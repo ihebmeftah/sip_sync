@@ -9,10 +9,29 @@ class AppLocalizationsAr extends AppLocalizations {
   AppLocalizationsAr([String locale = 'ar']) : super(locale);
 
   @override
-  String get appTitle => 'Sip Sync';
+  String get appTitle => 'Sip Sync Console';
 
   @override
-  String get tagline => 'طاولات ونكهات ومقعد يعرف اسمك.';
+  String get tagline => 'المشغّلون والمستأجرون ومسؤول المنصة.';
+
+  @override
+  String get atmosphereTitle => 'ابقِ المنصة نزيهة';
+
+  @override
+  String get atmosphereBody =>
+      'مسؤولون فائقون ومشغّلون. الصلاحيات لا تعيش في العميل.';
+
+  @override
+  String get authLead => 'دخول لوحة التحكم';
+
+  @override
+  String get registerLead => 'اطلب وصولاً للوحة';
+
+  @override
+  String get showPassword => 'إظهار كلمة المرور';
+
+  @override
+  String get hidePassword => 'إخفاء كلمة المرور';
 
   @override
   String get signIn => 'تسجيل الدخول';

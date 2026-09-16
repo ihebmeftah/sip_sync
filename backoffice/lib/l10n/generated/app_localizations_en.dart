@@ -12,7 +12,26 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appTitle => 'Sip Sync Console';
 
   @override
-  String get tagline => 'Tables, tastes, and a seat that knows your name.';
+  String get tagline => 'Operators, tenants, and the platform admin.';
+
+  @override
+  String get atmosphereTitle => 'Keep the platform honest';
+
+  @override
+  String get atmosphereBody =>
+      'Super admins and operators. Privileges never live in the client.';
+
+  @override
+  String get authLead => 'Console access';
+
+  @override
+  String get registerLead => 'Request console access';
+
+  @override
+  String get showPassword => 'Show password';
+
+  @override
+  String get hidePassword => 'Hide password';
 
   @override
   String get signIn => 'Sign in';

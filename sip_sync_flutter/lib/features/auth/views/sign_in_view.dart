@@ -5,6 +5,7 @@ import '../../../core/errors/error_mapper.dart';
 import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
+import '../../../core/widgets/auth_shell.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../view_models/auth_view_model.dart';
 
@@ -30,93 +31,44 @@ class _SignInViewState extends ConsumerState<SignInView> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final auth = ref.watch(authViewModelProvider);
-    return Scaffold(
-      body: Stack(
+    final text = Theme.of(context).textTheme;
+    return AuthShell(
+      form: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const Positioned.fill(
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    AppColors.foam,
-                    Color(0xFFE8C9A8),
-                    AppColors.terracotta,
-                  ],
-                ),
-              ),
-            ),
+          Text(l10n.authLead, style: text.headlineMedium),
+          const SizedBox(height: AppSpacing.sm),
+          Text(l10n.tagline, style: text.bodyLarge),
+          const SizedBox(height: AppSpacing.xl),
+          AppTextField(
+            controller: _email,
+            label: l10n.email,
+            keyboardType: TextInputType.emailAddress,
+            prefixIcon: Icons.mail_outline,
+            textInputAction: TextInputAction.next,
           ),
-          SafeArea(
-            child: Center(
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 420),
-                child: Padding(
-                  padding: const EdgeInsets.all(AppSpacing.xl),
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.88),
-                      borderRadius: BorderRadius.circular(28),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(AppSpacing.xl),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Text(
-                            l10n.appTitle,
-                            style: Theme.of(context).textTheme.headlineMedium,
-                          ),
-                          const SizedBox(height: AppSpacing.sm),
-                          Text(l10n.tagline),
-                          const SizedBox(height: AppSpacing.xl),
-                          AppTextField(
-                            controller: _email,
-                            label: l10n.email,
-                            keyboardType: TextInputType.emailAddress,
-                          ),
-                          AppTextField(
-                            controller: _password,
-                            label: l10n.password,
-                            obscure: true,
-                          ),
-                          if (auth.errorKey != null)
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                bottom: AppSpacing.md,
-                              ),
-                              child: Text(
-                                lookupError(l10n, auth.errorKey!),
-                                style: TextStyle(
-                                  color: Theme.of(context).colorScheme.error,
-                                ),
-                              ),
-                            ),
-                          AppFilledButton(
-                            label: l10n.signIn,
-                            busy: auth.isLoading,
-                            onPressed: () async {
-                              await ref
-                                  .read(authViewModelProvider.notifier)
-                                  .login(
-                                    _email.text,
-                                    _password.text,
-                                  );
-                            },
-                          ),
-                          TextButton(
-                            onPressed: () => const RegisterRoute().go(context),
-                            child: Text(l10n.noAccount),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
+          AppTextField(
+            controller: _password,
+            label: l10n.password,
+            obscure: true,
+            prefixIcon: Icons.lock_outline,
+            textInputAction: TextInputAction.done,
+          ),
+          if (auth.errorKey != null)
+            AppErrorBanner(message: lookupError(l10n, auth.errorKey!)),
+          AppFilledButton(
+            label: l10n.signIn,
+            busy: auth.isLoading,
+            onPressed: () async {
+              await ref
+                  .read(authViewModelProvider.notifier)
+                  .login(_email.text, _password.text);
+            },
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          TextButton(
+            onPressed: () => const RegisterRoute().go(context),
+            child: Text(l10n.noAccount),
           ),
         ],
       ),

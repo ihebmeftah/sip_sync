@@ -20,6 +20,18 @@ Business rules and permissions live on the server. Views do not call the client.
 
 Reusable widgets, theme, and routing helpers live under that app's `lib/core/`. Do not create a fourth Flutter package until a real shared UI need appears (today the three apps have different audiences and visual languages).
 
+## Visual language
+
+Each Flutter app extends its own tokens in `lib/core/theme/` (`AppColors`, `AppSpacing`, `AppRadii`, `AppBreakpoints`) and a full `ThemeData` (type, fields, buttons, chips, cards). Layouts switch at `840` dp: split hero + form (auth) or two-column dashboards (home). Forms cap at `440` dp so they do not stretch on web.
+
+| App | Audience | Palette | Type |
+| --- | --- | --- | --- |
+| `sip_sync_flutter` | customers | cream foam, espresso, terracotta, pistachio | Fraunces + Figtree |
+| `managment` | owners / staff | steam linen, slate, brass | Syne + IBM Plex Sans |
+| `backoffice` | super admin | ice paper, graphite, cyan | Sora + IBM Plex Sans |
+
+Auth uses `AuthShell` (wide split / compact stack). Primary actions and fields come from `AppFilledButton` / `AppTextField` so radius, focus rings, and password visibility stay consistent. Arabic is RTL via `MaterialApp` locales.
+
 ## Security
 
 - Endpoints: `requireLogin`, Sip Sync scopes (`sip.owner`, `sip.employee`, `sip.backoffice`, …), building membership

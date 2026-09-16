@@ -109,8 +109,44 @@ abstract class AppLocalizations {
   /// No description provided for @tagline.
   ///
   /// In en, this message translates to:
-  /// **'Tables, tastes, and a seat that knows your name.'**
+  /// **'Operators, tenants, and the platform admin.'**
   String get tagline;
+
+  /// No description provided for @atmosphereTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep the platform honest'**
+  String get atmosphereTitle;
+
+  /// No description provided for @atmosphereBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Super admins and operators. Privileges never live in the client.'**
+  String get atmosphereBody;
+
+  /// No description provided for @authLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Console access'**
+  String get authLead;
+
+  /// No description provided for @registerLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Request console access'**
+  String get registerLead;
+
+  /// No description provided for @showPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Show password'**
+  String get showPassword;
+
+  /// No description provided for @hidePassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide password'**
+  String get hidePassword;
 
   /// No description provided for @signIn.
   ///

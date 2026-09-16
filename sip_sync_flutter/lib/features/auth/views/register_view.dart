@@ -5,6 +5,7 @@ import '../../../core/errors/error_mapper.dart';
 import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
+import '../../../core/widgets/auth_shell.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../view_models/auth_view_model.dart';
 
@@ -38,35 +39,56 @@ class _RegisterViewState extends ConsumerState<RegisterView> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final auth = ref.watch(authViewModelProvider);
-    return Scaffold(
-      appBar: AppBar(title: Text(l10n.register)),
-      body: ListView(
-        padding: const EdgeInsets.all(AppSpacing.xl),
+    final text = Theme.of(context).textTheme;
+    return AuthShell(
+      form: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          AppTextField(controller: _first, label: l10n.firstName),
-          AppTextField(controller: _last, label: l10n.lastName),
-          AppTextField(controller: _username, label: l10n.username),
+          Text(l10n.registerLead, style: text.headlineMedium),
+          const SizedBox(height: AppSpacing.sm),
+          Text(l10n.tagline, style: text.bodyLarge),
+          const SizedBox(height: AppSpacing.xl),
+          AppTextField(
+            controller: _first,
+            label: l10n.firstName,
+            prefixIcon: Icons.person_outline,
+            textInputAction: TextInputAction.next,
+          ),
+          AppTextField(
+            controller: _last,
+            label: l10n.lastName,
+            prefixIcon: Icons.badge_outlined,
+            textInputAction: TextInputAction.next,
+          ),
+          AppTextField(
+            controller: _username,
+            label: l10n.username,
+            prefixIcon: Icons.alternate_email,
+            textInputAction: TextInputAction.next,
+          ),
           AppTextField(
             controller: _email,
             label: l10n.email,
             keyboardType: TextInputType.emailAddress,
+            prefixIcon: Icons.mail_outline,
+            textInputAction: TextInputAction.next,
           ),
           AppTextField(
             controller: _phone,
             label: l10n.phone,
             keyboardType: TextInputType.phone,
+            prefixIcon: Icons.phone_outlined,
+            textInputAction: TextInputAction.next,
           ),
           AppTextField(
             controller: _password,
             label: l10n.password,
             obscure: true,
+            prefixIcon: Icons.lock_outline,
+            textInputAction: TextInputAction.done,
           ),
           if (auth.errorKey != null)
-            Text(
-              lookupError(l10n, auth.errorKey!),
-              style: TextStyle(color: Theme.of(context).colorScheme.error),
-            ),
-          const SizedBox(height: AppSpacing.md),
+            AppErrorBanner(message: lookupError(l10n, auth.errorKey!)),
           AppFilledButton(
             label: l10n.register,
             busy: auth.isLoading,
@@ -83,6 +105,7 @@ class _RegisterViewState extends ConsumerState<RegisterView> {
                   );
             },
           ),
+          const SizedBox(height: AppSpacing.sm),
           TextButton(
             onPressed: () => const SignInRoute().go(context),
             child: Text(l10n.hasAccount),

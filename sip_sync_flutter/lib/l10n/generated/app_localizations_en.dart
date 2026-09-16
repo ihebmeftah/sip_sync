@@ -15,6 +15,25 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tagline => 'Tables, tastes, and a seat that knows your name.';
 
   @override
+  String get atmosphereTitle => 'A seat that knows your name';
+
+  @override
+  String get atmosphereBody =>
+      'Walk in, order, and pick up — the house already has your table.';
+
+  @override
+  String get authLead => 'Welcome back';
+
+  @override
+  String get registerLead => 'Create your seat';
+
+  @override
+  String get showPassword => 'Show password';
+
+  @override
+  String get hidePassword => 'Hide password';
+
+  @override
   String get signIn => 'Sign in';
 
   @override

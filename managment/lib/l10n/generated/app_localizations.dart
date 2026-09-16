@@ -109,8 +109,44 @@ abstract class AppLocalizations {
   /// No description provided for @tagline.
   ///
   /// In en, this message translates to:
-  /// **'Tables, tastes, and a seat that knows your name.'**
+  /// **'Floor, kitchen, and till — one login for the house.'**
   String get tagline;
+
+  /// No description provided for @atmosphereTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Run the house from one screen'**
+  String get atmosphereTitle;
+
+  /// No description provided for @atmosphereBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Owners and staff share a login. What you can do is decided on the server.'**
+  String get atmosphereBody;
+
+  /// No description provided for @authLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Staff sign in'**
+  String get authLead;
+
+  /// No description provided for @registerLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Open an owner account'**
+  String get registerLead;
+
+  /// No description provided for @showPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Show password'**
+  String get showPassword;
+
+  /// No description provided for @hidePassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide password'**
+  String get hidePassword;
 
   /// No description provided for @signIn.
   ///

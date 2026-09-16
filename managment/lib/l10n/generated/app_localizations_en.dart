@@ -12,7 +12,26 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appTitle => 'Sip Sync Ops';
 
   @override
-  String get tagline => 'Tables, tastes, and a seat that knows your name.';
+  String get tagline => 'Floor, kitchen, and till — one login for the house.';
+
+  @override
+  String get atmosphereTitle => 'Run the house from one screen';
+
+  @override
+  String get atmosphereBody =>
+      'Owners and staff share a login. What you can do is decided on the server.';
+
+  @override
+  String get authLead => 'Staff sign in';
+
+  @override
+  String get registerLead => 'Open an owner account';
+
+  @override
+  String get showPassword => 'Show password';
+
+  @override
+  String get hidePassword => 'Hide password';
 
   @override
   String get signIn => 'Sign in';

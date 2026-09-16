@@ -16,6 +16,25 @@ class AppLocalizationsFr extends AppLocalizations {
       'Des tables, des goûts, une place qui connaît votre nom.';
 
   @override
+  String get atmosphereTitle => 'Une place qui connaît votre nom';
+
+  @override
+  String get atmosphereBody =>
+      'Entrez, commandez, récupérez — la maison a déjà votre table.';
+
+  @override
+  String get authLead => 'Bon retour';
+
+  @override
+  String get registerLead => 'Créez votre place';
+
+  @override
+  String get showPassword => 'Afficher le mot de passe';
+
+  @override
+  String get hidePassword => 'Masquer le mot de passe';
+
+  @override
   String get signIn => 'Connexion';
 
   @override

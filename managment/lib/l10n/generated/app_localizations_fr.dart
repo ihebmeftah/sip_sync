@@ -9,11 +9,30 @@ class AppLocalizationsFr extends AppLocalizations {
   AppLocalizationsFr([String locale = 'fr']) : super(locale);
 
   @override
-  String get appTitle => 'Sip Sync';
+  String get appTitle => 'Sip Sync Ops';
 
   @override
   String get tagline =>
-      'Des tables, des goûts, une place qui connaît votre nom.';
+      'Salle, cuisine, caisse — un seul accès pour la maison.';
+
+  @override
+  String get atmosphereTitle => 'Pilotez la maison depuis un écran';
+
+  @override
+  String get atmosphereBody =>
+      'Propriétaires et équipe partagent un identifiant. Les droits restent côté serveur.';
+
+  @override
+  String get authLead => 'Accès équipe';
+
+  @override
+  String get registerLead => 'Créer un compte propriétaire';
+
+  @override
+  String get showPassword => 'Afficher le mot de passe';
+
+  @override
+  String get hidePassword => 'Masquer le mot de passe';
 
   @override
   String get signIn => 'Connexion';

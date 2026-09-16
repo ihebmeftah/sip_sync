@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'app.dart';
+part of 'locale_controller.dart';
 
 // **************************************************************************
 // RiverpodGenerator

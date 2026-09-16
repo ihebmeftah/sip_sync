@@ -15,6 +15,24 @@ class AppLocalizationsAr extends AppLocalizations {
   String get tagline => 'طاولات ونكهات ومقعد يعرف اسمك.';
 
   @override
+  String get atmosphereTitle => 'مقعد يعرف اسمك';
+
+  @override
+  String get atmosphereBody => 'ادخل واطلب واستلم — المكان يعرف طاولتك مسبقاً.';
+
+  @override
+  String get authLead => 'مرحباً بعودتك';
+
+  @override
+  String get registerLead => 'أنشئ مقعدك';
+
+  @override
+  String get showPassword => 'إظهار كلمة المرور';
+
+  @override
+  String get hidePassword => 'إخفاء كلمة المرور';
+
+  @override
   String get signIn => 'تسجيل الدخول';
 
   @override

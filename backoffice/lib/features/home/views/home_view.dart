@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sip_sync_client/sip_sync_client.dart';
 
+import '../../../core/di/app_providers.dart';
 import '../../../core/errors/error_mapper.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
-import '../../../core/di/app_providers.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../auth/view_models/auth_view_model.dart';
 
@@ -20,6 +20,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
   List<BackofficeUserView> _users = [];
   String? _errorKey;
   bool _loading = true;
+  bool _saving = false;
 
   final _email = TextEditingController();
   final _password = TextEditingController();
@@ -68,97 +69,190 @@ class _HomeViewState extends ConsumerState<HomeView> {
     final l10n = AppLocalizations.of(context)!;
     final session = ref.watch(authViewModelProvider).session;
     final isAdmin = session?.isBackofficeAdmin ?? false;
+    final text = Theme.of(context).textTheme;
+    final scheme = Theme.of(context).colorScheme;
     return Scaffold(
       appBar: AppBar(
         title: Text(l10n.appTitle),
         actions: [
+          const LocaleMenuButton(),
           TextButton(
             onPressed: () => ref.read(authViewModelProvider.notifier).signOut(),
             child: Text(l10n.signOut),
           ),
         ],
       ),
-      body: ListView(
-        padding: const EdgeInsets.all(AppSpacing.xl),
-        children: [
-          Text(
-            l10n.welcome(session?.profile.firstName ?? ''),
-            style: Theme.of(context).textTheme.headlineSmall,
-          ),
-          if (_errorKey != null)
-            Text(
-              lookupError(l10n, _errorKey!),
-              style: TextStyle(color: Theme.of(context).colorScheme.error),
-            ),
-          const SizedBox(height: AppSpacing.xl),
-          Text(l10n.staff, style: Theme.of(context).textTheme.titleLarge),
-          if (_loading) const LinearProgressIndicator(),
-          for (final user in _users)
-            ListTile(
-              title: Text('${user.profile.firstName} ${user.profile.lastName}'),
-              subtitle: Text(
-                [
-                  user.profile.email,
-                  if (user.isAdmin) l10n.adminFlag,
-                  if (user.isSystemDefault) l10n.defaultAdminFlag,
-                ].join(' · '),
+      body: Align(
+        alignment: Alignment.topCenter,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: AppBreakpoints.pageMax),
+          child: ListView(
+            padding: const EdgeInsets.all(AppSpacing.xl),
+            children: [
+              AppSurfaceCard(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      l10n.welcome(session?.profile.firstName ?? ''),
+                      style: text.headlineMedium,
+                    ),
+                    if (_errorKey != null) ...[
+                      const SizedBox(height: AppSpacing.md),
+                      AppErrorBanner(message: lookupError(l10n, _errorKey!)),
+                    ],
+                  ],
+                ),
               ),
-              trailing: isAdmin && !user.isSystemDefault
-                  ? IconButton(
-                      icon: const Icon(Icons.delete_outline),
-                      onPressed: () async {
-                        try {
-                          await ref
-                              .read(accountRepositoryProvider)
-                              .deleteBackofficeUser(user.profile.authUserId);
-                          await _reload();
-                        } catch (error) {
-                          setState(() => _errorKey = mapError(error).l10nKey);
-                        }
-                      },
-                    )
-                  : null,
-            ),
-          if (isAdmin) ...[
-            const SizedBox(height: AppSpacing.xl),
-            Text(l10n.addStaff, style: Theme.of(context).textTheme.titleLarge),
-            AppTextField(controller: _first, label: l10n.firstName),
-            AppTextField(controller: _last, label: l10n.lastName),
-            AppTextField(controller: _username, label: l10n.username),
-            AppTextField(controller: _email, label: l10n.email),
-            AppTextField(controller: _phone, label: l10n.phone),
-            AppTextField(
-              controller: _password,
-              label: l10n.password,
-              obscure: true,
-            ),
-            AppFilledButton(
-              label: l10n.addStaff,
-              busy: _loading,
-              onPressed: () async {
-                setState(() => _loading = true);
-                try {
-                  await ref
-                      .read(accountRepositoryProvider)
-                      .addBackofficeUser(
-                        email: _email.text,
-                        password: _password.text,
-                        username: _username.text,
-                        phoneNumber: _phone.text,
-                        firstName: _first.text,
-                        lastName: _last.text,
-                      );
-                  await _reload();
-                } catch (error) {
-                  setState(() {
-                    _loading = false;
-                    _errorKey = mapError(error).l10nKey;
-                  });
-                }
-              },
-            ),
-          ],
-        ],
+              const SizedBox(height: AppSpacing.xl),
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  final wide = constraints.maxWidth >= AppBreakpoints.expanded;
+                  final staff = AppSurfaceCard(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(l10n.staff, style: text.titleLarge),
+                        const SizedBox(height: AppSpacing.md),
+                        if (_loading) const LinearProgressIndicator(),
+                        if (!_loading && _users.isEmpty)
+                          Text(l10n.empty, style: text.bodyMedium),
+                        for (final user in _users)
+                          ListTile(
+                            contentPadding: EdgeInsets.zero,
+                            leading: CircleAvatar(
+                              backgroundColor: scheme.secondaryContainer,
+                              foregroundColor: scheme.onSecondaryContainer,
+                              child: Text(
+                                user.profile.firstName.isEmpty
+                                    ? '?'
+                                    : user.profile.firstName.characters.first,
+                              ),
+                            ),
+                            title: Text(
+                              '${user.profile.firstName} ${user.profile.lastName}',
+                            ),
+                            subtitle: Text(
+                              [
+                                user.profile.email,
+                                if (user.isAdmin) l10n.adminFlag,
+                                if (user.isSystemDefault) l10n.defaultAdminFlag,
+                              ].join(' · '),
+                            ),
+                            trailing: isAdmin && !user.isSystemDefault
+                                ? IconButton(
+                                    icon: const Icon(Icons.delete_outline),
+                                    onPressed: () async {
+                                      try {
+                                        await ref
+                                            .read(accountRepositoryProvider)
+                                            .deleteBackofficeUser(
+                                              user.profile.authUserId,
+                                            );
+                                        await _reload();
+                                      } catch (error) {
+                                        setState(
+                                          () => _errorKey = mapError(
+                                            error,
+                                          ).l10nKey,
+                                        );
+                                      }
+                                    },
+                                  )
+                                : null,
+                          ),
+                      ],
+                    ),
+                  );
+                  if (!isAdmin) return staff;
+                  final form = AppSurfaceCard(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Text(l10n.addStaff, style: text.titleLarge),
+                        const SizedBox(height: AppSpacing.lg),
+                        AppTextField(
+                          controller: _first,
+                          label: l10n.firstName,
+                          prefixIcon: Icons.person_outline,
+                        ),
+                        AppTextField(
+                          controller: _last,
+                          label: l10n.lastName,
+                          prefixIcon: Icons.badge_outlined,
+                        ),
+                        AppTextField(
+                          controller: _username,
+                          label: l10n.username,
+                          prefixIcon: Icons.alternate_email,
+                        ),
+                        AppTextField(
+                          controller: _email,
+                          label: l10n.email,
+                          prefixIcon: Icons.mail_outline,
+                        ),
+                        AppTextField(
+                          controller: _phone,
+                          label: l10n.phone,
+                          prefixIcon: Icons.phone_outlined,
+                        ),
+                        AppTextField(
+                          controller: _password,
+                          label: l10n.password,
+                          obscure: true,
+                          prefixIcon: Icons.lock_outline,
+                        ),
+                        AppFilledButton(
+                          label: l10n.addStaff,
+                          busy: _saving,
+                          onPressed: () async {
+                            setState(() => _saving = true);
+                            try {
+                              await ref
+                                  .read(accountRepositoryProvider)
+                                  .addBackofficeUser(
+                                    email: _email.text,
+                                    password: _password.text,
+                                    username: _username.text,
+                                    phoneNumber: _phone.text,
+                                    firstName: _first.text,
+                                    lastName: _last.text,
+                                  );
+                              setState(() => _saving = false);
+                              await _reload();
+                            } catch (error) {
+                              setState(() {
+                                _saving = false;
+                                _errorKey = mapError(error).l10nKey;
+                              });
+                            }
+                          },
+                        ),
+                      ],
+                    ),
+                  );
+                  if (wide) {
+                    return Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(child: staff),
+                        const SizedBox(width: AppSpacing.lg),
+                        Expanded(child: form),
+                      ],
+                    );
+                  }
+                  return Column(
+                    children: [
+                      staff,
+                      const SizedBox(height: AppSpacing.lg),
+                      form,
+                    ],
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

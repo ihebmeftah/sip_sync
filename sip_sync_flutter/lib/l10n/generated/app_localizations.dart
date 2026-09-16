@@ -112,6 +112,42 @@ abstract class AppLocalizations {
   /// **'Tables, tastes, and a seat that knows your name.'**
   String get tagline;
 
+  /// No description provided for @atmosphereTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'A seat that knows your name'**
+  String get atmosphereTitle;
+
+  /// No description provided for @atmosphereBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Walk in, order, and pick up — the house already has your table.'**
+  String get atmosphereBody;
+
+  /// No description provided for @authLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome back'**
+  String get authLead;
+
+  /// No description provided for @registerLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Create your seat'**
+  String get registerLead;
+
+  /// No description provided for @showPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Show password'**
+  String get showPassword;
+
+  /// No description provided for @hidePassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide password'**
+  String get hidePassword;
+
   /// No description provided for @signIn.
   ///
   /// In en, this message translates to:

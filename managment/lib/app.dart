@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import 'core/di/locale_controller.dart';
 import 'core/routing/app_router.dart';
 import 'core/theme/app_theme.dart';
 import 'l10n/generated/app_localizations.dart';
-
-part 'app.g.dart';
 
 class SipSyncApp extends ConsumerWidget {
   const SipSyncApp({super.key});
@@ -30,12 +28,4 @@ class SipSyncApp extends ConsumerWidget {
       ],
     );
   }
-}
-
-@riverpod
-class LocaleController extends _$LocaleController {
-  @override
-  Locale build() => const Locale('en');
-
-  void setLocale(Locale locale) => state = locale;
 }
