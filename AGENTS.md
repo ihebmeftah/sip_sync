@@ -1,7 +1,24 @@
-# Flutter & Serverpod project
+# Sip Sync — agent guide
 
-This project is a Flutter app (frontend) backed by a Serverpod server (backend). Always build the app's backend with Serverpod.
-Build for multiple users, use Serverpod's built-in authentication, which is already set up in `lib/server.dart`.
+Sip Sync is a café / restaurant / lounge / bar ecosystem. One Serverpod backend serves three Flutter apps. Features listed in `notes.txt` and `Docs/` are **not frozen** and may change during development.
+
+## Apps
+
+| Package | Audience | Role |
+| --- | --- | --- |
+| `managment` | café owners and employees | operations: buildings, staff, menu, orders, cash register, kitchen |
+| `sip_sync_flutter` | customers | customer-facing ordering / discovery |
+| `backoffice` | super admin | platform administration |
+| `sip_sync_server` | backend | Serverpod RPC, DB, auth, streams |
+| `sip_sync_client` | generated | **never edit** — regenerated from the server |
+
+Stack on every Flutter app: **MVVM**, **Riverpod**, **go_router**, **ARB i18n** (en, ar, fr with RTL for Arabic), shared theme/typography, reusable widgets per app.
+
+Before implementing a feature, read `.cursor/skills/sip-sync-feature-development/SKILL.md` and the matching `Docs/features/` file (create it if missing). Follow `.cursor/rules/` for architecture, security, i18n, and docs.
+
+## Serverpod workflow
+
+Always build the backend with Serverpod. Use Serverpod's built-in authentication (already set up in `sip_sync_server/lib/server.dart`).
 
 The user starts the server and Flutter app with `serverpod start`. There is no need to check if the server is running: make the changes and call the `serverpod` MCP tools as needed. If the server is not running, an informative error message will be received from the MCP server. Then STOP and ask the user to start it. NEVER start the server yourself. The Flutter app is started along with it, or can be launched from the MCP tool `spawn_flutter_app`.
 
@@ -46,5 +63,3 @@ If the user asks you to test the app:
 3. Use `flutter_driver` (`dart` MCP) to navigate through the app
 
 The app is launched from `sip_sync_flutter/lib/driver.dart`, which starts the Flutter driver extension with text entry emulation turned off so the app stays usable by hand. To let the driver type, set `enableTextEntryEmulation: true` there and `hot_restart` the app.
-
-IMPORTANT: After building the first version of the app, update this AGENTS.md file with information about the app we're building. KEEP the info about the MCP server and the checklist. Remove this paragraph.
