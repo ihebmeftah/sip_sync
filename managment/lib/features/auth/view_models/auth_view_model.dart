@@ -106,6 +106,15 @@ class AuthViewModel extends _$AuthViewModel {
     }
   }
 
+  /// Keeps [AuthState.session] aligned after a profile save.
+  void applySession(AccountSessionView session) {
+    state = state.copyWith(
+      session: session,
+      isLoading: false,
+      clearError: true,
+    );
+  }
+
   Future<void> signOut() async {
     await _repository.signOut();
     state = const AuthState();

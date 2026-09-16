@@ -147,4 +147,91 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get errorProfileIncomplete =>
       'Finish registration with username and phone.';
+
+  @override
+  String get opsRailTagline => 'Floor command';
+
+  @override
+  String get navDashboard => 'Dashboard';
+
+  @override
+  String get navProfile => 'Profile';
+
+  @override
+  String get navProducts => 'Products';
+
+  @override
+  String get navArticles => 'Articles';
+
+  @override
+  String get navIngredients => 'Ingredients';
+
+  @override
+  String get navPos => 'POS';
+
+  @override
+  String get navTables => 'Tables';
+
+  @override
+  String helloScreen(String screen) {
+    return 'Hello, $screen';
+  }
+
+  @override
+  String get placeholderBody =>
+      'This screen is not connected to the server yet.';
+
+  @override
+  String get saveProfile => 'Save profile';
+
+  @override
+  String get profileSaved => 'Profile updated.';
+
+  @override
+  String get myProfile => 'Your profile';
+
+  @override
+  String get teamProfiles => 'Added staff';
+
+  @override
+  String get viewProfile => 'View';
+
+  @override
+  String get employeeProfile => 'Staff profile';
+
+  @override
+  String get themeLight => 'Light theme';
+
+  @override
+  String get themeDark => 'Dark theme';
+
+  @override
+  String get dashboardEyebrow => 'Tonight’s house';
+
+  @override
+  String get dashboardSubtitle =>
+      'POS, floor, and catalog sit one tap away. Live counts arrive with the next server slice.';
+
+  @override
+  String get dashboardShift => 'Shift board';
+
+  @override
+  String get dashboardPosCue => 'Till and tickets — coming next.';
+
+  @override
+  String get dashboardTablesCue => 'Floor map without a backend yet.';
+
+  @override
+  String get dashboardCatalogCue => 'Articles and ingredients, UI only.';
+
+  @override
+  String get dashboardProfileCue => 'Your details and the team you added.';
+
+  @override
+  String get emailLocked =>
+      'Email is tied to sign-in and cannot be changed here.';
+
+  @override
+  String get profileHint =>
+      'Update the name the floor sees. Owners can open staff profiles below.';
 }

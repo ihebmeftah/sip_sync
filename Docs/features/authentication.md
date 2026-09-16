@@ -72,10 +72,13 @@ Login to `managment` without owner/employee, or to `backoffice` without backoffi
 
 - Tables: `sip_sync_profile`, `user_role_membership`, `backoffice_staff`, `employee_record` (server-only)
 - Create: `SelfRegisterCreate`, `LoginRequest`, `EmployeeCreate`, `BackofficeUserCreate`
+- Update: `ProfileUpdate` (username, phone, names; email stays on the identity)
 - Responses: `AuthSessionResult` (`AuthSuccess` + `AccountSessionView`), `ProfileView`, `BackofficeUserView`
 - Exceptions: `AccountException` with `AccountErrorCode`
 
 Passwords are never stored on Sip Sync tables; they live in the email identity provider.
+
+Signed-in users call `updateMyProfile`. Owners call `getEmployee` for staff they added (see [ops-shell](ops-shell.md) and [employees](employees.md)).
 
 ## Realtime
 

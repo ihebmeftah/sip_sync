@@ -235,5 +235,89 @@ void main() {
         );
       },
     );
+
+    test(
+      'when owner updates their profile then session reflects the new name',
+      () async {
+        final owner = await endpoints.account.register(
+          sessionBuilder,
+          SelfRegisterCreate(
+            email: 'rename@example.com',
+            password: 'password1',
+            username: 'oldowner',
+            phoneNumber: '+21620000008',
+            firstName: 'Old',
+            lastName: 'Name',
+            app: SipApp.management,
+          ),
+        );
+
+        final ownerSession = sessionBuilder.copyWith(
+          authentication: AuthenticationOverride.authenticationInfo(
+            owner.authSuccess.authUserId.uuid,
+            {Scope('sip.owner')},
+          ),
+        );
+
+        final updated = await endpoints.account.updateMyProfile(
+          ownerSession,
+          ProfileUpdate(
+            username: 'newowner',
+            phoneNumber: '+21620000008',
+            firstName: 'New',
+            lastName: 'Owner',
+          ),
+        );
+
+        expect(updated.profile.username, 'newowner');
+        expect(updated.profile.firstName, 'New');
+        expect(updated.profile.email, 'rename@example.com');
+      },
+    );
+
+    test(
+      'when owner reads an added employee then the profile is returned',
+      () async {
+        final owner = await endpoints.account.register(
+          sessionBuilder,
+          SelfRegisterCreate(
+            email: 'boss@example.com',
+            password: 'password1',
+            username: 'theboss',
+            phoneNumber: '+21620000009',
+            firstName: 'The',
+            lastName: 'Boss',
+            app: SipApp.management,
+          ),
+        );
+
+        final ownerSession = sessionBuilder.copyWith(
+          authentication: AuthenticationOverride.authenticationInfo(
+            owner.authSuccess.authUserId.uuid,
+            {Scope('sip.owner')},
+          ),
+        );
+
+        final employee = await endpoints.account.addEmployee(
+          ownerSession,
+          EmployeeCreate(
+            email: 'cook@example.com',
+            password: 'password1',
+            username: 'linecook',
+            phoneNumber: '+21620000010',
+            firstName: 'Line',
+            lastName: 'Cook',
+          ),
+        );
+
+        final viewed = await endpoints.account.getEmployee(
+          ownerSession,
+          employee.authUserId,
+        );
+
+        expect(viewed.email, 'cook@example.com');
+        expect(viewed.roles, contains('employee'));
+      },
+    );
   });
 }

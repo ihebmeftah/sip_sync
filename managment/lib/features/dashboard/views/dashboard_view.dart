@@ -1,0 +1,245 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../../core/routing/app_routes.dart';
+import '../../../core/theme/app_tokens.dart';
+import '../../../core/widgets/app_controls.dart';
+import '../../../l10n/generated/app_localizations.dart';
+import '../../auth/view_models/auth_view_model.dart';
+
+/// House overview for owners and staff. Destinations are wired; metrics later.
+class DashboardView extends ConsumerWidget {
+  const DashboardView({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
+    final session = ref.watch(authViewModelProvider).session;
+    final scheme = Theme.of(context).colorScheme;
+    final text = Theme.of(context).textTheme;
+    final name = session?.profile.firstName ?? '';
+
+    return ColoredBox(
+      color: Theme.of(context).scaffoldBackgroundColor,
+      child: CustomScrollView(
+        slivers: [
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(
+                AppSpacing.xl,
+                AppSpacing.xxl,
+                AppSpacing.xl,
+                AppSpacing.lg,
+              ),
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(
+                  maxWidth: AppBreakpoints.pageMax,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    DecoratedBox(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(AppRadii.xl),
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            scheme.primaryContainer,
+                            scheme.secondaryContainer,
+                          ],
+                        ),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(AppSpacing.xxl),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              l10n.dashboardEyebrow,
+                              style: text.labelLarge?.copyWith(
+                                color: scheme.primary,
+                                letterSpacing: 1.4,
+                              ),
+                            ),
+                            const SizedBox(height: AppSpacing.sm),
+                            Text(
+                              l10n.welcome(name),
+                              style: text.displaySmall?.copyWith(
+                                color: scheme.onPrimaryContainer,
+                              ),
+                            ),
+                            const SizedBox(height: AppSpacing.md),
+                            Text(
+                              l10n.dashboardSubtitle,
+                              style: text.titleMedium?.copyWith(
+                                color: scheme.onPrimaryContainer.withValues(
+                                  alpha: 0.82,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: AppSpacing.lg),
+                            Wrap(
+                              spacing: AppSpacing.sm,
+                              runSpacing: AppSpacing.sm,
+                              children: [
+                                for (final role
+                                    in session?.profile.roles ??
+                                        const <String>[])
+                                  Chip(
+                                    label: Text(role),
+                                    backgroundColor: scheme.surface.withValues(
+                                      alpha: 0.55,
+                                    ),
+                                    labelStyle: text.labelLarge?.copyWith(
+                                      color: scheme.onPrimaryContainer,
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.xl),
+                    LayoutBuilder(
+                      builder: (context, constraints) {
+                        final wide =
+                            constraints.maxWidth >= AppBreakpoints.expanded;
+                        final cards = [
+                          _DashTile(
+                            title: l10n.navPos,
+                            body: l10n.dashboardPosCue,
+                            icon: Icons.point_of_sale_outlined,
+                            onTap: () => const PosRoute().go(context),
+                          ),
+                          _DashTile(
+                            title: l10n.navTables,
+                            body: l10n.dashboardTablesCue,
+                            icon: Icons.table_restaurant_outlined,
+                            onTap: () => const TablesRoute().go(context),
+                          ),
+                          _DashTile(
+                            title: l10n.navProducts,
+                            body: l10n.dashboardCatalogCue,
+                            icon: Icons.inventory_2_outlined,
+                            onTap: () => const ArticlesRoute().go(context),
+                          ),
+                          _DashTile(
+                            title: l10n.navProfile,
+                            body: l10n.dashboardProfileCue,
+                            icon: Icons.person_outline,
+                            onTap: () => const ProfileRoute().go(context),
+                          ),
+                        ];
+                        if (wide) {
+                          return GridView.count(
+                            crossAxisCount: 2,
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            mainAxisSpacing: AppSpacing.lg,
+                            crossAxisSpacing: AppSpacing.lg,
+                            childAspectRatio: 2.2,
+                            children: cards,
+                          );
+                        }
+                        return Column(
+                          children: [
+                            for (final card in cards) ...[
+                              card,
+                              const SizedBox(height: AppSpacing.lg),
+                            ],
+                          ],
+                        );
+                      },
+                    ),
+                    AppSurfaceCard(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(l10n.dashboardShift, style: text.titleLarge),
+                          const SizedBox(height: AppSpacing.sm),
+                          Text(
+                            l10n.placeholderBody,
+                            style: text.bodyMedium?.copyWith(
+                              color: scheme.onSurfaceVariant,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _DashTile extends StatelessWidget {
+  const _DashTile({
+    required this.title,
+    required this.body,
+    required this.icon,
+    required this.onTap,
+  });
+
+  final String title;
+  final String body;
+  final IconData icon;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Material(
+      color: scheme.surfaceContainerLowest,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppRadii.lg),
+        side: BorderSide(color: scheme.outline),
+      ),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(AppRadii.lg),
+        child: Padding(
+          padding: const EdgeInsets.all(AppSpacing.xl),
+          child: Row(
+            children: [
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  color: scheme.secondaryContainer,
+                  borderRadius: BorderRadius.circular(AppRadii.md),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(AppSpacing.md),
+                  child: Icon(icon, color: scheme.onSecondaryContainer),
+                ),
+              ),
+              const SizedBox(width: AppSpacing.lg),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(title, style: Theme.of(context).textTheme.titleLarge),
+                    const SizedBox(height: AppSpacing.xs),
+                    Text(
+                      body,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: scheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Icon(Icons.arrow_outward, color: scheme.secondary),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

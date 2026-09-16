@@ -39,6 +39,44 @@ class AccountEndpoint extends Endpoint {
     return _accounts.me(session, userId);
   }
 
+  /// Updates the signed-in user's username, phone, and name.
+  Future<AccountSessionView> updateMyProfile(
+    Session session,
+    ProfileUpdate request,
+  ) async {
+    final userId = session.authenticated?.authUserId;
+    if (userId == null) {
+      throw AccountException(
+        message: 'Sign in required.',
+        code: AccountErrorCode.notAuthorized,
+      );
+    }
+    return _accounts.updateMyProfile(
+      session,
+      authUserId: userId,
+      request: request,
+    );
+  }
+
+  /// Owner reads one employee they added.
+  Future<ProfileView> getEmployee(
+    Session session,
+    UuidValue employeeAuthUserId,
+  ) async {
+    final userId = session.authenticated?.authUserId;
+    if (userId == null) {
+      throw AccountException(
+        message: 'Sign in required.',
+        code: AccountErrorCode.notAuthorized,
+      );
+    }
+    return _accounts.getEmployee(
+      session,
+      ownerAuthUserId: userId,
+      employeeAuthUserId: employeeAuthUserId,
+    );
+  }
+
   /// Owner adds an employee (new account or extra role on an existing email).
   Future<ProfileView> addEmployee(
     Session session,

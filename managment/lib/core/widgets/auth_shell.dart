@@ -105,7 +105,7 @@ class _HeroPanel extends StatelessWidget {
     return Stack(
       fit: StackFit.expand,
       children: [
-        const CustomPaint(painter: _OpsPainter()),
+        CustomPaint(painter: _OpsPainter(scheme: scheme)),
         Padding(
           padding: EdgeInsets.all(expanded ? AppSpacing.xxl : AppSpacing.xl),
           child: Align(
@@ -122,7 +122,7 @@ class _HeroPanel extends StatelessWidget {
                       filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                       child: DecoratedBox(
                         decoration: BoxDecoration(
-                          color: AppColors.brass.withValues(alpha: 0.16),
+                          color: scheme.primary.withValues(alpha: 0.14),
                           borderRadius: BorderRadius.circular(AppRadii.sm),
                         ),
                         child: Padding(
@@ -133,7 +133,7 @@ class _HeroPanel extends StatelessWidget {
                           child: Text(
                             l10n.appTitle,
                             style: text.labelLarge?.copyWith(
-                              color: AppColors.brass,
+                              color: scheme.primary,
                               letterSpacing: 1.6,
                             ),
                           ),
@@ -145,13 +145,13 @@ class _HeroPanel extends StatelessWidget {
                   Text(
                     l10n.atmosphereTitle,
                     style: (expanded ? text.displayMedium : text.headlineSmall)
-                        ?.copyWith(color: scheme.onInverseSurface),
+                        ?.copyWith(color: scheme.onPrimaryContainer),
                   ),
                   const SizedBox(height: AppSpacing.md),
                   Text(
                     l10n.atmosphereBody,
                     style: text.bodyLarge?.copyWith(
-                      color: scheme.onInverseSurface.withValues(alpha: 0.8),
+                      color: scheme.onPrimaryContainer.withValues(alpha: 0.82),
                       height: 1.4,
                     ),
                   ),
@@ -166,7 +166,9 @@ class _HeroPanel extends StatelessWidget {
 }
 
 class _OpsPainter extends CustomPainter {
-  const _OpsPainter();
+  const _OpsPainter({required this.scheme});
+
+  final ColorScheme scheme;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -174,14 +176,18 @@ class _OpsPainter extends CustomPainter {
     canvas.drawRect(
       rect,
       Paint()
-        ..shader = const LinearGradient(
+        ..shader = LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [AppColors.slate, Color(0xFF1E2430), Color(0xFF2C2418)],
+          colors: [
+            scheme.primaryContainer,
+            scheme.surfaceContainerHigh,
+            scheme.secondaryContainer,
+          ],
         ).createShader(rect),
     );
     final line = Paint()
-      ..color = AppColors.brass.withValues(alpha: 0.12)
+      ..color = scheme.primary.withValues(alpha: 0.12)
       ..strokeWidth = 1;
     for (var i = -4; i < 18; i++) {
       final x = i * 48.0;
@@ -190,10 +196,11 @@ class _OpsPainter extends CustomPainter {
     canvas.drawCircle(
       Offset(size.width * 0.82, size.height * 0.18),
       90,
-      Paint()..color = AppColors.brass.withValues(alpha: 0.14),
+      Paint()..color = scheme.secondary.withValues(alpha: 0.16),
     );
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+  bool shouldRepaint(covariant _OpsPainter oldDelegate) =>
+      oldDelegate.scheme != scheme;
 }

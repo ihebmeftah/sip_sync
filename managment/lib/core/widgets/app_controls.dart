@@ -48,6 +48,8 @@ class AppTextField extends StatefulWidget {
     this.keyboardType,
     this.prefixIcon,
     this.textInputAction,
+    this.readOnly = false,
+    this.helperText,
   });
 
   final TextEditingController controller;
@@ -56,6 +58,8 @@ class AppTextField extends StatefulWidget {
   final TextInputType? keyboardType;
   final IconData? prefixIcon;
   final TextInputAction? textInputAction;
+  final bool readOnly;
+  final String? helperText;
 
   @override
   State<AppTextField> createState() => _AppTextFieldState();
@@ -74,8 +78,10 @@ class _AppTextFieldState extends State<AppTextField> {
         obscureText: _hidden,
         keyboardType: widget.keyboardType,
         textInputAction: widget.textInputAction,
+        readOnly: widget.readOnly,
         decoration: InputDecoration(
           labelText: widget.label,
+          helperText: widget.helperText,
           prefixIcon: widget.prefixIcon == null
               ? null
               : Icon(widget.prefixIcon),
@@ -120,6 +126,31 @@ class AppErrorBanner extends StatelessWidget {
               context,
             ).textTheme.bodyMedium?.copyWith(color: scheme.error),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class AppSuccessBanner extends StatelessWidget {
+  const AppSuccessBanner({super.key, required this.message});
+
+  final String message;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AppSpacing.lg),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: scheme.secondary.withValues(alpha: 0.16),
+          borderRadius: BorderRadius.circular(AppRadii.sm),
+          border: Border.all(color: scheme.secondary.withValues(alpha: 0.4)),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(AppSpacing.md),
+          child: Text(message, style: Theme.of(context).textTheme.bodyMedium),
         ),
       ),
     );

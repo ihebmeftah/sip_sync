@@ -29,6 +29,8 @@ import 'package:sip_sync_client/src/protocol/auth/employee_create.dart'
     as _i0ndf5ud;
 import 'package:sip_sync_client/src/protocol/auth/login_request.dart'
     as _innui2e8;
+import 'package:sip_sync_client/src/protocol/auth/profile_update.dart'
+    as _ijw3vapc;
 import 'package:sip_sync_client/src/protocol/auth/profile_view.dart'
     as _i64758c0;
 import 'package:sip_sync_client/src/protocol/auth/self_register_create.dart'
@@ -73,6 +75,24 @@ class EndpointAccount extends _isc.EndpointRef {
         'me',
         {},
       );
+
+  /// Updates the signed-in user's username, phone, and name.
+  _ida.Future<_iyjeltbx.AccountSessionView> updateMyProfile(
+    _ijw3vapc.ProfileUpdate request,
+  ) => caller.callServerEndpoint<_iyjeltbx.AccountSessionView>(
+    'account',
+    'updateMyProfile',
+    {'request': request},
+  );
+
+  /// Owner reads one employee they added.
+  _ida.Future<_i64758c0.ProfileView> getEmployee(
+    _isc.UuidValue employeeAuthUserId,
+  ) => caller.callServerEndpoint<_i64758c0.ProfileView>(
+    'account',
+    'getEmployee',
+    {'employeeAuthUserId': employeeAuthUserId},
+  );
 
   /// Owner adds an employee (new account or extra role on an existing email).
   _ida.Future<_i64758c0.ProfileView> addEmployee(

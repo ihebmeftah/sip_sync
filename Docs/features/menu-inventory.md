@@ -12,6 +12,8 @@ Status: draft
 - Kitchen / ops: stock levels, threshold alerts.
 - Customers: published menu only.
 
+The management app currently exposes **Articles** and **Ingredients** under a Products rail group as placeholders (no endpoints).
+
 ## Flow
 
 1. Manage categories and articles per building (or shared catalog — decide at implementation).

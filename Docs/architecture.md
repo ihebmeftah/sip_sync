@@ -27,10 +27,10 @@ Each Flutter app extends its own tokens in `lib/core/theme/` (`AppColors`, `AppS
 | App | Audience | Palette | Type |
 | --- | --- | --- | --- |
 | `sip_sync_flutter` | customers | cream foam, espresso, terracotta, pistachio | Fraunces + Figtree |
-| `managment` | owners / staff | steam linen, slate, brass | Syne + IBM Plex Sans |
+| `managment` | owners / staff | olive, sage, sand, parchment (same family in light/dark) | Syne + IBM Plex Sans |
 | `backoffice` | super admin | ice paper, graphite, cyan | Sora + IBM Plex Sans |
 
-Auth uses `AuthShell` (wide split / compact stack). Primary actions and fields come from `AppFilledButton` / `AppTextField` so radius, focus rings, and password visibility stay consistent. Arabic is RTL via `MaterialApp` locales.
+Auth uses `AuthShell` (wide split / compact stack). Signed-in `managment` uses `OpsShell` (olive rail / compact drawer) with dashboard, profile, products, POS, and tables. Primary actions and fields come from `AppFilledButton` / `AppTextField` so radius, focus rings, and password visibility stay consistent. Arabic is RTL via `MaterialApp` locales. Light and dark `ThemeData` are selected with `ThemeController`.
 
 ## Security
 

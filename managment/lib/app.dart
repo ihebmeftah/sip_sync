@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'core/di/locale_controller.dart';
+import 'core/di/theme_controller.dart';
 import 'core/routing/app_router.dart';
 import 'core/theme/app_theme.dart';
 import 'l10n/generated/app_localizations.dart';
@@ -17,6 +18,7 @@ class SipSyncApp extends ConsumerWidget {
       title: 'Sip Sync Management',
       theme: AppTheme.light(),
       darkTheme: AppTheme.dark(),
+      themeMode: ref.watch(themeControllerProvider),
       routerConfig: router,
       locale: ref.watch(localeControllerProvider),
       supportedLocales: AppLocalizations.supportedLocales,

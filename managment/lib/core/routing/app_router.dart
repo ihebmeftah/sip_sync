@@ -22,7 +22,10 @@ GoRouter appRouter(Ref ref) {
         return const SignInRoute().location;
       }
       if (signedIn && onAuth) {
-        return const HomeRoute().location;
+        return const DashboardRoute().location;
+      }
+      if (signedIn && state.matchedLocation == '/') {
+        return const DashboardRoute().location;
       }
       return null;
     },

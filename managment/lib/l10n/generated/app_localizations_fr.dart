@@ -149,4 +149,92 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get errorProfileIncomplete =>
       'Terminez l\'inscription avec un identifiant et un téléphone.';
+
+  @override
+  String get opsRailTagline => 'Commande de salle';
+
+  @override
+  String get navDashboard => 'Tableau de bord';
+
+  @override
+  String get navProfile => 'Profil';
+
+  @override
+  String get navProducts => 'Produits';
+
+  @override
+  String get navArticles => 'Articles';
+
+  @override
+  String get navIngredients => 'Ingrédients';
+
+  @override
+  String get navPos => 'Caisse';
+
+  @override
+  String get navTables => 'Tables';
+
+  @override
+  String helloScreen(String screen) {
+    return 'Bonjour, $screen';
+  }
+
+  @override
+  String get placeholderBody =>
+      'Cet écran n’est pas encore branché au serveur.';
+
+  @override
+  String get saveProfile => 'Enregistrer le profil';
+
+  @override
+  String get profileSaved => 'Profil mis à jour.';
+
+  @override
+  String get myProfile => 'Votre profil';
+
+  @override
+  String get teamProfiles => 'Équipe ajoutée';
+
+  @override
+  String get viewProfile => 'Voir';
+
+  @override
+  String get employeeProfile => 'Profil employé';
+
+  @override
+  String get themeLight => 'Thème clair';
+
+  @override
+  String get themeDark => 'Thème sombre';
+
+  @override
+  String get dashboardEyebrow => 'La maison ce soir';
+
+  @override
+  String get dashboardSubtitle =>
+      'Caisse, salle et catalogue à un geste. Les compteurs arriveront avec le serveur.';
+
+  @override
+  String get dashboardShift => 'Tableau de service';
+
+  @override
+  String get dashboardPosCue => 'Caisse et tickets — bientôt.';
+
+  @override
+  String get dashboardTablesCue => 'Plan de salle sans backend pour l’instant.';
+
+  @override
+  String get dashboardCatalogCue =>
+      'Articles et ingrédients, interface seulement.';
+
+  @override
+  String get dashboardProfileCue => 'Vos informations et l’équipe ajoutée.';
+
+  @override
+  String get emailLocked =>
+      'L’e-mail est lié à la connexion et ne change pas ici.';
+
+  @override
+  String get profileHint =>
+      'Mettez à jour le nom vu en salle. Les propriétaires ouvrent les profils d’équipe ci-dessous.';
 }

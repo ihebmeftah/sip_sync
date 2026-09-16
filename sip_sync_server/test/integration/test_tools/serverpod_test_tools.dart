@@ -29,6 +29,8 @@ import 'package:sip_sync_server/src/generated/auth/employee_create.dart'
     as _itsh5tmy;
 import 'package:sip_sync_server/src/generated/auth/login_request.dart'
     as _igjnjeoy;
+import 'package:sip_sync_server/src/generated/auth/profile_update.dart'
+    as _id6sv1bw;
 import 'package:sip_sync_server/src/generated/auth/profile_view.dart'
     as _ilvz914s;
 import 'package:sip_sync_server/src/generated/auth/self_register_create.dart'
@@ -293,6 +295,70 @@ class _AccountEndpoint {
                   _localCallContext.arguments,
                 )
                 as _ida.Future<_ir1ant8o.AccountSessionView>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<_ir1ant8o.AccountSessionView> updateMyProfile(
+    _ist.TestSessionBuilder sessionBuilder,
+    _id6sv1bw.ProfileUpdate request,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'account',
+            method: 'updateMyProfile',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'account',
+          methodName: 'updateMyProfile',
+          parameters: _ist.testObjectToJson({'request': request}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_ir1ant8o.AccountSessionView>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<_ilvz914s.ProfileView> getEmployee(
+    _ist.TestSessionBuilder sessionBuilder,
+    _is.UuidValue employeeAuthUserId,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'account',
+            method: 'getEmployee',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'account',
+          methodName: 'getEmployee',
+          parameters: _ist.testObjectToJson({
+            'employeeAuthUserId': employeeAuthUserId,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_ilvz914s.ProfileView>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();

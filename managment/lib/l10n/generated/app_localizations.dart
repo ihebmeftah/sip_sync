@@ -363,6 +363,168 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Finish registration with username and phone.'**
   String get errorProfileIncomplete;
+
+  /// No description provided for @opsRailTagline.
+  ///
+  /// In en, this message translates to:
+  /// **'Floor command'**
+  String get opsRailTagline;
+
+  /// No description provided for @navDashboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Dashboard'**
+  String get navDashboard;
+
+  /// No description provided for @navProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile'**
+  String get navProfile;
+
+  /// No description provided for @navProducts.
+  ///
+  /// In en, this message translates to:
+  /// **'Products'**
+  String get navProducts;
+
+  /// No description provided for @navArticles.
+  ///
+  /// In en, this message translates to:
+  /// **'Articles'**
+  String get navArticles;
+
+  /// No description provided for @navIngredients.
+  ///
+  /// In en, this message translates to:
+  /// **'Ingredients'**
+  String get navIngredients;
+
+  /// No description provided for @navPos.
+  ///
+  /// In en, this message translates to:
+  /// **'POS'**
+  String get navPos;
+
+  /// No description provided for @navTables.
+  ///
+  /// In en, this message translates to:
+  /// **'Tables'**
+  String get navTables;
+
+  /// No description provided for @helloScreen.
+  ///
+  /// In en, this message translates to:
+  /// **'Hello, {screen}'**
+  String helloScreen(String screen);
+
+  /// No description provided for @placeholderBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This screen is not connected to the server yet.'**
+  String get placeholderBody;
+
+  /// No description provided for @saveProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Save profile'**
+  String get saveProfile;
+
+  /// No description provided for @profileSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile updated.'**
+  String get profileSaved;
+
+  /// No description provided for @myProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Your profile'**
+  String get myProfile;
+
+  /// No description provided for @teamProfiles.
+  ///
+  /// In en, this message translates to:
+  /// **'Added staff'**
+  String get teamProfiles;
+
+  /// No description provided for @viewProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'View'**
+  String get viewProfile;
+
+  /// No description provided for @employeeProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Staff profile'**
+  String get employeeProfile;
+
+  /// No description provided for @themeLight.
+  ///
+  /// In en, this message translates to:
+  /// **'Light theme'**
+  String get themeLight;
+
+  /// No description provided for @themeDark.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark theme'**
+  String get themeDark;
+
+  /// No description provided for @dashboardEyebrow.
+  ///
+  /// In en, this message translates to:
+  /// **'Tonight’s house'**
+  String get dashboardEyebrow;
+
+  /// No description provided for @dashboardSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'POS, floor, and catalog sit one tap away. Live counts arrive with the next server slice.'**
+  String get dashboardSubtitle;
+
+  /// No description provided for @dashboardShift.
+  ///
+  /// In en, this message translates to:
+  /// **'Shift board'**
+  String get dashboardShift;
+
+  /// No description provided for @dashboardPosCue.
+  ///
+  /// In en, this message translates to:
+  /// **'Till and tickets — coming next.'**
+  String get dashboardPosCue;
+
+  /// No description provided for @dashboardTablesCue.
+  ///
+  /// In en, this message translates to:
+  /// **'Floor map without a backend yet.'**
+  String get dashboardTablesCue;
+
+  /// No description provided for @dashboardCatalogCue.
+  ///
+  /// In en, this message translates to:
+  /// **'Articles and ingredients, UI only.'**
+  String get dashboardCatalogCue;
+
+  /// No description provided for @dashboardProfileCue.
+  ///
+  /// In en, this message translates to:
+  /// **'Your details and the team you added.'**
+  String get dashboardProfileCue;
+
+  /// No description provided for @emailLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Email is tied to sign-in and cannot be changed here.'**
+  String get emailLocked;
+
+  /// No description provided for @profileHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Update the name the floor sees. Owners can open staff profiles below.'**
+  String get profileHint;
 }
 
 class _AppLocalizationsDelegate

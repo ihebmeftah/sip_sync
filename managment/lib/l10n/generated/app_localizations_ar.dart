@@ -145,4 +145,89 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get errorProfileIncomplete => 'أكمل التسجيل باسم المستخدم والهاتف.';
+
+  @override
+  String get opsRailTagline => 'قيادة الصالة';
+
+  @override
+  String get navDashboard => 'لوحة التحكم';
+
+  @override
+  String get navProfile => 'الملف الشخصي';
+
+  @override
+  String get navProducts => 'المنتجات';
+
+  @override
+  String get navArticles => 'الأصناف';
+
+  @override
+  String get navIngredients => 'المكوّنات';
+
+  @override
+  String get navPos => 'نقطة البيع';
+
+  @override
+  String get navTables => 'الطاولات';
+
+  @override
+  String helloScreen(String screen) {
+    return 'مرحباً، $screen';
+  }
+
+  @override
+  String get placeholderBody => 'هذه الشاشة غير متصلة بالخادم بعد.';
+
+  @override
+  String get saveProfile => 'حفظ الملف';
+
+  @override
+  String get profileSaved => 'تم تحديث الملف.';
+
+  @override
+  String get myProfile => 'ملفك';
+
+  @override
+  String get teamProfiles => 'الفريق المضاف';
+
+  @override
+  String get viewProfile => 'عرض';
+
+  @override
+  String get employeeProfile => 'ملف الموظف';
+
+  @override
+  String get themeLight => 'مظهر فاتح';
+
+  @override
+  String get themeDark => 'مظهر داكن';
+
+  @override
+  String get dashboardEyebrow => 'البيت الليلة';
+
+  @override
+  String get dashboardSubtitle =>
+      'نقطة البيع والصالة والكتالوج بضغطة. الأرقام الحية تأتي مع الخادم لاحقاً.';
+
+  @override
+  String get dashboardShift => 'لوحة الوردية';
+
+  @override
+  String get dashboardPosCue => 'الصندوق والتذاكر — قريباً.';
+
+  @override
+  String get dashboardTablesCue => 'خريطة الصالة دون خادم بعد.';
+
+  @override
+  String get dashboardCatalogCue => 'أصناف ومكوّنات، واجهة فقط.';
+
+  @override
+  String get dashboardProfileCue => 'بياناتك والفريق الذي أضفته.';
+
+  @override
+  String get emailLocked => 'البريد مرتبط بتسجيل الدخول ولا يُغيَّر هنا.';
+
+  @override
+  String get profileHint =>
+      'حدّث الاسم الظاهر في الصالة. يمكن للمالك فتح ملفات الفريق أدناه.';
 }

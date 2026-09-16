@@ -21,6 +21,8 @@ import 'package:sip_sync_server/src/generated/auth/employee_create.dart'
     as _itsh5tmy;
 import 'package:sip_sync_server/src/generated/auth/login_request.dart'
     as _igjnjeoy;
+import 'package:sip_sync_server/src/generated/auth/profile_update.dart'
+    as _id6sv1bw;
 import 'package:sip_sync_server/src/generated/auth/self_register_create.dart'
     as _iomxn8e2;
 import '../auth/account_endpoint.dart' as _ii6ycf6v;
@@ -109,6 +111,44 @@ class Endpoints extends _is.EndpointDispatch {
               ) async => (endpoints['account'] as _ii6ycf6v.AccountEndpoint).me(
                 session,
               ),
+        ),
+        'updateMyProfile': _is.MethodConnector(
+          name: 'updateMyProfile',
+          params: {
+            'request': _is.ParameterDescription(
+              name: 'request',
+              type: _is.getType<_id6sv1bw.ProfileUpdate>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['account'] as _ii6ycf6v.AccountEndpoint)
+                  .updateMyProfile(
+                    session,
+                    params['request'],
+                  ),
+        ),
+        'getEmployee': _is.MethodConnector(
+          name: 'getEmployee',
+          params: {
+            'employeeAuthUserId': _is.ParameterDescription(
+              name: 'employeeAuthUserId',
+              type: _is.getType<_is.UuidValue>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['account'] as _ii6ycf6v.AccountEndpoint)
+                  .getEmployee(
+                    session,
+                    params['employeeAuthUserId'],
+                  ),
         ),
         'addEmployee': _is.MethodConnector(
           name: 'addEmployee',

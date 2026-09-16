@@ -29,6 +29,7 @@ import 'auth/backoffice_user_create.dart' as _i9kd7km5;
 import 'auth/backoffice_user_view.dart' as _itl1aokg;
 import 'auth/employee_create.dart' as _iedt4kib;
 import 'auth/login_request.dart' as _ir2e8vdz;
+import 'auth/profile_update.dart' as _irdmlmfi;
 import 'auth/profile_view.dart' as _iz95i0di;
 import 'auth/self_register_create.dart' as _i90p781y;
 import 'auth/sip_app.dart' as _iztspa7i;
@@ -42,6 +43,7 @@ export 'auth/backoffice_user_create.dart';
 export 'auth/backoffice_user_view.dart';
 export 'auth/employee_create.dart';
 export 'auth/login_request.dart';
+export 'auth/profile_update.dart';
 export 'auth/profile_view.dart';
 export 'auth/self_register_create.dart';
 export 'auth/sip_app.dart';
@@ -109,6 +111,9 @@ class Protocol extends _isc.SerializationManager {
     if (t == _ir2e8vdz.LoginRequest) {
       return _ir2e8vdz.LoginRequest.fromJson(data) as T;
     }
+    if (t == _irdmlmfi.ProfileUpdate) {
+      return _irdmlmfi.ProfileUpdate.fromJson(data) as T;
+    }
     if (t == _iz95i0di.ProfileView) {
       return _iz95i0di.ProfileView.fromJson(data) as T;
     }
@@ -156,6 +161,10 @@ class Protocol extends _isc.SerializationManager {
     }
     if (t == _isc.getType<_ir2e8vdz.LoginRequest?>()) {
       return (data != null ? _ir2e8vdz.LoginRequest.fromJson(data) : null) as T;
+    }
+    if (t == _isc.getType<_irdmlmfi.ProfileUpdate?>()) {
+      return (data != null ? _irdmlmfi.ProfileUpdate.fromJson(data) : null)
+          as T;
     }
     if (t == _isc.getType<_iz95i0di.ProfileView?>()) {
       return (data != null ? _iz95i0di.ProfileView.fromJson(data) : null) as T;
@@ -205,6 +214,7 @@ class Protocol extends _isc.SerializationManager {
       _itl1aokg.BackofficeUserView => 'BackofficeUserView',
       _iedt4kib.EmployeeCreate => 'EmployeeCreate',
       _ir2e8vdz.LoginRequest => 'LoginRequest',
+      _irdmlmfi.ProfileUpdate => 'ProfileUpdate',
       _iz95i0di.ProfileView => 'ProfileView',
       _i90p781y.SelfRegisterCreate => 'SelfRegisterCreate',
       _iztspa7i.SipApp => 'SipApp',
@@ -241,6 +251,8 @@ class Protocol extends _isc.SerializationManager {
         return 'EmployeeCreate';
       case _ir2e8vdz.LoginRequest():
         return 'LoginRequest';
+      case _irdmlmfi.ProfileUpdate():
+        return 'ProfileUpdate';
       case _iz95i0di.ProfileView():
         return 'ProfileView';
       case _i90p781y.SelfRegisterCreate():
@@ -297,6 +309,9 @@ class Protocol extends _isc.SerializationManager {
     }
     if (dataClassName == 'LoginRequest') {
       return deserialize<_ir2e8vdz.LoginRequest>(data['data']);
+    }
+    if (dataClassName == 'ProfileUpdate') {
+      return deserialize<_irdmlmfi.ProfileUpdate>(data['data']);
     }
     if (dataClassName == 'ProfileView') {
       return deserialize<_iz95i0di.ProfileView>(data['data']);

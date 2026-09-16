@@ -45,7 +45,27 @@ class AccountRepository {
 
   Future<AccountSessionView> me() => _client.account.me();
 
+  Future<AccountSessionView> updateMyProfile({
+    required String username,
+    required String phoneNumber,
+    required String firstName,
+    required String lastName,
+  }) {
+    return _client.account.updateMyProfile(
+      ProfileUpdate(
+        username: username,
+        phoneNumber: phoneNumber,
+        firstName: firstName,
+        lastName: lastName,
+      ),
+    );
+  }
+
   Future<List<ProfileView>> listEmployees() => _client.account.listEmployees();
+
+  Future<ProfileView> getEmployee(UuidValue employeeAuthUserId) {
+    return _client.account.getEmployee(employeeAuthUserId);
+  }
 
   Future<ProfileView> addEmployee({
     required String email,

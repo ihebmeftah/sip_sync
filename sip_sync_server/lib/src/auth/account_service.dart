@@ -120,6 +120,77 @@ class AccountService {
     return _sessionView(session, authUserId);
   }
 
+  /// Lets the signed-in user change username, phone, and display name.
+  ///
+  /// Email is identity-bound and is not writable here.
+  Future<AccountSessionView> updateMyProfile(
+    Session session, {
+    required UuidValue authUserId,
+    required ProfileUpdate request,
+  }) async {
+    final profile = await SipSyncProfile.db.findFirstRow(
+      session,
+      where: (t) => t.authUserId.equals(authUserId),
+    );
+    if (profile == null) {
+      throw AccountException(
+        message: 'Profile not found.',
+        code: AccountErrorCode.profileIncomplete,
+      );
+    }
+
+    final username = _normalizeUsername(request.username);
+    final phoneNumber = _normalizePhone(request.phoneNumber);
+    _validateName(request.firstName, request.lastName);
+    await _assertUniqueProfileExcept(
+      session,
+      authUserId: authUserId,
+      username: username,
+      phoneNumber: phoneNumber,
+    );
+
+    await SipSyncProfile.db.updateRow(
+      session,
+      profile.copyWith(
+        username: username,
+        phoneNumber: phoneNumber,
+        firstName: request.firstName.trim(),
+        lastName: request.lastName.trim(),
+      ),
+    );
+
+    return _sessionView(session, authUserId);
+  }
+
+  /// Owner-only: one employee this owner added.
+  Future<ProfileView> getEmployee(
+    Session session, {
+    required UuidValue ownerAuthUserId,
+    required UuidValue employeeAuthUserId,
+  }) async {
+    if (!await _hasAnyRole(session, ownerAuthUserId, {AppRole.owner})) {
+      throw AccountException(
+        message: 'Only owners can view employee profiles.',
+        code: AccountErrorCode.notAuthorized,
+      );
+    }
+
+    final record = await EmployeeRecord.db.findFirstRow(
+      session,
+      where: (t) =>
+          t.ownerAuthUserId.equals(ownerAuthUserId) &
+          t.authUserId.equals(employeeAuthUserId),
+    );
+    if (record == null) {
+      throw AccountException(
+        message: 'Employee not found.',
+        code: AccountErrorCode.notFound,
+      );
+    }
+
+    return _profileView(session, employeeAuthUserId);
+  }
+
   /// Owner-only: create or attach an employee identity.
   Future<ProfileView> addEmployee(
     Session session, {
@@ -684,6 +755,34 @@ class AccountService {
       lastName: profile.lastName,
       roles: roles.map(_roleWireName).toList(),
     );
+  }
+
+  Future<void> _assertUniqueProfileExcept(
+    Session session, {
+    required UuidValue authUserId,
+    required String username,
+    required String phoneNumber,
+  }) async {
+    final userHit = await SipSyncProfile.db.findFirstRow(
+      session,
+      where: (t) => t.username.equals(username),
+    );
+    if (userHit != null && userHit.authUserId != authUserId) {
+      throw AccountException(
+        message: 'Username is already taken.',
+        code: AccountErrorCode.usernameTaken,
+      );
+    }
+    final phoneHit = await SipSyncProfile.db.findFirstRow(
+      session,
+      where: (t) => t.phoneNumber.equals(phoneNumber),
+    );
+    if (phoneHit != null && phoneHit.authUserId != authUserId) {
+      throw AccountException(
+        message: 'Phone number is already registered.',
+        code: AccountErrorCode.phoneTaken,
+      );
+    }
   }
 
   Future<void> _assertUniqueProfile(
