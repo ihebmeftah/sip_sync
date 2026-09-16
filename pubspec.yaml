@@ -8,4 +8,8 @@ workspace:
   - sip_sync_client
   - sip_sync_server
   - sip_sync_flutter
+  - managment
+  - backoffice
 
+dependency_overrides:
+  flutter_secure_storage: ^10.0.0

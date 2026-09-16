@@ -1,0 +1,13 @@
+### Links an employee identity to the owner who added them.
+class: EmployeeRecord
+table: employee_record
+serverOnly: true
+fields:
+  authUser: module:serverpod_auth_core:AuthUser?, relation(onDelete=Cascade)
+  ownerAuthUserId: UuidValue
+indexes:
+  employee_record_auth_user_idx:
+    fields: authUserId
+    unique: true
+  employee_record_owner_idx:
+    fields: ownerAuthUserId

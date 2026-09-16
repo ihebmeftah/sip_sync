@@ -12,7 +12,9 @@ Sip Sync is a café / restaurant / lounge / bar ecosystem. One Serverpod backend
 | `sip_sync_server` | backend | Serverpod RPC, DB, auth, streams |
 | `sip_sync_client` | generated | **never edit** — regenerated from the server |
 
-Stack on every Flutter app: **MVVM**, **Riverpod**, **go_router**, **ARB i18n** (en, ar, fr with RTL for Arabic), shared theme/typography, reusable widgets per app.
+Stack on every Flutter app: **MVVM**, **Riverpod + riverpod_generator**, **go_router + go_router_builder**, **build_runner**, **GetIt** (singletons only), **ARB i18n** (en, ar, fr with RTL for Arabic), shared theme/typography, reusable widgets per app.
+
+`serverpod start` auto-launches all three Flutter apps (`sip_sync_flutter` :8090, `managment` :8091, `backoffice` :8092). After changing `@riverpod` or `@TypedGoRoute` annotations, run `dart run build_runner build --delete-conflicting-outputs` in that app (commit the `.g.dart` files).
 
 Before implementing a feature, read `.cursor/skills/sip-sync-feature-development/SKILL.md` and the matching `Docs/features/` file (create it if missing). Follow `.cursor/rules/` for architecture, security, i18n, and docs.
 
@@ -51,6 +53,7 @@ Checklist after doing changes, in this order:
 
 - `dart analyze` (CLI)
 - `dart format` (CLI)
+- `dart run build_runner build --delete-conflicting-outputs` in any Flutter app whose `@riverpod` / `@TypedGoRoute` files changed
 - `create_migration` and `apply_migrations` (MCP - only if necessary)
 - Do `serverpod` MCP `hot_restart` if required (hot reload is done automatically). Will also hot restart Flutter app
 - Run tests, if applicable (`dart test` in the server package)

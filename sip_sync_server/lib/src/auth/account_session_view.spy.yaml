@@ -1,0 +1,5 @@
+class: AccountSessionView
+fields:
+  profile: ProfileView
+  isBackofficeAdmin: bool
+  isSystemDefaultAdmin: bool

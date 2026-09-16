@@ -8,19 +8,19 @@ Status: draft
 
 ## Actors and permissions
 
-- Owner: invite/add staff, assign buildings, set permissions (order create, payment, kitchen).
+- Owner: invite/add staff, assign buildings (later), set permissions (order create, payment, kitchen).
 - Employee: own profile; cannot escalate permissions.
-- Automated employee email from building name (server-generated, unique).
+- The same email can already be a customer or backoffice user; adding them as employee attaches the employee role to that identity. See [authentication](authentication.md).
 
 ## Flow
 
-1. Owner adds employee with role + building assignments.
-2. Server creates auth user, generates email, assigns scopes.
-3. Employee signs in; routes and endpoints filter by assignment.
+1. Owner adds employee (email, profile fields, password if the email is new).
+2. Server creates or reuses the auth user, assigns the employee role, stores `employee_record` under that owner.
+3. Employee signs in on `managment`; routes and endpoints filter by assignment (building scope in a later iteration).
 
 ## Data
 
-`EmployeeCreate` / `EmployeeUpdate` without auth secrets. Responses omit password hashes and reset tokens.
+`EmployeeCreate` without auth secrets in responses. Passwords are write-only on create for new emails.
 
 ## Realtime
 

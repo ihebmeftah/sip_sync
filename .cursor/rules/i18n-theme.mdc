@@ -1,0 +1,25 @@
+---
+description: English, Arabic, French localization, RTL, typography, and theming
+globs: "{managment,sip_sync_flutter,backoffice}/**/*.{dart,arb,yaml}"
+alwaysApply: false
+---
+
+# i18n, text, theme
+
+Locales: **en**, **ar**, **fr**. Arabic must work RTL (`Directionality` via `MaterialApp`).
+
+## Strings
+
+- No user-visible hardcoded English (or any language) in widgets
+- ARB per app: `lib/l10n/app_en.arb` (template), `app_ar.arb`, `app_fr.arb`
+- Access via generated `AppLocalizations`
+- Add the same key to all three ARB files in the same change
+
+## Theme & type
+
+- One `ThemeData` (light + dark) in `lib/core/theme/`
+- Text styles only from `TextTheme` / named `AppTextStyles` — never ad-hoc `TextStyle` in screens
+- Colors from `ColorScheme` / `AppColors` — no raw `Colors.blue` in features
+- Spacing from a small token set (`AppSpacing`)
+
+When a visual language already exists in that app, extend it. Do not invent a second theme.

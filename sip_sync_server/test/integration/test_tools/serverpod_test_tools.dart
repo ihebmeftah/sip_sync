@@ -17,6 +17,22 @@ import 'package:serverpod/serverpod.dart' as _is;
 import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
     as _iacs;
 import 'package:serverpod_test/serverpod_test.dart' as _ist;
+import 'package:sip_sync_server/src/generated/auth/account_session_view.dart'
+    as _ir1ant8o;
+import 'package:sip_sync_server/src/generated/auth/auth_session_result.dart'
+    as _i8mvijvl;
+import 'package:sip_sync_server/src/generated/auth/backoffice_user_create.dart'
+    as _ivojw13s;
+import 'package:sip_sync_server/src/generated/auth/backoffice_user_view.dart'
+    as _iea1ilrj;
+import 'package:sip_sync_server/src/generated/auth/employee_create.dart'
+    as _itsh5tmy;
+import 'package:sip_sync_server/src/generated/auth/login_request.dart'
+    as _igjnjeoy;
+import 'package:sip_sync_server/src/generated/auth/profile_view.dart'
+    as _ilvz914s;
+import 'package:sip_sync_server/src/generated/auth/self_register_create.dart'
+    as _iomxn8e2;
 import 'package:sip_sync_server/src/generated/greetings/greeting.dart'
     as _igj77q9p;
 import 'package:sip_sync_server/src/generated/protocol.dart';
@@ -147,6 +163,8 @@ void withServerpod(
 }
 
 class TestEndpoints {
+  late final _AccountEndpoint account;
+
   late final _EmailIdpEndpoint emailIdp;
 
   late final _JwtRefreshEndpoint jwtRefresh;
@@ -161,6 +179,10 @@ class _InternalTestEndpoints extends TestEndpoints
     _is.SerializationManager serializationManager,
     _is.EndpointDispatch endpoints,
   ) {
+    account = _AccountEndpoint(
+      endpoints,
+      serializationManager,
+    );
     emailIdp = _EmailIdpEndpoint(
       endpoints,
       serializationManager,
@@ -173,6 +195,264 @@ class _InternalTestEndpoints extends TestEndpoints
       endpoints,
       serializationManager,
     );
+  }
+}
+
+class _AccountEndpoint {
+  _AccountEndpoint(
+    this._endpointDispatch,
+    this._serializationManager,
+  );
+
+  final _is.EndpointDispatch _endpointDispatch;
+
+  final _is.SerializationManager _serializationManager;
+
+  _ida.Future<_i8mvijvl.AuthSessionResult> register(
+    _ist.TestSessionBuilder sessionBuilder,
+    _iomxn8e2.SelfRegisterCreate request,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'account',
+            method: 'register',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'account',
+          methodName: 'register',
+          parameters: _ist.testObjectToJson({'request': request}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_i8mvijvl.AuthSessionResult>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<_i8mvijvl.AuthSessionResult> login(
+    _ist.TestSessionBuilder sessionBuilder,
+    _igjnjeoy.LoginRequest request,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'account',
+            method: 'login',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'account',
+          methodName: 'login',
+          parameters: _ist.testObjectToJson({'request': request}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_i8mvijvl.AuthSessionResult>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<_ir1ant8o.AccountSessionView> me(
+    _ist.TestSessionBuilder sessionBuilder,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'account',
+            method: 'me',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'account',
+          methodName: 'me',
+          parameters: _ist.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_ir1ant8o.AccountSessionView>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<_ilvz914s.ProfileView> addEmployee(
+    _ist.TestSessionBuilder sessionBuilder,
+    _itsh5tmy.EmployeeCreate request,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'account',
+            method: 'addEmployee',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'account',
+          methodName: 'addEmployee',
+          parameters: _ist.testObjectToJson({'request': request}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_ilvz914s.ProfileView>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<List<_ilvz914s.ProfileView>> listEmployees(
+    _ist.TestSessionBuilder sessionBuilder,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'account',
+            method: 'listEmployees',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'account',
+          methodName: 'listEmployees',
+          parameters: _ist.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<List<_ilvz914s.ProfileView>>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<_iea1ilrj.BackofficeUserView> addBackofficeUser(
+    _ist.TestSessionBuilder sessionBuilder,
+    _ivojw13s.BackofficeUserCreate request,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'account',
+            method: 'addBackofficeUser',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'account',
+          methodName: 'addBackofficeUser',
+          parameters: _ist.testObjectToJson({'request': request}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_iea1ilrj.BackofficeUserView>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<List<_iea1ilrj.BackofficeUserView>> listBackofficeUsers(
+    _ist.TestSessionBuilder sessionBuilder,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'account',
+            method: 'listBackofficeUsers',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'account',
+          methodName: 'listBackofficeUsers',
+          parameters: _ist.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<List<_iea1ilrj.BackofficeUserView>>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<void> deleteBackofficeUser(
+    _ist.TestSessionBuilder sessionBuilder,
+    _is.UuidValue targetAuthUserId,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'account',
+            method: 'deleteBackofficeUser',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'account',
+          methodName: 'deleteBackofficeUser',
+          parameters: _ist.testObjectToJson({
+            'targetAuthUserId': targetAuthUserId,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<void>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
   }
 }
 

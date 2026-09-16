@@ -4,7 +4,7 @@ description: Starting point for a Serverpod server.
 # homepage: https://www.example.com
 
 environment:
-  sdk: '^3.12.2'
+  sdk: "^3.12.2"
 
 resolution: workspace
 
@@ -14,7 +14,7 @@ dependencies:
   serverpod_cloud_storage: 4.0.0
 
 dev_dependencies:
-  lints: '>=3.0.0 <7.0.0'
+  lints: ">=3.0.0 <7.0.0"
   serverpod_test: 4.0.0
   test: ^1.25.5
 
@@ -59,6 +59,19 @@ serverpod:
   flutter_apps:
     sip_sync:
       path: ../sip_sync_flutter
-      displayName: "Sip sync app"
+      displayName: "Customer app"
+      auto_launch: false
+      target: lib/driver.dart
+      web-port: 8090
+    managment:
+      path: ../managment
+      displayName: "Management app"
       auto_launch: true
       target: lib/driver.dart
+      web-port: 8091
+    backoffice:
+      path: ../backoffice
+      displayName: "Backoffice app"
+      auto_launch: false
+      target: lib/driver.dart
+      web-port: 8092

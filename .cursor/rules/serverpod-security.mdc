@@ -1,0 +1,27 @@
+---
+description: Endpoint auth, scopes, DTOs, and error handling on the Serverpod backend
+globs: "sip_sync_server/**/*.{dart,yaml}"
+alwaysApply: false
+---
+
+# Server security & DTOs
+
+Never trust the client. Check `session.authenticated` and building membership / permissions on **every** mutating method.
+
+## Endpoints
+
+- Default `requireLogin => true` except explicitly public methods
+- Scopes: super-admin, owner, employee roles (orders, payments, kitchen) — match domain docs
+- Employees are scoped to assigned buildings; customers only see their own data
+- Log failures with `session.log`; do not leak internals in client messages
+
+## Models
+
+- Table models stay internal; expose **protocol** types for create/update/read
+- `*Create` / `*Update` DTOs: only writable fields (no `id`, no server-only flags, no other users' ids unless required)
+- Responses: smallest safe shape (ids, display fields). Omit secrets, hashes, unused relations
+- Prefer explicit exceptions (`Exception` in `.spy.yaml`) over generic strings
+
+Change `.spy.yaml` and endpoints — never `lib/src/generated/` or `sip_sync_client`.
+
+See `.cursor/skills/sip-sync-security-and-errors/SKILL.md`.

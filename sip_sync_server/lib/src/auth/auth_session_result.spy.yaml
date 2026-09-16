@@ -1,0 +1,4 @@
+class: AuthSessionResult
+fields:
+  authSuccess: module:serverpod_auth_core:AuthSuccess
+  session: AccountSessionView

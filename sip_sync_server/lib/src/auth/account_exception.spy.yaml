@@ -1,0 +1,4 @@
+exception: AccountException
+fields:
+  message: String
+  code: AccountErrorCode

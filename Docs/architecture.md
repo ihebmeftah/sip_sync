@@ -3,9 +3,10 @@
 ## Stack
 
 - Backend: Serverpod (`sip_sync_server`) + generated `sip_sync_client`
-- Flutter: MVVM, Riverpod, go_router
+- Flutter: MVVM, Riverpod + `riverpod_generator`, go_router + `go_router_builder`, `build_runner`
+- DI: Riverpod in widgets; GetIt for Serverpod `Client` and repositories used outside the tree (e.g. router `redirect`)
 - i18n: ARB English, Arabic (RTL), French
-- Auth: Serverpod built-in identity (`lib/server.dart`)
+- Auth: Serverpod email identity plus Sip Sync profile/roles (`Docs/features/authentication.md`)
 
 ## Layers (each Flutter app)
 
@@ -21,7 +22,8 @@ Reusable widgets, theme, and routing helpers live under that app's `lib/core/`. 
 
 ## Security
 
-- Endpoints: `requireLogin`, scopes, building membership
+- Endpoints: `requireLogin`, Sip Sync scopes (`sip.owner`, `sip.employee`, `sip.backoffice`, …), building membership
+- One `AuthUser` per person; apps attach roles instead of duplicating accounts
 - Routes: go_router `redirect` for UX
 - DTOs: narrow create/update/view models
 

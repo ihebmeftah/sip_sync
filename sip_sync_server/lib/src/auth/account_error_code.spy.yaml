@@ -1,0 +1,14 @@
+enum: AccountErrorCode
+serialized: byIndex
+values:
+  - invalidInput
+  - emailTaken
+  - usernameTaken
+  - phoneTaken
+  - invalidCredentials
+  - appAccessDenied
+  - notAuthorized
+  - notFound
+  - cannotDeleteDefaultAdmin
+  - passwordTooWeak
+  - profileIncomplete

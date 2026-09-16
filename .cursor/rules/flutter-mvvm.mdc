@@ -1,0 +1,37 @@
+---
+description: MVVM, Riverpod, go_router, SOLID, and folder layout for Flutter apps
+globs: "{managment,sip_sync_flutter,backoffice}/**/*.dart"
+alwaysApply: false
+---
+
+# Flutter MVVM
+
+Views render. ViewModels hold UI state. Repositories own data. Widgets never call Serverpod `Client` directly.
+
+## Layers
+
+- **View** — widgets only (layout, animation, navigation *calls*)
+- **ViewModel** — `@riverpod` `Notifier` / `AsyncNotifier` (`riverpod_generator`); expose immutable state + commands
+- **Repository** — maps client protocol models → app domain models; caching
+- **Use case** — only when logic is reused or too heavy for a ViewModel
+
+**DI:** Riverpod in the widget tree (`ref.watch` / `ref.read`). **GetIt** only for long-lived singletons that non-widget code needs (Serverpod `Client`, repositories used by `GoRouter` redirects). Do not register ViewModels in GetIt.
+
+After annotation changes: `dart run build_runner build --delete-conflicting-outputs` in that app.
+
+## Folder layout (`lib/`)
+
+```
+core/di  core/theme  core/l10n  core/routing  core/widgets  core/errors
+data/repositories  data/services
+domain/models  domain/use_cases
+features/<name>/views  features/<name>/view_models  features/<name>/providers
+```
+
+Shared widgets live in `core/widgets`, not copied per screen. Feature widgets that are not reused stay in the feature folder.
+
+## Navigation
+
+`MaterialApp.router` + **typed** `go_router` (`go_router_builder`: `@TypedGoRoute` / `GoRouteData`). Navigate with `const HomeRoute().go(context)`, not raw path strings. Auth `redirect` and role guards. No anonymous `Navigator.push` for app flows.
+
+See `.cursor/skills/sip-sync-mvvm-riverpod/SKILL.md`.

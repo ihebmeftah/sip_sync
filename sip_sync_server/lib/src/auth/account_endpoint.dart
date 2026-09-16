@@ -1,0 +1,122 @@
+import 'package:serverpod/serverpod.dart';
+import 'package:serverpod_auth_idp_server/core.dart';
+
+import '../generated/protocol.dart';
+import 'account_service.dart';
+
+/// Public registration/login plus owner and backoffice user management.
+///
+/// App access is enforced here; Flutter route guards are UX only.
+class AccountEndpoint extends Endpoint {
+  final _accounts = AccountService();
+
+  /// Customer or owner self-registration. Reuses an existing email identity
+  /// when the password matches.
+  Future<AuthSessionResult> register(
+    Session session,
+    SelfRegisterCreate request,
+  ) {
+    return _accounts.register(session, request);
+  }
+
+  /// Email/password login for one [LoginRequest.app].
+  Future<AuthSessionResult> login(
+    Session session,
+    LoginRequest request,
+  ) {
+    return _accounts.login(session, request);
+  }
+
+  /// Current profile and roles.
+  Future<AccountSessionView> me(Session session) async {
+    final userId = session.authenticated?.authUserId;
+    if (userId == null) {
+      throw AccountException(
+        message: 'Sign in required.',
+        code: AccountErrorCode.notAuthorized,
+      );
+    }
+    return _accounts.me(session, userId);
+  }
+
+  /// Owner adds an employee (new account or extra role on an existing email).
+  Future<ProfileView> addEmployee(
+    Session session,
+    EmployeeCreate request,
+  ) async {
+    final userId = session.authenticated?.authUserId;
+    if (userId == null) {
+      throw AccountException(
+        message: 'Sign in required.',
+        code: AccountErrorCode.notAuthorized,
+      );
+    }
+    return _accounts.addEmployee(
+      session,
+      ownerAuthUserId: userId,
+      request: request,
+    );
+  }
+
+  /// Employees added by the signed-in owner.
+  Future<List<ProfileView>> listEmployees(Session session) async {
+    final userId = session.authenticated?.authUserId;
+    if (userId == null) {
+      throw AccountException(
+        message: 'Sign in required.',
+        code: AccountErrorCode.notAuthorized,
+      );
+    }
+    return _accounts.listEmployees(session, userId);
+  }
+
+  /// Backoffice admin creates another backoffice user (`isAdmin` stays false).
+  Future<BackofficeUserView> addBackofficeUser(
+    Session session,
+    BackofficeUserCreate request,
+  ) async {
+    final userId = session.authenticated?.authUserId;
+    if (userId == null) {
+      throw AccountException(
+        message: 'Sign in required.',
+        code: AccountErrorCode.notAuthorized,
+      );
+    }
+    return _accounts.addBackofficeUser(
+      session,
+      actorId: userId,
+      request: request,
+    );
+  }
+
+  /// Lists platform backoffice users.
+  Future<List<BackofficeUserView>> listBackofficeUsers(Session session) async {
+    final userId = session.authenticated?.authUserId;
+    if (userId == null) {
+      throw AccountException(
+        message: 'Sign in required.',
+        code: AccountErrorCode.notAuthorized,
+      );
+    }
+    return _accounts.listBackofficeUsers(session, userId);
+  }
+
+  /// Deletes a non-default backoffice membership.
+  Future<void> deleteBackofficeUser(
+    Session session,
+    UuidValue targetAuthUserId,
+  ) async {
+    final userId = session.authenticated?.authUserId;
+    if (userId == null) {
+      throw AccountException(
+        message: 'Sign in required.',
+        code: AccountErrorCode.notAuthorized,
+      );
+    }
+    await _accounts.deleteBackofficeUser(
+      session,
+      actorId: userId,
+      targetId: targetAuthUserId,
+    );
+  }
+}

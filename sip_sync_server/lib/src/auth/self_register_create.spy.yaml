@@ -1,0 +1,9 @@
+class: SelfRegisterCreate
+fields:
+  email: String
+  password: String
+  username: String
+  phoneNumber: String
+  firstName: String
+  lastName: String
+  app: SipApp

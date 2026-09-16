@@ -10,7 +10,9 @@ pubspec_overrides.yaml
 .agents/
 .claude/
 .gemini/
-.cursor/
+.cursor/*
+!.cursor/rules/
+!.cursor/skills/
 .vscode/mcp.json
 .codex/
 .mcp.json

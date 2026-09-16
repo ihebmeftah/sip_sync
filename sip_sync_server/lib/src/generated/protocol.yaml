@@ -1,3 +1,12 @@
+account:
+  - register:
+  - login:
+  - me:
+  - addEmployee:
+  - listEmployees:
+  - addBackofficeUser:
+  - listBackofficeUsers:
+  - deleteBackofficeUser:
 emailIdp:
   - login:
   - startRegistration:

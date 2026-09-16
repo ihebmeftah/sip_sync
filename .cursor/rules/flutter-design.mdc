@@ -1,0 +1,21 @@
+---
+description: Distinctive production UI for Sip Sync Flutter apps; reuse core widgets
+globs: "{managment,sip_sync_flutter,backoffice}/**/*.dart"
+alwaysApply: false
+---
+
+# UI design
+
+Each app has a distinct, high-fidelity look (hospitality operations vs customer vs admin). Do not ship default Material boilerplate, Roboto-only type, or purple-on-white clichés.
+
+## Rules
+
+- New screens use `core/theme` and `core/widgets` first; extract a reusable widget after the second copy
+- Honor RTL for Arabic; layouts must not clip or reverse incorrectly
+- Dense, scannable ops UI in `managment` (kitchen, POS, tables)
+- Inviting customer UI in `sip_sync_flutter`
+- Clear, information-dense admin UI in `backoffice`
+- Loading, empty, error, and permission-denied states are required
+- Micro-interactions on primary actions; keep motion consistent
+
+If the app already has a theme, **extend it**. Only invent a visual language when the app has none yet (see `serverpod-flutter-frontend` skill).

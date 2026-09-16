@@ -1,0 +1,13 @@
+### Backoffice membership flags. [isSystemDefault] marks the seeded admin,
+### which must never be deleted.
+class: BackofficeStaff
+table: backoffice_staff
+serverOnly: true
+fields:
+  authUser: module:serverpod_auth_core:AuthUser?, relation(onDelete=Cascade)
+  isAdmin: bool, default=false
+  isSystemDefault: bool, default=false
+indexes:
+  backoffice_staff_auth_user_idx:
+    fields: authUserId
+    unique: true

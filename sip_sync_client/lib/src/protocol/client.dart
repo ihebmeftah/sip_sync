@@ -17,9 +17,105 @@ import 'package:serverpod_auth_core_client/serverpod_auth_core_client.dart'
 import 'package:serverpod_auth_idp_client/serverpod_auth_idp_client.dart'
     as _iaic;
 import 'package:serverpod_client/serverpod_client.dart' as _isc;
+import 'package:sip_sync_client/src/protocol/auth/account_session_view.dart'
+    as _iyjeltbx;
+import 'package:sip_sync_client/src/protocol/auth/auth_session_result.dart'
+    as _iek9awmf;
+import 'package:sip_sync_client/src/protocol/auth/backoffice_user_create.dart'
+    as _iyydg4pn;
+import 'package:sip_sync_client/src/protocol/auth/backoffice_user_view.dart'
+    as _ian6jh4a;
+import 'package:sip_sync_client/src/protocol/auth/employee_create.dart'
+    as _i0ndf5ud;
+import 'package:sip_sync_client/src/protocol/auth/login_request.dart'
+    as _innui2e8;
+import 'package:sip_sync_client/src/protocol/auth/profile_view.dart'
+    as _i64758c0;
+import 'package:sip_sync_client/src/protocol/auth/self_register_create.dart'
+    as _i3rp8k05;
 import 'package:sip_sync_client/src/protocol/greetings/greeting.dart'
     as _ijvf1i5e;
 import 'protocol.dart' as _il2as5qe;
+
+/// Public registration/login plus owner and backoffice user management.
+///
+/// App access is enforced here; Flutter route guards are UX only.
+/// {@category Endpoint}
+class EndpointAccount extends _isc.EndpointRef {
+  EndpointAccount(_isc.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'account';
+
+  /// Customer or owner self-registration. Reuses an existing email identity
+  /// when the password matches.
+  _ida.Future<_iek9awmf.AuthSessionResult> register(
+    _i3rp8k05.SelfRegisterCreate request,
+  ) => caller.callServerEndpoint<_iek9awmf.AuthSessionResult>(
+    'account',
+    'register',
+    {'request': request},
+  );
+
+  /// Email/password login for one [LoginRequest.app].
+  _ida.Future<_iek9awmf.AuthSessionResult> login(
+    _innui2e8.LoginRequest request,
+  ) => caller.callServerEndpoint<_iek9awmf.AuthSessionResult>(
+    'account',
+    'login',
+    {'request': request},
+  );
+
+  /// Current profile and roles.
+  _ida.Future<_iyjeltbx.AccountSessionView> me() =>
+      caller.callServerEndpoint<_iyjeltbx.AccountSessionView>(
+        'account',
+        'me',
+        {},
+      );
+
+  /// Owner adds an employee (new account or extra role on an existing email).
+  _ida.Future<_i64758c0.ProfileView> addEmployee(
+    _i0ndf5ud.EmployeeCreate request,
+  ) => caller.callServerEndpoint<_i64758c0.ProfileView>(
+    'account',
+    'addEmployee',
+    {'request': request},
+  );
+
+  /// Employees added by the signed-in owner.
+  _ida.Future<List<_i64758c0.ProfileView>> listEmployees() =>
+      caller.callServerEndpoint<List<_i64758c0.ProfileView>>(
+        'account',
+        'listEmployees',
+        {},
+      );
+
+  /// Backoffice admin creates another backoffice user (`isAdmin` stays false).
+  _ida.Future<_ian6jh4a.BackofficeUserView> addBackofficeUser(
+    _iyydg4pn.BackofficeUserCreate request,
+  ) => caller.callServerEndpoint<_ian6jh4a.BackofficeUserView>(
+    'account',
+    'addBackofficeUser',
+    {'request': request},
+  );
+
+  /// Lists platform backoffice users.
+  _ida.Future<List<_ian6jh4a.BackofficeUserView>> listBackofficeUsers() =>
+      caller.callServerEndpoint<List<_ian6jh4a.BackofficeUserView>>(
+        'account',
+        'listBackofficeUsers',
+        {},
+      );
+
+  /// Deletes a non-default backoffice membership.
+  _ida.Future<void> deleteBackofficeUser(_isc.UuidValue targetAuthUserId) =>
+      caller.callServerEndpoint<void>(
+        'account',
+        'deleteBackofficeUser',
+        {'targetAuthUserId': targetAuthUserId},
+      );
+}
 
 /// By extending [EmailIdpBaseEndpoint], the email identity provider endpoints
 /// are made available on the server and enable the corresponding sign-in widget
@@ -302,11 +398,14 @@ class Client extends _isc.ServerpodClientShared {
              disconnectStreamsOnLostInternetConnection,
          httpClientOverride: httpClientOverride,
        ) {
+    account = EndpointAccount(this);
     emailIdp = EndpointEmailIdp(this);
     jwtRefresh = EndpointJwtRefresh(this);
     greeting = EndpointGreeting(this);
     modules = Modules(this);
   }
+
+  late final EndpointAccount account;
 
   late final EndpointEmailIdp emailIdp;
 
@@ -318,6 +417,7 @@ class Client extends _isc.ServerpodClientShared {
 
   @override
   Map<String, _isc.EndpointRef> get endpointRefLookup => {
+    'account': account,
     'emailIdp': emailIdp,
     'jwtRefresh': jwtRefresh,
     'greeting': greeting,

@@ -1,0 +1,24 @@
+---
+description: In-code dartdoc and Docs/ feature documentation required with every feature
+alwaysApply: true
+---
+
+# Documentation
+
+Every feature ships with code comments **and** a `Docs/` page.
+
+## Code
+
+- `///` on public classes, endpoints, ViewModels, repositories, and non-obvious methods
+- Explain *why* (permissions, building scope, order status rules), not what the identifier already says
+- Do not comment generated code
+
+## Docs folder
+
+Path: repo-root `Docs/` (not inside a single app).
+
+- `Docs/README.md` — index
+- `Docs/architecture.md` — layers and apps
+- `Docs/features/<feature>.md` — how the feature works (actors, flows, permissions, data)
+
+Update the feature doc in the same change as the implementation. If the user changes product direction, update Docs first or in the same PR.

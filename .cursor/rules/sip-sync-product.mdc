@@ -1,0 +1,27 @@
+---
+description: Sip Sync product context, apps, and domain boundaries for every task
+alwaysApply: true
+---
+
+# Sip Sync product
+
+Café / restaurant / lounge / bar platform. One Serverpod backend, three Flutter clients. Domain features in `Docs/` and `notes.txt` can change — confirm with the user before large schema work.
+
+## Touch only the right app
+
+- `managment` — owners and employees (buildings, staff, menu, inventory, orders, cash register, kitchen)
+- `sip_sync_flutter` — customers
+- `backoffice` — super admin
+- `sip_sync_server` — models, endpoints, auth, streams
+- `sip_sync_client` — generated; never edit
+
+Do not leak owner/employee screens into the customer app, or customer flows into backoffice.
+
+## Before coding a feature
+
+1. Read `.cursor/skills/sip-sync-feature-development/SKILL.md`
+2. Add or update `Docs/features/<feature>.md`
+3. Server first (auth, DTOs, tests), then the Flutter app(s) that need the feature
+4. Document public APIs in code (dartdoc)
+
+Use **Riverpod + riverpod_generator**, **go_router + go_router_builder**, **build_runner**, ARB (en/ar/fr). GetIt only for imperative singletons. Enforce permissions on the **server**; Flutter redirects are UX only.
