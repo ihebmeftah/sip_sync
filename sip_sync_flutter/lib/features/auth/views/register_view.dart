@@ -19,7 +19,6 @@ class RegisterView extends ConsumerStatefulWidget {
 class _RegisterViewState extends ConsumerState<RegisterView> {
   final _email = TextEditingController();
   final _password = TextEditingController();
-  final _username = TextEditingController();
   final _phone = TextEditingController();
   final _first = TextEditingController();
   final _last = TextEditingController();
@@ -28,7 +27,6 @@ class _RegisterViewState extends ConsumerState<RegisterView> {
   void dispose() {
     _email.dispose();
     _password.dispose();
-    _username.dispose();
     _phone.dispose();
     _first.dispose();
     _last.dispose();
@@ -58,12 +56,6 @@ class _RegisterViewState extends ConsumerState<RegisterView> {
             controller: _last,
             label: l10n.lastName,
             prefixIcon: Icons.badge_outlined,
-            textInputAction: TextInputAction.next,
-          ),
-          AppTextField(
-            controller: _username,
-            label: l10n.username,
-            prefixIcon: Icons.alternate_email,
             textInputAction: TextInputAction.next,
           ),
           AppTextField(
@@ -98,7 +90,6 @@ class _RegisterViewState extends ConsumerState<RegisterView> {
                   .register(
                     email: _email.text,
                     password: _password.text,
-                    username: _username.text,
                     phoneNumber: _phone.text,
                     firstName: _first.text,
                     lastName: _last.text,

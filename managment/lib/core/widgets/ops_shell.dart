@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../features/auth/view_models/auth_view_model.dart';
 import '../../l10n/generated/app_localizations.dart';
+import '../di/app_providers.dart';
 import '../di/theme_controller.dart';
 import '../routing/app_routes.dart';
 import '../theme/app_tokens.dart';
@@ -54,6 +55,8 @@ class OpsSideBar extends ConsumerWidget {
     final l10n = AppLocalizations.of(context)!;
     final scheme = Theme.of(context).colorScheme;
     final session = ref.watch(authViewModelProvider).session;
+    final selected = ref.watch(buildingSelectionProvider);
+    final locked = selected == null;
     final location = GoRouterState.of(context).uri.path;
     final productsOpen =
         location.startsWith('/products') ||
@@ -90,6 +93,15 @@ class OpsSideBar extends ConsumerWidget {
                         color: scheme.onSurface.withValues(alpha: 0.7),
                       ),
                     ),
+                    if (selected != null) ...[
+                      const SizedBox(height: AppSpacing.sm),
+                      Text(
+                        selected.name,
+                        style: Theme.of(
+                          context,
+                        ).textTheme.titleSmall?.copyWith(color: scheme.primary),
+                      ),
+                    ],
                   ],
                 ),
               ),
@@ -100,18 +112,34 @@ class OpsSideBar extends ConsumerWidget {
                   ),
                   children: [
                     _NavTile(
+                      icon: Icons.storefront_outlined,
+                      label: l10n.navBuildings,
+                      selected: location.startsWith('/buildings'),
+                      onTap: () => const BuildingsRoute().go(context),
+                    ),
+                    _NavTile(
                       icon: Icons.grid_view_rounded,
                       label: l10n.navDashboard,
                       selected: location == const DashboardRoute().location,
-                      onTap: () => const DashboardRoute().go(context),
+                      onTap: locked
+                          ? null
+                          : () => const DashboardRoute().go(context),
                     ),
                     _NavTile(
                       icon: Icons.person_outline,
                       label: l10n.navProfile,
-                      selected:
-                          location == const ProfileRoute().location ||
-                          location.startsWith('/profile/'),
-                      onTap: () => const ProfileRoute().go(context),
+                      selected: location == const ProfileRoute().location,
+                      onTap: locked
+                          ? null
+                          : () => const ProfileRoute().go(context),
+                    ),
+                    _NavTile(
+                      icon: Icons.groups_outlined,
+                      label: l10n.navEmployees,
+                      selected: location.startsWith('/employees'),
+                      onTap: locked
+                          ? null
+                          : () => const EmployeesRoute().go(context),
                     ),
                     Theme(
                       data: Theme.of(context).copyWith(
@@ -144,7 +172,9 @@ class OpsSideBar extends ConsumerWidget {
                             indent: true,
                             selected:
                                 location == const ArticlesRoute().location,
-                            onTap: () => const ArticlesRoute().go(context),
+                            onTap: locked
+                                ? null
+                                : () => const ArticlesRoute().go(context),
                           ),
                           _NavTile(
                             icon: Icons.science_outlined,
@@ -152,7 +182,9 @@ class OpsSideBar extends ConsumerWidget {
                             indent: true,
                             selected:
                                 location == const IngredientsRoute().location,
-                            onTap: () => const IngredientsRoute().go(context),
+                            onTap: locked
+                                ? null
+                                : () => const IngredientsRoute().go(context),
                           ),
                         ],
                       ),
@@ -161,13 +193,15 @@ class OpsSideBar extends ConsumerWidget {
                       icon: Icons.point_of_sale_outlined,
                       label: l10n.navPos,
                       selected: location == const PosRoute().location,
-                      onTap: () => const PosRoute().go(context),
+                      onTap: locked ? null : () => const PosRoute().go(context),
                     ),
                     _NavTile(
                       icon: Icons.table_restaurant_outlined,
                       label: l10n.navTables,
                       selected: location == const TablesRoute().location,
-                      onTap: () => const TablesRoute().go(context),
+                      onTap: locked
+                          ? null
+                          : () => const TablesRoute().go(context),
                     ),
                   ],
                 ),
@@ -212,7 +246,9 @@ class OpsSideBar extends ConsumerWidget {
                           borderRadius: BorderRadius.circular(AppRadii.md),
                         ),
                         child: ListTile(
-                          onTap: () => const ProfileRoute().go(context),
+                          onTap: locked
+                              ? null
+                              : () => const ProfileRoute().go(context),
                           leading: CircleAvatar(
                             backgroundColor: scheme.secondary,
                             foregroundColor: scheme.onSecondary,
@@ -229,7 +265,10 @@ class OpsSideBar extends ConsumerWidget {
                                 ?.copyWith(color: scheme.onSurface),
                           ),
                           subtitle: Text(
-                            session?.profile.email ?? '',
+                            (session?.profile.roles.contains('employee') ??
+                                    false)
+                                ? (session?.profile.username ?? '')
+                                : (session?.profile.email ?? ''),
                             style: Theme.of(context).textTheme.bodySmall
                                 ?.copyWith(
                                   color: scheme.onSurface.withValues(
@@ -263,7 +302,7 @@ class _NavTile extends StatelessWidget {
   final IconData icon;
   final String label;
   final bool selected;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
   final bool indent;
 
   @override
@@ -281,25 +320,30 @@ class _NavTile extends StatelessWidget {
         child: InkWell(
           onTap: onTap,
           borderRadius: BorderRadius.circular(AppRadii.sm),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.md,
-              vertical: AppSpacing.md,
-            ),
-            child: Row(
-              children: [
-                Icon(icon, color: fg, size: 22),
-                const SizedBox(width: AppSpacing.md),
-                Expanded(
-                  child: Text(
-                    label,
-                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      color: fg,
-                      fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+          child: Opacity(
+            opacity: onTap == null ? 0.38 : 1,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.md,
+                vertical: AppSpacing.md,
+              ),
+              child: Row(
+                children: [
+                  Icon(icon, color: fg, size: 22),
+                  const SizedBox(width: AppSpacing.md),
+                  Expanded(
+                    child: Text(
+                      label,
+                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                        color: fg,
+                        fontWeight: selected
+                            ? FontWeight.w700
+                            : FontWeight.w500,
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

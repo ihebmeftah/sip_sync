@@ -172,6 +172,18 @@ abstract class AppLocalizations {
   /// **'Email'**
   String get email;
 
+  /// No description provided for @loginIdentifier.
+  ///
+  /// In en, this message translates to:
+  /// **'Email or username'**
+  String get loginIdentifier;
+
+  /// No description provided for @loginIdentifierHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Owners use email. Staff use their username.'**
+  String get loginIdentifierHint;
+
   /// No description provided for @password.
   ///
   /// In en, this message translates to:
@@ -183,6 +195,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Username'**
   String get username;
+
+  /// No description provided for @usernameLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Username is assigned by the system and cannot be changed.'**
+  String get usernameLocked;
+
+  /// No description provided for @employeeUsernameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'A username is generated from the name after you save.'**
+  String get employeeUsernameHint;
 
   /// No description provided for @phone.
   ///
@@ -364,6 +388,66 @@ abstract class AppLocalizations {
   /// **'Finish registration with username and phone.'**
   String get errorProfileIncomplete;
 
+  /// No description provided for @errorAccountDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'This staff account is disabled.'**
+  String get errorAccountDisabled;
+
+  /// No description provided for @navEmployees.
+  ///
+  /// In en, this message translates to:
+  /// **'Employees'**
+  String get navEmployees;
+
+  /// No description provided for @editEmployee.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit employee'**
+  String get editEmployee;
+
+  /// No description provided for @saveEmployee.
+  ///
+  /// In en, this message translates to:
+  /// **'Save employee'**
+  String get saveEmployee;
+
+  /// No description provided for @employeesOwnerOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Only owners can manage staff.'**
+  String get employeesOwnerOnly;
+
+  /// No description provided for @accountEnabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Account enabled'**
+  String get accountEnabled;
+
+  /// No description provided for @accountDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Account disabled'**
+  String get accountDisabled;
+
+  /// No description provided for @accountEnabledHint.
+  ///
+  /// In en, this message translates to:
+  /// **'This person can sign in to operations.'**
+  String get accountEnabledHint;
+
+  /// No description provided for @accountDisabledHint.
+  ///
+  /// In en, this message translates to:
+  /// **'This person cannot sign in to operations.'**
+  String get accountDisabledHint;
+
+  /// No description provided for @dashboardEmployeesCue.
+  ///
+  /// In en, this message translates to:
+  /// **'Add staff, edit details, and enable or disable access.'**
+  String get dashboardEmployeesCue;
+
   /// No description provided for @opsRailTagline.
   ///
   /// In en, this message translates to:
@@ -511,7 +595,7 @@ abstract class AppLocalizations {
   /// No description provided for @dashboardProfileCue.
   ///
   /// In en, this message translates to:
-  /// **'Your details and the team you added.'**
+  /// **'Your name and phone.'**
   String get dashboardProfileCue;
 
   /// No description provided for @emailLocked.
@@ -523,8 +607,254 @@ abstract class AppLocalizations {
   /// No description provided for @profileHint.
   ///
   /// In en, this message translates to:
-  /// **'Update the name the floor sees. Owners can open staff profiles below.'**
+  /// **'Update the name the floor sees. Sign-in identity stays locked.'**
   String get profileHint;
+
+  /// No description provided for @navBuildings.
+  ///
+  /// In en, this message translates to:
+  /// **'Buildings'**
+  String get navBuildings;
+
+  /// No description provided for @addBuilding.
+  ///
+  /// In en, this message translates to:
+  /// **'Add building'**
+  String get addBuilding;
+
+  /// No description provided for @editBuilding.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit building'**
+  String get editBuilding;
+
+  /// No description provided for @saveBuilding.
+  ///
+  /// In en, this message translates to:
+  /// **'Save building'**
+  String get saveBuilding;
+
+  /// No description provided for @buildingName.
+  ///
+  /// In en, this message translates to:
+  /// **'Venue name'**
+  String get buildingName;
+
+  /// No description provided for @buildingType.
+  ///
+  /// In en, this message translates to:
+  /// **'Venue type'**
+  String get buildingType;
+
+  /// No description provided for @buildingTypeRestaurant.
+  ///
+  /// In en, this message translates to:
+  /// **'Restaurant'**
+  String get buildingTypeRestaurant;
+
+  /// No description provided for @buildingTypeLounge.
+  ///
+  /// In en, this message translates to:
+  /// **'Lounge'**
+  String get buildingTypeLounge;
+
+  /// No description provided for @buildingTypeBar.
+  ///
+  /// In en, this message translates to:
+  /// **'Bar'**
+  String get buildingTypeBar;
+
+  /// No description provided for @buildingTypeCafe.
+  ///
+  /// In en, this message translates to:
+  /// **'Café'**
+  String get buildingTypeCafe;
+
+  /// No description provided for @buildingTypeOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get buildingTypeOther;
+
+  /// No description provided for @buildingTypeCustom.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom type'**
+  String get buildingTypeCustom;
+
+  /// No description provided for @buildingAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Address'**
+  String get buildingAddress;
+
+  /// No description provided for @latitude.
+  ///
+  /// In en, this message translates to:
+  /// **'Latitude'**
+  String get latitude;
+
+  /// No description provided for @longitude.
+  ///
+  /// In en, this message translates to:
+  /// **'Longitude'**
+  String get longitude;
+
+  /// No description provided for @openingTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Opens'**
+  String get openingTime;
+
+  /// No description provided for @closingTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Closes'**
+  String get closingTime;
+
+  /// No description provided for @currencyCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Currency'**
+  String get currencyCode;
+
+  /// No description provided for @buildingStaff.
+  ///
+  /// In en, this message translates to:
+  /// **'Staff at this venue'**
+  String get buildingStaff;
+
+  /// No description provided for @buildingStaffEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No employees yet. Add staff after you save this venue.'**
+  String get buildingStaffEmpty;
+
+  /// No description provided for @buildingsOwnerHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a venue, then open it to run the floor. Other tools stay locked until you pick one.'**
+  String get buildingsOwnerHint;
+
+  /// No description provided for @buildingsStaffHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a venue you are assigned to.'**
+  String get buildingsStaffHint;
+
+  /// No description provided for @buildingsEmptyOwner.
+  ///
+  /// In en, this message translates to:
+  /// **'Add your first café, restaurant, lounge, or bar to continue.'**
+  String get buildingsEmptyOwner;
+
+  /// No description provided for @employeesEmptyBuilding.
+  ///
+  /// In en, this message translates to:
+  /// **'No staff assigned to this venue yet.'**
+  String get employeesEmptyBuilding;
+
+  /// No description provided for @dashboardBuildingMeta.
+  ///
+  /// In en, this message translates to:
+  /// **'{type} · {address} · {opens}–{closes} · {currency}'**
+  String dashboardBuildingMeta(
+    String type,
+    String address,
+    String opens,
+    String closes,
+    String currency,
+  );
+
+  /// No description provided for @validationRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'This field is required.'**
+  String get validationRequired;
+
+  /// No description provided for @validationLoginIdentifier.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter an email or a username (at least 3 characters).'**
+  String get validationLoginIdentifier;
+
+  /// No description provided for @validationEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid email.'**
+  String get validationEmail;
+
+  /// No description provided for @validationPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Use at least 8 characters, no leading or trailing spaces.'**
+  String get validationPassword;
+
+  /// No description provided for @validationPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid phone number.'**
+  String get validationPhone;
+
+  /// No description provided for @validationVenueName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name must be 1–80 characters.'**
+  String get validationVenueName;
+
+  /// No description provided for @validationVenueType.
+  ///
+  /// In en, this message translates to:
+  /// **'Use 2–40 letters, numbers, spaces, or hyphens.'**
+  String get validationVenueType;
+
+  /// No description provided for @validationAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Address must be 3–200 characters.'**
+  String get validationAddress;
+
+  /// No description provided for @validationLatitude.
+  ///
+  /// In en, this message translates to:
+  /// **'Latitude must be between -90 and 90.'**
+  String get validationLatitude;
+
+  /// No description provided for @validationLongitude.
+  ///
+  /// In en, this message translates to:
+  /// **'Longitude must be between -180 and 180.'**
+  String get validationLongitude;
+
+  /// No description provided for @validationCurrency.
+  ///
+  /// In en, this message translates to:
+  /// **'Use a 3-letter currency code.'**
+  String get validationCurrency;
+
+  /// No description provided for @pickCurrentPosition.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick current position'**
+  String get pickCurrentPosition;
+
+  /// No description provided for @errorLocationDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Location permission is required to fill the address.'**
+  String get errorLocationDenied;
+
+  /// No description provided for @errorLocationDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on location services and try again.'**
+  String get errorLocationDisabled;
+
+  /// No description provided for @errorLocationFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not read the current position.'**
+  String get errorLocationFailed;
 }
 
 class _AppLocalizationsDelegate

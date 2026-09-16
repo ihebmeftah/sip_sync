@@ -2,7 +2,6 @@ class: BackofficeUserCreate
 fields:
   email: String
   password: String
-  username: String
   phoneNumber: String
   firstName: String
   lastName: String

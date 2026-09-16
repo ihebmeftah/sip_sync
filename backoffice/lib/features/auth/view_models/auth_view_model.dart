@@ -77,35 +77,6 @@ class AuthViewModel extends _$AuthViewModel {
     }
   }
 
-  Future<bool> register({
-    required String email,
-    required String password,
-    required String username,
-    required String phoneNumber,
-    required String firstName,
-    required String lastName,
-  }) async {
-    state = state.copyWith(isLoading: true, clearError: true);
-    try {
-      final session = await _repository.register(
-        email: email,
-        password: password,
-        username: username,
-        phoneNumber: phoneNumber,
-        firstName: firstName,
-        lastName: lastName,
-      );
-      state = state.copyWith(session: session, isLoading: false);
-      return true;
-    } catch (error) {
-      state = state.copyWith(
-        isLoading: false,
-        errorKey: mapError(error).l10nKey,
-      );
-      return false;
-    }
-  }
-
   Future<void> signOut() async {
     await _repository.signOut();
     state = const AuthState();

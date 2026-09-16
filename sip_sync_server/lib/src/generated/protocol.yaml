@@ -6,6 +6,8 @@ account:
   - getEmployee:
   - addEmployee:
   - listEmployees:
+  - updateEmployee:
+  - setEmployeeEnabled:
   - addBackofficeUser:
   - listBackofficeUsers:
   - deleteBackofficeUser:
@@ -20,5 +22,11 @@ emailIdp:
   - hasAccount:
 jwtRefresh:
   - refreshAccessToken:
+building:
+  - listMine:
+  - get:
+  - create:
+  - update:
+  - listEmployees:
 greeting:
   - hello:

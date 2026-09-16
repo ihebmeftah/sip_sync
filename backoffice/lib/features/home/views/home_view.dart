@@ -24,7 +24,6 @@ class _HomeViewState extends ConsumerState<HomeView> {
 
   final _email = TextEditingController();
   final _password = TextEditingController();
-  final _username = TextEditingController();
   final _phone = TextEditingController();
   final _first = TextEditingController();
   final _last = TextEditingController();
@@ -39,7 +38,6 @@ class _HomeViewState extends ConsumerState<HomeView> {
   void dispose() {
     _email.dispose();
     _password.dispose();
-    _username.dispose();
     _phone.dispose();
     _first.dispose();
     _last.dispose();
@@ -182,11 +180,6 @@ class _HomeViewState extends ConsumerState<HomeView> {
                           prefixIcon: Icons.badge_outlined,
                         ),
                         AppTextField(
-                          controller: _username,
-                          label: l10n.username,
-                          prefixIcon: Icons.alternate_email,
-                        ),
-                        AppTextField(
                           controller: _email,
                           label: l10n.email,
                           prefixIcon: Icons.mail_outline,
@@ -213,7 +206,6 @@ class _HomeViewState extends ConsumerState<HomeView> {
                                   .addBackofficeUser(
                                     email: _email.text,
                                     password: _password.text,
-                                    username: _username.text,
                                     phoneNumber: _phone.text,
                                     firstName: _first.text,
                                     lastName: _last.text,

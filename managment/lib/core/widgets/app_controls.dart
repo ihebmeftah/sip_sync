@@ -50,6 +50,10 @@ class AppTextField extends StatefulWidget {
     this.textInputAction,
     this.readOnly = false,
     this.helperText,
+    this.validator,
+    this.onTap,
+    this.suffixIcon,
+    this.compact = false,
   });
 
   final TextEditingController controller;
@@ -60,6 +64,10 @@ class AppTextField extends StatefulWidget {
   final TextInputAction? textInputAction;
   final bool readOnly;
   final String? helperText;
+  final String? Function(String?)? validator;
+  final VoidCallback? onTap;
+  final Widget? suffixIcon;
+  final bool compact;
 
   @override
   State<AppTextField> createState() => _AppTextFieldState();
@@ -72,13 +80,16 @@ class _AppTextFieldState extends State<AppTextField> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return Padding(
-      padding: const EdgeInsets.only(bottom: AppSpacing.lg),
-      child: TextField(
+      padding: EdgeInsets.only(bottom: widget.compact ? 0 : AppSpacing.lg),
+      child: TextFormField(
         controller: widget.controller,
         obscureText: _hidden,
         keyboardType: widget.keyboardType,
         textInputAction: widget.textInputAction,
         readOnly: widget.readOnly,
+        onTap: widget.onTap,
+        validator: widget.validator,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
         decoration: InputDecoration(
           labelText: widget.label,
           helperText: widget.helperText,
@@ -95,7 +106,45 @@ class _AppTextFieldState extends State<AppTextField> {
                         : Icons.visibility_off_outlined,
                   ),
                 )
-              : null,
+              : widget.suffixIcon,
+        ),
+      ),
+    );
+  }
+}
+
+class AppDropdownField<T> extends StatelessWidget {
+  const AppDropdownField({
+    super.key,
+    required this.label,
+    required this.value,
+    required this.items,
+    required this.onChanged,
+    this.prefixIcon,
+    this.validator,
+  });
+
+  final String label;
+  final T value;
+  final List<DropdownMenuItem<T>> items;
+  final ValueChanged<T?> onChanged;
+  final IconData? prefixIcon;
+  final String? Function(T?)? validator;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AppSpacing.lg),
+      child: DropdownButtonFormField<T>(
+        key: ValueKey(value),
+        initialValue: value,
+        isExpanded: true,
+        items: items,
+        onChanged: onChanged,
+        validator: validator,
+        decoration: InputDecoration(
+          labelText: label,
+          prefixIcon: prefixIcon == null ? null : Icon(prefixIcon),
         ),
       ),
     );

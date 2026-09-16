@@ -19,7 +19,7 @@ class AccountEndpoint extends Endpoint {
     return _accounts.register(session, request);
   }
 
-  /// Email/password login for one [LoginRequest.app].
+  /// Email or username login for one [LoginRequest.app].
   Future<AuthSessionResult> login(
     Session session,
     LoginRequest request,
@@ -39,7 +39,7 @@ class AccountEndpoint extends Endpoint {
     return _accounts.me(session, userId);
   }
 
-  /// Updates the signed-in user's username, phone, and name.
+  /// Updates the signed-in user's phone and name.
   Future<AccountSessionView> updateMyProfile(
     Session session,
     ProfileUpdate request,
@@ -59,7 +59,7 @@ class AccountEndpoint extends Endpoint {
   }
 
   /// Owner reads one employee they added.
-  Future<ProfileView> getEmployee(
+  Future<EmployeeView> getEmployee(
     Session session,
     UuidValue employeeAuthUserId,
   ) async {
@@ -77,8 +77,8 @@ class AccountEndpoint extends Endpoint {
     );
   }
 
-  /// Owner adds an employee (new account or extra role on an existing email).
-  Future<ProfileView> addEmployee(
+  /// Owner adds an employee (new account with generated username).
+  Future<EmployeeView> addEmployee(
     Session session,
     EmployeeCreate request,
   ) async {
@@ -97,7 +97,7 @@ class AccountEndpoint extends Endpoint {
   }
 
   /// Employees added by the signed-in owner.
-  Future<List<ProfileView>> listEmployees(Session session) async {
+  Future<List<EmployeeView>> listEmployees(Session session) async {
     final userId = session.authenticated?.authUserId;
     if (userId == null) {
       throw AccountException(
@@ -106,6 +106,46 @@ class AccountEndpoint extends Endpoint {
       );
     }
     return _accounts.listEmployees(session, userId);
+  }
+
+  /// Owner updates an added employee's username, phone, and name.
+  Future<EmployeeView> updateEmployee(
+    Session session,
+    EmployeeUpdate request,
+  ) async {
+    final userId = session.authenticated?.authUserId;
+    if (userId == null) {
+      throw AccountException(
+        message: 'Sign in required.',
+        code: AccountErrorCode.notAuthorized,
+      );
+    }
+    return _accounts.updateEmployee(
+      session,
+      ownerAuthUserId: userId,
+      request: request,
+    );
+  }
+
+  /// Owner enables or disables management login for that employee.
+  Future<EmployeeView> setEmployeeEnabled(
+    Session session,
+    UuidValue employeeAuthUserId,
+    bool isEnabled,
+  ) async {
+    final userId = session.authenticated?.authUserId;
+    if (userId == null) {
+      throw AccountException(
+        message: 'Sign in required.',
+        code: AccountErrorCode.notAuthorized,
+      );
+    }
+    return _accounts.setEmployeeEnabled(
+      session,
+      ownerAuthUserId: userId,
+      employeeAuthUserId: employeeAuthUserId,
+      isEnabled: isEnabled,
+    );
   }
 
   /// Backoffice admin creates another backoffice user (`isAdmin` stays false).

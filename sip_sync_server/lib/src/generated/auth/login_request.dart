@@ -16,26 +16,27 @@ import '../auth/sip_app.dart' as _iit1nxnv;
 abstract class LoginRequest
     implements _is.SerializableModel, _is.ProtocolSerialization {
   LoginRequest._({
-    required this.email,
+    required this.identifier,
     required this.password,
     required this.app,
   });
 
   factory LoginRequest({
-    required String email,
+    required String identifier,
     required String password,
     required _iit1nxnv.SipApp app,
   }) = _LoginRequestImpl;
 
   factory LoginRequest.fromJson(Map<String, dynamic> jsonSerialization) {
     return LoginRequest(
-      email: jsonSerialization['email'] as String,
+      identifier: jsonSerialization['identifier'] as String,
       password: jsonSerialization['password'] as String,
       app: _iit1nxnv.SipApp.fromJson((jsonSerialization['app'] as int)),
     );
   }
 
-  String email;
+  /// Email for customer/owner/backoffice, or employee username.
+  String identifier;
 
   String password;
 
@@ -45,7 +46,7 @@ abstract class LoginRequest
   /// with some or all fields replaced by the given arguments.
   @_is.useResult
   LoginRequest copyWith({
-    String? email,
+    String? identifier,
     String? password,
     _iit1nxnv.SipApp? app,
   });
@@ -53,7 +54,7 @@ abstract class LoginRequest
   Map<String, dynamic> toJson() {
     return {
       '__className__': 'LoginRequest',
-      'email': email,
+      'identifier': identifier,
       'password': password,
       'app': app.toJson(),
     };
@@ -63,7 +64,7 @@ abstract class LoginRequest
   Map<String, dynamic> toJsonForProtocol() {
     return {
       '__className__': 'LoginRequest',
-      'email': email,
+      'identifier': identifier,
       'password': password,
       'app': app.toJson(),
     };
@@ -77,11 +78,11 @@ abstract class LoginRequest
 
 class _LoginRequestImpl extends LoginRequest {
   _LoginRequestImpl({
-    required String email,
+    required String identifier,
     required String password,
     required _iit1nxnv.SipApp app,
   }) : super._(
-         email: email,
+         identifier: identifier,
          password: password,
          app: app,
        );
@@ -91,12 +92,12 @@ class _LoginRequestImpl extends LoginRequest {
   @_is.useResult
   @override
   LoginRequest copyWith({
-    String? email,
+    String? identifier,
     String? password,
     _iit1nxnv.SipApp? app,
   }) {
     return LoginRequest(
-      email: email ?? this.email,
+      identifier: identifier ?? this.identifier,
       password: password ?? this.password,
       app: app ?? this.app,
     );

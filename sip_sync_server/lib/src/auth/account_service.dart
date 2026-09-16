@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_auth_idp_server/core.dart';
 import 'package:serverpod_auth_idp_server/providers/email.dart';
@@ -7,9 +9,12 @@ import 'sip_sync_scope.dart';
 
 /// Creates identities, attaches additive roles, and issues sessions.
 ///
-/// One [AuthUser] per email. Additional apps add [UserRoleMembership] rows
-/// instead of a second login. See `Docs/features/authentication.md`.
+/// Owners / customers / backoffice sign in with email. Employees sign in with
+/// a server-generated username (synthetic email under the email IDP).
+/// See `Docs/features/authentication.md`.
 class AccountService {
+  static const _employeeEmailDomain = 'employees.sipsync.local';
+
   /// Registers a customer (customer app) or owner (management app).
   ///
   /// If the email already exists, the password is checked and the role for
@@ -41,7 +46,7 @@ class AccountService {
         session,
         authUserId: authUserId,
         email: email,
-        username: request.username,
+        username: null,
         phoneNumber: request.phoneNumber,
         firstName: request.firstName,
         lastName: request.lastName,
@@ -51,7 +56,7 @@ class AccountService {
         session,
         email: email,
         password: request.password,
-        username: request.username,
+        username: null,
         phoneNumber: request.phoneNumber,
         firstName: request.firstName,
         lastName: request.lastName,
@@ -67,16 +72,15 @@ class AccountService {
     return _issueSession(session, authUserId);
   }
 
-  /// Authenticates and checks that [request.app] is allowed for this user.
+  /// Authenticates with [LoginRequest.identifier] (email or employee username).
   ///
   /// Customer app logins grant the customer role if it is missing so owners
-  /// and employees can order as guests with the same email.
+  /// can order as guests with the same email.
   Future<AuthSessionResult> login(
     Session session,
     LoginRequest request,
   ) async {
-    final email = _normalizeEmail(request.email);
-    _validateEmail(email);
+    final email = await _resolveLoginEmail(session, request.identifier);
     final authUserId = await _authenticate(session, email, request.password);
 
     final profile = await SipSyncProfile.db.findFirstRow(
@@ -85,7 +89,7 @@ class AccountService {
     );
     if (profile == null) {
       throw AccountException(
-        message: 'Complete registration with username and phone number.',
+        message: 'Complete registration with phone number and name.',
         code: AccountErrorCode.profileIncomplete,
       );
     }
@@ -103,6 +107,7 @@ class AccountService {
             code: AccountErrorCode.appAccessDenied,
           );
         }
+        await _assertEmployeeAccountActive(session, authUserId);
       case SipApp.backoffice:
         if (!await _hasAnyRole(session, authUserId, {AppRole.backoffice})) {
           throw AccountException(
@@ -120,9 +125,9 @@ class AccountService {
     return _sessionView(session, authUserId);
   }
 
-  /// Lets the signed-in user change username, phone, and display name.
+  /// Lets the signed-in user change phone and display name.
   ///
-  /// Email is identity-bound and is not writable here.
+  /// Email and username are identity-bound and are not writable here.
   Future<AccountSessionView> updateMyProfile(
     Session session, {
     required UuidValue authUserId,
@@ -139,20 +144,17 @@ class AccountService {
       );
     }
 
-    final username = _normalizeUsername(request.username);
     final phoneNumber = _normalizePhone(request.phoneNumber);
     _validateName(request.firstName, request.lastName);
-    await _assertUniqueProfileExcept(
+    await _assertUniquePhoneExcept(
       session,
       authUserId: authUserId,
-      username: username,
       phoneNumber: phoneNumber,
     );
 
     await SipSyncProfile.db.updateRow(
       session,
       profile.copyWith(
-        username: username,
         phoneNumber: phoneNumber,
         firstName: request.firstName.trim(),
         lastName: request.lastName.trim(),
@@ -163,36 +165,21 @@ class AccountService {
   }
 
   /// Owner-only: one employee this owner added.
-  Future<ProfileView> getEmployee(
+  Future<EmployeeView> getEmployee(
     Session session, {
     required UuidValue ownerAuthUserId,
     required UuidValue employeeAuthUserId,
   }) async {
-    if (!await _hasAnyRole(session, ownerAuthUserId, {AppRole.owner})) {
-      throw AccountException(
-        message: 'Only owners can view employee profiles.',
-        code: AccountErrorCode.notAuthorized,
-      );
-    }
-
-    final record = await EmployeeRecord.db.findFirstRow(
+    final record = await _ownedEmployee(
       session,
-      where: (t) =>
-          t.ownerAuthUserId.equals(ownerAuthUserId) &
-          t.authUserId.equals(employeeAuthUserId),
+      ownerAuthUserId: ownerAuthUserId,
+      employeeAuthUserId: employeeAuthUserId,
     );
-    if (record == null) {
-      throw AccountException(
-        message: 'Employee not found.',
-        code: AccountErrorCode.notFound,
-      );
-    }
-
-    return _profileView(session, employeeAuthUserId);
+    return _employeeView(session, record);
   }
 
-  /// Owner-only: create or attach an employee identity.
-  Future<ProfileView> addEmployee(
+  /// Owner-only: create a staff identity with a generated username.
+  Future<EmployeeView> addEmployee(
     Session session, {
     required UuidValue ownerAuthUserId,
     required EmployeeCreate request,
@@ -204,60 +191,65 @@ class AccountService {
       );
     }
 
-    final email = _normalizeEmail(request.email);
-    _validateEmail(email);
+    _validatePassword(request.password);
+    final username = await _allocateEmployeeUsername(
+      session,
+      request.firstName,
+      request.lastName,
+    );
+    final email = _employeeEmailFor(username);
 
-    final existing = await AuthServices.instance.emailIdp.admin.findAccount(
+    final employeeId = await _createIdentity(
       session,
       email: email,
+      password: request.password,
+      username: username,
+      phoneNumber: request.phoneNumber,
+      firstName: request.firstName,
+      lastName: request.lastName,
     );
-
-    late final UuidValue employeeId;
-    if (existing != null) {
-      employeeId = existing.authUserId;
-      await _ensureProfile(
-        session,
-        authUserId: employeeId,
-        email: email,
-        username: request.username,
-        phoneNumber: request.phoneNumber,
-        firstName: request.firstName,
-        lastName: request.lastName,
-      );
-    } else {
-      _validatePassword(request.password);
-      employeeId = await _createIdentity(
-        session,
-        email: email,
-        password: request.password,
-        username: request.username,
-        phoneNumber: request.phoneNumber,
-        firstName: request.firstName,
-        lastName: request.lastName,
-      );
-    }
 
     await _grantRole(session, employeeId, AppRole.employee);
 
-    final record = await EmployeeRecord.db.findFirstRow(
+    final record = await EmployeeRecord.db.insertRow(
       session,
-      where: (t) => t.authUserId.equals(employeeId),
+      EmployeeRecord(
+        authUserId: employeeId,
+        ownerAuthUserId: ownerAuthUserId,
+      ),
     );
-    if (record == null) {
-      await EmployeeRecord.db.insertRow(
+
+    final buildingId = request.buildingId;
+    if (buildingId != null) {
+      final building = await Building.db.findById(session, buildingId);
+      if (building == null || building.ownerAuthUserId != ownerAuthUserId) {
+        throw AccountException(
+          message: 'Building not found.',
+          code: AccountErrorCode.notFound,
+        );
+      }
+      final already = await BuildingStaff.db.findFirstRow(
         session,
-        EmployeeRecord(
-          authUserId: employeeId,
-          ownerAuthUserId: ownerAuthUserId,
-        ),
+        where: (t) =>
+            t.buildingId.equals(buildingId) &
+            t.employeeAuthUserId.equals(employeeId),
       );
+      if (already == null) {
+        await BuildingStaff.db.insertRow(
+          session,
+          BuildingStaff(
+            buildingId: buildingId,
+            employeeAuthUserId: employeeId,
+          ),
+        );
+      }
     }
 
-    return _profileView(session, employeeId);
+    return _employeeView(session, record);
   }
 
   /// Employees this owner added.
-  Future<List<ProfileView>> listEmployees(
+  Future<List<EmployeeView>> listEmployees(
     Session session,
     UuidValue ownerAuthUserId,
   ) async {
@@ -272,11 +264,73 @@ class AccountService {
       session,
       where: (t) => t.ownerAuthUserId.equals(ownerAuthUserId),
     );
-    final views = <ProfileView>[];
+    final views = <EmployeeView>[];
     for (final record in records) {
-      views.add(await _profileView(session, record.authUserId));
+      views.add(await _employeeView(session, record));
     }
     return views;
+  }
+
+  /// Owner-only: update phone and name for an added employee.
+  Future<EmployeeView> updateEmployee(
+    Session session, {
+    required UuidValue ownerAuthUserId,
+    required EmployeeUpdate request,
+  }) async {
+    final record = await _ownedEmployee(
+      session,
+      ownerAuthUserId: ownerAuthUserId,
+      employeeAuthUserId: request.authUserId,
+    );
+
+    final profile = await SipSyncProfile.db.findFirstRow(
+      session,
+      where: (t) => t.authUserId.equals(record.authUserId),
+    );
+    if (profile == null) {
+      throw AccountException(
+        message: 'Profile not found.',
+        code: AccountErrorCode.profileIncomplete,
+      );
+    }
+
+    final phoneNumber = _normalizePhone(request.phoneNumber);
+    _validateName(request.firstName, request.lastName);
+    await _assertUniquePhoneExcept(
+      session,
+      authUserId: record.authUserId,
+      phoneNumber: phoneNumber,
+    );
+
+    await SipSyncProfile.db.updateRow(
+      session,
+      profile.copyWith(
+        phoneNumber: phoneNumber,
+        firstName: request.firstName.trim(),
+        lastName: request.lastName.trim(),
+      ),
+    );
+
+    return _employeeView(session, record);
+  }
+
+  /// Owner-only: allow or block management login for that employee.
+  Future<EmployeeView> setEmployeeEnabled(
+    Session session, {
+    required UuidValue ownerAuthUserId,
+    required UuidValue employeeAuthUserId,
+    required bool isEnabled,
+  }) async {
+    final record = await _ownedEmployee(
+      session,
+      ownerAuthUserId: ownerAuthUserId,
+      employeeAuthUserId: employeeAuthUserId,
+    );
+    final updated = await EmployeeRecord.db.updateRow(
+      session,
+      record.copyWith(isEnabled: isEnabled),
+    );
+    return _employeeView(session, updated);
   }
 
   /// Backoffice admin: create or attach a non-admin backoffice user.
@@ -302,7 +356,7 @@ class AccountService {
         session,
         authUserId: userId,
         email: email,
-        username: request.username,
+        username: null,
         phoneNumber: request.phoneNumber,
         firstName: request.firstName,
         lastName: request.lastName,
@@ -313,7 +367,7 @@ class AccountService {
         session,
         email: email,
         password: request.password,
-        username: request.username,
+        username: null,
         phoneNumber: request.phoneNumber,
         firstName: request.firstName,
         lastName: request.lastName,
@@ -413,7 +467,7 @@ class AccountService {
         session,
         authUserId: authUserId,
         email: email,
-        username: 'superadmin',
+        username: null,
         phoneNumber: '+0000000000',
         firstName: 'Super',
         lastName: 'Admin',
@@ -423,7 +477,7 @@ class AccountService {
         session,
         email: email,
         password: password,
-        username: 'superadmin',
+        username: null,
         phoneNumber: '+0000000000',
         firstName: 'Super',
         lastName: 'Admin',
@@ -444,12 +498,14 @@ class AccountService {
     Session session, {
     required String email,
     required String password,
-    required String username,
+    required String? username,
     required String phoneNumber,
     required String firstName,
     required String lastName,
   }) async {
-    final normalizedUser = _normalizeUsername(username);
+    final normalizedUser = username == null
+        ? null
+        : _normalizeUsername(username);
     final normalizedPhone = _normalizePhone(phoneNumber);
     _validateName(firstName, lastName);
     await _assertUniqueProfile(
@@ -473,7 +529,7 @@ class AccountService {
       session,
       authUserId,
       UserProfileData(
-        userName: normalizedUser,
+        userName: normalizedUser ?? email.split('@').first,
         fullName: '$firstName $lastName'.trim(),
         email: email,
       ),
@@ -498,7 +554,7 @@ class AccountService {
     Session session, {
     required UuidValue authUserId,
     required String email,
-    required String username,
+    required String? username,
     required String phoneNumber,
     required String firstName,
     required String lastName,
@@ -511,7 +567,9 @@ class AccountService {
       return;
     }
 
-    final normalizedUser = _normalizeUsername(username);
+    final normalizedUser = username == null
+        ? null
+        : _normalizeUsername(username);
     final normalizedPhone = _normalizePhone(phoneNumber);
     _validateName(firstName, lastName);
     await _assertUniqueProfile(
@@ -626,6 +684,15 @@ class AccountService {
     );
   }
 
+  /// Whether [authUserId] currently holds [role].
+  Future<bool> hasRole(
+    Session session,
+    UuidValue authUserId,
+    AppRole role,
+  ) {
+    return _hasAnyRole(session, authUserId, {role});
+  }
+
   Future<bool> _hasAnyRole(
     Session session,
     UuidValue authUserId,
@@ -652,6 +719,35 @@ class AccountService {
         code: AccountErrorCode.notAuthorized,
       );
     }
+  }
+
+  Future<String> _resolveLoginEmail(Session session, String identifier) async {
+    final raw = identifier.trim();
+    if (raw.contains('@')) {
+      final email = _normalizeEmail(raw);
+      _validateEmail(email);
+      return email;
+    }
+
+    final username = raw.toLowerCase();
+    if (username.length < 3) {
+      throw AccountException(
+        message: 'Invalid username or password.',
+        code: AccountErrorCode.invalidCredentials,
+      );
+    }
+
+    final profile = await SipSyncProfile.db.findFirstRow(
+      session,
+      where: (t) => t.username.equals(username),
+    );
+    if (profile == null) {
+      throw AccountException(
+        message: 'Invalid username or password.',
+        code: AccountErrorCode.invalidCredentials,
+      );
+    }
+    return profile.email;
   }
 
   Future<UuidValue> _authenticate(
@@ -757,22 +853,119 @@ class AccountService {
     );
   }
 
-  Future<void> _assertUniqueProfileExcept(
-    Session session, {
-    required UuidValue authUserId,
-    required String username,
-    required String phoneNumber,
-  }) async {
-    final userHit = await SipSyncProfile.db.findFirstRow(
-      session,
-      where: (t) => t.username.equals(username),
-    );
-    if (userHit != null && userHit.authUserId != authUserId) {
+  Future<EmployeeView> _employeeView(
+    Session session,
+    EmployeeRecord record,
+  ) async {
+    final profile = await _profileView(session, record.authUserId);
+    final username = profile.username;
+    if (username == null || username.isEmpty) {
       throw AccountException(
-        message: 'Username is already taken.',
-        code: AccountErrorCode.usernameTaken,
+        message: 'Employee profile is incomplete.',
+        code: AccountErrorCode.profileIncomplete,
       );
     }
+    return EmployeeView(
+      authUserId: profile.authUserId,
+      username: username,
+      phoneNumber: profile.phoneNumber,
+      firstName: profile.firstName,
+      lastName: profile.lastName,
+      roles: profile.roles,
+      isEnabled: record.isEnabled,
+    );
+  }
+
+  Future<EmployeeRecord> _ownedEmployee(
+    Session session, {
+    required UuidValue ownerAuthUserId,
+    required UuidValue employeeAuthUserId,
+  }) async {
+    if (!await _hasAnyRole(session, ownerAuthUserId, {AppRole.owner})) {
+      throw AccountException(
+        message: 'Only owners can manage employees.',
+        code: AccountErrorCode.notAuthorized,
+      );
+    }
+    final record = await EmployeeRecord.db.findFirstRow(
+      session,
+      where: (t) =>
+          t.ownerAuthUserId.equals(ownerAuthUserId) &
+          t.authUserId.equals(employeeAuthUserId),
+    );
+    if (record == null) {
+      throw AccountException(
+        message: 'Employee not found.',
+        code: AccountErrorCode.notFound,
+      );
+    }
+    return record;
+  }
+
+  /// Owners always enter management. Disabled staff cannot.
+  Future<void> _assertEmployeeAccountActive(
+    Session session,
+    UuidValue authUserId,
+  ) async {
+    if (await _hasAnyRole(session, authUserId, {AppRole.owner})) {
+      return;
+    }
+    final record = await EmployeeRecord.db.findFirstRow(
+      session,
+      where: (t) => t.authUserId.equals(authUserId),
+    );
+    if (record != null && !record.isEnabled) {
+      throw AccountException(
+        message: 'This staff account is disabled.',
+        code: AccountErrorCode.accountDisabled,
+      );
+    }
+  }
+
+  Future<String> _allocateEmployeeUsername(
+    Session session,
+    String firstName,
+    String lastName,
+  ) async {
+    final base = '${_slugName(firstName)}.${_slugName(lastName)}';
+    final random = Random.secure();
+    for (var attempt = 0; attempt < 20; attempt++) {
+      final digits = 1000 + random.nextInt(9000);
+      final candidate = '$base$digits';
+      final hit = await SipSyncProfile.db.findFirstRow(
+        session,
+        where: (t) => t.username.equals(candidate),
+      );
+      if (hit == null) {
+        return candidate;
+      }
+    }
+    throw AccountException(
+      message: 'Could not allocate a unique username.',
+      code: AccountErrorCode.invalidInput,
+    );
+  }
+
+  String _slugName(String value) {
+    final slug = value
+        .trim()
+        .toLowerCase()
+        .replaceAll(RegExp(r'[^a-z0-9]+'), '')
+        .replaceAll(RegExp(r'^_+|_+$'), '');
+    if (slug.isEmpty) {
+      return 'user';
+    }
+    return slug.length > 24 ? slug.substring(0, 24) : slug;
+  }
+
+  String _employeeEmailFor(String username) =>
+      '$username@$_employeeEmailDomain';
+
+  Future<void> _assertUniquePhoneExcept(
+    Session session, {
+    required UuidValue authUserId,
+    required String phoneNumber,
+  }) async {
     final phoneHit = await SipSyncProfile.db.findFirstRow(
       session,
       where: (t) => t.phoneNumber.equals(phoneNumber),
@@ -787,19 +980,21 @@ class AccountService {
 
   Future<void> _assertUniqueProfile(
     Session session, {
-    required String username,
+    required String? username,
     required String email,
     required String phoneNumber,
   }) async {
-    if (await SipSyncProfile.db.findFirstRow(
-          session,
-          where: (t) => t.username.equals(username),
-        ) !=
-        null) {
-      throw AccountException(
-        message: 'Username is already taken.',
-        code: AccountErrorCode.usernameTaken,
-      );
+    if (username != null) {
+      if (await SipSyncProfile.db.findFirstRow(
+            session,
+            where: (t) => t.username.equals(username),
+          ) !=
+          null) {
+        throw AccountException(
+          message: 'Username is already taken.',
+          code: AccountErrorCode.usernameTaken,
+        );
+      }
     }
     if (await SipSyncProfile.db.findFirstRow(
           session,
@@ -854,10 +1049,10 @@ class AccountService {
 
   String _normalizeUsername(String username) {
     final value = username.trim().toLowerCase();
-    if (value.length < 3 || !RegExp(r'^[a-z0-9_]+$').hasMatch(value)) {
+    if (value.length < 3 || !RegExp(r'^[a-z0-9.]+$').hasMatch(value)) {
       throw AccountException(
         message:
-            'Username must be at least 3 characters (letters, numbers, underscore).',
+            'Username must be at least 3 characters (letters, numbers, dots).',
         code: AccountErrorCode.invalidInput,
       );
     }

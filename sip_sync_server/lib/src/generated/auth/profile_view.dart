@@ -17,7 +17,7 @@ abstract class ProfileView
     implements _is.SerializableModel, _is.ProtocolSerialization {
   ProfileView._({
     required this.authUserId,
-    required this.username,
+    this.username,
     required this.email,
     required this.phoneNumber,
     required this.firstName,
@@ -27,7 +27,7 @@ abstract class ProfileView
 
   factory ProfileView({
     required _is.UuidValue authUserId,
-    required String username,
+    String? username,
     required String email,
     required String phoneNumber,
     required String firstName,
@@ -40,7 +40,7 @@ abstract class ProfileView
       authUserId: _is.UuidValueJsonExtension.fromJson(
         jsonSerialization['authUserId'],
       ),
-      username: jsonSerialization['username'] as String,
+      username: jsonSerialization['username'] as String?,
       email: jsonSerialization['email'] as String,
       phoneNumber: jsonSerialization['phoneNumber'] as String,
       firstName: jsonSerialization['firstName'] as String,
@@ -53,7 +53,7 @@ abstract class ProfileView
 
   _is.UuidValue authUserId;
 
-  String username;
+  String? username;
 
   String email;
 
@@ -82,7 +82,7 @@ abstract class ProfileView
     return {
       '__className__': 'ProfileView',
       'authUserId': authUserId.toJson(),
-      'username': username,
+      if (username != null) 'username': username,
       'email': email,
       'phoneNumber': phoneNumber,
       'firstName': firstName,
@@ -96,7 +96,7 @@ abstract class ProfileView
     return {
       '__className__': 'ProfileView',
       'authUserId': authUserId.toJson(),
-      'username': username,
+      if (username != null) 'username': username,
       'email': email,
       'phoneNumber': phoneNumber,
       'firstName': firstName,
@@ -111,10 +111,12 @@ abstract class ProfileView
   }
 }
 
+class _Undefined {}
+
 class _ProfileViewImpl extends ProfileView {
   _ProfileViewImpl({
     required _is.UuidValue authUserId,
-    required String username,
+    String? username,
     required String email,
     required String phoneNumber,
     required String firstName,
@@ -136,7 +138,7 @@ class _ProfileViewImpl extends ProfileView {
   @override
   ProfileView copyWith({
     _is.UuidValue? authUserId,
-    String? username,
+    Object? username = _Undefined,
     String? email,
     String? phoneNumber,
     String? firstName,
@@ -145,7 +147,7 @@ class _ProfileViewImpl extends ProfileView {
   }) {
     return ProfileView(
       authUserId: authUserId ?? this.authUserId,
-      username: username ?? this.username,
+      username: username is String? ? username : this.username,
       email: email ?? this.email,
       phoneNumber: phoneNumber ?? this.phoneNumber,
       firstName: firstName ?? this.firstName,

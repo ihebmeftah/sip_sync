@@ -84,7 +84,6 @@ class AuthViewModel extends _$AuthViewModel {
   Future<bool> register({
     required String email,
     required String password,
-    required String username,
     required String phoneNumber,
     required String firstName,
     required String lastName,
@@ -94,7 +93,6 @@ class AuthViewModel extends _$AuthViewModel {
       final session = await _repository.register(
         email: email,
         password: password,
-        username: username,
         phoneNumber: phoneNumber,
         firstName: firstName,
         lastName: lastName,

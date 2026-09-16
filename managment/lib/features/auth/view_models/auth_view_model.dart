@@ -3,8 +3,11 @@ import 'package:serverpod_auth_idp_flutter/serverpod_auth_idp_flutter.dart';
 import 'package:sip_sync_client/sip_sync_client.dart';
 
 import '../../../core/di/app_providers.dart';
+import '../../../core/di/building_session.dart';
+import '../../../core/di/service_locator.dart';
 import '../../../core/errors/error_mapper.dart';
 import '../../../data/repositories/account_repository.dart';
+import '../../../data/repositories/building_repository.dart';
 
 part 'auth_view_model.g.dart';
 
@@ -53,6 +56,7 @@ class AuthViewModel extends _$AuthViewModel {
     state = state.copyWith(isLoading: true, clearError: true);
     try {
       final session = await _repository.me();
+      await _reloadBuildings();
       state = state.copyWith(session: session, isLoading: false);
     } catch (error) {
       state = state.copyWith(
@@ -62,10 +66,14 @@ class AuthViewModel extends _$AuthViewModel {
     }
   }
 
-  Future<bool> login(String email, String password) async {
+  Future<bool> login(String identifier, String password) async {
     state = state.copyWith(isLoading: true, clearError: true);
     try {
-      final session = await _repository.login(email: email, password: password);
+      final session = await _repository.login(
+        identifier: identifier,
+        password: password,
+      );
+      await _reloadBuildings();
       state = state.copyWith(session: session, isLoading: false);
       return true;
     } catch (error) {
@@ -80,7 +88,6 @@ class AuthViewModel extends _$AuthViewModel {
   Future<bool> register({
     required String email,
     required String password,
-    required String username,
     required String phoneNumber,
     required String firstName,
     required String lastName,
@@ -90,11 +97,11 @@ class AuthViewModel extends _$AuthViewModel {
       final session = await _repository.register(
         email: email,
         password: password,
-        username: username,
         phoneNumber: phoneNumber,
         firstName: firstName,
         lastName: lastName,
       );
+      await _reloadBuildings();
       state = state.copyWith(session: session, isLoading: false);
       return true;
     } catch (error) {
@@ -117,11 +124,22 @@ class AuthViewModel extends _$AuthViewModel {
 
   Future<void> signOut() async {
     await _repository.signOut();
+    getIt<BuildingSession>().clear();
     state = const AuthState();
+  }
+
+  Future<void> _reloadBuildings() async {
+    try {
+      final buildings = await getIt<BuildingRepository>().listMine();
+      getIt<BuildingSession>().replace(buildings);
+    } catch (_) {
+      getIt<BuildingSession>().replace(const []);
+    }
   }
 
   void _onAuthChanged() {
     if (!_repository.client.auth.isAuthenticated) {
+      getIt<BuildingSession>().clear();
       state = const AuthState();
     }
   }

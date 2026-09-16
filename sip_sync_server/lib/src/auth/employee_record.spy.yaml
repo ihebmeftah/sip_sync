@@ -5,6 +5,7 @@ serverOnly: true
 fields:
   authUser: module:serverpod_auth_core:AuthUser?, relation(onDelete=Cascade)
   ownerAuthUserId: UuidValue
+  isEnabled: bool, default=true
 indexes:
   employee_record_auth_user_idx:
     fields: authUserId

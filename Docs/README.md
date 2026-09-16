@@ -13,8 +13,8 @@ Product and feature documentation for Sip Sync. Update these pages when behavior
 | --- | --- | --- |
 | Authentication & identities | in progress | [authentication](features/authentication.md) |
 | Operations shell (management) | in progress | [ops-shell](features/ops-shell.md) |
-| Building & multi-location | planned | [buildings](features/buildings.md) |
-| Employee management & access | planned | [employees](features/employees.md) |
+| Building & multi-location | in progress | [buildings](features/buildings.md) |
+| Employee management & access | in progress | [employees](features/employees.md) |
 | Menu & inventory | planned | [menu-inventory](features/menu-inventory.md) |
 | Order management | planned | [orders](features/orders.md) |
 | Cash register | planned | [cash-register](features/cash-register.md) |

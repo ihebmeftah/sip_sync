@@ -27,14 +27,22 @@ import 'package:sip_sync_client/src/protocol/auth/backoffice_user_view.dart'
     as _ian6jh4a;
 import 'package:sip_sync_client/src/protocol/auth/employee_create.dart'
     as _i0ndf5ud;
+import 'package:sip_sync_client/src/protocol/auth/employee_update.dart'
+    as _itl0g0fc;
+import 'package:sip_sync_client/src/protocol/auth/employee_view.dart'
+    as _ix96cplr;
 import 'package:sip_sync_client/src/protocol/auth/login_request.dart'
     as _innui2e8;
 import 'package:sip_sync_client/src/protocol/auth/profile_update.dart'
     as _ijw3vapc;
-import 'package:sip_sync_client/src/protocol/auth/profile_view.dart'
-    as _i64758c0;
 import 'package:sip_sync_client/src/protocol/auth/self_register_create.dart'
     as _i3rp8k05;
+import 'package:sip_sync_client/src/protocol/buildings/building_create.dart'
+    as _iekc365h;
+import 'package:sip_sync_client/src/protocol/buildings/building_update.dart'
+    as _i2rxmt9c;
+import 'package:sip_sync_client/src/protocol/buildings/building_view.dart'
+    as _ia8vsgay;
 import 'package:sip_sync_client/src/protocol/greetings/greeting.dart'
     as _ijvf1i5e;
 import 'protocol.dart' as _il2as5qe;
@@ -59,7 +67,7 @@ class EndpointAccount extends _isc.EndpointRef {
     {'request': request},
   );
 
-  /// Email/password login for one [LoginRequest.app].
+  /// Email or username login for one [LoginRequest.app].
   _ida.Future<_iek9awmf.AuthSessionResult> login(
     _innui2e8.LoginRequest request,
   ) => caller.callServerEndpoint<_iek9awmf.AuthSessionResult>(
@@ -76,7 +84,7 @@ class EndpointAccount extends _isc.EndpointRef {
         {},
       );
 
-  /// Updates the signed-in user's username, phone, and name.
+  /// Updates the signed-in user's phone and name.
   _ida.Future<_iyjeltbx.AccountSessionView> updateMyProfile(
     _ijw3vapc.ProfileUpdate request,
   ) => caller.callServerEndpoint<_iyjeltbx.AccountSessionView>(
@@ -86,30 +94,52 @@ class EndpointAccount extends _isc.EndpointRef {
   );
 
   /// Owner reads one employee they added.
-  _ida.Future<_i64758c0.ProfileView> getEmployee(
+  _ida.Future<_ix96cplr.EmployeeView> getEmployee(
     _isc.UuidValue employeeAuthUserId,
-  ) => caller.callServerEndpoint<_i64758c0.ProfileView>(
+  ) => caller.callServerEndpoint<_ix96cplr.EmployeeView>(
     'account',
     'getEmployee',
     {'employeeAuthUserId': employeeAuthUserId},
   );
 
-  /// Owner adds an employee (new account or extra role on an existing email).
-  _ida.Future<_i64758c0.ProfileView> addEmployee(
+  /// Owner adds an employee (new account with generated username).
+  _ida.Future<_ix96cplr.EmployeeView> addEmployee(
     _i0ndf5ud.EmployeeCreate request,
-  ) => caller.callServerEndpoint<_i64758c0.ProfileView>(
+  ) => caller.callServerEndpoint<_ix96cplr.EmployeeView>(
     'account',
     'addEmployee',
     {'request': request},
   );
 
   /// Employees added by the signed-in owner.
-  _ida.Future<List<_i64758c0.ProfileView>> listEmployees() =>
-      caller.callServerEndpoint<List<_i64758c0.ProfileView>>(
+  _ida.Future<List<_ix96cplr.EmployeeView>> listEmployees() =>
+      caller.callServerEndpoint<List<_ix96cplr.EmployeeView>>(
         'account',
         'listEmployees',
         {},
       );
+
+  /// Owner updates an added employee's username, phone, and name.
+  _ida.Future<_ix96cplr.EmployeeView> updateEmployee(
+    _itl0g0fc.EmployeeUpdate request,
+  ) => caller.callServerEndpoint<_ix96cplr.EmployeeView>(
+    'account',
+    'updateEmployee',
+    {'request': request},
+  );
+
+  /// Owner enables or disables management login for that employee.
+  _ida.Future<_ix96cplr.EmployeeView> setEmployeeEnabled(
+    _isc.UuidValue employeeAuthUserId,
+    bool isEnabled,
+  ) => caller.callServerEndpoint<_ix96cplr.EmployeeView>(
+    'account',
+    'setEmployeeEnabled',
+    {
+      'employeeAuthUserId': employeeAuthUserId,
+      'isEnabled': isEnabled,
+    },
+  );
 
   /// Backoffice admin creates another backoffice user (`isAdmin` stays false).
   _ida.Future<_ian6jh4a.BackofficeUserView> addBackofficeUser(
@@ -362,6 +392,58 @@ class EndpointJwtRefresh extends _iacc.EndpointRefreshJwtTokens {
       );
 }
 
+/// Venue CRUD for owners; assigned staff can read their buildings.
+/// {@category Endpoint}
+class EndpointBuilding extends _isc.EndpointRef {
+  EndpointBuilding(_isc.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'building';
+
+  /// Buildings the signed-in owner created, or staff assignments.
+  _ida.Future<List<_ia8vsgay.BuildingView>> listMine() =>
+      caller.callServerEndpoint<List<_ia8vsgay.BuildingView>>(
+        'building',
+        'listMine',
+        {},
+      );
+
+  /// One venue if the actor owns it or is assigned there.
+  _ida.Future<_ia8vsgay.BuildingView> get(_isc.UuidValue buildingId) =>
+      caller.callServerEndpoint<_ia8vsgay.BuildingView>(
+        'building',
+        'get',
+        {'buildingId': buildingId},
+      );
+
+  /// Owner creates a café, restaurant, lounge, bar, or custom venue.
+  _ida.Future<_ia8vsgay.BuildingView> create(
+    _iekc365h.BuildingCreate request,
+  ) => caller.callServerEndpoint<_ia8vsgay.BuildingView>(
+    'building',
+    'create',
+    {'request': request},
+  );
+
+  /// Owner updates venue details and which staff work there.
+  _ida.Future<_ia8vsgay.BuildingView> update(
+    _i2rxmt9c.BuildingUpdate request,
+  ) => caller.callServerEndpoint<_ia8vsgay.BuildingView>(
+    'building',
+    'update',
+    {'request': request},
+  );
+
+  /// Staff assigned to [buildingId].
+  _ida.Future<List<_ix96cplr.EmployeeView>> listEmployees(
+    _isc.UuidValue buildingId,
+  ) => caller.callServerEndpoint<List<_ix96cplr.EmployeeView>>(
+    'building',
+    'listEmployees',
+    {'buildingId': buildingId},
+  );
+}
+
 /// This is an example endpoint that returns a greeting message through
 /// its [hello] method.
 /// {@category Endpoint}
@@ -421,6 +503,7 @@ class Client extends _isc.ServerpodClientShared {
     account = EndpointAccount(this);
     emailIdp = EndpointEmailIdp(this);
     jwtRefresh = EndpointJwtRefresh(this);
+    building = EndpointBuilding(this);
     greeting = EndpointGreeting(this);
     modules = Modules(this);
   }
@@ -431,6 +514,8 @@ class Client extends _isc.ServerpodClientShared {
 
   late final EndpointJwtRefresh jwtRefresh;
 
+  late final EndpointBuilding building;
+
   late final EndpointGreeting greeting;
 
   late final Modules modules;
@@ -440,6 +525,7 @@ class Client extends _isc.ServerpodClientShared {
     'account': account,
     'emailIdp': emailIdp,
     'jwtRefresh': jwtRefresh,
+    'building': building,
     'greeting': greeting,
   };
 

@@ -14,18 +14,16 @@ import 'package:serverpod/serverpod.dart' as _is;
 
 /// Writable identity fields for the signed-in user.
 ///
-/// Email stays on the auth identity and is not changed here.
+/// Email and username are not changed here.
 abstract class ProfileUpdate
     implements _is.SerializableModel, _is.ProtocolSerialization {
   ProfileUpdate._({
-    required this.username,
     required this.phoneNumber,
     required this.firstName,
     required this.lastName,
   });
 
   factory ProfileUpdate({
-    required String username,
     required String phoneNumber,
     required String firstName,
     required String lastName,
@@ -33,14 +31,11 @@ abstract class ProfileUpdate
 
   factory ProfileUpdate.fromJson(Map<String, dynamic> jsonSerialization) {
     return ProfileUpdate(
-      username: jsonSerialization['username'] as String,
       phoneNumber: jsonSerialization['phoneNumber'] as String,
       firstName: jsonSerialization['firstName'] as String,
       lastName: jsonSerialization['lastName'] as String,
     );
   }
-
-  String username;
 
   String phoneNumber;
 
@@ -52,7 +47,6 @@ abstract class ProfileUpdate
   /// with some or all fields replaced by the given arguments.
   @_is.useResult
   ProfileUpdate copyWith({
-    String? username,
     String? phoneNumber,
     String? firstName,
     String? lastName,
@@ -61,7 +55,6 @@ abstract class ProfileUpdate
   Map<String, dynamic> toJson() {
     return {
       '__className__': 'ProfileUpdate',
-      'username': username,
       'phoneNumber': phoneNumber,
       'firstName': firstName,
       'lastName': lastName,
@@ -72,7 +65,6 @@ abstract class ProfileUpdate
   Map<String, dynamic> toJsonForProtocol() {
     return {
       '__className__': 'ProfileUpdate',
-      'username': username,
       'phoneNumber': phoneNumber,
       'firstName': firstName,
       'lastName': lastName,
@@ -87,12 +79,10 @@ abstract class ProfileUpdate
 
 class _ProfileUpdateImpl extends ProfileUpdate {
   _ProfileUpdateImpl({
-    required String username,
     required String phoneNumber,
     required String firstName,
     required String lastName,
   }) : super._(
-         username: username,
          phoneNumber: phoneNumber,
          firstName: firstName,
          lastName: lastName,
@@ -103,13 +93,11 @@ class _ProfileUpdateImpl extends ProfileUpdate {
   @_is.useResult
   @override
   ProfileUpdate copyWith({
-    String? username,
     String? phoneNumber,
     String? firstName,
     String? lastName,
   }) {
     return ProfileUpdate(
-      username: username ?? this.username,
       phoneNumber: phoneNumber ?? this.phoneNumber,
       firstName: firstName ?? this.firstName,
       lastName: lastName ?? this.lastName,

@@ -1,0 +1,13 @@
+class: BuildingView
+fields:
+  id: UuidValue
+  ownerAuthUserId: UuidValue
+  name: String
+  type: String
+  address: String
+  latitude: double
+  longitude: double
+  openingMinutes: int
+  closingMinutes: int
+  currencyCode: String
+  employeeAuthUserIds: List<UuidValue>

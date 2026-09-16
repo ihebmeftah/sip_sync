@@ -10,11 +10,15 @@ class AccountRepository {
   Client get client => _client;
 
   Future<AccountSessionView> login({
-    required String email,
+    required String identifier,
     required String password,
   }) async {
     final result = await _client.account.login(
-      LoginRequest(email: email, password: password, app: SipApp.management),
+      LoginRequest(
+        identifier: identifier,
+        password: password,
+        app: SipApp.management,
+      ),
     );
     await _client.auth.updateSignedInUser(result.authSuccess);
     return result.session;
@@ -23,7 +27,6 @@ class AccountRepository {
   Future<AccountSessionView> register({
     required String email,
     required String password,
-    required String username,
     required String phoneNumber,
     required String firstName,
     required String lastName,
@@ -32,7 +35,6 @@ class AccountRepository {
       SelfRegisterCreate(
         email: email,
         password: password,
-        username: username,
         phoneNumber: phoneNumber,
         firstName: firstName,
         lastName: lastName,
@@ -46,14 +48,12 @@ class AccountRepository {
   Future<AccountSessionView> me() => _client.account.me();
 
   Future<AccountSessionView> updateMyProfile({
-    required String username,
     required String phoneNumber,
     required String firstName,
     required String lastName,
   }) {
     return _client.account.updateMyProfile(
       ProfileUpdate(
-        username: username,
         phoneNumber: phoneNumber,
         firstName: firstName,
         lastName: lastName,
@@ -61,30 +61,51 @@ class AccountRepository {
     );
   }
 
-  Future<List<ProfileView>> listEmployees() => _client.account.listEmployees();
+  Future<List<EmployeeView>> listEmployees() => _client.account.listEmployees();
 
-  Future<ProfileView> getEmployee(UuidValue employeeAuthUserId) {
+  Future<EmployeeView> getEmployee(UuidValue employeeAuthUserId) {
     return _client.account.getEmployee(employeeAuthUserId);
   }
 
-  Future<ProfileView> addEmployee({
-    required String email,
+  Future<EmployeeView> addEmployee({
     required String password,
-    required String username,
+    required String phoneNumber,
+    required String firstName,
+    required String lastName,
+    UuidValue? buildingId,
+  }) {
+    return _client.account.addEmployee(
+      EmployeeCreate(
+        password: password,
+        phoneNumber: phoneNumber,
+        firstName: firstName,
+        lastName: lastName,
+        buildingId: buildingId,
+      ),
+    );
+  }
+
+  Future<EmployeeView> updateEmployee({
+    required UuidValue authUserId,
     required String phoneNumber,
     required String firstName,
     required String lastName,
   }) {
-    return _client.account.addEmployee(
-      EmployeeCreate(
-        email: email,
-        password: password,
-        username: username,
+    return _client.account.updateEmployee(
+      EmployeeUpdate(
+        authUserId: authUserId,
         phoneNumber: phoneNumber,
         firstName: firstName,
         lastName: lastName,
       ),
     );
+  }
+
+  Future<EmployeeView> setEmployeeEnabled({
+    required UuidValue authUserId,
+    required bool isEnabled,
+  }) {
+    return _client.account.setEmployeeEnabled(authUserId, isEnabled);
   }
 
   Future<void> signOut() => _client.auth.signOutDevice();

@@ -18,7 +18,6 @@ abstract class SelfRegisterCreate
   SelfRegisterCreate._({
     required this.email,
     required this.password,
-    required this.username,
     required this.phoneNumber,
     required this.firstName,
     required this.lastName,
@@ -28,7 +27,6 @@ abstract class SelfRegisterCreate
   factory SelfRegisterCreate({
     required String email,
     required String password,
-    required String username,
     required String phoneNumber,
     required String firstName,
     required String lastName,
@@ -39,7 +37,6 @@ abstract class SelfRegisterCreate
     return SelfRegisterCreate(
       email: jsonSerialization['email'] as String,
       password: jsonSerialization['password'] as String,
-      username: jsonSerialization['username'] as String,
       phoneNumber: jsonSerialization['phoneNumber'] as String,
       firstName: jsonSerialization['firstName'] as String,
       lastName: jsonSerialization['lastName'] as String,
@@ -50,8 +47,6 @@ abstract class SelfRegisterCreate
   String email;
 
   String password;
-
-  String username;
 
   String phoneNumber;
 
@@ -67,7 +62,6 @@ abstract class SelfRegisterCreate
   SelfRegisterCreate copyWith({
     String? email,
     String? password,
-    String? username,
     String? phoneNumber,
     String? firstName,
     String? lastName,
@@ -79,7 +73,6 @@ abstract class SelfRegisterCreate
       '__className__': 'SelfRegisterCreate',
       'email': email,
       'password': password,
-      'username': username,
       'phoneNumber': phoneNumber,
       'firstName': firstName,
       'lastName': lastName,
@@ -93,7 +86,6 @@ abstract class SelfRegisterCreate
       '__className__': 'SelfRegisterCreate',
       'email': email,
       'password': password,
-      'username': username,
       'phoneNumber': phoneNumber,
       'firstName': firstName,
       'lastName': lastName,
@@ -111,7 +103,6 @@ class _SelfRegisterCreateImpl extends SelfRegisterCreate {
   _SelfRegisterCreateImpl({
     required String email,
     required String password,
-    required String username,
     required String phoneNumber,
     required String firstName,
     required String lastName,
@@ -119,7 +110,6 @@ class _SelfRegisterCreateImpl extends SelfRegisterCreate {
   }) : super._(
          email: email,
          password: password,
-         username: username,
          phoneNumber: phoneNumber,
          firstName: firstName,
          lastName: lastName,
@@ -133,7 +123,6 @@ class _SelfRegisterCreateImpl extends SelfRegisterCreate {
   SelfRegisterCreate copyWith({
     String? email,
     String? password,
-    String? username,
     String? phoneNumber,
     String? firstName,
     String? lastName,
@@ -142,7 +131,6 @@ class _SelfRegisterCreateImpl extends SelfRegisterCreate {
     return SelfRegisterCreate(
       email: email ?? this.email,
       password: password ?? this.password,
-      username: username ?? this.username,
       phoneNumber: phoneNumber ?? this.phoneNumber,
       firstName: firstName ?? this.firstName,
       lastName: lastName ?? this.lastName,

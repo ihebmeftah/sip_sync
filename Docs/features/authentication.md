@@ -14,71 +14,75 @@ All three clients plus `sip_sync_server`.
 
 ## Identity model
 
-One Serverpod `AuthUser` per person. Email, username, and phone number are unique across the platform. The same person can hold several **roles at once** (customer + owner, employee + customer, backoffice + customer, and so on). Apps never create a second login for an existing email: they attach another role after the password is verified.
+One Serverpod `AuthUser` per person. Login method depends on role:
+
+| Actor | Signs in with | Email | Username |
+| --- | --- | --- | --- |
+| Customer | email + password | required (real) | none (null) |
+| Owner | email + password | required (real) | none (null) |
+| Backoffice / super admin | email + password | required (real) | none (null) |
+| Employee | **username** + password | synthetic only (server IDP); never collected or shown | auto-generated from first + last + digits; **read-only** |
+
+Employees use a synthetic email (`{username}@employees.sipsync.local`) under the hood so Serverpod’s email identity provider still stores the password. Owners never see or edit that address.
 
 Profile fields (table `sip_sync_profile`):
 
-- `username` (unique, stored lowercase)
-- `email` (unique, stored lowercase)
+- `email` (unique, lowercase) — real for customer/owner/backoffice; synthetic for employees
+- `username` (unique when set, lowercase) — set only for employees
 - `phoneNumber` (unique)
 - `firstName`, `lastName`
 
-Roles live in `user_role_membership` (`customer`, `owner`, `employee`, `backoffice`). Serverpod scopes (`sip.customer`, `sip.owner`, `sip.employee`, `sip.backoffice`, `sip.backoffice.admin`) are kept in sync with those memberships so endpoints can use `requiredScopes`.
+Roles live in `user_role_membership` (`customer`, `owner`, `employee`, `backoffice`). Serverpod scopes stay in sync with those memberships.
 
-Backoffice extras (`backoffice_staff`):
+Backoffice extras (`backoffice_staff`): `isAdmin`, `isSystemDefault` (seeded default cannot be deleted).
 
-- `isAdmin` — platform operator who can add/remove other backoffice users
-- `isSystemDefault` — the seeded account; it cannot be deleted
-
-Employee extras (`employee_record`): links an employee identity to the owner who added them. Building assignments come later.
+Employee extras (`employee_record`): links staff to the owner who added them. Building assignment uses `building_staff`.
 
 ## Actors and permissions
 
-- **Customer** — self-register or log in on `sip_sync_flutter`. Logging in on that app grants the customer role if it is missing.
-- **Owner** — self-register or log in on `managment` (register grants owner). May add employees.
-- **Employee** — created by an owner (new account or existing email). Logs in on `managment`.
-- **Backoffice user** — added by a backoffice admin (`isAdmin`). Logs in on `backoffice`. Cannot self-register.
-- **Default super admin** — created on server start if missing. `isAdmin` and `isSystemDefault` are true. Optional `config/passwords.yaml` keys: `sipSyncDefaultAdminEmail` (default `admin@sipsync.local`) and `sipSyncDefaultAdminPassword` (default `SipSyncAdmin8!`).
+- **Customer** — self-register or log in on `sip_sync_flutter` with email.
+- **Owner** — self-register or log in on `managment` with email (register grants owner).
+- **Employee** — created by an owner (no email). Logs in on `managment` with username + password. Disabled `employee_record` blocks management login.
+- **Backoffice user** — added by a backoffice admin. Logs in on `backoffice` with email. Cannot self-register.
+- **Default super admin** — seeded on server start. Optional passwords: `sipSyncDefaultAdminEmail` / `sipSyncDefaultAdminPassword`.
 
 ## Flow
 
-### New person
+### New customer or owner
 
-1. Fill profile + password in the app they care about (customer or owner).
-2. Server creates `AuthUser`, email password, `sip_sync_profile`, and the matching role.
-3. Client stores the issued JWT and loads `AccountSessionView`.
+1. Submit email, password, phone, names (no username field).
+2. Server creates `AuthUser`, email password, `sip_sync_profile` with `username: null`, and the app role.
+3. Client stores the JWT and loads `AccountSessionView`.
 
-### Existing person, another app
+### Existing person, another email-based app
 
-1. They register or log in with the **same email** and password.
-2. Server authenticates, does not create a second user, and adds the role that app needs (owner on management register; customer on customer login).
-3. Username / phone from a later register are ignored if a profile already exists.
+1. Same **email** + password.
+2. Server authenticates and adds the role that app needs.
 
 ### Owner adds an employee
 
-1. If the email is new: create identity + employee role + `employee_record`.
-2. If the email already exists: authenticate is not required; attach employee role and record. Profile uniqueness is left as-is.
+1. Password, phone, names, optional `buildingId` — **no email, no username**.
+2. Server generates a unique username (`firstname.lastname` + random digits), a synthetic email, identity + employee role + `employee_record`, and optional `building_staff`.
+3. Owner sees the username on the employee details screen (read-only). Staff sign in with that username.
 
-### Backoffice staff
+### Login (`LoginRequest.identifier`)
 
-1. Default admin (or later `isAdmin` users) create a backoffice user with `isAdmin: false`.
-2. Delete is allowed only when `isSystemDefault` is false.
+- Contains `@` → treat as email (customer / owner / backoffice).
+- Otherwise → look up profile by username, authenticate with that row’s synthetic email (employees on management).
 
 ### Access denied
 
-Login to `managment` without owner/employee, or to `backoffice` without backoffice membership, returns `appAccessDenied`. Register is the path to become an owner; backoffice is invite-only.
+Management without owner/employee, or backoffice without membership → `appAccessDenied`.
 
 ## Data
 
-- Tables: `sip_sync_profile`, `user_role_membership`, `backoffice_staff`, `employee_record` (server-only)
-- Create: `SelfRegisterCreate`, `LoginRequest`, `EmployeeCreate`, `BackofficeUserCreate`
-- Update: `ProfileUpdate` (username, phone, names; email stays on the identity)
-- Responses: `AuthSessionResult` (`AuthSuccess` + `AccountSessionView`), `ProfileView`, `BackofficeUserView`
-- Exceptions: `AccountException` with `AccountErrorCode`
+- Tables: `sip_sync_profile`, `user_role_membership`, `backoffice_staff`, `employee_record`
+- Create: `SelfRegisterCreate` (no username), `LoginRequest` (`identifier` + password + app), `EmployeeCreate` (no email/username), `BackofficeUserCreate` (no username)
+- Update: `ProfileUpdate` / `EmployeeUpdate` (phone + names only; username and email not writable)
+- Responses: `AuthSessionResult`, `ProfileView` (`username` nullable), `EmployeeView` (username, no email), `BackofficeUserView`
+- Exceptions: `AccountException` / `AccountErrorCode`
 
-Passwords are never stored on Sip Sync tables; they live in the email identity provider.
-
-Signed-in users call `updateMyProfile`. Owners call `getEmployee` for staff they added (see [ops-shell](ops-shell.md) and [employees](employees.md)).
+Passwords live in the email identity provider, never on Sip Sync tables.
 
 ## Realtime
 

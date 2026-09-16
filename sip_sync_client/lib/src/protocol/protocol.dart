@@ -18,8 +18,10 @@ import 'package:serverpod_auth_idp_client/serverpod_auth_idp_client.dart'
 import 'package:serverpod_client/serverpod_client.dart' as _isc;
 import 'package:sip_sync_client/src/protocol/auth/backoffice_user_view.dart'
     as _ian6jh4a;
-import 'package:sip_sync_client/src/protocol/auth/profile_view.dart'
-    as _i64758c0;
+import 'package:sip_sync_client/src/protocol/auth/employee_view.dart'
+    as _ix96cplr;
+import 'package:sip_sync_client/src/protocol/buildings/building_view.dart'
+    as _ia8vsgay;
 import 'auth/account_error_code.dart' as _i4a4wzkt;
 import 'auth/account_exception.dart' as _ibhqro64;
 import 'auth/account_session_view.dart' as _io80wa8m;
@@ -28,11 +30,18 @@ import 'auth/auth_session_result.dart' as _i9zpdl2u;
 import 'auth/backoffice_user_create.dart' as _i9kd7km5;
 import 'auth/backoffice_user_view.dart' as _itl1aokg;
 import 'auth/employee_create.dart' as _iedt4kib;
+import 'auth/employee_update.dart' as _iidaq8tj;
+import 'auth/employee_view.dart' as _igp37ocx;
 import 'auth/login_request.dart' as _ir2e8vdz;
 import 'auth/profile_update.dart' as _irdmlmfi;
 import 'auth/profile_view.dart' as _iz95i0di;
 import 'auth/self_register_create.dart' as _i90p781y;
 import 'auth/sip_app.dart' as _iztspa7i;
+import 'buildings/building_create.dart' as _i4cz4s4m;
+import 'buildings/building_error_code.dart' as _isz6zhld;
+import 'buildings/building_exception.dart' as _i7fakgop;
+import 'buildings/building_update.dart' as _ivqpqa05;
+import 'buildings/building_view.dart' as _iyqmhcrr;
 import 'greetings/greeting.dart' as _izw8z7ou;
 export 'auth/account_error_code.dart';
 export 'auth/account_exception.dart';
@@ -42,11 +51,18 @@ export 'auth/auth_session_result.dart';
 export 'auth/backoffice_user_create.dart';
 export 'auth/backoffice_user_view.dart';
 export 'auth/employee_create.dart';
+export 'auth/employee_update.dart';
+export 'auth/employee_view.dart';
 export 'auth/login_request.dart';
 export 'auth/profile_update.dart';
 export 'auth/profile_view.dart';
 export 'auth/self_register_create.dart';
 export 'auth/sip_app.dart';
+export 'buildings/building_create.dart';
+export 'buildings/building_error_code.dart';
+export 'buildings/building_exception.dart';
+export 'buildings/building_update.dart';
+export 'buildings/building_view.dart';
 export 'greetings/greeting.dart';
 export 'client.dart';
 
@@ -108,6 +124,12 @@ class Protocol extends _isc.SerializationManager {
     if (t == _iedt4kib.EmployeeCreate) {
       return _iedt4kib.EmployeeCreate.fromJson(data) as T;
     }
+    if (t == _iidaq8tj.EmployeeUpdate) {
+      return _iidaq8tj.EmployeeUpdate.fromJson(data) as T;
+    }
+    if (t == _igp37ocx.EmployeeView) {
+      return _igp37ocx.EmployeeView.fromJson(data) as T;
+    }
     if (t == _ir2e8vdz.LoginRequest) {
       return _ir2e8vdz.LoginRequest.fromJson(data) as T;
     }
@@ -122,6 +144,21 @@ class Protocol extends _isc.SerializationManager {
     }
     if (t == _iztspa7i.SipApp) {
       return _iztspa7i.SipApp.fromJson(data) as T;
+    }
+    if (t == _i4cz4s4m.BuildingCreate) {
+      return _i4cz4s4m.BuildingCreate.fromJson(data) as T;
+    }
+    if (t == _isz6zhld.BuildingErrorCode) {
+      return _isz6zhld.BuildingErrorCode.fromJson(data) as T;
+    }
+    if (t == _i7fakgop.BuildingException) {
+      return _i7fakgop.BuildingException.fromJson(data) as T;
+    }
+    if (t == _ivqpqa05.BuildingUpdate) {
+      return _ivqpqa05.BuildingUpdate.fromJson(data) as T;
+    }
+    if (t == _iyqmhcrr.BuildingView) {
+      return _iyqmhcrr.BuildingView.fromJson(data) as T;
     }
     if (t == _izw8z7ou.Greeting) {
       return _izw8z7ou.Greeting.fromJson(data) as T;
@@ -159,6 +196,13 @@ class Protocol extends _isc.SerializationManager {
       return (data != null ? _iedt4kib.EmployeeCreate.fromJson(data) : null)
           as T;
     }
+    if (t == _isc.getType<_iidaq8tj.EmployeeUpdate?>()) {
+      return (data != null ? _iidaq8tj.EmployeeUpdate.fromJson(data) : null)
+          as T;
+    }
+    if (t == _isc.getType<_igp37ocx.EmployeeView?>()) {
+      return (data != null ? _igp37ocx.EmployeeView.fromJson(data) : null) as T;
+    }
     if (t == _isc.getType<_ir2e8vdz.LoginRequest?>()) {
       return (data != null ? _ir2e8vdz.LoginRequest.fromJson(data) : null) as T;
     }
@@ -176,21 +220,50 @@ class Protocol extends _isc.SerializationManager {
     if (t == _isc.getType<_iztspa7i.SipApp?>()) {
       return (data != null ? _iztspa7i.SipApp.fromJson(data) : null) as T;
     }
+    if (t == _isc.getType<_i4cz4s4m.BuildingCreate?>()) {
+      return (data != null ? _i4cz4s4m.BuildingCreate.fromJson(data) : null)
+          as T;
+    }
+    if (t == _isc.getType<_isz6zhld.BuildingErrorCode?>()) {
+      return (data != null ? _isz6zhld.BuildingErrorCode.fromJson(data) : null)
+          as T;
+    }
+    if (t == _isc.getType<_i7fakgop.BuildingException?>()) {
+      return (data != null ? _i7fakgop.BuildingException.fromJson(data) : null)
+          as T;
+    }
+    if (t == _isc.getType<_ivqpqa05.BuildingUpdate?>()) {
+      return (data != null ? _ivqpqa05.BuildingUpdate.fromJson(data) : null)
+          as T;
+    }
+    if (t == _isc.getType<_iyqmhcrr.BuildingView?>()) {
+      return (data != null ? _iyqmhcrr.BuildingView.fromJson(data) : null) as T;
+    }
     if (t == _isc.getType<_izw8z7ou.Greeting?>()) {
       return (data != null ? _izw8z7ou.Greeting.fromJson(data) : null) as T;
     }
     if (t == List<String>) {
       return (data as List).map((e) => deserialize<String>(e)).toList() as T;
     }
-    if (t == List<_i64758c0.ProfileView>) {
+    if (t == List<_isc.UuidValue>) {
+      return (data as List).map((e) => deserialize<_isc.UuidValue>(e)).toList()
+          as T;
+    }
+    if (t == List<_ix96cplr.EmployeeView>) {
       return (data as List)
-              .map((e) => deserialize<_i64758c0.ProfileView>(e))
+              .map((e) => deserialize<_ix96cplr.EmployeeView>(e))
               .toList()
           as T;
     }
     if (t == List<_ian6jh4a.BackofficeUserView>) {
       return (data as List)
               .map((e) => deserialize<_ian6jh4a.BackofficeUserView>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_ia8vsgay.BuildingView>) {
+      return (data as List)
+              .map((e) => deserialize<_ia8vsgay.BuildingView>(e))
               .toList()
           as T;
     }
@@ -213,11 +286,18 @@ class Protocol extends _isc.SerializationManager {
       _i9kd7km5.BackofficeUserCreate => 'BackofficeUserCreate',
       _itl1aokg.BackofficeUserView => 'BackofficeUserView',
       _iedt4kib.EmployeeCreate => 'EmployeeCreate',
+      _iidaq8tj.EmployeeUpdate => 'EmployeeUpdate',
+      _igp37ocx.EmployeeView => 'EmployeeView',
       _ir2e8vdz.LoginRequest => 'LoginRequest',
       _irdmlmfi.ProfileUpdate => 'ProfileUpdate',
       _iz95i0di.ProfileView => 'ProfileView',
       _i90p781y.SelfRegisterCreate => 'SelfRegisterCreate',
       _iztspa7i.SipApp => 'SipApp',
+      _i4cz4s4m.BuildingCreate => 'BuildingCreate',
+      _isz6zhld.BuildingErrorCode => 'BuildingErrorCode',
+      _i7fakgop.BuildingException => 'BuildingException',
+      _ivqpqa05.BuildingUpdate => 'BuildingUpdate',
+      _iyqmhcrr.BuildingView => 'BuildingView',
       _izw8z7ou.Greeting => 'Greeting',
       _ => null,
     };
@@ -249,6 +329,10 @@ class Protocol extends _isc.SerializationManager {
         return 'BackofficeUserView';
       case _iedt4kib.EmployeeCreate():
         return 'EmployeeCreate';
+      case _iidaq8tj.EmployeeUpdate():
+        return 'EmployeeUpdate';
+      case _igp37ocx.EmployeeView():
+        return 'EmployeeView';
       case _ir2e8vdz.LoginRequest():
         return 'LoginRequest';
       case _irdmlmfi.ProfileUpdate():
@@ -259,6 +343,16 @@ class Protocol extends _isc.SerializationManager {
         return 'SelfRegisterCreate';
       case _iztspa7i.SipApp():
         return 'SipApp';
+      case _i4cz4s4m.BuildingCreate():
+        return 'BuildingCreate';
+      case _isz6zhld.BuildingErrorCode():
+        return 'BuildingErrorCode';
+      case _i7fakgop.BuildingException():
+        return 'BuildingException';
+      case _ivqpqa05.BuildingUpdate():
+        return 'BuildingUpdate';
+      case _iyqmhcrr.BuildingView():
+        return 'BuildingView';
       case _izw8z7ou.Greeting():
         return 'Greeting';
     }
@@ -307,6 +401,12 @@ class Protocol extends _isc.SerializationManager {
     if (dataClassName == 'EmployeeCreate') {
       return deserialize<_iedt4kib.EmployeeCreate>(data['data']);
     }
+    if (dataClassName == 'EmployeeUpdate') {
+      return deserialize<_iidaq8tj.EmployeeUpdate>(data['data']);
+    }
+    if (dataClassName == 'EmployeeView') {
+      return deserialize<_igp37ocx.EmployeeView>(data['data']);
+    }
     if (dataClassName == 'LoginRequest') {
       return deserialize<_ir2e8vdz.LoginRequest>(data['data']);
     }
@@ -321,6 +421,21 @@ class Protocol extends _isc.SerializationManager {
     }
     if (dataClassName == 'SipApp') {
       return deserialize<_iztspa7i.SipApp>(data['data']);
+    }
+    if (dataClassName == 'BuildingCreate') {
+      return deserialize<_i4cz4s4m.BuildingCreate>(data['data']);
+    }
+    if (dataClassName == 'BuildingErrorCode') {
+      return deserialize<_isz6zhld.BuildingErrorCode>(data['data']);
+    }
+    if (dataClassName == 'BuildingException') {
+      return deserialize<_i7fakgop.BuildingException>(data['data']);
+    }
+    if (dataClassName == 'BuildingUpdate') {
+      return deserialize<_ivqpqa05.BuildingUpdate>(data['data']);
+    }
+    if (dataClassName == 'BuildingView') {
+      return deserialize<_iyqmhcrr.BuildingView>(data['data']);
     }
     if (dataClassName == 'Greeting') {
       return deserialize<_izw8z7ou.Greeting>(data['data']);

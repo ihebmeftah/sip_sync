@@ -24,13 +24,15 @@ abstract class EmployeeRecord
     required this.authUserId,
     this.authUser,
     required this.ownerAuthUserId,
-  });
+    bool? isEnabled,
+  }) : isEnabled = isEnabled ?? true;
 
   factory EmployeeRecord({
     int? id,
     required _is.UuidValue authUserId,
     _iacs.AuthUser? authUser,
     required _is.UuidValue ownerAuthUserId,
+    bool? isEnabled,
   }) = _EmployeeRecordImpl;
 
   factory EmployeeRecord.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -47,6 +49,9 @@ abstract class EmployeeRecord
       ownerAuthUserId: _is.UuidValueJsonExtension.fromJson(
         jsonSerialization['ownerAuthUserId'],
       ),
+      isEnabled: jsonSerialization['isEnabled'] == null
+          ? null
+          : _is.BoolJsonExtension.fromJson(jsonSerialization['isEnabled']),
     );
   }
 
@@ -63,6 +68,8 @@ abstract class EmployeeRecord
 
   _is.UuidValue ownerAuthUserId;
 
+  bool isEnabled;
+
   @override
   _is.Table<int?> get table => t;
 
@@ -74,6 +81,7 @@ abstract class EmployeeRecord
     _is.UuidValue? authUserId,
     _iacs.AuthUser? authUser,
     _is.UuidValue? ownerAuthUserId,
+    bool? isEnabled,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -83,6 +91,7 @@ abstract class EmployeeRecord
       'authUserId': authUserId.toJson(),
       if (authUser != null) 'authUser': authUser?.toJson(),
       'ownerAuthUserId': ownerAuthUserId.toJson(),
+      'isEnabled': isEnabled,
     };
   }
 
@@ -127,11 +136,13 @@ class _EmployeeRecordImpl extends EmployeeRecord {
     required _is.UuidValue authUserId,
     _iacs.AuthUser? authUser,
     required _is.UuidValue ownerAuthUserId,
+    bool? isEnabled,
   }) : super._(
          id: id,
          authUserId: authUserId,
          authUser: authUser,
          ownerAuthUserId: ownerAuthUserId,
+         isEnabled: isEnabled,
        );
 
   /// Returns a shallow copy of this [EmployeeRecord]
@@ -143,6 +154,7 @@ class _EmployeeRecordImpl extends EmployeeRecord {
     _is.UuidValue? authUserId,
     Object? authUser = _Undefined,
     _is.UuidValue? ownerAuthUserId,
+    bool? isEnabled,
   }) {
     return EmployeeRecord(
       id: id is int? ? id : this.id,
@@ -151,6 +163,7 @@ class _EmployeeRecordImpl extends EmployeeRecord {
           ? authUser
           : this.authUser?.copyWith(),
       ownerAuthUserId: ownerAuthUserId ?? this.ownerAuthUserId,
+      isEnabled: isEnabled ?? this.isEnabled,
     );
   }
 }
@@ -171,6 +184,11 @@ class EmployeeRecordUpdateTable extends _is.UpdateTable<EmployeeRecordTable> {
     table.ownerAuthUserId,
     value,
   );
+
+  _is.ColumnValue<bool, bool> isEnabled(bool value) => _is.ColumnValue(
+    table.isEnabled,
+    value,
+  );
 }
 
 class EmployeeRecordTable extends _is.Table<int?> {
@@ -185,6 +203,11 @@ class EmployeeRecordTable extends _is.Table<int?> {
       'ownerAuthUserId',
       this,
     );
+    isEnabled = _is.ColumnBool(
+      'isEnabled',
+      this,
+      hasDefault: true,
+    );
   }
 
   late final EmployeeRecordUpdateTable updateTable;
@@ -194,6 +217,8 @@ class EmployeeRecordTable extends _is.Table<int?> {
   _iacs.AuthUserTable? _authUser;
 
   late final _is.ColumnUuid ownerAuthUserId;
+
+  late final _is.ColumnBool isEnabled;
 
   _iacs.AuthUserTable get authUser {
     if (_authUser != null) return _authUser!;
@@ -213,6 +238,7 @@ class EmployeeRecordTable extends _is.Table<int?> {
     id,
     authUserId,
     ownerAuthUserId,
+    isEnabled,
   ];
 
   @override

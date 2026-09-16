@@ -1,0 +1,10 @@
+### Owner-facing staff row. Username is server-generated and read-only.
+class: EmployeeView
+fields:
+  authUserId: UuidValue
+  username: String
+  phoneNumber: String
+  firstName: String
+  lastName: String
+  roles: List<String>
+  isEnabled: bool

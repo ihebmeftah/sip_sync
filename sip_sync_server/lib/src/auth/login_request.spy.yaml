@@ -1,5 +1,6 @@
 class: LoginRequest
 fields:
-  email: String
+  ### Email for customer/owner/backoffice, or employee username.
+  identifier: String
   password: String
   app: SipApp

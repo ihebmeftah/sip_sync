@@ -18,15 +18,14 @@ import 'package:sip_sync_server/src/generated/protocol.dart' as _iaib1p48;
 
 /// Platform profile attached 1:1 to a Serverpod [AuthUser].
 ///
-/// Identity is unique by email, username, and phone so the same person can
-/// hold several app roles without duplicate accounts.
+/// Email is unique. Username is unique when set (employees only).
 abstract class SipSyncProfile
     implements _is.TableRow<int?>, _is.ProtocolSerialization {
   SipSyncProfile._({
     this.id,
     required this.authUserId,
     this.authUser,
-    required this.username,
+    this.username,
     required this.email,
     required this.phoneNumber,
     required this.firstName,
@@ -38,7 +37,7 @@ abstract class SipSyncProfile
     int? id,
     required _is.UuidValue authUserId,
     _iacs.AuthUser? authUser,
-    required String username,
+    String? username,
     required String email,
     required String phoneNumber,
     required String firstName,
@@ -57,7 +56,7 @@ abstract class SipSyncProfile
           : _iaib1p48.Protocol().deserialize<_iacs.AuthUser>(
               jsonSerialization['authUser'],
             ),
-      username: jsonSerialization['username'] as String,
+      username: jsonSerialization['username'] as String?,
       email: jsonSerialization['email'] as String,
       phoneNumber: jsonSerialization['phoneNumber'] as String,
       firstName: jsonSerialization['firstName'] as String,
@@ -79,7 +78,7 @@ abstract class SipSyncProfile
 
   _iacs.AuthUser? authUser;
 
-  String username;
+  String? username;
 
   String email;
 
@@ -115,7 +114,7 @@ abstract class SipSyncProfile
       if (id != null) 'id': id,
       'authUserId': authUserId.toJson(),
       if (authUser != null) 'authUser': authUser?.toJson(),
-      'username': username,
+      if (username != null) 'username': username,
       'email': email,
       'phoneNumber': phoneNumber,
       'firstName': firstName,
@@ -164,7 +163,7 @@ class _SipSyncProfileImpl extends SipSyncProfile {
     int? id,
     required _is.UuidValue authUserId,
     _iacs.AuthUser? authUser,
-    required String username,
+    String? username,
     required String email,
     required String phoneNumber,
     required String firstName,
@@ -190,7 +189,7 @@ class _SipSyncProfileImpl extends SipSyncProfile {
     Object? id = _Undefined,
     _is.UuidValue? authUserId,
     Object? authUser = _Undefined,
-    String? username,
+    Object? username = _Undefined,
     String? email,
     String? phoneNumber,
     String? firstName,
@@ -203,7 +202,7 @@ class _SipSyncProfileImpl extends SipSyncProfile {
       authUser: authUser is _iacs.AuthUser?
           ? authUser
           : this.authUser?.copyWith(),
-      username: username ?? this.username,
+      username: username is String? ? username : this.username,
       email: email ?? this.email,
       phoneNumber: phoneNumber ?? this.phoneNumber,
       firstName: firstName ?? this.firstName,
@@ -223,7 +222,7 @@ class SipSyncProfileUpdateTable extends _is.UpdateTable<SipSyncProfileTable> {
     value,
   );
 
-  _is.ColumnValue<String, String> username(String value) => _is.ColumnValue(
+  _is.ColumnValue<String, String> username(String? value) => _is.ColumnValue(
     table.username,
     value,
   );

@@ -19,8 +19,10 @@ import 'package:serverpod_auth_idp_server/serverpod_auth_idp_server.dart'
     as _iais;
 import 'package:sip_sync_server/src/generated/auth/backoffice_user_view.dart'
     as _iea1ilrj;
-import 'package:sip_sync_server/src/generated/auth/profile_view.dart'
-    as _ilvz914s;
+import 'package:sip_sync_server/src/generated/auth/employee_view.dart'
+    as _iusy412g;
+import 'package:sip_sync_server/src/generated/buildings/building_view.dart'
+    as _iughhy8g;
 import 'auth/account_error_code.dart' as _i4a4wzkt;
 import 'auth/account_exception.dart' as _ibhqro64;
 import 'auth/account_session_view.dart' as _io80wa8m;
@@ -31,6 +33,8 @@ import 'auth/backoffice_user_create.dart' as _i9kd7km5;
 import 'auth/backoffice_user_view.dart' as _itl1aokg;
 import 'auth/employee_create.dart' as _iedt4kib;
 import 'auth/employee_record.dart' as _im6hyfbr;
+import 'auth/employee_update.dart' as _iidaq8tj;
+import 'auth/employee_view.dart' as _igp37ocx;
 import 'auth/login_request.dart' as _ir2e8vdz;
 import 'auth/profile_update.dart' as _irdmlmfi;
 import 'auth/profile_view.dart' as _iz95i0di;
@@ -38,6 +42,13 @@ import 'auth/self_register_create.dart' as _i90p781y;
 import 'auth/sip_app.dart' as _iztspa7i;
 import 'auth/sip_sync_profile.dart' as _iow4lxxs;
 import 'auth/user_role_membership.dart' as _ilsup31p;
+import 'buildings/building.dart' as _i60s6nd2;
+import 'buildings/building_create.dart' as _i4cz4s4m;
+import 'buildings/building_error_code.dart' as _isz6zhld;
+import 'buildings/building_exception.dart' as _i7fakgop;
+import 'buildings/building_staff.dart' as _izkbr6tl;
+import 'buildings/building_update.dart' as _ivqpqa05;
+import 'buildings/building_view.dart' as _iyqmhcrr;
 import 'greetings/greeting.dart' as _izw8z7ou;
 export 'auth/account_error_code.dart';
 export 'auth/account_exception.dart';
@@ -49,6 +60,8 @@ export 'auth/backoffice_user_create.dart';
 export 'auth/backoffice_user_view.dart';
 export 'auth/employee_create.dart';
 export 'auth/employee_record.dart';
+export 'auth/employee_update.dart';
+export 'auth/employee_view.dart';
 export 'auth/login_request.dart';
 export 'auth/profile_update.dart';
 export 'auth/profile_view.dart';
@@ -56,6 +69,13 @@ export 'auth/self_register_create.dart';
 export 'auth/sip_app.dart';
 export 'auth/sip_sync_profile.dart';
 export 'auth/user_role_membership.dart';
+export 'buildings/building.dart';
+export 'buildings/building_create.dart';
+export 'buildings/building_error_code.dart';
+export 'buildings/building_exception.dart';
+export 'buildings/building_staff.dart';
+export 'buildings/building_update.dart';
+export 'buildings/building_view.dart';
 export 'greetings/greeting.dart';
 
 class Protocol extends _is.DatabaseSerializationManager {
@@ -130,6 +150,157 @@ class Protocol extends _is.DatabaseSerializationManager {
       managed: true,
     ),
     _isp.TableDefinition(
+      name: 'building',
+      dartName: 'Building',
+      schema: 'public',
+      module: 'sip_sync',
+      columns: [
+        _isp.ColumnDefinition(
+          name: 'id',
+          columnType: _isp.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue?',
+          columnDefault: 'random_v7',
+        ),
+        _isp.ColumnDefinition(
+          name: 'ownerAuthUserId',
+          columnType: _isp.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue',
+        ),
+        _isp.ColumnDefinition(
+          name: 'name',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _isp.ColumnDefinition(
+          name: 'type',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _isp.ColumnDefinition(
+          name: 'address',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _isp.ColumnDefinition(
+          name: 'latitude',
+          columnType: _isp.ColumnType.doublePrecision,
+          isNullable: false,
+          dartType: 'double',
+        ),
+        _isp.ColumnDefinition(
+          name: 'longitude',
+          columnType: _isp.ColumnType.doublePrecision,
+          isNullable: false,
+          dartType: 'double',
+        ),
+        _isp.ColumnDefinition(
+          name: 'openingMinutes',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _isp.ColumnDefinition(
+          name: 'closingMinutes',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _isp.ColumnDefinition(
+          name: 'currencyCode',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _isp.ColumnDefinition(
+          name: 'createdAt',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+        ),
+      ],
+      foreignKeys: [],
+      indexes: [
+        _isp.IndexDefinition(
+          indexName: 'building_owner_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'ownerAuthUserId',
+            ),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
+    _isp.TableDefinition(
+      name: 'building_staff',
+      dartName: 'BuildingStaff',
+      schema: 'public',
+      module: 'sip_sync',
+      columns: [
+        _isp.ColumnDefinition(
+          name: 'id',
+          columnType: _isp.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue?',
+          columnDefault: 'random_v7',
+        ),
+        _isp.ColumnDefinition(
+          name: 'buildingId',
+          columnType: _isp.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue',
+        ),
+        _isp.ColumnDefinition(
+          name: 'employeeAuthUserId',
+          columnType: _isp.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue',
+        ),
+      ],
+      foreignKeys: [
+        _isp.ForeignKeyDefinition(
+          constraintName: 'building_staff_fk_0',
+          columns: ['buildingId'],
+          referenceTable: 'building',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.cascade,
+          matchType: null,
+        ),
+      ],
+      indexes: [
+        _isp.IndexDefinition(
+          indexName: 'building_staff_unique',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'buildingId',
+            ),
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'employeeAuthUserId',
+            ),
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
+    _isp.TableDefinition(
       name: 'employee_record',
       dartName: 'EmployeeRecord',
       schema: 'public',
@@ -153,6 +324,13 @@ class Protocol extends _is.DatabaseSerializationManager {
           columnType: _isp.ColumnType.uuid,
           isNullable: false,
           dartType: 'UuidValue',
+        ),
+        _isp.ColumnDefinition(
+          name: 'isEnabled',
+          columnType: _isp.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'true',
         ),
       ],
       foreignKeys: [
@@ -219,8 +397,8 @@ class Protocol extends _is.DatabaseSerializationManager {
         _isp.ColumnDefinition(
           name: 'username',
           columnType: _isp.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
+          isNullable: true,
+          dartType: 'String?',
         ),
         _isp.ColumnDefinition(
           name: 'email',
@@ -442,6 +620,12 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == _im6hyfbr.EmployeeRecord) {
       return _im6hyfbr.EmployeeRecord.fromJson(data) as T;
     }
+    if (t == _iidaq8tj.EmployeeUpdate) {
+      return _iidaq8tj.EmployeeUpdate.fromJson(data) as T;
+    }
+    if (t == _igp37ocx.EmployeeView) {
+      return _igp37ocx.EmployeeView.fromJson(data) as T;
+    }
     if (t == _ir2e8vdz.LoginRequest) {
       return _ir2e8vdz.LoginRequest.fromJson(data) as T;
     }
@@ -462,6 +646,27 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     if (t == _ilsup31p.UserRoleMembership) {
       return _ilsup31p.UserRoleMembership.fromJson(data) as T;
+    }
+    if (t == _i60s6nd2.Building) {
+      return _i60s6nd2.Building.fromJson(data) as T;
+    }
+    if (t == _i4cz4s4m.BuildingCreate) {
+      return _i4cz4s4m.BuildingCreate.fromJson(data) as T;
+    }
+    if (t == _isz6zhld.BuildingErrorCode) {
+      return _isz6zhld.BuildingErrorCode.fromJson(data) as T;
+    }
+    if (t == _i7fakgop.BuildingException) {
+      return _i7fakgop.BuildingException.fromJson(data) as T;
+    }
+    if (t == _izkbr6tl.BuildingStaff) {
+      return _izkbr6tl.BuildingStaff.fromJson(data) as T;
+    }
+    if (t == _ivqpqa05.BuildingUpdate) {
+      return _ivqpqa05.BuildingUpdate.fromJson(data) as T;
+    }
+    if (t == _iyqmhcrr.BuildingView) {
+      return _iyqmhcrr.BuildingView.fromJson(data) as T;
     }
     if (t == _izw8z7ou.Greeting) {
       return _izw8z7ou.Greeting.fromJson(data) as T;
@@ -507,6 +712,13 @@ class Protocol extends _is.DatabaseSerializationManager {
       return (data != null ? _im6hyfbr.EmployeeRecord.fromJson(data) : null)
           as T;
     }
+    if (t == _is.getType<_iidaq8tj.EmployeeUpdate?>()) {
+      return (data != null ? _iidaq8tj.EmployeeUpdate.fromJson(data) : null)
+          as T;
+    }
+    if (t == _is.getType<_igp37ocx.EmployeeView?>()) {
+      return (data != null ? _igp37ocx.EmployeeView.fromJson(data) : null) as T;
+    }
     if (t == _is.getType<_ir2e8vdz.LoginRequest?>()) {
       return (data != null ? _ir2e8vdz.LoginRequest.fromJson(data) : null) as T;
     }
@@ -532,21 +744,57 @@ class Protocol extends _is.DatabaseSerializationManager {
       return (data != null ? _ilsup31p.UserRoleMembership.fromJson(data) : null)
           as T;
     }
+    if (t == _is.getType<_i60s6nd2.Building?>()) {
+      return (data != null ? _i60s6nd2.Building.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_i4cz4s4m.BuildingCreate?>()) {
+      return (data != null ? _i4cz4s4m.BuildingCreate.fromJson(data) : null)
+          as T;
+    }
+    if (t == _is.getType<_isz6zhld.BuildingErrorCode?>()) {
+      return (data != null ? _isz6zhld.BuildingErrorCode.fromJson(data) : null)
+          as T;
+    }
+    if (t == _is.getType<_i7fakgop.BuildingException?>()) {
+      return (data != null ? _i7fakgop.BuildingException.fromJson(data) : null)
+          as T;
+    }
+    if (t == _is.getType<_izkbr6tl.BuildingStaff?>()) {
+      return (data != null ? _izkbr6tl.BuildingStaff.fromJson(data) : null)
+          as T;
+    }
+    if (t == _is.getType<_ivqpqa05.BuildingUpdate?>()) {
+      return (data != null ? _ivqpqa05.BuildingUpdate.fromJson(data) : null)
+          as T;
+    }
+    if (t == _is.getType<_iyqmhcrr.BuildingView?>()) {
+      return (data != null ? _iyqmhcrr.BuildingView.fromJson(data) : null) as T;
+    }
     if (t == _is.getType<_izw8z7ou.Greeting?>()) {
       return (data != null ? _izw8z7ou.Greeting.fromJson(data) : null) as T;
     }
     if (t == List<String>) {
       return (data as List).map((e) => deserialize<String>(e)).toList() as T;
     }
-    if (t == List<_ilvz914s.ProfileView>) {
+    if (t == List<_is.UuidValue>) {
+      return (data as List).map((e) => deserialize<_is.UuidValue>(e)).toList()
+          as T;
+    }
+    if (t == List<_iusy412g.EmployeeView>) {
       return (data as List)
-              .map((e) => deserialize<_ilvz914s.ProfileView>(e))
+              .map((e) => deserialize<_iusy412g.EmployeeView>(e))
               .toList()
           as T;
     }
     if (t == List<_iea1ilrj.BackofficeUserView>) {
       return (data as List)
               .map((e) => deserialize<_iea1ilrj.BackofficeUserView>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_iughhy8g.BuildingView>) {
+      return (data as List)
+              .map((e) => deserialize<_iughhy8g.BuildingView>(e))
               .toList()
           as T;
     }
@@ -574,6 +822,8 @@ class Protocol extends _is.DatabaseSerializationManager {
       _itl1aokg.BackofficeUserView => 'BackofficeUserView',
       _iedt4kib.EmployeeCreate => 'EmployeeCreate',
       _im6hyfbr.EmployeeRecord => 'EmployeeRecord',
+      _iidaq8tj.EmployeeUpdate => 'EmployeeUpdate',
+      _igp37ocx.EmployeeView => 'EmployeeView',
       _ir2e8vdz.LoginRequest => 'LoginRequest',
       _irdmlmfi.ProfileUpdate => 'ProfileUpdate',
       _iz95i0di.ProfileView => 'ProfileView',
@@ -581,6 +831,13 @@ class Protocol extends _is.DatabaseSerializationManager {
       _iztspa7i.SipApp => 'SipApp',
       _iow4lxxs.SipSyncProfile => 'SipSyncProfile',
       _ilsup31p.UserRoleMembership => 'UserRoleMembership',
+      _i60s6nd2.Building => 'Building',
+      _i4cz4s4m.BuildingCreate => 'BuildingCreate',
+      _isz6zhld.BuildingErrorCode => 'BuildingErrorCode',
+      _i7fakgop.BuildingException => 'BuildingException',
+      _izkbr6tl.BuildingStaff => 'BuildingStaff',
+      _ivqpqa05.BuildingUpdate => 'BuildingUpdate',
+      _iyqmhcrr.BuildingView => 'BuildingView',
       _izw8z7ou.Greeting => 'Greeting',
       _ => null,
     };
@@ -616,6 +873,10 @@ class Protocol extends _is.DatabaseSerializationManager {
         return 'EmployeeCreate';
       case _im6hyfbr.EmployeeRecord():
         return 'EmployeeRecord';
+      case _iidaq8tj.EmployeeUpdate():
+        return 'EmployeeUpdate';
+      case _igp37ocx.EmployeeView():
+        return 'EmployeeView';
       case _ir2e8vdz.LoginRequest():
         return 'LoginRequest';
       case _irdmlmfi.ProfileUpdate():
@@ -630,6 +891,20 @@ class Protocol extends _is.DatabaseSerializationManager {
         return 'SipSyncProfile';
       case _ilsup31p.UserRoleMembership():
         return 'UserRoleMembership';
+      case _i60s6nd2.Building():
+        return 'Building';
+      case _i4cz4s4m.BuildingCreate():
+        return 'BuildingCreate';
+      case _isz6zhld.BuildingErrorCode():
+        return 'BuildingErrorCode';
+      case _i7fakgop.BuildingException():
+        return 'BuildingException';
+      case _izkbr6tl.BuildingStaff():
+        return 'BuildingStaff';
+      case _ivqpqa05.BuildingUpdate():
+        return 'BuildingUpdate';
+      case _iyqmhcrr.BuildingView():
+        return 'BuildingView';
       case _izw8z7ou.Greeting():
         return 'Greeting';
     }
@@ -688,6 +963,12 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (dataClassName == 'EmployeeRecord') {
       return deserialize<_im6hyfbr.EmployeeRecord>(data['data']);
     }
+    if (dataClassName == 'EmployeeUpdate') {
+      return deserialize<_iidaq8tj.EmployeeUpdate>(data['data']);
+    }
+    if (dataClassName == 'EmployeeView') {
+      return deserialize<_igp37ocx.EmployeeView>(data['data']);
+    }
     if (dataClassName == 'LoginRequest') {
       return deserialize<_ir2e8vdz.LoginRequest>(data['data']);
     }
@@ -708,6 +989,27 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     if (dataClassName == 'UserRoleMembership') {
       return deserialize<_ilsup31p.UserRoleMembership>(data['data']);
+    }
+    if (dataClassName == 'Building') {
+      return deserialize<_i60s6nd2.Building>(data['data']);
+    }
+    if (dataClassName == 'BuildingCreate') {
+      return deserialize<_i4cz4s4m.BuildingCreate>(data['data']);
+    }
+    if (dataClassName == 'BuildingErrorCode') {
+      return deserialize<_isz6zhld.BuildingErrorCode>(data['data']);
+    }
+    if (dataClassName == 'BuildingException') {
+      return deserialize<_i7fakgop.BuildingException>(data['data']);
+    }
+    if (dataClassName == 'BuildingStaff') {
+      return deserialize<_izkbr6tl.BuildingStaff>(data['data']);
+    }
+    if (dataClassName == 'BuildingUpdate') {
+      return deserialize<_ivqpqa05.BuildingUpdate>(data['data']);
+    }
+    if (dataClassName == 'BuildingView') {
+      return deserialize<_iyqmhcrr.BuildingView>(data['data']);
     }
     if (dataClassName == 'Greeting') {
       return deserialize<_izw8z7ou.Greeting>(data['data']);
@@ -761,6 +1063,10 @@ class Protocol extends _is.DatabaseSerializationManager {
         return _iow4lxxs.SipSyncProfile.t;
       case _ilsup31p.UserRoleMembership:
         return _ilsup31p.UserRoleMembership.t;
+      case _i60s6nd2.Building:
+        return _i60s6nd2.Building.t;
+      case _izkbr6tl.BuildingStaff:
+        return _izkbr6tl.BuildingStaff.t;
     }
     return null;
   }

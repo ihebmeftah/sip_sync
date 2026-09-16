@@ -1,0 +1,6 @@
+enum: BuildingErrorCode
+serialized: byIndex
+values:
+  - invalidInput
+  - notAuthorized
+  - notFound

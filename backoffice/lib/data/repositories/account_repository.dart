@@ -14,28 +14,9 @@ class AccountRepository {
     required String password,
   }) async {
     final result = await _client.account.login(
-      LoginRequest(email: email, password: password, app: SipApp.backoffice),
-    );
-    await _client.auth.updateSignedInUser(result.authSuccess);
-    return result.session;
-  }
-
-  Future<AccountSessionView> register({
-    required String email,
-    required String password,
-    required String username,
-    required String phoneNumber,
-    required String firstName,
-    required String lastName,
-  }) async {
-    final result = await _client.account.register(
-      SelfRegisterCreate(
-        email: email,
+      LoginRequest(
+        identifier: email,
         password: password,
-        username: username,
-        phoneNumber: phoneNumber,
-        firstName: firstName,
-        lastName: lastName,
         app: SipApp.backoffice,
       ),
     );
@@ -51,7 +32,6 @@ class AccountRepository {
   Future<BackofficeUserView> addBackofficeUser({
     required String email,
     required String password,
-    required String username,
     required String phoneNumber,
     required String firstName,
     required String lastName,
@@ -60,7 +40,6 @@ class AccountRepository {
       BackofficeUserCreate(
         email: email,
         password: password,
-        username: username,
         phoneNumber: phoneNumber,
         firstName: firstName,
         lastName: lastName,

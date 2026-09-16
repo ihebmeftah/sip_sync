@@ -31,7 +31,7 @@ Each Flutter app extends its own tokens in `lib/core/theme/` (`AppColors`, `AppS
 | `managment` | owners / staff | olive, sage, sand, parchment (same family in light/dark) | Syne + IBM Plex Sans |
 | `backoffice` | super admin | ice paper, graphite, cyan | Sora + IBM Plex Sans |
 
-Auth uses `AuthShell` (wide split / compact stack). Signed-in `managment` uses `OpsShell` (olive rail / compact drawer) with dashboard, profile, products, POS, and tables. Primary actions and fields come from `AppFilledButton` / `AppTextField` so radius, focus rings, and password visibility stay consistent. Arabic is RTL via `MaterialApp` locales. Light and dark `ThemeData` are selected with `ThemeController`.
+Auth uses `AuthShell` (wide split / compact stack). Signed-in `managment` uses `OpsShell` (olive rail / compact drawer). After login the user must pick a **building**; dashboard, employees, products, POS, and tables stay locked until then. Forms use `TextFormField` validators (`FormValidators`) plus server errors. Primary actions and fields come from `AppFilledButton` / `AppTextField`. Arabic is RTL via `MaterialApp` locales. Light and dark `ThemeData` are selected with `ThemeController`.
 
 ## Security
 

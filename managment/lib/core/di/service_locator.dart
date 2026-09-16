@@ -2,7 +2,9 @@ import 'package:get_it/get_it.dart';
 import 'package:sip_sync_client/sip_sync_client.dart';
 
 import '../../data/repositories/account_repository.dart';
+import '../../data/repositories/building_repository.dart';
 import '../../data/services/api_client.dart';
+import 'building_session.dart';
 
 /// Imperative locator for the Serverpod [Client] and repositories.
 ///
@@ -19,4 +21,8 @@ Future<void> setupServiceLocator() async {
   getIt.registerLazySingleton<AccountRepository>(
     () => AccountRepository(client),
   );
+  getIt.registerLazySingleton<BuildingRepository>(
+    () => BuildingRepository(client),
+  );
+  getIt.registerSingleton<BuildingSession>(BuildingSession());
 }

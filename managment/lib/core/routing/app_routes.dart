@@ -5,8 +5,12 @@ import '../../core/widgets/ops_shell.dart';
 import '../../core/widgets/placeholder_view.dart';
 import '../../features/auth/views/register_view.dart';
 import '../../features/auth/views/sign_in_view.dart';
+import '../../features/buildings/views/building_form_view.dart';
+import '../../features/buildings/views/buildings_list_view.dart';
 import '../../features/dashboard/views/dashboard_view.dart';
-import '../../features/profile/views/employee_profile_view.dart';
+import '../../features/employees/views/employee_details_view.dart';
+import '../../features/employees/views/employee_form_view.dart';
+import '../../features/employees/views/employees_list_view.dart';
 import '../../features/profile/views/profile_view.dart';
 import '../../l10n/generated/app_localizations.dart';
 
@@ -32,13 +36,29 @@ class RegisterRoute extends GoRouteData with $RegisterRoute {
 @TypedShellRoute<OpsShellRoute>(
   routes: [
     TypedGoRoute<DashboardRoute>(path: '/dashboard', name: 'dashboard'),
-    TypedGoRoute<ProfileRoute>(
-      path: '/profile',
-      name: 'profile',
+    TypedGoRoute<BuildingsRoute>(
+      path: '/buildings',
+      name: 'buildings',
       routes: [
-        TypedGoRoute<EmployeeProfileRoute>(
-          path: 'employees/:authUserId',
-          name: 'employeeProfile',
+        TypedGoRoute<BuildingCreateRoute>(path: 'new', name: 'buildingCreate'),
+        TypedGoRoute<BuildingEditRoute>(
+          path: ':buildingId/edit',
+          name: 'buildingEdit',
+        ),
+      ],
+    ),
+    TypedGoRoute<ProfileRoute>(path: '/profile', name: 'profile'),
+    TypedGoRoute<EmployeesRoute>(
+      path: '/employees',
+      name: 'employees',
+      routes: [
+        TypedGoRoute<EmployeeCreateRoute>(path: 'new', name: 'employeeCreate'),
+        TypedGoRoute<EmployeeDetailsRoute>(
+          path: ':authUserId',
+          name: 'employeeDetails',
+          routes: [
+            TypedGoRoute<EmployeeEditRoute>(path: 'edit', name: 'employeeEdit'),
+          ],
         ),
       ],
     ),
@@ -68,6 +88,33 @@ class DashboardRoute extends GoRouteData with $DashboardRoute {
       const DashboardView();
 }
 
+class BuildingsRoute extends GoRouteData with $BuildingsRoute {
+  const BuildingsRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) =>
+      const BuildingsListView();
+}
+
+class BuildingCreateRoute extends GoRouteData with $BuildingCreateRoute {
+  const BuildingCreateRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) =>
+      const BuildingFormView();
+}
+
+class BuildingEditRoute extends GoRouteData with $BuildingEditRoute {
+  const BuildingEditRoute({required this.buildingId});
+
+  final String buildingId;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return BuildingFormView(buildingId: buildingId);
+  }
+}
+
 class ProfileRoute extends GoRouteData with $ProfileRoute {
   const ProfileRoute();
 
@@ -76,14 +123,41 @@ class ProfileRoute extends GoRouteData with $ProfileRoute {
       const ProfileViewPage();
 }
 
-class EmployeeProfileRoute extends GoRouteData with $EmployeeProfileRoute {
-  const EmployeeProfileRoute({required this.authUserId});
+class EmployeesRoute extends GoRouteData with $EmployeesRoute {
+  const EmployeesRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) =>
+      const EmployeesListView();
+}
+
+class EmployeeCreateRoute extends GoRouteData with $EmployeeCreateRoute {
+  const EmployeeCreateRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) =>
+      const EmployeeFormView();
+}
+
+class EmployeeDetailsRoute extends GoRouteData with $EmployeeDetailsRoute {
+  const EmployeeDetailsRoute({required this.authUserId});
 
   final String authUserId;
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return EmployeeProfileView(authUserId: authUserId);
+    return EmployeeDetailsPage(authUserId: authUserId);
+  }
+}
+
+class EmployeeEditRoute extends GoRouteData with $EmployeeEditRoute {
+  const EmployeeEditRoute({required this.authUserId});
+
+  final String authUserId;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return EmployeeFormView(authUserId: authUserId);
   }
 }
 

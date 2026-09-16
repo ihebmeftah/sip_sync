@@ -17,6 +17,14 @@ Failure mapError(Object error) {
         'errorCannotDeleteDefaultAdmin',
       AccountErrorCode.passwordTooWeak => 'errorPasswordTooWeak',
       AccountErrorCode.profileIncomplete => 'errorProfileIncomplete',
+      AccountErrorCode.accountDisabled => 'errorAccountDisabled',
+    });
+  }
+  if (error is BuildingException) {
+    return Failure(switch (error.code) {
+      BuildingErrorCode.invalidInput => 'errorInvalidInput',
+      BuildingErrorCode.notAuthorized => 'errorNotAuthorized',
+      BuildingErrorCode.notFound => 'errorNotFound',
     });
   }
   return const Failure('errorGeneric');
@@ -35,6 +43,10 @@ String lookupError(dynamic l10n, String key) {
     'errorCannotDeleteDefaultAdmin' => l10n.errorCannotDeleteDefaultAdmin,
     'errorPasswordTooWeak' => l10n.errorPasswordTooWeak,
     'errorProfileIncomplete' => l10n.errorProfileIncomplete,
+    'errorAccountDisabled' => l10n.errorAccountDisabled,
+    'errorLocationDenied' => l10n.errorLocationDenied,
+    'errorLocationDisabled' => l10n.errorLocationDisabled,
+    'errorLocationFailed' => l10n.errorLocationFailed,
     _ => l10n.errorGeneric,
   };
 }

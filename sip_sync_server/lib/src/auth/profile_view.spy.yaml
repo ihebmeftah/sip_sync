@@ -1,7 +1,7 @@
 class: ProfileView
 fields:
   authUserId: UuidValue
-  username: String
+  username: String?
   email: String
   phoneNumber: String
   firstName: String

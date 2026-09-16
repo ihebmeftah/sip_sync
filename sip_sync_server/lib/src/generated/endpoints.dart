@@ -19,15 +19,22 @@ import 'package:sip_sync_server/src/generated/auth/backoffice_user_create.dart'
     as _ivojw13s;
 import 'package:sip_sync_server/src/generated/auth/employee_create.dart'
     as _itsh5tmy;
+import 'package:sip_sync_server/src/generated/auth/employee_update.dart'
+    as _isn5wmy3;
 import 'package:sip_sync_server/src/generated/auth/login_request.dart'
     as _igjnjeoy;
 import 'package:sip_sync_server/src/generated/auth/profile_update.dart'
     as _id6sv1bw;
 import 'package:sip_sync_server/src/generated/auth/self_register_create.dart'
     as _iomxn8e2;
+import 'package:sip_sync_server/src/generated/buildings/building_create.dart'
+    as _iikuia2o;
+import 'package:sip_sync_server/src/generated/buildings/building_update.dart'
+    as _ipidi05l;
 import '../auth/account_endpoint.dart' as _ii6ycf6v;
 import '../auth/email_idp_endpoint.dart' as _iuc1hd5t;
 import '../auth/jwt_refresh_endpoint.dart' as _inwq3ztq;
+import '../buildings/building_endpoint.dart' as _i69ygv7j;
 import '../greetings/greeting_endpoint.dart' as _il624ik7;
 
 class Endpoints extends _is.EndpointDispatch {
@@ -50,6 +57,12 @@ class Endpoints extends _is.EndpointDispatch {
         ..initialize(
           server,
           'jwtRefresh',
+          null,
+        ),
+      'building': _i69ygv7j.BuildingEndpoint()
+        ..initialize(
+          server,
+          'building',
           null,
         ),
       'greeting': _il624ik7.GreetingEndpoint()
@@ -178,6 +191,50 @@ class Endpoints extends _is.EndpointDispatch {
                 Map<String, dynamic> params,
               ) async => (endpoints['account'] as _ii6ycf6v.AccountEndpoint)
                   .listEmployees(session),
+        ),
+        'updateEmployee': _is.MethodConnector(
+          name: 'updateEmployee',
+          params: {
+            'request': _is.ParameterDescription(
+              name: 'request',
+              type: _is.getType<_isn5wmy3.EmployeeUpdate>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['account'] as _ii6ycf6v.AccountEndpoint)
+                  .updateEmployee(
+                    session,
+                    params['request'],
+                  ),
+        ),
+        'setEmployeeEnabled': _is.MethodConnector(
+          name: 'setEmployeeEnabled',
+          params: {
+            'employeeAuthUserId': _is.ParameterDescription(
+              name: 'employeeAuthUserId',
+              type: _is.getType<_is.UuidValue>(),
+              nullable: false,
+            ),
+            'isEnabled': _is.ParameterDescription(
+              name: 'isEnabled',
+              type: _is.getType<bool>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['account'] as _ii6ycf6v.AccountEndpoint)
+                  .setEmployeeEnabled(
+                    session,
+                    params['employeeAuthUserId'],
+                    params['isEnabled'],
+                  ),
         ),
         'addBackofficeUser': _is.MethodConnector(
           name: 'addBackofficeUser',
@@ -432,6 +489,98 @@ class Endpoints extends _is.EndpointDispatch {
                         session,
                         refreshToken: params['refreshToken'],
                       ),
+        ),
+      },
+    );
+    connectors['building'] = _is.EndpointConnector(
+      name: 'building',
+      endpoint: endpoints['building']!,
+      methodConnectors: {
+        'listMine': _is.MethodConnector(
+          name: 'listMine',
+          params: {},
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['building'] as _i69ygv7j.BuildingEndpoint)
+                  .listMine(session),
+        ),
+        'get': _is.MethodConnector(
+          name: 'get',
+          params: {
+            'buildingId': _is.ParameterDescription(
+              name: 'buildingId',
+              type: _is.getType<_is.UuidValue>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['building'] as _i69ygv7j.BuildingEndpoint).get(
+                    session,
+                    params['buildingId'],
+                  ),
+        ),
+        'create': _is.MethodConnector(
+          name: 'create',
+          params: {
+            'request': _is.ParameterDescription(
+              name: 'request',
+              type: _is.getType<_iikuia2o.BuildingCreate>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['building'] as _i69ygv7j.BuildingEndpoint).create(
+                    session,
+                    params['request'],
+                  ),
+        ),
+        'update': _is.MethodConnector(
+          name: 'update',
+          params: {
+            'request': _is.ParameterDescription(
+              name: 'request',
+              type: _is.getType<_ipidi05l.BuildingUpdate>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['building'] as _i69ygv7j.BuildingEndpoint).update(
+                    session,
+                    params['request'],
+                  ),
+        ),
+        'listEmployees': _is.MethodConnector(
+          name: 'listEmployees',
+          params: {
+            'buildingId': _is.ParameterDescription(
+              name: 'buildingId',
+              type: _is.getType<_is.UuidValue>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['building'] as _i69ygv7j.BuildingEndpoint)
+                  .listEmployees(
+                    session,
+                    params['buildingId'],
+                  ),
         ),
       },
     );

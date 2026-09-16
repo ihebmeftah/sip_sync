@@ -15,7 +15,7 @@ class AccountRepository {
   }) async {
     final result = await _client.account.login(
       LoginRequest(
-        email: email,
+        identifier: email,
         password: password,
         app: SipApp.customer,
       ),
@@ -27,7 +27,6 @@ class AccountRepository {
   Future<AccountSessionView> register({
     required String email,
     required String password,
-    required String username,
     required String phoneNumber,
     required String firstName,
     required String lastName,
@@ -36,7 +35,6 @@ class AccountRepository {
       SelfRegisterCreate(
         email: email,
         password: password,
-        username: username,
         phoneNumber: phoneNumber,
         firstName: firstName,
         lastName: lastName,

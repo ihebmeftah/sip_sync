@@ -1,0 +1,11 @@
+class: BuildingCreate
+fields:
+  name: String
+  type: String
+  address: String
+  latitude: double
+  longitude: double
+  openingMinutes: int
+  closingMinutes: int
+  currencyCode: String
+  employeeAuthUserIds: List<UuidValue>

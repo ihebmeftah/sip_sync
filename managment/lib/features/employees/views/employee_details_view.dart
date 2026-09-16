@@ -2,20 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/errors/error_mapper.dart';
+import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
 import '../../../l10n/generated/app_localizations.dart';
-import '../view_models/employee_profile_view_model.dart';
+import '../view_models/employee_details_view_model.dart';
 
-class EmployeeProfileView extends ConsumerWidget {
-  const EmployeeProfileView({super.key, required this.authUserId});
+class EmployeeDetailsPage extends ConsumerWidget {
+  const EmployeeDetailsPage({super.key, required this.authUserId});
 
   final String authUserId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
-    final async = ref.watch(employeeProfileViewModelProvider(authUserId));
+    final async = ref.watch(employeeDetailsViewModelProvider(authUserId));
     final text = Theme.of(context).textTheme;
 
     return ColoredBox(
@@ -38,12 +39,44 @@ class EmployeeProfileView extends ConsumerWidget {
             data: (employee) => ListView(
               padding: const EdgeInsets.all(AppSpacing.xl),
               children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        l10n.employeeProfile,
+                        style: text.headlineSmall,
+                      ),
+                    ),
+                    FilledButton.tonal(
+                      onPressed: () =>
+                          EmployeeEditRoute(authUserId: authUserId).go(context),
+                      child: Text(l10n.editEmployee),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: AppSpacing.lg),
                 AppSurfaceCard(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(l10n.employeeProfile, style: text.headlineSmall),
-                      const SizedBox(height: AppSpacing.lg),
+                      SwitchListTile(
+                        contentPadding: EdgeInsets.zero,
+                        title: Text(l10n.accountEnabled),
+                        subtitle: Text(
+                          employee.isEnabled
+                              ? l10n.accountEnabledHint
+                              : l10n.accountDisabledHint,
+                        ),
+                        value: employee.isEnabled,
+                        onChanged: (value) => ref
+                            .read(
+                              employeeDetailsViewModelProvider(
+                                authUserId,
+                              ).notifier,
+                            )
+                            .setEnabled(value),
+                      ),
+                      const Divider(),
                       ListTile(
                         contentPadding: EdgeInsets.zero,
                         title: Text(l10n.firstName),
@@ -58,11 +91,6 @@ class EmployeeProfileView extends ConsumerWidget {
                         contentPadding: EdgeInsets.zero,
                         title: Text(l10n.username),
                         subtitle: Text(employee.username),
-                      ),
-                      ListTile(
-                        contentPadding: EdgeInsets.zero,
-                        title: Text(l10n.email),
-                        subtitle: Text(employee.email),
                       ),
                       ListTile(
                         contentPadding: EdgeInsets.zero,

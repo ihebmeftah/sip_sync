@@ -27,14 +27,22 @@ import 'package:sip_sync_server/src/generated/auth/backoffice_user_view.dart'
     as _iea1ilrj;
 import 'package:sip_sync_server/src/generated/auth/employee_create.dart'
     as _itsh5tmy;
+import 'package:sip_sync_server/src/generated/auth/employee_update.dart'
+    as _isn5wmy3;
+import 'package:sip_sync_server/src/generated/auth/employee_view.dart'
+    as _iusy412g;
 import 'package:sip_sync_server/src/generated/auth/login_request.dart'
     as _igjnjeoy;
 import 'package:sip_sync_server/src/generated/auth/profile_update.dart'
     as _id6sv1bw;
-import 'package:sip_sync_server/src/generated/auth/profile_view.dart'
-    as _ilvz914s;
 import 'package:sip_sync_server/src/generated/auth/self_register_create.dart'
     as _iomxn8e2;
+import 'package:sip_sync_server/src/generated/buildings/building_create.dart'
+    as _iikuia2o;
+import 'package:sip_sync_server/src/generated/buildings/building_update.dart'
+    as _ipidi05l;
+import 'package:sip_sync_server/src/generated/buildings/building_view.dart'
+    as _iughhy8g;
 import 'package:sip_sync_server/src/generated/greetings/greeting.dart'
     as _igj77q9p;
 import 'package:sip_sync_server/src/generated/protocol.dart';
@@ -171,6 +179,8 @@ class TestEndpoints {
 
   late final _JwtRefreshEndpoint jwtRefresh;
 
+  late final _BuildingEndpoint building;
+
   late final _GreetingEndpoint greeting;
 }
 
@@ -190,6 +200,10 @@ class _InternalTestEndpoints extends TestEndpoints
       serializationManager,
     );
     jwtRefresh = _JwtRefreshEndpoint(
+      endpoints,
+      serializationManager,
+    );
+    building = _BuildingEndpoint(
       endpoints,
       serializationManager,
     );
@@ -333,7 +347,7 @@ class _AccountEndpoint {
     });
   }
 
-  _ida.Future<_ilvz914s.ProfileView> getEmployee(
+  _ida.Future<_iusy412g.EmployeeView> getEmployee(
     _ist.TestSessionBuilder sessionBuilder,
     _is.UuidValue employeeAuthUserId,
   ) async {
@@ -358,7 +372,7 @@ class _AccountEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _ida.Future<_ilvz914s.ProfileView>);
+                as _ida.Future<_iusy412g.EmployeeView>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -366,7 +380,7 @@ class _AccountEndpoint {
     });
   }
 
-  _ida.Future<_ilvz914s.ProfileView> addEmployee(
+  _ida.Future<_iusy412g.EmployeeView> addEmployee(
     _ist.TestSessionBuilder sessionBuilder,
     _itsh5tmy.EmployeeCreate request,
   ) async {
@@ -389,7 +403,7 @@ class _AccountEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _ida.Future<_ilvz914s.ProfileView>);
+                as _ida.Future<_iusy412g.EmployeeView>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -397,7 +411,7 @@ class _AccountEndpoint {
     });
   }
 
-  _ida.Future<List<_ilvz914s.ProfileView>> listEmployees(
+  _ida.Future<List<_iusy412g.EmployeeView>> listEmployees(
     _ist.TestSessionBuilder sessionBuilder,
   ) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
@@ -419,7 +433,73 @@ class _AccountEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _ida.Future<List<_ilvz914s.ProfileView>>);
+                as _ida.Future<List<_iusy412g.EmployeeView>>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<_iusy412g.EmployeeView> updateEmployee(
+    _ist.TestSessionBuilder sessionBuilder,
+    _isn5wmy3.EmployeeUpdate request,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'account',
+            method: 'updateEmployee',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'account',
+          methodName: 'updateEmployee',
+          parameters: _ist.testObjectToJson({'request': request}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_iusy412g.EmployeeView>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<_iusy412g.EmployeeView> setEmployeeEnabled(
+    _ist.TestSessionBuilder sessionBuilder,
+    _is.UuidValue employeeAuthUserId,
+    bool isEnabled,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'account',
+            method: 'setEmployeeEnabled',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'account',
+          methodName: 'setEmployeeEnabled',
+          parameters: _ist.testObjectToJson({
+            'employeeAuthUserId': employeeAuthUserId,
+            'isEnabled': isEnabled,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_iusy412g.EmployeeView>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -832,6 +912,171 @@ class _JwtRefreshEndpoint {
                   _localCallContext.arguments,
                 )
                 as _ida.Future<_iacs.AuthSuccess>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+}
+
+class _BuildingEndpoint {
+  _BuildingEndpoint(
+    this._endpointDispatch,
+    this._serializationManager,
+  );
+
+  final _is.EndpointDispatch _endpointDispatch;
+
+  final _is.SerializationManager _serializationManager;
+
+  _ida.Future<List<_iughhy8g.BuildingView>> listMine(
+    _ist.TestSessionBuilder sessionBuilder,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'building',
+            method: 'listMine',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'building',
+          methodName: 'listMine',
+          parameters: _ist.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<List<_iughhy8g.BuildingView>>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<_iughhy8g.BuildingView> get(
+    _ist.TestSessionBuilder sessionBuilder,
+    _is.UuidValue buildingId,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'building',
+            method: 'get',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'building',
+          methodName: 'get',
+          parameters: _ist.testObjectToJson({'buildingId': buildingId}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_iughhy8g.BuildingView>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<_iughhy8g.BuildingView> create(
+    _ist.TestSessionBuilder sessionBuilder,
+    _iikuia2o.BuildingCreate request,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'building',
+            method: 'create',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'building',
+          methodName: 'create',
+          parameters: _ist.testObjectToJson({'request': request}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_iughhy8g.BuildingView>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<_iughhy8g.BuildingView> update(
+    _ist.TestSessionBuilder sessionBuilder,
+    _ipidi05l.BuildingUpdate request,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'building',
+            method: 'update',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'building',
+          methodName: 'update',
+          parameters: _ist.testObjectToJson({'request': request}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_iughhy8g.BuildingView>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<List<_iusy412g.EmployeeView>> listEmployees(
+    _ist.TestSessionBuilder sessionBuilder,
+    _is.UuidValue buildingId,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'building',
+            method: 'listEmployees',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'building',
+          methodName: 'listEmployees',
+          parameters: _ist.testObjectToJson({'buildingId': buildingId}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<List<_iusy412g.EmployeeView>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();

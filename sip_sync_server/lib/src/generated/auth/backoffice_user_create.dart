@@ -17,7 +17,6 @@ abstract class BackofficeUserCreate
   BackofficeUserCreate._({
     required this.email,
     required this.password,
-    required this.username,
     required this.phoneNumber,
     required this.firstName,
     required this.lastName,
@@ -26,7 +25,6 @@ abstract class BackofficeUserCreate
   factory BackofficeUserCreate({
     required String email,
     required String password,
-    required String username,
     required String phoneNumber,
     required String firstName,
     required String lastName,
@@ -38,7 +36,6 @@ abstract class BackofficeUserCreate
     return BackofficeUserCreate(
       email: jsonSerialization['email'] as String,
       password: jsonSerialization['password'] as String,
-      username: jsonSerialization['username'] as String,
       phoneNumber: jsonSerialization['phoneNumber'] as String,
       firstName: jsonSerialization['firstName'] as String,
       lastName: jsonSerialization['lastName'] as String,
@@ -48,8 +45,6 @@ abstract class BackofficeUserCreate
   String email;
 
   String password;
-
-  String username;
 
   String phoneNumber;
 
@@ -63,7 +58,6 @@ abstract class BackofficeUserCreate
   BackofficeUserCreate copyWith({
     String? email,
     String? password,
-    String? username,
     String? phoneNumber,
     String? firstName,
     String? lastName,
@@ -74,7 +68,6 @@ abstract class BackofficeUserCreate
       '__className__': 'BackofficeUserCreate',
       'email': email,
       'password': password,
-      'username': username,
       'phoneNumber': phoneNumber,
       'firstName': firstName,
       'lastName': lastName,
@@ -87,7 +80,6 @@ abstract class BackofficeUserCreate
       '__className__': 'BackofficeUserCreate',
       'email': email,
       'password': password,
-      'username': username,
       'phoneNumber': phoneNumber,
       'firstName': firstName,
       'lastName': lastName,
@@ -104,14 +96,12 @@ class _BackofficeUserCreateImpl extends BackofficeUserCreate {
   _BackofficeUserCreateImpl({
     required String email,
     required String password,
-    required String username,
     required String phoneNumber,
     required String firstName,
     required String lastName,
   }) : super._(
          email: email,
          password: password,
-         username: username,
          phoneNumber: phoneNumber,
          firstName: firstName,
          lastName: lastName,
@@ -124,7 +114,6 @@ class _BackofficeUserCreateImpl extends BackofficeUserCreate {
   BackofficeUserCreate copyWith({
     String? email,
     String? password,
-    String? username,
     String? phoneNumber,
     String? firstName,
     String? lastName,
@@ -132,7 +121,6 @@ class _BackofficeUserCreateImpl extends BackofficeUserCreate {
     return BackofficeUserCreate(
       email: email ?? this.email,
       password: password ?? this.password,
-      username: username ?? this.username,
       phoneNumber: phoneNumber ?? this.phoneNumber,
       firstName: firstName ?? this.firstName,
       lastName: lastName ?? this.lastName,

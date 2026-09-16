@@ -46,10 +46,25 @@ class AppLocalizationsEn extends AppLocalizations {
   String get email => 'Email';
 
   @override
+  String get loginIdentifier => 'Email or username';
+
+  @override
+  String get loginIdentifierHint =>
+      'Owners use email. Staff use their username.';
+
+  @override
   String get password => 'Password';
 
   @override
   String get username => 'Username';
+
+  @override
+  String get usernameLocked =>
+      'Username is assigned by the system and cannot be changed.';
+
+  @override
+  String get employeeUsernameHint =>
+      'A username is generated from the name after you save.';
 
   @override
   String get phone => 'Phone number';
@@ -149,6 +164,37 @@ class AppLocalizationsEn extends AppLocalizations {
       'Finish registration with username and phone.';
 
   @override
+  String get errorAccountDisabled => 'This staff account is disabled.';
+
+  @override
+  String get navEmployees => 'Employees';
+
+  @override
+  String get editEmployee => 'Edit employee';
+
+  @override
+  String get saveEmployee => 'Save employee';
+
+  @override
+  String get employeesOwnerOnly => 'Only owners can manage staff.';
+
+  @override
+  String get accountEnabled => 'Account enabled';
+
+  @override
+  String get accountDisabled => 'Account disabled';
+
+  @override
+  String get accountEnabledHint => 'This person can sign in to operations.';
+
+  @override
+  String get accountDisabledHint => 'This person cannot sign in to operations.';
+
+  @override
+  String get dashboardEmployeesCue =>
+      'Add staff, edit details, and enable or disable access.';
+
+  @override
   String get opsRailTagline => 'Floor command';
 
   @override
@@ -225,7 +271,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dashboardCatalogCue => 'Articles and ingredients, UI only.';
 
   @override
-  String get dashboardProfileCue => 'Your details and the team you added.';
+  String get dashboardProfileCue => 'Your name and phone.';
 
   @override
   String get emailLocked =>
@@ -233,5 +279,141 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get profileHint =>
-      'Update the name the floor sees. Owners can open staff profiles below.';
+      'Update the name the floor sees. Sign-in identity stays locked.';
+
+  @override
+  String get navBuildings => 'Buildings';
+
+  @override
+  String get addBuilding => 'Add building';
+
+  @override
+  String get editBuilding => 'Edit building';
+
+  @override
+  String get saveBuilding => 'Save building';
+
+  @override
+  String get buildingName => 'Venue name';
+
+  @override
+  String get buildingType => 'Venue type';
+
+  @override
+  String get buildingTypeRestaurant => 'Restaurant';
+
+  @override
+  String get buildingTypeLounge => 'Lounge';
+
+  @override
+  String get buildingTypeBar => 'Bar';
+
+  @override
+  String get buildingTypeCafe => 'Café';
+
+  @override
+  String get buildingTypeOther => 'Other';
+
+  @override
+  String get buildingTypeCustom => 'Custom type';
+
+  @override
+  String get buildingAddress => 'Address';
+
+  @override
+  String get latitude => 'Latitude';
+
+  @override
+  String get longitude => 'Longitude';
+
+  @override
+  String get openingTime => 'Opens';
+
+  @override
+  String get closingTime => 'Closes';
+
+  @override
+  String get currencyCode => 'Currency';
+
+  @override
+  String get buildingStaff => 'Staff at this venue';
+
+  @override
+  String get buildingStaffEmpty =>
+      'No employees yet. Add staff after you save this venue.';
+
+  @override
+  String get buildingsOwnerHint =>
+      'Create a venue, then open it to run the floor. Other tools stay locked until you pick one.';
+
+  @override
+  String get buildingsStaffHint => 'Pick a venue you are assigned to.';
+
+  @override
+  String get buildingsEmptyOwner =>
+      'Add your first café, restaurant, lounge, or bar to continue.';
+
+  @override
+  String get employeesEmptyBuilding => 'No staff assigned to this venue yet.';
+
+  @override
+  String dashboardBuildingMeta(
+    String type,
+    String address,
+    String opens,
+    String closes,
+    String currency,
+  ) {
+    return '$type · $address · $opens–$closes · $currency';
+  }
+
+  @override
+  String get validationRequired => 'This field is required.';
+
+  @override
+  String get validationLoginIdentifier =>
+      'Enter an email or a username (at least 3 characters).';
+
+  @override
+  String get validationEmail => 'Enter a valid email.';
+
+  @override
+  String get validationPassword =>
+      'Use at least 8 characters, no leading or trailing spaces.';
+
+  @override
+  String get validationPhone => 'Enter a valid phone number.';
+
+  @override
+  String get validationVenueName => 'Name must be 1–80 characters.';
+
+  @override
+  String get validationVenueType =>
+      'Use 2–40 letters, numbers, spaces, or hyphens.';
+
+  @override
+  String get validationAddress => 'Address must be 3–200 characters.';
+
+  @override
+  String get validationLatitude => 'Latitude must be between -90 and 90.';
+
+  @override
+  String get validationLongitude => 'Longitude must be between -180 and 180.';
+
+  @override
+  String get validationCurrency => 'Use a 3-letter currency code.';
+
+  @override
+  String get pickCurrentPosition => 'Pick current position';
+
+  @override
+  String get errorLocationDenied =>
+      'Location permission is required to fill the address.';
+
+  @override
+  String get errorLocationDisabled =>
+      'Turn on location services and try again.';
+
+  @override
+  String get errorLocationFailed => 'Could not read the current position.';
 }

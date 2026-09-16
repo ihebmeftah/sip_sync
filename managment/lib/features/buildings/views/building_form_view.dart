@@ -1,0 +1,474 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sip_sync_client/sip_sync_client.dart';
+
+import '../../../core/di/app_providers.dart';
+import '../../../core/di/building_session.dart';
+import '../../../core/di/service_locator.dart';
+import '../../../core/errors/error_mapper.dart';
+import '../../../core/errors/form_validators.dart';
+import '../../../core/routing/app_routes.dart';
+import '../../../core/theme/app_tokens.dart';
+import '../../../core/widgets/app_controls.dart';
+import '../../../l10n/generated/app_localizations.dart';
+import '../../auth/view_models/auth_view_model.dart';
+import '../venue_location.dart';
+import '../view_models/buildings_view_model.dart';
+
+const _predefinedTypes = ['restaurant', 'lounge', 'bar', 'cafe'];
+const _currencies = ['TND', 'EUR', 'USD', 'GBP', 'MAD', 'DZD'];
+
+class BuildingFormView extends ConsumerStatefulWidget {
+  const BuildingFormView({super.key, this.buildingId});
+
+  final String? buildingId;
+
+  @override
+  ConsumerState<BuildingFormView> createState() => _BuildingFormViewState();
+}
+
+class _BuildingFormViewState extends ConsumerState<BuildingFormView> {
+  final _formKey = GlobalKey<FormState>();
+  final _name = TextEditingController();
+  final _customType = TextEditingController();
+  final _address = TextEditingController();
+  final _latitude = TextEditingController();
+  final _longitude = TextEditingController();
+  final _opensText = TextEditingController();
+  final _closesText = TextEditingController();
+  TimeOfDay _opens = const TimeOfDay(hour: 8, minute: 0);
+  TimeOfDay _closes = const TimeOfDay(hour: 23, minute: 0);
+  String _type = 'cafe';
+  String _currency = 'TND';
+  var _otherType = false;
+  final _selectedStaff = <String>{};
+  var _filled = false;
+  var _saving = false;
+  var _locating = false;
+  String? _locationErrorKey;
+  final _locationPicker = VenueLocationPicker();
+
+  String get _id => widget.buildingId ?? '';
+  bool get _isEdit => _id.isNotEmpty;
+
+  @override
+  void initState() {
+    super.initState();
+    _syncTimeFields();
+  }
+
+  @override
+  void dispose() {
+    _name.dispose();
+    _customType.dispose();
+    _address.dispose();
+    _latitude.dispose();
+    _longitude.dispose();
+    _opensText.dispose();
+    _closesText.dispose();
+    super.dispose();
+  }
+
+  void _fill(BuildingView building) {
+    if (_filled) {
+      return;
+    }
+    _name.text = building.name;
+    _address.text = building.address;
+    _latitude.text = building.latitude.toString();
+    _longitude.text = building.longitude.toString();
+    _currency = _currencies.contains(building.currencyCode)
+        ? building.currencyCode
+        : 'TND';
+    _opens = TimeOfDay(
+      hour: building.openingMinutes ~/ 60,
+      minute: building.openingMinutes % 60,
+    );
+    _closes = TimeOfDay(
+      hour: building.closingMinutes ~/ 60,
+      minute: building.closingMinutes % 60,
+    );
+    _syncTimeFields();
+    if (_predefinedTypes.contains(building.type)) {
+      _type = building.type;
+      _otherType = false;
+    } else {
+      _type = building.type;
+      _otherType = true;
+      _customType.text = building.type;
+    }
+    _selectedStaff
+      ..clear()
+      ..addAll(building.employeeAuthUserIds.map((id) => id.uuid));
+    _filled = true;
+  }
+
+  String _resolvedType() => _otherType ? _customType.text : _type;
+
+  void _syncTimeFields() {
+    _opensText.text = formatMinutes(minutesFromTimeOfDay(_opens));
+    _closesText.text = formatMinutes(minutesFromTimeOfDay(_closes));
+  }
+
+  Future<void> _pickTime({required bool opening}) async {
+    final initial = opening ? _opens : _closes;
+    final picked = await showTimePicker(context: context, initialTime: initial);
+    if (picked == null) {
+      return;
+    }
+    setState(() {
+      if (opening) {
+        _opens = picked;
+      } else {
+        _closes = picked;
+      }
+      _syncTimeFields();
+    });
+  }
+
+  Future<void> _pickCurrentPosition() async {
+    setState(() {
+      _locating = true;
+      _locationErrorKey = null;
+    });
+    try {
+      final location = await _locationPicker.pickCurrent();
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _latitude.text = location.latitude.toString();
+        _longitude.text = location.longitude.toString();
+        if (location.address != null && location.address!.isNotEmpty) {
+          _address.text = location.address!;
+        }
+        _locating = false;
+      });
+    } on VenueLocationException catch (error) {
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _locationErrorKey = error.l10nKey;
+        _locating = false;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final async = ref.watch(buildingFormViewModelProvider(_id));
+    final isOwner =
+        ref
+            .watch(authViewModelProvider)
+            .session
+            ?.profile
+            .roles
+            .contains('owner') ??
+        false;
+    async.whenData((building) {
+      if (building != null) {
+        _fill(building);
+      }
+    });
+
+    return ColoredBox(
+      color: Theme.of(context).scaffoldBackgroundColor,
+      child: Align(
+        alignment: Alignment.topCenter,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: AppBreakpoints.pageMax),
+          child: Form(
+            key: _formKey,
+            child: ListView(
+              padding: const EdgeInsets.all(AppSpacing.xl),
+              children: [
+                Text(
+                  _isEdit ? l10n.editBuilding : l10n.addBuilding,
+                  style: Theme.of(context).textTheme.headlineSmall,
+                ),
+                const SizedBox(height: AppSpacing.lg),
+                if (async.isLoading) const LinearProgressIndicator(),
+                AppSurfaceCard(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      AppTextField(
+                        controller: _name,
+                        label: l10n.buildingName,
+                        prefixIcon: Icons.storefront_outlined,
+                        validator: (value) =>
+                            FormValidators.venueName(l10n, value),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: AppSpacing.lg),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Text(
+                              l10n.buildingType,
+                              style: Theme.of(context).textTheme.titleSmall,
+                            ),
+                            const SizedBox(height: AppSpacing.sm),
+                            Wrap(
+                              spacing: AppSpacing.sm,
+                              runSpacing: AppSpacing.sm,
+                              children: [
+                                for (final type in _predefinedTypes)
+                                  ChoiceChip(
+                                    label: Text(_typeLabel(l10n, type)),
+                                    selected: !_otherType && _type == type,
+                                    onSelected: (_) => setState(() {
+                                      _otherType = false;
+                                      _type = type;
+                                    }),
+                                  ),
+                                ChoiceChip(
+                                  label: Text(l10n.buildingTypeOther),
+                                  selected: _otherType,
+                                  onSelected: (_) =>
+                                      setState(() => _otherType = true),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      if (_otherType)
+                        AppTextField(
+                          controller: _customType,
+                          label: l10n.buildingTypeCustom,
+                          validator: (value) =>
+                              FormValidators.venueType(l10n, value),
+                        ),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: AppSpacing.lg),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              flex: 2,
+                              child: AppTextField(
+                                controller: _address,
+                                label: l10n.buildingAddress,
+                                prefixIcon: Icons.place_outlined,
+                                compact: true,
+                                validator: (value) =>
+                                    FormValidators.address(l10n, value),
+                              ),
+                            ),
+                            const SizedBox(width: AppSpacing.md),
+                            Expanded(
+                              child: AppTextField(
+                                controller: _longitude,
+                                label: l10n.longitude,
+                                compact: true,
+                                keyboardType:
+                                    const TextInputType.numberWithOptions(
+                                      decimal: true,
+                                      signed: true,
+                                    ),
+                                validator: (value) =>
+                                    FormValidators.longitude(l10n, value),
+                              ),
+                            ),
+                            const SizedBox(width: AppSpacing.md),
+                            Expanded(
+                              child: AppTextField(
+                                controller: _latitude,
+                                label: l10n.latitude,
+                                compact: true,
+                                keyboardType:
+                                    const TextInputType.numberWithOptions(
+                                      decimal: true,
+                                      signed: true,
+                                    ),
+                                validator: (value) =>
+                                    FormValidators.latitude(l10n, value),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: AppSpacing.lg),
+                        child: Align(
+                          alignment: AlignmentDirectional.centerStart,
+                          child: OutlinedButton.icon(
+                            onPressed: _locating ? null : _pickCurrentPosition,
+                            icon: _locating
+                                ? SizedBox(
+                                    width: 18,
+                                    height: 18,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.primary,
+                                    ),
+                                  )
+                                : const Icon(Icons.my_location_outlined),
+                            label: Text(l10n.pickCurrentPosition),
+                          ),
+                        ),
+                      ),
+                      if (_locationErrorKey != null)
+                        AppErrorBanner(
+                          message: lookupError(l10n, _locationErrorKey!),
+                        ),
+                      AppTextField(
+                        controller: _opensText,
+                        label: l10n.openingTime,
+                        readOnly: true,
+                        prefixIcon: Icons.schedule_outlined,
+                        suffixIcon: const Icon(Icons.keyboard_arrow_down),
+                        onTap: () => _pickTime(opening: true),
+                      ),
+                      AppTextField(
+                        controller: _closesText,
+                        label: l10n.closingTime,
+                        readOnly: true,
+                        prefixIcon: Icons.schedule_outlined,
+                        suffixIcon: const Icon(Icons.keyboard_arrow_down),
+                        onTap: () => _pickTime(opening: false),
+                      ),
+                      AppDropdownField<String>(
+                        label: l10n.currencyCode,
+                        value: _currency,
+                        prefixIcon: Icons.payments_outlined,
+                        items: [
+                          for (final code in _currencies)
+                            DropdownMenuItem(value: code, child: Text(code)),
+                        ],
+                        onChanged: (value) {
+                          if (value != null) {
+                            setState(() => _currency = value);
+                          }
+                        },
+                      ),
+                      if (isOwner)
+                        _StaffPicker(
+                          selected: _selectedStaff,
+                          onToggle: (id) => setState(() {
+                            if (_selectedStaff.contains(id)) {
+                              _selectedStaff.remove(id);
+                            } else {
+                              _selectedStaff.add(id);
+                            }
+                          }),
+                        ),
+                      if (async.hasError)
+                        AppErrorBanner(
+                          message: lookupError(
+                            l10n,
+                            mapError(async.error!).l10nKey,
+                          ),
+                        ),
+                      AppFilledButton(
+                        label: _isEdit ? l10n.saveBuilding : l10n.addBuilding,
+                        busy: _saving,
+                        onPressed: () async {
+                          if (!(_formKey.currentState?.validate() ?? false)) {
+                            return;
+                          }
+                          if (FormValidators.venueType(l10n, _resolvedType()) !=
+                              null) {
+                            return;
+                          }
+                          setState(() => _saving = true);
+                          final saved = await ref
+                              .read(buildingFormViewModelProvider(_id).notifier)
+                              .save(
+                                name: _name.text,
+                                type: _resolvedType(),
+                                address: _address.text,
+                                latitude: double.parse(_latitude.text.trim()),
+                                longitude: double.parse(_longitude.text.trim()),
+                                openingMinutes: minutesFromTimeOfDay(_opens),
+                                closingMinutes: minutesFromTimeOfDay(_closes),
+                                currencyCode: _currency,
+                                employeeAuthUserIds: _selectedStaff
+                                    .map(UuidValue.fromString)
+                                    .toList(),
+                              );
+                          if (!context.mounted) {
+                            return;
+                          }
+                          setState(() => _saving = false);
+                          if (saved == null) {
+                            return;
+                          }
+                          getIt<BuildingSession>().select(saved.id);
+                          const DashboardRoute().go(context);
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  String _typeLabel(AppLocalizations l10n, String type) {
+    return switch (type) {
+      'restaurant' => l10n.buildingTypeRestaurant,
+      'lounge' => l10n.buildingTypeLounge,
+      'bar' => l10n.buildingTypeBar,
+      'cafe' => l10n.buildingTypeCafe,
+      _ => type,
+    };
+  }
+}
+
+class _StaffPicker extends ConsumerWidget {
+  const _StaffPicker({required this.selected, required this.onToggle});
+
+  final Set<String> selected;
+  final ValueChanged<String> onToggle;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
+    return FutureBuilder(
+      future: ref.read(accountRepositoryProvider).listEmployees(),
+      builder: (context, snapshot) {
+        final staff = snapshot.data ?? const <EmployeeView>[];
+        if (staff.isEmpty) {
+          return Padding(
+            padding: const EdgeInsets.only(bottom: AppSpacing.lg),
+            child: Text(l10n.buildingStaffEmpty),
+          );
+        }
+        return Padding(
+          padding: const EdgeInsets.only(bottom: AppSpacing.lg),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                l10n.buildingStaff,
+                style: Theme.of(context).textTheme.titleSmall,
+              ),
+              const SizedBox(height: AppSpacing.sm),
+              Wrap(
+                spacing: AppSpacing.sm,
+                children: [
+                  for (final employee in staff)
+                    FilterChip(
+                      label: Text('${employee.firstName} ${employee.lastName}'),
+                      selected: selected.contains(employee.authUserId.uuid),
+                      onSelected: (_) => onToggle(employee.authUserId.uuid),
+                    ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}

@@ -1,0 +1,4 @@
+exception: BuildingException
+fields:
+  message: String
+  code: BuildingErrorCode

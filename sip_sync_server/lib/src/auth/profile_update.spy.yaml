@@ -1,9 +1,8 @@
 ### Writable identity fields for the signed-in user.
 ###
-### Email stays on the auth identity and is not changed here.
+### Email and username are not changed here.
 class: ProfileUpdate
 fields:
-  username: String
   phoneNumber: String
   firstName: String
   lastName: String

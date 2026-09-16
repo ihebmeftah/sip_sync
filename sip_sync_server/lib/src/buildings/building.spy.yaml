@@ -1,0 +1,19 @@
+### A café, restaurant, lounge, bar, or custom venue owned by one owner.
+class: Building
+table: building
+serverOnly: true
+fields:
+  id: UuidValue?, defaultPersist=random_v7
+  ownerAuthUserId: UuidValue
+  name: String
+  type: String
+  address: String
+  latitude: double
+  longitude: double
+  openingMinutes: int
+  closingMinutes: int
+  currencyCode: String
+  createdAt: DateTime, defaultModel=now
+indexes:
+  building_owner_idx:
+    fields: ownerAuthUserId

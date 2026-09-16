@@ -1,13 +1,12 @@
 ### Platform profile attached 1:1 to a Serverpod [AuthUser].
 ###
-### Identity is unique by email, username, and phone so the same person can
-### hold several app roles without duplicate accounts.
+### Email is unique. Username is unique when set (employees only).
 class: SipSyncProfile
 table: sip_sync_profile
 serverOnly: true
 fields:
   authUser: module:serverpod_auth_core:AuthUser?, relation(onDelete=Cascade)
-  username: String
+  username: String?
   email: String
   phoneNumber: String
   firstName: String

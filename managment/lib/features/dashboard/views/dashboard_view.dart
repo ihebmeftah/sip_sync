@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/di/app_providers.dart';
+import '../../../core/errors/form_validators.dart';
 import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
@@ -15,6 +17,7 @@ class DashboardView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final session = ref.watch(authViewModelProvider).session;
+    final building = ref.watch(buildingSelectionProvider);
     final scheme = Theme.of(context).colorScheme;
     final text = Theme.of(context).textTheme;
     final name = session?.profile.firstName ?? '';
@@ -97,6 +100,30 @@ class DashboardView extends ConsumerWidget {
                                   ),
                               ],
                             ),
+                            if (building != null) ...[
+                              const SizedBox(height: AppSpacing.lg),
+                              Text(
+                                building.name,
+                                style: text.headlineSmall?.copyWith(
+                                  color: scheme.onPrimaryContainer,
+                                ),
+                              ),
+                              const SizedBox(height: AppSpacing.xs),
+                              Text(
+                                l10n.dashboardBuildingMeta(
+                                  building.type,
+                                  building.address,
+                                  formatMinutes(building.openingMinutes),
+                                  formatMinutes(building.closingMinutes),
+                                  building.currencyCode,
+                                ),
+                                style: text.bodyMedium?.copyWith(
+                                  color: scheme.onPrimaryContainer.withValues(
+                                    alpha: 0.82,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ],
                         ),
                       ),
@@ -124,6 +151,12 @@ class DashboardView extends ConsumerWidget {
                             body: l10n.dashboardCatalogCue,
                             icon: Icons.inventory_2_outlined,
                             onTap: () => const ArticlesRoute().go(context),
+                          ),
+                          _DashTile(
+                            title: l10n.navEmployees,
+                            body: l10n.dashboardEmployeesCue,
+                            icon: Icons.groups_outlined,
+                            onTap: () => const EmployeesRoute().go(context),
                           ),
                           _DashTile(
                             title: l10n.navProfile,

@@ -12,3 +12,4 @@ values:
   - cannotDeleteDefaultAdmin
   - passwordTooWeak
   - profileIncomplete
+  - accountDisabled
