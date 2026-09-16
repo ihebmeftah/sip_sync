@@ -32,6 +32,6 @@ Shared widgets live in `core/widgets`, not copied per screen. Feature widgets th
 
 ## Navigation
 
-`MaterialApp.router` + **typed** `go_router` (`go_router_builder`: `@TypedGoRoute` / `GoRouteData`). Navigate with `const HomeRoute().go(context)`, not raw path strings. Auth `redirect` and role guards. No anonymous `Navigator.push` for app flows.
+`MaterialApp.router` + **typed** `go_router` (`go_router_builder`: `@TypedGoRoute` / `GoRouteData`). Navigate with typed routes, not raw path strings. Path params for entities are UUID strings. Auth `redirect` and role guards. No anonymous `Navigator.push` for app flows.
 
 See `.cursor/skills/sip-sync-mvvm-riverpod/SKILL.md`.

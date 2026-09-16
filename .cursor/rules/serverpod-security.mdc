@@ -18,8 +18,9 @@ Never trust the client. Check `session.authenticated` and building membership / 
 ## Models
 
 - Table models stay internal; expose **protocol** types for create/update/read
-- `*Create` / `*Update` DTOs: only writable fields (no `id`, no server-only flags, no other users' ids unless required)
-- Responses: smallest safe shape (ids, display fields). Omit secrets, hashes, unused relations
+- New tables: `id: UuidValue?, defaultPersist=random_v7` — no integer PKs
+- `*Update` / views: entity `id` is `UuidValue`; Create DTOs omit id (server assigns UUIDv7)
+- Responses: smallest safe shape (UUID ids, display fields). Omit secrets, hashes, unused relations
 - Prefer explicit exceptions (`Exception` in `.spy.yaml`) over generic strings
 
 Change `.spy.yaml` and endpoints — never `lib/src/generated/` or `sip_sync_client`.

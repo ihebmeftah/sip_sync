@@ -12,7 +12,7 @@ Copy and track:
 ```
 - [ ] Docs/features/<feature>.md (actors, flow, permissions)
 - [ ] Protocol DTOs (Create/Update/Response) — no over-fetch
-- [ ] Table models + migration if needed
+- [ ] Table models: UUID PKs (`id: UuidValue?, defaultPersist=random_v7`) + migration if needed
 - [ ] Endpoint: requireLogin, scopes, building membership
 - [ ] Server tests (`dart test` in sip_sync_server)
 - [ ] Flutter: GetIt singleton if needed → `@riverpod` repository/ViewModel → view

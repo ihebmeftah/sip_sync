@@ -24,4 +24,4 @@ Do not leak owner/employee screens into the customer app, or customer flows into
 3. Server first (auth, DTOs, tests), then the Flutter app(s) that need the feature
 4. Document public APIs in code (dartdoc)
 
-Use **Riverpod + riverpod_generator**, **go_router + go_router_builder**, **build_runner**, ARB (en/ar/fr). GetIt only for imperative singletons. Enforce permissions on the **server**; Flutter redirects are UX only.
+Use **Riverpod + riverpod_generator**, **go_router + go_router_builder**, **build_runner**, ARB (en/ar/fr). GetIt only for imperative singletons. Entity ids are **UUID** (`UuidValue`), not ints. Enforce permissions on the **server**; Flutter redirects are UX only.

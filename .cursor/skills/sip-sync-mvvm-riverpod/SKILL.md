@@ -64,4 +64,15 @@ class HomeRoute extends GoRouteData with $HomeRoute {
 }
 ```
 
-Navigate: `const HomeRoute().go(context)`. Router uses `$appRoutes` plus `refreshListenable` on auth. Route guards are **not** security — mirror checks on the endpoint.
+```dart
+@TypedGoRoute<BuildingRoute>(path: '/buildings/:id', name: 'building')
+class BuildingRoute extends GoRouteData with $BuildingRoute {
+  const BuildingRoute({required this.id});
+  final String id; // UUID string; UuidValue.fromString in the ViewModel
+  @override
+  Widget build(BuildContext context, GoRouterState state) =>
+      BuildingView(buildingId: id);
+}
+```
+
+Navigate: `BuildingRoute(id: building.id.uuid).go(context)`. Router uses `$appRoutes` plus `refreshListenable` on auth. Route guards are **not** security — mirror checks on the endpoint.

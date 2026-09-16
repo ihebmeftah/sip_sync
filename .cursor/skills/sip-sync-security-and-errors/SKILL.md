@@ -18,7 +18,7 @@ class OrderEndpoint extends Endpoint {
       throw NotAuthorizedException();
     }
     await ensureCanCreateOrder(session, userId, request.buildingId);
-    // persist using table models, return OrderView
+    // persist using table models (UUID PK from DB), return OrderView
   }
 }
 ```
@@ -32,9 +32,9 @@ class OrderEndpoint extends Endpoint {
 
 | Type | Contains |
 | --- | --- |
-| `*Create` | Required fields to create; no id, no timestamps, no derived totals the server must compute |
-| `*Update` | Optional fields + id; never send "set this to the same as GET" blobs of secrets |
-| `*View` / response | Display + ids needed by the client; no password hashes, tokens, unused relations |
+| `*Create` | Required fields to create; no id (server assigns UUIDv7), no timestamps, no derived totals the server must compute |
+| `*Update` | Optional fields + `UuidValue` id; never send "set this to the same as GET" blobs of secrets |
+| `*View` / response | Display + `UuidValue` ids the client needs; no password hashes, tokens, unused relations |
 
 Prefer Serverpod `Exception` types for expected failures (`NotFound`, `NotAuthorized`, `Validation`).
 

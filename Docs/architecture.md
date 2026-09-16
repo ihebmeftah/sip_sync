@@ -7,6 +7,7 @@
 - DI: Riverpod in widgets; GetIt for Serverpod `Client` and repositories used outside the tree (e.g. router `redirect`)
 - i18n: ARB English, Arabic (RTL), French
 - Auth: Serverpod email identity plus Sip Sync profile/roles (`Docs/features/authentication.md`)
+- IDs: `UuidValue` everywhere (tables: `defaultPersist=random_v7`). Auth users already use UUID. Flutter route params are UUID strings → `UuidValue.fromString`.
 
 ## Layers (each Flutter app)
 
@@ -37,7 +38,7 @@ Auth uses `AuthShell` (wide split / compact stack). Signed-in `managment` uses `
 - Endpoints: `requireLogin`, Sip Sync scopes (`sip.owner`, `sip.employee`, `sip.backoffice`, …), building membership
 - One `AuthUser` per person; apps attach roles instead of duplicating accounts
 - Routes: go_router `redirect` for UX
-- DTOs: narrow create/update/view models
+- DTOs: narrow create/update/view models; ids are UUID
 
 ## Agent conventions
 

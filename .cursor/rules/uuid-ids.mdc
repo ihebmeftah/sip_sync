@@ -1,0 +1,33 @@
+---
+description: Use UUID (UuidValue) for all entity IDs in Serverpod and Flutter
+alwaysApply: true
+---
+
+# IDs are UUIDs
+
+Use **UUID**, never `int` serials, for domain primary keys, foreign keys, and protocol ids.
+
+## Server (`.spy.yaml`)
+
+```yaml
+class: Building
+table: building
+fields:
+  id: UuidValue?, defaultPersist=random_v7
+  ownerAuthUserId: UuidValue
+  name: String
+```
+
+- `defaultPersist=random_v7` — database assigns UUIDv7 on insert
+- `defaultModel=random_v7` — Dart knows the id before insert (rare; prefer persist)
+- Relations and DTOs: `UuidValue` / `UuidValue?`
+- Auth users already use `UuidValue` (`authUserId`)
+
+## Flutter
+
+- Repositories and endpoints take `UuidValue`, not `int`
+- Route path params are **strings**; convert once with `UuidValue.fromString(id)`
+- Display with `id.uuid` only in UI copy if needed
+- Do not generate entity ids on the client unless the protocol requires it; the server assigns them
+
+Do not migrate existing int tables unless the user asks. All **new** tables and DTOs use UUID.

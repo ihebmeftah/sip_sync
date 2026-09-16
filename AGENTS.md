@@ -12,7 +12,7 @@ Sip Sync is a café / restaurant / lounge / bar ecosystem. One Serverpod backend
 | `sip_sync_server` | backend | Serverpod RPC, DB, auth, streams |
 | `sip_sync_client` | generated | **never edit** — regenerated from the server |
 
-Stack on every Flutter app: **MVVM**, **Riverpod + riverpod_generator**, **go_router + go_router_builder**, **build_runner**, **GetIt** (singletons only), **ARB i18n** (en, ar, fr with RTL for Arabic), shared theme/typography, reusable widgets per app.
+Stack on every Flutter app: **MVVM**, **Riverpod + riverpod_generator**, **go_router + go_router_builder**, **build_runner**, **GetIt** (singletons only), **ARB i18n** (en, ar, fr with RTL for Arabic), shared theme/typography, reusable widgets per app. Domain ids are **UUID** (`UuidValue` / UUIDv7 on the server), not integers.
 
 `serverpod start` auto-launches all three Flutter apps (`sip_sync_flutter` :8090, `managment` :8091, `backoffice` :8092). After changing `@riverpod` or `@TypedGoRoute` annotations, run `dart run build_runner build --delete-conflicting-outputs` in that app (commit the `.g.dart` files).
 
