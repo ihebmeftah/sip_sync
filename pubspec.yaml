@@ -1,0 +1,11 @@
+name: _
+publish_to: none
+
+environment:
+  sdk: '^3.12.2'
+
+workspace:
+  - sip_sync_client
+  - sip_sync_server
+  - sip_sync_flutter
+
