@@ -12,18 +12,17 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _is;
 
-/// Writable staff fields. Username and email are not editable.
 abstract class EmployeeUpdate
     implements _is.SerializableModel, _is.ProtocolSerialization {
   EmployeeUpdate._({
-    required this.authUserId,
+    required this.id,
     required this.phoneNumber,
     required this.firstName,
     required this.lastName,
   });
 
   factory EmployeeUpdate({
-    required _is.UuidValue authUserId,
+    required _is.UuidValue id,
     required String phoneNumber,
     required String firstName,
     required String lastName,
@@ -31,16 +30,14 @@ abstract class EmployeeUpdate
 
   factory EmployeeUpdate.fromJson(Map<String, dynamic> jsonSerialization) {
     return EmployeeUpdate(
-      authUserId: _is.UuidValueJsonExtension.fromJson(
-        jsonSerialization['authUserId'],
-      ),
+      id: _is.UuidValueJsonExtension.fromJson(jsonSerialization['id']),
       phoneNumber: jsonSerialization['phoneNumber'] as String,
       firstName: jsonSerialization['firstName'] as String,
       lastName: jsonSerialization['lastName'] as String,
     );
   }
 
-  _is.UuidValue authUserId;
+  _is.UuidValue id;
 
   String phoneNumber;
 
@@ -52,7 +49,7 @@ abstract class EmployeeUpdate
   /// with some or all fields replaced by the given arguments.
   @_is.useResult
   EmployeeUpdate copyWith({
-    _is.UuidValue? authUserId,
+    _is.UuidValue? id,
     String? phoneNumber,
     String? firstName,
     String? lastName,
@@ -61,7 +58,7 @@ abstract class EmployeeUpdate
   Map<String, dynamic> toJson() {
     return {
       '__className__': 'EmployeeUpdate',
-      'authUserId': authUserId.toJson(),
+      'id': id.toJson(),
       'phoneNumber': phoneNumber,
       'firstName': firstName,
       'lastName': lastName,
@@ -72,7 +69,7 @@ abstract class EmployeeUpdate
   Map<String, dynamic> toJsonForProtocol() {
     return {
       '__className__': 'EmployeeUpdate',
-      'authUserId': authUserId.toJson(),
+      'id': id.toJson(),
       'phoneNumber': phoneNumber,
       'firstName': firstName,
       'lastName': lastName,
@@ -87,12 +84,12 @@ abstract class EmployeeUpdate
 
 class _EmployeeUpdateImpl extends EmployeeUpdate {
   _EmployeeUpdateImpl({
-    required _is.UuidValue authUserId,
+    required _is.UuidValue id,
     required String phoneNumber,
     required String firstName,
     required String lastName,
   }) : super._(
-         authUserId: authUserId,
+         id: id,
          phoneNumber: phoneNumber,
          firstName: firstName,
          lastName: lastName,
@@ -103,13 +100,13 @@ class _EmployeeUpdateImpl extends EmployeeUpdate {
   @_is.useResult
   @override
   EmployeeUpdate copyWith({
-    _is.UuidValue? authUserId,
+    _is.UuidValue? id,
     String? phoneNumber,
     String? firstName,
     String? lastName,
   }) {
     return EmployeeUpdate(
-      authUserId: authUserId ?? this.authUserId,
+      id: id ?? this.id,
       phoneNumber: phoneNumber ?? this.phoneNumber,
       firstName: firstName ?? this.firstName,
       lastName: lastName ?? this.lastName,

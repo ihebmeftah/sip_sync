@@ -13,14 +13,16 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _is;
 import 'package:sip_sync_server/src/generated/protocol.dart' as _iaib1p48;
-import '../auth/employee_record.dart' as _i8nmniuq;
+import '../auth/employee.dart' as _iujgysn6;
+import '../auth/owner.dart' as _it5d988d;
 
 /// A café, restaurant, lounge, bar, or custom venue owned by one owner.
 abstract class Building
     implements _is.TableRow<_is.UuidValue?>, _is.ProtocolSerialization {
   Building._({
     this.id,
-    required this.ownerAuthUserId,
+    required this.ownerId,
+    this.owner,
     required this.name,
     required this.type,
     required this.address,
@@ -35,7 +37,8 @@ abstract class Building
 
   factory Building({
     _is.UuidValue? id,
-    required _is.UuidValue ownerAuthUserId,
+    required _is.UuidValue ownerId,
+    _it5d988d.Owner? owner,
     required String name,
     required String type,
     required String address,
@@ -45,7 +48,7 @@ abstract class Building
     required int closingMinutes,
     required String currencyCode,
     DateTime? createdAt,
-    List<_i8nmniuq.EmployeeRecord>? employees,
+    List<_iujgysn6.Employee>? employees,
   }) = _BuildingImpl;
 
   factory Building.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -53,9 +56,14 @@ abstract class Building
       id: jsonSerialization['id'] == null
           ? null
           : _is.UuidValueJsonExtension.fromJson(jsonSerialization['id']),
-      ownerAuthUserId: _is.UuidValueJsonExtension.fromJson(
-        jsonSerialization['ownerAuthUserId'],
+      ownerId: _is.UuidValueJsonExtension.fromJson(
+        jsonSerialization['ownerId'],
       ),
+      owner: jsonSerialization['owner'] == null
+          ? null
+          : _iaib1p48.Protocol().deserialize<_it5d988d.Owner>(
+              jsonSerialization['owner'],
+            ),
       name: jsonSerialization['name'] as String,
       type: jsonSerialization['type'] as String,
       address: jsonSerialization['address'] as String,
@@ -69,7 +77,7 @@ abstract class Building
           : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
       employees: jsonSerialization['employees'] == null
           ? null
-          : _iaib1p48.Protocol().deserialize<List<_i8nmniuq.EmployeeRecord>>(
+          : _iaib1p48.Protocol().deserialize<List<_iujgysn6.Employee>>(
               jsonSerialization['employees'],
             ),
     );
@@ -82,7 +90,9 @@ abstract class Building
   @override
   _is.UuidValue? id;
 
-  _is.UuidValue ownerAuthUserId;
+  _is.UuidValue ownerId;
+
+  _it5d988d.Owner? owner;
 
   String name;
 
@@ -102,7 +112,7 @@ abstract class Building
 
   DateTime createdAt;
 
-  List<_i8nmniuq.EmployeeRecord>? employees;
+  List<_iujgysn6.Employee>? employees;
 
   @override
   _is.Table<_is.UuidValue?> get table => t;
@@ -112,7 +122,8 @@ abstract class Building
   @_is.useResult
   Building copyWith({
     _is.UuidValue? id,
-    _is.UuidValue? ownerAuthUserId,
+    _is.UuidValue? ownerId,
+    _it5d988d.Owner? owner,
     String? name,
     String? type,
     String? address,
@@ -122,14 +133,15 @@ abstract class Building
     int? closingMinutes,
     String? currencyCode,
     DateTime? createdAt,
-    List<_i8nmniuq.EmployeeRecord>? employees,
+    List<_iujgysn6.Employee>? employees,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
       '__className__': 'Building',
       if (id != null) 'id': id?.toJson(),
-      'ownerAuthUserId': ownerAuthUserId.toJson(),
+      'ownerId': ownerId.toJson(),
+      if (owner != null) 'owner': owner?.toJson(),
       'name': name,
       'type': type,
       'address': address,
@@ -150,9 +162,13 @@ abstract class Building
   }
 
   static BuildingInclude include({
-    _i8nmniuq.EmployeeRecordIncludeList? employees,
+    _it5d988d.OwnerInclude? owner,
+    _iujgysn6.EmployeeIncludeList? employees,
   }) {
-    return BuildingInclude._(employees: employees);
+    return BuildingInclude._(
+      owner: owner,
+      employees: employees,
+    );
   }
 
   static BuildingIncludeList includeList({
@@ -184,7 +200,8 @@ class _Undefined {}
 class _BuildingImpl extends Building {
   _BuildingImpl({
     _is.UuidValue? id,
-    required _is.UuidValue ownerAuthUserId,
+    required _is.UuidValue ownerId,
+    _it5d988d.Owner? owner,
     required String name,
     required String type,
     required String address,
@@ -194,10 +211,11 @@ class _BuildingImpl extends Building {
     required int closingMinutes,
     required String currencyCode,
     DateTime? createdAt,
-    List<_i8nmniuq.EmployeeRecord>? employees,
+    List<_iujgysn6.Employee>? employees,
   }) : super._(
          id: id,
-         ownerAuthUserId: ownerAuthUserId,
+         ownerId: ownerId,
+         owner: owner,
          name: name,
          type: type,
          address: address,
@@ -216,7 +234,8 @@ class _BuildingImpl extends Building {
   @override
   Building copyWith({
     Object? id = _Undefined,
-    _is.UuidValue? ownerAuthUserId,
+    _is.UuidValue? ownerId,
+    Object? owner = _Undefined,
     String? name,
     String? type,
     String? address,
@@ -230,7 +249,8 @@ class _BuildingImpl extends Building {
   }) {
     return Building(
       id: id is _is.UuidValue? ? id : this.id,
-      ownerAuthUserId: ownerAuthUserId ?? this.ownerAuthUserId,
+      ownerId: ownerId ?? this.ownerId,
+      owner: owner is _it5d988d.Owner? ? owner : this.owner?.copyWith(),
       name: name ?? this.name,
       type: type ?? this.type,
       address: address ?? this.address,
@@ -240,7 +260,7 @@ class _BuildingImpl extends Building {
       closingMinutes: closingMinutes ?? this.closingMinutes,
       currencyCode: currencyCode ?? this.currencyCode,
       createdAt: createdAt ?? this.createdAt,
-      employees: employees is List<_i8nmniuq.EmployeeRecord>?
+      employees: employees is List<_iujgysn6.Employee>?
           ? employees
           : this.employees?.map((e0) => e0.copyWith()).toList(),
     );
@@ -250,12 +270,11 @@ class _BuildingImpl extends Building {
 class BuildingUpdateTable extends _is.UpdateTable<BuildingTable> {
   BuildingUpdateTable(super.table);
 
-  _is.ColumnValue<_is.UuidValue, _is.UuidValue> ownerAuthUserId(
-    _is.UuidValue value,
-  ) => _is.ColumnValue(
-    table.ownerAuthUserId,
-    value,
-  );
+  _is.ColumnValue<_is.UuidValue, _is.UuidValue> ownerId(_is.UuidValue value) =>
+      _is.ColumnValue(
+        table.ownerId,
+        value,
+      );
 
   _is.ColumnValue<String, String> name(String value) => _is.ColumnValue(
     table.name,
@@ -307,8 +326,8 @@ class BuildingUpdateTable extends _is.UpdateTable<BuildingTable> {
 class BuildingTable extends _is.Table<_is.UuidValue?> {
   BuildingTable({super.tableRelation}) : super(tableName: 'building') {
     updateTable = BuildingUpdateTable(this);
-    ownerAuthUserId = _is.ColumnUuid(
-      'ownerAuthUserId',
+    ownerId = _is.ColumnUuid(
+      'ownerId',
       this,
     );
     name = _is.ColumnString(
@@ -351,7 +370,9 @@ class BuildingTable extends _is.Table<_is.UuidValue?> {
 
   late final BuildingUpdateTable updateTable;
 
-  late final _is.ColumnUuid ownerAuthUserId;
+  late final _is.ColumnUuid ownerId;
+
+  _it5d988d.OwnerTable? _owner;
 
   late final _is.ColumnString name;
 
@@ -371,36 +392,49 @@ class BuildingTable extends _is.Table<_is.UuidValue?> {
 
   late final _is.ColumnDateTime createdAt;
 
-  _i8nmniuq.EmployeeRecordTable? ___employees;
+  _iujgysn6.EmployeeTable? ___employees;
 
-  _is.ManyRelation<_i8nmniuq.EmployeeRecordTable>? _employees;
+  _is.ManyRelation<_iujgysn6.EmployeeTable>? _employees;
 
-  _i8nmniuq.EmployeeRecordTable get __employees {
+  _it5d988d.OwnerTable get owner {
+    if (_owner != null) return _owner!;
+    _owner = _is.createRelationTable(
+      relationFieldName: 'owner',
+      field: Building.t.ownerId,
+      foreignField: _it5d988d.Owner.t.id,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _it5d988d.OwnerTable(tableRelation: foreignTableRelation),
+    );
+    return _owner!;
+  }
+
+  _iujgysn6.EmployeeTable get __employees {
     if (___employees != null) return ___employees!;
     ___employees = _is.createRelationTable(
       relationFieldName: '__employees',
       field: Building.t.id,
-      foreignField: _i8nmniuq.EmployeeRecord.t.buildingId,
+      foreignField: _iujgysn6.Employee.t.buildingId,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i8nmniuq.EmployeeRecordTable(tableRelation: foreignTableRelation),
+          _iujgysn6.EmployeeTable(tableRelation: foreignTableRelation),
     );
     return ___employees!;
   }
 
-  _is.ManyRelation<_i8nmniuq.EmployeeRecordTable> get employees {
+  _is.ManyRelation<_iujgysn6.EmployeeTable> get employees {
     if (_employees != null) return _employees!;
     var relationTable = _is.createRelationTable(
       relationFieldName: 'employees',
       field: Building.t.id,
-      foreignField: _i8nmniuq.EmployeeRecord.t.buildingId,
+      foreignField: _iujgysn6.Employee.t.buildingId,
       tableRelation: tableRelation,
       createTable: (foreignTableRelation) =>
-          _i8nmniuq.EmployeeRecordTable(tableRelation: foreignTableRelation),
+          _iujgysn6.EmployeeTable(tableRelation: foreignTableRelation),
     );
-    _employees = _is.ManyRelation<_i8nmniuq.EmployeeRecordTable>(
+    _employees = _is.ManyRelation<_iujgysn6.EmployeeTable>(
       tableWithRelations: relationTable,
-      table: _i8nmniuq.EmployeeRecordTable(
+      table: _iujgysn6.EmployeeTable(
         tableRelation: relationTable.tableRelation!.lastRelation,
       ),
     );
@@ -410,7 +444,7 @@ class BuildingTable extends _is.Table<_is.UuidValue?> {
   @override
   List<_is.Column> get columns => [
     id,
-    ownerAuthUserId,
+    ownerId,
     name,
     type,
     address,
@@ -424,6 +458,9 @@ class BuildingTable extends _is.Table<_is.UuidValue?> {
 
   @override
   _is.Table? getRelationTable(String relationField) {
+    if (relationField == 'owner') {
+      return owner;
+    }
     if (relationField == 'employees') {
       return __employees;
     }
@@ -432,14 +469,23 @@ class BuildingTable extends _is.Table<_is.UuidValue?> {
 }
 
 class BuildingInclude extends _is.IncludeObject {
-  BuildingInclude._({_i8nmniuq.EmployeeRecordIncludeList? employees}) {
+  BuildingInclude._({
+    _it5d988d.OwnerInclude? owner,
+    _iujgysn6.EmployeeIncludeList? employees,
+  }) {
+    _owner = owner;
     _employees = employees;
   }
 
-  _i8nmniuq.EmployeeRecordIncludeList? _employees;
+  _it5d988d.OwnerInclude? _owner;
+
+  _iujgysn6.EmployeeIncludeList? _employees;
 
   @override
-  Map<String, _is.Include?> get includes => {'employees': _employees};
+  Map<String, _is.Include?> get includes => {
+    'owner': _owner,
+    'employees': _employees,
+  };
 
   @override
   _is.Table<_is.UuidValue?> get table => Building.t;
@@ -872,27 +918,27 @@ class BuildingRepository {
 class BuildingAttachRepository {
   const BuildingAttachRepository._();
 
-  /// Creates a relation between this [Building] and the given [EmployeeRecord]s
-  /// by setting each [EmployeeRecord]'s foreign key `buildingId` to refer to this [Building].
+  /// Creates a relation between this [Building] and the given [Employee]s
+  /// by setting each [Employee]'s foreign key `buildingId` to refer to this [Building].
   Future<void> employees(
     _is.DatabaseSession session,
     Building building,
-    List<_i8nmniuq.EmployeeRecord> employeeRecord, {
+    List<_iujgysn6.Employee> employee, {
     _is.Transaction? transaction,
   }) async {
-    if (employeeRecord.any((e) => e.id == null)) {
-      throw ArgumentError.notNull('employeeRecord.id');
+    if (employee.any((e) => e.id == null)) {
+      throw ArgumentError.notNull('employee.id');
     }
     if (building.id == null) {
       throw ArgumentError.notNull('building.id');
     }
 
-    var $employeeRecord = employeeRecord
+    var $employee = employee
         .map((e) => e.copyWith(buildingId: building.id))
         .toList();
-    await session.db.update<_i8nmniuq.EmployeeRecord>(
-      $employeeRecord,
-      columns: [_i8nmniuq.EmployeeRecord.t.buildingId],
+    await session.db.update<_iujgysn6.Employee>(
+      $employee,
+      columns: [_iujgysn6.Employee.t.buildingId],
       transaction: transaction,
     );
   }
@@ -901,25 +947,48 @@ class BuildingAttachRepository {
 class BuildingAttachRowRepository {
   const BuildingAttachRowRepository._();
 
-  /// Creates a relation between this [Building] and the given [EmployeeRecord]
-  /// by setting the [EmployeeRecord]'s foreign key `buildingId` to refer to this [Building].
+  /// Creates a relation between the given [Building] and [Owner]
+  /// by setting the [Building]'s foreign key `ownerId` to refer to the [Owner].
+  Future<void> owner(
+    _is.DatabaseSession session,
+    Building building,
+    _it5d988d.Owner owner, {
+    _is.Transaction? transaction,
+  }) async {
+    if (building.id == null) {
+      throw ArgumentError.notNull('building.id');
+    }
+    if (owner.id == null) {
+      throw ArgumentError.notNull('owner.id');
+    }
+
+    var $building = building.copyWith(ownerId: owner.id);
+    await session.db.updateRow<Building>(
+      $building,
+      columns: [Building.t.ownerId],
+      transaction: transaction,
+    );
+  }
+
+  /// Creates a relation between this [Building] and the given [Employee]
+  /// by setting the [Employee]'s foreign key `buildingId` to refer to this [Building].
   Future<void> employees(
     _is.DatabaseSession session,
     Building building,
-    _i8nmniuq.EmployeeRecord employeeRecord, {
+    _iujgysn6.Employee employee, {
     _is.Transaction? transaction,
   }) async {
-    if (employeeRecord.id == null) {
-      throw ArgumentError.notNull('employeeRecord.id');
+    if (employee.id == null) {
+      throw ArgumentError.notNull('employee.id');
     }
     if (building.id == null) {
       throw ArgumentError.notNull('building.id');
     }
 
-    var $employeeRecord = employeeRecord.copyWith(buildingId: building.id);
-    await session.db.updateRow<_i8nmniuq.EmployeeRecord>(
-      $employeeRecord,
-      columns: [_i8nmniuq.EmployeeRecord.t.buildingId],
+    var $employee = employee.copyWith(buildingId: building.id);
+    await session.db.updateRow<_iujgysn6.Employee>(
+      $employee,
+      columns: [_iujgysn6.Employee.t.buildingId],
       transaction: transaction,
     );
   }

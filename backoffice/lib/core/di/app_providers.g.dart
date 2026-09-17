@@ -49,49 +49,92 @@ final class ClientProvider extends $FunctionalProvider<Client, Client, Client>
 
 String _$clientHash() => r'cd1ac107ee15d79c82574cd6d6680bc53670e85b';
 
-@ProviderFor(accountRepository)
-const accountRepositoryProvider = AccountRepositoryProvider._();
+@ProviderFor(superAdminAuthRepository)
+const superAdminAuthRepositoryProvider = SuperAdminAuthRepositoryProvider._();
 
-final class AccountRepositoryProvider
+final class SuperAdminAuthRepositoryProvider
     extends
         $FunctionalProvider<
-          AccountRepository,
-          AccountRepository,
-          AccountRepository
+          SuperAdminAuthRepository,
+          SuperAdminAuthRepository,
+          SuperAdminAuthRepository
         >
-    with $Provider<AccountRepository> {
-  const AccountRepositoryProvider._()
+    with $Provider<SuperAdminAuthRepository> {
+  const SuperAdminAuthRepositoryProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'accountRepositoryProvider',
+        name: r'superAdminAuthRepositoryProvider',
         isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$accountRepositoryHash();
+  String debugGetCreateSourceHash() => _$superAdminAuthRepositoryHash();
 
   @$internal
   @override
-  $ProviderElement<AccountRepository> $createElement(
+  $ProviderElement<SuperAdminAuthRepository> $createElement(
     $ProviderPointer pointer,
   ) => $ProviderElement(pointer);
 
   @override
-  AccountRepository create(Ref ref) {
-    return accountRepository(ref);
+  SuperAdminAuthRepository create(Ref ref) {
+    return superAdminAuthRepository(ref);
   }
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(AccountRepository value) {
+  Override overrideWithValue(SuperAdminAuthRepository value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<AccountRepository>(value),
+      providerOverride: $SyncValueProvider<SuperAdminAuthRepository>(value),
     );
   }
 }
 
-String _$accountRepositoryHash() => r'9f0d02cdfa37317cffc67c91cd016399030035a6';
+String _$superAdminAuthRepositoryHash() =>
+    r'6a6c34fa9c369e87109c0c64cc0bad037701f1e3';
+
+@ProviderFor(appSessionStore)
+const appSessionStoreProvider = AppSessionStoreProvider._();
+
+final class AppSessionStoreProvider
+    extends
+        $FunctionalProvider<AppSessionStore, AppSessionStore, AppSessionStore>
+    with $Provider<AppSessionStore> {
+  const AppSessionStoreProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'appSessionStoreProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$appSessionStoreHash();
+
+  @$internal
+  @override
+  $ProviderElement<AppSessionStore> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  AppSessionStore create(Ref ref) {
+    return appSessionStore(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(AppSessionStore value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<AppSessionStore>(value),
+    );
+  }
+}
+
+String _$appSessionStoreHash() => r'4119692888a986f5a2fb6225be75421170f4563d';

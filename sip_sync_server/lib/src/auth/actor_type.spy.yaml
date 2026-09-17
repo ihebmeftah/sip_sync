@@ -1,0 +1,7 @@
+enum: ActorType
+serialized: byName
+values:
+  - owner
+  - employee
+  - customer
+  - superAdmin

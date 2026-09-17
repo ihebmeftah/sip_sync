@@ -1,6 +1,0 @@
-enum: SipApp
-serialized: byIndex
-values:
-  - customer
-  - management
-  - backoffice

@@ -9,7 +9,6 @@ import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
 import '../../../l10n/generated/app_localizations.dart';
-import '../../auth/view_models/auth_view_model.dart';
 import '../view_models/buildings_view_model.dart';
 
 class BuildingsListView extends ConsumerWidget {
@@ -20,14 +19,7 @@ class BuildingsListView extends ConsumerWidget {
     final l10n = AppLocalizations.of(context)!;
     final text = Theme.of(context).textTheme;
     final scheme = Theme.of(context).colorScheme;
-    final isOwner =
-        ref
-            .watch(authViewModelProvider)
-            .session
-            ?.profile
-            .roles
-            .contains('owner') ??
-        false;
+    final isOwner = ref.watch(appSessionStoreProvider).isOwner;
     final async = ref.watch(buildingsViewModelProvider);
     final selectedId = ref.watch(buildingSelectionProvider)?.id;
 

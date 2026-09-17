@@ -2,7 +2,6 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../core/di/app_providers.dart';
 import '../../../core/errors/error_mapper.dart';
-import '../../auth/view_models/auth_view_model.dart';
 
 part 'profile_view_model.g.dart';
 
@@ -43,14 +42,21 @@ class ProfileViewModel extends _$ProfileViewModel {
   }) async {
     state = state.copyWith(saving: true, saved: false, clearError: true);
     try {
-      final session = await ref
-          .read(accountRepositoryProvider)
-          .updateMyProfile(
-            phoneNumber: phoneNumber,
-            firstName: firstName,
-            lastName: lastName,
-          );
-      ref.read(authViewModelProvider.notifier).applySession(session);
+      final sessionStore = ref.read(appSessionStoreProvider);
+      final auth = ref.read(ownerAuthRepositoryProvider);
+      if (sessionStore.isOwner) {
+        await auth.updateOwnerProfile(
+          phoneNumber: phoneNumber,
+          firstName: firstName,
+          lastName: lastName,
+        );
+      } else {
+        await auth.updateEmployeeProfile(
+          phoneNumber: phoneNumber,
+          firstName: firstName,
+          lastName: lastName,
+        );
+      }
       state = state.copyWith(saving: false, saved: true);
       return true;
     } catch (error) {

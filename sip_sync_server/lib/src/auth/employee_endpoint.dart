@@ -1,88 +1,147 @@
 import 'package:serverpod/serverpod.dart';
-import 'package:serverpod_auth_idp_server/core.dart';
 
 import '../generated/protocol.dart';
-import 'account_service.dart';
+import 'auth_guard.dart';
+import 'auth_support.dart';
 
-/// Owner-only staff management. Employees always belong to one building.
-///
-/// Separated from [AccountEndpoint] so venue-scoped staff CRUD is not mixed
-/// with customer/owner/backoffice identity flows.
+/// Owner-only staff management for a building.
 class EmployeeEndpoint extends Endpoint {
-  final _accounts = AccountService();
+  final _auth = AuthSupport();
 
   @override
   bool get requireLogin => true;
 
-  /// Owner reads one employee they added.
-  Future<EmployeeView> get(
-    Session session,
-    UuidValue employeeAuthUserId,
-  ) async {
-    final userId = session.authenticated?.authUserId;
-    if (userId == null) {
+  Future<EmployeeView> get(Session session, UuidValue employeeId) async {
+    final ownerId = AuthGuard.requireOwner(session);
+    final employee = await Employee.db.findFirstRow(
+      session,
+      where: (t) => t.id.equals(employeeId) & t.ownerId.equals(ownerId),
+    );
+    if (employee == null) {
       throw AccountException(
-        message: 'Sign in required.',
-        code: AccountErrorCode.notAuthorized,
+        message: 'Employee not found.',
+        code: AccountErrorCode.notFound,
       );
     }
-    return _accounts.getEmployee(
-      session,
-      ownerAuthUserId: userId,
-      employeeAuthUserId: employeeAuthUserId,
-    );
+    return _view(employee);
   }
 
-  /// Owner adds an employee for an existing building.
   Future<EmployeeView> add(Session session, EmployeeCreate request) async {
-    final userId = session.authenticated?.authUserId;
-    if (userId == null) {
+    final ownerId = AuthGuard.requireOwner(session);
+    _auth.validatePassword(request.password);
+    final phone = _auth.normalizePhone(request.phoneNumber);
+    _auth.validatePhone(phone);
+    _auth.validateName(request.firstName, request.lastName);
+
+    final building = await Building.db.findById(session, request.buildingId);
+    if (building == null || building.ownerId != ownerId) {
       throw AccountException(
-        message: 'Sign in required.',
-        code: AccountErrorCode.notAuthorized,
+        message: 'Building not found.',
+        code: AccountErrorCode.notFound,
       );
     }
-    return _accounts.addEmployee(
+
+    final phoneHit = await Employee.db.findFirstRow(
       session,
-      ownerAuthUserId: userId,
-      request: request,
+      where: (t) => t.phoneNumber.equals(phone),
     );
+    if (phoneHit != null) {
+      throw AccountException(
+        message: 'Phone already registered.',
+        code: AccountErrorCode.phoneTaken,
+      );
+    }
+
+    final username = await _auth.allocateEmployeeUsername(
+      session,
+      request.firstName,
+      request.lastName,
+    );
+
+    final employee = await Employee.db.insertRow(
+      session,
+      Employee(
+        ownerId: ownerId,
+        buildingId: request.buildingId,
+        username: username,
+        phoneNumber: phone,
+        firstName: request.firstName.trim(),
+        lastName: request.lastName.trim(),
+        passwordHash: _auth.passwords.hash(request.password),
+      ),
+    );
+    return _view(employee);
   }
 
-  /// Owner updates an added employee's phone and name.
   Future<EmployeeView> update(Session session, EmployeeUpdate request) async {
-    final userId = session.authenticated?.authUserId;
-    if (userId == null) {
+    final ownerId = AuthGuard.requireOwner(session);
+    final phone = _auth.normalizePhone(request.phoneNumber);
+    _auth.validatePhone(phone);
+    _auth.validateName(request.firstName, request.lastName);
+
+    final employee = await Employee.db.findFirstRow(
+      session,
+      where: (t) => t.id.equals(request.id) & t.ownerId.equals(ownerId),
+    );
+    if (employee == null) {
       throw AccountException(
-        message: 'Sign in required.',
-        code: AccountErrorCode.notAuthorized,
+        message: 'Employee not found.',
+        code: AccountErrorCode.notFound,
       );
     }
-    return _accounts.updateEmployee(
+    final phoneHit = await Employee.db.findFirstRow(
       session,
-      ownerAuthUserId: userId,
-      request: request,
+      where: (t) =>
+          t.phoneNumber.equals(phone) & t.id.notEquals(request.id),
     );
+    if (phoneHit != null) {
+      throw AccountException(
+        message: 'Phone already registered.',
+        code: AccountErrorCode.phoneTaken,
+      );
+    }
+    final updated = await Employee.db.updateRow(
+      session,
+      employee.copyWith(
+        phoneNumber: phone,
+        firstName: request.firstName.trim(),
+        lastName: request.lastName.trim(),
+      ),
+    );
+    return _view(updated);
   }
 
-  /// Owner enables or disables management login for that employee.
   Future<EmployeeView> setEnabled(
     Session session,
-    UuidValue employeeAuthUserId,
+    UuidValue employeeId,
     bool isEnabled,
   ) async {
-    final userId = session.authenticated?.authUserId;
-    if (userId == null) {
+    final ownerId = AuthGuard.requireOwner(session);
+    final employee = await Employee.db.findFirstRow(
+      session,
+      where: (t) => t.id.equals(employeeId) & t.ownerId.equals(ownerId),
+    );
+    if (employee == null) {
       throw AccountException(
-        message: 'Sign in required.',
-        code: AccountErrorCode.notAuthorized,
+        message: 'Employee not found.',
+        code: AccountErrorCode.notFound,
       );
     }
-    return _accounts.setEmployeeEnabled(
+    final updated = await Employee.db.updateRow(
       session,
-      ownerAuthUserId: userId,
-      employeeAuthUserId: employeeAuthUserId,
-      isEnabled: isEnabled,
+      employee.copyWith(isEnabled: isEnabled),
     );
+    return _view(updated);
   }
+
+  EmployeeView _view(Employee employee) => EmployeeView(
+    id: employee.id!,
+    buildingId: employee.buildingId,
+    ownerId: employee.ownerId,
+    username: employee.username,
+    phoneNumber: employee.phoneNumber,
+    firstName: employee.firstName,
+    lastName: employee.lastName,
+    isEnabled: employee.isEnabled,
+  );
 }

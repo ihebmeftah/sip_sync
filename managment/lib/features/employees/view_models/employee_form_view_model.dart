@@ -39,19 +39,19 @@ class EmployeeFormState {
 @riverpod
 class EmployeeFormViewModel extends _$EmployeeFormViewModel {
   @override
-  EmployeeFormState build(String authUserId) {
-    if (authUserId.isNotEmpty) {
-      Future<void>.microtask(() => load(authUserId));
+  EmployeeFormState build(String employeeId) {
+    if (employeeId.isNotEmpty) {
+      Future<void>.microtask(() => load(employeeId));
     }
-    return EmployeeFormState(loading: authUserId.isNotEmpty);
+    return EmployeeFormState(loading: employeeId.isNotEmpty);
   }
 
-  Future<void> load(String authUserId) async {
+  Future<void> load(String employeeId) async {
     state = state.copyWith(loading: true, clearError: true);
     try {
       final existing = await ref
           .read(employeeRepositoryProvider)
-          .get(UuidValue.fromString(authUserId));
+          .get(UuidValue.fromString(employeeId));
       state = state.copyWith(existing: existing, loading: false);
     } catch (error) {
       state = state.copyWith(loading: false, errorKey: mapError(error).l10nKey);
@@ -83,7 +83,7 @@ class EmployeeFormViewModel extends _$EmployeeFormViewModel {
         saved = await ref
             .read(employeeRepositoryProvider)
             .update(
-              authUserId: existing.authUserId,
+              id: existing.id,
               phoneNumber: phoneNumber,
               firstName: firstName,
               lastName: lastName,

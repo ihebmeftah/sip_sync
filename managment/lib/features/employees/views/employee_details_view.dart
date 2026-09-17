@@ -12,16 +12,16 @@ class EmployeeDetailsPage extends ConsumerWidget {
   const EmployeeDetailsPage({
     super.key,
     required this.buildingId,
-    required this.authUserId,
+    required this.employeeId,
   });
 
   final String buildingId;
-  final String authUserId;
+  final String employeeId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
-    final async = ref.watch(employeeDetailsViewModelProvider(authUserId));
+    final async = ref.watch(employeeDetailsViewModelProvider(employeeId));
     final text = Theme.of(context).textTheme;
 
     return ColoredBox(
@@ -55,7 +55,7 @@ class EmployeeDetailsPage extends ConsumerWidget {
                     FilledButton.tonal(
                       onPressed: () => EmployeeEditRoute(
                         buildingId: buildingId,
-                        authUserId: authUserId,
+                        employeeId: employeeId,
                       ).go(context),
                       child: Text(l10n.editEmployee),
                     ),
@@ -78,7 +78,7 @@ class EmployeeDetailsPage extends ConsumerWidget {
                         onChanged: (value) => ref
                             .read(
                               employeeDetailsViewModelProvider(
-                                authUserId,
+                                employeeId,
                               ).notifier,
                             )
                             .setEnabled(value),
@@ -103,13 +103,6 @@ class EmployeeDetailsPage extends ConsumerWidget {
                         contentPadding: EdgeInsets.zero,
                         title: Text(l10n.phone),
                         subtitle: Text(employee.phoneNumber),
-                      ),
-                      Wrap(
-                        spacing: AppSpacing.sm,
-                        children: [
-                          for (final role in employee.roles)
-                            Chip(label: Text(role)),
-                        ],
                       ),
                     ],
                   ),

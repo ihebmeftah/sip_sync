@@ -11,55 +11,53 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _is;
-import 'package:sip_sync_server/src/generated/protocol.dart' as _iaib1p48;
 
-/// Owner-facing staff row. Username is server-generated and read-only.
 abstract class EmployeeView
     implements _is.SerializableModel, _is.ProtocolSerialization {
   EmployeeView._({
-    required this.authUserId,
+    required this.id,
     required this.buildingId,
+    required this.ownerId,
     required this.username,
     required this.phoneNumber,
     required this.firstName,
     required this.lastName,
-    required this.roles,
     required this.isEnabled,
   });
 
   factory EmployeeView({
-    required _is.UuidValue authUserId,
+    required _is.UuidValue id,
     required _is.UuidValue buildingId,
+    required _is.UuidValue ownerId,
     required String username,
     required String phoneNumber,
     required String firstName,
     required String lastName,
-    required List<String> roles,
     required bool isEnabled,
   }) = _EmployeeViewImpl;
 
   factory EmployeeView.fromJson(Map<String, dynamic> jsonSerialization) {
     return EmployeeView(
-      authUserId: _is.UuidValueJsonExtension.fromJson(
-        jsonSerialization['authUserId'],
-      ),
+      id: _is.UuidValueJsonExtension.fromJson(jsonSerialization['id']),
       buildingId: _is.UuidValueJsonExtension.fromJson(
         jsonSerialization['buildingId'],
+      ),
+      ownerId: _is.UuidValueJsonExtension.fromJson(
+        jsonSerialization['ownerId'],
       ),
       username: jsonSerialization['username'] as String,
       phoneNumber: jsonSerialization['phoneNumber'] as String,
       firstName: jsonSerialization['firstName'] as String,
       lastName: jsonSerialization['lastName'] as String,
-      roles: _iaib1p48.Protocol().deserialize<List<String>>(
-        jsonSerialization['roles'],
-      ),
       isEnabled: _is.BoolJsonExtension.fromJson(jsonSerialization['isEnabled']),
     );
   }
 
-  _is.UuidValue authUserId;
+  _is.UuidValue id;
 
   _is.UuidValue buildingId;
+
+  _is.UuidValue ownerId;
 
   String username;
 
@@ -69,34 +67,32 @@ abstract class EmployeeView
 
   String lastName;
 
-  List<String> roles;
-
   bool isEnabled;
 
   /// Returns a shallow copy of this [EmployeeView]
   /// with some or all fields replaced by the given arguments.
   @_is.useResult
   EmployeeView copyWith({
-    _is.UuidValue? authUserId,
+    _is.UuidValue? id,
     _is.UuidValue? buildingId,
+    _is.UuidValue? ownerId,
     String? username,
     String? phoneNumber,
     String? firstName,
     String? lastName,
-    List<String>? roles,
     bool? isEnabled,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
       '__className__': 'EmployeeView',
-      'authUserId': authUserId.toJson(),
+      'id': id.toJson(),
       'buildingId': buildingId.toJson(),
+      'ownerId': ownerId.toJson(),
       'username': username,
       'phoneNumber': phoneNumber,
       'firstName': firstName,
       'lastName': lastName,
-      'roles': roles.toJson(),
       'isEnabled': isEnabled,
     };
   }
@@ -105,13 +101,13 @@ abstract class EmployeeView
   Map<String, dynamic> toJsonForProtocol() {
     return {
       '__className__': 'EmployeeView',
-      'authUserId': authUserId.toJson(),
+      'id': id.toJson(),
       'buildingId': buildingId.toJson(),
+      'ownerId': ownerId.toJson(),
       'username': username,
       'phoneNumber': phoneNumber,
       'firstName': firstName,
       'lastName': lastName,
-      'roles': roles.toJson(),
       'isEnabled': isEnabled,
     };
   }
@@ -124,22 +120,22 @@ abstract class EmployeeView
 
 class _EmployeeViewImpl extends EmployeeView {
   _EmployeeViewImpl({
-    required _is.UuidValue authUserId,
+    required _is.UuidValue id,
     required _is.UuidValue buildingId,
+    required _is.UuidValue ownerId,
     required String username,
     required String phoneNumber,
     required String firstName,
     required String lastName,
-    required List<String> roles,
     required bool isEnabled,
   }) : super._(
-         authUserId: authUserId,
+         id: id,
          buildingId: buildingId,
+         ownerId: ownerId,
          username: username,
          phoneNumber: phoneNumber,
          firstName: firstName,
          lastName: lastName,
-         roles: roles,
          isEnabled: isEnabled,
        );
 
@@ -148,23 +144,23 @@ class _EmployeeViewImpl extends EmployeeView {
   @_is.useResult
   @override
   EmployeeView copyWith({
-    _is.UuidValue? authUserId,
+    _is.UuidValue? id,
     _is.UuidValue? buildingId,
+    _is.UuidValue? ownerId,
     String? username,
     String? phoneNumber,
     String? firstName,
     String? lastName,
-    List<String>? roles,
     bool? isEnabled,
   }) {
     return EmployeeView(
-      authUserId: authUserId ?? this.authUserId,
+      id: id ?? this.id,
       buildingId: buildingId ?? this.buildingId,
+      ownerId: ownerId ?? this.ownerId,
       username: username ?? this.username,
       phoneNumber: phoneNumber ?? this.phoneNumber,
       firstName: firstName ?? this.firstName,
       lastName: lastName ?? this.lastName,
-      roles: roles ?? this.roles.map((e0) => e0).toList(),
       isEnabled: isEnabled ?? this.isEnabled,
     );
   }

@@ -34,7 +34,7 @@ final class BuildingsViewModelProvider
 }
 
 String _$buildingsViewModelHash() =>
-    r'e476a7e863b69aebc898d6154391e12056ab1314';
+    r'1bbac8cbf8c4a33ad28cfba401f6662a81ee04a1';
 
 abstract class _$BuildingsViewModel extends $AsyncNotifier<List<BuildingView>> {
   FutureOr<List<BuildingView>> build();

@@ -17,7 +17,7 @@ class HomeView extends ConsumerStatefulWidget {
 }
 
 class _HomeViewState extends ConsumerState<HomeView> {
-  List<BackofficeUserView> _users = [];
+  List<SuperAdminView> _users = [];
   String? _errorKey;
   bool _loading = true;
   bool _saving = false;
@@ -46,9 +46,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
 
   Future<void> _reload() async {
     try {
-      final list = await ref
-          .read(accountRepositoryProvider)
-          .listBackofficeUsers();
+      final list = await ref.read(superAdminAuthRepositoryProvider).list();
       setState(() {
         _users = list;
         _loading = false;
@@ -66,7 +64,6 @@ class _HomeViewState extends ConsumerState<HomeView> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final session = ref.watch(authViewModelProvider).session;
-    final isAdmin = session?.isBackofficeAdmin ?? false;
     final text = Theme.of(context).textTheme;
     final scheme = Theme.of(context).colorScheme;
     return Scaffold(
@@ -92,7 +89,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      l10n.welcome(session?.profile.firstName ?? ''),
+                      l10n.welcome(session?.firstName ?? ''),
                       style: text.headlineMedium,
                     ),
                     if (_errorKey != null) ...[
@@ -122,31 +119,28 @@ class _HomeViewState extends ConsumerState<HomeView> {
                               backgroundColor: scheme.secondaryContainer,
                               foregroundColor: scheme.onSecondaryContainer,
                               child: Text(
-                                user.profile.firstName.isEmpty
+                                user.firstName.isEmpty
                                     ? '?'
-                                    : user.profile.firstName.characters.first,
+                                    : user.firstName.characters.first,
                               ),
                             ),
-                            title: Text(
-                              '${user.profile.firstName} ${user.profile.lastName}',
-                            ),
+                            title: Text('${user.firstName} ${user.lastName}'),
                             subtitle: Text(
                               [
-                                user.profile.email,
-                                if (user.isAdmin) l10n.adminFlag,
+                                user.email,
                                 if (user.isSystemDefault) l10n.defaultAdminFlag,
                               ].join(' · '),
                             ),
-                            trailing: isAdmin && !user.isSystemDefault
+                            trailing: !user.isSystemDefault
                                 ? IconButton(
                                     icon: const Icon(Icons.delete_outline),
                                     onPressed: () async {
                                       try {
                                         await ref
-                                            .read(accountRepositoryProvider)
-                                            .deleteBackofficeUser(
-                                              user.profile.authUserId,
-                                            );
+                                            .read(
+                                              superAdminAuthRepositoryProvider,
+                                            )
+                                            .delete(user.id);
                                         await _reload();
                                       } catch (error) {
                                         setState(
@@ -162,7 +156,6 @@ class _HomeViewState extends ConsumerState<HomeView> {
                       ],
                     ),
                   );
-                  if (!isAdmin) return staff;
                   final form = AppSurfaceCard(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -202,8 +195,8 @@ class _HomeViewState extends ConsumerState<HomeView> {
                             setState(() => _saving = true);
                             try {
                               await ref
-                                  .read(accountRepositoryProvider)
-                                  .addBackofficeUser(
+                                  .read(superAdminAuthRepositoryProvider)
+                                  .add(
                                     email: _email.text,
                                     password: _password.text,
                                     phoneNumber: _phone.text,

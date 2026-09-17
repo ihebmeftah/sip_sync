@@ -13,13 +13,9 @@ class EmployeesViewModel extends _$EmployeesViewModel {
   @override
   Future<List<EmployeeView>> build(String buildingId) async {
     _buildingId = buildingId;
-    ref.listen(authViewModelProvider, (previous, next) {
-      if (previous?.session?.profile.authUserId !=
-          next.session?.profile.authUserId) {
-        ref.invalidateSelf();
-      }
-    });
-    if (!_isOwner || buildingId.isEmpty) {
+    ref.watch(signedInActorIdProvider);
+    final isOwner = ref.read(appSessionStoreProvider).isOwner;
+    if (!isOwner || buildingId.isEmpty) {
       return const [];
     }
     return ref
@@ -27,17 +23,11 @@ class EmployeesViewModel extends _$EmployeesViewModel {
         .listEmployees(UuidValue.fromString(buildingId));
   }
 
-  bool get _isOwner {
-    final roles =
-        ref.read(authViewModelProvider).session?.profile.roles ??
-        const <String>[];
-    return roles.contains('owner');
-  }
-
   Future<void> refresh() async {
     state = const AsyncLoading();
     state = await AsyncValue.guard(() async {
-      if (!_isOwner || _buildingId.isEmpty) {
+      final isOwner = ref.read(appSessionStoreProvider).isOwner;
+      if (!isOwner || _buildingId.isEmpty) {
         return const <EmployeeView>[];
       }
       return ref

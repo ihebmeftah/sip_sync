@@ -154,6 +154,18 @@ abstract class AppLocalizations {
   /// **'Sign in'**
   String get signIn;
 
+  /// No description provided for @loginAsOwner.
+  ///
+  /// In en, this message translates to:
+  /// **'Owner'**
+  String get loginAsOwner;
+
+  /// No description provided for @loginAsEmployee.
+  ///
+  /// In en, this message translates to:
+  /// **'Employee'**
+  String get loginAsEmployee;
+
   /// No description provided for @register.
   ///
   /// In en, this message translates to:

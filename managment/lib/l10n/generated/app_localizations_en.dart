@@ -37,6 +37,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get signIn => 'Sign in';
 
   @override
+  String get loginAsOwner => 'Owner';
+
+  @override
+  String get loginAsEmployee => 'Employee';
+
+  @override
   String get register => 'Create account';
 
   @override

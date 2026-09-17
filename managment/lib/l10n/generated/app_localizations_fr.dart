@@ -38,6 +38,12 @@ class AppLocalizationsFr extends AppLocalizations {
   String get signIn => 'Connexion';
 
   @override
+  String get loginAsOwner => 'Propriétaire';
+
+  @override
+  String get loginAsEmployee => 'Employé';
+
+  @override
   String get register => 'Créer un compte';
 
   @override

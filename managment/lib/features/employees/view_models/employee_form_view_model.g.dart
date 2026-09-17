@@ -59,7 +59,7 @@ final class EmployeeFormViewModelProvider
 }
 
 String _$employeeFormViewModelHash() =>
-    r'e4e3c84fc2e0e6ecb86df7fe1f43ef4af28ce0e6';
+    r'f87fafb0e34a847c8df8ed398247b1bd292c6e3c';
 
 final class EmployeeFormViewModelFamily extends $Family
     with
@@ -79,8 +79,8 @@ final class EmployeeFormViewModelFamily extends $Family
         isAutoDispose: true,
       );
 
-  EmployeeFormViewModelProvider call(String authUserId) =>
-      EmployeeFormViewModelProvider._(argument: authUserId, from: this);
+  EmployeeFormViewModelProvider call(String employeeId) =>
+      EmployeeFormViewModelProvider._(argument: employeeId, from: this);
 
   @override
   String toString() => r'employeeFormViewModelProvider';
@@ -88,9 +88,9 @@ final class EmployeeFormViewModelFamily extends $Family
 
 abstract class _$EmployeeFormViewModel extends $Notifier<EmployeeFormState> {
   late final _$args = ref.$arg as String;
-  String get authUserId => _$args;
+  String get employeeId => _$args;
 
-  EmployeeFormState build(String authUserId);
+  EmployeeFormState build(String employeeId);
   @$mustCallSuper
   @override
   void runBuild() {

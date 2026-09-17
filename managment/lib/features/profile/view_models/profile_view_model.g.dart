@@ -41,7 +41,7 @@ final class ProfileViewModelProvider
   }
 }
 
-String _$profileViewModelHash() => r'4472b6a04bf9fc0226dc69d0122df632a0bcd068';
+String _$profileViewModelHash() => r'94f4a38968f1f9a8c43041cad4712beb17c61fec';
 
 abstract class _$ProfileViewModel extends $Notifier<ProfileUiState> {
   ProfileUiState build();

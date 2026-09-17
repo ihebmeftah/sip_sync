@@ -1,10 +1,11 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:serverpod_auth_idp_flutter/serverpod_auth_idp_flutter.dart';
 import 'package:sip_sync_client/sip_sync_client.dart';
 
 import '../../../core/di/app_providers.dart';
+import '../../../core/di/app_session_store.dart';
+import '../../../core/di/service_locator.dart';
 import '../../../core/errors/error_mapper.dart';
-import '../../../data/repositories/account_repository.dart';
+import '../../../data/repositories/customer_auth_repository.dart';
 
 part 'auth_view_model.g.dart';
 
@@ -15,12 +16,12 @@ class AuthState {
     this.errorKey,
   });
 
-  final AccountSessionView? session;
+  final CustomerSessionView? session;
   final bool isLoading;
   final String? errorKey;
 
   AuthState copyWith({
-    AccountSessionView? session,
+    CustomerSessionView? session,
     bool? isLoading,
     String? errorKey,
     bool clearError = false,
@@ -36,31 +37,34 @@ class AuthState {
 
 @Riverpod(keepAlive: true)
 class AuthViewModel extends _$AuthViewModel {
-  AccountRepository get _repository => ref.read(accountRepositoryProvider);
+  CustomerAuthRepository get _repository =>
+      ref.read(customerAuthRepositoryProvider);
+  AppSessionStore get _store => getIt<AppSessionStore>();
 
   @override
   AuthState build() {
-    _repository.client.auth.authInfoListenable.addListener(_onAuthChanged);
-    ref.onDispose(() {
-      _repository.client.auth.authInfoListenable.removeListener(_onAuthChanged);
-    });
+    _store.addListener(_onStoreChanged);
+    ref.onDispose(() => _store.removeListener(_onStoreChanged));
     Future<void>.microtask(restore);
-    return const AuthState();
+    return AuthState(session: _store.customer);
   }
 
-  bool get isSignedIn => _repository.client.auth.isAuthenticated;
+  bool get isSignedIn => _store.isSignedIn;
 
   Future<void> restore() async {
-    if (!_repository.client.auth.isAuthenticated) {
+    if (!_store.isSignedIn) {
       return;
     }
     state = state.copyWith(isLoading: true, clearError: true);
     try {
       final session = await _repository.me();
+      await _store.setCustomer(session);
       state = state.copyWith(session: session, isLoading: false);
     } catch (error) {
+      await _store.clear();
       state = state.copyWith(
         isLoading: false,
+        clearSession: true,
         errorKey: mapError(error).l10nKey,
       );
     }
@@ -69,8 +73,11 @@ class AuthViewModel extends _$AuthViewModel {
   Future<bool> login(String email, String password) async {
     state = state.copyWith(isLoading: true, clearError: true);
     try {
-      final session = await _repository.login(email: email, password: password);
-      state = state.copyWith(session: session, isLoading: false);
+      final result = await _repository.login(email: email, password: password);
+      state = state.copyWith(
+        session: result.customer,
+        isLoading: false,
+      );
       return true;
     } catch (error) {
       state = state.copyWith(
@@ -90,14 +97,17 @@ class AuthViewModel extends _$AuthViewModel {
   }) async {
     state = state.copyWith(isLoading: true, clearError: true);
     try {
-      final session = await _repository.register(
+      final result = await _repository.register(
         email: email,
         password: password,
         phoneNumber: phoneNumber,
         firstName: firstName,
         lastName: lastName,
       );
-      state = state.copyWith(session: session, isLoading: false);
+      state = state.copyWith(
+        session: result.customer,
+        isLoading: false,
+      );
       return true;
     } catch (error) {
       state = state.copyWith(
@@ -113,9 +123,11 @@ class AuthViewModel extends _$AuthViewModel {
     state = const AuthState();
   }
 
-  void _onAuthChanged() {
-    if (!_repository.client.auth.isAuthenticated) {
+  void _onStoreChanged() {
+    if (!_store.isSignedIn) {
       state = const AuthState();
+    } else if (_store.customer != null) {
+      state = state.copyWith(session: _store.customer);
     }
   }
 }

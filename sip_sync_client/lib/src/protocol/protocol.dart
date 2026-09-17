@@ -16,27 +16,29 @@ import 'package:serverpod_auth_core_client/serverpod_auth_core_client.dart'
 import 'package:serverpod_auth_idp_client/serverpod_auth_idp_client.dart'
     as _iaic;
 import 'package:serverpod_client/serverpod_client.dart' as _isc;
-import 'package:sip_sync_client/src/protocol/auth/backoffice_user_view.dart'
-    as _ian6jh4a;
 import 'package:sip_sync_client/src/protocol/auth/employee_view.dart'
     as _ix96cplr;
+import 'package:sip_sync_client/src/protocol/auth/super_admin_view.dart'
+    as _iddpd7et;
 import 'package:sip_sync_client/src/protocol/buildings/building_view.dart'
     as _ia8vsgay;
 import 'auth/account_error_code.dart' as _i4a4wzkt;
 import 'auth/account_exception.dart' as _ibhqro64;
-import 'auth/account_session_view.dart' as _io80wa8m;
-import 'auth/app_role.dart' as _i87vpzmk;
-import 'auth/auth_session_result.dart' as _i9zpdl2u;
-import 'auth/backoffice_user_create.dart' as _i9kd7km5;
-import 'auth/backoffice_user_view.dart' as _itl1aokg;
+import 'auth/actor_type.dart' as _i350eaix;
+import 'auth/auth_token_result.dart' as _itpbqj0d;
+import 'auth/customer_session_view.dart' as _i1o3zw63;
+import 'auth/email_login_request.dart' as _ibs93nxz;
+import 'auth/email_register_create.dart' as _i6a2khfu;
 import 'auth/employee_create.dart' as _iedt4kib;
+import 'auth/employee_session_view.dart' as _i4i3smcx;
 import 'auth/employee_update.dart' as _iidaq8tj;
 import 'auth/employee_view.dart' as _igp37ocx;
-import 'auth/login_request.dart' as _ir2e8vdz;
+import 'auth/owner_session_view.dart' as _ijssep5h;
 import 'auth/profile_update.dart' as _irdmlmfi;
-import 'auth/profile_view.dart' as _iz95i0di;
-import 'auth/self_register_create.dart' as _i90p781y;
-import 'auth/sip_app.dart' as _iztspa7i;
+import 'auth/super_admin_create.dart' as _iru1pmbh;
+import 'auth/super_admin_session_view.dart' as _id5qrr5o;
+import 'auth/super_admin_view.dart' as _ivpekvgb;
+import 'auth/username_login_request.dart' as _imdgiusd;
 import 'buildings/building_create.dart' as _i4cz4s4m;
 import 'buildings/building_error_code.dart' as _isz6zhld;
 import 'buildings/building_exception.dart' as _i7fakgop;
@@ -45,19 +47,21 @@ import 'buildings/building_view.dart' as _iyqmhcrr;
 import 'greetings/greeting.dart' as _izw8z7ou;
 export 'auth/account_error_code.dart';
 export 'auth/account_exception.dart';
-export 'auth/account_session_view.dart';
-export 'auth/app_role.dart';
-export 'auth/auth_session_result.dart';
-export 'auth/backoffice_user_create.dart';
-export 'auth/backoffice_user_view.dart';
+export 'auth/actor_type.dart';
+export 'auth/auth_token_result.dart';
+export 'auth/customer_session_view.dart';
+export 'auth/email_login_request.dart';
+export 'auth/email_register_create.dart';
 export 'auth/employee_create.dart';
+export 'auth/employee_session_view.dart';
 export 'auth/employee_update.dart';
 export 'auth/employee_view.dart';
-export 'auth/login_request.dart';
+export 'auth/owner_session_view.dart';
 export 'auth/profile_update.dart';
-export 'auth/profile_view.dart';
-export 'auth/self_register_create.dart';
-export 'auth/sip_app.dart';
+export 'auth/super_admin_create.dart';
+export 'auth/super_admin_session_view.dart';
+export 'auth/super_admin_view.dart';
+export 'auth/username_login_request.dart';
 export 'buildings/building_create.dart';
 export 'buildings/building_error_code.dart';
 export 'buildings/building_exception.dart';
@@ -106,23 +110,26 @@ class Protocol extends _isc.SerializationManager {
     if (t == _ibhqro64.AccountException) {
       return _ibhqro64.AccountException.fromJson(data) as T;
     }
-    if (t == _io80wa8m.AccountSessionView) {
-      return _io80wa8m.AccountSessionView.fromJson(data) as T;
+    if (t == _i350eaix.ActorType) {
+      return _i350eaix.ActorType.fromJson(data) as T;
     }
-    if (t == _i87vpzmk.AppRole) {
-      return _i87vpzmk.AppRole.fromJson(data) as T;
+    if (t == _itpbqj0d.AuthTokenResult) {
+      return _itpbqj0d.AuthTokenResult.fromJson(data) as T;
     }
-    if (t == _i9zpdl2u.AuthSessionResult) {
-      return _i9zpdl2u.AuthSessionResult.fromJson(data) as T;
+    if (t == _i1o3zw63.CustomerSessionView) {
+      return _i1o3zw63.CustomerSessionView.fromJson(data) as T;
     }
-    if (t == _i9kd7km5.BackofficeUserCreate) {
-      return _i9kd7km5.BackofficeUserCreate.fromJson(data) as T;
+    if (t == _ibs93nxz.EmailLoginRequest) {
+      return _ibs93nxz.EmailLoginRequest.fromJson(data) as T;
     }
-    if (t == _itl1aokg.BackofficeUserView) {
-      return _itl1aokg.BackofficeUserView.fromJson(data) as T;
+    if (t == _i6a2khfu.EmailRegisterCreate) {
+      return _i6a2khfu.EmailRegisterCreate.fromJson(data) as T;
     }
     if (t == _iedt4kib.EmployeeCreate) {
       return _iedt4kib.EmployeeCreate.fromJson(data) as T;
+    }
+    if (t == _i4i3smcx.EmployeeSessionView) {
+      return _i4i3smcx.EmployeeSessionView.fromJson(data) as T;
     }
     if (t == _iidaq8tj.EmployeeUpdate) {
       return _iidaq8tj.EmployeeUpdate.fromJson(data) as T;
@@ -130,20 +137,23 @@ class Protocol extends _isc.SerializationManager {
     if (t == _igp37ocx.EmployeeView) {
       return _igp37ocx.EmployeeView.fromJson(data) as T;
     }
-    if (t == _ir2e8vdz.LoginRequest) {
-      return _ir2e8vdz.LoginRequest.fromJson(data) as T;
+    if (t == _ijssep5h.OwnerSessionView) {
+      return _ijssep5h.OwnerSessionView.fromJson(data) as T;
     }
     if (t == _irdmlmfi.ProfileUpdate) {
       return _irdmlmfi.ProfileUpdate.fromJson(data) as T;
     }
-    if (t == _iz95i0di.ProfileView) {
-      return _iz95i0di.ProfileView.fromJson(data) as T;
+    if (t == _iru1pmbh.SuperAdminCreate) {
+      return _iru1pmbh.SuperAdminCreate.fromJson(data) as T;
     }
-    if (t == _i90p781y.SelfRegisterCreate) {
-      return _i90p781y.SelfRegisterCreate.fromJson(data) as T;
+    if (t == _id5qrr5o.SuperAdminSessionView) {
+      return _id5qrr5o.SuperAdminSessionView.fromJson(data) as T;
     }
-    if (t == _iztspa7i.SipApp) {
-      return _iztspa7i.SipApp.fromJson(data) as T;
+    if (t == _ivpekvgb.SuperAdminView) {
+      return _ivpekvgb.SuperAdminView.fromJson(data) as T;
+    }
+    if (t == _imdgiusd.UsernameLoginRequest) {
+      return _imdgiusd.UsernameLoginRequest.fromJson(data) as T;
     }
     if (t == _i4cz4s4m.BuildingCreate) {
       return _i4cz4s4m.BuildingCreate.fromJson(data) as T;
@@ -171,29 +181,37 @@ class Protocol extends _isc.SerializationManager {
       return (data != null ? _ibhqro64.AccountException.fromJson(data) : null)
           as T;
     }
-    if (t == _isc.getType<_io80wa8m.AccountSessionView?>()) {
-      return (data != null ? _io80wa8m.AccountSessionView.fromJson(data) : null)
+    if (t == _isc.getType<_i350eaix.ActorType?>()) {
+      return (data != null ? _i350eaix.ActorType.fromJson(data) : null) as T;
+    }
+    if (t == _isc.getType<_itpbqj0d.AuthTokenResult?>()) {
+      return (data != null ? _itpbqj0d.AuthTokenResult.fromJson(data) : null)
           as T;
     }
-    if (t == _isc.getType<_i87vpzmk.AppRole?>()) {
-      return (data != null ? _i87vpzmk.AppRole.fromJson(data) : null) as T;
-    }
-    if (t == _isc.getType<_i9zpdl2u.AuthSessionResult?>()) {
-      return (data != null ? _i9zpdl2u.AuthSessionResult.fromJson(data) : null)
-          as T;
-    }
-    if (t == _isc.getType<_i9kd7km5.BackofficeUserCreate?>()) {
+    if (t == _isc.getType<_i1o3zw63.CustomerSessionView?>()) {
       return (data != null
-              ? _i9kd7km5.BackofficeUserCreate.fromJson(data)
+              ? _i1o3zw63.CustomerSessionView.fromJson(data)
               : null)
           as T;
     }
-    if (t == _isc.getType<_itl1aokg.BackofficeUserView?>()) {
-      return (data != null ? _itl1aokg.BackofficeUserView.fromJson(data) : null)
+    if (t == _isc.getType<_ibs93nxz.EmailLoginRequest?>()) {
+      return (data != null ? _ibs93nxz.EmailLoginRequest.fromJson(data) : null)
+          as T;
+    }
+    if (t == _isc.getType<_i6a2khfu.EmailRegisterCreate?>()) {
+      return (data != null
+              ? _i6a2khfu.EmailRegisterCreate.fromJson(data)
+              : null)
           as T;
     }
     if (t == _isc.getType<_iedt4kib.EmployeeCreate?>()) {
       return (data != null ? _iedt4kib.EmployeeCreate.fromJson(data) : null)
+          as T;
+    }
+    if (t == _isc.getType<_i4i3smcx.EmployeeSessionView?>()) {
+      return (data != null
+              ? _i4i3smcx.EmployeeSessionView.fromJson(data)
+              : null)
           as T;
     }
     if (t == _isc.getType<_iidaq8tj.EmployeeUpdate?>()) {
@@ -203,22 +221,33 @@ class Protocol extends _isc.SerializationManager {
     if (t == _isc.getType<_igp37ocx.EmployeeView?>()) {
       return (data != null ? _igp37ocx.EmployeeView.fromJson(data) : null) as T;
     }
-    if (t == _isc.getType<_ir2e8vdz.LoginRequest?>()) {
-      return (data != null ? _ir2e8vdz.LoginRequest.fromJson(data) : null) as T;
+    if (t == _isc.getType<_ijssep5h.OwnerSessionView?>()) {
+      return (data != null ? _ijssep5h.OwnerSessionView.fromJson(data) : null)
+          as T;
     }
     if (t == _isc.getType<_irdmlmfi.ProfileUpdate?>()) {
       return (data != null ? _irdmlmfi.ProfileUpdate.fromJson(data) : null)
           as T;
     }
-    if (t == _isc.getType<_iz95i0di.ProfileView?>()) {
-      return (data != null ? _iz95i0di.ProfileView.fromJson(data) : null) as T;
-    }
-    if (t == _isc.getType<_i90p781y.SelfRegisterCreate?>()) {
-      return (data != null ? _i90p781y.SelfRegisterCreate.fromJson(data) : null)
+    if (t == _isc.getType<_iru1pmbh.SuperAdminCreate?>()) {
+      return (data != null ? _iru1pmbh.SuperAdminCreate.fromJson(data) : null)
           as T;
     }
-    if (t == _isc.getType<_iztspa7i.SipApp?>()) {
-      return (data != null ? _iztspa7i.SipApp.fromJson(data) : null) as T;
+    if (t == _isc.getType<_id5qrr5o.SuperAdminSessionView?>()) {
+      return (data != null
+              ? _id5qrr5o.SuperAdminSessionView.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _isc.getType<_ivpekvgb.SuperAdminView?>()) {
+      return (data != null ? _ivpekvgb.SuperAdminView.fromJson(data) : null)
+          as T;
+    }
+    if (t == _isc.getType<_imdgiusd.UsernameLoginRequest?>()) {
+      return (data != null
+              ? _imdgiusd.UsernameLoginRequest.fromJson(data)
+              : null)
+          as T;
     }
     if (t == _isc.getType<_i4cz4s4m.BuildingCreate?>()) {
       return (data != null ? _i4cz4s4m.BuildingCreate.fromJson(data) : null)
@@ -242,16 +271,13 @@ class Protocol extends _isc.SerializationManager {
     if (t == _isc.getType<_izw8z7ou.Greeting?>()) {
       return (data != null ? _izw8z7ou.Greeting.fromJson(data) : null) as T;
     }
-    if (t == List<String>) {
-      return (data as List).map((e) => deserialize<String>(e)).toList() as T;
-    }
     if (t == List<_isc.UuidValue>) {
       return (data as List).map((e) => deserialize<_isc.UuidValue>(e)).toList()
           as T;
     }
-    if (t == List<_ian6jh4a.BackofficeUserView>) {
+    if (t == List<_iddpd7et.SuperAdminView>) {
       return (data as List)
-              .map((e) => deserialize<_ian6jh4a.BackofficeUserView>(e))
+              .map((e) => deserialize<_iddpd7et.SuperAdminView>(e))
               .toList()
           as T;
     }
@@ -280,19 +306,21 @@ class Protocol extends _isc.SerializationManager {
     return switch (type) {
       _i4a4wzkt.AccountErrorCode => 'AccountErrorCode',
       _ibhqro64.AccountException => 'AccountException',
-      _io80wa8m.AccountSessionView => 'AccountSessionView',
-      _i87vpzmk.AppRole => 'AppRole',
-      _i9zpdl2u.AuthSessionResult => 'AuthSessionResult',
-      _i9kd7km5.BackofficeUserCreate => 'BackofficeUserCreate',
-      _itl1aokg.BackofficeUserView => 'BackofficeUserView',
+      _i350eaix.ActorType => 'ActorType',
+      _itpbqj0d.AuthTokenResult => 'AuthTokenResult',
+      _i1o3zw63.CustomerSessionView => 'CustomerSessionView',
+      _ibs93nxz.EmailLoginRequest => 'EmailLoginRequest',
+      _i6a2khfu.EmailRegisterCreate => 'EmailRegisterCreate',
       _iedt4kib.EmployeeCreate => 'EmployeeCreate',
+      _i4i3smcx.EmployeeSessionView => 'EmployeeSessionView',
       _iidaq8tj.EmployeeUpdate => 'EmployeeUpdate',
       _igp37ocx.EmployeeView => 'EmployeeView',
-      _ir2e8vdz.LoginRequest => 'LoginRequest',
+      _ijssep5h.OwnerSessionView => 'OwnerSessionView',
       _irdmlmfi.ProfileUpdate => 'ProfileUpdate',
-      _iz95i0di.ProfileView => 'ProfileView',
-      _i90p781y.SelfRegisterCreate => 'SelfRegisterCreate',
-      _iztspa7i.SipApp => 'SipApp',
+      _iru1pmbh.SuperAdminCreate => 'SuperAdminCreate',
+      _id5qrr5o.SuperAdminSessionView => 'SuperAdminSessionView',
+      _ivpekvgb.SuperAdminView => 'SuperAdminView',
+      _imdgiusd.UsernameLoginRequest => 'UsernameLoginRequest',
       _i4cz4s4m.BuildingCreate => 'BuildingCreate',
       _isz6zhld.BuildingErrorCode => 'BuildingErrorCode',
       _i7fakgop.BuildingException => 'BuildingException',
@@ -317,32 +345,36 @@ class Protocol extends _isc.SerializationManager {
         return 'AccountErrorCode';
       case _ibhqro64.AccountException():
         return 'AccountException';
-      case _io80wa8m.AccountSessionView():
-        return 'AccountSessionView';
-      case _i87vpzmk.AppRole():
-        return 'AppRole';
-      case _i9zpdl2u.AuthSessionResult():
-        return 'AuthSessionResult';
-      case _i9kd7km5.BackofficeUserCreate():
-        return 'BackofficeUserCreate';
-      case _itl1aokg.BackofficeUserView():
-        return 'BackofficeUserView';
+      case _i350eaix.ActorType():
+        return 'ActorType';
+      case _itpbqj0d.AuthTokenResult():
+        return 'AuthTokenResult';
+      case _i1o3zw63.CustomerSessionView():
+        return 'CustomerSessionView';
+      case _ibs93nxz.EmailLoginRequest():
+        return 'EmailLoginRequest';
+      case _i6a2khfu.EmailRegisterCreate():
+        return 'EmailRegisterCreate';
       case _iedt4kib.EmployeeCreate():
         return 'EmployeeCreate';
+      case _i4i3smcx.EmployeeSessionView():
+        return 'EmployeeSessionView';
       case _iidaq8tj.EmployeeUpdate():
         return 'EmployeeUpdate';
       case _igp37ocx.EmployeeView():
         return 'EmployeeView';
-      case _ir2e8vdz.LoginRequest():
-        return 'LoginRequest';
+      case _ijssep5h.OwnerSessionView():
+        return 'OwnerSessionView';
       case _irdmlmfi.ProfileUpdate():
         return 'ProfileUpdate';
-      case _iz95i0di.ProfileView():
-        return 'ProfileView';
-      case _i90p781y.SelfRegisterCreate():
-        return 'SelfRegisterCreate';
-      case _iztspa7i.SipApp():
-        return 'SipApp';
+      case _iru1pmbh.SuperAdminCreate():
+        return 'SuperAdminCreate';
+      case _id5qrr5o.SuperAdminSessionView():
+        return 'SuperAdminSessionView';
+      case _ivpekvgb.SuperAdminView():
+        return 'SuperAdminView';
+      case _imdgiusd.UsernameLoginRequest():
+        return 'UsernameLoginRequest';
       case _i4cz4s4m.BuildingCreate():
         return 'BuildingCreate';
       case _isz6zhld.BuildingErrorCode():
@@ -383,23 +415,26 @@ class Protocol extends _isc.SerializationManager {
     if (dataClassName == 'AccountException') {
       return deserialize<_ibhqro64.AccountException>(data['data']);
     }
-    if (dataClassName == 'AccountSessionView') {
-      return deserialize<_io80wa8m.AccountSessionView>(data['data']);
+    if (dataClassName == 'ActorType') {
+      return deserialize<_i350eaix.ActorType>(data['data']);
     }
-    if (dataClassName == 'AppRole') {
-      return deserialize<_i87vpzmk.AppRole>(data['data']);
+    if (dataClassName == 'AuthTokenResult') {
+      return deserialize<_itpbqj0d.AuthTokenResult>(data['data']);
     }
-    if (dataClassName == 'AuthSessionResult') {
-      return deserialize<_i9zpdl2u.AuthSessionResult>(data['data']);
+    if (dataClassName == 'CustomerSessionView') {
+      return deserialize<_i1o3zw63.CustomerSessionView>(data['data']);
     }
-    if (dataClassName == 'BackofficeUserCreate') {
-      return deserialize<_i9kd7km5.BackofficeUserCreate>(data['data']);
+    if (dataClassName == 'EmailLoginRequest') {
+      return deserialize<_ibs93nxz.EmailLoginRequest>(data['data']);
     }
-    if (dataClassName == 'BackofficeUserView') {
-      return deserialize<_itl1aokg.BackofficeUserView>(data['data']);
+    if (dataClassName == 'EmailRegisterCreate') {
+      return deserialize<_i6a2khfu.EmailRegisterCreate>(data['data']);
     }
     if (dataClassName == 'EmployeeCreate') {
       return deserialize<_iedt4kib.EmployeeCreate>(data['data']);
+    }
+    if (dataClassName == 'EmployeeSessionView') {
+      return deserialize<_i4i3smcx.EmployeeSessionView>(data['data']);
     }
     if (dataClassName == 'EmployeeUpdate') {
       return deserialize<_iidaq8tj.EmployeeUpdate>(data['data']);
@@ -407,20 +442,23 @@ class Protocol extends _isc.SerializationManager {
     if (dataClassName == 'EmployeeView') {
       return deserialize<_igp37ocx.EmployeeView>(data['data']);
     }
-    if (dataClassName == 'LoginRequest') {
-      return deserialize<_ir2e8vdz.LoginRequest>(data['data']);
+    if (dataClassName == 'OwnerSessionView') {
+      return deserialize<_ijssep5h.OwnerSessionView>(data['data']);
     }
     if (dataClassName == 'ProfileUpdate') {
       return deserialize<_irdmlmfi.ProfileUpdate>(data['data']);
     }
-    if (dataClassName == 'ProfileView') {
-      return deserialize<_iz95i0di.ProfileView>(data['data']);
+    if (dataClassName == 'SuperAdminCreate') {
+      return deserialize<_iru1pmbh.SuperAdminCreate>(data['data']);
     }
-    if (dataClassName == 'SelfRegisterCreate') {
-      return deserialize<_i90p781y.SelfRegisterCreate>(data['data']);
+    if (dataClassName == 'SuperAdminSessionView') {
+      return deserialize<_id5qrr5o.SuperAdminSessionView>(data['data']);
     }
-    if (dataClassName == 'SipApp') {
-      return deserialize<_iztspa7i.SipApp>(data['data']);
+    if (dataClassName == 'SuperAdminView') {
+      return deserialize<_ivpekvgb.SuperAdminView>(data['data']);
+    }
+    if (dataClassName == 'UsernameLoginRequest') {
+      return deserialize<_imdgiusd.UsernameLoginRequest>(data['data']);
     }
     if (dataClassName == 'BuildingCreate') {
       return deserialize<_i4cz4s4m.BuildingCreate>(data['data']);

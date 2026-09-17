@@ -1,7 +1,6 @@
-### Writable staff fields. Username and email are not editable.
 class: EmployeeUpdate
 fields:
-  authUserId: UuidValue
+  id: UuidValue
   phoneNumber: String
   firstName: String
   lastName: String

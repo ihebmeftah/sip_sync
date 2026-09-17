@@ -101,7 +101,13 @@ class OpsSideBar extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final scheme = Theme.of(context).colorScheme;
-    final session = ref.watch(authViewModelProvider).session;
+    final store = ref.watch(appSessionStoreProvider);
+    final isOwner = store.isOwner;
+    final firstName = store.owner?.firstName ?? store.employee?.firstName ?? '';
+    final lastName = store.owner?.lastName ?? store.employee?.lastName ?? '';
+    final subtitle = isOwner
+        ? (store.owner?.email ?? '')
+        : (store.employee?.username ?? '');
     final selected = ref.watch(buildingSelectionProvider);
     final location = GoRouterState.of(context).uri.path;
     final productsOpen =
@@ -157,7 +163,7 @@ class OpsSideBar extends ConsumerWidget {
                     horizontal: AppSpacing.sm,
                   ),
                   children: [
-                    if (session?.profile.roles.contains('owner') ?? false)
+                    if (isOwner)
                       _NavTile(
                         icon: Icons.storefront_outlined,
                         label: l10n.navBuildings,
@@ -178,13 +184,14 @@ class OpsSideBar extends ConsumerWidget {
                       onTap: () =>
                           ProfileRoute(buildingId: buildingId).go(context),
                     ),
-                    _NavTile(
-                      icon: Icons.groups_outlined,
-                      label: l10n.navEmployees,
-                      selected: location.contains('/employees'),
-                      onTap: () =>
-                          EmployeesRoute(buildingId: buildingId).go(context),
-                    ),
+                    if (isOwner)
+                      _NavTile(
+                        icon: Icons.groups_outlined,
+                        label: l10n.navEmployees,
+                        selected: location.contains('/employees'),
+                        onTap: () =>
+                            EmployeesRoute(buildingId: buildingId).go(context),
+                      ),
                     Theme(
                       data: Theme.of(context).copyWith(
                         dividerColor: Colors.transparent,
@@ -295,22 +302,18 @@ class OpsSideBar extends ConsumerWidget {
                             backgroundColor: scheme.secondary,
                             foregroundColor: scheme.onSecondary,
                             child: Text(
-                              (session?.profile.firstName.isNotEmpty ?? false)
-                                  ? session!.profile.firstName.characters.first
+                              firstName.isNotEmpty
+                                  ? firstName.characters.first
                                   : '?',
                             ),
                           ),
                           title: Text(
-                            '${session?.profile.firstName ?? ''} ${session?.profile.lastName ?? ''}'
-                                .trim(),
+                            '$firstName $lastName'.trim(),
                             style: Theme.of(context).textTheme.titleSmall
                                 ?.copyWith(color: scheme.onSurface),
                           ),
                           subtitle: Text(
-                            (session?.profile.roles.contains('employee') ??
-                                    false)
-                                ? (session?.profile.username ?? '')
-                                : (session?.profile.email ?? ''),
+                            subtitle,
                             style: Theme.of(context).textTheme.bodySmall
                                 ?.copyWith(
                                   color: scheme.onSurface.withValues(

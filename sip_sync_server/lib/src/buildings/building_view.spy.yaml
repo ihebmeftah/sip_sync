@@ -1,7 +1,7 @@
 class: BuildingView
 fields:
   id: UuidValue
-  ownerAuthUserId: UuidValue
+  ownerId: UuidValue
   name: String
   type: String
   address: String
@@ -10,4 +10,4 @@ fields:
   openingMinutes: int
   closingMinutes: int
   currencyCode: String
-  employeeAuthUserIds: List<UuidValue>
+  employeeIds: List<UuidValue>

@@ -14,11 +14,11 @@ class EmployeeFormView extends ConsumerStatefulWidget {
   const EmployeeFormView({
     super.key,
     required this.buildingId,
-    this.authUserId,
+    this.employeeId,
   });
 
   final String buildingId;
-  final String? authUserId;
+  final String? employeeId;
 
   @override
   ConsumerState<EmployeeFormView> createState() => _EmployeeFormViewState();
@@ -33,9 +33,9 @@ class _EmployeeFormViewState extends ConsumerState<EmployeeFormView> {
   final _username = TextEditingController();
   var _filled = false;
 
-  bool get _isEdit => (widget.authUserId ?? '').isNotEmpty;
+  bool get _isEdit => (widget.employeeId ?? '').isNotEmpty;
 
-  String get _employeeKey => widget.authUserId ?? '';
+  String get _employeeKey => widget.employeeId ?? '';
 
   @override
   void dispose() {
@@ -158,7 +158,7 @@ class _EmployeeFormViewState extends ConsumerState<EmployeeFormView> {
                           }
                           EmployeeDetailsRoute(
                             buildingId: widget.buildingId,
-                            authUserId: saved.authUserId.uuid,
+                            employeeId: saved.id.uuid,
                           ).go(context);
                         },
                       ),

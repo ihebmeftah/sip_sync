@@ -1,0 +1,10 @@
+class: EmployeeSessionView
+fields:
+  id: UuidValue
+  buildingId: UuidValue
+  ownerId: UuidValue
+  username: String
+  phoneNumber: String
+  firstName: String
+  lastName: String
+  isEnabled: bool

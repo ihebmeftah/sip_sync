@@ -7,7 +7,6 @@ import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
 import '../../../l10n/generated/app_localizations.dart';
-import '../../auth/view_models/auth_view_model.dart';
 
 /// House overview for owners and staff. Destinations are wired; metrics later.
 class DashboardView extends ConsumerWidget {
@@ -18,11 +17,12 @@ class DashboardView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
-    final session = ref.watch(authViewModelProvider).session;
+    final store = ref.watch(appSessionStoreProvider);
     final building = ref.watch(buildingSelectionProvider);
     final scheme = Theme.of(context).colorScheme;
     final text = Theme.of(context).textTheme;
-    final name = session?.profile.firstName ?? '';
+    final name = store.owner?.firstName ?? store.employee?.firstName ?? '';
+    final roleLabel = store.isOwner ? l10n.loginAsOwner : l10n.loginAsEmployee;
 
     return ColoredBox(
       color: Theme.of(context).scaffoldBackgroundColor,
@@ -88,18 +88,15 @@ class DashboardView extends ConsumerWidget {
                               spacing: AppSpacing.sm,
                               runSpacing: AppSpacing.sm,
                               children: [
-                                for (final role
-                                    in session?.profile.roles ??
-                                        const <String>[])
-                                  Chip(
-                                    label: Text(role),
-                                    backgroundColor: scheme.surface.withValues(
-                                      alpha: 0.55,
-                                    ),
-                                    labelStyle: text.labelLarge?.copyWith(
-                                      color: scheme.onPrimaryContainer,
-                                    ),
+                                Chip(
+                                  label: Text(roleLabel),
+                                  backgroundColor: scheme.surface.withValues(
+                                    alpha: 0.55,
                                   ),
+                                  labelStyle: text.labelLarge?.copyWith(
+                                    color: scheme.onPrimaryContainer,
+                                  ),
+                                ),
                               ],
                             ),
                             if (building != null) ...[

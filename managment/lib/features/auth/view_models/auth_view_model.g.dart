@@ -8,30 +8,26 @@ part of 'auth_view_model.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-/// Stable identity for dependents that must not rebuild on loading/error flips.
 
-@ProviderFor(signedInAuthUserId)
-const signedInAuthUserIdProvider = SignedInAuthUserIdProvider._();
+@ProviderFor(signedInActorId)
+const signedInActorIdProvider = SignedInActorIdProvider._();
 
-/// Stable identity for dependents that must not rebuild on loading/error flips.
-
-final class SignedInAuthUserIdProvider
+final class SignedInActorIdProvider
     extends $FunctionalProvider<UuidValue?, UuidValue?, UuidValue?>
     with $Provider<UuidValue?> {
-  /// Stable identity for dependents that must not rebuild on loading/error flips.
-  const SignedInAuthUserIdProvider._()
+  const SignedInActorIdProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'signedInAuthUserIdProvider',
+        name: r'signedInActorIdProvider',
         isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$signedInAuthUserIdHash();
+  String debugGetCreateSourceHash() => _$signedInActorIdHash();
 
   @$internal
   @override
@@ -40,7 +36,7 @@ final class SignedInAuthUserIdProvider
 
   @override
   UuidValue? create(Ref ref) {
-    return signedInAuthUserId(ref);
+    return signedInActorId(ref);
   }
 
   /// {@macro riverpod.override_with_value}
@@ -52,8 +48,7 @@ final class SignedInAuthUserIdProvider
   }
 }
 
-String _$signedInAuthUserIdHash() =>
-    r'300387fd303a4ac7b5d484b207ba9d79c442f1d0';
+String _$signedInActorIdHash() => r'6c6efc7f8b0c379fbec4462e8c06204b437079a1';
 
 @ProviderFor(AuthViewModel)
 const authViewModelProvider = AuthViewModelProvider._();
@@ -87,7 +82,7 @@ final class AuthViewModelProvider
   }
 }
 
-String _$authViewModelHash() => r'3ba2610ba622bf8c92bf9a447c45c6604578033b';
+String _$authViewModelHash() => r'ae3f0ff3e2963e5bc2bdca51dc390e86e055c4f3';
 
 abstract class _$AuthViewModel extends $Notifier<AuthState> {
   AuthState build();

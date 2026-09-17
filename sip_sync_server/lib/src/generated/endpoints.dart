@@ -15,26 +15,29 @@ import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
     as _iacs;
 import 'package:serverpod_auth_idp_server/serverpod_auth_idp_server.dart'
     as _iais;
-import 'package:sip_sync_server/src/generated/auth/backoffice_user_create.dart'
-    as _ivojw13s;
+import 'package:sip_sync_server/src/generated/auth/email_login_request.dart'
+    as _i61r4gix;
+import 'package:sip_sync_server/src/generated/auth/email_register_create.dart'
+    as _ihm3fhv0;
 import 'package:sip_sync_server/src/generated/auth/employee_create.dart'
     as _itsh5tmy;
 import 'package:sip_sync_server/src/generated/auth/employee_update.dart'
     as _isn5wmy3;
-import 'package:sip_sync_server/src/generated/auth/login_request.dart'
-    as _igjnjeoy;
 import 'package:sip_sync_server/src/generated/auth/profile_update.dart'
     as _id6sv1bw;
-import 'package:sip_sync_server/src/generated/auth/self_register_create.dart'
-    as _iomxn8e2;
+import 'package:sip_sync_server/src/generated/auth/super_admin_create.dart'
+    as _id6ub811;
+import 'package:sip_sync_server/src/generated/auth/username_login_request.dart'
+    as _i4u41mzh;
 import 'package:sip_sync_server/src/generated/buildings/building_create.dart'
     as _iikuia2o;
 import 'package:sip_sync_server/src/generated/buildings/building_update.dart'
     as _ipidi05l;
-import '../auth/account_endpoint.dart' as _ii6ycf6v;
-import '../auth/email_idp_endpoint.dart' as _iuc1hd5t;
+import '../auth/customer_auth_endpoint.dart' as _i4yxnu3z;
+import '../auth/employee_auth_endpoint.dart' as _i6neyhet;
 import '../auth/employee_endpoint.dart' as _i3t5tbp4;
-import '../auth/jwt_refresh_endpoint.dart' as _inwq3ztq;
+import '../auth/owner_auth_endpoint.dart' as _is2qyeee;
+import '../auth/super_admin_auth_endpoint.dart' as _itmp66ay;
 import '../buildings/building_endpoint.dart' as _i69ygv7j;
 import '../greetings/greeting_endpoint.dart' as _il624ik7;
 
@@ -42,16 +45,16 @@ class Endpoints extends _is.EndpointDispatch {
   @override
   void initializeEndpoints(_is.Server server) {
     var endpoints = <String, _is.Endpoint>{
-      'account': _ii6ycf6v.AccountEndpoint()
+      'customerAuth': _i4yxnu3z.CustomerAuthEndpoint()
         ..initialize(
           server,
-          'account',
+          'customerAuth',
           null,
         ),
-      'emailIdp': _iuc1hd5t.EmailIdpEndpoint()
+      'employeeAuth': _i6neyhet.EmployeeAuthEndpoint()
         ..initialize(
           server,
-          'emailIdp',
+          'employeeAuth',
           null,
         ),
       'employee': _i3t5tbp4.EmployeeEndpoint()
@@ -60,10 +63,16 @@ class Endpoints extends _is.EndpointDispatch {
           'employee',
           null,
         ),
-      'jwtRefresh': _inwq3ztq.JwtRefreshEndpoint()
+      'ownerAuth': _is2qyeee.OwnerAuthEndpoint()
         ..initialize(
           server,
-          'jwtRefresh',
+          'ownerAuth',
+          null,
+        ),
+      'superAdminAuth': _itmp66ay.SuperAdminAuthEndpoint()
+        ..initialize(
+          server,
+          'superAdminAuth',
           null,
         ),
       'building': _i69ygv7j.BuildingEndpoint()
@@ -79,16 +88,16 @@ class Endpoints extends _is.EndpointDispatch {
           null,
         ),
     };
-    connectors['account'] = _is.EndpointConnector(
-      name: 'account',
-      endpoint: endpoints['account']!,
+    connectors['customerAuth'] = _is.EndpointConnector(
+      name: 'customerAuth',
+      endpoint: endpoints['customerAuth']!,
       methodConnectors: {
         'register': _is.MethodConnector(
           name: 'register',
           params: {
             'request': _is.ParameterDescription(
               name: 'request',
-              type: _is.getType<_iomxn8e2.SelfRegisterCreate>(),
+              type: _is.getType<_ihm3fhv0.EmailRegisterCreate>(),
               nullable: false,
             ),
           },
@@ -97,17 +106,18 @@ class Endpoints extends _is.EndpointDispatch {
                 _is.Session session,
                 Map<String, dynamic> params,
               ) async =>
-                  (endpoints['account'] as _ii6ycf6v.AccountEndpoint).register(
-                    session,
-                    params['request'],
-                  ),
+                  (endpoints['customerAuth'] as _i4yxnu3z.CustomerAuthEndpoint)
+                      .register(
+                        session,
+                        params['request'],
+                      ),
         ),
         'login': _is.MethodConnector(
           name: 'login',
           params: {
             'request': _is.ParameterDescription(
               name: 'request',
-              type: _is.getType<_igjnjeoy.LoginRequest>(),
+              type: _is.getType<_i61r4gix.EmailLoginRequest>(),
               nullable: false,
             ),
           },
@@ -116,10 +126,11 @@ class Endpoints extends _is.EndpointDispatch {
                 _is.Session session,
                 Map<String, dynamic> params,
               ) async =>
-                  (endpoints['account'] as _ii6ycf6v.AccountEndpoint).login(
-                    session,
-                    params['request'],
-                  ),
+                  (endpoints['customerAuth'] as _i4yxnu3z.CustomerAuthEndpoint)
+                      .login(
+                        session,
+                        params['request'],
+                      ),
         ),
         'me': _is.MethodConnector(
           name: 'me',
@@ -128,9 +139,9 @@ class Endpoints extends _is.EndpointDispatch {
               (
                 _is.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['account'] as _ii6ycf6v.AccountEndpoint).me(
-                session,
-              ),
+              ) async =>
+                  (endpoints['customerAuth'] as _i4yxnu3z.CustomerAuthEndpoint)
+                      .me(session),
         ),
         'updateMyProfile': _is.MethodConnector(
           name: 'updateMyProfile',
@@ -145,77 +156,36 @@ class Endpoints extends _is.EndpointDispatch {
               (
                 _is.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['account'] as _ii6ycf6v.AccountEndpoint)
-                  .updateMyProfile(
-                    session,
-                    params['request'],
-                  ),
+              ) async =>
+                  (endpoints['customerAuth'] as _i4yxnu3z.CustomerAuthEndpoint)
+                      .updateMyProfile(
+                        session,
+                        params['request'],
+                      ),
         ),
-        'addBackofficeUser': _is.MethodConnector(
-          name: 'addBackofficeUser',
-          params: {
-            'request': _is.ParameterDescription(
-              name: 'request',
-              type: _is.getType<_ivojw13s.BackofficeUserCreate>(),
-              nullable: false,
-            ),
-          },
-          call:
-              (
-                _is.Session session,
-                Map<String, dynamic> params,
-              ) async => (endpoints['account'] as _ii6ycf6v.AccountEndpoint)
-                  .addBackofficeUser(
-                    session,
-                    params['request'],
-                  ),
-        ),
-        'listBackofficeUsers': _is.MethodConnector(
-          name: 'listBackofficeUsers',
+        'logout': _is.MethodConnector(
+          name: 'logout',
           params: {},
           call:
               (
                 _is.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['account'] as _ii6ycf6v.AccountEndpoint)
-                  .listBackofficeUsers(session),
-        ),
-        'deleteBackofficeUser': _is.MethodConnector(
-          name: 'deleteBackofficeUser',
-          params: {
-            'targetAuthUserId': _is.ParameterDescription(
-              name: 'targetAuthUserId',
-              type: _is.getType<_is.UuidValue>(),
-              nullable: false,
-            ),
-          },
-          call:
-              (
-                _is.Session session,
-                Map<String, dynamic> params,
-              ) async => (endpoints['account'] as _ii6ycf6v.AccountEndpoint)
-                  .deleteBackofficeUser(
-                    session,
-                    params['targetAuthUserId'],
-                  ),
+              ) async =>
+                  (endpoints['customerAuth'] as _i4yxnu3z.CustomerAuthEndpoint)
+                      .logout(session),
         ),
       },
     );
-    connectors['emailIdp'] = _is.EndpointConnector(
-      name: 'emailIdp',
-      endpoint: endpoints['emailIdp']!,
+    connectors['employeeAuth'] = _is.EndpointConnector(
+      name: 'employeeAuth',
+      endpoint: endpoints['employeeAuth']!,
       methodConnectors: {
         'login': _is.MethodConnector(
           name: 'login',
           params: {
-            'email': _is.ParameterDescription(
-              name: 'email',
-              type: _is.getType<String>(),
-              nullable: false,
-            ),
-            'password': _is.ParameterDescription(
-              name: 'password',
-              type: _is.getType<String>(),
+            'request': _is.ParameterDescription(
+              name: 'request',
+              type: _is.getType<_i4u41mzh.UsernameLoginRequest>(),
               nullable: false,
             ),
           },
@@ -224,160 +194,53 @@ class Endpoints extends _is.EndpointDispatch {
                 _is.Session session,
                 Map<String, dynamic> params,
               ) async =>
-                  (endpoints['emailIdp'] as _iuc1hd5t.EmailIdpEndpoint).login(
-                    session,
-                    email: params['email'],
-                    password: params['password'],
-                  ),
+                  (endpoints['employeeAuth'] as _i6neyhet.EmployeeAuthEndpoint)
+                      .login(
+                        session,
+                        params['request'],
+                      ),
         ),
-        'startRegistration': _is.MethodConnector(
-          name: 'startRegistration',
-          params: {
-            'email': _is.ParameterDescription(
-              name: 'email',
-              type: _is.getType<String>(),
-              nullable: false,
-            ),
-          },
-          call:
-              (
-                _is.Session session,
-                Map<String, dynamic> params,
-              ) async => (endpoints['emailIdp'] as _iuc1hd5t.EmailIdpEndpoint)
-                  .startRegistration(
-                    session,
-                    email: params['email'],
-                  ),
-        ),
-        'verifyRegistrationCode': _is.MethodConnector(
-          name: 'verifyRegistrationCode',
-          params: {
-            'accountRequestId': _is.ParameterDescription(
-              name: 'accountRequestId',
-              type: _is.getType<_is.UuidValue>(),
-              nullable: false,
-            ),
-            'verificationCode': _is.ParameterDescription(
-              name: 'verificationCode',
-              type: _is.getType<String>(),
-              nullable: false,
-            ),
-          },
-          call:
-              (
-                _is.Session session,
-                Map<String, dynamic> params,
-              ) async => (endpoints['emailIdp'] as _iuc1hd5t.EmailIdpEndpoint)
-                  .verifyRegistrationCode(
-                    session,
-                    accountRequestId: params['accountRequestId'],
-                    verificationCode: params['verificationCode'],
-                  ),
-        ),
-        'finishRegistration': _is.MethodConnector(
-          name: 'finishRegistration',
-          params: {
-            'registrationToken': _is.ParameterDescription(
-              name: 'registrationToken',
-              type: _is.getType<String>(),
-              nullable: false,
-            ),
-            'password': _is.ParameterDescription(
-              name: 'password',
-              type: _is.getType<String>(),
-              nullable: false,
-            ),
-          },
-          call:
-              (
-                _is.Session session,
-                Map<String, dynamic> params,
-              ) async => (endpoints['emailIdp'] as _iuc1hd5t.EmailIdpEndpoint)
-                  .finishRegistration(
-                    session,
-                    registrationToken: params['registrationToken'],
-                    password: params['password'],
-                  ),
-        ),
-        'startPasswordReset': _is.MethodConnector(
-          name: 'startPasswordReset',
-          params: {
-            'email': _is.ParameterDescription(
-              name: 'email',
-              type: _is.getType<String>(),
-              nullable: false,
-            ),
-          },
-          call:
-              (
-                _is.Session session,
-                Map<String, dynamic> params,
-              ) async => (endpoints['emailIdp'] as _iuc1hd5t.EmailIdpEndpoint)
-                  .startPasswordReset(
-                    session,
-                    email: params['email'],
-                  ),
-        ),
-        'verifyPasswordResetCode': _is.MethodConnector(
-          name: 'verifyPasswordResetCode',
-          params: {
-            'passwordResetRequestId': _is.ParameterDescription(
-              name: 'passwordResetRequestId',
-              type: _is.getType<_is.UuidValue>(),
-              nullable: false,
-            ),
-            'verificationCode': _is.ParameterDescription(
-              name: 'verificationCode',
-              type: _is.getType<String>(),
-              nullable: false,
-            ),
-          },
-          call:
-              (
-                _is.Session session,
-                Map<String, dynamic> params,
-              ) async => (endpoints['emailIdp'] as _iuc1hd5t.EmailIdpEndpoint)
-                  .verifyPasswordResetCode(
-                    session,
-                    passwordResetRequestId: params['passwordResetRequestId'],
-                    verificationCode: params['verificationCode'],
-                  ),
-        ),
-        'finishPasswordReset': _is.MethodConnector(
-          name: 'finishPasswordReset',
-          params: {
-            'finishPasswordResetToken': _is.ParameterDescription(
-              name: 'finishPasswordResetToken',
-              type: _is.getType<String>(),
-              nullable: false,
-            ),
-            'newPassword': _is.ParameterDescription(
-              name: 'newPassword',
-              type: _is.getType<String>(),
-              nullable: false,
-            ),
-          },
-          call:
-              (
-                _is.Session session,
-                Map<String, dynamic> params,
-              ) async => (endpoints['emailIdp'] as _iuc1hd5t.EmailIdpEndpoint)
-                  .finishPasswordReset(
-                    session,
-                    finishPasswordResetToken:
-                        params['finishPasswordResetToken'],
-                    newPassword: params['newPassword'],
-                  ),
-        ),
-        'hasAccount': _is.MethodConnector(
-          name: 'hasAccount',
+        'me': _is.MethodConnector(
+          name: 'me',
           params: {},
           call:
               (
                 _is.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['emailIdp'] as _iuc1hd5t.EmailIdpEndpoint)
-                  .hasAccount(session),
+              ) async =>
+                  (endpoints['employeeAuth'] as _i6neyhet.EmployeeAuthEndpoint)
+                      .me(session),
+        ),
+        'updateMyProfile': _is.MethodConnector(
+          name: 'updateMyProfile',
+          params: {
+            'request': _is.ParameterDescription(
+              name: 'request',
+              type: _is.getType<_id6sv1bw.ProfileUpdate>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['employeeAuth'] as _i6neyhet.EmployeeAuthEndpoint)
+                      .updateMyProfile(
+                        session,
+                        params['request'],
+                      ),
+        ),
+        'logout': _is.MethodConnector(
+          name: 'logout',
+          params: {},
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['employeeAuth'] as _i6neyhet.EmployeeAuthEndpoint)
+                      .logout(session),
         ),
       },
     );
@@ -388,8 +251,8 @@ class Endpoints extends _is.EndpointDispatch {
         'get': _is.MethodConnector(
           name: 'get',
           params: {
-            'employeeAuthUserId': _is.ParameterDescription(
-              name: 'employeeAuthUserId',
+            'employeeId': _is.ParameterDescription(
+              name: 'employeeId',
               type: _is.getType<_is.UuidValue>(),
               nullable: false,
             ),
@@ -401,7 +264,7 @@ class Endpoints extends _is.EndpointDispatch {
               ) async =>
                   (endpoints['employee'] as _i3t5tbp4.EmployeeEndpoint).get(
                     session,
-                    params['employeeAuthUserId'],
+                    params['employeeId'],
                   ),
         ),
         'add': _is.MethodConnector(
@@ -445,8 +308,8 @@ class Endpoints extends _is.EndpointDispatch {
         'setEnabled': _is.MethodConnector(
           name: 'setEnabled',
           params: {
-            'employeeAuthUserId': _is.ParameterDescription(
-              name: 'employeeAuthUserId',
+            'employeeId': _is.ParameterDescription(
+              name: 'employeeId',
               type: _is.getType<_is.UuidValue>(),
               nullable: false,
             ),
@@ -463,23 +326,42 @@ class Endpoints extends _is.EndpointDispatch {
               ) async => (endpoints['employee'] as _i3t5tbp4.EmployeeEndpoint)
                   .setEnabled(
                     session,
-                    params['employeeAuthUserId'],
+                    params['employeeId'],
                     params['isEnabled'],
                   ),
         ),
       },
     );
-    connectors['jwtRefresh'] = _is.EndpointConnector(
-      name: 'jwtRefresh',
-      endpoint: endpoints['jwtRefresh']!,
+    connectors['ownerAuth'] = _is.EndpointConnector(
+      name: 'ownerAuth',
+      endpoint: endpoints['ownerAuth']!,
       methodConnectors: {
-        'refreshAccessToken': _is.MethodConnector(
-          name: 'refreshAccessToken',
+        'register': _is.MethodConnector(
+          name: 'register',
           params: {
-            'refreshToken': _is.ParameterDescription(
-              name: 'refreshToken',
-              type: _is.getType<String?>(),
-              nullable: true,
+            'request': _is.ParameterDescription(
+              name: 'request',
+              type: _is.getType<_ihm3fhv0.EmailRegisterCreate>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['ownerAuth'] as _is2qyeee.OwnerAuthEndpoint)
+                  .register(
+                    session,
+                    params['request'],
+                  ),
+        ),
+        'login': _is.MethodConnector(
+          name: 'login',
+          params: {
+            'request': _is.ParameterDescription(
+              name: 'request',
+              type: _is.getType<_i61r4gix.EmailLoginRequest>(),
+              nullable: false,
             ),
           },
           call:
@@ -487,11 +369,166 @@ class Endpoints extends _is.EndpointDispatch {
                 _is.Session session,
                 Map<String, dynamic> params,
               ) async =>
-                  (endpoints['jwtRefresh'] as _inwq3ztq.JwtRefreshEndpoint)
-                      .refreshAccessToken(
+                  (endpoints['ownerAuth'] as _is2qyeee.OwnerAuthEndpoint).login(
+                    session,
+                    params['request'],
+                  ),
+        ),
+        'me': _is.MethodConnector(
+          name: 'me',
+          params: {},
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['ownerAuth'] as _is2qyeee.OwnerAuthEndpoint)
+                  .me(session),
+        ),
+        'updateMyProfile': _is.MethodConnector(
+          name: 'updateMyProfile',
+          params: {
+            'request': _is.ParameterDescription(
+              name: 'request',
+              type: _is.getType<_id6sv1bw.ProfileUpdate>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['ownerAuth'] as _is2qyeee.OwnerAuthEndpoint)
+                  .updateMyProfile(
+                    session,
+                    params['request'],
+                  ),
+        ),
+        'logout': _is.MethodConnector(
+          name: 'logout',
+          params: {},
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['ownerAuth'] as _is2qyeee.OwnerAuthEndpoint)
+                  .logout(session),
+        ),
+      },
+    );
+    connectors['superAdminAuth'] = _is.EndpointConnector(
+      name: 'superAdminAuth',
+      endpoint: endpoints['superAdminAuth']!,
+      methodConnectors: {
+        'login': _is.MethodConnector(
+          name: 'login',
+          params: {
+            'request': _is.ParameterDescription(
+              name: 'request',
+              type: _is.getType<_i61r4gix.EmailLoginRequest>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['superAdminAuth']
+                          as _itmp66ay.SuperAdminAuthEndpoint)
+                      .login(
                         session,
-                        refreshToken: params['refreshToken'],
+                        params['request'],
                       ),
+        ),
+        'me': _is.MethodConnector(
+          name: 'me',
+          params: {},
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['superAdminAuth']
+                          as _itmp66ay.SuperAdminAuthEndpoint)
+                      .me(session),
+        ),
+        'logout': _is.MethodConnector(
+          name: 'logout',
+          params: {},
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['superAdminAuth']
+                          as _itmp66ay.SuperAdminAuthEndpoint)
+                      .logout(session),
+        ),
+        'add': _is.MethodConnector(
+          name: 'add',
+          params: {
+            'request': _is.ParameterDescription(
+              name: 'request',
+              type: _is.getType<_id6ub811.SuperAdminCreate>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['superAdminAuth']
+                          as _itmp66ay.SuperAdminAuthEndpoint)
+                      .add(
+                        session,
+                        params['request'],
+                      ),
+        ),
+        'list': _is.MethodConnector(
+          name: 'list',
+          params: {},
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['superAdminAuth']
+                          as _itmp66ay.SuperAdminAuthEndpoint)
+                      .list(session),
+        ),
+        'delete': _is.MethodConnector(
+          name: 'delete',
+          params: {
+            'targetId': _is.ParameterDescription(
+              name: 'targetId',
+              type: _is.getType<_is.UuidValue>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['superAdminAuth']
+                          as _itmp66ay.SuperAdminAuthEndpoint)
+                      .delete(
+                        session,
+                        params['targetId'],
+                      ),
+        ),
+        'ensureDefaultAdmin': _is.MethodConnector(
+          name: 'ensureDefaultAdmin',
+          params: {},
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['superAdminAuth']
+                          as _itmp66ay.SuperAdminAuthEndpoint)
+                      .ensureDefaultAdmin(session),
         ),
       },
     );

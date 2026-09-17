@@ -17,7 +17,7 @@ abstract class BuildingView
     implements _is.SerializableModel, _is.ProtocolSerialization {
   BuildingView._({
     required this.id,
-    required this.ownerAuthUserId,
+    required this.ownerId,
     required this.name,
     required this.type,
     required this.address,
@@ -26,12 +26,12 @@ abstract class BuildingView
     required this.openingMinutes,
     required this.closingMinutes,
     required this.currencyCode,
-    required this.employeeAuthUserIds,
+    required this.employeeIds,
   });
 
   factory BuildingView({
     required _is.UuidValue id,
-    required _is.UuidValue ownerAuthUserId,
+    required _is.UuidValue ownerId,
     required String name,
     required String type,
     required String address,
@@ -40,14 +40,14 @@ abstract class BuildingView
     required int openingMinutes,
     required int closingMinutes,
     required String currencyCode,
-    required List<_is.UuidValue> employeeAuthUserIds,
+    required List<_is.UuidValue> employeeIds,
   }) = _BuildingViewImpl;
 
   factory BuildingView.fromJson(Map<String, dynamic> jsonSerialization) {
     return BuildingView(
       id: _is.UuidValueJsonExtension.fromJson(jsonSerialization['id']),
-      ownerAuthUserId: _is.UuidValueJsonExtension.fromJson(
-        jsonSerialization['ownerAuthUserId'],
+      ownerId: _is.UuidValueJsonExtension.fromJson(
+        jsonSerialization['ownerId'],
       ),
       name: jsonSerialization['name'] as String,
       type: jsonSerialization['type'] as String,
@@ -57,16 +57,15 @@ abstract class BuildingView
       openingMinutes: jsonSerialization['openingMinutes'] as int,
       closingMinutes: jsonSerialization['closingMinutes'] as int,
       currencyCode: jsonSerialization['currencyCode'] as String,
-      employeeAuthUserIds: _iaib1p48.Protocol()
-          .deserialize<List<_is.UuidValue>>(
-            jsonSerialization['employeeAuthUserIds'],
-          ),
+      employeeIds: _iaib1p48.Protocol().deserialize<List<_is.UuidValue>>(
+        jsonSerialization['employeeIds'],
+      ),
     );
   }
 
   _is.UuidValue id;
 
-  _is.UuidValue ownerAuthUserId;
+  _is.UuidValue ownerId;
 
   String name;
 
@@ -84,14 +83,14 @@ abstract class BuildingView
 
   String currencyCode;
 
-  List<_is.UuidValue> employeeAuthUserIds;
+  List<_is.UuidValue> employeeIds;
 
   /// Returns a shallow copy of this [BuildingView]
   /// with some or all fields replaced by the given arguments.
   @_is.useResult
   BuildingView copyWith({
     _is.UuidValue? id,
-    _is.UuidValue? ownerAuthUserId,
+    _is.UuidValue? ownerId,
     String? name,
     String? type,
     String? address,
@@ -100,14 +99,14 @@ abstract class BuildingView
     int? openingMinutes,
     int? closingMinutes,
     String? currencyCode,
-    List<_is.UuidValue>? employeeAuthUserIds,
+    List<_is.UuidValue>? employeeIds,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
       '__className__': 'BuildingView',
       'id': id.toJson(),
-      'ownerAuthUserId': ownerAuthUserId.toJson(),
+      'ownerId': ownerId.toJson(),
       'name': name,
       'type': type,
       'address': address,
@@ -116,9 +115,7 @@ abstract class BuildingView
       'openingMinutes': openingMinutes,
       'closingMinutes': closingMinutes,
       'currencyCode': currencyCode,
-      'employeeAuthUserIds': employeeAuthUserIds.toJson(
-        valueToJson: (v) => v.toJson(),
-      ),
+      'employeeIds': employeeIds.toJson(valueToJson: (v) => v.toJson()),
     };
   }
 
@@ -127,7 +124,7 @@ abstract class BuildingView
     return {
       '__className__': 'BuildingView',
       'id': id.toJson(),
-      'ownerAuthUserId': ownerAuthUserId.toJson(),
+      'ownerId': ownerId.toJson(),
       'name': name,
       'type': type,
       'address': address,
@@ -136,9 +133,7 @@ abstract class BuildingView
       'openingMinutes': openingMinutes,
       'closingMinutes': closingMinutes,
       'currencyCode': currencyCode,
-      'employeeAuthUserIds': employeeAuthUserIds.toJson(
-        valueToJson: (v) => v.toJson(),
-      ),
+      'employeeIds': employeeIds.toJson(valueToJson: (v) => v.toJson()),
     };
   }
 
@@ -151,7 +146,7 @@ abstract class BuildingView
 class _BuildingViewImpl extends BuildingView {
   _BuildingViewImpl({
     required _is.UuidValue id,
-    required _is.UuidValue ownerAuthUserId,
+    required _is.UuidValue ownerId,
     required String name,
     required String type,
     required String address,
@@ -160,10 +155,10 @@ class _BuildingViewImpl extends BuildingView {
     required int openingMinutes,
     required int closingMinutes,
     required String currencyCode,
-    required List<_is.UuidValue> employeeAuthUserIds,
+    required List<_is.UuidValue> employeeIds,
   }) : super._(
          id: id,
-         ownerAuthUserId: ownerAuthUserId,
+         ownerId: ownerId,
          name: name,
          type: type,
          address: address,
@@ -172,7 +167,7 @@ class _BuildingViewImpl extends BuildingView {
          openingMinutes: openingMinutes,
          closingMinutes: closingMinutes,
          currencyCode: currencyCode,
-         employeeAuthUserIds: employeeAuthUserIds,
+         employeeIds: employeeIds,
        );
 
   /// Returns a shallow copy of this [BuildingView]
@@ -181,7 +176,7 @@ class _BuildingViewImpl extends BuildingView {
   @override
   BuildingView copyWith({
     _is.UuidValue? id,
-    _is.UuidValue? ownerAuthUserId,
+    _is.UuidValue? ownerId,
     String? name,
     String? type,
     String? address,
@@ -190,11 +185,11 @@ class _BuildingViewImpl extends BuildingView {
     int? openingMinutes,
     int? closingMinutes,
     String? currencyCode,
-    List<_is.UuidValue>? employeeAuthUserIds,
+    List<_is.UuidValue>? employeeIds,
   }) {
     return BuildingView(
       id: id ?? this.id,
-      ownerAuthUserId: ownerAuthUserId ?? this.ownerAuthUserId,
+      ownerId: ownerId ?? this.ownerId,
       name: name ?? this.name,
       type: type ?? this.type,
       address: address ?? this.address,
@@ -203,9 +198,7 @@ class _BuildingViewImpl extends BuildingView {
       openingMinutes: openingMinutes ?? this.openingMinutes,
       closingMinutes: closingMinutes ?? this.closingMinutes,
       currencyCode: currencyCode ?? this.currencyCode,
-      employeeAuthUserIds:
-          employeeAuthUserIds ??
-          this.employeeAuthUserIds.map((e0) => e0).toList(),
+      employeeIds: employeeIds ?? this.employeeIds.map((e0) => e0).toList(),
     );
   }
 }

@@ -52,7 +52,7 @@ final class EmployeeDetailsViewModelProvider
 }
 
 String _$employeeDetailsViewModelHash() =>
-    r'3b18641bc40e91a94eb3e0baff13f46184b4205a';
+    r'e0ba9689ec2152c79ce78168ae74c5346d7d3458';
 
 final class EmployeeDetailsViewModelFamily extends $Family
     with
@@ -72,8 +72,8 @@ final class EmployeeDetailsViewModelFamily extends $Family
         isAutoDispose: true,
       );
 
-  EmployeeDetailsViewModelProvider call(String authUserId) =>
-      EmployeeDetailsViewModelProvider._(argument: authUserId, from: this);
+  EmployeeDetailsViewModelProvider call(String employeeId) =>
+      EmployeeDetailsViewModelProvider._(argument: employeeId, from: this);
 
   @override
   String toString() => r'employeeDetailsViewModelProvider';
@@ -81,9 +81,9 @@ final class EmployeeDetailsViewModelFamily extends $Family
 
 abstract class _$EmployeeDetailsViewModel extends $AsyncNotifier<EmployeeView> {
   late final _$args = ref.$arg as String;
-  String get authUserId => _$args;
+  String get employeeId => _$args;
 
-  FutureOr<EmployeeView> build(String authUserId);
+  FutureOr<EmployeeView> build(String employeeId);
   @$mustCallSuper
   @override
   void runBuild() {

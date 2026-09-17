@@ -1,0 +1,21 @@
+### Opaque bearer session for any actor type.
+class: AuthSession
+table: auth_session
+serverOnly: true
+fields:
+  id: UuidValue?, defaultPersist=random_v7
+  actorType: ActorType
+  actorId: UuidValue
+  tokenHash: String
+  refreshTokenHash: String
+  expiresAt: DateTime
+  createdAt: DateTime, defaultModel=now
+indexes:
+  auth_session_token_idx:
+    fields: tokenHash
+    unique: true
+  auth_session_refresh_idx:
+    fields: refreshTokenHash
+    unique: true
+  auth_session_actor_idx:
+    fields: actorType, actorId

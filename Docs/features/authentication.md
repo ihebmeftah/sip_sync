@@ -8,82 +8,65 @@ All three clients plus `sip_sync_server`.
 
 | App | Package | Who may enter |
 | --- | --- | --- |
-| Customer | `sip_sync_flutter` | Anyone with a Sip Sync account (customer role is granted on first customer login or self-register) |
-| Operations | `managment` | Owner or employee membership |
-| Platform admin | `backoffice` | Backoffice membership (seeded default admin plus staff added by that admin) |
+| Customer | `sip_sync_flutter` | Customer account |
+| Operations | `managment` | Owner or employee account |
+| Platform admin | `backoffice` | Super admin account |
 
 ## Identity model
 
-One Serverpod `AuthUser` per person. Login method depends on role:
+**Fully custom auth.** Product login does **not** use Serverpod email IDP or `AuthUser`. Each actor type has its own table, password hash, and auth endpoint. The same email may exist as both owner and customer as **unrelated** rows.
 
-| Actor | Signs in with | Email | Username |
+| Actor | Table | Signs in with | Self-register |
 | --- | --- | --- | --- |
-| Customer | email + password | required (real) | none (null) |
-| Owner | email + password | required (real) | none (null) |
-| Backoffice / super admin | email + password | required (real) | none (null) |
-| Employee | **username** + password | synthetic only (server IDP); never collected or shown | auto-generated from first + last + digits; **read-only** |
+| Customer | `customer` | email + password | yes (`CustomerAuth`) |
+| Owner | `owner` | email + password | yes (`OwnerAuth`) |
+| Employee | `employee` | username + password | no — owner creates |
+| Super admin | `super_admin` | email + password | no — admin invites / seed |
 
-Employees use a synthetic email (`{username}@employees.sipsync.local`) under the hood so Serverpod’s email identity provider still stores the password. Owners never see or edit that address.
+Passwords are hashed (Argon2id) on the actor row (`passwordHash`). Sessions are opaque bearer tokens stored hashed in `auth_session` (`tokenHash`, optional `refreshTokenHash`, `actorType`, `actorId`, expiry).
 
-Profile fields (table `sip_sync_profile`):
+## Domain links
 
-- `email` (unique, lowercase) — real for customer/owner/backoffice; synthetic for employees
-- `username` (unique when set, lowercase) — set only for employees
-- `phoneNumber` (unique)
-- `firstName`, `lastName`
-
-Roles live in `user_role_membership` (`customer`, `owner`, `employee`, `backoffice`). Serverpod scopes stay in sync with those memberships.
-
-Backoffice extras (`backoffice_staff`): `isAdmin`, `isSystemDefault` (seeded default cannot be deleted).
-
-Employee extras (`employee_record`): links staff to the owner who added them and to the **required** building they work at (`buildingId`). That same id is returned on `AccountSessionView.buildingId` so the management app can open their dashboard directly.
+- Owner **has many** buildings (`building.ownerId`).
+- Building **has many** employees (`employee.buildingId`).
+- Employee **belongs to one** building (and that building’s owner via `employee.ownerId`).
 
 ## Actors and permissions
 
-- **Customer** — self-register or log in on `sip_sync_flutter` with email.
-- **Owner** — self-register or log in on `managment` with email (register grants owner).
-- **Employee** — created by an owner (no email). Logs in on `managment` with username + password. Disabled `employee_record` blocks management login.
-- **Backoffice user** — added by a backoffice admin. Logs in on `backoffice` with email. Cannot self-register.
-- **Default super admin** — seeded on server start. Optional passwords: `sipSyncDefaultAdminEmail` / `sipSyncDefaultAdminPassword`.
+- **Customer** — self-register / login on `sip_sync_flutter`.
+- **Owner** — self-register / login on `managment`; manages buildings and staff.
+- **Employee** — created by an owner for a building; logs in on `managment` with username; session includes `buildingId` → app opens dashboard directly.
+- **Super admin** — seeded default + staff added by an admin; logs in on `backoffice`. Default admin cannot be deleted.
 
 ## Flow
 
-### New customer or owner
+### Owner or customer register
 
-1. Submit email, password, phone, names (no username field).
-2. Server creates `AuthUser`, email password, `sip_sync_profile` with `username: null`, and the app role.
-3. Client stores the JWT and loads `AccountSessionView`.
+1. Email, password, phone, names.
+2. Server hashes password, inserts actor row, creates `auth_session`, returns token + session view.
 
-### Existing person, another email-based app
+### Employee create (owner)
 
-1. Same **email** + password.
-2. Server authenticates and adds the role that app needs.
+1. Building must exist and be owned by the actor.
+2. Password, phone, names, required `buildingId` — no email/username from client.
+3. Server allocates username, hashes password, inserts `employee`.
 
-### Owner adds an employee
+### Login
 
-1. Building must already exist. Password, phone, names, **required** `buildingId` — **no email, no username**.
-2. Server generates a unique username (`firstname.lastname` + random digits), a synthetic email, identity + employee role + `employee_record` (with that `buildingId`).
-3. Owner sees the username on the employee details screen (read-only). Staff sign in with that username.
+- Owner / customer / super admin: email + password on their endpoint.
+- Employee: username + password on `EmployeeAuth.login`.
+- Disabled employee → `accountDisabled`.
 
-### Login (`LoginRequest.identifier`)
+### Authenticated calls
 
-- Contains `@` → treat as email (customer / owner / backoffice).
-- Otherwise → look up profile by username, authenticate with that row’s synthetic email (employees on management).
-
-### Access denied
-
-Management without owner/employee, or backoffice without membership → `appAccessDenied`.
+Client sends `Authorization: Bearer <token>`. Endpoints resolve the session via `AuthGuard` (not Serverpod `session.authenticated`).
 
 ## Data
 
-- Tables: `sip_sync_profile`, `user_role_membership`, `backoffice_staff`, `employee_record`
-- Endpoints: `AccountEndpoint` (register/login/profile/backoffice), `EmployeeEndpoint` (owner staff CRUD; requires `buildingId` on create)
-- Create: `SelfRegisterCreate` (no username), `LoginRequest` (`identifier` + password + app), `EmployeeCreate` (no email/username; required `buildingId`), `BackofficeUserCreate` (no username)
-- Update: `ProfileUpdate` / `EmployeeUpdate` (phone + names only; username and email not writable)
-- Responses: `AuthSessionResult`, `ProfileView` (`username` nullable), `EmployeeView` (username, no email), `BackofficeUserView`
+- Tables: `owner`, `customer`, `super_admin`, `employee`, `auth_session`, `building`
+- Endpoints: `OwnerAuth`, `EmployeeAuth`, `CustomerAuth`, `SuperAdminAuth`, `Employee`, `Building`
+- Results: `AuthTokenResult` + actor-specific session views
 - Exceptions: `AccountException` / `AccountErrorCode`
-
-Passwords live in the email identity provider, never on Sip Sync tables.
 
 ## Realtime
 

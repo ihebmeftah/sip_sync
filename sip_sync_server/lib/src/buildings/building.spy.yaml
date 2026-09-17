@@ -4,7 +4,7 @@ table: building
 serverOnly: true
 fields:
   id: UuidValue?, defaultPersist=random_v7
-  ownerAuthUserId: UuidValue
+  owner: Owner?, relation(name=owner_buildings, onDelete=Cascade)
   name: String
   type: String
   address: String
@@ -14,7 +14,7 @@ fields:
   closingMinutes: int
   currencyCode: String
   createdAt: DateTime, defaultModel=now
-  employees: List<EmployeeRecord>?, relation(name=building_employees)
+  employees: List<Employee>?, relation(name=building_employees)
 indexes:
   building_owner_idx:
-    fields: ownerAuthUserId
+    fields: ownerId

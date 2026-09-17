@@ -1,6 +1,5 @@
 import 'package:sip_sync_client/sip_sync_client.dart';
 
-/// Talks to [EndpointBuilding] for the management app.
 class BuildingRepository {
   BuildingRepository(this._client);
 

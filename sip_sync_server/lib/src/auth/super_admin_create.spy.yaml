@@ -1,0 +1,7 @@
+class: SuperAdminCreate
+fields:
+  email: String
+  password: String
+  phoneNumber: String
+  firstName: String
+  lastName: String

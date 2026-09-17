@@ -10,6 +10,8 @@ import '../../../core/widgets/auth_shell.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../view_models/auth_view_model.dart';
 
+enum _LoginMode { owner, employee }
+
 class SignInView extends ConsumerStatefulWidget {
   const SignInView({super.key});
 
@@ -21,6 +23,7 @@ class _SignInViewState extends ConsumerState<SignInView> {
   final _formKey = GlobalKey<FormState>();
   final _identifier = TextEditingController();
   final _password = TextEditingController();
+  var _mode = _LoginMode.owner;
 
   @override
   void dispose() {
@@ -43,14 +46,35 @@ class _SignInViewState extends ConsumerState<SignInView> {
             Text(l10n.authLead, style: text.headlineMedium),
             const SizedBox(height: AppSpacing.sm),
             Text(l10n.tagline, style: text.bodyLarge),
-            const SizedBox(height: AppSpacing.xl),
+            const SizedBox(height: AppSpacing.lg),
+            SegmentedButton<_LoginMode>(
+              segments: [
+                ButtonSegment(
+                  value: _LoginMode.owner,
+                  label: Text(l10n.loginAsOwner),
+                ),
+                ButtonSegment(
+                  value: _LoginMode.employee,
+                  label: Text(l10n.loginAsEmployee),
+                ),
+              ],
+              selected: {_mode},
+              onSelectionChanged: (next) => setState(() => _mode = next.first),
+            ),
+            const SizedBox(height: AppSpacing.lg),
             AppTextField(
               controller: _identifier,
-              label: l10n.loginIdentifier,
-              helperText: l10n.loginIdentifierHint,
-              prefixIcon: Icons.badge_outlined,
+              label: _mode == _LoginMode.owner ? l10n.email : l10n.username,
+              helperText: _mode == _LoginMode.owner
+                  ? null
+                  : l10n.loginIdentifierHint,
+              prefixIcon: _mode == _LoginMode.owner
+                  ? Icons.email_outlined
+                  : Icons.badge_outlined,
               textInputAction: TextInputAction.next,
-              validator: (value) => FormValidators.loginIdentifier(l10n, value),
+              validator: (value) => _mode == _LoginMode.owner
+                  ? FormValidators.email(l10n, value)
+                  : FormValidators.loginIdentifier(l10n, value),
             ),
             AppTextField(
               controller: _password,
@@ -69,9 +93,16 @@ class _SignInViewState extends ConsumerState<SignInView> {
                 if (!(_formKey.currentState?.validate() ?? false)) {
                   return;
                 }
-                await ref
-                    .read(authViewModelProvider.notifier)
-                    .login(_identifier.text, _password.text);
+                final ok = _mode == _LoginMode.owner
+                    ? await ref
+                          .read(authViewModelProvider.notifier)
+                          .loginOwner(_identifier.text, _password.text)
+                    : await ref
+                          .read(authViewModelProvider.notifier)
+                          .loginEmployee(_identifier.text, _password.text);
+                if (!context.mounted || !ok) {
+                  return;
+                }
               },
             ),
             const SizedBox(height: AppSpacing.sm),

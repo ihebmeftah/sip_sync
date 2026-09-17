@@ -37,6 +37,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get signIn => 'تسجيل الدخول';
 
   @override
+  String get loginAsOwner => 'المالك';
+
+  @override
+  String get loginAsEmployee => 'موظف';
+
+  @override
   String get register => 'إنشاء حساب';
 
   @override

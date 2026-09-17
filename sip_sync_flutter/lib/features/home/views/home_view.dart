@@ -13,7 +13,7 @@ class HomeView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final session = ref.watch(authViewModelProvider).session;
-    final name = session?.profile.firstName ?? '';
+    final name = session?.firstName ?? '';
     final text = Theme.of(context).textTheme;
     final scheme = Theme.of(context).colorScheme;
     return Scaffold(
@@ -40,6 +40,10 @@ class HomeView extends ConsumerWidget {
                         Text(l10n.welcome(name), style: text.headlineMedium),
                         const SizedBox(height: AppSpacing.md),
                         Text(l10n.homeHint, style: text.bodyLarge),
+                        if (session != null) ...[
+                          const SizedBox(height: AppSpacing.md),
+                          Text(session.email, style: text.bodyMedium),
+                        ],
                         const SizedBox(height: AppSpacing.xl),
                         AppFilledButton(
                           label: l10n.signOut,
@@ -50,32 +54,20 @@ class HomeView extends ConsumerWidget {
                       ],
                     ),
                   );
-                  final roles = AppSurfaceCard(
+                  final account = AppSurfaceCard(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(l10n.rolesLabel, style: text.titleLarge),
                         const SizedBox(height: AppSpacing.md),
-                        if ((session?.profile.roles ?? const <String>[])
-                            .isEmpty)
-                          Text(l10n.empty, style: text.bodyMedium)
-                        else
-                          Wrap(
-                            spacing: AppSpacing.sm,
-                            runSpacing: AppSpacing.sm,
-                            children: [
-                              for (final role
-                                  in session?.profile.roles ?? const <String>[])
-                                Chip(
-                                  avatar: Icon(
-                                    Icons.local_cafe_outlined,
-                                    size: 18,
-                                    color: scheme.onSecondaryContainer,
-                                  ),
-                                  label: Text(role),
-                                ),
-                            ],
+                        Chip(
+                          avatar: Icon(
+                            Icons.local_cafe_outlined,
+                            size: 18,
+                            color: scheme.onSecondaryContainer,
                           ),
+                          label: Text(l10n.appTitle),
+                        ),
                       ],
                     ),
                   );
@@ -85,7 +77,7 @@ class HomeView extends ConsumerWidget {
                       children: [
                         Expanded(flex: 5, child: welcome),
                         const SizedBox(width: AppSpacing.lg),
-                        Expanded(flex: 4, child: roles),
+                        Expanded(flex: 4, child: account),
                       ],
                     );
                   }
@@ -93,7 +85,7 @@ class HomeView extends ConsumerWidget {
                     children: [
                       welcome,
                       const SizedBox(height: AppSpacing.lg),
-                      roles,
+                      account,
                     ],
                   );
                 },

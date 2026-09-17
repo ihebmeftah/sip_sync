@@ -49,52 +49,53 @@ final class ClientProvider extends $FunctionalProvider<Client, Client, Client>
 
 String _$clientHash() => r'cd1ac107ee15d79c82574cd6d6680bc53670e85b';
 
-@ProviderFor(accountRepository)
-const accountRepositoryProvider = AccountRepositoryProvider._();
+@ProviderFor(ownerAuthRepository)
+const ownerAuthRepositoryProvider = OwnerAuthRepositoryProvider._();
 
-final class AccountRepositoryProvider
+final class OwnerAuthRepositoryProvider
     extends
         $FunctionalProvider<
-          AccountRepository,
-          AccountRepository,
-          AccountRepository
+          OwnerAuthRepository,
+          OwnerAuthRepository,
+          OwnerAuthRepository
         >
-    with $Provider<AccountRepository> {
-  const AccountRepositoryProvider._()
+    with $Provider<OwnerAuthRepository> {
+  const OwnerAuthRepositoryProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'accountRepositoryProvider',
+        name: r'ownerAuthRepositoryProvider',
         isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$accountRepositoryHash();
+  String debugGetCreateSourceHash() => _$ownerAuthRepositoryHash();
 
   @$internal
   @override
-  $ProviderElement<AccountRepository> $createElement(
+  $ProviderElement<OwnerAuthRepository> $createElement(
     $ProviderPointer pointer,
   ) => $ProviderElement(pointer);
 
   @override
-  AccountRepository create(Ref ref) {
-    return accountRepository(ref);
+  OwnerAuthRepository create(Ref ref) {
+    return ownerAuthRepository(ref);
   }
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(AccountRepository value) {
+  Override overrideWithValue(OwnerAuthRepository value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<AccountRepository>(value),
+      providerOverride: $SyncValueProvider<OwnerAuthRepository>(value),
     );
   }
 }
 
-String _$accountRepositoryHash() => r'9f0d02cdfa37317cffc67c91cd016399030035a6';
+String _$ownerAuthRepositoryHash() =>
+    r'0512ee2aec5e3e8d0e742f61f90bce5f7a05c568';
 
 @ProviderFor(buildingRepository)
 const buildingRepositoryProvider = BuildingRepositoryProvider._();
@@ -192,15 +193,53 @@ final class EmployeeRepositoryProvider
 String _$employeeRepositoryHash() =>
     r'ef1b4c01ecac48242df944ddc03227ef80daaa19';
 
-/// Mirrors [BuildingSession.selected] so widgets rebuild when a venue is picked.
+@ProviderFor(appSessionStore)
+const appSessionStoreProvider = AppSessionStoreProvider._();
+
+final class AppSessionStoreProvider
+    extends
+        $FunctionalProvider<AppSessionStore, AppSessionStore, AppSessionStore>
+    with $Provider<AppSessionStore> {
+  const AppSessionStoreProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'appSessionStoreProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$appSessionStoreHash();
+
+  @$internal
+  @override
+  $ProviderElement<AppSessionStore> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  AppSessionStore create(Ref ref) {
+    return appSessionStore(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(AppSessionStore value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<AppSessionStore>(value),
+    );
+  }
+}
+
+String _$appSessionStoreHash() => r'4119692888a986f5a2fb6225be75421170f4563d';
 
 @ProviderFor(BuildingSelection)
 const buildingSelectionProvider = BuildingSelectionProvider._();
 
-/// Mirrors [BuildingSession.selected] so widgets rebuild when a venue is picked.
 final class BuildingSelectionProvider
     extends $NotifierProvider<BuildingSelection, BuildingView?> {
-  /// Mirrors [BuildingSession.selected] so widgets rebuild when a venue is picked.
   const BuildingSelectionProvider._()
     : super(
         from: null,
@@ -229,8 +268,6 @@ final class BuildingSelectionProvider
 }
 
 String _$buildingSelectionHash() => r'80ea972d407c9100b52c96acfd5b2b767ea05a4e';
-
-/// Mirrors [BuildingSession.selected] so widgets rebuild when a venue is picked.
 
 abstract class _$BuildingSelection extends $Notifier<BuildingView?> {
   BuildingView? build();

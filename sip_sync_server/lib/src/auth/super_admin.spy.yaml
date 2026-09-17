@@ -1,0 +1,20 @@
+### Platform super admin for the backoffice app.
+class: SuperAdmin
+table: super_admin
+serverOnly: true
+fields:
+  id: UuidValue?, defaultPersist=random_v7
+  email: String
+  phoneNumber: String
+  firstName: String
+  lastName: String
+  passwordHash: String
+  isSystemDefault: bool, default=false
+  createdAt: DateTime, defaultModel=now
+indexes:
+  super_admin_email_idx:
+    fields: email
+    unique: true
+  super_admin_phone_idx:
+    fields: phoneNumber
+    unique: true

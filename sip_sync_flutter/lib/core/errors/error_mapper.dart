@@ -20,14 +20,14 @@ Failure mapError(Object error) {
       AccountErrorCode.accountDisabled => 'errorAccountDisabled',
     });
   }
-      if (error is BuildingException) {
-        return Failure(switch (error.code) {
-          BuildingErrorCode.invalidInput => 'errorInvalidInput',
-          BuildingErrorCode.notAuthorized => 'errorNotAuthorized',
-          BuildingErrorCode.notFound => 'errorNotFound',
-        });
-      }
-      return const Failure('errorGeneric');
+  if (error is BuildingException) {
+    return Failure(switch (error.code) {
+      BuildingErrorCode.invalidInput => 'errorInvalidInput',
+      BuildingErrorCode.notAuthorized => 'errorNotAuthorized',
+      BuildingErrorCode.notFound => 'errorNotFound',
+    });
+  }
+  return const Failure('errorGeneric');
 }
 
 String lookupError(dynamic l10n, String key) {

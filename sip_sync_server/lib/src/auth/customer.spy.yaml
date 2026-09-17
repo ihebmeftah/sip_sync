@@ -1,0 +1,19 @@
+### Customer account for the consumer app.
+class: Customer
+table: customer
+serverOnly: true
+fields:
+  id: UuidValue?, defaultPersist=random_v7
+  email: String
+  phoneNumber: String
+  firstName: String
+  lastName: String
+  passwordHash: String
+  createdAt: DateTime, defaultModel=now
+indexes:
+  customer_email_idx:
+    fields: email
+    unique: true
+  customer_phone_idx:
+    fields: phoneNumber
+    unique: true

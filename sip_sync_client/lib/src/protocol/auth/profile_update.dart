@@ -12,9 +12,6 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _isc;
 
-/// Writable identity fields for the signed-in user.
-///
-/// Email and username are not changed here.
 abstract class ProfileUpdate
     implements _isc.SerializableModel, _isc.ProtocolSerialization {
   ProfileUpdate._({

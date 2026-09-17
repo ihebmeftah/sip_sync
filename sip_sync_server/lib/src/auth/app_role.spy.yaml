@@ -1,7 +1,0 @@
-enum: AppRole
-serialized: byName
-values:
-  - customer
-  - owner
-  - employee
-  - backoffice

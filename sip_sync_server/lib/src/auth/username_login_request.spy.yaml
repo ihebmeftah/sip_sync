@@ -1,0 +1,4 @@
+class: UsernameLoginRequest
+fields:
+  username: String
+  password: String

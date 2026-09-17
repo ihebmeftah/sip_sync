@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/di/app_providers.dart';
 import '../../../core/errors/error_mapper.dart';
 import '../../../core/errors/form_validators.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
 import '../../../l10n/generated/app_localizations.dart';
-import '../../auth/view_models/auth_view_model.dart';
 import '../view_models/profile_view_model.dart';
 
 class ProfileViewPage extends ConsumerStatefulWidget {
@@ -36,26 +36,34 @@ class _ProfileViewPageState extends ConsumerState<ProfileViewPage> {
   }
 
   void _fillFromSession() {
-    final profile = ref.read(authViewModelProvider).session?.profile;
-    if (profile == null || _filled) {
+    if (_filled) {
       return;
     }
-    _email.text = profile.email;
-    _username.text = profile.username ?? '';
-    _phone.text = profile.phoneNumber;
-    _first.text = profile.firstName;
-    _last.text = profile.lastName;
-    _filled = true;
+    final store = ref.read(appSessionStoreProvider);
+    if (store.isOwner && store.owner != null) {
+      final o = store.owner!;
+      _email.text = o.email;
+      _phone.text = o.phoneNumber;
+      _first.text = o.firstName;
+      _last.text = o.lastName;
+      _filled = true;
+    } else if (store.isEmployee && store.employee != null) {
+      final e = store.employee!;
+      _username.text = e.username;
+      _phone.text = e.phoneNumber;
+      _first.text = e.firstName;
+      _last.text = e.lastName;
+      _filled = true;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final auth = ref.watch(authViewModelProvider);
+    final store = ref.watch(appSessionStoreProvider);
     final ui = ref.watch(profileViewModelProvider);
     final text = Theme.of(context).textTheme;
-    final isEmployee =
-        auth.session?.profile.roles.contains('employee') ?? false;
+    final isEmployee = store.isEmployee;
     _fillFromSession();
 
     return ColoredBox(
@@ -67,7 +75,9 @@ class _ProfileViewPageState extends ConsumerState<ProfileViewPage> {
           child: ListView(
             padding: const EdgeInsets.all(AppSpacing.xl),
             children: [
-              if (auth.isLoading && auth.session == null)
+              if (!store.isSignedIn ||
+                  (store.isOwner && store.owner == null) ||
+                  (store.isEmployee && store.employee == null))
                 const LinearProgressIndicator(),
               AppSurfaceCard(
                 child: Form(

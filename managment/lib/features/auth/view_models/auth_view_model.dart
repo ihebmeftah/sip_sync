@@ -1,70 +1,87 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:serverpod_auth_idp_flutter/serverpod_auth_idp_flutter.dart';
 import 'package:sip_sync_client/sip_sync_client.dart';
 
 import '../../../core/di/app_providers.dart';
+import '../../../core/di/app_session_store.dart';
 import '../../../core/di/building_session.dart';
-import '../../../core/di/management_session_cache.dart';
 import '../../../core/di/service_locator.dart';
 import '../../../core/errors/error_mapper.dart';
-import '../../../data/repositories/account_repository.dart';
 import '../../../data/repositories/building_repository.dart';
+import '../../../data/repositories/owner_auth_repository.dart';
 
 part 'auth_view_model.g.dart';
 
 class AuthState {
-  const AuthState({this.session, this.isLoading = false, this.errorKey});
+  const AuthState({this.isLoading = false, this.errorKey});
 
-  final AccountSessionView? session;
   final bool isLoading;
   final String? errorKey;
 
   AuthState copyWith({
-    AccountSessionView? session,
     bool? isLoading,
     String? errorKey,
     bool clearError = false,
-    bool clearSession = false,
   }) {
     return AuthState(
-      session: clearSession ? null : (session ?? this.session),
       isLoading: isLoading ?? this.isLoading,
       errorKey: clearError ? null : (errorKey ?? this.errorKey),
     );
   }
 }
 
-/// Stable identity for dependents that must not rebuild on loading/error flips.
 @Riverpod(keepAlive: true)
-UuidValue? signedInAuthUserId(Ref ref) {
-  return ref.watch(authViewModelProvider).session?.profile.authUserId;
+UuidValue? signedInActorId(Ref ref) {
+  final store = ref.watch(appSessionStoreProvider);
+  return store.actorId;
 }
 
 @Riverpod(keepAlive: true)
 class AuthViewModel extends _$AuthViewModel {
-  AccountRepository get _repository => ref.read(accountRepositoryProvider);
+  OwnerAuthRepository get _repo => ref.read(ownerAuthRepositoryProvider);
+  AppSessionStore get _store => getIt<AppSessionStore>();
 
   @override
   AuthState build() {
-    _repository.client.auth.authInfoListenable.addListener(_onAuthChanged);
-    ref.onDispose(() {
-      _repository.client.auth.authInfoListenable.removeListener(_onAuthChanged);
-    });
+    _store.addListener(_onStoreChanged);
+    ref.onDispose(() => _store.removeListener(_onStoreChanged));
     Future<void>.microtask(restore);
     return const AuthState();
   }
 
-  bool get isSignedIn => _repository.client.auth.isAuthenticated;
+  void _onStoreChanged() {
+    // Force dependents that read the store via GetIt to rebuild when needed.
+    ref.invalidate(signedInActorIdProvider);
+  }
 
   Future<void> restore() async {
-    if (!_repository.client.auth.isAuthenticated) {
+    if (!_store.isSignedIn) {
       return;
     }
+    // Prefer persisted actor profile immediately; refresh from server.
     state = state.copyWith(isLoading: true, clearError: true);
     try {
-      final session = await _repository.me();
-      await _applySession(session);
+      if (_store.actorType == ActorType.owner || _store.owner != null) {
+        final me = await _repo.ownerMe();
+        await _store.setOwner(me);
+      } else if (_store.actorType == ActorType.employee ||
+          _store.employee != null) {
+        final me = await _repo.employeeMe();
+        await _store.setEmployee(me);
+        getIt<BuildingSession>().select(me.buildingId);
+        try {
+          final building = await getIt<BuildingRepository>().get(me.buildingId);
+          getIt<BuildingSession>().upsert(building);
+          getIt<BuildingSession>().select(building.id);
+        } catch (_) {}
+      } else {
+        // Token without actor metadata — force re-login.
+        await _store.clear();
+        getIt<BuildingSession>().clear();
+      }
+      state = state.copyWith(isLoading: false);
     } catch (error) {
+      await _store.clear();
+      getIt<BuildingSession>().clear();
       state = state.copyWith(
         isLoading: false,
         errorKey: mapError(error).l10nKey,
@@ -72,14 +89,11 @@ class AuthViewModel extends _$AuthViewModel {
     }
   }
 
-  Future<bool> login(String identifier, String password) async {
+  Future<bool> loginOwner(String email, String password) async {
     state = state.copyWith(isLoading: true, clearError: true);
     try {
-      final session = await _repository.login(
-        identifier: identifier,
-        password: password,
-      );
-      await _applySession(session);
+      await _repo.loginOwner(email: email, password: password);
+      state = state.copyWith(isLoading: false);
       return true;
     } catch (error) {
       state = state.copyWith(
@@ -90,7 +104,32 @@ class AuthViewModel extends _$AuthViewModel {
     }
   }
 
-  Future<bool> register({
+  Future<bool> loginEmployee(String username, String password) async {
+    state = state.copyWith(isLoading: true, clearError: true);
+    try {
+      final result = await _repo.loginEmployee(
+        username: username,
+        password: password,
+      );
+      final buildingId = result.employee!.buildingId;
+      getIt<BuildingSession>().select(buildingId);
+      try {
+        final building = await getIt<BuildingRepository>().get(buildingId);
+        getIt<BuildingSession>().upsert(building);
+        getIt<BuildingSession>().select(building.id);
+      } catch (_) {}
+      state = state.copyWith(isLoading: false);
+      return true;
+    } catch (error) {
+      state = state.copyWith(
+        isLoading: false,
+        errorKey: mapError(error).l10nKey,
+      );
+      return false;
+    }
+  }
+
+  Future<bool> registerOwner({
     required String email,
     required String password,
     required String phoneNumber,
@@ -99,14 +138,14 @@ class AuthViewModel extends _$AuthViewModel {
   }) async {
     state = state.copyWith(isLoading: true, clearError: true);
     try {
-      final session = await _repository.register(
+      await _repo.registerOwner(
         email: email,
         password: password,
         phoneNumber: phoneNumber,
         firstName: firstName,
         lastName: lastName,
       );
-      await _applySession(session);
+      state = state.copyWith(isLoading: false);
       return true;
     } catch (error) {
       state = state.copyWith(
@@ -117,42 +156,9 @@ class AuthViewModel extends _$AuthViewModel {
     }
   }
 
-  /// Keeps [AuthState.session] aligned after a profile save.
-  Future<void> applySession(AccountSessionView session) =>
-      _applySession(session);
-
   Future<void> signOut() async {
-    await _repository.signOut();
+    await _repo.signOut();
     getIt<BuildingSession>().clear();
-    getIt<ManagementSessionCache>().clear();
     state = const AuthState();
-  }
-
-  Future<void> _applySession(AccountSessionView session) async {
-    getIt<ManagementSessionCache>().setSession(session);
-    final buildingId = session.buildingId;
-    if (buildingId != null) {
-      getIt<BuildingSession>().select(buildingId);
-      try {
-        final building = await getIt<BuildingRepository>().get(buildingId);
-        getIt<BuildingSession>().upsert(building);
-        getIt<BuildingSession>().select(building.id);
-      } catch (_) {
-        // Sidebar name may be empty until a later load; routing still works.
-      }
-    }
-    state = state.copyWith(
-      session: session,
-      isLoading: false,
-      clearError: true,
-    );
-  }
-
-  void _onAuthChanged() {
-    if (!_repository.client.auth.isAuthenticated) {
-      getIt<BuildingSession>().clear();
-      getIt<ManagementSessionCache>().clear();
-      state = const AuthState();
-    }
   }
 }

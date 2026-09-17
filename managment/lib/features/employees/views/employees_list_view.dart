@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/di/app_providers.dart';
 import '../../../core/errors/error_mapper.dart';
 import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
 import '../../../l10n/generated/app_localizations.dart';
-import '../../auth/view_models/auth_view_model.dart';
 import '../view_models/employees_view_model.dart';
 
 class EmployeesListView extends ConsumerWidget {
@@ -19,14 +19,7 @@ class EmployeesListView extends ConsumerWidget {
     final l10n = AppLocalizations.of(context)!;
     final text = Theme.of(context).textTheme;
     final scheme = Theme.of(context).colorScheme;
-    final isOwner =
-        ref
-            .watch(authViewModelProvider)
-            .session
-            ?.profile
-            .roles
-            .contains('owner') ??
-        false;
+    final isOwner = ref.watch(appSessionStoreProvider).isOwner;
     final async = ref.watch(employeesViewModelProvider(buildingId));
 
     return ColoredBox(
@@ -112,7 +105,7 @@ class EmployeesListView extends ConsumerWidget {
                               ),
                               onTap: () => EmployeeDetailsRoute(
                                 buildingId: buildingId,
-                                authUserId: employee.authUserId.uuid,
+                                employeeId: employee.id.uuid,
                               ).go(context),
                             ),
                         ],

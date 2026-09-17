@@ -12,7 +12,6 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _isc;
 
-/// Owner creates staff for one building. Username is generated on the server; no email.
 abstract class EmployeeCreate
     implements _isc.SerializableModel, _isc.ProtocolSerialization {
   EmployeeCreate._({

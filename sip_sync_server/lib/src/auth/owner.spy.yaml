@@ -1,0 +1,21 @@
+### Café / venue owner account. Passwords are hashed locally (not Serverpod IDP).
+class: Owner
+table: owner
+serverOnly: true
+fields:
+  id: UuidValue?, defaultPersist=random_v7
+  email: String
+  phoneNumber: String
+  firstName: String
+  lastName: String
+  passwordHash: String
+  createdAt: DateTime, defaultModel=now
+  buildings: List<Building>?, relation(name=owner_buildings)
+  employees: List<Employee>?, relation(name=owner_employees)
+indexes:
+  owner_email_idx:
+    fields: email
+    unique: true
+  owner_phone_idx:
+    fields: phoneNumber
+    unique: true

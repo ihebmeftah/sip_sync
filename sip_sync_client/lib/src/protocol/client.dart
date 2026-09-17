@@ -17,26 +17,34 @@ import 'package:serverpod_auth_core_client/serverpod_auth_core_client.dart'
 import 'package:serverpod_auth_idp_client/serverpod_auth_idp_client.dart'
     as _iaic;
 import 'package:serverpod_client/serverpod_client.dart' as _isc;
-import 'package:sip_sync_client/src/protocol/auth/account_session_view.dart'
-    as _iyjeltbx;
-import 'package:sip_sync_client/src/protocol/auth/auth_session_result.dart'
-    as _iek9awmf;
-import 'package:sip_sync_client/src/protocol/auth/backoffice_user_create.dart'
-    as _iyydg4pn;
-import 'package:sip_sync_client/src/protocol/auth/backoffice_user_view.dart'
-    as _ian6jh4a;
+import 'package:sip_sync_client/src/protocol/auth/auth_token_result.dart'
+    as _iqlrpljp;
+import 'package:sip_sync_client/src/protocol/auth/customer_session_view.dart'
+    as _i22eeawk;
+import 'package:sip_sync_client/src/protocol/auth/email_login_request.dart'
+    as _ia66v70m;
+import 'package:sip_sync_client/src/protocol/auth/email_register_create.dart'
+    as _i7tbe1ul;
 import 'package:sip_sync_client/src/protocol/auth/employee_create.dart'
     as _i0ndf5ud;
+import 'package:sip_sync_client/src/protocol/auth/employee_session_view.dart'
+    as _i39hruwu;
 import 'package:sip_sync_client/src/protocol/auth/employee_update.dart'
     as _itl0g0fc;
 import 'package:sip_sync_client/src/protocol/auth/employee_view.dart'
     as _ix96cplr;
-import 'package:sip_sync_client/src/protocol/auth/login_request.dart'
-    as _innui2e8;
+import 'package:sip_sync_client/src/protocol/auth/owner_session_view.dart'
+    as _iu6l1hb5;
 import 'package:sip_sync_client/src/protocol/auth/profile_update.dart'
     as _ijw3vapc;
-import 'package:sip_sync_client/src/protocol/auth/self_register_create.dart'
-    as _i3rp8k05;
+import 'package:sip_sync_client/src/protocol/auth/super_admin_create.dart'
+    as _idilg51n;
+import 'package:sip_sync_client/src/protocol/auth/super_admin_session_view.dart'
+    as _ighxe7ge;
+import 'package:sip_sync_client/src/protocol/auth/super_admin_view.dart'
+    as _iddpd7et;
+import 'package:sip_sync_client/src/protocol/auth/username_login_request.dart'
+    as _irmg40wx;
 import 'package:sip_sync_client/src/protocol/buildings/building_create.dart'
     as _iekc365h;
 import 'package:sip_sync_client/src/protocol/buildings/building_update.dart'
@@ -47,265 +55,91 @@ import 'package:sip_sync_client/src/protocol/greetings/greeting.dart'
     as _ijvf1i5e;
 import 'protocol.dart' as _il2as5qe;
 
-/// Public registration/login plus owner and backoffice user management.
-///
-/// App access is enforced here; Flutter route guards are UX only.
+/// Customer self-register, login, and profile.
 /// {@category Endpoint}
-class EndpointAccount extends _isc.EndpointRef {
-  EndpointAccount(_isc.EndpointCaller caller) : super(caller);
+class EndpointCustomerAuth extends _isc.EndpointRef {
+  EndpointCustomerAuth(_isc.EndpointCaller caller) : super(caller);
 
   @override
-  String get name => 'account';
+  String get name => 'customerAuth';
 
-  /// Customer or owner self-registration. Reuses an existing email identity
-  /// when the password matches.
-  _ida.Future<_iek9awmf.AuthSessionResult> register(
-    _i3rp8k05.SelfRegisterCreate request,
-  ) => caller.callServerEndpoint<_iek9awmf.AuthSessionResult>(
-    'account',
+  _ida.Future<_iqlrpljp.AuthTokenResult> register(
+    _i7tbe1ul.EmailRegisterCreate request,
+  ) => caller.callServerEndpoint<_iqlrpljp.AuthTokenResult>(
+    'customerAuth',
     'register',
     {'request': request},
   );
 
-  /// Email or username login for one [LoginRequest.app].
-  _ida.Future<_iek9awmf.AuthSessionResult> login(
-    _innui2e8.LoginRequest request,
-  ) => caller.callServerEndpoint<_iek9awmf.AuthSessionResult>(
-    'account',
+  _ida.Future<_iqlrpljp.AuthTokenResult> login(
+    _ia66v70m.EmailLoginRequest request,
+  ) => caller.callServerEndpoint<_iqlrpljp.AuthTokenResult>(
+    'customerAuth',
     'login',
     {'request': request},
   );
 
-  /// Current profile and roles.
-  _ida.Future<_iyjeltbx.AccountSessionView> me() =>
-      caller.callServerEndpoint<_iyjeltbx.AccountSessionView>(
-        'account',
+  _ida.Future<_i22eeawk.CustomerSessionView> me() =>
+      caller.callServerEndpoint<_i22eeawk.CustomerSessionView>(
+        'customerAuth',
         'me',
         {},
       );
 
-  /// Updates the signed-in user's phone and name.
-  _ida.Future<_iyjeltbx.AccountSessionView> updateMyProfile(
+  _ida.Future<_i22eeawk.CustomerSessionView> updateMyProfile(
     _ijw3vapc.ProfileUpdate request,
-  ) => caller.callServerEndpoint<_iyjeltbx.AccountSessionView>(
-    'account',
+  ) => caller.callServerEndpoint<_i22eeawk.CustomerSessionView>(
+    'customerAuth',
     'updateMyProfile',
     {'request': request},
   );
 
-  /// Backoffice admin creates another backoffice user (`isAdmin` stays false).
-  _ida.Future<_ian6jh4a.BackofficeUserView> addBackofficeUser(
-    _iyydg4pn.BackofficeUserCreate request,
-  ) => caller.callServerEndpoint<_ian6jh4a.BackofficeUserView>(
-    'account',
-    'addBackofficeUser',
-    {'request': request},
-  );
-
-  /// Lists platform backoffice users.
-  _ida.Future<List<_ian6jh4a.BackofficeUserView>> listBackofficeUsers() =>
-      caller.callServerEndpoint<List<_ian6jh4a.BackofficeUserView>>(
-        'account',
-        'listBackofficeUsers',
-        {},
-      );
-
-  /// Deletes a non-default backoffice membership.
-  _ida.Future<void> deleteBackofficeUser(_isc.UuidValue targetAuthUserId) =>
-      caller.callServerEndpoint<void>(
-        'account',
-        'deleteBackofficeUser',
-        {'targetAuthUserId': targetAuthUserId},
-      );
-}
-
-/// By extending [EmailIdpBaseEndpoint], the email identity provider endpoints
-/// are made available on the server and enable the corresponding sign-in widget
-/// on the client.
-/// {@category Endpoint}
-class EndpointEmailIdp extends _iaic.EndpointEmailIdpBase {
-  EndpointEmailIdp(_isc.EndpointCaller caller) : super(caller);
-
-  @override
-  String get name => 'emailIdp';
-
-  /// Logs in the user and returns a new session.
-  ///
-  /// Throws an [EmailAccountLoginException] in case of errors, with reason:
-  /// - [EmailAccountLoginExceptionReason.invalidCredentials] if the email or
-  ///   password is incorrect.
-  /// - [EmailAccountLoginExceptionReason.tooManyAttempts] if there have been
-  ///   too many failed login attempts.
-  ///
-  /// Throws an [AuthUserBlockedException] if the auth user is blocked.
-  @override
-  _ida.Future<_iacc.AuthSuccess> login({
-    required String email,
-    required String password,
-  }) => caller.callServerEndpoint<_iacc.AuthSuccess>(
-    'emailIdp',
-    'login',
-    {
-      'email': email,
-      'password': password,
-    },
-  );
-
-  /// Starts the registration for a new user account with an email-based login
-  /// associated to it.
-  ///
-  /// Upon successful completion of this method, an email will have been
-  /// sent to [email] with a verification link, which the user must open to
-  /// complete the registration.
-  ///
-  /// Always returns a account request ID, which can be used to complete the
-  /// registration. If the email is already registered, the returned ID will not
-  /// be valid.
-  @override
-  _ida.Future<_isc.UuidValue> startRegistration({required String email}) =>
-      caller.callServerEndpoint<_isc.UuidValue>(
-        'emailIdp',
-        'startRegistration',
-        {'email': email},
-      );
-
-  /// Verifies an account request code and returns a token
-  /// that can be used to complete the account creation.
-  ///
-  /// Throws an [EmailAccountRequestException] in case of errors, with reason:
-  /// - [EmailAccountRequestExceptionReason.expired] if the account request has
-  ///   already expired.
-  /// - [EmailAccountRequestExceptionReason.policyViolation] if the password
-  ///   does not comply with the password policy.
-  /// - [EmailAccountRequestExceptionReason.invalid] if no request exists
-  ///   for the given [accountRequestId] or [verificationCode] is invalid.
-  @override
-  _ida.Future<String> verifyRegistrationCode({
-    required _isc.UuidValue accountRequestId,
-    required String verificationCode,
-  }) => caller.callServerEndpoint<String>(
-    'emailIdp',
-    'verifyRegistrationCode',
-    {
-      'accountRequestId': accountRequestId,
-      'verificationCode': verificationCode,
-    },
-  );
-
-  /// Completes a new account registration, creating a new auth user with a
-  /// profile and attaching the given email account to it.
-  ///
-  /// Throws an [EmailAccountRequestException] in case of errors, with reason:
-  /// - [EmailAccountRequestExceptionReason.expired] if the account request has
-  ///   already expired.
-  /// - [EmailAccountRequestExceptionReason.policyViolation] if the password
-  ///   does not comply with the password policy.
-  /// - [EmailAccountRequestExceptionReason.invalid] if the [registrationToken]
-  ///   is invalid.
-  ///
-  /// Throws an [AuthUserBlockedException] if the auth user is blocked.
-  ///
-  /// Returns a session for the newly created user.
-  @override
-  _ida.Future<_iacc.AuthSuccess> finishRegistration({
-    required String registrationToken,
-    required String password,
-  }) => caller.callServerEndpoint<_iacc.AuthSuccess>(
-    'emailIdp',
-    'finishRegistration',
-    {
-      'registrationToken': registrationToken,
-      'password': password,
-    },
-  );
-
-  /// Requests a password reset for [email].
-  ///
-  /// If the email address is registered, an email with reset instructions will
-  /// be send out. If the email is unknown, this method will have no effect.
-  ///
-  /// Always returns a password reset request ID, which can be used to complete
-  /// the reset. If the email is not registered, the returned ID will not be
-  /// valid.
-  ///
-  /// Throws an [EmailAccountPasswordResetException] in case of errors, with reason:
-  /// - [EmailAccountPasswordResetExceptionReason.tooManyAttempts] if the user has
-  ///   made too many attempts trying to request a password reset.
-  ///
-  @override
-  _ida.Future<_isc.UuidValue> startPasswordReset({required String email}) =>
-      caller.callServerEndpoint<_isc.UuidValue>(
-        'emailIdp',
-        'startPasswordReset',
-        {'email': email},
-      );
-
-  /// Verifies a password reset code and returns a finishPasswordResetToken
-  /// that can be used to finish the password reset.
-  ///
-  /// Throws an [EmailAccountPasswordResetException] in case of errors, with reason:
-  /// - [EmailAccountPasswordResetExceptionReason.expired] if the password reset
-  ///   request has already expired.
-  /// - [EmailAccountPasswordResetExceptionReason.tooManyAttempts] if the user has
-  ///   made too many attempts trying to verify the password reset.
-  /// - [EmailAccountPasswordResetExceptionReason.invalid] if no request exists
-  ///   for the given [passwordResetRequestId] or [verificationCode] is invalid.
-  ///
-  /// If multiple steps are required to complete the password reset, this endpoint
-  /// should be overridden to return credentials for the next step instead
-  /// of the credentials for setting the password.
-  @override
-  _ida.Future<String> verifyPasswordResetCode({
-    required _isc.UuidValue passwordResetRequestId,
-    required String verificationCode,
-  }) => caller.callServerEndpoint<String>(
-    'emailIdp',
-    'verifyPasswordResetCode',
-    {
-      'passwordResetRequestId': passwordResetRequestId,
-      'verificationCode': verificationCode,
-    },
-  );
-
-  /// Completes a password reset request by setting a new password.
-  ///
-  /// The [verificationCode] returned from [verifyPasswordResetCode] is used to
-  /// validate the password reset request.
-  ///
-  /// Throws an [EmailAccountPasswordResetException] in case of errors, with reason:
-  /// - [EmailAccountPasswordResetExceptionReason.expired] if the password reset
-  ///   request has already expired.
-  /// - [EmailAccountPasswordResetExceptionReason.policyViolation] if the new
-  ///   password does not comply with the password policy.
-  /// - [EmailAccountPasswordResetExceptionReason.invalid] if no request exists
-  ///   for the given [passwordResetRequestId] or [verificationCode] is invalid.
-  ///
-  /// Throws an [AuthUserBlockedException] if the auth user is blocked.
-  @override
-  _ida.Future<void> finishPasswordReset({
-    required String finishPasswordResetToken,
-    required String newPassword,
-  }) => caller.callServerEndpoint<void>(
-    'emailIdp',
-    'finishPasswordReset',
-    {
-      'finishPasswordResetToken': finishPasswordResetToken,
-      'newPassword': newPassword,
-    },
-  );
-
-  @override
-  _ida.Future<bool> hasAccount() => caller.callServerEndpoint<bool>(
-    'emailIdp',
-    'hasAccount',
+  _ida.Future<void> logout() => caller.callServerEndpoint<void>(
+    'customerAuth',
+    'logout',
     {},
   );
 }
 
-/// Owner-only staff management. Employees always belong to one building.
-///
-/// Separated from [AccountEndpoint] so venue-scoped staff CRUD is not mixed
-/// with customer/owner/backoffice identity flows.
+/// Employee username login and profile (no self-register).
+/// {@category Endpoint}
+class EndpointEmployeeAuth extends _isc.EndpointRef {
+  EndpointEmployeeAuth(_isc.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'employeeAuth';
+
+  _ida.Future<_iqlrpljp.AuthTokenResult> login(
+    _irmg40wx.UsernameLoginRequest request,
+  ) => caller.callServerEndpoint<_iqlrpljp.AuthTokenResult>(
+    'employeeAuth',
+    'login',
+    {'request': request},
+  );
+
+  _ida.Future<_i39hruwu.EmployeeSessionView> me() =>
+      caller.callServerEndpoint<_i39hruwu.EmployeeSessionView>(
+        'employeeAuth',
+        'me',
+        {},
+      );
+
+  _ida.Future<_i39hruwu.EmployeeSessionView> updateMyProfile(
+    _ijw3vapc.ProfileUpdate request,
+  ) => caller.callServerEndpoint<_i39hruwu.EmployeeSessionView>(
+    'employeeAuth',
+    'updateMyProfile',
+    {'request': request},
+  );
+
+  _ida.Future<void> logout() => caller.callServerEndpoint<void>(
+    'employeeAuth',
+    'logout',
+    {},
+  );
+}
+
+/// Owner-only staff management for a building.
 /// {@category Endpoint}
 class EndpointEmployee extends _isc.EndpointRef {
   EndpointEmployee(_isc.EndpointCaller caller) : super(caller);
@@ -313,15 +147,13 @@ class EndpointEmployee extends _isc.EndpointRef {
   @override
   String get name => 'employee';
 
-  /// Owner reads one employee they added.
-  _ida.Future<_ix96cplr.EmployeeView> get(_isc.UuidValue employeeAuthUserId) =>
+  _ida.Future<_ix96cplr.EmployeeView> get(_isc.UuidValue employeeId) =>
       caller.callServerEndpoint<_ix96cplr.EmployeeView>(
         'employee',
         'get',
-        {'employeeAuthUserId': employeeAuthUserId},
+        {'employeeId': employeeId},
       );
 
-  /// Owner adds an employee for an existing building.
   _ida.Future<_ix96cplr.EmployeeView> add(_i0ndf5ud.EmployeeCreate request) =>
       caller.callServerEndpoint<_ix96cplr.EmployeeView>(
         'employee',
@@ -329,7 +161,6 @@ class EndpointEmployee extends _isc.EndpointRef {
         {'request': request},
       );
 
-  /// Owner updates an added employee's phone and name.
   _ida.Future<_ix96cplr.EmployeeView> update(
     _itl0g0fc.EmployeeUpdate request,
   ) => caller.callServerEndpoint<_ix96cplr.EmployeeView>(
@@ -338,63 +169,125 @@ class EndpointEmployee extends _isc.EndpointRef {
     {'request': request},
   );
 
-  /// Owner enables or disables management login for that employee.
   _ida.Future<_ix96cplr.EmployeeView> setEnabled(
-    _isc.UuidValue employeeAuthUserId,
+    _isc.UuidValue employeeId,
     bool isEnabled,
   ) => caller.callServerEndpoint<_ix96cplr.EmployeeView>(
     'employee',
     'setEnabled',
     {
-      'employeeAuthUserId': employeeAuthUserId,
+      'employeeId': employeeId,
       'isEnabled': isEnabled,
     },
   );
 }
 
-/// By extending [RefreshJwtTokensEndpoint], the JWT token refresh endpoint
-/// is made available on the server and enables automatic token refresh on the client.
+/// Owner self-register, login, and profile.
 /// {@category Endpoint}
-class EndpointJwtRefresh extends _iacc.EndpointRefreshJwtTokens {
-  EndpointJwtRefresh(_isc.EndpointCaller caller) : super(caller);
+class EndpointOwnerAuth extends _isc.EndpointRef {
+  EndpointOwnerAuth(_isc.EndpointCaller caller) : super(caller);
 
   @override
-  String get name => 'jwtRefresh';
+  String get name => 'ownerAuth';
 
-  /// Creates a new token pair for the given [refreshToken].
-  ///
-  /// If [refreshToken] is omitted, cookie-mode web clients fall back to the
-  /// configured HttpOnly refresh cookie. When neither source is present this
-  /// throws [RefreshTokenNotFoundException], the same public "no usable refresh
-  /// credential" exception used for unknown refresh tokens.
-  ///
-  /// Can throw the following exceptions:
-  /// -[RefreshTokenMalformedException]: refresh token is malformed and could
-  ///   not be parsed. Not expected to happen for tokens issued by the server.
-  /// -[RefreshTokenNotFoundException]: refresh token is unknown to the server.
-  ///   Either the token was deleted or generated by a different server.
-  /// -[RefreshTokenExpiredException]: refresh token has expired. Will happen
-  ///   only if it has not been used within configured `refreshTokenLifetime`.
-  /// -[RefreshTokenInvalidSecretException]: refresh token is incorrect, meaning
-  ///   it does not refer to the current secret refresh token. This indicates
-  ///   either a malfunctioning client or a malicious attempt by someone who has
-  ///   obtained the refresh token. In this case the underlying refresh token
-  ///   will be deleted, and access to it will expire fully when the last access
-  ///   token is elapsed.
-  ///
-  /// This endpoint is unauthenticated, meaning the client won't include any
-  /// authentication information with the call.
-  @override
-  _ida.Future<_iacc.AuthSuccess> refreshAccessToken({String? refreshToken}) =>
-      caller.callServerEndpoint<_iacc.AuthSuccess>(
-        'jwtRefresh',
-        'refreshAccessToken',
-        {'refreshToken': refreshToken},
-        authenticated: false,
+  _ida.Future<_iqlrpljp.AuthTokenResult> register(
+    _i7tbe1ul.EmailRegisterCreate request,
+  ) => caller.callServerEndpoint<_iqlrpljp.AuthTokenResult>(
+    'ownerAuth',
+    'register',
+    {'request': request},
+  );
+
+  _ida.Future<_iqlrpljp.AuthTokenResult> login(
+    _ia66v70m.EmailLoginRequest request,
+  ) => caller.callServerEndpoint<_iqlrpljp.AuthTokenResult>(
+    'ownerAuth',
+    'login',
+    {'request': request},
+  );
+
+  _ida.Future<_iu6l1hb5.OwnerSessionView> me() =>
+      caller.callServerEndpoint<_iu6l1hb5.OwnerSessionView>(
+        'ownerAuth',
+        'me',
+        {},
       );
+
+  _ida.Future<_iu6l1hb5.OwnerSessionView> updateMyProfile(
+    _ijw3vapc.ProfileUpdate request,
+  ) => caller.callServerEndpoint<_iu6l1hb5.OwnerSessionView>(
+    'ownerAuth',
+    'updateMyProfile',
+    {'request': request},
+  );
+
+  _ida.Future<void> logout() => caller.callServerEndpoint<void>(
+    'ownerAuth',
+    'logout',
+    {},
+  );
 }
 
-/// Venue CRUD for owners; assigned staff can read their buildings.
+/// Super admin login, profile, and staff management for backoffice.
+/// {@category Endpoint}
+class EndpointSuperAdminAuth extends _isc.EndpointRef {
+  EndpointSuperAdminAuth(_isc.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'superAdminAuth';
+
+  _ida.Future<_iqlrpljp.AuthTokenResult> login(
+    _ia66v70m.EmailLoginRequest request,
+  ) => caller.callServerEndpoint<_iqlrpljp.AuthTokenResult>(
+    'superAdminAuth',
+    'login',
+    {'request': request},
+  );
+
+  _ida.Future<_ighxe7ge.SuperAdminSessionView> me() =>
+      caller.callServerEndpoint<_ighxe7ge.SuperAdminSessionView>(
+        'superAdminAuth',
+        'me',
+        {},
+      );
+
+  _ida.Future<void> logout() => caller.callServerEndpoint<void>(
+    'superAdminAuth',
+    'logout',
+    {},
+  );
+
+  _ida.Future<_iddpd7et.SuperAdminView> add(
+    _idilg51n.SuperAdminCreate request,
+  ) => caller.callServerEndpoint<_iddpd7et.SuperAdminView>(
+    'superAdminAuth',
+    'add',
+    {'request': request},
+  );
+
+  _ida.Future<List<_iddpd7et.SuperAdminView>> list() =>
+      caller.callServerEndpoint<List<_iddpd7et.SuperAdminView>>(
+        'superAdminAuth',
+        'list',
+        {},
+      );
+
+  _ida.Future<void> delete(_isc.UuidValue targetId) =>
+      caller.callServerEndpoint<void>(
+        'superAdminAuth',
+        'delete',
+        {'targetId': targetId},
+      );
+
+  /// Seeds the default platform admin if missing.
+  _ida.Future<void> ensureDefaultAdmin() => caller.callServerEndpoint<void>(
+    'superAdminAuth',
+    'ensureDefaultAdmin',
+    {},
+  );
+}
+
+/// Venue CRUD for owners; assigned staff can read their building.
 /// {@category Endpoint}
 class EndpointBuilding extends _isc.EndpointRef {
   EndpointBuilding(_isc.EndpointCaller caller) : super(caller);
@@ -402,7 +295,6 @@ class EndpointBuilding extends _isc.EndpointRef {
   @override
   String get name => 'building';
 
-  /// Buildings the signed-in owner created, or staff assignments.
   _ida.Future<List<_ia8vsgay.BuildingView>> listMine() =>
       caller.callServerEndpoint<List<_ia8vsgay.BuildingView>>(
         'building',
@@ -410,7 +302,6 @@ class EndpointBuilding extends _isc.EndpointRef {
         {},
       );
 
-  /// One venue if the actor owns it or is assigned there.
   _ida.Future<_ia8vsgay.BuildingView> get(_isc.UuidValue buildingId) =>
       caller.callServerEndpoint<_ia8vsgay.BuildingView>(
         'building',
@@ -418,7 +309,6 @@ class EndpointBuilding extends _isc.EndpointRef {
         {'buildingId': buildingId},
       );
 
-  /// Owner creates a café, restaurant, lounge, bar, or custom venue.
   _ida.Future<_ia8vsgay.BuildingView> create(
     _iekc365h.BuildingCreate request,
   ) => caller.callServerEndpoint<_ia8vsgay.BuildingView>(
@@ -427,7 +317,6 @@ class EndpointBuilding extends _isc.EndpointRef {
     {'request': request},
   );
 
-  /// Owner updates venue details.
   _ida.Future<_ia8vsgay.BuildingView> update(
     _i2rxmt9c.BuildingUpdate request,
   ) => caller.callServerEndpoint<_ia8vsgay.BuildingView>(
@@ -436,7 +325,6 @@ class EndpointBuilding extends _isc.EndpointRef {
     {'request': request},
   );
 
-  /// Staff assigned to [buildingId].
   _ida.Future<List<_ix96cplr.EmployeeView>> listEmployees(
     _isc.UuidValue buildingId,
   ) => caller.callServerEndpoint<List<_ix96cplr.EmployeeView>>(
@@ -502,22 +390,25 @@ class Client extends _isc.ServerpodClientShared {
              disconnectStreamsOnLostInternetConnection,
          httpClientOverride: httpClientOverride,
        ) {
-    account = EndpointAccount(this);
-    emailIdp = EndpointEmailIdp(this);
+    customerAuth = EndpointCustomerAuth(this);
+    employeeAuth = EndpointEmployeeAuth(this);
     employee = EndpointEmployee(this);
-    jwtRefresh = EndpointJwtRefresh(this);
+    ownerAuth = EndpointOwnerAuth(this);
+    superAdminAuth = EndpointSuperAdminAuth(this);
     building = EndpointBuilding(this);
     greeting = EndpointGreeting(this);
     modules = Modules(this);
   }
 
-  late final EndpointAccount account;
+  late final EndpointCustomerAuth customerAuth;
 
-  late final EndpointEmailIdp emailIdp;
+  late final EndpointEmployeeAuth employeeAuth;
 
   late final EndpointEmployee employee;
 
-  late final EndpointJwtRefresh jwtRefresh;
+  late final EndpointOwnerAuth ownerAuth;
+
+  late final EndpointSuperAdminAuth superAdminAuth;
 
   late final EndpointBuilding building;
 
@@ -527,10 +418,11 @@ class Client extends _isc.ServerpodClientShared {
 
   @override
   Map<String, _isc.EndpointRef> get endpointRefLookup => {
-    'account': account,
-    'emailIdp': emailIdp,
+    'customerAuth': customerAuth,
+    'employeeAuth': employeeAuth,
     'employee': employee,
-    'jwtRefresh': jwtRefresh,
+    'ownerAuth': ownerAuth,
+    'superAdminAuth': superAdminAuth,
     'building': building,
     'greeting': greeting,
   };

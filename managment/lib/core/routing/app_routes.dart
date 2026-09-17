@@ -98,7 +98,7 @@ class BuildingEditRoute extends GoRouteData with $BuildingEditRoute {
       routes: [
         TypedGoRoute<EmployeeCreateRoute>(path: 'new', name: 'employeeCreate'),
         TypedGoRoute<EmployeeDetailsRoute>(
-          path: ':authUserId',
+          path: ':employeeId',
           name: 'employeeDetails',
           routes: [
             TypedGoRoute<EmployeeEditRoute>(path: 'edit', name: 'employeeEdit'),
@@ -173,27 +173,27 @@ class EmployeeCreateRoute extends GoRouteData with $EmployeeCreateRoute {
 class EmployeeDetailsRoute extends GoRouteData with $EmployeeDetailsRoute {
   const EmployeeDetailsRoute({
     required this.buildingId,
-    required this.authUserId,
+    required this.employeeId,
   });
 
   final String buildingId;
-  final String authUserId;
+  final String employeeId;
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return EmployeeDetailsPage(buildingId: buildingId, authUserId: authUserId);
+    return EmployeeDetailsPage(buildingId: buildingId, employeeId: employeeId);
   }
 }
 
 class EmployeeEditRoute extends GoRouteData with $EmployeeEditRoute {
-  const EmployeeEditRoute({required this.buildingId, required this.authUserId});
+  const EmployeeEditRoute({required this.buildingId, required this.employeeId});
 
   final String buildingId;
-  final String authUserId;
+  final String employeeId;
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return EmployeeFormView(buildingId: buildingId, authUserId: authUserId);
+    return EmployeeFormView(buildingId: buildingId, employeeId: employeeId);
   }
 }
 

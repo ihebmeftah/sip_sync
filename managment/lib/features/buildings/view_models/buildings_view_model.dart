@@ -12,13 +12,11 @@ part 'buildings_view_model.g.dart';
 class BuildingsViewModel extends _$BuildingsViewModel {
   @override
   Future<List<BuildingView>> build() async {
-    // Rebuild only when the signed-in user changes — one listMine per user.
-    final authUserId = ref.watch(signedInAuthUserIdProvider);
-    if (authUserId == null) {
+    final actorId = ref.watch(signedInActorIdProvider);
+    if (actorId == null) {
       getIt<BuildingSession>().replace(const []);
       return const [];
     }
-
     final list = await ref.read(buildingRepositoryProvider).listMine();
     getIt<BuildingSession>().replace(list);
     return list;

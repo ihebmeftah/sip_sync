@@ -9,6 +9,8 @@
   "showPassword": "إظهار كلمة المرور",
   "hidePassword": "إخفاء كلمة المرور",
   "signIn": "تسجيل الدخول",
+  "loginAsOwner": "المالك",
+  "loginAsEmployee": "موظف",
   "register": "إنشاء حساب",
   "signOut": "تسجيل الخروج",
   "email": "البريد الإلكتروني",

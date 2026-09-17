@@ -1,9 +1,0 @@
-class: ProfileView
-fields:
-  authUserId: UuidValue
-  username: String?
-  email: String
-  phoneNumber: String
-  firstName: String
-  lastName: String
-  roles: List<String>

@@ -193,7 +193,7 @@ RouteBase get $opsShellRoute => ShellRouteData.$route(
           factory: $EmployeeCreateRoute._fromState,
         ),
         GoRouteData.$route(
-          path: ':authUserId',
+          path: ':employeeId',
           name: 'employeeDetails',
           hasOverriddenOnExit: false,
           factory: $EmployeeDetailsRoute._fromState,
@@ -343,14 +343,14 @@ mixin $EmployeeDetailsRoute on GoRouteData {
   static EmployeeDetailsRoute _fromState(GoRouterState state) =>
       EmployeeDetailsRoute(
         buildingId: state.pathParameters['buildingId']!,
-        authUserId: state.pathParameters['authUserId']!,
+        employeeId: state.pathParameters['employeeId']!,
       );
 
   EmployeeDetailsRoute get _self => this as EmployeeDetailsRoute;
 
   @override
   String get location => GoRouteData.$location(
-    '/b/${Uri.encodeComponent(_self.buildingId)}/employees/${Uri.encodeComponent(_self.authUserId)}',
+    '/b/${Uri.encodeComponent(_self.buildingId)}/employees/${Uri.encodeComponent(_self.employeeId)}',
   );
 
   @override
@@ -370,14 +370,14 @@ mixin $EmployeeDetailsRoute on GoRouteData {
 mixin $EmployeeEditRoute on GoRouteData {
   static EmployeeEditRoute _fromState(GoRouterState state) => EmployeeEditRoute(
     buildingId: state.pathParameters['buildingId']!,
-    authUserId: state.pathParameters['authUserId']!,
+    employeeId: state.pathParameters['employeeId']!,
   );
 
   EmployeeEditRoute get _self => this as EmployeeEditRoute;
 
   @override
   String get location => GoRouteData.$location(
-    '/b/${Uri.encodeComponent(_self.buildingId)}/employees/${Uri.encodeComponent(_self.authUserId)}/edit',
+    '/b/${Uri.encodeComponent(_self.buildingId)}/employees/${Uri.encodeComponent(_self.employeeId)}/edit',
   );
 
   @override

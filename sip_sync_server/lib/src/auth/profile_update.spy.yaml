@@ -1,6 +1,3 @@
-### Writable identity fields for the signed-in user.
-###
-### Email and username are not changed here.
 class: ProfileUpdate
 fields:
   phoneNumber: String

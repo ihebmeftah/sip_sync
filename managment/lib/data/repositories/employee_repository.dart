@@ -1,14 +1,13 @@
 import 'package:sip_sync_client/sip_sync_client.dart';
 
-/// Talks to [EndpointEmployee] for building-scoped staff management.
+/// Building-scoped staff CRUD.
 class EmployeeRepository {
   EmployeeRepository(this._client);
 
   final Client _client;
 
-  Future<EmployeeView> get(UuidValue employeeAuthUserId) {
-    return _client.employee.get(employeeAuthUserId);
-  }
+  Future<EmployeeView> get(UuidValue employeeId) =>
+      _client.employee.get(employeeId);
 
   Future<EmployeeView> add({
     required String password,
@@ -29,14 +28,14 @@ class EmployeeRepository {
   }
 
   Future<EmployeeView> update({
-    required UuidValue authUserId,
+    required UuidValue id,
     required String phoneNumber,
     required String firstName,
     required String lastName,
   }) {
     return _client.employee.update(
       EmployeeUpdate(
-        authUserId: authUserId,
+        id: id,
         phoneNumber: phoneNumber,
         firstName: firstName,
         lastName: lastName,
@@ -45,9 +44,9 @@ class EmployeeRepository {
   }
 
   Future<EmployeeView> setEnabled({
-    required UuidValue authUserId,
+    required UuidValue id,
     required bool isEnabled,
   }) {
-    return _client.employee.setEnabled(authUserId, isEnabled);
+    return _client.employee.setEnabled(id, isEnabled);
   }
 }

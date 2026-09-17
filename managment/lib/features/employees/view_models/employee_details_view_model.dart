@@ -9,10 +9,10 @@ part 'employee_details_view_model.g.dart';
 @riverpod
 class EmployeeDetailsViewModel extends _$EmployeeDetailsViewModel {
   @override
-  Future<EmployeeView> build(String authUserId) {
+  Future<EmployeeView> build(String employeeId) {
     return ref
         .read(employeeRepositoryProvider)
-        .get(UuidValue.fromString(authUserId));
+        .get(UuidValue.fromString(employeeId));
   }
 
   Future<void> setEnabled(bool isEnabled) async {
@@ -24,7 +24,7 @@ class EmployeeDetailsViewModel extends _$EmployeeDetailsViewModel {
     state = await AsyncValue.guard(() async {
       final updated = await ref
           .read(employeeRepositoryProvider)
-          .setEnabled(authUserId: current.authUserId, isEnabled: isEnabled);
+          .setEnabled(id: current.id, isEnabled: isEnabled);
       await ref
           .read(employeesViewModelProvider(current.buildingId.uuid).notifier)
           .refresh();

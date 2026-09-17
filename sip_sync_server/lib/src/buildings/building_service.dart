@@ -1,89 +1,55 @@
 import 'package:serverpod/serverpod.dart';
 
-import '../auth/account_service.dart';
+import '../auth/auth_guard.dart';
 import '../generated/protocol.dart';
 
-/// Owner venues and the staff assigned to each one.
-///
-/// See `Docs/features/buildings.md`.
+/// Owner venues; employees can read their assigned building.
 class BuildingService {
-  final _accounts = AccountService();
-
-  /// Buildings the actor owns, or the single venue on their employee record.
-  Future<List<BuildingView>> listMine(
-    Session session,
-    UuidValue actorId,
-  ) async {
-    if (await _accounts.hasRole(session, actorId, AppRole.owner)) {
+  Future<List<BuildingView>> listMine(Session session) async {
+    final ctx = AuthGuard.requireAny(session);
+    if (ctx.actorType == ActorType.owner) {
       final rows = await Building.db.find(
         session,
-        where: (t) => t.ownerAuthUserId.equals(actorId),
+        where: (t) => t.ownerId.equals(ctx.actorId),
         orderBy: (t) => t.createdAt,
       );
-      final views = <BuildingView>[];
-      for (final row in rows) {
-        views.add(await _view(session, row));
+      return Future.wait(rows.map((row) => _view(session, row)));
+    }
+    if (ctx.actorType == ActorType.employee) {
+      final employee = await Employee.db.findById(session, ctx.actorId);
+      if (employee == null) {
+        return const [];
       }
-      return views;
+      final row = await Building.db.findById(session, employee.buildingId);
+      if (row == null) {
+        return const [];
+      }
+      return [await _view(session, row)];
     }
-
-    if (!await _accounts.hasRole(session, actorId, AppRole.employee)) {
-      throw BuildingException(
-        message: 'Sign in as an owner or employee.',
-        code: BuildingErrorCode.notAuthorized,
-      );
-    }
-
-    final record = await EmployeeRecord.db.findFirstRow(
-      session,
-      where: (t) => t.authUserId.equals(actorId),
+    throw BuildingException(
+      message: 'Sign in as an owner or employee.',
+      code: BuildingErrorCode.notAuthorized,
     );
-    if (record == null) {
-      return const [];
-    }
-    final row = await Building.db.findById(session, record.buildingId);
-    if (row == null) {
-      return const [];
-    }
-    return [await _view(session, row)];
   }
 
-  /// Owner CRUD read, or staff assigned to that building.
   Future<BuildingView> get(
     Session session, {
-    required UuidValue actorId,
     required UuidValue buildingId,
   }) async {
-    final row = await _readableBuilding(
-      session,
-      actorId: actorId,
-      buildingId: buildingId,
-    );
+    final row = await _readableBuilding(session, buildingId);
     return _view(session, row);
   }
 
-  /// Owner creates a venue (staff are added later with [EmployeeCreate]).
   Future<BuildingView> create(
-    Session session, {
-    required UuidValue ownerAuthUserId,
-    required BuildingCreate request,
-  }) async {
-    await _requireOwner(session, ownerAuthUserId);
-    _validate(
-      request.name,
-      request.type,
-      request.address,
-      request.latitude,
-      request.longitude,
-      request.openingMinutes,
-      request.closingMinutes,
-      request.currencyCode,
-    );
-
+    Session session,
+    BuildingCreate request,
+  ) async {
+    final ownerId = AuthGuard.requireOwner(session);
+    _validate(request);
     final row = await Building.db.insertRow(
       session,
       Building(
-        ownerAuthUserId: ownerAuthUserId,
+        ownerId: ownerId,
         name: request.name.trim(),
         type: _normalizeType(request.type),
         address: request.address.trim(),
@@ -97,28 +63,19 @@ class BuildingService {
     return _view(session, row);
   }
 
-  /// Owner updates venue fields only.
   Future<BuildingView> update(
-    Session session, {
-    required UuidValue ownerAuthUserId,
-    required BuildingUpdate request,
-  }) async {
-    final row = await _ownedBuilding(
-      session,
-      ownerAuthUserId: ownerAuthUserId,
-      buildingId: request.id,
-    );
-    _validate(
-      request.name,
-      request.type,
-      request.address,
-      request.latitude,
-      request.longitude,
-      request.openingMinutes,
-      request.closingMinutes,
-      request.currencyCode,
-    );
-
+    Session session,
+    BuildingUpdate request,
+  ) async {
+    final ownerId = AuthGuard.requireOwner(session);
+    _validate(request);
+    final row = await Building.db.findById(session, request.id);
+    if (row == null || row.ownerId != ownerId) {
+      throw BuildingException(
+        message: 'Building not found.',
+        code: BuildingErrorCode.notFound,
+      );
+    }
     final updated = await Building.db.updateRow(
       session,
       row.copyWith(
@@ -135,56 +92,35 @@ class BuildingService {
     return _view(session, updated);
   }
 
-  /// Staff whose [EmployeeRecord.buildingId] is [buildingId].
   Future<List<EmployeeView>> listEmployees(
-    Session session, {
-    required UuidValue actorId,
-    required UuidValue buildingId,
-  }) async {
-    await _readableBuilding(
-      session,
-      actorId: actorId,
-      buildingId: buildingId,
-    );
-    final building = await Building.db.findById(session, buildingId);
-    final records = await EmployeeRecord.db.find(
+    Session session,
+    UuidValue buildingId,
+  ) async {
+    await _readableBuilding(session, buildingId);
+    final records = await Employee.db.find(
       session,
       where: (t) => t.buildingId.equals(buildingId),
     );
-    final views = <EmployeeView>[];
-    for (final row in records) {
-      views.add(
-        await _accounts.getEmployee(
-          session,
-          ownerAuthUserId: building!.ownerAuthUserId,
-          employeeAuthUserId: row.authUserId,
-        ),
-      );
-    }
-    return views;
-  }
-
-  Future<Building> _ownedBuilding(
-    Session session, {
-    required UuidValue ownerAuthUserId,
-    required UuidValue buildingId,
-  }) async {
-    await _requireOwner(session, ownerAuthUserId);
-    final row = await Building.db.findById(session, buildingId);
-    if (row == null || row.ownerAuthUserId != ownerAuthUserId) {
-      throw BuildingException(
-        message: 'Building not found.',
-        code: BuildingErrorCode.notFound,
-      );
-    }
-    return row;
+    return records
+        .map(
+          (e) => EmployeeView(
+            id: e.id!,
+            buildingId: e.buildingId,
+            ownerId: e.ownerId,
+            username: e.username,
+            phoneNumber: e.phoneNumber,
+            firstName: e.firstName,
+            lastName: e.lastName,
+            isEnabled: e.isEnabled,
+          ),
+        )
+        .toList();
   }
 
   Future<Building> _readableBuilding(
-    Session session, {
-    required UuidValue actorId,
-    required UuidValue buildingId,
-  }) async {
+    Session session,
+    UuidValue buildingId,
+  ) async {
     final row = await Building.db.findById(session, buildingId);
     if (row == null) {
       throw BuildingException(
@@ -192,40 +128,30 @@ class BuildingService {
         code: BuildingErrorCode.notFound,
       );
     }
-    if (row.ownerAuthUserId == actorId) {
+    final ctx = AuthGuard.requireAny(session);
+    if (ctx.actorType == ActorType.owner && row.ownerId == ctx.actorId) {
       return row;
     }
-    final assigned = await EmployeeRecord.db.findFirstRow(
-      session,
-      where: (t) =>
-          t.buildingId.equals(buildingId) & t.authUserId.equals(actorId),
+    if (ctx.actorType == ActorType.employee) {
+      final employee = await Employee.db.findById(session, ctx.actorId);
+      if (employee != null && employee.buildingId == buildingId) {
+        return row;
+      }
+    }
+    throw BuildingException(
+      message: 'Building not found.',
+      code: BuildingErrorCode.notFound,
     );
-    if (assigned == null) {
-      throw BuildingException(
-        message: 'Building not found.',
-        code: BuildingErrorCode.notFound,
-      );
-    }
-    return row;
-  }
-
-  Future<void> _requireOwner(Session session, UuidValue authUserId) async {
-    if (!await _accounts.hasRole(session, authUserId, AppRole.owner)) {
-      throw BuildingException(
-        message: 'Only owners can manage buildings.',
-        code: BuildingErrorCode.notAuthorized,
-      );
-    }
   }
 
   Future<BuildingView> _view(Session session, Building row) async {
-    final staff = await EmployeeRecord.db.find(
+    final staff = await Employee.db.find(
       session,
       where: (t) => t.buildingId.equals(row.id!),
     );
     return BuildingView(
       id: row.id!,
-      ownerAuthUserId: row.ownerAuthUserId,
+      ownerId: row.ownerId,
       name: row.name,
       type: row.type,
       address: row.address,
@@ -234,20 +160,20 @@ class BuildingService {
       openingMinutes: row.openingMinutes,
       closingMinutes: row.closingMinutes,
       currencyCode: row.currencyCode,
-      employeeAuthUserIds: staff.map((s) => s.authUserId).toList(),
+      employeeIds: staff.map((s) => s.id!).toList(),
     );
   }
 
-  void _validate(
-    String name,
-    String type,
-    String address,
-    double latitude,
-    double longitude,
-    int openingMinutes,
-    int closingMinutes,
-    String currencyCode,
-  ) {
+  void _validate(dynamic request) {
+    final name = request.name as String;
+    final type = request.type as String;
+    final address = request.address as String;
+    final latitude = request.latitude as double;
+    final longitude = request.longitude as double;
+    final openingMinutes = request.openingMinutes as int;
+    final closingMinutes = request.closingMinutes as int;
+    final currencyCode = request.currencyCode as String;
+
     if (name.trim().isEmpty || name.trim().length > 80) {
       throw BuildingException(
         message: 'Enter a venue name.',

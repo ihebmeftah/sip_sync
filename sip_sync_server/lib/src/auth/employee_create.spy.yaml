@@ -1,4 +1,3 @@
-### Owner creates staff for one building. Username is generated on the server; no email.
 class: EmployeeCreate
 fields:
   password: String

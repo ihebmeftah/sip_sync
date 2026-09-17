@@ -2,50 +2,39 @@ import 'dart:io';
 
 import 'package:serverpod_cloud_storage/serverpod_cloud_storage.dart';
 
-import 'src/auth/account_service.dart';
-import 'src/auth/auth_bootstrap.dart';
+import 'src/auth/session_service.dart';
+import 'src/auth/super_admin_auth_endpoint.dart';
 import 'src/cache_busting.dart';
 import 'src/generated/serverpod.dart';
 import 'src/web/routes/app_config_route.dart';
 
 /// The starting point of the Serverpod server.
 void run(List<String> args) async {
-  // Initialize Serverpod. The generated Serverpod class is already connected
-  // with your project's generated code.
-  final pod = Serverpod(args);
+  final pod = Serverpod(
+    args,
+    authenticationHandler: sipSyncAuthenticationHandler,
+  );
 
-  configureSipSyncAuth();
-
-  // Serve all files in the web/static relative directory under /web.
-  // These are used by the default web page.
   pod.webServer.addRoute(
     StaticRoute.withCacheBusting(cacheBustingConfig),
     cacheBustingConfig.mountPrefix,
   );
 
-  // Setup the app config route.
-  // We build this configuration based on the servers api url and serve it to
-  // the flutter app.
   pod.webServer.addRoute(
     AppConfigRoute(apiConfig: pod.config.apiServer),
     '/assets/assets/config.json',
   );
 
-  // Checks if the flutter web app has been built and serves it if it has.
   final appDir = Directory(Uri(path: 'web/app').toFilePath());
   if (appDir.existsSync()) {
-    // Serve the flutter web app under /.
     pod.webServer.addRoute(
       FlutterRoute(
         appDir,
-        // If building the Flutter app with WASM, set the below parameter to
-        // true and add the --wasm flag to the flutter build command.
         enableWasmHeaders: false,
       ),
       '/',
     );
   } else {
-    // If the flutter web app has not been built, serve the build app page.
     final defaultRoute = StaticRoute.file(
       File(
         Uri(path: 'web/pages/build_flutter_app.html').toFilePath(),
@@ -66,10 +55,6 @@ void run(List<String> args) async {
     );
   }
 
-  // Configure cloud storage.
-  // This setup works with Serverpod Cloud without extra configuration.
-  // If you want to use a custom provider for cloud storage, replace these
-  // with your preferred provider.
   pod.addCloudStorage(
     await ServerpodCloudProvider.private(
       fallback: () => DatabaseCloudStorage('private'),
@@ -81,10 +66,9 @@ void run(List<String> args) async {
     ),
   );
 
-  // Start the server.
   await pod.start();
 
   await pod.withSession((session) async {
-    await AccountService().ensureDefaultAdmin(session);
+    await SuperAdminAuthEndpoint().ensureDefaultAdmin(session);
   });
 }

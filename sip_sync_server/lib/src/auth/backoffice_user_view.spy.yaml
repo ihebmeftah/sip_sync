@@ -1,5 +1,0 @@
-class: BackofficeUserView
-fields:
-  profile: ProfileView
-  isAdmin: bool
-  isSystemDefault: bool

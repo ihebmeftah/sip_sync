@@ -1,9 +1,10 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sip_sync_client/sip_sync_client.dart';
 
-import '../../data/repositories/account_repository.dart';
 import '../../data/repositories/building_repository.dart';
 import '../../data/repositories/employee_repository.dart';
+import '../../data/repositories/owner_auth_repository.dart';
+import 'app_session_store.dart';
 import 'building_session.dart';
 import 'service_locator.dart';
 
@@ -13,7 +14,8 @@ part 'app_providers.g.dart';
 Client client(Ref ref) => getIt<Client>();
 
 @Riverpod(keepAlive: true)
-AccountRepository accountRepository(Ref ref) => getIt<AccountRepository>();
+OwnerAuthRepository ownerAuthRepository(Ref ref) =>
+    getIt<OwnerAuthRepository>();
 
 @Riverpod(keepAlive: true)
 BuildingRepository buildingRepository(Ref ref) => getIt<BuildingRepository>();
@@ -21,7 +23,15 @@ BuildingRepository buildingRepository(Ref ref) => getIt<BuildingRepository>();
 @Riverpod(keepAlive: true)
 EmployeeRepository employeeRepository(Ref ref) => getIt<EmployeeRepository>();
 
-/// Mirrors [BuildingSession.selected] so widgets rebuild when a venue is picked.
+@Riverpod(keepAlive: true)
+AppSessionStore appSessionStore(Ref ref) {
+  final store = getIt<AppSessionStore>();
+  void listener() => ref.invalidateSelf();
+  store.addListener(listener);
+  ref.onDispose(() => store.removeListener(listener));
+  return store;
+}
+
 @Riverpod(keepAlive: true)
 class BuildingSelection extends _$BuildingSelection {
   @override

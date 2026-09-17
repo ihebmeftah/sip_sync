@@ -9,6 +9,8 @@
   "showPassword": "Afficher le mot de passe",
   "hidePassword": "Masquer le mot de passe",
   "signIn": "Connexion",
+  "loginAsOwner": "Propriétaire",
+  "loginAsEmployee": "Employé",
   "register": "Créer un compte",
   "signOut": "Déconnexion",
   "email": "E-mail",

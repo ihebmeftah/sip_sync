@@ -99,7 +99,7 @@ class _RegisterViewState extends ConsumerState<RegisterView> {
                 }
                 await ref
                     .read(authViewModelProvider.notifier)
-                    .register(
+                    .registerOwner(
                       email: _email.text,
                       password: _password.text,
                       phoneNumber: _phone.text,

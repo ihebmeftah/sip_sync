@@ -1,0 +1,26 @@
+### Staff account for one building. Username login; password hashed locally.
+class: Employee
+table: employee
+serverOnly: true
+fields:
+  id: UuidValue?, defaultPersist=random_v7
+  owner: Owner?, relation(name=owner_employees, onDelete=Cascade)
+  building: Building?, relation(name=building_employees, onDelete=Cascade)
+  username: String
+  phoneNumber: String
+  firstName: String
+  lastName: String
+  passwordHash: String
+  isEnabled: bool, default=true
+  createdAt: DateTime, defaultModel=now
+indexes:
+  employee_username_idx:
+    fields: username
+    unique: true
+  employee_phone_idx:
+    fields: phoneNumber
+    unique: true
+  employee_building_idx:
+    fields: buildingId
+  employee_owner_idx:
+    fields: ownerId

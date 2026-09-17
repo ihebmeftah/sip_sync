@@ -1,0 +1,11 @@
+### Login/register response. [sessionJson] is the actor session view as JSON map fields.
+class: AuthTokenResult
+fields:
+  token: String
+  refreshToken: String
+  expiresAt: DateTime
+  actorType: ActorType
+  owner: OwnerSessionView?
+  employee: EmployeeSessionView?
+  customer: CustomerSessionView?
+  superAdmin: SuperAdminSessionView?

@@ -14,29 +14,35 @@
 import 'dart:async' as _ida;
 import 'dart:io' as _idi;
 import 'package:serverpod/serverpod.dart' as _is;
-import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
-    as _iacs;
 import 'package:serverpod_test/serverpod_test.dart' as _ist;
-import 'package:sip_sync_server/src/generated/auth/account_session_view.dart'
-    as _ir1ant8o;
-import 'package:sip_sync_server/src/generated/auth/auth_session_result.dart'
-    as _i8mvijvl;
-import 'package:sip_sync_server/src/generated/auth/backoffice_user_create.dart'
-    as _ivojw13s;
-import 'package:sip_sync_server/src/generated/auth/backoffice_user_view.dart'
-    as _iea1ilrj;
+import 'package:sip_sync_server/src/generated/auth/auth_token_result.dart'
+    as _i3z807il;
+import 'package:sip_sync_server/src/generated/auth/customer_session_view.dart'
+    as _i6zelgrl;
+import 'package:sip_sync_server/src/generated/auth/email_login_request.dart'
+    as _i61r4gix;
+import 'package:sip_sync_server/src/generated/auth/email_register_create.dart'
+    as _ihm3fhv0;
 import 'package:sip_sync_server/src/generated/auth/employee_create.dart'
     as _itsh5tmy;
+import 'package:sip_sync_server/src/generated/auth/employee_session_view.dart'
+    as _in8iynda;
 import 'package:sip_sync_server/src/generated/auth/employee_update.dart'
     as _isn5wmy3;
 import 'package:sip_sync_server/src/generated/auth/employee_view.dart'
     as _iusy412g;
-import 'package:sip_sync_server/src/generated/auth/login_request.dart'
-    as _igjnjeoy;
+import 'package:sip_sync_server/src/generated/auth/owner_session_view.dart'
+    as _iqkx9riy;
 import 'package:sip_sync_server/src/generated/auth/profile_update.dart'
     as _id6sv1bw;
-import 'package:sip_sync_server/src/generated/auth/self_register_create.dart'
-    as _iomxn8e2;
+import 'package:sip_sync_server/src/generated/auth/super_admin_create.dart'
+    as _id6ub811;
+import 'package:sip_sync_server/src/generated/auth/super_admin_session_view.dart'
+    as _irxwe8xn;
+import 'package:sip_sync_server/src/generated/auth/super_admin_view.dart'
+    as _i3qefl0x;
+import 'package:sip_sync_server/src/generated/auth/username_login_request.dart'
+    as _i4u41mzh;
 import 'package:sip_sync_server/src/generated/buildings/building_create.dart'
     as _iikuia2o;
 import 'package:sip_sync_server/src/generated/buildings/building_update.dart'
@@ -173,13 +179,15 @@ void withServerpod(
 }
 
 class TestEndpoints {
-  late final _AccountEndpoint account;
+  late final _CustomerAuthEndpoint customerAuth;
 
-  late final _EmailIdpEndpoint emailIdp;
+  late final _EmployeeAuthEndpoint employeeAuth;
 
   late final _EmployeeEndpoint employee;
 
-  late final _JwtRefreshEndpoint jwtRefresh;
+  late final _OwnerAuthEndpoint ownerAuth;
+
+  late final _SuperAdminAuthEndpoint superAdminAuth;
 
   late final _BuildingEndpoint building;
 
@@ -193,11 +201,11 @@ class _InternalTestEndpoints extends TestEndpoints
     _is.SerializationManager serializationManager,
     _is.EndpointDispatch endpoints,
   ) {
-    account = _AccountEndpoint(
+    customerAuth = _CustomerAuthEndpoint(
       endpoints,
       serializationManager,
     );
-    emailIdp = _EmailIdpEndpoint(
+    employeeAuth = _EmployeeAuthEndpoint(
       endpoints,
       serializationManager,
     );
@@ -205,7 +213,11 @@ class _InternalTestEndpoints extends TestEndpoints
       endpoints,
       serializationManager,
     );
-    jwtRefresh = _JwtRefreshEndpoint(
+    ownerAuth = _OwnerAuthEndpoint(
+      endpoints,
+      serializationManager,
+    );
+    superAdminAuth = _SuperAdminAuthEndpoint(
       endpoints,
       serializationManager,
     );
@@ -220,8 +232,8 @@ class _InternalTestEndpoints extends TestEndpoints
   }
 }
 
-class _AccountEndpoint {
-  _AccountEndpoint(
+class _CustomerAuthEndpoint {
+  _CustomerAuthEndpoint(
     this._endpointDispatch,
     this._serializationManager,
   );
@@ -230,20 +242,20 @@ class _AccountEndpoint {
 
   final _is.SerializationManager _serializationManager;
 
-  _ida.Future<_i8mvijvl.AuthSessionResult> register(
+  _ida.Future<_i3z807il.AuthTokenResult> register(
     _ist.TestSessionBuilder sessionBuilder,
-    _iomxn8e2.SelfRegisterCreate request,
+    _ihm3fhv0.EmailRegisterCreate request,
   ) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
           (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
-            endpoint: 'account',
+            endpoint: 'customerAuth',
             method: 'register',
           );
       try {
         var _localCallContext = await _endpointDispatch.getMethodCallContext(
           createSessionCallback: (_) => _localUniqueSession,
-          endpointPath: 'account',
+          endpointPath: 'customerAuth',
           methodName: 'register',
           parameters: _ist.testObjectToJson({'request': request}),
           serializationManager: _serializationManager,
@@ -253,7 +265,7 @@ class _AccountEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _ida.Future<_i8mvijvl.AuthSessionResult>);
+                as _ida.Future<_i3z807il.AuthTokenResult>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -261,20 +273,20 @@ class _AccountEndpoint {
     });
   }
 
-  _ida.Future<_i8mvijvl.AuthSessionResult> login(
+  _ida.Future<_i3z807il.AuthTokenResult> login(
     _ist.TestSessionBuilder sessionBuilder,
-    _igjnjeoy.LoginRequest request,
+    _i61r4gix.EmailLoginRequest request,
   ) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
           (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
-            endpoint: 'account',
+            endpoint: 'customerAuth',
             method: 'login',
           );
       try {
         var _localCallContext = await _endpointDispatch.getMethodCallContext(
           createSessionCallback: (_) => _localUniqueSession,
-          endpointPath: 'account',
+          endpointPath: 'customerAuth',
           methodName: 'login',
           parameters: _ist.testObjectToJson({'request': request}),
           serializationManager: _serializationManager,
@@ -284,7 +296,7 @@ class _AccountEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _ida.Future<_i8mvijvl.AuthSessionResult>);
+                as _ida.Future<_i3z807il.AuthTokenResult>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -292,19 +304,19 @@ class _AccountEndpoint {
     });
   }
 
-  _ida.Future<_ir1ant8o.AccountSessionView> me(
+  _ida.Future<_i6zelgrl.CustomerSessionView> me(
     _ist.TestSessionBuilder sessionBuilder,
   ) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
           (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
-            endpoint: 'account',
+            endpoint: 'customerAuth',
             method: 'me',
           );
       try {
         var _localCallContext = await _endpointDispatch.getMethodCallContext(
           createSessionCallback: (_) => _localUniqueSession,
-          endpointPath: 'account',
+          endpointPath: 'customerAuth',
           methodName: 'me',
           parameters: _ist.testObjectToJson({}),
           serializationManager: _serializationManager,
@@ -314,7 +326,7 @@ class _AccountEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _ida.Future<_ir1ant8o.AccountSessionView>);
+                as _ida.Future<_i6zelgrl.CustomerSessionView>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -322,20 +334,20 @@ class _AccountEndpoint {
     });
   }
 
-  _ida.Future<_ir1ant8o.AccountSessionView> updateMyProfile(
+  _ida.Future<_i6zelgrl.CustomerSessionView> updateMyProfile(
     _ist.TestSessionBuilder sessionBuilder,
     _id6sv1bw.ProfileUpdate request,
   ) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
           (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
-            endpoint: 'account',
+            endpoint: 'customerAuth',
             method: 'updateMyProfile',
           );
       try {
         var _localCallContext = await _endpointDispatch.getMethodCallContext(
           createSessionCallback: (_) => _localUniqueSession,
-          endpointPath: 'account',
+          endpointPath: 'customerAuth',
           methodName: 'updateMyProfile',
           parameters: _ist.testObjectToJson({'request': request}),
           serializationManager: _serializationManager,
@@ -345,7 +357,7 @@ class _AccountEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _ida.Future<_ir1ant8o.AccountSessionView>);
+                as _ida.Future<_i6zelgrl.CustomerSessionView>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -353,85 +365,19 @@ class _AccountEndpoint {
     });
   }
 
-  _ida.Future<_iea1ilrj.BackofficeUserView> addBackofficeUser(
-    _ist.TestSessionBuilder sessionBuilder,
-    _ivojw13s.BackofficeUserCreate request,
-  ) async {
+  _ida.Future<void> logout(_ist.TestSessionBuilder sessionBuilder) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
           (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
-            endpoint: 'account',
-            method: 'addBackofficeUser',
+            endpoint: 'customerAuth',
+            method: 'logout',
           );
       try {
         var _localCallContext = await _endpointDispatch.getMethodCallContext(
           createSessionCallback: (_) => _localUniqueSession,
-          endpointPath: 'account',
-          methodName: 'addBackofficeUser',
-          parameters: _ist.testObjectToJson({'request': request}),
-          serializationManager: _serializationManager,
-        );
-        var _localReturnValue =
-            await (_localCallContext.method.call(
-                  _localUniqueSession,
-                  _localCallContext.arguments,
-                )
-                as _ida.Future<_iea1ilrj.BackofficeUserView>);
-        return _localReturnValue;
-      } finally {
-        await _localUniqueSession.close();
-      }
-    });
-  }
-
-  _ida.Future<List<_iea1ilrj.BackofficeUserView>> listBackofficeUsers(
-    _ist.TestSessionBuilder sessionBuilder,
-  ) async {
-    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
-      var _localUniqueSession =
-          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
-            endpoint: 'account',
-            method: 'listBackofficeUsers',
-          );
-      try {
-        var _localCallContext = await _endpointDispatch.getMethodCallContext(
-          createSessionCallback: (_) => _localUniqueSession,
-          endpointPath: 'account',
-          methodName: 'listBackofficeUsers',
+          endpointPath: 'customerAuth',
+          methodName: 'logout',
           parameters: _ist.testObjectToJson({}),
-          serializationManager: _serializationManager,
-        );
-        var _localReturnValue =
-            await (_localCallContext.method.call(
-                  _localUniqueSession,
-                  _localCallContext.arguments,
-                )
-                as _ida.Future<List<_iea1ilrj.BackofficeUserView>>);
-        return _localReturnValue;
-      } finally {
-        await _localUniqueSession.close();
-      }
-    });
-  }
-
-  _ida.Future<void> deleteBackofficeUser(
-    _ist.TestSessionBuilder sessionBuilder,
-    _is.UuidValue targetAuthUserId,
-  ) async {
-    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
-      var _localUniqueSession =
-          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
-            endpoint: 'account',
-            method: 'deleteBackofficeUser',
-          );
-      try {
-        var _localCallContext = await _endpointDispatch.getMethodCallContext(
-          createSessionCallback: (_) => _localUniqueSession,
-          endpointPath: 'account',
-          methodName: 'deleteBackofficeUser',
-          parameters: _ist.testObjectToJson({
-            'targetAuthUserId': targetAuthUserId,
-          }),
           serializationManager: _serializationManager,
         );
         var _localReturnValue =
@@ -448,8 +394,8 @@ class _AccountEndpoint {
   }
 }
 
-class _EmailIdpEndpoint {
-  _EmailIdpEndpoint(
+class _EmployeeAuthEndpoint {
+  _EmployeeAuthEndpoint(
     this._endpointDispatch,
     this._serializationManager,
   );
@@ -458,26 +404,22 @@ class _EmailIdpEndpoint {
 
   final _is.SerializationManager _serializationManager;
 
-  _ida.Future<_iacs.AuthSuccess> login(
-    _ist.TestSessionBuilder sessionBuilder, {
-    required String email,
-    required String password,
-  }) async {
+  _ida.Future<_i3z807il.AuthTokenResult> login(
+    _ist.TestSessionBuilder sessionBuilder,
+    _i4u41mzh.UsernameLoginRequest request,
+  ) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
           (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
-            endpoint: 'emailIdp',
+            endpoint: 'employeeAuth',
             method: 'login',
           );
       try {
         var _localCallContext = await _endpointDispatch.getMethodCallContext(
           createSessionCallback: (_) => _localUniqueSession,
-          endpointPath: 'emailIdp',
+          endpointPath: 'employeeAuth',
           methodName: 'login',
-          parameters: _ist.testObjectToJson({
-            'email': email,
-            'password': password,
-          }),
+          parameters: _ist.testObjectToJson({'request': request}),
           serializationManager: _serializationManager,
         );
         var _localReturnValue =
@@ -485,7 +427,7 @@ class _EmailIdpEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _ida.Future<_iacs.AuthSuccess>);
+                as _ida.Future<_i3z807il.AuthTokenResult>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -493,220 +435,20 @@ class _EmailIdpEndpoint {
     });
   }
 
-  _ida.Future<_is.UuidValue> startRegistration(
-    _ist.TestSessionBuilder sessionBuilder, {
-    required String email,
-  }) async {
+  _ida.Future<_in8iynda.EmployeeSessionView> me(
+    _ist.TestSessionBuilder sessionBuilder,
+  ) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
           (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
-            endpoint: 'emailIdp',
-            method: 'startRegistration',
+            endpoint: 'employeeAuth',
+            method: 'me',
           );
       try {
         var _localCallContext = await _endpointDispatch.getMethodCallContext(
           createSessionCallback: (_) => _localUniqueSession,
-          endpointPath: 'emailIdp',
-          methodName: 'startRegistration',
-          parameters: _ist.testObjectToJson({'email': email}),
-          serializationManager: _serializationManager,
-        );
-        var _localReturnValue =
-            await (_localCallContext.method.call(
-                  _localUniqueSession,
-                  _localCallContext.arguments,
-                )
-                as _ida.Future<_is.UuidValue>);
-        return _localReturnValue;
-      } finally {
-        await _localUniqueSession.close();
-      }
-    });
-  }
-
-  _ida.Future<String> verifyRegistrationCode(
-    _ist.TestSessionBuilder sessionBuilder, {
-    required _is.UuidValue accountRequestId,
-    required String verificationCode,
-  }) async {
-    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
-      var _localUniqueSession =
-          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
-            endpoint: 'emailIdp',
-            method: 'verifyRegistrationCode',
-          );
-      try {
-        var _localCallContext = await _endpointDispatch.getMethodCallContext(
-          createSessionCallback: (_) => _localUniqueSession,
-          endpointPath: 'emailIdp',
-          methodName: 'verifyRegistrationCode',
-          parameters: _ist.testObjectToJson({
-            'accountRequestId': accountRequestId,
-            'verificationCode': verificationCode,
-          }),
-          serializationManager: _serializationManager,
-        );
-        var _localReturnValue =
-            await (_localCallContext.method.call(
-                  _localUniqueSession,
-                  _localCallContext.arguments,
-                )
-                as _ida.Future<String>);
-        return _localReturnValue;
-      } finally {
-        await _localUniqueSession.close();
-      }
-    });
-  }
-
-  _ida.Future<_iacs.AuthSuccess> finishRegistration(
-    _ist.TestSessionBuilder sessionBuilder, {
-    required String registrationToken,
-    required String password,
-  }) async {
-    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
-      var _localUniqueSession =
-          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
-            endpoint: 'emailIdp',
-            method: 'finishRegistration',
-          );
-      try {
-        var _localCallContext = await _endpointDispatch.getMethodCallContext(
-          createSessionCallback: (_) => _localUniqueSession,
-          endpointPath: 'emailIdp',
-          methodName: 'finishRegistration',
-          parameters: _ist.testObjectToJson({
-            'registrationToken': registrationToken,
-            'password': password,
-          }),
-          serializationManager: _serializationManager,
-        );
-        var _localReturnValue =
-            await (_localCallContext.method.call(
-                  _localUniqueSession,
-                  _localCallContext.arguments,
-                )
-                as _ida.Future<_iacs.AuthSuccess>);
-        return _localReturnValue;
-      } finally {
-        await _localUniqueSession.close();
-      }
-    });
-  }
-
-  _ida.Future<_is.UuidValue> startPasswordReset(
-    _ist.TestSessionBuilder sessionBuilder, {
-    required String email,
-  }) async {
-    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
-      var _localUniqueSession =
-          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
-            endpoint: 'emailIdp',
-            method: 'startPasswordReset',
-          );
-      try {
-        var _localCallContext = await _endpointDispatch.getMethodCallContext(
-          createSessionCallback: (_) => _localUniqueSession,
-          endpointPath: 'emailIdp',
-          methodName: 'startPasswordReset',
-          parameters: _ist.testObjectToJson({'email': email}),
-          serializationManager: _serializationManager,
-        );
-        var _localReturnValue =
-            await (_localCallContext.method.call(
-                  _localUniqueSession,
-                  _localCallContext.arguments,
-                )
-                as _ida.Future<_is.UuidValue>);
-        return _localReturnValue;
-      } finally {
-        await _localUniqueSession.close();
-      }
-    });
-  }
-
-  _ida.Future<String> verifyPasswordResetCode(
-    _ist.TestSessionBuilder sessionBuilder, {
-    required _is.UuidValue passwordResetRequestId,
-    required String verificationCode,
-  }) async {
-    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
-      var _localUniqueSession =
-          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
-            endpoint: 'emailIdp',
-            method: 'verifyPasswordResetCode',
-          );
-      try {
-        var _localCallContext = await _endpointDispatch.getMethodCallContext(
-          createSessionCallback: (_) => _localUniqueSession,
-          endpointPath: 'emailIdp',
-          methodName: 'verifyPasswordResetCode',
-          parameters: _ist.testObjectToJson({
-            'passwordResetRequestId': passwordResetRequestId,
-            'verificationCode': verificationCode,
-          }),
-          serializationManager: _serializationManager,
-        );
-        var _localReturnValue =
-            await (_localCallContext.method.call(
-                  _localUniqueSession,
-                  _localCallContext.arguments,
-                )
-                as _ida.Future<String>);
-        return _localReturnValue;
-      } finally {
-        await _localUniqueSession.close();
-      }
-    });
-  }
-
-  _ida.Future<void> finishPasswordReset(
-    _ist.TestSessionBuilder sessionBuilder, {
-    required String finishPasswordResetToken,
-    required String newPassword,
-  }) async {
-    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
-      var _localUniqueSession =
-          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
-            endpoint: 'emailIdp',
-            method: 'finishPasswordReset',
-          );
-      try {
-        var _localCallContext = await _endpointDispatch.getMethodCallContext(
-          createSessionCallback: (_) => _localUniqueSession,
-          endpointPath: 'emailIdp',
-          methodName: 'finishPasswordReset',
-          parameters: _ist.testObjectToJson({
-            'finishPasswordResetToken': finishPasswordResetToken,
-            'newPassword': newPassword,
-          }),
-          serializationManager: _serializationManager,
-        );
-        var _localReturnValue =
-            await (_localCallContext.method.call(
-                  _localUniqueSession,
-                  _localCallContext.arguments,
-                )
-                as _ida.Future<void>);
-        return _localReturnValue;
-      } finally {
-        await _localUniqueSession.close();
-      }
-    });
-  }
-
-  _ida.Future<bool> hasAccount(_ist.TestSessionBuilder sessionBuilder) async {
-    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
-      var _localUniqueSession =
-          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
-            endpoint: 'emailIdp',
-            method: 'hasAccount',
-          );
-      try {
-        var _localCallContext = await _endpointDispatch.getMethodCallContext(
-          createSessionCallback: (_) => _localUniqueSession,
-          endpointPath: 'emailIdp',
-          methodName: 'hasAccount',
+          endpointPath: 'employeeAuth',
+          methodName: 'me',
           parameters: _ist.testObjectToJson({}),
           serializationManager: _serializationManager,
         );
@@ -715,7 +457,66 @@ class _EmailIdpEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _ida.Future<bool>);
+                as _ida.Future<_in8iynda.EmployeeSessionView>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<_in8iynda.EmployeeSessionView> updateMyProfile(
+    _ist.TestSessionBuilder sessionBuilder,
+    _id6sv1bw.ProfileUpdate request,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'employeeAuth',
+            method: 'updateMyProfile',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'employeeAuth',
+          methodName: 'updateMyProfile',
+          parameters: _ist.testObjectToJson({'request': request}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_in8iynda.EmployeeSessionView>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<void> logout(_ist.TestSessionBuilder sessionBuilder) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'employeeAuth',
+            method: 'logout',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'employeeAuth',
+          methodName: 'logout',
+          parameters: _ist.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<void>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -736,7 +537,7 @@ class _EmployeeEndpoint {
 
   _ida.Future<_iusy412g.EmployeeView> get(
     _ist.TestSessionBuilder sessionBuilder,
-    _is.UuidValue employeeAuthUserId,
+    _is.UuidValue employeeId,
   ) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -749,9 +550,7 @@ class _EmployeeEndpoint {
           createSessionCallback: (_) => _localUniqueSession,
           endpointPath: 'employee',
           methodName: 'get',
-          parameters: _ist.testObjectToJson({
-            'employeeAuthUserId': employeeAuthUserId,
-          }),
+          parameters: _ist.testObjectToJson({'employeeId': employeeId}),
           serializationManager: _serializationManager,
         );
         var _localReturnValue =
@@ -831,7 +630,7 @@ class _EmployeeEndpoint {
 
   _ida.Future<_iusy412g.EmployeeView> setEnabled(
     _ist.TestSessionBuilder sessionBuilder,
-    _is.UuidValue employeeAuthUserId,
+    _is.UuidValue employeeId,
     bool isEnabled,
   ) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
@@ -846,7 +645,7 @@ class _EmployeeEndpoint {
           endpointPath: 'employee',
           methodName: 'setEnabled',
           parameters: _ist.testObjectToJson({
-            'employeeAuthUserId': employeeAuthUserId,
+            'employeeId': employeeId,
             'isEnabled': isEnabled,
           }),
           serializationManager: _serializationManager,
@@ -865,8 +664,8 @@ class _EmployeeEndpoint {
   }
 }
 
-class _JwtRefreshEndpoint {
-  _JwtRefreshEndpoint(
+class _OwnerAuthEndpoint {
+  _OwnerAuthEndpoint(
     this._endpointDispatch,
     this._serializationManager,
   );
@@ -875,22 +674,22 @@ class _JwtRefreshEndpoint {
 
   final _is.SerializationManager _serializationManager;
 
-  _ida.Future<_iacs.AuthSuccess> refreshAccessToken(
-    _ist.TestSessionBuilder sessionBuilder, {
-    String? refreshToken,
-  }) async {
+  _ida.Future<_i3z807il.AuthTokenResult> register(
+    _ist.TestSessionBuilder sessionBuilder,
+    _ihm3fhv0.EmailRegisterCreate request,
+  ) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
           (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
-            endpoint: 'jwtRefresh',
-            method: 'refreshAccessToken',
+            endpoint: 'ownerAuth',
+            method: 'register',
           );
       try {
         var _localCallContext = await _endpointDispatch.getMethodCallContext(
           createSessionCallback: (_) => _localUniqueSession,
-          endpointPath: 'jwtRefresh',
-          methodName: 'refreshAccessToken',
-          parameters: _ist.testObjectToJson({'refreshToken': refreshToken}),
+          endpointPath: 'ownerAuth',
+          methodName: 'register',
+          parameters: _ist.testObjectToJson({'request': request}),
           serializationManager: _serializationManager,
         );
         var _localReturnValue =
@@ -898,7 +697,349 @@ class _JwtRefreshEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _ida.Future<_iacs.AuthSuccess>);
+                as _ida.Future<_i3z807il.AuthTokenResult>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<_i3z807il.AuthTokenResult> login(
+    _ist.TestSessionBuilder sessionBuilder,
+    _i61r4gix.EmailLoginRequest request,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'ownerAuth',
+            method: 'login',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'ownerAuth',
+          methodName: 'login',
+          parameters: _ist.testObjectToJson({'request': request}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_i3z807il.AuthTokenResult>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<_iqkx9riy.OwnerSessionView> me(
+    _ist.TestSessionBuilder sessionBuilder,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'ownerAuth',
+            method: 'me',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'ownerAuth',
+          methodName: 'me',
+          parameters: _ist.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_iqkx9riy.OwnerSessionView>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<_iqkx9riy.OwnerSessionView> updateMyProfile(
+    _ist.TestSessionBuilder sessionBuilder,
+    _id6sv1bw.ProfileUpdate request,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'ownerAuth',
+            method: 'updateMyProfile',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'ownerAuth',
+          methodName: 'updateMyProfile',
+          parameters: _ist.testObjectToJson({'request': request}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_iqkx9riy.OwnerSessionView>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<void> logout(_ist.TestSessionBuilder sessionBuilder) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'ownerAuth',
+            method: 'logout',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'ownerAuth',
+          methodName: 'logout',
+          parameters: _ist.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<void>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+}
+
+class _SuperAdminAuthEndpoint {
+  _SuperAdminAuthEndpoint(
+    this._endpointDispatch,
+    this._serializationManager,
+  );
+
+  final _is.EndpointDispatch _endpointDispatch;
+
+  final _is.SerializationManager _serializationManager;
+
+  _ida.Future<_i3z807il.AuthTokenResult> login(
+    _ist.TestSessionBuilder sessionBuilder,
+    _i61r4gix.EmailLoginRequest request,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'superAdminAuth',
+            method: 'login',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'superAdminAuth',
+          methodName: 'login',
+          parameters: _ist.testObjectToJson({'request': request}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_i3z807il.AuthTokenResult>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<_irxwe8xn.SuperAdminSessionView> me(
+    _ist.TestSessionBuilder sessionBuilder,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'superAdminAuth',
+            method: 'me',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'superAdminAuth',
+          methodName: 'me',
+          parameters: _ist.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_irxwe8xn.SuperAdminSessionView>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<void> logout(_ist.TestSessionBuilder sessionBuilder) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'superAdminAuth',
+            method: 'logout',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'superAdminAuth',
+          methodName: 'logout',
+          parameters: _ist.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<void>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<_i3qefl0x.SuperAdminView> add(
+    _ist.TestSessionBuilder sessionBuilder,
+    _id6ub811.SuperAdminCreate request,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'superAdminAuth',
+            method: 'add',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'superAdminAuth',
+          methodName: 'add',
+          parameters: _ist.testObjectToJson({'request': request}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_i3qefl0x.SuperAdminView>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<List<_i3qefl0x.SuperAdminView>> list(
+    _ist.TestSessionBuilder sessionBuilder,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'superAdminAuth',
+            method: 'list',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'superAdminAuth',
+          methodName: 'list',
+          parameters: _ist.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<List<_i3qefl0x.SuperAdminView>>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<void> delete(
+    _ist.TestSessionBuilder sessionBuilder,
+    _is.UuidValue targetId,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'superAdminAuth',
+            method: 'delete',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'superAdminAuth',
+          methodName: 'delete',
+          parameters: _ist.testObjectToJson({'targetId': targetId}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<void>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<void> ensureDefaultAdmin(
+    _ist.TestSessionBuilder sessionBuilder,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'superAdminAuth',
+            method: 'ensureDefaultAdmin',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'superAdminAuth',
+          methodName: 'ensureDefaultAdmin',
+          parameters: _ist.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<void>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();

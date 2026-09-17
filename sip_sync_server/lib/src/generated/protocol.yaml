@@ -1,27 +1,33 @@
-account:
+customerAuth:
   - register:
   - login:
   - me:
   - updateMyProfile:
-  - addBackofficeUser:
-  - listBackofficeUsers:
-  - deleteBackofficeUser:
-emailIdp:
+  - logout:
+employeeAuth:
   - login:
-  - startRegistration:
-  - verifyRegistrationCode:
-  - finishRegistration:
-  - startPasswordReset:
-  - verifyPasswordResetCode:
-  - finishPasswordReset:
-  - hasAccount:
+  - me:
+  - updateMyProfile:
+  - logout:
 employee:
   - get:
   - add:
   - update:
   - setEnabled:
-jwtRefresh:
-  - refreshAccessToken:
+ownerAuth:
+  - register:
+  - login:
+  - me:
+  - updateMyProfile:
+  - logout:
+superAdminAuth:
+  - login:
+  - me:
+  - logout:
+  - add:
+  - list:
+  - delete:
+  - ensureDefaultAdmin:
 building:
   - listMine:
   - get:

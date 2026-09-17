@@ -1,0 +1,8 @@
+class: SuperAdminSessionView
+fields:
+  id: UuidValue
+  email: String
+  phoneNumber: String
+  firstName: String
+  lastName: String
+  isSystemDefault: bool

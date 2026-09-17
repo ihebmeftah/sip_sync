@@ -10,6 +10,8 @@
   "showPassword": "Show password",
   "hidePassword": "Hide password",
   "signIn": "Sign in",
+  "loginAsOwner": "Owner",
+  "loginAsEmployee": "Employee",
   "register": "Create account",
   "signOut": "Sign out",
   "email": "Email",
