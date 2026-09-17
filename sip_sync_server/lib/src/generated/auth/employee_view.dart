@@ -18,6 +18,7 @@ abstract class EmployeeView
     implements _is.SerializableModel, _is.ProtocolSerialization {
   EmployeeView._({
     required this.authUserId,
+    required this.buildingId,
     required this.username,
     required this.phoneNumber,
     required this.firstName,
@@ -28,6 +29,7 @@ abstract class EmployeeView
 
   factory EmployeeView({
     required _is.UuidValue authUserId,
+    required _is.UuidValue buildingId,
     required String username,
     required String phoneNumber,
     required String firstName,
@@ -41,6 +43,9 @@ abstract class EmployeeView
       authUserId: _is.UuidValueJsonExtension.fromJson(
         jsonSerialization['authUserId'],
       ),
+      buildingId: _is.UuidValueJsonExtension.fromJson(
+        jsonSerialization['buildingId'],
+      ),
       username: jsonSerialization['username'] as String,
       phoneNumber: jsonSerialization['phoneNumber'] as String,
       firstName: jsonSerialization['firstName'] as String,
@@ -53,6 +58,8 @@ abstract class EmployeeView
   }
 
   _is.UuidValue authUserId;
+
+  _is.UuidValue buildingId;
 
   String username;
 
@@ -71,6 +78,7 @@ abstract class EmployeeView
   @_is.useResult
   EmployeeView copyWith({
     _is.UuidValue? authUserId,
+    _is.UuidValue? buildingId,
     String? username,
     String? phoneNumber,
     String? firstName,
@@ -83,6 +91,7 @@ abstract class EmployeeView
     return {
       '__className__': 'EmployeeView',
       'authUserId': authUserId.toJson(),
+      'buildingId': buildingId.toJson(),
       'username': username,
       'phoneNumber': phoneNumber,
       'firstName': firstName,
@@ -97,6 +106,7 @@ abstract class EmployeeView
     return {
       '__className__': 'EmployeeView',
       'authUserId': authUserId.toJson(),
+      'buildingId': buildingId.toJson(),
       'username': username,
       'phoneNumber': phoneNumber,
       'firstName': firstName,
@@ -115,6 +125,7 @@ abstract class EmployeeView
 class _EmployeeViewImpl extends EmployeeView {
   _EmployeeViewImpl({
     required _is.UuidValue authUserId,
+    required _is.UuidValue buildingId,
     required String username,
     required String phoneNumber,
     required String firstName,
@@ -123,6 +134,7 @@ class _EmployeeViewImpl extends EmployeeView {
     required bool isEnabled,
   }) : super._(
          authUserId: authUserId,
+         buildingId: buildingId,
          username: username,
          phoneNumber: phoneNumber,
          firstName: firstName,
@@ -137,6 +149,7 @@ class _EmployeeViewImpl extends EmployeeView {
   @override
   EmployeeView copyWith({
     _is.UuidValue? authUserId,
+    _is.UuidValue? buildingId,
     String? username,
     String? phoneNumber,
     String? firstName,
@@ -146,6 +159,7 @@ class _EmployeeViewImpl extends EmployeeView {
   }) {
     return EmployeeView(
       authUserId: authUserId ?? this.authUserId,
+      buildingId: buildingId ?? this.buildingId,
       username: username ?? this.username,
       phoneNumber: phoneNumber ?? this.phoneNumber,
       firstName: firstName ?? this.firstName,

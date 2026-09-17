@@ -51,7 +51,7 @@ class BuildingEndpoint extends Endpoint {
     );
   }
 
-  /// Owner updates venue details and which staff work there.
+  /// Owner updates venue details.
   Future<BuildingView> update(Session session, BuildingUpdate request) async {
     final userId = session.authenticated?.authUserId;
     if (userId == null) {

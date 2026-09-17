@@ -50,8 +50,8 @@ class EmployeeFormViewModel extends _$EmployeeFormViewModel {
     state = state.copyWith(loading: true, clearError: true);
     try {
       final existing = await ref
-          .read(accountRepositoryProvider)
-          .getEmployee(UuidValue.fromString(authUserId));
+          .read(employeeRepositoryProvider)
+          .get(UuidValue.fromString(authUserId));
       state = state.copyWith(existing: existing, loading: false);
     } catch (error) {
       state = state.copyWith(loading: false, errorKey: mapError(error).l10nKey);
@@ -63,7 +63,7 @@ class EmployeeFormViewModel extends _$EmployeeFormViewModel {
     required String phoneNumber,
     required String firstName,
     required String lastName,
-    UuidValue? buildingId,
+    required UuidValue buildingId,
   }) async {
     state = state.copyWith(saving: true, clearError: true);
     try {
@@ -71,8 +71,8 @@ class EmployeeFormViewModel extends _$EmployeeFormViewModel {
       late final EmployeeView saved;
       if (existing == null) {
         saved = await ref
-            .read(accountRepositoryProvider)
-            .addEmployee(
+            .read(employeeRepositoryProvider)
+            .add(
               password: password,
               phoneNumber: phoneNumber,
               firstName: firstName,
@@ -81,15 +81,17 @@ class EmployeeFormViewModel extends _$EmployeeFormViewModel {
             );
       } else {
         saved = await ref
-            .read(accountRepositoryProvider)
-            .updateEmployee(
+            .read(employeeRepositoryProvider)
+            .update(
               authUserId: existing.authUserId,
               phoneNumber: phoneNumber,
               firstName: firstName,
               lastName: lastName,
             );
       }
-      await ref.read(employeesViewModelProvider.notifier).refresh();
+      await ref
+          .read(employeesViewModelProvider(buildingId.uuid).notifier)
+          .refresh();
       state = state.copyWith(saving: false, existing: saved);
       return saved;
     } catch (error) {

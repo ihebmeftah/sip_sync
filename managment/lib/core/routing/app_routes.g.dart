@@ -9,6 +9,7 @@ part of 'app_routes.dart';
 List<RouteBase> get $appRoutes => [
   $signInRoute,
   $registerRoute,
+  $buildingsGateShellRoute,
   $opsShellRoute,
 ];
 
@@ -66,15 +67,9 @@ mixin $RegisterRoute on GoRouteData {
   void replace(BuildContext context) => context.replace(location);
 }
 
-RouteBase get $opsShellRoute => ShellRouteData.$route(
-  factory: $OpsShellRouteExtension._fromState,
+RouteBase get $buildingsGateShellRoute => ShellRouteData.$route(
+  factory: $BuildingsGateShellRouteExtension._fromState,
   routes: [
-    GoRouteData.$route(
-      path: '/dashboard',
-      name: 'dashboard',
-      hasOverriddenOnExit: false,
-      factory: $DashboardRoute._fromState,
-    ),
     GoRouteData.$route(
       path: '/buildings',
       name: 'buildings',
@@ -95,90 +90,12 @@ RouteBase get $opsShellRoute => ShellRouteData.$route(
         ),
       ],
     ),
-    GoRouteData.$route(
-      path: '/profile',
-      name: 'profile',
-      hasOverriddenOnExit: false,
-      factory: $ProfileRoute._fromState,
-    ),
-    GoRouteData.$route(
-      path: '/employees',
-      name: 'employees',
-      hasOverriddenOnExit: false,
-      factory: $EmployeesRoute._fromState,
-      routes: [
-        GoRouteData.$route(
-          path: 'new',
-          name: 'employeeCreate',
-          hasOverriddenOnExit: false,
-          factory: $EmployeeCreateRoute._fromState,
-        ),
-        GoRouteData.$route(
-          path: ':authUserId',
-          name: 'employeeDetails',
-          hasOverriddenOnExit: false,
-          factory: $EmployeeDetailsRoute._fromState,
-          routes: [
-            GoRouteData.$route(
-              path: 'edit',
-              name: 'employeeEdit',
-              hasOverriddenOnExit: false,
-              factory: $EmployeeEditRoute._fromState,
-            ),
-          ],
-        ),
-      ],
-    ),
-    GoRouteData.$route(
-      path: '/pos',
-      name: 'pos',
-      hasOverriddenOnExit: false,
-      factory: $PosRoute._fromState,
-    ),
-    GoRouteData.$route(
-      path: '/tables',
-      name: 'tables',
-      hasOverriddenOnExit: false,
-      factory: $TablesRoute._fromState,
-    ),
-    GoRouteData.$route(
-      path: '/products/articles',
-      name: 'articles',
-      hasOverriddenOnExit: false,
-      factory: $ArticlesRoute._fromState,
-    ),
-    GoRouteData.$route(
-      path: '/products/ingredients',
-      name: 'ingredients',
-      hasOverriddenOnExit: false,
-      factory: $IngredientsRoute._fromState,
-    ),
   ],
 );
 
-extension $OpsShellRouteExtension on OpsShellRoute {
-  static OpsShellRoute _fromState(GoRouterState state) => const OpsShellRoute();
-}
-
-mixin $DashboardRoute on GoRouteData {
-  static DashboardRoute _fromState(GoRouterState state) =>
-      const DashboardRoute();
-
-  @override
-  String get location => GoRouteData.$location('/dashboard');
-
-  @override
-  void go(BuildContext context) => context.go(location);
-
-  @override
-  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
-
-  @override
-  void pushReplacement(BuildContext context) =>
-      context.pushReplacement(location);
-
-  @override
-  void replace(BuildContext context) => context.replace(location);
+extension $BuildingsGateShellRouteExtension on BuildingsGateShellRoute {
+  static BuildingsGateShellRoute _fromState(GoRouterState state) =>
+      const BuildingsGateShellRoute();
 }
 
 mixin $BuildingsRoute on GoRouteData {
@@ -248,11 +165,115 @@ mixin $BuildingEditRoute on GoRouteData {
   void replace(BuildContext context) => context.replace(location);
 }
 
-mixin $ProfileRoute on GoRouteData {
-  static ProfileRoute _fromState(GoRouterState state) => const ProfileRoute();
+RouteBase get $opsShellRoute => ShellRouteData.$route(
+  factory: $OpsShellRouteExtension._fromState,
+  routes: [
+    GoRouteData.$route(
+      path: '/b/:buildingId/dashboard',
+      name: 'dashboard',
+      hasOverriddenOnExit: false,
+      factory: $DashboardRoute._fromState,
+    ),
+    GoRouteData.$route(
+      path: '/b/:buildingId/profile',
+      name: 'profile',
+      hasOverriddenOnExit: false,
+      factory: $ProfileRoute._fromState,
+    ),
+    GoRouteData.$route(
+      path: '/b/:buildingId/employees',
+      name: 'employees',
+      hasOverriddenOnExit: false,
+      factory: $EmployeesRoute._fromState,
+      routes: [
+        GoRouteData.$route(
+          path: 'new',
+          name: 'employeeCreate',
+          hasOverriddenOnExit: false,
+          factory: $EmployeeCreateRoute._fromState,
+        ),
+        GoRouteData.$route(
+          path: ':authUserId',
+          name: 'employeeDetails',
+          hasOverriddenOnExit: false,
+          factory: $EmployeeDetailsRoute._fromState,
+          routes: [
+            GoRouteData.$route(
+              path: 'edit',
+              name: 'employeeEdit',
+              hasOverriddenOnExit: false,
+              factory: $EmployeeEditRoute._fromState,
+            ),
+          ],
+        ),
+      ],
+    ),
+    GoRouteData.$route(
+      path: '/b/:buildingId/pos',
+      name: 'pos',
+      hasOverriddenOnExit: false,
+      factory: $PosRoute._fromState,
+    ),
+    GoRouteData.$route(
+      path: '/b/:buildingId/tables',
+      name: 'tables',
+      hasOverriddenOnExit: false,
+      factory: $TablesRoute._fromState,
+    ),
+    GoRouteData.$route(
+      path: '/b/:buildingId/products/articles',
+      name: 'articles',
+      hasOverriddenOnExit: false,
+      factory: $ArticlesRoute._fromState,
+    ),
+    GoRouteData.$route(
+      path: '/b/:buildingId/products/ingredients',
+      name: 'ingredients',
+      hasOverriddenOnExit: false,
+      factory: $IngredientsRoute._fromState,
+    ),
+  ],
+);
+
+extension $OpsShellRouteExtension on OpsShellRoute {
+  static OpsShellRoute _fromState(GoRouterState state) => const OpsShellRoute();
+}
+
+mixin $DashboardRoute on GoRouteData {
+  static DashboardRoute _fromState(GoRouterState state) =>
+      DashboardRoute(buildingId: state.pathParameters['buildingId']!);
+
+  DashboardRoute get _self => this as DashboardRoute;
 
   @override
-  String get location => GoRouteData.$location('/profile');
+  String get location => GoRouteData.$location(
+    '/b/${Uri.encodeComponent(_self.buildingId)}/dashboard',
+  );
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+mixin $ProfileRoute on GoRouteData {
+  static ProfileRoute _fromState(GoRouterState state) =>
+      ProfileRoute(buildingId: state.pathParameters['buildingId']!);
+
+  ProfileRoute get _self => this as ProfileRoute;
+
+  @override
+  String get location => GoRouteData.$location(
+    '/b/${Uri.encodeComponent(_self.buildingId)}/profile',
+  );
 
   @override
   void go(BuildContext context) => context.go(location);
@@ -270,10 +291,14 @@ mixin $ProfileRoute on GoRouteData {
 
 mixin $EmployeesRoute on GoRouteData {
   static EmployeesRoute _fromState(GoRouterState state) =>
-      const EmployeesRoute();
+      EmployeesRoute(buildingId: state.pathParameters['buildingId']!);
+
+  EmployeesRoute get _self => this as EmployeesRoute;
 
   @override
-  String get location => GoRouteData.$location('/employees');
+  String get location => GoRouteData.$location(
+    '/b/${Uri.encodeComponent(_self.buildingId)}/employees',
+  );
 
   @override
   void go(BuildContext context) => context.go(location);
@@ -291,10 +316,14 @@ mixin $EmployeesRoute on GoRouteData {
 
 mixin $EmployeeCreateRoute on GoRouteData {
   static EmployeeCreateRoute _fromState(GoRouterState state) =>
-      const EmployeeCreateRoute();
+      EmployeeCreateRoute(buildingId: state.pathParameters['buildingId']!);
+
+  EmployeeCreateRoute get _self => this as EmployeeCreateRoute;
 
   @override
-  String get location => GoRouteData.$location('/employees/new');
+  String get location => GoRouteData.$location(
+    '/b/${Uri.encodeComponent(_self.buildingId)}/employees/new',
+  );
 
   @override
   void go(BuildContext context) => context.go(location);
@@ -312,13 +341,16 @@ mixin $EmployeeCreateRoute on GoRouteData {
 
 mixin $EmployeeDetailsRoute on GoRouteData {
   static EmployeeDetailsRoute _fromState(GoRouterState state) =>
-      EmployeeDetailsRoute(authUserId: state.pathParameters['authUserId']!);
+      EmployeeDetailsRoute(
+        buildingId: state.pathParameters['buildingId']!,
+        authUserId: state.pathParameters['authUserId']!,
+      );
 
   EmployeeDetailsRoute get _self => this as EmployeeDetailsRoute;
 
   @override
   String get location => GoRouteData.$location(
-    '/employees/${Uri.encodeComponent(_self.authUserId)}',
+    '/b/${Uri.encodeComponent(_self.buildingId)}/employees/${Uri.encodeComponent(_self.authUserId)}',
   );
 
   @override
@@ -336,14 +368,16 @@ mixin $EmployeeDetailsRoute on GoRouteData {
 }
 
 mixin $EmployeeEditRoute on GoRouteData {
-  static EmployeeEditRoute _fromState(GoRouterState state) =>
-      EmployeeEditRoute(authUserId: state.pathParameters['authUserId']!);
+  static EmployeeEditRoute _fromState(GoRouterState state) => EmployeeEditRoute(
+    buildingId: state.pathParameters['buildingId']!,
+    authUserId: state.pathParameters['authUserId']!,
+  );
 
   EmployeeEditRoute get _self => this as EmployeeEditRoute;
 
   @override
   String get location => GoRouteData.$location(
-    '/employees/${Uri.encodeComponent(_self.authUserId)}/edit',
+    '/b/${Uri.encodeComponent(_self.buildingId)}/employees/${Uri.encodeComponent(_self.authUserId)}/edit',
   );
 
   @override
@@ -361,10 +395,14 @@ mixin $EmployeeEditRoute on GoRouteData {
 }
 
 mixin $PosRoute on GoRouteData {
-  static PosRoute _fromState(GoRouterState state) => const PosRoute();
+  static PosRoute _fromState(GoRouterState state) =>
+      PosRoute(buildingId: state.pathParameters['buildingId']!);
+
+  PosRoute get _self => this as PosRoute;
 
   @override
-  String get location => GoRouteData.$location('/pos');
+  String get location =>
+      GoRouteData.$location('/b/${Uri.encodeComponent(_self.buildingId)}/pos');
 
   @override
   void go(BuildContext context) => context.go(location);
@@ -381,10 +419,15 @@ mixin $PosRoute on GoRouteData {
 }
 
 mixin $TablesRoute on GoRouteData {
-  static TablesRoute _fromState(GoRouterState state) => const TablesRoute();
+  static TablesRoute _fromState(GoRouterState state) =>
+      TablesRoute(buildingId: state.pathParameters['buildingId']!);
+
+  TablesRoute get _self => this as TablesRoute;
 
   @override
-  String get location => GoRouteData.$location('/tables');
+  String get location => GoRouteData.$location(
+    '/b/${Uri.encodeComponent(_self.buildingId)}/tables',
+  );
 
   @override
   void go(BuildContext context) => context.go(location);
@@ -401,10 +444,15 @@ mixin $TablesRoute on GoRouteData {
 }
 
 mixin $ArticlesRoute on GoRouteData {
-  static ArticlesRoute _fromState(GoRouterState state) => const ArticlesRoute();
+  static ArticlesRoute _fromState(GoRouterState state) =>
+      ArticlesRoute(buildingId: state.pathParameters['buildingId']!);
+
+  ArticlesRoute get _self => this as ArticlesRoute;
 
   @override
-  String get location => GoRouteData.$location('/products/articles');
+  String get location => GoRouteData.$location(
+    '/b/${Uri.encodeComponent(_self.buildingId)}/products/articles',
+  );
 
   @override
   void go(BuildContext context) => context.go(location);
@@ -422,10 +470,14 @@ mixin $ArticlesRoute on GoRouteData {
 
 mixin $IngredientsRoute on GoRouteData {
   static IngredientsRoute _fromState(GoRouterState state) =>
-      const IngredientsRoute();
+      IngredientsRoute(buildingId: state.pathParameters['buildingId']!);
+
+  IngredientsRoute get _self => this as IngredientsRoute;
 
   @override
-  String get location => GoRouteData.$location('/products/ingredients');
+  String get location => GoRouteData.$location(
+    '/b/${Uri.encodeComponent(_self.buildingId)}/products/ingredients',
+  );
 
   @override
   void go(BuildContext context) => context.go(location);

@@ -12,7 +12,7 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _is;
 
-/// Owner creates staff. Username is generated on the server; no email.
+/// Owner creates staff for one building. Username is generated on the server; no email.
 abstract class EmployeeCreate
     implements _is.SerializableModel, _is.ProtocolSerialization {
   EmployeeCreate._({
@@ -20,7 +20,7 @@ abstract class EmployeeCreate
     required this.phoneNumber,
     required this.firstName,
     required this.lastName,
-    this.buildingId,
+    required this.buildingId,
   });
 
   factory EmployeeCreate({
@@ -28,7 +28,7 @@ abstract class EmployeeCreate
     required String phoneNumber,
     required String firstName,
     required String lastName,
-    _is.UuidValue? buildingId,
+    required _is.UuidValue buildingId,
   }) = _EmployeeCreateImpl;
 
   factory EmployeeCreate.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -37,11 +37,9 @@ abstract class EmployeeCreate
       phoneNumber: jsonSerialization['phoneNumber'] as String,
       firstName: jsonSerialization['firstName'] as String,
       lastName: jsonSerialization['lastName'] as String,
-      buildingId: jsonSerialization['buildingId'] == null
-          ? null
-          : _is.UuidValueJsonExtension.fromJson(
-              jsonSerialization['buildingId'],
-            ),
+      buildingId: _is.UuidValueJsonExtension.fromJson(
+        jsonSerialization['buildingId'],
+      ),
     );
   }
 
@@ -53,7 +51,7 @@ abstract class EmployeeCreate
 
   String lastName;
 
-  _is.UuidValue? buildingId;
+  _is.UuidValue buildingId;
 
   /// Returns a shallow copy of this [EmployeeCreate]
   /// with some or all fields replaced by the given arguments.
@@ -73,7 +71,7 @@ abstract class EmployeeCreate
       'phoneNumber': phoneNumber,
       'firstName': firstName,
       'lastName': lastName,
-      if (buildingId != null) 'buildingId': buildingId?.toJson(),
+      'buildingId': buildingId.toJson(),
     };
   }
 
@@ -85,7 +83,7 @@ abstract class EmployeeCreate
       'phoneNumber': phoneNumber,
       'firstName': firstName,
       'lastName': lastName,
-      if (buildingId != null) 'buildingId': buildingId?.toJson(),
+      'buildingId': buildingId.toJson(),
     };
   }
 
@@ -95,15 +93,13 @@ abstract class EmployeeCreate
   }
 }
 
-class _Undefined {}
-
 class _EmployeeCreateImpl extends EmployeeCreate {
   _EmployeeCreateImpl({
     required String password,
     required String phoneNumber,
     required String firstName,
     required String lastName,
-    _is.UuidValue? buildingId,
+    required _is.UuidValue buildingId,
   }) : super._(
          password: password,
          phoneNumber: phoneNumber,
@@ -121,14 +117,14 @@ class _EmployeeCreateImpl extends EmployeeCreate {
     String? phoneNumber,
     String? firstName,
     String? lastName,
-    Object? buildingId = _Undefined,
+    _is.UuidValue? buildingId,
   }) {
     return EmployeeCreate(
       password: password ?? this.password,
       phoneNumber: phoneNumber ?? this.phoneNumber,
       firstName: firstName ?? this.firstName,
       lastName: lastName ?? this.lastName,
-      buildingId: buildingId is _is.UuidValue? ? buildingId : this.buildingId,
+      buildingId: buildingId ?? this.buildingId,
     );
   }
 }

@@ -126,18 +126,34 @@ void main() {
           ),
         );
 
-        final employee = await endpoints.account.addEmployee(
+        final building = await endpoints.building.create(
+          ownerSession,
+          BuildingCreate(
+            name: 'Owner Cafe',
+            type: 'cafe',
+            address: '1 Main St',
+            latitude: 36.8,
+            longitude: 10.18,
+            openingMinutes: 480,
+            closingMinutes: 1380,
+            currencyCode: 'TND',
+          ),
+        );
+
+        final employee = await endpoints.employee.add(
           ownerSession,
           EmployeeCreate(
             password: 'password1',
             phoneNumber: '+21620000005',
             firstName: 'Bar',
             lastName: 'Ista',
+            buildingId: building.id,
           ),
         );
 
         expect(employee.username, startsWith('bar.ista'));
         expect(employee.username, matches(RegExp(r'^bar\.ista\d{4}$')));
+        expect(employee.buildingId, building.id);
 
         final staffLogin = await endpoints.account.login(
           sessionBuilder,
@@ -150,6 +166,7 @@ void main() {
 
         expect(staffLogin.session.profile.roles, contains('employee'));
         expect(staffLogin.session.profile.username, employee.username);
+        expect(staffLogin.session.buildingId, building.id);
       },
     );
 
@@ -253,17 +270,32 @@ void main() {
           ),
         );
 
-        final employee = await endpoints.account.addEmployee(
+        final building = await endpoints.building.create(
+          ownerSession,
+          BuildingCreate(
+            name: 'Boss Kitchen',
+            type: 'restaurant',
+            address: '9 Side St',
+            latitude: 36.8,
+            longitude: 10.18,
+            openingMinutes: 480,
+            closingMinutes: 1380,
+            currencyCode: 'TND',
+          ),
+        );
+
+        final employee = await endpoints.employee.add(
           ownerSession,
           EmployeeCreate(
             password: 'password1',
             phoneNumber: '+21620000010',
             firstName: 'Line',
             lastName: 'Cook',
+            buildingId: building.id,
           ),
         );
 
-        final viewed = await endpoints.account.getEmployee(
+        final viewed = await endpoints.employee.get(
           ownerSession,
           employee.authUserId,
         );
@@ -271,6 +303,7 @@ void main() {
         expect(viewed.username, startsWith('line.cook'));
         expect(viewed.roles, contains('employee'));
         expect(viewed.isEnabled, isTrue);
+        expect(viewed.buildingId, building.id);
       },
     );
 
@@ -296,17 +329,32 @@ void main() {
           ),
         );
 
-        final employee = await endpoints.account.addEmployee(
+        final building = await endpoints.building.create(
+          ownerSession,
+          BuildingCreate(
+            name: 'Host Lounge',
+            type: 'lounge',
+            address: '11 Host Ave',
+            latitude: 36.8,
+            longitude: 10.18,
+            openingMinutes: 480,
+            closingMinutes: 1380,
+            currencyCode: 'TND',
+          ),
+        );
+
+        final employee = await endpoints.employee.add(
           ownerSession,
           EmployeeCreate(
             password: 'password1',
             phoneNumber: '+21620000012',
             firstName: 'Wait',
             lastName: 'Er',
+            buildingId: building.id,
           ),
         );
 
-        final renamed = await endpoints.account.updateEmployee(
+        final renamed = await endpoints.employee.update(
           ownerSession,
           EmployeeUpdate(
             authUserId: employee.authUserId,
@@ -318,11 +366,14 @@ void main() {
         expect(renamed.username, employee.username);
         expect(renamed.firstName, 'Waiter');
 
-        final listed = await endpoints.account.listEmployees(ownerSession);
+        final listed = await endpoints.building.listEmployees(
+          ownerSession,
+          building.id,
+        );
         expect(listed, hasLength(1));
         expect(listed.single.username, employee.username);
 
-        final disabled = await endpoints.account.setEmployeeEnabled(
+        final disabled = await endpoints.employee.setEnabled(
           ownerSession,
           employee.authUserId,
           false,

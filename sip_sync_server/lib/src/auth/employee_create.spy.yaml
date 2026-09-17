@@ -1,8 +1,8 @@
-### Owner creates staff. Username is generated on the server; no email.
+### Owner creates staff for one building. Username is generated on the server; no email.
 class: EmployeeCreate
 fields:
   password: String
   phoneNumber: String
   firstName: String
   lastName: String
-  buildingId: UuidValue?
+  buildingId: UuidValue

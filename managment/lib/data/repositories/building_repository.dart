@@ -19,7 +19,6 @@ class BuildingRepository {
     required int openingMinutes,
     required int closingMinutes,
     required String currencyCode,
-    required List<UuidValue> employeeAuthUserIds,
   }) {
     return _client.building.create(
       BuildingCreate(
@@ -31,7 +30,6 @@ class BuildingRepository {
         openingMinutes: openingMinutes,
         closingMinutes: closingMinutes,
         currencyCode: currencyCode,
-        employeeAuthUserIds: employeeAuthUserIds,
       ),
     );
   }
@@ -46,7 +44,6 @@ class BuildingRepository {
     required int openingMinutes,
     required int closingMinutes,
     required String currencyCode,
-    required List<UuidValue> employeeAuthUserIds,
   }) {
     return _client.building.update(
       BuildingUpdate(
@@ -59,7 +56,6 @@ class BuildingRepository {
         openingMinutes: openingMinutes,
         closingMinutes: closingMinutes,
         currencyCode: currencyCode,
-        employeeAuthUserIds: employeeAuthUserIds,
       ),
     );
   }

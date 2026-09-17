@@ -93,54 +93,6 @@ class EndpointAccount extends _isc.EndpointRef {
     {'request': request},
   );
 
-  /// Owner reads one employee they added.
-  _ida.Future<_ix96cplr.EmployeeView> getEmployee(
-    _isc.UuidValue employeeAuthUserId,
-  ) => caller.callServerEndpoint<_ix96cplr.EmployeeView>(
-    'account',
-    'getEmployee',
-    {'employeeAuthUserId': employeeAuthUserId},
-  );
-
-  /// Owner adds an employee (new account with generated username).
-  _ida.Future<_ix96cplr.EmployeeView> addEmployee(
-    _i0ndf5ud.EmployeeCreate request,
-  ) => caller.callServerEndpoint<_ix96cplr.EmployeeView>(
-    'account',
-    'addEmployee',
-    {'request': request},
-  );
-
-  /// Employees added by the signed-in owner.
-  _ida.Future<List<_ix96cplr.EmployeeView>> listEmployees() =>
-      caller.callServerEndpoint<List<_ix96cplr.EmployeeView>>(
-        'account',
-        'listEmployees',
-        {},
-      );
-
-  /// Owner updates an added employee's username, phone, and name.
-  _ida.Future<_ix96cplr.EmployeeView> updateEmployee(
-    _itl0g0fc.EmployeeUpdate request,
-  ) => caller.callServerEndpoint<_ix96cplr.EmployeeView>(
-    'account',
-    'updateEmployee',
-    {'request': request},
-  );
-
-  /// Owner enables or disables management login for that employee.
-  _ida.Future<_ix96cplr.EmployeeView> setEmployeeEnabled(
-    _isc.UuidValue employeeAuthUserId,
-    bool isEnabled,
-  ) => caller.callServerEndpoint<_ix96cplr.EmployeeView>(
-    'account',
-    'setEmployeeEnabled',
-    {
-      'employeeAuthUserId': employeeAuthUserId,
-      'isEnabled': isEnabled,
-    },
-  );
-
   /// Backoffice admin creates another backoffice user (`isAdmin` stays false).
   _ida.Future<_ian6jh4a.BackofficeUserView> addBackofficeUser(
     _iyydg4pn.BackofficeUserCreate request,
@@ -350,6 +302,56 @@ class EndpointEmailIdp extends _iaic.EndpointEmailIdpBase {
   );
 }
 
+/// Owner-only staff management. Employees always belong to one building.
+///
+/// Separated from [AccountEndpoint] so venue-scoped staff CRUD is not mixed
+/// with customer/owner/backoffice identity flows.
+/// {@category Endpoint}
+class EndpointEmployee extends _isc.EndpointRef {
+  EndpointEmployee(_isc.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'employee';
+
+  /// Owner reads one employee they added.
+  _ida.Future<_ix96cplr.EmployeeView> get(_isc.UuidValue employeeAuthUserId) =>
+      caller.callServerEndpoint<_ix96cplr.EmployeeView>(
+        'employee',
+        'get',
+        {'employeeAuthUserId': employeeAuthUserId},
+      );
+
+  /// Owner adds an employee for an existing building.
+  _ida.Future<_ix96cplr.EmployeeView> add(_i0ndf5ud.EmployeeCreate request) =>
+      caller.callServerEndpoint<_ix96cplr.EmployeeView>(
+        'employee',
+        'add',
+        {'request': request},
+      );
+
+  /// Owner updates an added employee's phone and name.
+  _ida.Future<_ix96cplr.EmployeeView> update(
+    _itl0g0fc.EmployeeUpdate request,
+  ) => caller.callServerEndpoint<_ix96cplr.EmployeeView>(
+    'employee',
+    'update',
+    {'request': request},
+  );
+
+  /// Owner enables or disables management login for that employee.
+  _ida.Future<_ix96cplr.EmployeeView> setEnabled(
+    _isc.UuidValue employeeAuthUserId,
+    bool isEnabled,
+  ) => caller.callServerEndpoint<_ix96cplr.EmployeeView>(
+    'employee',
+    'setEnabled',
+    {
+      'employeeAuthUserId': employeeAuthUserId,
+      'isEnabled': isEnabled,
+    },
+  );
+}
+
 /// By extending [RefreshJwtTokensEndpoint], the JWT token refresh endpoint
 /// is made available on the server and enables automatic token refresh on the client.
 /// {@category Endpoint}
@@ -425,7 +427,7 @@ class EndpointBuilding extends _isc.EndpointRef {
     {'request': request},
   );
 
-  /// Owner updates venue details and which staff work there.
+  /// Owner updates venue details.
   _ida.Future<_ia8vsgay.BuildingView> update(
     _i2rxmt9c.BuildingUpdate request,
   ) => caller.callServerEndpoint<_ia8vsgay.BuildingView>(
@@ -502,6 +504,7 @@ class Client extends _isc.ServerpodClientShared {
        ) {
     account = EndpointAccount(this);
     emailIdp = EndpointEmailIdp(this);
+    employee = EndpointEmployee(this);
     jwtRefresh = EndpointJwtRefresh(this);
     building = EndpointBuilding(this);
     greeting = EndpointGreeting(this);
@@ -511,6 +514,8 @@ class Client extends _isc.ServerpodClientShared {
   late final EndpointAccount account;
 
   late final EndpointEmailIdp emailIdp;
+
+  late final EndpointEmployee employee;
 
   late final EndpointJwtRefresh jwtRefresh;
 
@@ -524,6 +529,7 @@ class Client extends _isc.ServerpodClientShared {
   Map<String, _isc.EndpointRef> get endpointRefLookup => {
     'account': account,
     'emailIdp': emailIdp,
+    'employee': employee,
     'jwtRefresh': jwtRefresh,
     'building': building,
     'greeting': greeting,

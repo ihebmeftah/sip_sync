@@ -11,7 +11,6 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _is;
-import 'package:sip_sync_server/src/generated/protocol.dart' as _iaib1p48;
 
 abstract class BuildingCreate
     implements _is.SerializableModel, _is.ProtocolSerialization {
@@ -24,7 +23,6 @@ abstract class BuildingCreate
     required this.openingMinutes,
     required this.closingMinutes,
     required this.currencyCode,
-    required this.employeeAuthUserIds,
   });
 
   factory BuildingCreate({
@@ -36,7 +34,6 @@ abstract class BuildingCreate
     required int openingMinutes,
     required int closingMinutes,
     required String currencyCode,
-    required List<_is.UuidValue> employeeAuthUserIds,
   }) = _BuildingCreateImpl;
 
   factory BuildingCreate.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -49,10 +46,6 @@ abstract class BuildingCreate
       openingMinutes: jsonSerialization['openingMinutes'] as int,
       closingMinutes: jsonSerialization['closingMinutes'] as int,
       currencyCode: jsonSerialization['currencyCode'] as String,
-      employeeAuthUserIds: _iaib1p48.Protocol()
-          .deserialize<List<_is.UuidValue>>(
-            jsonSerialization['employeeAuthUserIds'],
-          ),
     );
   }
 
@@ -72,8 +65,6 @@ abstract class BuildingCreate
 
   String currencyCode;
 
-  List<_is.UuidValue> employeeAuthUserIds;
-
   /// Returns a shallow copy of this [BuildingCreate]
   /// with some or all fields replaced by the given arguments.
   @_is.useResult
@@ -86,7 +77,6 @@ abstract class BuildingCreate
     int? openingMinutes,
     int? closingMinutes,
     String? currencyCode,
-    List<_is.UuidValue>? employeeAuthUserIds,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -100,9 +90,6 @@ abstract class BuildingCreate
       'openingMinutes': openingMinutes,
       'closingMinutes': closingMinutes,
       'currencyCode': currencyCode,
-      'employeeAuthUserIds': employeeAuthUserIds.toJson(
-        valueToJson: (v) => v.toJson(),
-      ),
     };
   }
 
@@ -118,9 +105,6 @@ abstract class BuildingCreate
       'openingMinutes': openingMinutes,
       'closingMinutes': closingMinutes,
       'currencyCode': currencyCode,
-      'employeeAuthUserIds': employeeAuthUserIds.toJson(
-        valueToJson: (v) => v.toJson(),
-      ),
     };
   }
 
@@ -140,7 +124,6 @@ class _BuildingCreateImpl extends BuildingCreate {
     required int openingMinutes,
     required int closingMinutes,
     required String currencyCode,
-    required List<_is.UuidValue> employeeAuthUserIds,
   }) : super._(
          name: name,
          type: type,
@@ -150,7 +133,6 @@ class _BuildingCreateImpl extends BuildingCreate {
          openingMinutes: openingMinutes,
          closingMinutes: closingMinutes,
          currencyCode: currencyCode,
-         employeeAuthUserIds: employeeAuthUserIds,
        );
 
   /// Returns a shallow copy of this [BuildingCreate]
@@ -166,7 +148,6 @@ class _BuildingCreateImpl extends BuildingCreate {
     int? openingMinutes,
     int? closingMinutes,
     String? currencyCode,
-    List<_is.UuidValue>? employeeAuthUserIds,
   }) {
     return BuildingCreate(
       name: name ?? this.name,
@@ -177,9 +158,6 @@ class _BuildingCreateImpl extends BuildingCreate {
       openingMinutes: openingMinutes ?? this.openingMinutes,
       closingMinutes: closingMinutes ?? this.closingMinutes,
       currencyCode: currencyCode ?? this.currencyCode,
-      employeeAuthUserIds:
-          employeeAuthUserIds ??
-          this.employeeAuthUserIds.map((e0) => e0).toList(),
     );
   }
 }

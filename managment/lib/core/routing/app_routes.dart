@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/widgets/buildings_gate_shell.dart';
 import '../../core/widgets/ops_shell.dart';
 import '../../core/widgets/placeholder_view.dart';
 import '../../features/auth/views/register_view.dart';
@@ -33,9 +34,8 @@ class RegisterRoute extends GoRouteData with $RegisterRoute {
       const RegisterView();
 }
 
-@TypedShellRoute<OpsShellRoute>(
+@TypedShellRoute<BuildingsGateShellRoute>(
   routes: [
-    TypedGoRoute<DashboardRoute>(path: '/dashboard', name: 'dashboard'),
     TypedGoRoute<BuildingsRoute>(
       path: '/buildings',
       name: 'buildings',
@@ -47,45 +47,15 @@ class RegisterRoute extends GoRouteData with $RegisterRoute {
         ),
       ],
     ),
-    TypedGoRoute<ProfileRoute>(path: '/profile', name: 'profile'),
-    TypedGoRoute<EmployeesRoute>(
-      path: '/employees',
-      name: 'employees',
-      routes: [
-        TypedGoRoute<EmployeeCreateRoute>(path: 'new', name: 'employeeCreate'),
-        TypedGoRoute<EmployeeDetailsRoute>(
-          path: ':authUserId',
-          name: 'employeeDetails',
-          routes: [
-            TypedGoRoute<EmployeeEditRoute>(path: 'edit', name: 'employeeEdit'),
-          ],
-        ),
-      ],
-    ),
-    TypedGoRoute<PosRoute>(path: '/pos', name: 'pos'),
-    TypedGoRoute<TablesRoute>(path: '/tables', name: 'tables'),
-    TypedGoRoute<ArticlesRoute>(path: '/products/articles', name: 'articles'),
-    TypedGoRoute<IngredientsRoute>(
-      path: '/products/ingredients',
-      name: 'ingredients',
-    ),
   ],
 )
-class OpsShellRoute extends ShellRouteData {
-  const OpsShellRoute();
+class BuildingsGateShellRoute extends ShellRouteData {
+  const BuildingsGateShellRoute();
 
   @override
   Widget builder(BuildContext context, GoRouterState state, Widget navigator) {
-    return OpsShell(child: navigator);
+    return BuildingsGateShell(child: navigator);
   }
-}
-
-class DashboardRoute extends GoRouteData with $DashboardRoute {
-  const DashboardRoute();
-
-  @override
-  Widget build(BuildContext context, GoRouterState state) =>
-      const DashboardView();
 }
 
 class BuildingsRoute extends GoRouteData with $BuildingsRoute {
@@ -115,8 +85,63 @@ class BuildingEditRoute extends GoRouteData with $BuildingEditRoute {
   }
 }
 
+@TypedShellRoute<OpsShellRoute>(
+  routes: [
+    TypedGoRoute<DashboardRoute>(
+      path: '/b/:buildingId/dashboard',
+      name: 'dashboard',
+    ),
+    TypedGoRoute<ProfileRoute>(path: '/b/:buildingId/profile', name: 'profile'),
+    TypedGoRoute<EmployeesRoute>(
+      path: '/b/:buildingId/employees',
+      name: 'employees',
+      routes: [
+        TypedGoRoute<EmployeeCreateRoute>(path: 'new', name: 'employeeCreate'),
+        TypedGoRoute<EmployeeDetailsRoute>(
+          path: ':authUserId',
+          name: 'employeeDetails',
+          routes: [
+            TypedGoRoute<EmployeeEditRoute>(path: 'edit', name: 'employeeEdit'),
+          ],
+        ),
+      ],
+    ),
+    TypedGoRoute<PosRoute>(path: '/b/:buildingId/pos', name: 'pos'),
+    TypedGoRoute<TablesRoute>(path: '/b/:buildingId/tables', name: 'tables'),
+    TypedGoRoute<ArticlesRoute>(
+      path: '/b/:buildingId/products/articles',
+      name: 'articles',
+    ),
+    TypedGoRoute<IngredientsRoute>(
+      path: '/b/:buildingId/products/ingredients',
+      name: 'ingredients',
+    ),
+  ],
+)
+class OpsShellRoute extends ShellRouteData {
+  const OpsShellRoute();
+
+  @override
+  Widget builder(BuildContext context, GoRouterState state, Widget navigator) {
+    final buildingId = state.pathParameters['buildingId'];
+    return OpsShell(buildingId: buildingId, child: navigator);
+  }
+}
+
+class DashboardRoute extends GoRouteData with $DashboardRoute {
+  const DashboardRoute({required this.buildingId});
+
+  final String buildingId;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) =>
+      DashboardView(buildingId: buildingId);
+}
+
 class ProfileRoute extends GoRouteData with $ProfileRoute {
-  const ProfileRoute();
+  const ProfileRoute({required this.buildingId});
+
+  final String buildingId;
 
   @override
   Widget build(BuildContext context, GoRouterState state) =>
@@ -124,45 +149,58 @@ class ProfileRoute extends GoRouteData with $ProfileRoute {
 }
 
 class EmployeesRoute extends GoRouteData with $EmployeesRoute {
-  const EmployeesRoute();
+  const EmployeesRoute({required this.buildingId});
+
+  final String buildingId;
 
   @override
-  Widget build(BuildContext context, GoRouterState state) =>
-      const EmployeesListView();
+  Widget build(BuildContext context, GoRouterState state) {
+    return EmployeesListView(buildingId: buildingId);
+  }
 }
 
 class EmployeeCreateRoute extends GoRouteData with $EmployeeCreateRoute {
-  const EmployeeCreateRoute();
+  const EmployeeCreateRoute({required this.buildingId});
+
+  final String buildingId;
 
   @override
-  Widget build(BuildContext context, GoRouterState state) =>
-      const EmployeeFormView();
+  Widget build(BuildContext context, GoRouterState state) {
+    return EmployeeFormView(buildingId: buildingId);
+  }
 }
 
 class EmployeeDetailsRoute extends GoRouteData with $EmployeeDetailsRoute {
-  const EmployeeDetailsRoute({required this.authUserId});
+  const EmployeeDetailsRoute({
+    required this.buildingId,
+    required this.authUserId,
+  });
 
+  final String buildingId;
   final String authUserId;
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return EmployeeDetailsPage(authUserId: authUserId);
+    return EmployeeDetailsPage(buildingId: buildingId, authUserId: authUserId);
   }
 }
 
 class EmployeeEditRoute extends GoRouteData with $EmployeeEditRoute {
-  const EmployeeEditRoute({required this.authUserId});
+  const EmployeeEditRoute({required this.buildingId, required this.authUserId});
 
+  final String buildingId;
   final String authUserId;
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return EmployeeFormView(authUserId: authUserId);
+    return EmployeeFormView(buildingId: buildingId, authUserId: authUserId);
   }
 }
 
 class PosRoute extends GoRouteData with $PosRoute {
-  const PosRoute();
+  const PosRoute({required this.buildingId});
+
+  final String buildingId;
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
@@ -172,7 +210,9 @@ class PosRoute extends GoRouteData with $PosRoute {
 }
 
 class TablesRoute extends GoRouteData with $TablesRoute {
-  const TablesRoute();
+  const TablesRoute({required this.buildingId});
+
+  final String buildingId;
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
@@ -182,7 +222,9 @@ class TablesRoute extends GoRouteData with $TablesRoute {
 }
 
 class ArticlesRoute extends GoRouteData with $ArticlesRoute {
-  const ArticlesRoute();
+  const ArticlesRoute({required this.buildingId});
+
+  final String buildingId;
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
@@ -192,7 +234,9 @@ class ArticlesRoute extends GoRouteData with $ArticlesRoute {
 }
 
 class IngredientsRoute extends GoRouteData with $IngredientsRoute {
-  const IngredientsRoute();
+  const IngredientsRoute({required this.buildingId});
+
+  final String buildingId;
 
   @override
   Widget build(BuildContext context, GoRouterState state) {

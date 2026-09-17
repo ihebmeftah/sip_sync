@@ -36,7 +36,7 @@ Roles live in `user_role_membership` (`customer`, `owner`, `employee`, `backoffi
 
 Backoffice extras (`backoffice_staff`): `isAdmin`, `isSystemDefault` (seeded default cannot be deleted).
 
-Employee extras (`employee_record`): links staff to the owner who added them. Building assignment uses `building_staff`.
+Employee extras (`employee_record`): links staff to the owner who added them and to the **required** building they work at (`buildingId`). That same id is returned on `AccountSessionView.buildingId` so the management app can open their dashboard directly.
 
 ## Actors and permissions
 
@@ -61,8 +61,8 @@ Employee extras (`employee_record`): links staff to the owner who added them. Bu
 
 ### Owner adds an employee
 
-1. Password, phone, names, optional `buildingId` — **no email, no username**.
-2. Server generates a unique username (`firstname.lastname` + random digits), a synthetic email, identity + employee role + `employee_record`, and optional `building_staff`.
+1. Building must already exist. Password, phone, names, **required** `buildingId` — **no email, no username**.
+2. Server generates a unique username (`firstname.lastname` + random digits), a synthetic email, identity + employee role + `employee_record` (with that `buildingId`).
 3. Owner sees the username on the employee details screen (read-only). Staff sign in with that username.
 
 ### Login (`LoginRequest.identifier`)
@@ -77,7 +77,8 @@ Management without owner/employee, or backoffice without membership → `appAcce
 ## Data
 
 - Tables: `sip_sync_profile`, `user_role_membership`, `backoffice_staff`, `employee_record`
-- Create: `SelfRegisterCreate` (no username), `LoginRequest` (`identifier` + password + app), `EmployeeCreate` (no email/username), `BackofficeUserCreate` (no username)
+- Endpoints: `AccountEndpoint` (register/login/profile/backoffice), `EmployeeEndpoint` (owner staff CRUD; requires `buildingId` on create)
+- Create: `SelfRegisterCreate` (no username), `LoginRequest` (`identifier` + password + app), `EmployeeCreate` (no email/username; required `buildingId`), `BackofficeUserCreate` (no username)
 - Update: `ProfileUpdate` / `EmployeeUpdate` (phone + names only; username and email not writable)
 - Responses: `AuthSessionResult`, `ProfileView` (`username` nullable), `EmployeeView` (username, no email), `BackofficeUserView`
 - Exceptions: `AccountException` / `AccountErrorCode`

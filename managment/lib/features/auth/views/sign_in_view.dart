@@ -50,8 +50,7 @@ class _SignInViewState extends ConsumerState<SignInView> {
               helperText: l10n.loginIdentifierHint,
               prefixIcon: Icons.badge_outlined,
               textInputAction: TextInputAction.next,
-              validator: (value) =>
-                  FormValidators.loginIdentifier(l10n, value),
+              validator: (value) => FormValidators.loginIdentifier(l10n, value),
             ),
             AppTextField(
               controller: _password,

@@ -33,6 +33,7 @@ import 'package:sip_sync_server/src/generated/buildings/building_update.dart'
     as _ipidi05l;
 import '../auth/account_endpoint.dart' as _ii6ycf6v;
 import '../auth/email_idp_endpoint.dart' as _iuc1hd5t;
+import '../auth/employee_endpoint.dart' as _i3t5tbp4;
 import '../auth/jwt_refresh_endpoint.dart' as _inwq3ztq;
 import '../buildings/building_endpoint.dart' as _i69ygv7j;
 import '../greetings/greeting_endpoint.dart' as _il624ik7;
@@ -51,6 +52,12 @@ class Endpoints extends _is.EndpointDispatch {
         ..initialize(
           server,
           'emailIdp',
+          null,
+        ),
+      'employee': _i3t5tbp4.EmployeeEndpoint()
+        ..initialize(
+          server,
+          'employee',
           null,
         ),
       'jwtRefresh': _inwq3ztq.JwtRefreshEndpoint()
@@ -142,98 +149,6 @@ class Endpoints extends _is.EndpointDispatch {
                   .updateMyProfile(
                     session,
                     params['request'],
-                  ),
-        ),
-        'getEmployee': _is.MethodConnector(
-          name: 'getEmployee',
-          params: {
-            'employeeAuthUserId': _is.ParameterDescription(
-              name: 'employeeAuthUserId',
-              type: _is.getType<_is.UuidValue>(),
-              nullable: false,
-            ),
-          },
-          call:
-              (
-                _is.Session session,
-                Map<String, dynamic> params,
-              ) async => (endpoints['account'] as _ii6ycf6v.AccountEndpoint)
-                  .getEmployee(
-                    session,
-                    params['employeeAuthUserId'],
-                  ),
-        ),
-        'addEmployee': _is.MethodConnector(
-          name: 'addEmployee',
-          params: {
-            'request': _is.ParameterDescription(
-              name: 'request',
-              type: _is.getType<_itsh5tmy.EmployeeCreate>(),
-              nullable: false,
-            ),
-          },
-          call:
-              (
-                _is.Session session,
-                Map<String, dynamic> params,
-              ) async => (endpoints['account'] as _ii6ycf6v.AccountEndpoint)
-                  .addEmployee(
-                    session,
-                    params['request'],
-                  ),
-        ),
-        'listEmployees': _is.MethodConnector(
-          name: 'listEmployees',
-          params: {},
-          call:
-              (
-                _is.Session session,
-                Map<String, dynamic> params,
-              ) async => (endpoints['account'] as _ii6ycf6v.AccountEndpoint)
-                  .listEmployees(session),
-        ),
-        'updateEmployee': _is.MethodConnector(
-          name: 'updateEmployee',
-          params: {
-            'request': _is.ParameterDescription(
-              name: 'request',
-              type: _is.getType<_isn5wmy3.EmployeeUpdate>(),
-              nullable: false,
-            ),
-          },
-          call:
-              (
-                _is.Session session,
-                Map<String, dynamic> params,
-              ) async => (endpoints['account'] as _ii6ycf6v.AccountEndpoint)
-                  .updateEmployee(
-                    session,
-                    params['request'],
-                  ),
-        ),
-        'setEmployeeEnabled': _is.MethodConnector(
-          name: 'setEmployeeEnabled',
-          params: {
-            'employeeAuthUserId': _is.ParameterDescription(
-              name: 'employeeAuthUserId',
-              type: _is.getType<_is.UuidValue>(),
-              nullable: false,
-            ),
-            'isEnabled': _is.ParameterDescription(
-              name: 'isEnabled',
-              type: _is.getType<bool>(),
-              nullable: false,
-            ),
-          },
-          call:
-              (
-                _is.Session session,
-                Map<String, dynamic> params,
-              ) async => (endpoints['account'] as _ii6ycf6v.AccountEndpoint)
-                  .setEmployeeEnabled(
-                    session,
-                    params['employeeAuthUserId'],
-                    params['isEnabled'],
                   ),
         ),
         'addBackofficeUser': _is.MethodConnector(
@@ -463,6 +378,94 @@ class Endpoints extends _is.EndpointDispatch {
                 Map<String, dynamic> params,
               ) async => (endpoints['emailIdp'] as _iuc1hd5t.EmailIdpEndpoint)
                   .hasAccount(session),
+        ),
+      },
+    );
+    connectors['employee'] = _is.EndpointConnector(
+      name: 'employee',
+      endpoint: endpoints['employee']!,
+      methodConnectors: {
+        'get': _is.MethodConnector(
+          name: 'get',
+          params: {
+            'employeeAuthUserId': _is.ParameterDescription(
+              name: 'employeeAuthUserId',
+              type: _is.getType<_is.UuidValue>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['employee'] as _i3t5tbp4.EmployeeEndpoint).get(
+                    session,
+                    params['employeeAuthUserId'],
+                  ),
+        ),
+        'add': _is.MethodConnector(
+          name: 'add',
+          params: {
+            'request': _is.ParameterDescription(
+              name: 'request',
+              type: _is.getType<_itsh5tmy.EmployeeCreate>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['employee'] as _i3t5tbp4.EmployeeEndpoint).add(
+                    session,
+                    params['request'],
+                  ),
+        ),
+        'update': _is.MethodConnector(
+          name: 'update',
+          params: {
+            'request': _is.ParameterDescription(
+              name: 'request',
+              type: _is.getType<_isn5wmy3.EmployeeUpdate>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['employee'] as _i3t5tbp4.EmployeeEndpoint).update(
+                    session,
+                    params['request'],
+                  ),
+        ),
+        'setEnabled': _is.MethodConnector(
+          name: 'setEnabled',
+          params: {
+            'employeeAuthUserId': _is.ParameterDescription(
+              name: 'employeeAuthUserId',
+              type: _is.getType<_is.UuidValue>(),
+              nullable: false,
+            ),
+            'isEnabled': _is.ParameterDescription(
+              name: 'isEnabled',
+              type: _is.getType<bool>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['employee'] as _i3t5tbp4.EmployeeEndpoint)
+                  .setEnabled(
+                    session,
+                    params['employeeAuthUserId'],
+                    params['isEnabled'],
+                  ),
         ),
       },
     );

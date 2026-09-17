@@ -15,8 +15,9 @@ import 'package:serverpod/serverpod.dart' as _is;
 import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
     as _iacs;
 import 'package:sip_sync_server/src/generated/protocol.dart' as _iaib1p48;
+import '../buildings/building.dart' as _idz3611u;
 
-/// Links an employee identity to the owner who added them.
+/// Links an employee identity to the owner who added them and the venue they work at.
 abstract class EmployeeRecord
     implements _is.TableRow<int?>, _is.ProtocolSerialization {
   EmployeeRecord._({
@@ -24,6 +25,8 @@ abstract class EmployeeRecord
     required this.authUserId,
     this.authUser,
     required this.ownerAuthUserId,
+    required this.buildingId,
+    this.building,
     bool? isEnabled,
   }) : isEnabled = isEnabled ?? true;
 
@@ -32,6 +35,8 @@ abstract class EmployeeRecord
     required _is.UuidValue authUserId,
     _iacs.AuthUser? authUser,
     required _is.UuidValue ownerAuthUserId,
+    required _is.UuidValue buildingId,
+    _idz3611u.Building? building,
     bool? isEnabled,
   }) = _EmployeeRecordImpl;
 
@@ -49,6 +54,14 @@ abstract class EmployeeRecord
       ownerAuthUserId: _is.UuidValueJsonExtension.fromJson(
         jsonSerialization['ownerAuthUserId'],
       ),
+      buildingId: _is.UuidValueJsonExtension.fromJson(
+        jsonSerialization['buildingId'],
+      ),
+      building: jsonSerialization['building'] == null
+          ? null
+          : _iaib1p48.Protocol().deserialize<_idz3611u.Building>(
+              jsonSerialization['building'],
+            ),
       isEnabled: jsonSerialization['isEnabled'] == null
           ? null
           : _is.BoolJsonExtension.fromJson(jsonSerialization['isEnabled']),
@@ -68,6 +81,10 @@ abstract class EmployeeRecord
 
   _is.UuidValue ownerAuthUserId;
 
+  _is.UuidValue buildingId;
+
+  _idz3611u.Building? building;
+
   bool isEnabled;
 
   @override
@@ -81,6 +98,8 @@ abstract class EmployeeRecord
     _is.UuidValue? authUserId,
     _iacs.AuthUser? authUser,
     _is.UuidValue? ownerAuthUserId,
+    _is.UuidValue? buildingId,
+    _idz3611u.Building? building,
     bool? isEnabled,
   });
   @override
@@ -91,6 +110,8 @@ abstract class EmployeeRecord
       'authUserId': authUserId.toJson(),
       if (authUser != null) 'authUser': authUser?.toJson(),
       'ownerAuthUserId': ownerAuthUserId.toJson(),
+      'buildingId': buildingId.toJson(),
+      if (building != null) 'building': building?.toJson(),
       'isEnabled': isEnabled,
     };
   }
@@ -100,8 +121,14 @@ abstract class EmployeeRecord
     return {};
   }
 
-  static EmployeeRecordInclude include({_iacs.AuthUserInclude? authUser}) {
-    return EmployeeRecordInclude._(authUser: authUser);
+  static EmployeeRecordInclude include({
+    _iacs.AuthUserInclude? authUser,
+    _idz3611u.BuildingInclude? building,
+  }) {
+    return EmployeeRecordInclude._(
+      authUser: authUser,
+      building: building,
+    );
   }
 
   static EmployeeRecordIncludeList includeList({
@@ -136,12 +163,16 @@ class _EmployeeRecordImpl extends EmployeeRecord {
     required _is.UuidValue authUserId,
     _iacs.AuthUser? authUser,
     required _is.UuidValue ownerAuthUserId,
+    required _is.UuidValue buildingId,
+    _idz3611u.Building? building,
     bool? isEnabled,
   }) : super._(
          id: id,
          authUserId: authUserId,
          authUser: authUser,
          ownerAuthUserId: ownerAuthUserId,
+         buildingId: buildingId,
+         building: building,
          isEnabled: isEnabled,
        );
 
@@ -154,6 +185,8 @@ class _EmployeeRecordImpl extends EmployeeRecord {
     _is.UuidValue? authUserId,
     Object? authUser = _Undefined,
     _is.UuidValue? ownerAuthUserId,
+    _is.UuidValue? buildingId,
+    Object? building = _Undefined,
     bool? isEnabled,
   }) {
     return EmployeeRecord(
@@ -163,6 +196,10 @@ class _EmployeeRecordImpl extends EmployeeRecord {
           ? authUser
           : this.authUser?.copyWith(),
       ownerAuthUserId: ownerAuthUserId ?? this.ownerAuthUserId,
+      buildingId: buildingId ?? this.buildingId,
+      building: building is _idz3611u.Building?
+          ? building
+          : this.building?.copyWith(),
       isEnabled: isEnabled ?? this.isEnabled,
     );
   }
@@ -185,6 +222,13 @@ class EmployeeRecordUpdateTable extends _is.UpdateTable<EmployeeRecordTable> {
     value,
   );
 
+  _is.ColumnValue<_is.UuidValue, _is.UuidValue> buildingId(
+    _is.UuidValue value,
+  ) => _is.ColumnValue(
+    table.buildingId,
+    value,
+  );
+
   _is.ColumnValue<bool, bool> isEnabled(bool value) => _is.ColumnValue(
     table.isEnabled,
     value,
@@ -203,6 +247,10 @@ class EmployeeRecordTable extends _is.Table<int?> {
       'ownerAuthUserId',
       this,
     );
+    buildingId = _is.ColumnUuid(
+      'buildingId',
+      this,
+    );
     isEnabled = _is.ColumnBool(
       'isEnabled',
       this,
@@ -217,6 +265,10 @@ class EmployeeRecordTable extends _is.Table<int?> {
   _iacs.AuthUserTable? _authUser;
 
   late final _is.ColumnUuid ownerAuthUserId;
+
+  late final _is.ColumnUuid buildingId;
+
+  _idz3611u.BuildingTable? _building;
 
   late final _is.ColumnBool isEnabled;
 
@@ -233,11 +285,25 @@ class EmployeeRecordTable extends _is.Table<int?> {
     return _authUser!;
   }
 
+  _idz3611u.BuildingTable get building {
+    if (_building != null) return _building!;
+    _building = _is.createRelationTable(
+      relationFieldName: 'building',
+      field: EmployeeRecord.t.buildingId,
+      foreignField: _idz3611u.Building.t.id,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _idz3611u.BuildingTable(tableRelation: foreignTableRelation),
+    );
+    return _building!;
+  }
+
   @override
   List<_is.Column> get columns => [
     id,
     authUserId,
     ownerAuthUserId,
+    buildingId,
     isEnabled,
   ];
 
@@ -246,19 +312,31 @@ class EmployeeRecordTable extends _is.Table<int?> {
     if (relationField == 'authUser') {
       return authUser;
     }
+    if (relationField == 'building') {
+      return building;
+    }
     return null;
   }
 }
 
 class EmployeeRecordInclude extends _is.IncludeObject {
-  EmployeeRecordInclude._({_iacs.AuthUserInclude? authUser}) {
+  EmployeeRecordInclude._({
+    _iacs.AuthUserInclude? authUser,
+    _idz3611u.BuildingInclude? building,
+  }) {
     _authUser = authUser;
+    _building = building;
   }
 
   _iacs.AuthUserInclude? _authUser;
 
+  _idz3611u.BuildingInclude? _building;
+
   @override
-  Map<String, _is.Include?> get includes => {'authUser': _authUser};
+  Map<String, _is.Include?> get includes => {
+    'authUser': _authUser,
+    'building': _building,
+  };
 
   @override
   _is.Table<int?> get table => EmployeeRecord.t;
@@ -708,6 +786,29 @@ class EmployeeRecordAttachRowRepository {
     await session.db.updateRow<EmployeeRecord>(
       $employeeRecord,
       columns: [EmployeeRecord.t.authUserId],
+      transaction: transaction,
+    );
+  }
+
+  /// Creates a relation between the given [EmployeeRecord] and [Building]
+  /// by setting the [EmployeeRecord]'s foreign key `buildingId` to refer to the [Building].
+  Future<void> building(
+    _is.DatabaseSession session,
+    EmployeeRecord employeeRecord,
+    _idz3611u.Building building, {
+    _is.Transaction? transaction,
+  }) async {
+    if (employeeRecord.id == null) {
+      throw ArgumentError.notNull('employeeRecord.id');
+    }
+    if (building.id == null) {
+      throw ArgumentError.notNull('building.id');
+    }
+
+    var $employeeRecord = employeeRecord.copyWith(buildingId: building.id);
+    await session.db.updateRow<EmployeeRecord>(
+      $employeeRecord,
+      columns: [EmployeeRecord.t.buildingId],
       transaction: transaction,
     );
   }

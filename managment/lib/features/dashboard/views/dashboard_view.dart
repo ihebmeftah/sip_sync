@@ -11,7 +11,9 @@ import '../../auth/view_models/auth_view_model.dart';
 
 /// House overview for owners and staff. Destinations are wired; metrics later.
 class DashboardView extends ConsumerWidget {
-  const DashboardView({super.key});
+  const DashboardView({super.key, required this.buildingId});
+
+  final String buildingId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -138,31 +140,39 @@ class DashboardView extends ConsumerWidget {
                             title: l10n.navPos,
                             body: l10n.dashboardPosCue,
                             icon: Icons.point_of_sale_outlined,
-                            onTap: () => const PosRoute().go(context),
+                            onTap: () =>
+                                PosRoute(buildingId: buildingId).go(context),
                           ),
                           _DashTile(
                             title: l10n.navTables,
                             body: l10n.dashboardTablesCue,
                             icon: Icons.table_restaurant_outlined,
-                            onTap: () => const TablesRoute().go(context),
+                            onTap: () =>
+                                TablesRoute(buildingId: buildingId).go(context),
                           ),
                           _DashTile(
                             title: l10n.navProducts,
                             body: l10n.dashboardCatalogCue,
                             icon: Icons.inventory_2_outlined,
-                            onTap: () => const ArticlesRoute().go(context),
+                            onTap: () => ArticlesRoute(
+                              buildingId: buildingId,
+                            ).go(context),
                           ),
                           _DashTile(
                             title: l10n.navEmployees,
                             body: l10n.dashboardEmployeesCue,
                             icon: Icons.groups_outlined,
-                            onTap: () => const EmployeesRoute().go(context),
+                            onTap: () => EmployeesRoute(
+                              buildingId: buildingId,
+                            ).go(context),
                           ),
                           _DashTile(
                             title: l10n.navProfile,
                             body: l10n.dashboardProfileCue,
                             icon: Icons.person_outline,
-                            onTap: () => const ProfileRoute().go(context),
+                            onTap: () => ProfileRoute(
+                              buildingId: buildingId,
+                            ).go(context),
                           ),
                         ];
                         if (wide) {

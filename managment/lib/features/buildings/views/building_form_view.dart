@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sip_sync_client/sip_sync_client.dart';
 
-import '../../../core/di/app_providers.dart';
 import '../../../core/di/building_session.dart';
 import '../../../core/di/service_locator.dart';
 import '../../../core/errors/error_mapper.dart';
@@ -11,7 +10,6 @@ import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
 import '../../../l10n/generated/app_localizations.dart';
-import '../../auth/view_models/auth_view_model.dart';
 import '../venue_location.dart';
 import '../view_models/buildings_view_model.dart';
 
@@ -41,7 +39,6 @@ class _BuildingFormViewState extends ConsumerState<BuildingFormView> {
   String _type = 'cafe';
   String _currency = 'TND';
   var _otherType = false;
-  final _selectedStaff = <String>{};
   var _filled = false;
   var _saving = false;
   var _locating = false;
@@ -97,9 +94,6 @@ class _BuildingFormViewState extends ConsumerState<BuildingFormView> {
       _otherType = true;
       _customType.text = building.type;
     }
-    _selectedStaff
-      ..clear()
-      ..addAll(building.employeeAuthUserIds.map((id) => id.uuid));
     _filled = true;
   }
 
@@ -159,14 +153,6 @@ class _BuildingFormViewState extends ConsumerState<BuildingFormView> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final async = ref.watch(buildingFormViewModelProvider(_id));
-    final isOwner =
-        ref
-            .watch(authViewModelProvider)
-            .session
-            ?.profile
-            .roles
-            .contains('owner') ??
-        false;
     async.whenData((building) {
       if (building != null) {
         _fill(building);
@@ -347,17 +333,6 @@ class _BuildingFormViewState extends ConsumerState<BuildingFormView> {
                           }
                         },
                       ),
-                      if (isOwner)
-                        _StaffPicker(
-                          selected: _selectedStaff,
-                          onToggle: (id) => setState(() {
-                            if (_selectedStaff.contains(id)) {
-                              _selectedStaff.remove(id);
-                            } else {
-                              _selectedStaff.add(id);
-                            }
-                          }),
-                        ),
                       if (async.hasError)
                         AppErrorBanner(
                           message: lookupError(
@@ -388,9 +363,6 @@ class _BuildingFormViewState extends ConsumerState<BuildingFormView> {
                                 openingMinutes: minutesFromTimeOfDay(_opens),
                                 closingMinutes: minutesFromTimeOfDay(_closes),
                                 currencyCode: _currency,
-                                employeeAuthUserIds: _selectedStaff
-                                    .map(UuidValue.fromString)
-                                    .toList(),
                               );
                           if (!context.mounted) {
                             return;
@@ -399,8 +371,9 @@ class _BuildingFormViewState extends ConsumerState<BuildingFormView> {
                           if (saved == null) {
                             return;
                           }
+                          getIt<BuildingSession>().upsert(saved);
                           getIt<BuildingSession>().select(saved.id);
-                          const DashboardRoute().go(context);
+                          DashboardRoute(buildingId: saved.id.uuid).go(context);
                         },
                       ),
                     ],
@@ -422,53 +395,5 @@ class _BuildingFormViewState extends ConsumerState<BuildingFormView> {
       'cafe' => l10n.buildingTypeCafe,
       _ => type,
     };
-  }
-}
-
-class _StaffPicker extends ConsumerWidget {
-  const _StaffPicker({required this.selected, required this.onToggle});
-
-  final Set<String> selected;
-  final ValueChanged<String> onToggle;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = AppLocalizations.of(context)!;
-    return FutureBuilder(
-      future: ref.read(accountRepositoryProvider).listEmployees(),
-      builder: (context, snapshot) {
-        final staff = snapshot.data ?? const <EmployeeView>[];
-        if (staff.isEmpty) {
-          return Padding(
-            padding: const EdgeInsets.only(bottom: AppSpacing.lg),
-            child: Text(l10n.buildingStaffEmpty),
-          );
-        }
-        return Padding(
-          padding: const EdgeInsets.only(bottom: AppSpacing.lg),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                l10n.buildingStaff,
-                style: Theme.of(context).textTheme.titleSmall,
-              ),
-              const SizedBox(height: AppSpacing.sm),
-              Wrap(
-                spacing: AppSpacing.sm,
-                children: [
-                  for (final employee in staff)
-                    FilterChip(
-                      label: Text('${employee.firstName} ${employee.lastName}'),
-                      selected: selected.contains(employee.authUserId.uuid),
-                      onSelected: (_) => onToggle(employee.authUserId.uuid),
-                    ),
-                ],
-              ),
-            ],
-          ),
-        );
-      },
-    );
   }
 }

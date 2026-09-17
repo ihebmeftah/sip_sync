@@ -61,52 +61,5 @@ class AccountRepository {
     );
   }
 
-  Future<List<EmployeeView>> listEmployees() => _client.account.listEmployees();
-
-  Future<EmployeeView> getEmployee(UuidValue employeeAuthUserId) {
-    return _client.account.getEmployee(employeeAuthUserId);
-  }
-
-  Future<EmployeeView> addEmployee({
-    required String password,
-    required String phoneNumber,
-    required String firstName,
-    required String lastName,
-    UuidValue? buildingId,
-  }) {
-    return _client.account.addEmployee(
-      EmployeeCreate(
-        password: password,
-        phoneNumber: phoneNumber,
-        firstName: firstName,
-        lastName: lastName,
-        buildingId: buildingId,
-      ),
-    );
-  }
-
-  Future<EmployeeView> updateEmployee({
-    required UuidValue authUserId,
-    required String phoneNumber,
-    required String firstName,
-    required String lastName,
-  }) {
-    return _client.account.updateEmployee(
-      EmployeeUpdate(
-        authUserId: authUserId,
-        phoneNumber: phoneNumber,
-        firstName: firstName,
-        lastName: lastName,
-      ),
-    );
-  }
-
-  Future<EmployeeView> setEmployeeEnabled({
-    required UuidValue authUserId,
-    required bool isEnabled,
-  }) {
-    return _client.account.setEmployeeEnabled(authUserId, isEnabled);
-  }
-
   Future<void> signOut() => _client.auth.signOutDevice();
 }

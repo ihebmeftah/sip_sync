@@ -2,6 +2,7 @@
 class: EmployeeView
 fields:
   authUserId: UuidValue
+  buildingId: UuidValue
   username: String
   phoneNumber: String
   firstName: String

@@ -8,9 +8,12 @@
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
 // ignore_for_file: invalid_use_of_internal_member
+// ignore_for_file: dead_code, unnecessary_null_comparison
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _is;
+import 'package:sip_sync_server/src/generated/protocol.dart' as _iaib1p48;
+import '../auth/employee_record.dart' as _i8nmniuq;
 
 /// A café, restaurant, lounge, bar, or custom venue owned by one owner.
 abstract class Building
@@ -27,6 +30,7 @@ abstract class Building
     required this.closingMinutes,
     required this.currencyCode,
     DateTime? createdAt,
+    this.employees,
   }) : createdAt = createdAt ?? DateTime.now();
 
   factory Building({
@@ -41,6 +45,7 @@ abstract class Building
     required int closingMinutes,
     required String currencyCode,
     DateTime? createdAt,
+    List<_i8nmniuq.EmployeeRecord>? employees,
   }) = _BuildingImpl;
 
   factory Building.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -62,6 +67,11 @@ abstract class Building
       createdAt: jsonSerialization['createdAt'] == null
           ? null
           : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
+      employees: jsonSerialization['employees'] == null
+          ? null
+          : _iaib1p48.Protocol().deserialize<List<_i8nmniuq.EmployeeRecord>>(
+              jsonSerialization['employees'],
+            ),
     );
   }
 
@@ -92,6 +102,8 @@ abstract class Building
 
   DateTime createdAt;
 
+  List<_i8nmniuq.EmployeeRecord>? employees;
+
   @override
   _is.Table<_is.UuidValue?> get table => t;
 
@@ -110,6 +122,7 @@ abstract class Building
     int? closingMinutes,
     String? currencyCode,
     DateTime? createdAt,
+    List<_i8nmniuq.EmployeeRecord>? employees,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -126,6 +139,8 @@ abstract class Building
       'closingMinutes': closingMinutes,
       'currencyCode': currencyCode,
       'createdAt': createdAt.toJson(),
+      if (employees != null)
+        'employees': employees?.toJson(valueToJson: (v) => v.toJson()),
     };
   }
 
@@ -134,8 +149,10 @@ abstract class Building
     return {};
   }
 
-  static BuildingInclude include() {
-    return BuildingInclude._();
+  static BuildingInclude include({
+    _i8nmniuq.EmployeeRecordIncludeList? employees,
+  }) {
+    return BuildingInclude._(employees: employees);
   }
 
   static BuildingIncludeList includeList({
@@ -177,6 +194,7 @@ class _BuildingImpl extends Building {
     required int closingMinutes,
     required String currencyCode,
     DateTime? createdAt,
+    List<_i8nmniuq.EmployeeRecord>? employees,
   }) : super._(
          id: id,
          ownerAuthUserId: ownerAuthUserId,
@@ -189,6 +207,7 @@ class _BuildingImpl extends Building {
          closingMinutes: closingMinutes,
          currencyCode: currencyCode,
          createdAt: createdAt,
+         employees: employees,
        );
 
   /// Returns a shallow copy of this [Building]
@@ -207,6 +226,7 @@ class _BuildingImpl extends Building {
     int? closingMinutes,
     String? currencyCode,
     DateTime? createdAt,
+    Object? employees = _Undefined,
   }) {
     return Building(
       id: id is _is.UuidValue? ? id : this.id,
@@ -220,6 +240,9 @@ class _BuildingImpl extends Building {
       closingMinutes: closingMinutes ?? this.closingMinutes,
       currencyCode: currencyCode ?? this.currencyCode,
       createdAt: createdAt ?? this.createdAt,
+      employees: employees is List<_i8nmniuq.EmployeeRecord>?
+          ? employees
+          : this.employees?.map((e0) => e0.copyWith()).toList(),
     );
   }
 }
@@ -348,6 +371,42 @@ class BuildingTable extends _is.Table<_is.UuidValue?> {
 
   late final _is.ColumnDateTime createdAt;
 
+  _i8nmniuq.EmployeeRecordTable? ___employees;
+
+  _is.ManyRelation<_i8nmniuq.EmployeeRecordTable>? _employees;
+
+  _i8nmniuq.EmployeeRecordTable get __employees {
+    if (___employees != null) return ___employees!;
+    ___employees = _is.createRelationTable(
+      relationFieldName: '__employees',
+      field: Building.t.id,
+      foreignField: _i8nmniuq.EmployeeRecord.t.buildingId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i8nmniuq.EmployeeRecordTable(tableRelation: foreignTableRelation),
+    );
+    return ___employees!;
+  }
+
+  _is.ManyRelation<_i8nmniuq.EmployeeRecordTable> get employees {
+    if (_employees != null) return _employees!;
+    var relationTable = _is.createRelationTable(
+      relationFieldName: 'employees',
+      field: Building.t.id,
+      foreignField: _i8nmniuq.EmployeeRecord.t.buildingId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i8nmniuq.EmployeeRecordTable(tableRelation: foreignTableRelation),
+    );
+    _employees = _is.ManyRelation<_i8nmniuq.EmployeeRecordTable>(
+      tableWithRelations: relationTable,
+      table: _i8nmniuq.EmployeeRecordTable(
+        tableRelation: relationTable.tableRelation!.lastRelation,
+      ),
+    );
+    return _employees!;
+  }
+
   @override
   List<_is.Column> get columns => [
     id,
@@ -362,13 +421,25 @@ class BuildingTable extends _is.Table<_is.UuidValue?> {
     currencyCode,
     createdAt,
   ];
+
+  @override
+  _is.Table? getRelationTable(String relationField) {
+    if (relationField == 'employees') {
+      return __employees;
+    }
+    return null;
+  }
 }
 
 class BuildingInclude extends _is.IncludeObject {
-  BuildingInclude._();
+  BuildingInclude._({_i8nmniuq.EmployeeRecordIncludeList? employees}) {
+    _employees = employees;
+  }
+
+  _i8nmniuq.EmployeeRecordIncludeList? _employees;
 
   @override
-  Map<String, _is.Include?> get includes => {};
+  Map<String, _is.Include?> get includes => {'employees': _employees};
 
   @override
   _is.Table<_is.UuidValue?> get table => Building.t;
@@ -395,6 +466,10 @@ class BuildingIncludeList extends _is.IncludeList {
 
 class BuildingRepository {
   const BuildingRepository._();
+
+  final attach = const BuildingAttachRepository._();
+
+  final attachRow = const BuildingAttachRowRepository._();
 
   /// Returns a list of [Building]s matching the given query parameters.
   ///
@@ -426,6 +501,7 @@ class BuildingRepository {
     _is.OrderByBuilder<BuildingTable>? orderBy,
     _is.OrderByListBuilder<BuildingTable>? orderByList,
     _is.Transaction? transaction,
+    BuildingInclude? include,
     _is.LockMode? lockMode,
     _is.LockBehavior? lockBehavior,
   }) async {
@@ -436,6 +512,7 @@ class BuildingRepository {
       limit: limit,
       offset: offset,
       transaction: transaction,
+      include: include,
       lockMode: lockMode,
       lockBehavior: lockBehavior,
     );
@@ -465,6 +542,7 @@ class BuildingRepository {
     _is.OrderByBuilder<BuildingTable>? orderBy,
     _is.OrderByListBuilder<BuildingTable>? orderByList,
     _is.Transaction? transaction,
+    BuildingInclude? include,
     _is.LockMode? lockMode,
     _is.LockBehavior? lockBehavior,
   }) async {
@@ -474,6 +552,7 @@ class BuildingRepository {
       orderByList: orderByList?.call(Building.t),
       offset: offset,
       transaction: transaction,
+      include: include,
       lockMode: lockMode,
       lockBehavior: lockBehavior,
     );
@@ -484,12 +563,14 @@ class BuildingRepository {
     _is.DatabaseSession session,
     _is.UuidValue id, {
     _is.Transaction? transaction,
+    BuildingInclude? include,
     _is.LockMode? lockMode,
     _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<Building>(
       id,
       transaction: transaction,
+      include: include,
       lockMode: lockMode,
       lockBehavior: lockBehavior,
     );
@@ -783,6 +864,62 @@ class BuildingRepository {
       where: where(Building.t),
       lockMode: lockMode,
       lockBehavior: lockBehavior,
+      transaction: transaction,
+    );
+  }
+}
+
+class BuildingAttachRepository {
+  const BuildingAttachRepository._();
+
+  /// Creates a relation between this [Building] and the given [EmployeeRecord]s
+  /// by setting each [EmployeeRecord]'s foreign key `buildingId` to refer to this [Building].
+  Future<void> employees(
+    _is.DatabaseSession session,
+    Building building,
+    List<_i8nmniuq.EmployeeRecord> employeeRecord, {
+    _is.Transaction? transaction,
+  }) async {
+    if (employeeRecord.any((e) => e.id == null)) {
+      throw ArgumentError.notNull('employeeRecord.id');
+    }
+    if (building.id == null) {
+      throw ArgumentError.notNull('building.id');
+    }
+
+    var $employeeRecord = employeeRecord
+        .map((e) => e.copyWith(buildingId: building.id))
+        .toList();
+    await session.db.update<_i8nmniuq.EmployeeRecord>(
+      $employeeRecord,
+      columns: [_i8nmniuq.EmployeeRecord.t.buildingId],
+      transaction: transaction,
+    );
+  }
+}
+
+class BuildingAttachRowRepository {
+  const BuildingAttachRowRepository._();
+
+  /// Creates a relation between this [Building] and the given [EmployeeRecord]
+  /// by setting the [EmployeeRecord]'s foreign key `buildingId` to refer to this [Building].
+  Future<void> employees(
+    _is.DatabaseSession session,
+    Building building,
+    _i8nmniuq.EmployeeRecord employeeRecord, {
+    _is.Transaction? transaction,
+  }) async {
+    if (employeeRecord.id == null) {
+      throw ArgumentError.notNull('employeeRecord.id');
+    }
+    if (building.id == null) {
+      throw ArgumentError.notNull('building.id');
+    }
+
+    var $employeeRecord = employeeRecord.copyWith(buildingId: building.id);
+    await session.db.updateRow<_i8nmniuq.EmployeeRecord>(
+      $employeeRecord,
+      columns: [_i8nmniuq.EmployeeRecord.t.buildingId],
       transaction: transaction,
     );
   }

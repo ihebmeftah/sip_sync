@@ -10,7 +10,9 @@ import '../../auth/view_models/auth_view_model.dart';
 import '../view_models/employees_view_model.dart';
 
 class EmployeesListView extends ConsumerWidget {
-  const EmployeesListView({super.key});
+  const EmployeesListView({super.key, required this.buildingId});
+
+  final String buildingId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -25,7 +27,7 @@ class EmployeesListView extends ConsumerWidget {
             .roles
             .contains('owner') ??
         false;
-    final async = ref.watch(employeesViewModelProvider);
+    final async = ref.watch(employeesViewModelProvider(buildingId));
 
     return ColoredBox(
       color: Theme.of(context).scaffoldBackgroundColor,
@@ -46,7 +48,9 @@ class EmployeesListView extends ConsumerWidget {
                       style: FilledButton.styleFrom(
                         minimumSize: const Size(0, 44),
                       ),
-                      onPressed: () => const EmployeeCreateRoute().go(context),
+                      onPressed: () => EmployeeCreateRoute(
+                        buildingId: buildingId,
+                      ).go(context),
                       icon: const Icon(Icons.add),
                       label: Text(l10n.addEmployee),
                     ),
@@ -66,7 +70,9 @@ class EmployeesListView extends ConsumerWidget {
                       ),
                       TextButton(
                         onPressed: () => ref
-                            .read(employeesViewModelProvider.notifier)
+                            .read(
+                              employeesViewModelProvider(buildingId).notifier,
+                            )
                             .refresh(),
                         child: Text(l10n.retry),
                       ),
@@ -105,6 +111,7 @@ class EmployeesListView extends ConsumerWidget {
                                 ),
                               ),
                               onTap: () => EmployeeDetailsRoute(
+                                buildingId: buildingId,
                                 authUserId: employee.authUserId.uuid,
                               ).go(context),
                             ),

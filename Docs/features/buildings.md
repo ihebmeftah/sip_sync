@@ -8,27 +8,27 @@ Status: in progress
 
 ## Actors and permissions
 
-- **Owner** — create and update buildings they own; assign employees via `BuildingStaff`. After login they stay on `/buildings` until they pick a venue; dashboard, employees, POS, tables, and products stay locked until then.
-- **Employee** — `listMine` returns only assigned buildings; they can open one for ops. They cannot create or edit venue settings.
+- **Owner** — create and update buildings they own. Venues are created **without** staff; employees are added later for a specific `buildingId`. After login they stay on `/buildings` (no ops sidebar) until they open a venue.
+- **Employee** — account is tied to one building (`AccountSessionView.buildingId`). After login they go straight to `/b/:buildingId/dashboard` (no buildings list). They cannot create or edit venue settings.
 - Enforcement is on `BuildingEndpoint` (`requireLogin` + owner vs staff). Flutter redirects are UX only.
 
 ## Flow
 
-1. Owner signs in or registers. `listMine` is empty → buildings list with create. Other ops routes redirect to `/buildings`.
-2. Create/update form: name, type (restaurant / lounge / bar / café or a custom label), address + longitude + latitude on one row, opening and closing times (same text fields as the rest of the form), currency dropdown. **Pick current position** uses `geolocator` then reverse-geocodes with `geocoding`.
-3. Tapping a row selects that building (`BuildingSession`) and goes to `/dashboard`, which shows the selected venue.
-4. Employees listed for a selected building come from `building.listEmployees`. New staff created from that screen pass `EmployeeCreate.buildingId`.
-5. Edit is `/buildings/:buildingId/edit`. Saving a venue selects it and opens the dashboard.
+1. Owner signs in or registers → `/buildings` (list + add), **without** the ops sidebar. Other ops URLs require `/b/:buildingId/...`.
+2. Employee signs in → `/b/:buildingId/dashboard` using the building on their `employee_record`. Visiting `/buildings` redirects them back to that dashboard.
+3. Create/update form (owners): name, type (restaurant / lounge / bar / café or a custom label), address + longitude + latitude on one row, opening and closing times, currency dropdown. **No employee picker.** **Pick current position** uses `geolocator` then reverse-geocodes with `geocoding`.
+4. Owner tapping a row opens `/b/:buildingId/dashboard` (ops shell + sidebar). Edit stays at `/buildings/:buildingId/edit` outside the shell.
+5. Staff for a venue come from `building.listEmployees` (employees whose `employee_record.buildingId` matches). New staff are created from Employees under that building with required `EmployeeCreate.buildingId`.
 
 ## Data
 
 - Table `building`: UUID PK, `ownerAuthUserId`, `name`, `type` (normalized string), `address`, `latitude`, `longitude`, `openingMinutes`, `closingMinutes`, `currencyCode`
-- Table `building_staff`: `buildingId`, `employeeAuthUserId`
-- Create: `BuildingCreate`
-- Update: `BuildingUpdate`
-- Response: `BuildingView` (includes `employeeAuthUserIds`)
+- Table `employee_record`: each employee row has required `buildingId` (building has many employees)
+- Create: `BuildingCreate` (venue fields only)
+- Update: `BuildingUpdate` (venue fields only)
+- Response: `BuildingView` (includes `employeeAuthUserIds` derived from `employee_record`)
 - Errors: `BuildingException` (`invalidInput`, `notAuthorized`, `notFound`)
 
 ## Realtime
 
-None. The client reloads `listMine` after save and keeps the selected id in `BuildingSession`.
+None. The client reloads `listMine` after save; the selected venue is the `buildingId` path parameter.

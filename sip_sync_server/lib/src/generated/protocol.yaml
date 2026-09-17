@@ -3,11 +3,6 @@ account:
   - login:
   - me:
   - updateMyProfile:
-  - getEmployee:
-  - addEmployee:
-  - listEmployees:
-  - updateEmployee:
-  - setEmployeeEnabled:
   - addBackofficeUser:
   - listBackofficeUsers:
   - deleteBackofficeUser:
@@ -20,6 +15,11 @@ emailIdp:
   - verifyPasswordResetCode:
   - finishPasswordReset:
   - hasAccount:
+employee:
+  - get:
+  - add:
+  - update:
+  - setEnabled:
 jwtRefresh:
   - refreshAccessToken:
 building:

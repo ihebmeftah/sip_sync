@@ -52,7 +52,6 @@ void main() {
             openingMinutes: 8 * 60,
             closingMinutes: 23 * 60,
             currencyCode: 'tnd',
-            employeeAuthUserIds: [],
           ),
         );
 
@@ -60,6 +59,7 @@ void main() {
         expect(created.type, 'cafe');
         expect(created.currencyCode, 'TND');
         expect(created.openingMinutes, 480);
+        expect(created.employeeAuthUserIds, isEmpty);
 
         final custom = await endpoints.building.create(
           scoped,
@@ -72,7 +72,6 @@ void main() {
             openingMinutes: 10 * 60,
             closingMinutes: 2 * 60,
             currencyCode: 'EUR',
-            employeeAuthUserIds: [],
           ),
         );
         expect(custom.type, 'tea house');
@@ -83,19 +82,9 @@ void main() {
     );
 
     test(
-      'when owner assigns an employee then the building lists that staff',
+      'when owner adds an employee to a building then staff can list that venue',
       () async {
         final scoped = await ownerScoped();
-        final employee = await endpoints.account.addEmployee(
-          scoped,
-          EmployeeCreate(
-            password: 'password1',
-            phoneNumber: '+21620000101',
-            firstName: 'Floor',
-            lastName: 'Staff',
-          ),
-        );
-
         final created = await endpoints.building.create(
           scoped,
           BuildingCreate(
@@ -107,11 +96,23 @@ void main() {
             openingMinutes: 18 * 60,
             closingMinutes: 2 * 60,
             currencyCode: 'TND',
-            employeeAuthUserIds: [employee.authUserId],
           ),
         );
 
-        expect(created.employeeAuthUserIds, contains(employee.authUserId));
+        final employee = await endpoints.employee.add(
+          scoped,
+          EmployeeCreate(
+            password: 'password1',
+            phoneNumber: '+21620000101',
+            firstName: 'Floor',
+            lastName: 'Staff',
+            buildingId: created.id,
+          ),
+        );
+
+        expect(employee.buildingId, created.id);
+        final refreshed = await endpoints.building.get(scoped, created.id);
+        expect(refreshed.employeeAuthUserIds, contains(employee.authUserId));
         final staff = await endpoints.building.listEmployees(
           scoped,
           created.id,
@@ -151,7 +152,6 @@ void main() {
             openingMinutes: 0,
             closingMinutes: 60,
             currencyCode: 'DINA',
-            employeeAuthUserIds: [],
           ),
         ),
         throwsA(

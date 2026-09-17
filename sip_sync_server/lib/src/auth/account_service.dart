@@ -211,64 +211,24 @@ class AccountService {
 
     await _grantRole(session, employeeId, AppRole.employee);
 
+    final building = await Building.db.findById(session, request.buildingId);
+    if (building == null || building.ownerAuthUserId != ownerAuthUserId) {
+      throw AccountException(
+        message: 'Building not found.',
+        code: AccountErrorCode.notFound,
+      );
+    }
+
     final record = await EmployeeRecord.db.insertRow(
       session,
       EmployeeRecord(
         authUserId: employeeId,
         ownerAuthUserId: ownerAuthUserId,
+        buildingId: request.buildingId,
       ),
     );
 
-    final buildingId = request.buildingId;
-    if (buildingId != null) {
-      final building = await Building.db.findById(session, buildingId);
-      if (building == null || building.ownerAuthUserId != ownerAuthUserId) {
-        throw AccountException(
-          message: 'Building not found.',
-          code: AccountErrorCode.notFound,
-        );
-      }
-      final already = await BuildingStaff.db.findFirstRow(
-        session,
-        where: (t) =>
-            t.buildingId.equals(buildingId) &
-            t.employeeAuthUserId.equals(employeeId),
-      );
-      if (already == null) {
-        await BuildingStaff.db.insertRow(
-          session,
-          BuildingStaff(
-            buildingId: buildingId,
-            employeeAuthUserId: employeeId,
-          ),
-        );
-      }
-    }
-
     return _employeeView(session, record);
-  }
-
-  /// Employees this owner added.
-  Future<List<EmployeeView>> listEmployees(
-    Session session,
-    UuidValue ownerAuthUserId,
-  ) async {
-    if (!await _hasAnyRole(session, ownerAuthUserId, {AppRole.owner})) {
-      throw AccountException(
-        message: 'Only owners can list employees.',
-        code: AccountErrorCode.notAuthorized,
-      );
-    }
-
-    final records = await EmployeeRecord.db.find(
-      session,
-      where: (t) => t.ownerAuthUserId.equals(ownerAuthUserId),
-    );
-    final views = <EmployeeView>[];
-    for (final record in records) {
-      views.add(await _employeeView(session, record));
-    }
-    return views;
   }
 
   /// Owner-only: update phone and name for an added employee.
@@ -801,10 +761,15 @@ class AccountService {
       session,
       where: (t) => t.authUserId.equals(authUserId),
     );
+    final employee = await EmployeeRecord.db.findFirstRow(
+      session,
+      where: (t) => t.authUserId.equals(authUserId),
+    );
     return AccountSessionView(
       profile: profile,
       isBackofficeAdmin: staff?.isAdmin ?? false,
       isSystemDefaultAdmin: staff?.isSystemDefault ?? false,
+      buildingId: employee?.buildingId,
     );
   }
 
@@ -867,6 +832,7 @@ class AccountService {
     }
     return EmployeeView(
       authUserId: profile.authUserId,
+      buildingId: record.buildingId,
       username: username,
       phoneNumber: profile.phoneNumber,
       firstName: profile.firstName,

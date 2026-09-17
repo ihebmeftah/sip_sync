@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sip_sync_client/sip_sync_client.dart';
 
-import '../../../core/di/building_session.dart';
-import '../../../core/di/service_locator.dart';
 import '../../../core/errors/error_mapper.dart';
 import '../../../core/errors/form_validators.dart';
 import '../../../core/routing/app_routes.dart';
@@ -12,8 +11,13 @@ import '../../../l10n/generated/app_localizations.dart';
 import '../view_models/employee_form_view_model.dart';
 
 class EmployeeFormView extends ConsumerStatefulWidget {
-  const EmployeeFormView({super.key, this.authUserId});
+  const EmployeeFormView({
+    super.key,
+    required this.buildingId,
+    this.authUserId,
+  });
 
+  final String buildingId;
   final String? authUserId;
 
   @override
@@ -106,17 +110,13 @@ class _EmployeeFormViewState extends ConsumerState<EmployeeFormView> {
                           prefixIcon: Icons.alternate_email,
                         )
                       else
-                        Text(
-                          l10n.employeeUsernameHint,
-                          style: text.bodySmall,
-                        ),
+                        Text(l10n.employeeUsernameHint, style: text.bodySmall),
                       if (!_isEdit) const SizedBox(height: AppSpacing.lg),
                       AppTextField(
                         controller: _phone,
                         label: l10n.phone,
                         prefixIcon: Icons.phone_outlined,
-                        validator: (value) =>
-                            FormValidators.phone(l10n, value),
+                        validator: (value) => FormValidators.phone(l10n, value),
                       ),
                       if (!_isEdit)
                         AppTextField(
@@ -149,13 +149,15 @@ class _EmployeeFormViewState extends ConsumerState<EmployeeFormView> {
                                 phoneNumber: _phone.text,
                                 firstName: _first.text,
                                 lastName: _last.text,
-                                buildingId:
-                                    getIt<BuildingSession>().selectedId,
+                                buildingId: UuidValue.fromString(
+                                  widget.buildingId,
+                                ),
                               );
                           if (!context.mounted || saved == null) {
                             return;
                           }
                           EmployeeDetailsRoute(
+                            buildingId: widget.buildingId,
                             authUserId: saved.authUserId.uuid,
                           ).go(context);
                         },

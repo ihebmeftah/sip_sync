@@ -3,6 +3,7 @@ import 'package:sip_sync_client/sip_sync_client.dart';
 
 import '../../data/repositories/account_repository.dart';
 import '../../data/repositories/building_repository.dart';
+import '../../data/repositories/employee_repository.dart';
 import 'building_session.dart';
 import 'service_locator.dart';
 
@@ -16,6 +17,9 @@ AccountRepository accountRepository(Ref ref) => getIt<AccountRepository>();
 
 @Riverpod(keepAlive: true)
 BuildingRepository buildingRepository(Ref ref) => getIt<BuildingRepository>();
+
+@Riverpod(keepAlive: true)
+EmployeeRepository employeeRepository(Ref ref) => getIt<EmployeeRepository>();
 
 /// Mirrors [BuildingSession.selected] so widgets rebuild when a venue is picked.
 @Riverpod(keepAlive: true)

@@ -46,7 +46,6 @@ import 'buildings/building.dart' as _i60s6nd2;
 import 'buildings/building_create.dart' as _i4cz4s4m;
 import 'buildings/building_error_code.dart' as _isz6zhld;
 import 'buildings/building_exception.dart' as _i7fakgop;
-import 'buildings/building_staff.dart' as _izkbr6tl;
 import 'buildings/building_update.dart' as _ivqpqa05;
 import 'buildings/building_view.dart' as _iyqmhcrr;
 import 'greetings/greeting.dart' as _izw8z7ou;
@@ -73,7 +72,6 @@ export 'buildings/building.dart';
 export 'buildings/building_create.dart';
 export 'buildings/building_error_code.dart';
 export 'buildings/building_exception.dart';
-export 'buildings/building_staff.dart';
 export 'buildings/building_update.dart';
 export 'buildings/building_view.dart';
 export 'greetings/greeting.dart';
@@ -242,65 +240,6 @@ class Protocol extends _is.DatabaseSerializationManager {
       managed: true,
     ),
     _isp.TableDefinition(
-      name: 'building_staff',
-      dartName: 'BuildingStaff',
-      schema: 'public',
-      module: 'sip_sync',
-      columns: [
-        _isp.ColumnDefinition(
-          name: 'id',
-          columnType: _isp.ColumnType.uuid,
-          isNullable: false,
-          dartType: 'UuidValue?',
-          columnDefault: 'random_v7',
-        ),
-        _isp.ColumnDefinition(
-          name: 'buildingId',
-          columnType: _isp.ColumnType.uuid,
-          isNullable: false,
-          dartType: 'UuidValue',
-        ),
-        _isp.ColumnDefinition(
-          name: 'employeeAuthUserId',
-          columnType: _isp.ColumnType.uuid,
-          isNullable: false,
-          dartType: 'UuidValue',
-        ),
-      ],
-      foreignKeys: [
-        _isp.ForeignKeyDefinition(
-          constraintName: 'building_staff_fk_0',
-          columns: ['buildingId'],
-          referenceTable: 'building',
-          referenceTableSchema: 'public',
-          referenceColumns: ['id'],
-          onUpdate: _isp.ForeignKeyAction.noAction,
-          onDelete: _isp.ForeignKeyAction.cascade,
-          matchType: null,
-        ),
-      ],
-      indexes: [
-        _isp.IndexDefinition(
-          indexName: 'building_staff_unique',
-          tableSpace: null,
-          elements: [
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'buildingId',
-            ),
-            _isp.IndexElementDefinition(
-              type: _isp.IndexElementDefinitionType.column,
-              definition: 'employeeAuthUserId',
-            ),
-          ],
-          type: 'btree',
-          isUnique: true,
-          isPrimary: false,
-        ),
-      ],
-      managed: true,
-    ),
-    _isp.TableDefinition(
       name: 'employee_record',
       dartName: 'EmployeeRecord',
       schema: 'public',
@@ -326,6 +265,12 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'UuidValue',
         ),
         _isp.ColumnDefinition(
+          name: 'buildingId',
+          columnType: _isp.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue',
+        ),
+        _isp.ColumnDefinition(
           name: 'isEnabled',
           columnType: _isp.ColumnType.boolean,
           isNullable: false,
@@ -338,6 +283,16 @@ class Protocol extends _is.DatabaseSerializationManager {
           constraintName: 'employee_record_fk_0',
           columns: ['authUserId'],
           referenceTable: 'serverpod_auth_core_user',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.cascade,
+          matchType: null,
+        ),
+        _isp.ForeignKeyDefinition(
+          constraintName: 'employee_record_fk_1',
+          columns: ['buildingId'],
+          referenceTable: 'building',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
           onUpdate: _isp.ForeignKeyAction.noAction,
@@ -366,6 +321,19 @@ class Protocol extends _is.DatabaseSerializationManager {
             _isp.IndexElementDefinition(
               type: _isp.IndexElementDefinitionType.column,
               definition: 'ownerAuthUserId',
+            ),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+        _isp.IndexDefinition(
+          indexName: 'employee_record_building_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'buildingId',
             ),
           ],
           type: 'btree',
@@ -659,9 +627,6 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == _i7fakgop.BuildingException) {
       return _i7fakgop.BuildingException.fromJson(data) as T;
     }
-    if (t == _izkbr6tl.BuildingStaff) {
-      return _izkbr6tl.BuildingStaff.fromJson(data) as T;
-    }
     if (t == _ivqpqa05.BuildingUpdate) {
       return _ivqpqa05.BuildingUpdate.fromJson(data) as T;
     }
@@ -759,10 +724,6 @@ class Protocol extends _is.DatabaseSerializationManager {
       return (data != null ? _i7fakgop.BuildingException.fromJson(data) : null)
           as T;
     }
-    if (t == _is.getType<_izkbr6tl.BuildingStaff?>()) {
-      return (data != null ? _izkbr6tl.BuildingStaff.fromJson(data) : null)
-          as T;
-    }
     if (t == _is.getType<_ivqpqa05.BuildingUpdate?>()) {
       return (data != null ? _ivqpqa05.BuildingUpdate.fromJson(data) : null)
           as T;
@@ -776,14 +737,22 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == List<String>) {
       return (data as List).map((e) => deserialize<String>(e)).toList() as T;
     }
-    if (t == List<_is.UuidValue>) {
-      return (data as List).map((e) => deserialize<_is.UuidValue>(e)).toList()
+    if (t == List<_im6hyfbr.EmployeeRecord>) {
+      return (data as List)
+              .map((e) => deserialize<_im6hyfbr.EmployeeRecord>(e))
+              .toList()
           as T;
     }
-    if (t == List<_iusy412g.EmployeeView>) {
-      return (data as List)
-              .map((e) => deserialize<_iusy412g.EmployeeView>(e))
-              .toList()
+    if (t == _is.getType<List<_im6hyfbr.EmployeeRecord>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map((e) => deserialize<_im6hyfbr.EmployeeRecord>(e))
+                    .toList()
+              : null)
+          as T;
+    }
+    if (t == List<_is.UuidValue>) {
+      return (data as List).map((e) => deserialize<_is.UuidValue>(e)).toList()
           as T;
     }
     if (t == List<_iea1ilrj.BackofficeUserView>) {
@@ -795,6 +764,12 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == List<_iughhy8g.BuildingView>) {
       return (data as List)
               .map((e) => deserialize<_iughhy8g.BuildingView>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_iusy412g.EmployeeView>) {
+      return (data as List)
+              .map((e) => deserialize<_iusy412g.EmployeeView>(e))
               .toList()
           as T;
     }
@@ -835,7 +810,6 @@ class Protocol extends _is.DatabaseSerializationManager {
       _i4cz4s4m.BuildingCreate => 'BuildingCreate',
       _isz6zhld.BuildingErrorCode => 'BuildingErrorCode',
       _i7fakgop.BuildingException => 'BuildingException',
-      _izkbr6tl.BuildingStaff => 'BuildingStaff',
       _ivqpqa05.BuildingUpdate => 'BuildingUpdate',
       _iyqmhcrr.BuildingView => 'BuildingView',
       _izw8z7ou.Greeting => 'Greeting',
@@ -899,8 +873,6 @@ class Protocol extends _is.DatabaseSerializationManager {
         return 'BuildingErrorCode';
       case _i7fakgop.BuildingException():
         return 'BuildingException';
-      case _izkbr6tl.BuildingStaff():
-        return 'BuildingStaff';
       case _ivqpqa05.BuildingUpdate():
         return 'BuildingUpdate';
       case _iyqmhcrr.BuildingView():
@@ -1002,9 +974,6 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (dataClassName == 'BuildingException') {
       return deserialize<_i7fakgop.BuildingException>(data['data']);
     }
-    if (dataClassName == 'BuildingStaff') {
-      return deserialize<_izkbr6tl.BuildingStaff>(data['data']);
-    }
     if (dataClassName == 'BuildingUpdate') {
       return deserialize<_ivqpqa05.BuildingUpdate>(data['data']);
     }
@@ -1065,8 +1034,6 @@ class Protocol extends _is.DatabaseSerializationManager {
         return _ilsup31p.UserRoleMembership.t;
       case _i60s6nd2.Building:
         return _i60s6nd2.Building.t;
-      case _izkbr6tl.BuildingStaff:
-        return _izkbr6tl.BuildingStaff.t;
     }
     return null;
   }

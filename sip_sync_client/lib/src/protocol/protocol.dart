@@ -249,12 +249,6 @@ class Protocol extends _isc.SerializationManager {
       return (data as List).map((e) => deserialize<_isc.UuidValue>(e)).toList()
           as T;
     }
-    if (t == List<_ix96cplr.EmployeeView>) {
-      return (data as List)
-              .map((e) => deserialize<_ix96cplr.EmployeeView>(e))
-              .toList()
-          as T;
-    }
     if (t == List<_ian6jh4a.BackofficeUserView>) {
       return (data as List)
               .map((e) => deserialize<_ian6jh4a.BackofficeUserView>(e))
@@ -264,6 +258,12 @@ class Protocol extends _isc.SerializationManager {
     if (t == List<_ia8vsgay.BuildingView>) {
       return (data as List)
               .map((e) => deserialize<_ia8vsgay.BuildingView>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_ix96cplr.EmployeeView>) {
+      return (data as List)
+              .map((e) => deserialize<_ix96cplr.EmployeeView>(e))
               .toList()
           as T;
     }

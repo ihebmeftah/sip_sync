@@ -12,13 +12,16 @@ part 'buildings_view_model.g.dart';
 class BuildingsViewModel extends _$BuildingsViewModel {
   @override
   Future<List<BuildingView>> build() async {
-    ref.listen(authViewModelProvider, (previous, next) {
-      if (previous?.session?.profile.authUserId !=
-          next.session?.profile.authUserId) {
-        ref.invalidateSelf();
-      }
-    });
-    return ref.read(buildingRepositoryProvider).listMine();
+    // Rebuild only when the signed-in user changes — one listMine per user.
+    final authUserId = ref.watch(signedInAuthUserIdProvider);
+    if (authUserId == null) {
+      getIt<BuildingSession>().replace(const []);
+      return const [];
+    }
+
+    final list = await ref.read(buildingRepositoryProvider).listMine();
+    getIt<BuildingSession>().replace(list);
+    return list;
   }
 
   Future<void> refresh() async {
@@ -52,7 +55,6 @@ class BuildingFormViewModel extends _$BuildingFormViewModel {
     required int openingMinutes,
     required int closingMinutes,
     required String currencyCode,
-    required List<UuidValue> employeeAuthUserIds,
   }) async {
     try {
       final existing = state.asData?.value;
@@ -69,7 +71,6 @@ class BuildingFormViewModel extends _$BuildingFormViewModel {
               openingMinutes: openingMinutes,
               closingMinutes: closingMinutes,
               currencyCode: currencyCode,
-              employeeAuthUserIds: employeeAuthUserIds,
             );
       } else {
         saved = await ref
@@ -84,7 +85,6 @@ class BuildingFormViewModel extends _$BuildingFormViewModel {
               openingMinutes: openingMinutes,
               closingMinutes: closingMinutes,
               currencyCode: currencyCode,
-              employeeAuthUserIds: employeeAuthUserIds,
             );
       }
       getIt<BuildingSession>().upsert(saved);

@@ -113,8 +113,7 @@ class _ProfileViewPageState extends ConsumerState<ProfileViewPage> {
                         controller: _phone,
                         label: l10n.phone,
                         prefixIcon: Icons.phone_outlined,
-                        validator: (value) =>
-                            FormValidators.phone(l10n, value),
+                        validator: (value) => FormValidators.phone(l10n, value),
                       ),
                       if (ui.errorKey != null)
                         AppErrorBanner(

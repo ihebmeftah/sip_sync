@@ -9,8 +9,13 @@ import '../../../l10n/generated/app_localizations.dart';
 import '../view_models/employee_details_view_model.dart';
 
 class EmployeeDetailsPage extends ConsumerWidget {
-  const EmployeeDetailsPage({super.key, required this.authUserId});
+  const EmployeeDetailsPage({
+    super.key,
+    required this.buildingId,
+    required this.authUserId,
+  });
 
+  final String buildingId;
   final String authUserId;
 
   @override
@@ -48,8 +53,10 @@ class EmployeeDetailsPage extends ConsumerWidget {
                       ),
                     ),
                     FilledButton.tonal(
-                      onPressed: () =>
-                          EmployeeEditRoute(authUserId: authUserId).go(context),
+                      onPressed: () => EmployeeEditRoute(
+                        buildingId: buildingId,
+                        authUserId: authUserId,
+                      ).go(context),
                       child: Text(l10n.editEmployee),
                     ),
                   ],

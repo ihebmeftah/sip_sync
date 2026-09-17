@@ -112,8 +112,11 @@ class BuildingsListView extends ConsumerWidget {
                                       color: scheme.primary,
                                     ),
                               onTap: () {
+                                getIt<BuildingSession>().upsert(building);
                                 getIt<BuildingSession>().select(building.id);
-                                const DashboardRoute().go(context);
+                                DashboardRoute(
+                                  buildingId: building.id.uuid,
+                                ).go(context);
                               },
                             ),
                           ),

@@ -9,4 +9,3 @@ fields:
   openingMinutes: int
   closingMinutes: int
   currencyCode: String
-  employeeAuthUserIds: List<UuidValue>

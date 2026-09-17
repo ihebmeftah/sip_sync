@@ -3,3 +3,5 @@ fields:
   profile: ProfileView
   isBackofficeAdmin: bool
   isSystemDefaultAdmin: bool
+  ### Set for employees — the single venue their account belongs to.
+  buildingId: UuidValue?

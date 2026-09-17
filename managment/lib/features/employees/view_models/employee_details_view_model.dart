@@ -11,8 +11,8 @@ class EmployeeDetailsViewModel extends _$EmployeeDetailsViewModel {
   @override
   Future<EmployeeView> build(String authUserId) {
     return ref
-        .read(accountRepositoryProvider)
-        .getEmployee(UuidValue.fromString(authUserId));
+        .read(employeeRepositoryProvider)
+        .get(UuidValue.fromString(authUserId));
   }
 
   Future<void> setEnabled(bool isEnabled) async {
@@ -23,12 +23,11 @@ class EmployeeDetailsViewModel extends _$EmployeeDetailsViewModel {
     state = const AsyncLoading();
     state = await AsyncValue.guard(() async {
       final updated = await ref
-          .read(accountRepositoryProvider)
-          .setEmployeeEnabled(
-            authUserId: current.authUserId,
-            isEnabled: isEnabled,
-          );
-      await ref.read(employeesViewModelProvider.notifier).refresh();
+          .read(employeeRepositoryProvider)
+          .setEnabled(authUserId: current.authUserId, isEnabled: isEnabled);
+      await ref
+          .read(employeesViewModelProvider(current.buildingId.uuid).notifier)
+          .refresh();
       return updated;
     });
   }

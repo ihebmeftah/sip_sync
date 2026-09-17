@@ -1,23 +1,60 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sip_sync_client/sip_sync_client.dart';
 
 import '../../features/auth/view_models/auth_view_model.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../di/app_providers.dart';
+import '../di/building_session.dart';
+import '../di/service_locator.dart';
 import '../di/theme_controller.dart';
 import '../routing/app_routes.dart';
 import '../theme/app_tokens.dart';
 import 'app_controls.dart';
 
 /// Persistent operations chrome: slate rail on wide screens, drawer on compact.
-class OpsShell extends ConsumerWidget {
-  const OpsShell({super.key, required this.child});
+///
+/// Requires a [buildingId] path segment; the buildings gate has no sidebar.
+class OpsShell extends ConsumerStatefulWidget {
+  const OpsShell({super.key, required this.buildingId, required this.child});
 
+  final String? buildingId;
   final Widget child;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<OpsShell> createState() => _OpsShellState();
+}
+
+class _OpsShellState extends ConsumerState<OpsShell> {
+  @override
+  void initState() {
+    super.initState();
+    _syncBuilding();
+  }
+
+  @override
+  void didUpdateWidget(covariant OpsShell oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.buildingId != widget.buildingId) {
+      _syncBuilding();
+    }
+  }
+
+  void _syncBuilding() {
+    final raw = widget.buildingId;
+    if (raw == null || raw.isEmpty) {
+      return;
+    }
+    final id = UuidValue.fromString(raw);
+    final session = getIt<BuildingSession>();
+    if (session.selectedId != id) {
+      session.select(id);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
         final wide = constraints.maxWidth >= AppBreakpoints.expanded;
@@ -25,8 +62,8 @@ class OpsShell extends ConsumerWidget {
           return Scaffold(
             body: Row(
               children: [
-                const OpsSideBar(),
-                Expanded(child: child),
+                OpsSideBar(buildingId: widget.buildingId ?? ''),
+                Expanded(child: widget.child),
               ],
             ),
           );
@@ -36,8 +73,13 @@ class OpsShell extends ConsumerWidget {
             title: Text(AppLocalizations.of(context)!.appTitle),
             actions: const [_ThemeToggle(), LocaleMenuButton()],
           ),
-          drawer: const Drawer(child: OpsSideBar(inDrawer: true)),
-          body: child,
+          drawer: Drawer(
+            child: OpsSideBar(
+              buildingId: widget.buildingId ?? '',
+              inDrawer: true,
+            ),
+          ),
+          body: widget.child,
         );
       },
     );
@@ -46,8 +88,13 @@ class OpsShell extends ConsumerWidget {
 
 /// Brand + destinations used by the rail and the compact drawer.
 class OpsSideBar extends ConsumerWidget {
-  const OpsSideBar({super.key, this.inDrawer = false});
+  const OpsSideBar({
+    super.key,
+    required this.buildingId,
+    this.inDrawer = false,
+  });
 
+  final String buildingId;
   final bool inDrawer;
 
   @override
@@ -56,12 +103,11 @@ class OpsSideBar extends ConsumerWidget {
     final scheme = Theme.of(context).colorScheme;
     final session = ref.watch(authViewModelProvider).session;
     final selected = ref.watch(buildingSelectionProvider);
-    final locked = selected == null;
     final location = GoRouterState.of(context).uri.path;
     final productsOpen =
-        location.startsWith('/products') ||
-        location == const ArticlesRoute().location ||
-        location == const IngredientsRoute().location;
+        location.contains('/products/') ||
+        location.endsWith('/products/articles') ||
+        location.endsWith('/products/ingredients');
 
     return ColoredBox(
       color: scheme.surfaceContainerHigh,
@@ -111,35 +157,33 @@ class OpsSideBar extends ConsumerWidget {
                     horizontal: AppSpacing.sm,
                   ),
                   children: [
-                    _NavTile(
-                      icon: Icons.storefront_outlined,
-                      label: l10n.navBuildings,
-                      selected: location.startsWith('/buildings'),
-                      onTap: () => const BuildingsRoute().go(context),
-                    ),
+                    if (session?.profile.roles.contains('owner') ?? false)
+                      _NavTile(
+                        icon: Icons.storefront_outlined,
+                        label: l10n.navBuildings,
+                        selected: false,
+                        onTap: () => const BuildingsRoute().go(context),
+                      ),
                     _NavTile(
                       icon: Icons.grid_view_rounded,
                       label: l10n.navDashboard,
-                      selected: location == const DashboardRoute().location,
-                      onTap: locked
-                          ? null
-                          : () => const DashboardRoute().go(context),
+                      selected: location.endsWith('/dashboard'),
+                      onTap: () =>
+                          DashboardRoute(buildingId: buildingId).go(context),
                     ),
                     _NavTile(
                       icon: Icons.person_outline,
                       label: l10n.navProfile,
-                      selected: location == const ProfileRoute().location,
-                      onTap: locked
-                          ? null
-                          : () => const ProfileRoute().go(context),
+                      selected: location.endsWith('/profile'),
+                      onTap: () =>
+                          ProfileRoute(buildingId: buildingId).go(context),
                     ),
                     _NavTile(
                       icon: Icons.groups_outlined,
                       label: l10n.navEmployees,
-                      selected: location.startsWith('/employees'),
-                      onTap: locked
-                          ? null
-                          : () => const EmployeesRoute().go(context),
+                      selected: location.contains('/employees'),
+                      onTap: () =>
+                          EmployeesRoute(buildingId: buildingId).go(context),
                     ),
                     Theme(
                       data: Theme.of(context).copyWith(
@@ -170,21 +214,21 @@ class OpsSideBar extends ConsumerWidget {
                             icon: Icons.restaurant_menu_outlined,
                             label: l10n.navArticles,
                             indent: true,
-                            selected:
-                                location == const ArticlesRoute().location,
-                            onTap: locked
-                                ? null
-                                : () => const ArticlesRoute().go(context),
+                            selected: location.endsWith('/products/articles'),
+                            onTap: () => ArticlesRoute(
+                              buildingId: buildingId,
+                            ).go(context),
                           ),
                           _NavTile(
                             icon: Icons.science_outlined,
                             label: l10n.navIngredients,
                             indent: true,
-                            selected:
-                                location == const IngredientsRoute().location,
-                            onTap: locked
-                                ? null
-                                : () => const IngredientsRoute().go(context),
+                            selected: location.endsWith(
+                              '/products/ingredients',
+                            ),
+                            onTap: () => IngredientsRoute(
+                              buildingId: buildingId,
+                            ).go(context),
                           ),
                         ],
                       ),
@@ -192,16 +236,15 @@ class OpsSideBar extends ConsumerWidget {
                     _NavTile(
                       icon: Icons.point_of_sale_outlined,
                       label: l10n.navPos,
-                      selected: location == const PosRoute().location,
-                      onTap: locked ? null : () => const PosRoute().go(context),
+                      selected: location.endsWith('/pos'),
+                      onTap: () => PosRoute(buildingId: buildingId).go(context),
                     ),
                     _NavTile(
                       icon: Icons.table_restaurant_outlined,
                       label: l10n.navTables,
-                      selected: location == const TablesRoute().location,
-                      onTap: locked
-                          ? null
-                          : () => const TablesRoute().go(context),
+                      selected: location.endsWith('/tables'),
+                      onTap: () =>
+                          TablesRoute(buildingId: buildingId).go(context),
                     ),
                   ],
                 ),
@@ -246,9 +289,8 @@ class OpsSideBar extends ConsumerWidget {
                           borderRadius: BorderRadius.circular(AppRadii.md),
                         ),
                         child: ListTile(
-                          onTap: locked
-                              ? null
-                              : () => const ProfileRoute().go(context),
+                          onTap: () =>
+                              ProfileRoute(buildingId: buildingId).go(context),
                           leading: CircleAvatar(
                             backgroundColor: scheme.secondary,
                             foregroundColor: scheme.onSecondary,

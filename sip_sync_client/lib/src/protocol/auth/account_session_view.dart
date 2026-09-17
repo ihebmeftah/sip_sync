@@ -20,12 +20,14 @@ abstract class AccountSessionView
     required this.profile,
     required this.isBackofficeAdmin,
     required this.isSystemDefaultAdmin,
+    this.buildingId,
   });
 
   factory AccountSessionView({
     required _ihlmgtq9.ProfileView profile,
     required bool isBackofficeAdmin,
     required bool isSystemDefaultAdmin,
+    _isc.UuidValue? buildingId,
   }) = _AccountSessionViewImpl;
 
   factory AccountSessionView.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -39,6 +41,11 @@ abstract class AccountSessionView
       isSystemDefaultAdmin: _isc.BoolJsonExtension.fromJson(
         jsonSerialization['isSystemDefaultAdmin'],
       ),
+      buildingId: jsonSerialization['buildingId'] == null
+          ? null
+          : _isc.UuidValueJsonExtension.fromJson(
+              jsonSerialization['buildingId'],
+            ),
     );
   }
 
@@ -48,6 +55,9 @@ abstract class AccountSessionView
 
   bool isSystemDefaultAdmin;
 
+  /// Set for employees — the single venue their account belongs to.
+  _isc.UuidValue? buildingId;
+
   /// Returns a shallow copy of this [AccountSessionView]
   /// with some or all fields replaced by the given arguments.
   @_isc.useResult
@@ -55,6 +65,7 @@ abstract class AccountSessionView
     _ihlmgtq9.ProfileView? profile,
     bool? isBackofficeAdmin,
     bool? isSystemDefaultAdmin,
+    _isc.UuidValue? buildingId,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -63,6 +74,7 @@ abstract class AccountSessionView
       'profile': profile.toJson(),
       'isBackofficeAdmin': isBackofficeAdmin,
       'isSystemDefaultAdmin': isSystemDefaultAdmin,
+      if (buildingId != null) 'buildingId': buildingId?.toJson(),
     };
   }
 
@@ -73,6 +85,7 @@ abstract class AccountSessionView
       'profile': profile.toJsonForProtocol(),
       'isBackofficeAdmin': isBackofficeAdmin,
       'isSystemDefaultAdmin': isSystemDefaultAdmin,
+      if (buildingId != null) 'buildingId': buildingId?.toJson(),
     };
   }
 
@@ -82,15 +95,19 @@ abstract class AccountSessionView
   }
 }
 
+class _Undefined {}
+
 class _AccountSessionViewImpl extends AccountSessionView {
   _AccountSessionViewImpl({
     required _ihlmgtq9.ProfileView profile,
     required bool isBackofficeAdmin,
     required bool isSystemDefaultAdmin,
+    _isc.UuidValue? buildingId,
   }) : super._(
          profile: profile,
          isBackofficeAdmin: isBackofficeAdmin,
          isSystemDefaultAdmin: isSystemDefaultAdmin,
+         buildingId: buildingId,
        );
 
   /// Returns a shallow copy of this [AccountSessionView]
@@ -101,11 +118,13 @@ class _AccountSessionViewImpl extends AccountSessionView {
     _ihlmgtq9.ProfileView? profile,
     bool? isBackofficeAdmin,
     bool? isSystemDefaultAdmin,
+    Object? buildingId = _Undefined,
   }) {
     return AccountSessionView(
       profile: profile ?? this.profile.copyWith(),
       isBackofficeAdmin: isBackofficeAdmin ?? this.isBackofficeAdmin,
       isSystemDefaultAdmin: isSystemDefaultAdmin ?? this.isSystemDefaultAdmin,
+      buildingId: buildingId is _isc.UuidValue? ? buildingId : this.buildingId,
     );
   }
 }

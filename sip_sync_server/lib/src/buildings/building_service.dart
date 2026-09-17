@@ -9,7 +9,7 @@ import '../generated/protocol.dart';
 class BuildingService {
   final _accounts = AccountService();
 
-  /// Buildings the actor owns, or is assigned to as staff.
+  /// Buildings the actor owns, or the single venue on their employee record.
   Future<List<BuildingView>> listMine(
     Session session,
     UuidValue actorId,
@@ -34,18 +34,18 @@ class BuildingService {
       );
     }
 
-    final assignments = await BuildingStaff.db.find(
+    final record = await EmployeeRecord.db.findFirstRow(
       session,
-      where: (t) => t.employeeAuthUserId.equals(actorId),
+      where: (t) => t.authUserId.equals(actorId),
     );
-    final views = <BuildingView>[];
-    for (final assignment in assignments) {
-      final row = await Building.db.findById(session, assignment.buildingId);
-      if (row != null) {
-        views.add(await _view(session, row));
-      }
+    if (record == null) {
+      return const [];
     }
-    return views;
+    final row = await Building.db.findById(session, record.buildingId);
+    if (row == null) {
+      return const [];
+    }
+    return [await _view(session, row)];
   }
 
   /// Owner CRUD read, or staff assigned to that building.
@@ -62,7 +62,7 @@ class BuildingService {
     return _view(session, row);
   }
 
-  /// Owner creates a venue and optionally assigns existing staff.
+  /// Owner creates a venue (staff are added later with [EmployeeCreate]).
   Future<BuildingView> create(
     Session session, {
     required UuidValue ownerAuthUserId,
@@ -94,16 +94,10 @@ class BuildingService {
         currencyCode: request.currencyCode.trim().toUpperCase(),
       ),
     );
-    await _replaceStaff(
-      session,
-      ownerAuthUserId: ownerAuthUserId,
-      buildingId: row.id!,
-      employeeAuthUserIds: request.employeeAuthUserIds,
-    );
     return _view(session, row);
   }
 
-  /// Owner updates venue fields and staff assignment.
+  /// Owner updates venue fields only.
   Future<BuildingView> update(
     Session session, {
     required UuidValue ownerAuthUserId,
@@ -138,16 +132,10 @@ class BuildingService {
         currencyCode: request.currencyCode.trim().toUpperCase(),
       ),
     );
-    await _replaceStaff(
-      session,
-      ownerAuthUserId: ownerAuthUserId,
-      buildingId: updated.id!,
-      employeeAuthUserIds: request.employeeAuthUserIds,
-    );
     return _view(session, updated);
   }
 
-  /// Staff assigned to [buildingId]. Owner or assigned employee may read.
+  /// Staff whose [EmployeeRecord.buildingId] is [buildingId].
   Future<List<EmployeeView>> listEmployees(
     Session session, {
     required UuidValue actorId,
@@ -158,18 +146,18 @@ class BuildingService {
       actorId: actorId,
       buildingId: buildingId,
     );
-    final staff = await BuildingStaff.db.find(
+    final building = await Building.db.findById(session, buildingId);
+    final records = await EmployeeRecord.db.find(
       session,
       where: (t) => t.buildingId.equals(buildingId),
     );
-    final building = await Building.db.findById(session, buildingId);
     final views = <EmployeeView>[];
-    for (final row in staff) {
+    for (final row in records) {
       views.add(
         await _accounts.getEmployee(
           session,
           ownerAuthUserId: building!.ownerAuthUserId,
-          employeeAuthUserId: row.employeeAuthUserId,
+          employeeAuthUserId: row.authUserId,
         ),
       );
     }
@@ -207,11 +195,10 @@ class BuildingService {
     if (row.ownerAuthUserId == actorId) {
       return row;
     }
-    final assigned = await BuildingStaff.db.findFirstRow(
+    final assigned = await EmployeeRecord.db.findFirstRow(
       session,
       where: (t) =>
-          t.buildingId.equals(buildingId) &
-          t.employeeAuthUserId.equals(actorId),
+          t.buildingId.equals(buildingId) & t.authUserId.equals(actorId),
     );
     if (assigned == null) {
       throw BuildingException(
@@ -231,37 +218,8 @@ class BuildingService {
     }
   }
 
-  Future<void> _replaceStaff(
-    Session session, {
-    required UuidValue ownerAuthUserId,
-    required UuidValue buildingId,
-    required List<UuidValue> employeeAuthUserIds,
-  }) async {
-    final unique = <String, UuidValue>{};
-    for (final id in employeeAuthUserIds) {
-      unique[id.uuid] = id;
-    }
-    for (final id in unique.values) {
-      await _accounts.getEmployee(
-        session,
-        ownerAuthUserId: ownerAuthUserId,
-        employeeAuthUserId: id,
-      );
-    }
-    await BuildingStaff.db.deleteWhere(
-      session,
-      where: (t) => t.buildingId.equals(buildingId),
-    );
-    for (final id in unique.values) {
-      await BuildingStaff.db.insertRow(
-        session,
-        BuildingStaff(buildingId: buildingId, employeeAuthUserId: id),
-      );
-    }
-  }
-
   Future<BuildingView> _view(Session session, Building row) async {
-    final staff = await BuildingStaff.db.find(
+    final staff = await EmployeeRecord.db.find(
       session,
       where: (t) => t.buildingId.equals(row.id!),
     );
@@ -276,7 +234,7 @@ class BuildingService {
       openingMinutes: row.openingMinutes,
       closingMinutes: row.closingMinutes,
       currencyCode: row.currencyCode,
-      employeeAuthUserIds: staff.map((s) => s.employeeAuthUserId).toList(),
+      employeeAuthUserIds: staff.map((s) => s.authUserId).toList(),
     );
   }
 

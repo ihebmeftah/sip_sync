@@ -144,6 +144,54 @@ final class BuildingRepositoryProvider
 String _$buildingRepositoryHash() =>
     r'6c7f41e1ecb66a8ddd889faec57caa201f470381';
 
+@ProviderFor(employeeRepository)
+const employeeRepositoryProvider = EmployeeRepositoryProvider._();
+
+final class EmployeeRepositoryProvider
+    extends
+        $FunctionalProvider<
+          EmployeeRepository,
+          EmployeeRepository,
+          EmployeeRepository
+        >
+    with $Provider<EmployeeRepository> {
+  const EmployeeRepositoryProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'employeeRepositoryProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$employeeRepositoryHash();
+
+  @$internal
+  @override
+  $ProviderElement<EmployeeRepository> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  EmployeeRepository create(Ref ref) {
+    return employeeRepository(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(EmployeeRepository value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<EmployeeRepository>(value),
+    );
+  }
+}
+
+String _$employeeRepositoryHash() =>
+    r'ef1b4c01ecac48242df944ddc03227ef80daaa19';
+
 /// Mirrors [BuildingSession.selected] so widgets rebuild when a venue is picked.
 
 @ProviderFor(BuildingSelection)
