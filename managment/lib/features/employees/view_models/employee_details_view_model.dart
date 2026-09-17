@@ -6,13 +6,13 @@ import 'employees_view_model.dart';
 
 part 'employee_details_view_model.g.dart';
 
+/// Loads a single employee; keeps prior data while toggling enabled.
 @riverpod
 class EmployeeDetailsViewModel extends _$EmployeeDetailsViewModel {
   @override
-  Future<EmployeeView> build(String employeeId) {
-    return ref
-        .read(employeeRepositoryProvider)
-        .get(UuidValue.fromString(employeeId));
+  Future<EmployeeView> build(String employeeId) async {
+    final id = _parseId(employeeId);
+    return ref.read(employeeRepositoryProvider).get(id);
   }
 
   Future<void> setEnabled(bool isEnabled) async {
@@ -20,15 +20,30 @@ class EmployeeDetailsViewModel extends _$EmployeeDetailsViewModel {
     if (current == null) {
       return;
     }
-    state = const AsyncLoading();
-    state = await AsyncValue.guard(() async {
+
+    // Optimistic update — keep the profile mounted (bare AsyncLoading can
+    // dispose the Switch mid-gesture and crash, especially on web).
+    state = AsyncData(current.copyWith(isEnabled: isEnabled));
+
+    try {
       final updated = await ref
           .read(employeeRepositoryProvider)
           .setEnabled(id: current.id, isEnabled: isEnabled);
+      state = AsyncData(updated);
       await ref
-          .read(employeesViewModelProvider(current.buildingId.uuid).notifier)
+          .read(employeesViewModelProvider(updated.buildingId.uuid).notifier)
           .refresh();
-      return updated;
-    });
+    } catch (error, stackTrace) {
+      state = AsyncData(current);
+      Error.throwWithStackTrace(error, stackTrace);
+    }
+  }
+
+  static UuidValue _parseId(String raw) {
+    final trimmed = raw.trim();
+    if (trimmed.isEmpty) {
+      throw const FormatException('Missing employee id');
+    }
+    return UuidValue.fromString(trimmed);
   }
 }

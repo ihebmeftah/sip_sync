@@ -68,105 +68,111 @@ class _EmployeeFormViewState extends ConsumerState<EmployeeFormView> {
 
     return ColoredBox(
       color: Theme.of(context).scaffoldBackgroundColor,
-      child: Align(
-        alignment: Alignment.topCenter,
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: AppBreakpoints.formMax),
-          child: ListView(
-            padding: const EdgeInsets.all(AppSpacing.xl),
-            children: [
-              Text(
-                _isEdit ? l10n.editEmployee : l10n.addEmployee,
-                style: text.headlineSmall,
-              ),
-              const SizedBox(height: AppSpacing.lg),
-              if (ui.loading) const LinearProgressIndicator(),
-              AppSurfaceCard(
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      AppTextField(
-                        controller: _first,
-                        label: l10n.firstName,
-                        prefixIcon: Icons.person_outline,
-                        validator: (value) =>
-                            FormValidators.requiredName(l10n, value),
-                      ),
-                      AppTextField(
-                        controller: _last,
-                        label: l10n.lastName,
-                        prefixIcon: Icons.badge_outlined,
-                        validator: (value) =>
-                            FormValidators.requiredName(l10n, value),
-                      ),
-                      if (_isEdit)
+      child: SizedBox.expand(
+        child: Align(
+          alignment: Alignment.topCenter,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: AppBreakpoints.formMax),
+            child: ListView(
+              padding: const EdgeInsets.all(AppSpacing.xl),
+              children: [
+                Text(
+                  _isEdit ? l10n.editEmployee : l10n.addEmployee,
+                  style: text.headlineSmall,
+                ),
+                const SizedBox(height: AppSpacing.lg),
+                if (ui.loading) const LinearProgressIndicator(),
+                AppSurfaceCard(
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
                         AppTextField(
-                          controller: _username,
-                          label: l10n.username,
-                          readOnly: true,
-                          helperText: l10n.usernameLocked,
-                          prefixIcon: Icons.alternate_email,
-                        )
-                      else
-                        Text(l10n.employeeUsernameHint, style: text.bodySmall),
-                      if (!_isEdit) const SizedBox(height: AppSpacing.lg),
-                      AppTextField(
-                        controller: _phone,
-                        label: l10n.phone,
-                        prefixIcon: Icons.phone_outlined,
-                        validator: (value) => FormValidators.phone(l10n, value),
-                      ),
-                      if (!_isEdit)
-                        AppTextField(
-                          controller: _password,
-                          label: l10n.password,
-                          obscure: true,
-                          prefixIcon: Icons.lock_outline,
+                          controller: _first,
+                          label: l10n.firstName,
+                          prefixIcon: Icons.person_outline,
                           validator: (value) =>
-                              FormValidators.password(l10n, value),
+                              FormValidators.requiredName(l10n, value),
                         ),
-                      if (ui.errorKey != null)
-                        AppErrorBanner(
-                          message: lookupError(l10n, ui.errorKey!),
+                        AppTextField(
+                          controller: _last,
+                          label: l10n.lastName,
+                          prefixIcon: Icons.badge_outlined,
+                          validator: (value) =>
+                              FormValidators.requiredName(l10n, value),
                         ),
-                      AppFilledButton(
-                        label: _isEdit ? l10n.saveEmployee : l10n.addEmployee,
-                        busy: ui.saving,
-                        onPressed: () async {
-                          if (!(_formKey.currentState?.validate() ?? false)) {
-                            return;
-                          }
-                          final saved = await ref
-                              .read(
-                                employeeFormViewModelProvider(
-                                  _employeeKey,
-                                ).notifier,
-                              )
-                              .save(
-                                password: _password.text,
-                                phoneNumber: _phone.text,
-                                firstName: _first.text,
-                                lastName: _last.text,
-                                buildingId: UuidValue.fromString(
-                                  widget.buildingId,
-                                ),
-                              );
-                          if (!context.mounted || saved == null) {
-                            return;
-                          }
-                          EmployeeDetailsRoute(
-                            buildingId: widget.buildingId,
-                            employeeId: saved.id.uuid,
-                          ).go(context);
-                        },
-                      ),
-                    ],
+                        if (_isEdit)
+                          AppTextField(
+                            controller: _username,
+                            label: l10n.username,
+                            readOnly: true,
+                            helperText: l10n.usernameLocked,
+                            prefixIcon: Icons.alternate_email,
+                          )
+                        else
+                          Text(
+                            l10n.employeeUsernameHint,
+                            style: text.bodySmall,
+                          ),
+                        if (!_isEdit) const SizedBox(height: AppSpacing.lg),
+                        AppTextField(
+                          controller: _phone,
+                          label: l10n.phone,
+                          prefixIcon: Icons.phone_outlined,
+                          validator: (value) =>
+                              FormValidators.phone(l10n, value),
+                        ),
+                        if (!_isEdit)
+                          AppTextField(
+                            controller: _password,
+                            label: l10n.password,
+                            obscure: true,
+                            prefixIcon: Icons.lock_outline,
+                            validator: (value) =>
+                                FormValidators.password(l10n, value),
+                          ),
+                        if (ui.errorKey != null)
+                          AppErrorBanner(
+                            message: lookupError(l10n, ui.errorKey!),
+                          ),
+                        AppFilledButton(
+                          label: _isEdit ? l10n.saveEmployee : l10n.addEmployee,
+                          busy: ui.saving,
+                          onPressed: () async {
+                            if (!(_formKey.currentState?.validate() ?? false)) {
+                              return;
+                            }
+                            final saved = await ref
+                                .read(
+                                  employeeFormViewModelProvider(
+                                    _employeeKey,
+                                  ).notifier,
+                                )
+                                .save(
+                                  password: _password.text,
+                                  phoneNumber: _phone.text,
+                                  firstName: _first.text,
+                                  lastName: _last.text,
+                                  buildingId: UuidValue.fromString(
+                                    widget.buildingId,
+                                  ),
+                                );
+                            if (!context.mounted || saved == null) {
+                              return;
+                            }
+                            EmployeeDetailsRoute(
+                              buildingId: widget.buildingId,
+                              employeeId: saved.id.uuid,
+                            ).go(context);
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

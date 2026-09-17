@@ -24,7 +24,6 @@ class EmployeesViewModel extends _$EmployeesViewModel {
   }
 
   Future<void> refresh() async {
-    state = const AsyncLoading();
     state = await AsyncValue.guard(() async {
       final isOwner = ref.read(appSessionStoreProvider).isOwner;
       if (!isOwner || _buildingId.isEmpty) {

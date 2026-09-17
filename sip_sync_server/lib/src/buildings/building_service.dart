@@ -96,7 +96,15 @@ class BuildingService {
     Session session,
     UuidValue buildingId,
   ) async {
-    await _readableBuilding(session, buildingId);
+    // Staff directory is owner-only (matches EmployeeEndpoint CRUD).
+    final ownerId = AuthGuard.requireOwner(session);
+    final row = await Building.db.findById(session, buildingId);
+    if (row == null || row.ownerId != ownerId) {
+      throw BuildingException(
+        message: 'Building not found.',
+        code: BuildingErrorCode.notFound,
+      );
+    }
     final records = await Employee.db.find(
       session,
       where: (t) => t.buildingId.equals(buildingId),

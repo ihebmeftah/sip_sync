@@ -8,7 +8,7 @@ import '../../../core/widgets/app_controls.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../view_models/employee_details_view_model.dart';
 
-class EmployeeDetailsPage extends ConsumerWidget {
+class EmployeeDetailsPage extends ConsumerStatefulWidget {
   const EmployeeDetailsPage({
     super.key,
     required this.buildingId,
@@ -19,29 +19,54 @@ class EmployeeDetailsPage extends ConsumerWidget {
   final String employeeId;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<EmployeeDetailsPage> createState() =>
+      _EmployeeDetailsPageState();
+}
+
+class _EmployeeDetailsPageState extends ConsumerState<EmployeeDetailsPage> {
+  var _toggling = false;
+  String? _actionErrorKey;
+
+  Future<void> _onEnabledChanged(bool value) async {
+    if (_toggling) {
+      return;
+    }
+    setState(() {
+      _toggling = true;
+      _actionErrorKey = null;
+    });
+    try {
+      await ref
+          .read(employeeDetailsViewModelProvider(widget.employeeId).notifier)
+          .setEnabled(value);
+    } catch (error) {
+      if (mounted) {
+        setState(() => _actionErrorKey = mapError(error).l10nKey);
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _toggling = false);
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final async = ref.watch(employeeDetailsViewModelProvider(employeeId));
+    final async = ref.watch(
+      employeeDetailsViewModelProvider(widget.employeeId),
+    );
     final text = Theme.of(context).textTheme;
+    final employee = async.asData?.value;
 
     return ColoredBox(
       color: Theme.of(context).scaffoldBackgroundColor,
-      child: Align(
-        alignment: Alignment.topCenter,
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: AppBreakpoints.formMax),
-          child: async.when(
-            loading: () => const Padding(
-              padding: EdgeInsets.all(AppSpacing.xxl),
-              child: LinearProgressIndicator(),
-            ),
-            error: (error, _) => Padding(
-              padding: const EdgeInsets.all(AppSpacing.xl),
-              child: AppErrorBanner(
-                message: lookupError(l10n, mapError(error).l10nKey),
-              ),
-            ),
-            data: (employee) => ListView(
+      child: SizedBox.expand(
+        child: Align(
+          alignment: Alignment.topCenter,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: AppBreakpoints.formMax),
+            child: ListView(
               padding: const EdgeInsets.all(AppSpacing.xl),
               children: [
                 Row(
@@ -54,59 +79,72 @@ class EmployeeDetailsPage extends ConsumerWidget {
                     ),
                     FilledButton.tonal(
                       onPressed: () => EmployeeEditRoute(
-                        buildingId: buildingId,
-                        employeeId: employeeId,
+                        buildingId: widget.buildingId,
+                        employeeId: widget.employeeId,
                       ).go(context),
                       child: Text(l10n.editEmployee),
                     ),
                   ],
                 ),
                 const SizedBox(height: AppSpacing.lg),
-                AppSurfaceCard(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SwitchListTile(
-                        contentPadding: EdgeInsets.zero,
-                        title: Text(l10n.accountEnabled),
-                        subtitle: Text(
-                          employee.isEnabled
-                              ? l10n.accountEnabledHint
-                              : l10n.accountDisabledHint,
-                        ),
-                        value: employee.isEnabled,
-                        onChanged: (value) => ref
-                            .read(
-                              employeeDetailsViewModelProvider(
-                                employeeId,
-                              ).notifier,
-                            )
-                            .setEnabled(value),
-                      ),
-                      const Divider(),
-                      ListTile(
-                        contentPadding: EdgeInsets.zero,
-                        title: Text(l10n.firstName),
-                        subtitle: Text(employee.firstName),
-                      ),
-                      ListTile(
-                        contentPadding: EdgeInsets.zero,
-                        title: Text(l10n.lastName),
-                        subtitle: Text(employee.lastName),
-                      ),
-                      ListTile(
-                        contentPadding: EdgeInsets.zero,
-                        title: Text(l10n.username),
-                        subtitle: Text(employee.username),
-                      ),
-                      ListTile(
-                        contentPadding: EdgeInsets.zero,
-                        title: Text(l10n.phone),
-                        subtitle: Text(employee.phoneNumber),
-                      ),
-                    ],
+                if (async.isLoading && employee == null)
+                  const LinearProgressIndicator(),
+                if (async.hasError && employee == null) ...[
+                  AppErrorBanner(
+                    message: lookupError(l10n, mapError(async.error!).l10nKey),
                   ),
-                ),
+                  TextButton(
+                    onPressed: () => ref.invalidate(
+                      employeeDetailsViewModelProvider(widget.employeeId),
+                    ),
+                    child: Text(l10n.retry),
+                  ),
+                ],
+                if (_actionErrorKey != null) ...[
+                  AppErrorBanner(message: lookupError(l10n, _actionErrorKey!)),
+                  const SizedBox(height: AppSpacing.md),
+                ],
+                if (employee != null)
+                  AppSurfaceCard(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SwitchListTile(
+                          contentPadding: EdgeInsets.zero,
+                          title: Text(l10n.accountEnabled),
+                          subtitle: Text(
+                            employee.isEnabled
+                                ? l10n.accountEnabledHint
+                                : l10n.accountDisabledHint,
+                          ),
+                          value: employee.isEnabled,
+                          onChanged: _toggling ? null : _onEnabledChanged,
+                        ),
+                        if (_toggling) const LinearProgressIndicator(),
+                        const Divider(),
+                        ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          title: Text(l10n.firstName),
+                          subtitle: Text(employee.firstName),
+                        ),
+                        ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          title: Text(l10n.lastName),
+                          subtitle: Text(employee.lastName),
+                        ),
+                        ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          title: Text(l10n.username),
+                          subtitle: Text(employee.username),
+                        ),
+                        ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          title: Text(l10n.phone),
+                          subtitle: Text(employee.phoneNumber),
+                        ),
+                      ],
+                    ),
+                  ),
               ],
             ),
           ),

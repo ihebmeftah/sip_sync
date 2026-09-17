@@ -20,10 +20,21 @@ class AuthGuard {
         code: AccountErrorCode.notAuthorized,
       );
     }
+    late final UuidValue actorId;
+    late final UuidValue sessionId;
+    try {
+      actorId = UuidValue.fromString(auth.userIdentifier);
+      sessionId = UuidValue.fromString(auth.authId);
+    } catch (_) {
+      throw AccountException(
+        message: 'Sign in required.',
+        code: AccountErrorCode.notAuthorized,
+      );
+    }
     return AuthContext(
       actorType: type,
-      actorId: UuidValue.fromString(auth.userIdentifier),
-      sessionId: UuidValue.fromString(auth.authId),
+      actorId: actorId,
+      sessionId: sessionId,
     );
   }
 

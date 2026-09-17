@@ -51,7 +51,7 @@ final class EmployeesViewModelProvider
 }
 
 String _$employeesViewModelHash() =>
-    r'1343e0f200f8f7de5f99217adff540db401972d2';
+    r'66250e83feadb90c1e407ce94cb4e315539096d0';
 
 final class EmployeesViewModelFamily extends $Family
     with

@@ -49,9 +49,13 @@ class EmployeeFormViewModel extends _$EmployeeFormViewModel {
   Future<void> load(String employeeId) async {
     state = state.copyWith(loading: true, clearError: true);
     try {
+      final trimmed = employeeId.trim();
+      if (trimmed.isEmpty) {
+        throw const FormatException('Missing employee id');
+      }
       final existing = await ref
           .read(employeeRepositoryProvider)
-          .get(UuidValue.fromString(employeeId));
+          .get(UuidValue.fromString(trimmed));
       state = state.copyWith(existing: existing, loading: false);
     } catch (error) {
       state = state.copyWith(loading: false, errorKey: mapError(error).l10nKey);

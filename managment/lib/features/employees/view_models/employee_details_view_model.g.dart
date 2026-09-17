@@ -8,12 +8,15 @@ part of 'employee_details_view_model.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
+/// Loads a single employee; keeps prior data while toggling enabled.
 
 @ProviderFor(EmployeeDetailsViewModel)
 const employeeDetailsViewModelProvider = EmployeeDetailsViewModelFamily._();
 
+/// Loads a single employee; keeps prior data while toggling enabled.
 final class EmployeeDetailsViewModelProvider
     extends $AsyncNotifierProvider<EmployeeDetailsViewModel, EmployeeView> {
+  /// Loads a single employee; keeps prior data while toggling enabled.
   const EmployeeDetailsViewModelProvider._({
     required EmployeeDetailsViewModelFamily super.from,
     required String super.argument,
@@ -52,7 +55,9 @@ final class EmployeeDetailsViewModelProvider
 }
 
 String _$employeeDetailsViewModelHash() =>
-    r'e0ba9689ec2152c79ce78168ae74c5346d7d3458';
+    r'4d3977bf787bc8f722156c85b26ff17780f79c25';
+
+/// Loads a single employee; keeps prior data while toggling enabled.
 
 final class EmployeeDetailsViewModelFamily extends $Family
     with
@@ -72,12 +77,16 @@ final class EmployeeDetailsViewModelFamily extends $Family
         isAutoDispose: true,
       );
 
+  /// Loads a single employee; keeps prior data while toggling enabled.
+
   EmployeeDetailsViewModelProvider call(String employeeId) =>
       EmployeeDetailsViewModelProvider._(argument: employeeId, from: this);
 
   @override
   String toString() => r'employeeDetailsViewModelProvider';
 }
+
+/// Loads a single employee; keeps prior data while toggling enabled.
 
 abstract class _$EmployeeDetailsViewModel extends $AsyncNotifier<EmployeeView> {
   late final _$args = ref.$arg as String;

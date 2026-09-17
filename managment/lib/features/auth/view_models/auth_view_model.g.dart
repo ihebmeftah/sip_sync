@@ -48,7 +48,7 @@ final class SignedInActorIdProvider
   }
 }
 
-String _$signedInActorIdHash() => r'6c6efc7f8b0c379fbec4462e8c06204b437079a1';
+String _$signedInActorIdHash() => r'3347da39e4180c57dc6e16b3e3f7fb9c9c813bf8';
 
 @ProviderFor(AuthViewModel)
 const authViewModelProvider = AuthViewModelProvider._();
@@ -82,7 +82,7 @@ final class AuthViewModelProvider
   }
 }
 
-String _$authViewModelHash() => r'ae3f0ff3e2963e5bc2bdca51dc390e86e055c4f3';
+String _$authViewModelHash() => r'7585181cdefdc7b9058f0eb81e4afdc185044892';
 
 abstract class _$AuthViewModel extends $Notifier<AuthState> {
   AuthState build();

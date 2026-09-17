@@ -92,19 +92,23 @@ class BuildingEditRoute extends GoRouteData with $BuildingEditRoute {
       name: 'dashboard',
     ),
     TypedGoRoute<ProfileRoute>(path: '/b/:buildingId/profile', name: 'profile'),
+    // Sibling routes (not nested) so each screen replaces the shell child
+    // instead of stacking under the list with no visible navigator slot.
     TypedGoRoute<EmployeesRoute>(
       path: '/b/:buildingId/employees',
       name: 'employees',
-      routes: [
-        TypedGoRoute<EmployeeCreateRoute>(path: 'new', name: 'employeeCreate'),
-        TypedGoRoute<EmployeeDetailsRoute>(
-          path: ':employeeId',
-          name: 'employeeDetails',
-          routes: [
-            TypedGoRoute<EmployeeEditRoute>(path: 'edit', name: 'employeeEdit'),
-          ],
-        ),
-      ],
+    ),
+    TypedGoRoute<EmployeeCreateRoute>(
+      path: '/b/:buildingId/employees/new',
+      name: 'employeeCreate',
+    ),
+    TypedGoRoute<EmployeeEditRoute>(
+      path: '/b/:buildingId/employees/:employeeId/edit',
+      name: 'employeeEdit',
+    ),
+    TypedGoRoute<EmployeeDetailsRoute>(
+      path: '/b/:buildingId/employees/:employeeId',
+      name: 'employeeDetails',
     ),
     TypedGoRoute<PosRoute>(path: '/b/:buildingId/pos', name: 'pos'),
     TypedGoRoute<TablesRoute>(path: '/b/:buildingId/tables', name: 'tables'),
