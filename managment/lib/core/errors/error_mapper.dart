@@ -35,6 +35,22 @@ Failure mapError(Object error) {
       VenueTableErrorCode.numberTaken => 'errorTableNumberTaken',
     });
   }
+  if (error is MenuCategoryException) {
+    return Failure(switch (error.code) {
+      MenuCategoryErrorCode.invalidInput => 'errorInvalidInput',
+      MenuCategoryErrorCode.notAuthorized => 'errorNotAuthorized',
+      MenuCategoryErrorCode.notFound => 'errorNotFound',
+      MenuCategoryErrorCode.nameTaken => 'errorCategoryNameTaken',
+    });
+  }
+  if (error is MenuArticleException) {
+    return Failure(switch (error.code) {
+      MenuArticleErrorCode.invalidInput => 'errorInvalidInput',
+      MenuArticleErrorCode.notAuthorized => 'errorNotAuthorized',
+      MenuArticleErrorCode.notFound => 'errorNotFound',
+      MenuArticleErrorCode.nameTaken => 'errorArticleNameTaken',
+    });
+  }
   return const Failure('errorGeneric');
 }
 
@@ -56,6 +72,8 @@ String lookupError(dynamic l10n, String key) {
     'errorLocationDisabled' => l10n.errorLocationDisabled,
     'errorLocationFailed' => l10n.errorLocationFailed,
     'errorTableNumberTaken' => l10n.errorTableNumberTaken,
+    'errorCategoryNameTaken' => l10n.errorCategoryNameTaken,
+    'errorArticleNameTaken' => l10n.errorArticleNameTaken,
     _ => l10n.errorGeneric,
   };
 }

@@ -36,6 +36,14 @@ building:
   - listEmployees:
 greeting:
   - hello:
+menuArticle:
+  - list:
+  - create:
+  - update:
+menuCategory:
+  - list:
+  - create:
+  - update:
 venueTable:
   - list:
   - create:

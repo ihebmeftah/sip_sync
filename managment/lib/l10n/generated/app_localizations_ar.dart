@@ -209,6 +209,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get navProducts => 'المنتجات';
 
   @override
+  String get navCategories => 'الفئات';
+
+  @override
   String get navArticles => 'الأصناف';
 
   @override
@@ -270,7 +273,7 @@ class AppLocalizationsAr extends AppLocalizations {
       'مخطط القاعة مع معاينات المقاعد وتصفية الحالة.';
 
   @override
-  String get dashboardCatalogCue => 'أصناف ومكوّنات، واجهة فقط.';
+  String get dashboardCatalogCue => 'فئات وأصناف لهذا المكان.';
 
   @override
   String get dashboardProfileCue => 'اسمك والهاتف.';
@@ -504,4 +507,95 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get errorTableNumberTaken => 'رقم الطاولة مستخدم هنا بالفعل.';
+
+  @override
+  String get optionalFieldHint => 'اختياري';
+
+  @override
+  String get noDescription => 'بدون وصف';
+
+  @override
+  String get categoriesHint =>
+      'نظّم قائمة هذا المكان. يجب أن تكون الأسماء فريدة هنا.';
+
+  @override
+  String get categoriesEmptyOwner => 'أضف أول فئة ثم اربط الأصناف.';
+
+  @override
+  String get categoriesEmpty => 'لا توجد فئات في هذا المكان بعد.';
+
+  @override
+  String get addCategory => 'إضافة فئة';
+
+  @override
+  String get editCategory => 'تعديل الفئة';
+
+  @override
+  String get saveCategory => 'حفظ الفئة';
+
+  @override
+  String get categoryFormHint => 'الاسم فريد في هذا المكان. الوصف اختياري.';
+
+  @override
+  String get categoryName => 'اسم الفئة';
+
+  @override
+  String get categoryDescription => 'الوصف';
+
+  @override
+  String get validationCategoryName => 'أدخل اسماً حتى 80 حرفاً.';
+
+  @override
+  String get validationDescription => 'الوصف يجب ألا يتجاوز 500 حرف.';
+
+  @override
+  String get errorCategoryNameTaken => 'اسم الفئة مستخدم هنا بالفعل.';
+
+  @override
+  String get articlesHint => 'أصناف للبيع مع سعر وفئة. الأسماء فريدة هنا.';
+
+  @override
+  String get articlesEmptyOwner => 'أضف أول صنف بعد إنشاء فئة.';
+
+  @override
+  String get articlesEmpty => 'لا توجد أصناف في هذا المكان بعد.';
+
+  @override
+  String get articlesNeedCategory => 'أنشئ فئة قبل إضافة الأصناف.';
+
+  @override
+  String get addArticle => 'إضافة صنف';
+
+  @override
+  String get editArticle => 'تعديل الصنف';
+
+  @override
+  String get saveArticle => 'حفظ الصنف';
+
+  @override
+  String get articleFormHint => 'اختر فئة وسعراً واسماً فريداً في هذا المكان.';
+
+  @override
+  String get articleName => 'اسم الصنف';
+
+  @override
+  String get articleDescription => 'الوصف';
+
+  @override
+  String get articlePrice => 'السعر';
+
+  @override
+  String get articleCategory => 'الفئة';
+
+  @override
+  String get validationArticleName => 'أدخل اسماً حتى 80 حرفاً.';
+
+  @override
+  String get validationArticlePrice => 'أدخل سعراً أكبر من 0.';
+
+  @override
+  String get validationArticleCategory => 'اختر فئة.';
+
+  @override
+  String get errorArticleNameTaken => 'اسم الصنف مستخدم هنا بالفعل.';
 }

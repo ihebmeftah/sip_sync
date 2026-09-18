@@ -51,6 +51,18 @@ import 'package:sip_sync_server/src/generated/buildings/building_view.dart'
     as _iughhy8g;
 import 'package:sip_sync_server/src/generated/greetings/greeting.dart'
     as _igj77q9p;
+import 'package:sip_sync_server/src/generated/menu/menu_article_create.dart'
+    as _io67qn2p;
+import 'package:sip_sync_server/src/generated/menu/menu_article_update.dart'
+    as _igs394lv;
+import 'package:sip_sync_server/src/generated/menu/menu_article_view.dart'
+    as _ilv9ypte;
+import 'package:sip_sync_server/src/generated/menu/menu_category_create.dart'
+    as _ickdwlcc;
+import 'package:sip_sync_server/src/generated/menu/menu_category_update.dart'
+    as _i4izftei;
+import 'package:sip_sync_server/src/generated/menu/menu_category_view.dart'
+    as _iwilrax0;
 import 'package:sip_sync_server/src/generated/tables/venue_table_create.dart'
     as _ij730ie3;
 import 'package:sip_sync_server/src/generated/tables/venue_table_update.dart'
@@ -199,6 +211,10 @@ class TestEndpoints {
 
   late final _GreetingEndpoint greeting;
 
+  late final _MenuArticleEndpoint menuArticle;
+
+  late final _MenuCategoryEndpoint menuCategory;
+
   late final _VenueTableEndpoint venueTable;
 }
 
@@ -234,6 +250,14 @@ class _InternalTestEndpoints extends TestEndpoints
       serializationManager,
     );
     greeting = _GreetingEndpoint(
+      endpoints,
+      serializationManager,
+    );
+    menuArticle = _MenuArticleEndpoint(
+      endpoints,
+      serializationManager,
+    );
+    menuCategory = _MenuCategoryEndpoint(
       endpoints,
       serializationManager,
     );
@@ -1259,6 +1283,214 @@ class _GreetingEndpoint {
                   _localCallContext.arguments,
                 )
                 as _ida.Future<_igj77q9p.Greeting>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+}
+
+class _MenuArticleEndpoint {
+  _MenuArticleEndpoint(
+    this._endpointDispatch,
+    this._serializationManager,
+  );
+
+  final _is.EndpointDispatch _endpointDispatch;
+
+  final _is.SerializationManager _serializationManager;
+
+  _ida.Future<List<_ilv9ypte.MenuArticleView>> list(
+    _ist.TestSessionBuilder sessionBuilder,
+    _is.UuidValue buildingId,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'menuArticle',
+            method: 'list',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'menuArticle',
+          methodName: 'list',
+          parameters: _ist.testObjectToJson({'buildingId': buildingId}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<List<_ilv9ypte.MenuArticleView>>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<_ilv9ypte.MenuArticleView> create(
+    _ist.TestSessionBuilder sessionBuilder,
+    _io67qn2p.MenuArticleCreate request,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'menuArticle',
+            method: 'create',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'menuArticle',
+          methodName: 'create',
+          parameters: _ist.testObjectToJson({'request': request}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_ilv9ypte.MenuArticleView>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<_ilv9ypte.MenuArticleView> update(
+    _ist.TestSessionBuilder sessionBuilder,
+    _igs394lv.MenuArticleUpdate request,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'menuArticle',
+            method: 'update',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'menuArticle',
+          methodName: 'update',
+          parameters: _ist.testObjectToJson({'request': request}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_ilv9ypte.MenuArticleView>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+}
+
+class _MenuCategoryEndpoint {
+  _MenuCategoryEndpoint(
+    this._endpointDispatch,
+    this._serializationManager,
+  );
+
+  final _is.EndpointDispatch _endpointDispatch;
+
+  final _is.SerializationManager _serializationManager;
+
+  _ida.Future<List<_iwilrax0.MenuCategoryView>> list(
+    _ist.TestSessionBuilder sessionBuilder,
+    _is.UuidValue buildingId,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'menuCategory',
+            method: 'list',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'menuCategory',
+          methodName: 'list',
+          parameters: _ist.testObjectToJson({'buildingId': buildingId}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<List<_iwilrax0.MenuCategoryView>>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<_iwilrax0.MenuCategoryView> create(
+    _ist.TestSessionBuilder sessionBuilder,
+    _ickdwlcc.MenuCategoryCreate request,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'menuCategory',
+            method: 'create',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'menuCategory',
+          methodName: 'create',
+          parameters: _ist.testObjectToJson({'request': request}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_iwilrax0.MenuCategoryView>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<_iwilrax0.MenuCategoryView> update(
+    _ist.TestSessionBuilder sessionBuilder,
+    _i4izftei.MenuCategoryUpdate request,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'menuCategory',
+            method: 'update',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'menuCategory',
+          methodName: 'update',
+          parameters: _ist.testObjectToJson({'request': request}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_iwilrax0.MenuCategoryView>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();

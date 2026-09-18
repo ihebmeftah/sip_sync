@@ -217,6 +217,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get navProducts => 'Produits';
 
   @override
+  String get navCategories => 'Catégories';
+
+  @override
   String get navArticles => 'Articles';
 
   @override
@@ -279,8 +282,7 @@ class AppLocalizationsFr extends AppLocalizations {
       'Plan de salle avec aperçus et filtres de statut.';
 
   @override
-  String get dashboardCatalogCue =>
-      'Articles et ingrédients, interface seulement.';
+  String get dashboardCatalogCue => 'Catégories et articles de ce lieu.';
 
   @override
   String get dashboardProfileCue => 'Votre nom et téléphone.';
@@ -521,4 +523,103 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get errorTableNumberTaken =>
       'Ce numéro de table est déjà utilisé ici.';
+
+  @override
+  String get optionalFieldHint => 'Facultatif';
+
+  @override
+  String get noDescription => 'Sans description';
+
+  @override
+  String get categoriesHint =>
+      'Regroupez le menu de ce lieu. Les noms doivent être uniques ici.';
+
+  @override
+  String get categoriesEmptyOwner =>
+      'Ajoutez votre première catégorie, puis les articles.';
+
+  @override
+  String get categoriesEmpty => 'Aucune catégorie dans ce lieu pour l’instant.';
+
+  @override
+  String get addCategory => 'Ajouter une catégorie';
+
+  @override
+  String get editCategory => 'Modifier la catégorie';
+
+  @override
+  String get saveCategory => 'Enregistrer';
+
+  @override
+  String get categoryFormHint =>
+      'Le nom est unique dans ce lieu. La description est facultative.';
+
+  @override
+  String get categoryName => 'Nom de la catégorie';
+
+  @override
+  String get categoryDescription => 'Description';
+
+  @override
+  String get validationCategoryName => 'Entrez un nom de 1 à 80 caractères.';
+
+  @override
+  String get validationDescription =>
+      'La description doit faire au plus 500 caractères.';
+
+  @override
+  String get errorCategoryNameTaken =>
+      'Ce nom de catégorie est déjà utilisé ici.';
+
+  @override
+  String get articlesHint =>
+      'Articles vendables avec prix et catégorie. Noms uniques ici.';
+
+  @override
+  String get articlesEmptyOwner =>
+      'Ajoutez un article une fois qu’une catégorie existe.';
+
+  @override
+  String get articlesEmpty => 'Aucun article dans ce lieu pour l’instant.';
+
+  @override
+  String get articlesNeedCategory =>
+      'Créez une catégorie avant d’ajouter des articles.';
+
+  @override
+  String get addArticle => 'Ajouter un article';
+
+  @override
+  String get editArticle => 'Modifier l’article';
+
+  @override
+  String get saveArticle => 'Enregistrer';
+
+  @override
+  String get articleFormHint =>
+      'Choisissez une catégorie, un prix, et un nom unique dans ce lieu.';
+
+  @override
+  String get articleName => 'Nom de l’article';
+
+  @override
+  String get articleDescription => 'Description';
+
+  @override
+  String get articlePrice => 'Prix';
+
+  @override
+  String get articleCategory => 'Catégorie';
+
+  @override
+  String get validationArticleName => 'Entrez un nom de 1 à 80 caractères.';
+
+  @override
+  String get validationArticlePrice => 'Entrez un prix supérieur à 0.';
+
+  @override
+  String get validationArticleCategory => 'Choisissez une catégorie.';
+
+  @override
+  String get errorArticleNameTaken => 'Ce nom d’article est déjà utilisé ici.';
 }

@@ -50,7 +50,7 @@ final class TablesViewModelProvider
   }
 }
 
-String _$tablesViewModelHash() => r'635a10d46e2fccbae289be78f44c19659e9794f8';
+String _$tablesViewModelHash() => r'8643eac8065aec154408cfb1788317f1076dd372';
 
 final class TablesViewModelFamily extends $Family
     with

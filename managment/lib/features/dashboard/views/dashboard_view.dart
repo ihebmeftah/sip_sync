@@ -151,7 +151,7 @@ class DashboardView extends ConsumerWidget {
                             title: l10n.navProducts,
                             body: l10n.dashboardCatalogCue,
                             icon: Icons.inventory_2_outlined,
-                            onTap: () => ArticlesRoute(
+                            onTap: () => CategoriesRoute(
                               buildingId: buildingId,
                             ).go(context),
                           ),

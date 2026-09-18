@@ -16,6 +16,8 @@ fields:
   createdAt: DateTime, defaultModel=now
   employees: List<Employee>?, relation(name=building_employees)
   tables: List<VenueTable>?, relation(name=building_tables)
+  menuCategories: List<MenuCategory>?, relation(name=building_menu_categories)
+  menuArticles: List<MenuArticle>?, relation(name=building_menu_articles)
 indexes:
   building_owner_idx:
     fields: ownerId

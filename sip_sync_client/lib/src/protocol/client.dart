@@ -53,6 +53,18 @@ import 'package:sip_sync_client/src/protocol/buildings/building_view.dart'
     as _ia8vsgay;
 import 'package:sip_sync_client/src/protocol/greetings/greeting.dart'
     as _ijvf1i5e;
+import 'package:sip_sync_client/src/protocol/menu/menu_article_create.dart'
+    as _iubk8tjs;
+import 'package:sip_sync_client/src/protocol/menu/menu_article_update.dart'
+    as _igfjpiyj;
+import 'package:sip_sync_client/src/protocol/menu/menu_article_view.dart'
+    as _ijqfjmuy;
+import 'package:sip_sync_client/src/protocol/menu/menu_category_create.dart'
+    as _iozirify;
+import 'package:sip_sync_client/src/protocol/menu/menu_category_update.dart'
+    as _i7i0pa16;
+import 'package:sip_sync_client/src/protocol/menu/menu_category_view.dart'
+    as _i0q757fl;
 import 'package:sip_sync_client/src/protocol/tables/venue_table_create.dart'
     as _imol4lsw;
 import 'package:sip_sync_client/src/protocol/tables/venue_table_update.dart'
@@ -358,6 +370,78 @@ class EndpointGreeting extends _isc.EndpointRef {
       );
 }
 
+/// Menu article RPC for a building.
+/// {@category Endpoint}
+class EndpointMenuArticle extends _isc.EndpointRef {
+  EndpointMenuArticle(_isc.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'menuArticle';
+
+  /// Lists articles for [buildingId] (owner or assigned employee).
+  _ida.Future<List<_ijqfjmuy.MenuArticleView>> list(
+    _isc.UuidValue buildingId,
+  ) => caller.callServerEndpoint<List<_ijqfjmuy.MenuArticleView>>(
+    'menuArticle',
+    'list',
+    {'buildingId': buildingId},
+  );
+
+  /// Owner creates an article.
+  _ida.Future<_ijqfjmuy.MenuArticleView> create(
+    _iubk8tjs.MenuArticleCreate request,
+  ) => caller.callServerEndpoint<_ijqfjmuy.MenuArticleView>(
+    'menuArticle',
+    'create',
+    {'request': request},
+  );
+
+  /// Owner updates an article.
+  _ida.Future<_ijqfjmuy.MenuArticleView> update(
+    _igfjpiyj.MenuArticleUpdate request,
+  ) => caller.callServerEndpoint<_ijqfjmuy.MenuArticleView>(
+    'menuArticle',
+    'update',
+    {'request': request},
+  );
+}
+
+/// Menu category RPC for a building.
+/// {@category Endpoint}
+class EndpointMenuCategory extends _isc.EndpointRef {
+  EndpointMenuCategory(_isc.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'menuCategory';
+
+  /// Lists categories for [buildingId] (owner or assigned employee).
+  _ida.Future<List<_i0q757fl.MenuCategoryView>> list(
+    _isc.UuidValue buildingId,
+  ) => caller.callServerEndpoint<List<_i0q757fl.MenuCategoryView>>(
+    'menuCategory',
+    'list',
+    {'buildingId': buildingId},
+  );
+
+  /// Owner creates a category.
+  _ida.Future<_i0q757fl.MenuCategoryView> create(
+    _iozirify.MenuCategoryCreate request,
+  ) => caller.callServerEndpoint<_i0q757fl.MenuCategoryView>(
+    'menuCategory',
+    'create',
+    {'request': request},
+  );
+
+  /// Owner updates a category.
+  _ida.Future<_i0q757fl.MenuCategoryView> update(
+    _i7i0pa16.MenuCategoryUpdate request,
+  ) => caller.callServerEndpoint<_i0q757fl.MenuCategoryView>(
+    'menuCategory',
+    'update',
+    {'request': request},
+  );
+}
+
 /// Floor table RPC for a building.
 /// {@category Endpoint}
 class EndpointVenueTable extends _isc.EndpointRef {
@@ -438,6 +522,8 @@ class Client extends _isc.ServerpodClientShared {
     superAdminAuth = EndpointSuperAdminAuth(this);
     building = EndpointBuilding(this);
     greeting = EndpointGreeting(this);
+    menuArticle = EndpointMenuArticle(this);
+    menuCategory = EndpointMenuCategory(this);
     venueTable = EndpointVenueTable(this);
     modules = Modules(this);
   }
@@ -456,6 +542,10 @@ class Client extends _isc.ServerpodClientShared {
 
   late final EndpointGreeting greeting;
 
+  late final EndpointMenuArticle menuArticle;
+
+  late final EndpointMenuCategory menuCategory;
+
   late final EndpointVenueTable venueTable;
 
   late final Modules modules;
@@ -469,6 +559,8 @@ class Client extends _isc.ServerpodClientShared {
     'superAdminAuth': superAdminAuth,
     'building': building,
     'greeting': greeting,
+    'menuArticle': menuArticle,
+    'menuCategory': menuCategory,
     'venueTable': venueTable,
   };
 

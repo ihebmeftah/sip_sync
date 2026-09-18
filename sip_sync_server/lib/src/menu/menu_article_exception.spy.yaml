@@ -1,0 +1,4 @@
+exception: MenuArticleException
+fields:
+  message: String
+  code: MenuArticleErrorCode

@@ -218,6 +218,15 @@ class OpsSideBar extends ConsumerWidget {
                         ),
                         children: [
                           _NavTile(
+                            icon: Icons.category_outlined,
+                            label: l10n.navCategories,
+                            indent: true,
+                            selected: location.endsWith('/products/categories'),
+                            onTap: () => CategoriesRoute(
+                              buildingId: buildingId,
+                            ).go(context),
+                          ),
+                          _NavTile(
                             icon: Icons.restaurant_menu_outlined,
                             label: l10n.navArticles,
                             indent: true,

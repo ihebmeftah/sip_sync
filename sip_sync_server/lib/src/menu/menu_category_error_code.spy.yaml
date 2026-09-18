@@ -1,0 +1,7 @@
+enum: MenuCategoryErrorCode
+serialized: byName
+values:
+  - invalidInput
+  - notAuthorized
+  - notFound
+  - nameTaken

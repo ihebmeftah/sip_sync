@@ -12,6 +12,8 @@ import '../../features/dashboard/views/dashboard_view.dart';
 import '../../features/employees/views/employee_details_view.dart';
 import '../../features/employees/views/employee_form_view.dart';
 import '../../features/employees/views/employees_list_view.dart';
+import '../../features/products/views/articles_list_view.dart';
+import '../../features/products/views/categories_list_view.dart';
 import '../../features/tables/views/tables_list_view.dart';
 import '../../features/profile/views/profile_view.dart';
 import '../../l10n/generated/app_localizations.dart';
@@ -113,6 +115,10 @@ class BuildingEditRoute extends GoRouteData with $BuildingEditRoute {
     ),
     TypedGoRoute<PosRoute>(path: '/b/:buildingId/pos', name: 'pos'),
     TypedGoRoute<TablesRoute>(path: '/b/:buildingId/tables', name: 'tables'),
+    TypedGoRoute<CategoriesRoute>(
+      path: '/b/:buildingId/products/categories',
+      name: 'categories',
+    ),
     TypedGoRoute<ArticlesRoute>(
       path: '/b/:buildingId/products/articles',
       name: 'articles',
@@ -225,6 +231,17 @@ class TablesRoute extends GoRouteData with $TablesRoute {
   }
 }
 
+class CategoriesRoute extends GoRouteData with $CategoriesRoute {
+  const CategoriesRoute({required this.buildingId});
+
+  final String buildingId;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return CategoriesListView(buildingId: buildingId);
+  }
+}
+
 class ArticlesRoute extends GoRouteData with $ArticlesRoute {
   const ArticlesRoute({required this.buildingId});
 
@@ -232,8 +249,7 @@ class ArticlesRoute extends GoRouteData with $ArticlesRoute {
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    final name = AppLocalizations.of(context)!.navArticles;
-    return PlaceholderView(screenName: name);
+    return ArticlesListView(buildingId: buildingId);
   }
 }
 

@@ -33,6 +33,14 @@ import 'package:sip_sync_server/src/generated/buildings/building_create.dart'
     as _iikuia2o;
 import 'package:sip_sync_server/src/generated/buildings/building_update.dart'
     as _ipidi05l;
+import 'package:sip_sync_server/src/generated/menu/menu_article_create.dart'
+    as _io67qn2p;
+import 'package:sip_sync_server/src/generated/menu/menu_article_update.dart'
+    as _igs394lv;
+import 'package:sip_sync_server/src/generated/menu/menu_category_create.dart'
+    as _ickdwlcc;
+import 'package:sip_sync_server/src/generated/menu/menu_category_update.dart'
+    as _i4izftei;
 import 'package:sip_sync_server/src/generated/tables/venue_table_create.dart'
     as _ij730ie3;
 import 'package:sip_sync_server/src/generated/tables/venue_table_update.dart'
@@ -44,6 +52,8 @@ import '../auth/owner_auth_endpoint.dart' as _is2qyeee;
 import '../auth/super_admin_auth_endpoint.dart' as _itmp66ay;
 import '../buildings/building_endpoint.dart' as _i69ygv7j;
 import '../greetings/greeting_endpoint.dart' as _il624ik7;
+import '../menu/menu_article_endpoint.dart' as _iefktwfq;
+import '../menu/menu_category_endpoint.dart' as _i1h28rjj;
 import '../tables/venue_table_endpoint.dart' as _ira8yrq4;
 
 class Endpoints extends _is.EndpointDispatch {
@@ -90,6 +100,18 @@ class Endpoints extends _is.EndpointDispatch {
         ..initialize(
           server,
           'greeting',
+          null,
+        ),
+      'menuArticle': _iefktwfq.MenuArticleEndpoint()
+        ..initialize(
+          server,
+          'menuArticle',
+          null,
+        ),
+      'menuCategory': _i1h28rjj.MenuCategoryEndpoint()
+        ..initialize(
+          server,
+          'menuCategory',
           null,
         ),
       'venueTable': _ira8yrq4.VenueTableEndpoint()
@@ -657,6 +679,138 @@ class Endpoints extends _is.EndpointDispatch {
                     session,
                     params['name'],
                   ),
+        ),
+      },
+    );
+    connectors['menuArticle'] = _is.EndpointConnector(
+      name: 'menuArticle',
+      endpoint: endpoints['menuArticle']!,
+      methodConnectors: {
+        'list': _is.MethodConnector(
+          name: 'list',
+          params: {
+            'buildingId': _is.ParameterDescription(
+              name: 'buildingId',
+              type: _is.getType<_is.UuidValue>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['menuArticle'] as _iefktwfq.MenuArticleEndpoint)
+                      .list(
+                        session,
+                        params['buildingId'],
+                      ),
+        ),
+        'create': _is.MethodConnector(
+          name: 'create',
+          params: {
+            'request': _is.ParameterDescription(
+              name: 'request',
+              type: _is.getType<_io67qn2p.MenuArticleCreate>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['menuArticle'] as _iefktwfq.MenuArticleEndpoint)
+                      .create(
+                        session,
+                        params['request'],
+                      ),
+        ),
+        'update': _is.MethodConnector(
+          name: 'update',
+          params: {
+            'request': _is.ParameterDescription(
+              name: 'request',
+              type: _is.getType<_igs394lv.MenuArticleUpdate>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['menuArticle'] as _iefktwfq.MenuArticleEndpoint)
+                      .update(
+                        session,
+                        params['request'],
+                      ),
+        ),
+      },
+    );
+    connectors['menuCategory'] = _is.EndpointConnector(
+      name: 'menuCategory',
+      endpoint: endpoints['menuCategory']!,
+      methodConnectors: {
+        'list': _is.MethodConnector(
+          name: 'list',
+          params: {
+            'buildingId': _is.ParameterDescription(
+              name: 'buildingId',
+              type: _is.getType<_is.UuidValue>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['menuCategory'] as _i1h28rjj.MenuCategoryEndpoint)
+                      .list(
+                        session,
+                        params['buildingId'],
+                      ),
+        ),
+        'create': _is.MethodConnector(
+          name: 'create',
+          params: {
+            'request': _is.ParameterDescription(
+              name: 'request',
+              type: _is.getType<_ickdwlcc.MenuCategoryCreate>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['menuCategory'] as _i1h28rjj.MenuCategoryEndpoint)
+                      .create(
+                        session,
+                        params['request'],
+                      ),
+        ),
+        'update': _is.MethodConnector(
+          name: 'update',
+          params: {
+            'request': _is.ParameterDescription(
+              name: 'request',
+              type: _is.getType<_i4izftei.MenuCategoryUpdate>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['menuCategory'] as _i1h28rjj.MenuCategoryEndpoint)
+                      .update(
+                        session,
+                        params['request'],
+                      ),
         ),
       },
     );

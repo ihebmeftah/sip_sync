@@ -1,0 +1,6 @@
+class: MenuCategoryView
+fields:
+  id: UuidValue
+  buildingId: UuidValue
+  name: String
+  description: String?

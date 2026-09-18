@@ -1,0 +1,5 @@
+class: MenuCategoryUpdate
+fields:
+  id: UuidValue
+  name: String
+  description: String?

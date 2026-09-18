@@ -1,0 +1,5 @@
+class: MenuCategoryCreate
+fields:
+  buildingId: UuidValue
+  name: String
+  description: String?

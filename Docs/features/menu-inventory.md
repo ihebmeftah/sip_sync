@@ -1,29 +1,51 @@
 # Menu & inventory
 
-Status: draft
+Status: in progress (categories + articles)
 
 ## Apps
 
-`managment` (catalog + stock), `sip_sync_flutter` (menu read for customers), `sip_sync_server`.
+`sip_sync_server`, `managment`. Customer menu read and ingredients/stock come later.
 
 ## Actors and permissions
 
-- Owner / menu managers: categories, articles, recipes (ingredient composition).
-- Kitchen / ops: stock levels, threshold alerts.
-- Customers: published menu only.
-
-The management app currently exposes **Articles** and **Ingredients** under a Products rail group as placeholders (no endpoints).
+- **Owner** — list, create, and update categories and articles for buildings they own.
+- **Employee** — list categories and articles for their assigned building (POS / kitchen later). Cannot create or edit.
+- Enforced on `MenuCategoryEndpoint` / `MenuArticleEndpoint` via `AuthGuard` + building ownership / assignment.
 
 ## Flow
 
-1. Manage categories and articles per building (or shared catalog — decide at implementation).
-2. Articles compose ingredients; placing an order deducts stock on the server.
-3. Threshold alerts when stock falls below limit.
+1. Open a venue → **Products** in the ops rail.
+2. **Categories** (`/b/:buildingId/products/categories`) — per-building catalog groups (name + optional description).
+3. **Articles** (`/b/:buildingId/products/articles`) — sellable items with name, optional description, price, and a category in the same building.
+4. Owner adds or edits via dialogs (same activity chrome as employees / tables).
+5. Category and article **names are unique per building** (case-insensitive after trim).
 
 ## Data
 
-Separate create/update for category, article, ingredient. Do not send full recipe graphs on every list response.
+### `menu_category`
+
+| Field | Notes |
+| --- | --- |
+| `id` | UUID |
+| `buildingId` | → `building` |
+| `name` | Unique per building (1–80) |
+| `description` | Optional (max 500) |
+| `createdAt` | |
+
+### `menu_article`
+
+| Field | Notes |
+| --- | --- |
+| `id` | UUID |
+| `buildingId` | → `building` (denormalized for unique name + list scope) |
+| `categoryId` | → `menu_category` (same building) |
+| `name` | Unique per building (1–80) |
+| `description` | Optional (max 500) |
+| `price` | `> 0`, max 1_000_000 |
+| `createdAt` | |
+
+`MenuArticleView` also returns `categoryName` for list UI.
 
 ## Realtime
 
-Stock updates when orders are placed (invalidate or stream to `managment`).
+None yet. Stock / ingredient deduction arrives with orders.

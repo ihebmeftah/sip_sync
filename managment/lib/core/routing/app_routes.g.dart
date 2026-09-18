@@ -217,6 +217,12 @@ RouteBase get $opsShellRoute => ShellRouteData.$route(
       factory: $TablesRoute._fromState,
     ),
     GoRouteData.$route(
+      path: '/b/:buildingId/products/categories',
+      name: 'categories',
+      hasOverriddenOnExit: false,
+      factory: $CategoriesRoute._fromState,
+    ),
+    GoRouteData.$route(
       path: '/b/:buildingId/products/articles',
       name: 'articles',
       hasOverriddenOnExit: false,
@@ -423,6 +429,31 @@ mixin $TablesRoute on GoRouteData {
   @override
   String get location => GoRouteData.$location(
     '/b/${Uri.encodeComponent(_self.buildingId)}/tables',
+  );
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+mixin $CategoriesRoute on GoRouteData {
+  static CategoriesRoute _fromState(GoRouterState state) =>
+      CategoriesRoute(buildingId: state.pathParameters['buildingId']!);
+
+  CategoriesRoute get _self => this as CategoriesRoute;
+
+  @override
+  String get location => GoRouteData.$location(
+    '/b/${Uri.encodeComponent(_self.buildingId)}/products/categories',
   );
 
   @override

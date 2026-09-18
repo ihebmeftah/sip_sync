@@ -1,0 +1,9 @@
+class: MenuArticleView
+fields:
+  id: UuidValue
+  buildingId: UuidValue
+  categoryId: UuidValue
+  categoryName: String
+  name: String
+  description: String?
+  price: double

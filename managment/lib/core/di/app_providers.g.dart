@@ -241,6 +241,102 @@ final class VenueTableRepositoryProvider
 String _$venueTableRepositoryHash() =>
     r'635bd24db8db29d775ebefa6c97df4518167f91c';
 
+@ProviderFor(menuCategoryRepository)
+const menuCategoryRepositoryProvider = MenuCategoryRepositoryProvider._();
+
+final class MenuCategoryRepositoryProvider
+    extends
+        $FunctionalProvider<
+          MenuCategoryRepository,
+          MenuCategoryRepository,
+          MenuCategoryRepository
+        >
+    with $Provider<MenuCategoryRepository> {
+  const MenuCategoryRepositoryProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'menuCategoryRepositoryProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$menuCategoryRepositoryHash();
+
+  @$internal
+  @override
+  $ProviderElement<MenuCategoryRepository> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  MenuCategoryRepository create(Ref ref) {
+    return menuCategoryRepository(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(MenuCategoryRepository value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<MenuCategoryRepository>(value),
+    );
+  }
+}
+
+String _$menuCategoryRepositoryHash() =>
+    r'eafd4c43edabf4098ead91cfbe2327a59d5f73cf';
+
+@ProviderFor(menuArticleRepository)
+const menuArticleRepositoryProvider = MenuArticleRepositoryProvider._();
+
+final class MenuArticleRepositoryProvider
+    extends
+        $FunctionalProvider<
+          MenuArticleRepository,
+          MenuArticleRepository,
+          MenuArticleRepository
+        >
+    with $Provider<MenuArticleRepository> {
+  const MenuArticleRepositoryProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'menuArticleRepositoryProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$menuArticleRepositoryHash();
+
+  @$internal
+  @override
+  $ProviderElement<MenuArticleRepository> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  MenuArticleRepository create(Ref ref) {
+    return menuArticleRepository(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(MenuArticleRepository value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<MenuArticleRepository>(value),
+    );
+  }
+}
+
+String _$menuArticleRepositoryHash() =>
+    r'823fabf37abaf733fff3533635409471602c822a';
+
 @ProviderFor(appSessionStore)
 const appSessionStoreProvider = AppSessionStoreProvider._();
 

@@ -3,6 +3,8 @@ import 'package:sip_sync_client/sip_sync_client.dart';
 
 import '../../data/repositories/building_repository.dart';
 import '../../data/repositories/employee_repository.dart';
+import '../../data/repositories/menu_article_repository.dart';
+import '../../data/repositories/menu_category_repository.dart';
 import '../../data/repositories/owner_auth_repository.dart';
 import '../../data/repositories/venue_table_repository.dart';
 import 'app_session_store.dart';
@@ -27,6 +29,14 @@ EmployeeRepository employeeRepository(Ref ref) => getIt<EmployeeRepository>();
 @Riverpod(keepAlive: true)
 VenueTableRepository venueTableRepository(Ref ref) =>
     getIt<VenueTableRepository>();
+
+@Riverpod(keepAlive: true)
+MenuCategoryRepository menuCategoryRepository(Ref ref) =>
+    getIt<MenuCategoryRepository>();
+
+@Riverpod(keepAlive: true)
+MenuArticleRepository menuArticleRepository(Ref ref) =>
+    getIt<MenuArticleRepository>();
 
 @Riverpod(keepAlive: true)
 AppSessionStore appSessionStore(Ref ref) {

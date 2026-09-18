@@ -484,6 +484,12 @@ abstract class AppLocalizations {
   /// **'Products'**
   String get navProducts;
 
+  /// No description provided for @navCategories.
+  ///
+  /// In en, this message translates to:
+  /// **'Categories'**
+  String get navCategories;
+
   /// No description provided for @navArticles.
   ///
   /// In en, this message translates to:
@@ -601,7 +607,7 @@ abstract class AppLocalizations {
   /// No description provided for @dashboardCatalogCue.
   ///
   /// In en, this message translates to:
-  /// **'Articles and ingredients, UI only.'**
+  /// **'Categories and articles for this venue.'**
   String get dashboardCatalogCue;
 
   /// No description provided for @dashboardProfileCue.
@@ -1029,6 +1035,186 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'That table number is already used here.'**
   String get errorTableNumberTaken;
+
+  /// No description provided for @optionalFieldHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional'**
+  String get optionalFieldHint;
+
+  /// No description provided for @noDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'No description'**
+  String get noDescription;
+
+  /// No description provided for @categoriesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Group the menu for this venue. Names must be unique here.'**
+  String get categoriesHint;
+
+  /// No description provided for @categoriesEmptyOwner.
+  ///
+  /// In en, this message translates to:
+  /// **'Add your first category, then attach articles.'**
+  String get categoriesEmptyOwner;
+
+  /// No description provided for @categoriesEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No categories in this venue yet.'**
+  String get categoriesEmpty;
+
+  /// No description provided for @addCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Add category'**
+  String get addCategory;
+
+  /// No description provided for @editCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit category'**
+  String get editCategory;
+
+  /// No description provided for @saveCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Save category'**
+  String get saveCategory;
+
+  /// No description provided for @categoryFormHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Name is unique in this building. Description is optional.'**
+  String get categoryFormHint;
+
+  /// No description provided for @categoryName.
+  ///
+  /// In en, this message translates to:
+  /// **'Category name'**
+  String get categoryName;
+
+  /// No description provided for @categoryDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get categoryDescription;
+
+  /// No description provided for @validationCategoryName.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a name up to 80 characters.'**
+  String get validationCategoryName;
+
+  /// No description provided for @validationDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Description must be at most 500 characters.'**
+  String get validationDescription;
+
+  /// No description provided for @errorCategoryNameTaken.
+  ///
+  /// In en, this message translates to:
+  /// **'That category name is already used here.'**
+  String get errorCategoryNameTaken;
+
+  /// No description provided for @articlesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Sellable items with a price and category. Names must be unique here.'**
+  String get articlesHint;
+
+  /// No description provided for @articlesEmptyOwner.
+  ///
+  /// In en, this message translates to:
+  /// **'Add your first article once a category exists.'**
+  String get articlesEmptyOwner;
+
+  /// No description provided for @articlesEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No articles in this venue yet.'**
+  String get articlesEmpty;
+
+  /// No description provided for @articlesNeedCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a category before adding articles.'**
+  String get articlesNeedCategory;
+
+  /// No description provided for @addArticle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add article'**
+  String get addArticle;
+
+  /// No description provided for @editArticle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit article'**
+  String get editArticle;
+
+  /// No description provided for @saveArticle.
+  ///
+  /// In en, this message translates to:
+  /// **'Save article'**
+  String get saveArticle;
+
+  /// No description provided for @articleFormHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a category, set the price, and keep the name unique in this building.'**
+  String get articleFormHint;
+
+  /// No description provided for @articleName.
+  ///
+  /// In en, this message translates to:
+  /// **'Article name'**
+  String get articleName;
+
+  /// No description provided for @articleDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get articleDescription;
+
+  /// No description provided for @articlePrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Price'**
+  String get articlePrice;
+
+  /// No description provided for @articleCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Category'**
+  String get articleCategory;
+
+  /// No description provided for @validationArticleName.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a name up to 80 characters.'**
+  String get validationArticleName;
+
+  /// No description provided for @validationArticlePrice.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a price greater than 0.'**
+  String get validationArticlePrice;
+
+  /// No description provided for @validationArticleCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a category.'**
+  String get validationArticleCategory;
+
+  /// No description provided for @errorArticleNameTaken.
+  ///
+  /// In en, this message translates to:
+  /// **'That article name is already used here.'**
+  String get errorArticleNameTaken;
 }
 
 class _AppLocalizationsDelegate

@@ -213,6 +213,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get navProducts => 'Products';
 
   @override
+  String get navCategories => 'Categories';
+
+  @override
   String get navArticles => 'Articles';
 
   @override
@@ -275,7 +278,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Floor map with seat previews and status filters.';
 
   @override
-  String get dashboardCatalogCue => 'Articles and ingredients, UI only.';
+  String get dashboardCatalogCue => 'Categories and articles for this venue.';
 
   @override
   String get dashboardProfileCue => 'Your name and phone.';
@@ -512,4 +515,103 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get errorTableNumberTaken => 'That table number is already used here.';
+
+  @override
+  String get optionalFieldHint => 'Optional';
+
+  @override
+  String get noDescription => 'No description';
+
+  @override
+  String get categoriesHint =>
+      'Group the menu for this venue. Names must be unique here.';
+
+  @override
+  String get categoriesEmptyOwner =>
+      'Add your first category, then attach articles.';
+
+  @override
+  String get categoriesEmpty => 'No categories in this venue yet.';
+
+  @override
+  String get addCategory => 'Add category';
+
+  @override
+  String get editCategory => 'Edit category';
+
+  @override
+  String get saveCategory => 'Save category';
+
+  @override
+  String get categoryFormHint =>
+      'Name is unique in this building. Description is optional.';
+
+  @override
+  String get categoryName => 'Category name';
+
+  @override
+  String get categoryDescription => 'Description';
+
+  @override
+  String get validationCategoryName => 'Enter a name up to 80 characters.';
+
+  @override
+  String get validationDescription =>
+      'Description must be at most 500 characters.';
+
+  @override
+  String get errorCategoryNameTaken =>
+      'That category name is already used here.';
+
+  @override
+  String get articlesHint =>
+      'Sellable items with a price and category. Names must be unique here.';
+
+  @override
+  String get articlesEmptyOwner =>
+      'Add your first article once a category exists.';
+
+  @override
+  String get articlesEmpty => 'No articles in this venue yet.';
+
+  @override
+  String get articlesNeedCategory =>
+      'Create a category before adding articles.';
+
+  @override
+  String get addArticle => 'Add article';
+
+  @override
+  String get editArticle => 'Edit article';
+
+  @override
+  String get saveArticle => 'Save article';
+
+  @override
+  String get articleFormHint =>
+      'Pick a category, set the price, and keep the name unique in this building.';
+
+  @override
+  String get articleName => 'Article name';
+
+  @override
+  String get articleDescription => 'Description';
+
+  @override
+  String get articlePrice => 'Price';
+
+  @override
+  String get articleCategory => 'Category';
+
+  @override
+  String get validationArticleName => 'Enter a name up to 80 characters.';
+
+  @override
+  String get validationArticlePrice => 'Enter a price greater than 0.';
+
+  @override
+  String get validationArticleCategory => 'Choose a category.';
+
+  @override
+  String get errorArticleNameTaken => 'That article name is already used here.';
 }

@@ -23,6 +23,10 @@ import 'package:sip_sync_server/src/generated/auth/super_admin_view.dart'
     as _i3qefl0x;
 import 'package:sip_sync_server/src/generated/buildings/building_view.dart'
     as _iughhy8g;
+import 'package:sip_sync_server/src/generated/menu/menu_article_view.dart'
+    as _ilv9ypte;
+import 'package:sip_sync_server/src/generated/menu/menu_category_view.dart'
+    as _iwilrax0;
 import 'package:sip_sync_server/src/generated/tables/venue_table_view.dart'
     as _icmpx87d;
 import 'auth/account_error_code.dart' as _i4a4wzkt;
@@ -54,6 +58,18 @@ import 'buildings/building_exception.dart' as _i7fakgop;
 import 'buildings/building_update.dart' as _ivqpqa05;
 import 'buildings/building_view.dart' as _iyqmhcrr;
 import 'greetings/greeting.dart' as _izw8z7ou;
+import 'menu/menu_article.dart' as _ip0o9c0i;
+import 'menu/menu_article_create.dart' as _i7hj1jb2;
+import 'menu/menu_article_error_code.dart' as _i46cm0v4;
+import 'menu/menu_article_exception.dart' as _iwbmeh47;
+import 'menu/menu_article_update.dart' as _iwetmqfn;
+import 'menu/menu_article_view.dart' as _irzndnzc;
+import 'menu/menu_category.dart' as _i7sxg44v;
+import 'menu/menu_category_create.dart' as _i8xl75s4;
+import 'menu/menu_category_error_code.dart' as _ifc6ty9l;
+import 'menu/menu_category_exception.dart' as _ikojmx8s;
+import 'menu/menu_category_update.dart' as _i152aql3;
+import 'menu/menu_category_view.dart' as _i9ogfgfu;
 import 'tables/table_floor_status.dart' as _issw8is0;
 import 'tables/venue_table.dart' as _i4t52k6g;
 import 'tables/venue_table_create.dart' as _iwle9uzy;
@@ -90,6 +106,18 @@ export 'buildings/building_exception.dart';
 export 'buildings/building_update.dart';
 export 'buildings/building_view.dart';
 export 'greetings/greeting.dart';
+export 'menu/menu_article.dart';
+export 'menu/menu_article_create.dart';
+export 'menu/menu_article_error_code.dart';
+export 'menu/menu_article_exception.dart';
+export 'menu/menu_article_update.dart';
+export 'menu/menu_article_view.dart';
+export 'menu/menu_category.dart';
+export 'menu/menu_category_create.dart';
+export 'menu/menu_category_error_code.dart';
+export 'menu/menu_category_exception.dart';
+export 'menu/menu_category_update.dart';
+export 'menu/menu_category_view.dart';
 export 'tables/table_floor_status.dart';
 export 'tables/venue_table.dart';
 export 'tables/venue_table_create.dart';
@@ -536,6 +564,209 @@ class Protocol extends _is.DatabaseSerializationManager {
       managed: true,
     ),
     _isp.TableDefinition(
+      name: 'menu_article',
+      dartName: 'MenuArticle',
+      schema: 'public',
+      module: 'sip_sync',
+      columns: [
+        _isp.ColumnDefinition(
+          name: 'id',
+          columnType: _isp.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue?',
+          columnDefault: 'random_v7',
+        ),
+        _isp.ColumnDefinition(
+          name: 'buildingId',
+          columnType: _isp.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue',
+        ),
+        _isp.ColumnDefinition(
+          name: 'categoryId',
+          columnType: _isp.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue',
+        ),
+        _isp.ColumnDefinition(
+          name: 'name',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _isp.ColumnDefinition(
+          name: 'description',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'price',
+          columnType: _isp.ColumnType.doublePrecision,
+          isNullable: false,
+          dartType: 'double',
+        ),
+        _isp.ColumnDefinition(
+          name: 'createdAt',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+        ),
+      ],
+      foreignKeys: [
+        _isp.ForeignKeyDefinition(
+          constraintName: 'menu_article_fk_0',
+          columns: ['buildingId'],
+          referenceTable: 'building',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.cascade,
+          matchType: null,
+        ),
+        _isp.ForeignKeyDefinition(
+          constraintName: 'menu_article_fk_1',
+          columns: ['categoryId'],
+          referenceTable: 'menu_category',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.restrict,
+          matchType: null,
+        ),
+      ],
+      indexes: [
+        _isp.IndexDefinition(
+          indexName: 'menu_article_building_name_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'buildingId',
+            ),
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'name',
+            ),
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: false,
+        ),
+        _isp.IndexDefinition(
+          indexName: 'menu_article_building_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'buildingId',
+            ),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+        _isp.IndexDefinition(
+          indexName: 'menu_article_category_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'categoryId',
+            ),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
+    _isp.TableDefinition(
+      name: 'menu_category',
+      dartName: 'MenuCategory',
+      schema: 'public',
+      module: 'sip_sync',
+      columns: [
+        _isp.ColumnDefinition(
+          name: 'id',
+          columnType: _isp.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue?',
+          columnDefault: 'random_v7',
+        ),
+        _isp.ColumnDefinition(
+          name: 'buildingId',
+          columnType: _isp.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue',
+        ),
+        _isp.ColumnDefinition(
+          name: 'name',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _isp.ColumnDefinition(
+          name: 'description',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'createdAt',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+        ),
+      ],
+      foreignKeys: [
+        _isp.ForeignKeyDefinition(
+          constraintName: 'menu_category_fk_0',
+          columns: ['buildingId'],
+          referenceTable: 'building',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.cascade,
+          matchType: null,
+        ),
+      ],
+      indexes: [
+        _isp.IndexDefinition(
+          indexName: 'menu_category_building_name_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'buildingId',
+            ),
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'name',
+            ),
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: false,
+        ),
+        _isp.IndexDefinition(
+          indexName: 'menu_category_building_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'buildingId',
+            ),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
+    _isp.TableDefinition(
       name: 'owner',
       dartName: 'Owner',
       schema: 'public',
@@ -914,6 +1145,42 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == _izw8z7ou.Greeting) {
       return _izw8z7ou.Greeting.fromJson(data) as T;
     }
+    if (t == _ip0o9c0i.MenuArticle) {
+      return _ip0o9c0i.MenuArticle.fromJson(data) as T;
+    }
+    if (t == _i7hj1jb2.MenuArticleCreate) {
+      return _i7hj1jb2.MenuArticleCreate.fromJson(data) as T;
+    }
+    if (t == _i46cm0v4.MenuArticleErrorCode) {
+      return _i46cm0v4.MenuArticleErrorCode.fromJson(data) as T;
+    }
+    if (t == _iwbmeh47.MenuArticleException) {
+      return _iwbmeh47.MenuArticleException.fromJson(data) as T;
+    }
+    if (t == _iwetmqfn.MenuArticleUpdate) {
+      return _iwetmqfn.MenuArticleUpdate.fromJson(data) as T;
+    }
+    if (t == _irzndnzc.MenuArticleView) {
+      return _irzndnzc.MenuArticleView.fromJson(data) as T;
+    }
+    if (t == _i7sxg44v.MenuCategory) {
+      return _i7sxg44v.MenuCategory.fromJson(data) as T;
+    }
+    if (t == _i8xl75s4.MenuCategoryCreate) {
+      return _i8xl75s4.MenuCategoryCreate.fromJson(data) as T;
+    }
+    if (t == _ifc6ty9l.MenuCategoryErrorCode) {
+      return _ifc6ty9l.MenuCategoryErrorCode.fromJson(data) as T;
+    }
+    if (t == _ikojmx8s.MenuCategoryException) {
+      return _ikojmx8s.MenuCategoryException.fromJson(data) as T;
+    }
+    if (t == _i152aql3.MenuCategoryUpdate) {
+      return _i152aql3.MenuCategoryUpdate.fromJson(data) as T;
+    }
+    if (t == _i9ogfgfu.MenuCategoryView) {
+      return _i9ogfgfu.MenuCategoryView.fromJson(data) as T;
+    }
     if (t == _issw8is0.TableFloorStatus) {
       return _issw8is0.TableFloorStatus.fromJson(data) as T;
     }
@@ -1051,6 +1318,60 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == _is.getType<_izw8z7ou.Greeting?>()) {
       return (data != null ? _izw8z7ou.Greeting.fromJson(data) : null) as T;
     }
+    if (t == _is.getType<_ip0o9c0i.MenuArticle?>()) {
+      return (data != null ? _ip0o9c0i.MenuArticle.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_i7hj1jb2.MenuArticleCreate?>()) {
+      return (data != null ? _i7hj1jb2.MenuArticleCreate.fromJson(data) : null)
+          as T;
+    }
+    if (t == _is.getType<_i46cm0v4.MenuArticleErrorCode?>()) {
+      return (data != null
+              ? _i46cm0v4.MenuArticleErrorCode.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_iwbmeh47.MenuArticleException?>()) {
+      return (data != null
+              ? _iwbmeh47.MenuArticleException.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_iwetmqfn.MenuArticleUpdate?>()) {
+      return (data != null ? _iwetmqfn.MenuArticleUpdate.fromJson(data) : null)
+          as T;
+    }
+    if (t == _is.getType<_irzndnzc.MenuArticleView?>()) {
+      return (data != null ? _irzndnzc.MenuArticleView.fromJson(data) : null)
+          as T;
+    }
+    if (t == _is.getType<_i7sxg44v.MenuCategory?>()) {
+      return (data != null ? _i7sxg44v.MenuCategory.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_i8xl75s4.MenuCategoryCreate?>()) {
+      return (data != null ? _i8xl75s4.MenuCategoryCreate.fromJson(data) : null)
+          as T;
+    }
+    if (t == _is.getType<_ifc6ty9l.MenuCategoryErrorCode?>()) {
+      return (data != null
+              ? _ifc6ty9l.MenuCategoryErrorCode.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_ikojmx8s.MenuCategoryException?>()) {
+      return (data != null
+              ? _ikojmx8s.MenuCategoryException.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_i152aql3.MenuCategoryUpdate?>()) {
+      return (data != null ? _i152aql3.MenuCategoryUpdate.fromJson(data) : null)
+          as T;
+    }
+    if (t == _is.getType<_i9ogfgfu.MenuCategoryView?>()) {
+      return (data != null ? _i9ogfgfu.MenuCategoryView.fromJson(data) : null)
+          as T;
+    }
     if (t == _is.getType<_issw8is0.TableFloorStatus?>()) {
       return (data != null ? _issw8is0.TableFloorStatus.fromJson(data) : null)
           as T;
@@ -1124,6 +1445,34 @@ class Protocol extends _is.DatabaseSerializationManager {
               : null)
           as T;
     }
+    if (t == List<_i7sxg44v.MenuCategory>) {
+      return (data as List)
+              .map((e) => deserialize<_i7sxg44v.MenuCategory>(e))
+              .toList()
+          as T;
+    }
+    if (t == _is.getType<List<_i7sxg44v.MenuCategory>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map((e) => deserialize<_i7sxg44v.MenuCategory>(e))
+                    .toList()
+              : null)
+          as T;
+    }
+    if (t == List<_ip0o9c0i.MenuArticle>) {
+      return (data as List)
+              .map((e) => deserialize<_ip0o9c0i.MenuArticle>(e))
+              .toList()
+          as T;
+    }
+    if (t == _is.getType<List<_ip0o9c0i.MenuArticle>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map((e) => deserialize<_ip0o9c0i.MenuArticle>(e))
+                    .toList()
+              : null)
+          as T;
+    }
     if (t == List<_is.UuidValue>) {
       return (data as List).map((e) => deserialize<_is.UuidValue>(e)).toList()
           as T;
@@ -1143,6 +1492,18 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == List<_iusy412g.EmployeeView>) {
       return (data as List)
               .map((e) => deserialize<_iusy412g.EmployeeView>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_ilv9ypte.MenuArticleView>) {
+      return (data as List)
+              .map((e) => deserialize<_ilv9ypte.MenuArticleView>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_iwilrax0.MenuCategoryView>) {
+      return (data as List)
+              .map((e) => deserialize<_iwilrax0.MenuCategoryView>(e))
               .toList()
           as T;
     }
@@ -1195,6 +1556,18 @@ class Protocol extends _is.DatabaseSerializationManager {
       _ivqpqa05.BuildingUpdate => 'BuildingUpdate',
       _iyqmhcrr.BuildingView => 'BuildingView',
       _izw8z7ou.Greeting => 'Greeting',
+      _ip0o9c0i.MenuArticle => 'MenuArticle',
+      _i7hj1jb2.MenuArticleCreate => 'MenuArticleCreate',
+      _i46cm0v4.MenuArticleErrorCode => 'MenuArticleErrorCode',
+      _iwbmeh47.MenuArticleException => 'MenuArticleException',
+      _iwetmqfn.MenuArticleUpdate => 'MenuArticleUpdate',
+      _irzndnzc.MenuArticleView => 'MenuArticleView',
+      _i7sxg44v.MenuCategory => 'MenuCategory',
+      _i8xl75s4.MenuCategoryCreate => 'MenuCategoryCreate',
+      _ifc6ty9l.MenuCategoryErrorCode => 'MenuCategoryErrorCode',
+      _ikojmx8s.MenuCategoryException => 'MenuCategoryException',
+      _i152aql3.MenuCategoryUpdate => 'MenuCategoryUpdate',
+      _i9ogfgfu.MenuCategoryView => 'MenuCategoryView',
       _issw8is0.TableFloorStatus => 'TableFloorStatus',
       _i4t52k6g.VenueTable => 'VenueTable',
       _iwle9uzy.VenueTableCreate => 'VenueTableCreate',
@@ -1274,6 +1647,30 @@ class Protocol extends _is.DatabaseSerializationManager {
         return 'BuildingView';
       case _izw8z7ou.Greeting():
         return 'Greeting';
+      case _ip0o9c0i.MenuArticle():
+        return 'MenuArticle';
+      case _i7hj1jb2.MenuArticleCreate():
+        return 'MenuArticleCreate';
+      case _i46cm0v4.MenuArticleErrorCode():
+        return 'MenuArticleErrorCode';
+      case _iwbmeh47.MenuArticleException():
+        return 'MenuArticleException';
+      case _iwetmqfn.MenuArticleUpdate():
+        return 'MenuArticleUpdate';
+      case _irzndnzc.MenuArticleView():
+        return 'MenuArticleView';
+      case _i7sxg44v.MenuCategory():
+        return 'MenuCategory';
+      case _i8xl75s4.MenuCategoryCreate():
+        return 'MenuCategoryCreate';
+      case _ifc6ty9l.MenuCategoryErrorCode():
+        return 'MenuCategoryErrorCode';
+      case _ikojmx8s.MenuCategoryException():
+        return 'MenuCategoryException';
+      case _i152aql3.MenuCategoryUpdate():
+        return 'MenuCategoryUpdate';
+      case _i9ogfgfu.MenuCategoryView():
+        return 'MenuCategoryView';
       case _issw8is0.TableFloorStatus():
         return 'TableFloorStatus';
       case _i4t52k6g.VenueTable():
@@ -1401,6 +1798,42 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (dataClassName == 'Greeting') {
       return deserialize<_izw8z7ou.Greeting>(data['data']);
     }
+    if (dataClassName == 'MenuArticle') {
+      return deserialize<_ip0o9c0i.MenuArticle>(data['data']);
+    }
+    if (dataClassName == 'MenuArticleCreate') {
+      return deserialize<_i7hj1jb2.MenuArticleCreate>(data['data']);
+    }
+    if (dataClassName == 'MenuArticleErrorCode') {
+      return deserialize<_i46cm0v4.MenuArticleErrorCode>(data['data']);
+    }
+    if (dataClassName == 'MenuArticleException') {
+      return deserialize<_iwbmeh47.MenuArticleException>(data['data']);
+    }
+    if (dataClassName == 'MenuArticleUpdate') {
+      return deserialize<_iwetmqfn.MenuArticleUpdate>(data['data']);
+    }
+    if (dataClassName == 'MenuArticleView') {
+      return deserialize<_irzndnzc.MenuArticleView>(data['data']);
+    }
+    if (dataClassName == 'MenuCategory') {
+      return deserialize<_i7sxg44v.MenuCategory>(data['data']);
+    }
+    if (dataClassName == 'MenuCategoryCreate') {
+      return deserialize<_i8xl75s4.MenuCategoryCreate>(data['data']);
+    }
+    if (dataClassName == 'MenuCategoryErrorCode') {
+      return deserialize<_ifc6ty9l.MenuCategoryErrorCode>(data['data']);
+    }
+    if (dataClassName == 'MenuCategoryException') {
+      return deserialize<_ikojmx8s.MenuCategoryException>(data['data']);
+    }
+    if (dataClassName == 'MenuCategoryUpdate') {
+      return deserialize<_i152aql3.MenuCategoryUpdate>(data['data']);
+    }
+    if (dataClassName == 'MenuCategoryView') {
+      return deserialize<_i9ogfgfu.MenuCategoryView>(data['data']);
+    }
     if (dataClassName == 'TableFloorStatus') {
       return deserialize<_issw8is0.TableFloorStatus>(data['data']);
     }
@@ -1475,6 +1908,10 @@ class Protocol extends _is.DatabaseSerializationManager {
         return _iyiwchf3.SuperAdmin.t;
       case _i60s6nd2.Building:
         return _i60s6nd2.Building.t;
+      case _ip0o9c0i.MenuArticle:
+        return _ip0o9c0i.MenuArticle.t;
+      case _i7sxg44v.MenuCategory:
+        return _i7sxg44v.MenuCategory.t;
       case _i4t52k6g.VenueTable:
         return _i4t52k6g.VenueTable.t;
     }

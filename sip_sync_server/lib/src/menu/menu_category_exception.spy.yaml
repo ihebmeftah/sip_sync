@@ -1,0 +1,4 @@
+exception: MenuCategoryException
+fields:
+  message: String
+  code: MenuCategoryErrorCode

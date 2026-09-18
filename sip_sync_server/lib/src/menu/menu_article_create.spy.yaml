@@ -1,0 +1,7 @@
+class: MenuArticleCreate
+fields:
+  buildingId: UuidValue
+  categoryId: UuidValue
+  name: String
+  description: String?
+  price: double

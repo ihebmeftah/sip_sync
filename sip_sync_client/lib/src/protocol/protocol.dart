@@ -22,6 +22,10 @@ import 'package:sip_sync_client/src/protocol/auth/super_admin_view.dart'
     as _iddpd7et;
 import 'package:sip_sync_client/src/protocol/buildings/building_view.dart'
     as _ia8vsgay;
+import 'package:sip_sync_client/src/protocol/menu/menu_article_view.dart'
+    as _ijqfjmuy;
+import 'package:sip_sync_client/src/protocol/menu/menu_category_view.dart'
+    as _i0q757fl;
 import 'package:sip_sync_client/src/protocol/tables/venue_table_view.dart'
     as _i6tmc6jw;
 import 'auth/account_error_code.dart' as _i4a4wzkt;
@@ -47,6 +51,16 @@ import 'buildings/building_exception.dart' as _i7fakgop;
 import 'buildings/building_update.dart' as _ivqpqa05;
 import 'buildings/building_view.dart' as _iyqmhcrr;
 import 'greetings/greeting.dart' as _izw8z7ou;
+import 'menu/menu_article_create.dart' as _i7hj1jb2;
+import 'menu/menu_article_error_code.dart' as _i46cm0v4;
+import 'menu/menu_article_exception.dart' as _iwbmeh47;
+import 'menu/menu_article_update.dart' as _iwetmqfn;
+import 'menu/menu_article_view.dart' as _irzndnzc;
+import 'menu/menu_category_create.dart' as _i8xl75s4;
+import 'menu/menu_category_error_code.dart' as _ifc6ty9l;
+import 'menu/menu_category_exception.dart' as _ikojmx8s;
+import 'menu/menu_category_update.dart' as _i152aql3;
+import 'menu/menu_category_view.dart' as _i9ogfgfu;
 import 'tables/table_floor_status.dart' as _issw8is0;
 import 'tables/venue_table_create.dart' as _iwle9uzy;
 import 'tables/venue_table_error_code.dart' as _igqdoyb7;
@@ -76,6 +90,16 @@ export 'buildings/building_exception.dart';
 export 'buildings/building_update.dart';
 export 'buildings/building_view.dart';
 export 'greetings/greeting.dart';
+export 'menu/menu_article_create.dart';
+export 'menu/menu_article_error_code.dart';
+export 'menu/menu_article_exception.dart';
+export 'menu/menu_article_update.dart';
+export 'menu/menu_article_view.dart';
+export 'menu/menu_category_create.dart';
+export 'menu/menu_category_error_code.dart';
+export 'menu/menu_category_exception.dart';
+export 'menu/menu_category_update.dart';
+export 'menu/menu_category_view.dart';
 export 'tables/table_floor_status.dart';
 export 'tables/venue_table_create.dart';
 export 'tables/venue_table_error_code.dart';
@@ -186,6 +210,36 @@ class Protocol extends _isc.SerializationManager {
     }
     if (t == _izw8z7ou.Greeting) {
       return _izw8z7ou.Greeting.fromJson(data) as T;
+    }
+    if (t == _i7hj1jb2.MenuArticleCreate) {
+      return _i7hj1jb2.MenuArticleCreate.fromJson(data) as T;
+    }
+    if (t == _i46cm0v4.MenuArticleErrorCode) {
+      return _i46cm0v4.MenuArticleErrorCode.fromJson(data) as T;
+    }
+    if (t == _iwbmeh47.MenuArticleException) {
+      return _iwbmeh47.MenuArticleException.fromJson(data) as T;
+    }
+    if (t == _iwetmqfn.MenuArticleUpdate) {
+      return _iwetmqfn.MenuArticleUpdate.fromJson(data) as T;
+    }
+    if (t == _irzndnzc.MenuArticleView) {
+      return _irzndnzc.MenuArticleView.fromJson(data) as T;
+    }
+    if (t == _i8xl75s4.MenuCategoryCreate) {
+      return _i8xl75s4.MenuCategoryCreate.fromJson(data) as T;
+    }
+    if (t == _ifc6ty9l.MenuCategoryErrorCode) {
+      return _ifc6ty9l.MenuCategoryErrorCode.fromJson(data) as T;
+    }
+    if (t == _ikojmx8s.MenuCategoryException) {
+      return _ikojmx8s.MenuCategoryException.fromJson(data) as T;
+    }
+    if (t == _i152aql3.MenuCategoryUpdate) {
+      return _i152aql3.MenuCategoryUpdate.fromJson(data) as T;
+    }
+    if (t == _i9ogfgfu.MenuCategoryView) {
+      return _i9ogfgfu.MenuCategoryView.fromJson(data) as T;
     }
     if (t == _issw8is0.TableFloorStatus) {
       return _issw8is0.TableFloorStatus.fromJson(data) as T;
@@ -303,6 +357,54 @@ class Protocol extends _isc.SerializationManager {
     if (t == _isc.getType<_izw8z7ou.Greeting?>()) {
       return (data != null ? _izw8z7ou.Greeting.fromJson(data) : null) as T;
     }
+    if (t == _isc.getType<_i7hj1jb2.MenuArticleCreate?>()) {
+      return (data != null ? _i7hj1jb2.MenuArticleCreate.fromJson(data) : null)
+          as T;
+    }
+    if (t == _isc.getType<_i46cm0v4.MenuArticleErrorCode?>()) {
+      return (data != null
+              ? _i46cm0v4.MenuArticleErrorCode.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _isc.getType<_iwbmeh47.MenuArticleException?>()) {
+      return (data != null
+              ? _iwbmeh47.MenuArticleException.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _isc.getType<_iwetmqfn.MenuArticleUpdate?>()) {
+      return (data != null ? _iwetmqfn.MenuArticleUpdate.fromJson(data) : null)
+          as T;
+    }
+    if (t == _isc.getType<_irzndnzc.MenuArticleView?>()) {
+      return (data != null ? _irzndnzc.MenuArticleView.fromJson(data) : null)
+          as T;
+    }
+    if (t == _isc.getType<_i8xl75s4.MenuCategoryCreate?>()) {
+      return (data != null ? _i8xl75s4.MenuCategoryCreate.fromJson(data) : null)
+          as T;
+    }
+    if (t == _isc.getType<_ifc6ty9l.MenuCategoryErrorCode?>()) {
+      return (data != null
+              ? _ifc6ty9l.MenuCategoryErrorCode.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _isc.getType<_ikojmx8s.MenuCategoryException?>()) {
+      return (data != null
+              ? _ikojmx8s.MenuCategoryException.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _isc.getType<_i152aql3.MenuCategoryUpdate?>()) {
+      return (data != null ? _i152aql3.MenuCategoryUpdate.fromJson(data) : null)
+          as T;
+    }
+    if (t == _isc.getType<_i9ogfgfu.MenuCategoryView?>()) {
+      return (data != null ? _i9ogfgfu.MenuCategoryView.fromJson(data) : null)
+          as T;
+    }
     if (t == _isc.getType<_issw8is0.TableFloorStatus?>()) {
       return (data != null ? _issw8is0.TableFloorStatus.fromJson(data) : null)
           as T;
@@ -353,6 +455,18 @@ class Protocol extends _isc.SerializationManager {
               .toList()
           as T;
     }
+    if (t == List<_ijqfjmuy.MenuArticleView>) {
+      return (data as List)
+              .map((e) => deserialize<_ijqfjmuy.MenuArticleView>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_i0q757fl.MenuCategoryView>) {
+      return (data as List)
+              .map((e) => deserialize<_i0q757fl.MenuCategoryView>(e))
+              .toList()
+          as T;
+    }
     if (t == List<_i6tmc6jw.VenueTableView>) {
       return (data as List)
               .map((e) => deserialize<_i6tmc6jw.VenueTableView>(e))
@@ -393,6 +507,16 @@ class Protocol extends _isc.SerializationManager {
       _ivqpqa05.BuildingUpdate => 'BuildingUpdate',
       _iyqmhcrr.BuildingView => 'BuildingView',
       _izw8z7ou.Greeting => 'Greeting',
+      _i7hj1jb2.MenuArticleCreate => 'MenuArticleCreate',
+      _i46cm0v4.MenuArticleErrorCode => 'MenuArticleErrorCode',
+      _iwbmeh47.MenuArticleException => 'MenuArticleException',
+      _iwetmqfn.MenuArticleUpdate => 'MenuArticleUpdate',
+      _irzndnzc.MenuArticleView => 'MenuArticleView',
+      _i8xl75s4.MenuCategoryCreate => 'MenuCategoryCreate',
+      _ifc6ty9l.MenuCategoryErrorCode => 'MenuCategoryErrorCode',
+      _ikojmx8s.MenuCategoryException => 'MenuCategoryException',
+      _i152aql3.MenuCategoryUpdate => 'MenuCategoryUpdate',
+      _i9ogfgfu.MenuCategoryView => 'MenuCategoryView',
       _issw8is0.TableFloorStatus => 'TableFloorStatus',
       _iwle9uzy.VenueTableCreate => 'VenueTableCreate',
       _igqdoyb7.VenueTableErrorCode => 'VenueTableErrorCode',
@@ -459,6 +583,26 @@ class Protocol extends _isc.SerializationManager {
         return 'BuildingView';
       case _izw8z7ou.Greeting():
         return 'Greeting';
+      case _i7hj1jb2.MenuArticleCreate():
+        return 'MenuArticleCreate';
+      case _i46cm0v4.MenuArticleErrorCode():
+        return 'MenuArticleErrorCode';
+      case _iwbmeh47.MenuArticleException():
+        return 'MenuArticleException';
+      case _iwetmqfn.MenuArticleUpdate():
+        return 'MenuArticleUpdate';
+      case _irzndnzc.MenuArticleView():
+        return 'MenuArticleView';
+      case _i8xl75s4.MenuCategoryCreate():
+        return 'MenuCategoryCreate';
+      case _ifc6ty9l.MenuCategoryErrorCode():
+        return 'MenuCategoryErrorCode';
+      case _ikojmx8s.MenuCategoryException():
+        return 'MenuCategoryException';
+      case _i152aql3.MenuCategoryUpdate():
+        return 'MenuCategoryUpdate';
+      case _i9ogfgfu.MenuCategoryView():
+        return 'MenuCategoryView';
       case _issw8is0.TableFloorStatus():
         return 'TableFloorStatus';
       case _iwle9uzy.VenueTableCreate():
@@ -561,6 +705,36 @@ class Protocol extends _isc.SerializationManager {
     }
     if (dataClassName == 'Greeting') {
       return deserialize<_izw8z7ou.Greeting>(data['data']);
+    }
+    if (dataClassName == 'MenuArticleCreate') {
+      return deserialize<_i7hj1jb2.MenuArticleCreate>(data['data']);
+    }
+    if (dataClassName == 'MenuArticleErrorCode') {
+      return deserialize<_i46cm0v4.MenuArticleErrorCode>(data['data']);
+    }
+    if (dataClassName == 'MenuArticleException') {
+      return deserialize<_iwbmeh47.MenuArticleException>(data['data']);
+    }
+    if (dataClassName == 'MenuArticleUpdate') {
+      return deserialize<_iwetmqfn.MenuArticleUpdate>(data['data']);
+    }
+    if (dataClassName == 'MenuArticleView') {
+      return deserialize<_irzndnzc.MenuArticleView>(data['data']);
+    }
+    if (dataClassName == 'MenuCategoryCreate') {
+      return deserialize<_i8xl75s4.MenuCategoryCreate>(data['data']);
+    }
+    if (dataClassName == 'MenuCategoryErrorCode') {
+      return deserialize<_ifc6ty9l.MenuCategoryErrorCode>(data['data']);
+    }
+    if (dataClassName == 'MenuCategoryException') {
+      return deserialize<_ikojmx8s.MenuCategoryException>(data['data']);
+    }
+    if (dataClassName == 'MenuCategoryUpdate') {
+      return deserialize<_i152aql3.MenuCategoryUpdate>(data['data']);
+    }
+    if (dataClassName == 'MenuCategoryView') {
+      return deserialize<_i9ogfgfu.MenuCategoryView>(data['data']);
     }
     if (dataClassName == 'TableFloorStatus') {
       return deserialize<_issw8is0.TableFloorStatus>(data['data']);

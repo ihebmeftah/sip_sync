@@ -1,0 +1,17 @@
+### A menu category scoped to one building.
+class: MenuCategory
+table: menu_category
+serverOnly: true
+fields:
+  id: UuidValue?, defaultPersist=random_v7
+  building: Building?, relation(name=building_menu_categories, onDelete=Cascade)
+  name: String
+  description: String?
+  createdAt: DateTime, defaultModel=now
+  articles: List<MenuArticle>?, relation(name=category_articles)
+indexes:
+  menu_category_building_name_idx:
+    fields: buildingId, name
+    unique: true
+  menu_category_building_idx:
+    fields: buildingId

@@ -1,0 +1,7 @@
+class: MenuArticleUpdate
+fields:
+  id: UuidValue
+  categoryId: UuidValue
+  name: String
+  description: String?
+  price: double

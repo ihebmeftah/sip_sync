@@ -1,0 +1,20 @@
+### A sellable menu article in one building, belonging to a category.
+class: MenuArticle
+table: menu_article
+serverOnly: true
+fields:
+  id: UuidValue?, defaultPersist=random_v7
+  building: Building?, relation(name=building_menu_articles, onDelete=Cascade)
+  category: MenuCategory?, relation(name=category_articles, onDelete=Restrict)
+  name: String
+  description: String?
+  price: double
+  createdAt: DateTime, defaultModel=now
+indexes:
+  menu_article_building_name_idx:
+    fields: buildingId, name
+    unique: true
+  menu_article_building_idx:
+    fields: buildingId
+  menu_article_category_idx:
+    fields: categoryId
