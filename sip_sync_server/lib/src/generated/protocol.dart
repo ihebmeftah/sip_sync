@@ -23,6 +23,8 @@ import 'package:sip_sync_server/src/generated/auth/super_admin_view.dart'
     as _i3qefl0x;
 import 'package:sip_sync_server/src/generated/buildings/building_view.dart'
     as _iughhy8g;
+import 'package:sip_sync_server/src/generated/tables/venue_table_view.dart'
+    as _icmpx87d;
 import 'auth/account_error_code.dart' as _i4a4wzkt;
 import 'auth/account_exception.dart' as _ibhqro64;
 import 'auth/actor_type.dart' as _i350eaix;
@@ -52,6 +54,13 @@ import 'buildings/building_exception.dart' as _i7fakgop;
 import 'buildings/building_update.dart' as _ivqpqa05;
 import 'buildings/building_view.dart' as _iyqmhcrr;
 import 'greetings/greeting.dart' as _izw8z7ou;
+import 'tables/table_floor_status.dart' as _issw8is0;
+import 'tables/venue_table.dart' as _i4t52k6g;
+import 'tables/venue_table_create.dart' as _iwle9uzy;
+import 'tables/venue_table_error_code.dart' as _igqdoyb7;
+import 'tables/venue_table_exception.dart' as _iigq9ewv;
+import 'tables/venue_table_update.dart' as _i04zcocb;
+import 'tables/venue_table_view.dart' as _iu0tyr2r;
 export 'auth/account_error_code.dart';
 export 'auth/account_exception.dart';
 export 'auth/actor_type.dart';
@@ -81,6 +90,13 @@ export 'buildings/building_exception.dart';
 export 'buildings/building_update.dart';
 export 'buildings/building_view.dart';
 export 'greetings/greeting.dart';
+export 'tables/table_floor_status.dart';
+export 'tables/venue_table.dart';
+export 'tables/venue_table_create.dart';
+export 'tables/venue_table_error_code.dart';
+export 'tables/venue_table_exception.dart';
+export 'tables/venue_table_update.dart';
+export 'tables/venue_table_view.dart';
 
 class Protocol extends _is.DatabaseSerializationManager {
   Protocol._();
@@ -688,6 +704,97 @@ class Protocol extends _is.DatabaseSerializationManager {
       ],
       managed: true,
     ),
+    _isp.TableDefinition(
+      name: 'venue_table',
+      dartName: 'VenueTable',
+      schema: 'public',
+      module: 'sip_sync',
+      columns: [
+        _isp.ColumnDefinition(
+          name: 'id',
+          columnType: _isp.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue?',
+          columnDefault: 'random_v7',
+        ),
+        _isp.ColumnDefinition(
+          name: 'buildingId',
+          columnType: _isp.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue',
+        ),
+        _isp.ColumnDefinition(
+          name: 'number',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _isp.ColumnDefinition(
+          name: 'maxSeats',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _isp.ColumnDefinition(
+          name: 'isActive',
+          columnType: _isp.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'true',
+        ),
+        _isp.ColumnDefinition(
+          name: 'createdAt',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+        ),
+      ],
+      foreignKeys: [
+        _isp.ForeignKeyDefinition(
+          constraintName: 'venue_table_fk_0',
+          columns: ['buildingId'],
+          referenceTable: 'building',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.cascade,
+          matchType: null,
+        ),
+      ],
+      indexes: [
+        _isp.IndexDefinition(
+          indexName: 'venue_table_building_number_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'buildingId',
+            ),
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'number',
+            ),
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: false,
+        ),
+        _isp.IndexDefinition(
+          indexName: 'venue_table_building_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'buildingId',
+            ),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
     ..._iais.Protocol.targetTableDefinitions,
     ..._iacs.Protocol.targetTableDefinitions,
     ..._isp.Protocol.targetTableDefinitions,
@@ -807,6 +914,27 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == _izw8z7ou.Greeting) {
       return _izw8z7ou.Greeting.fromJson(data) as T;
     }
+    if (t == _issw8is0.TableFloorStatus) {
+      return _issw8is0.TableFloorStatus.fromJson(data) as T;
+    }
+    if (t == _i4t52k6g.VenueTable) {
+      return _i4t52k6g.VenueTable.fromJson(data) as T;
+    }
+    if (t == _iwle9uzy.VenueTableCreate) {
+      return _iwle9uzy.VenueTableCreate.fromJson(data) as T;
+    }
+    if (t == _igqdoyb7.VenueTableErrorCode) {
+      return _igqdoyb7.VenueTableErrorCode.fromJson(data) as T;
+    }
+    if (t == _iigq9ewv.VenueTableException) {
+      return _iigq9ewv.VenueTableException.fromJson(data) as T;
+    }
+    if (t == _i04zcocb.VenueTableUpdate) {
+      return _i04zcocb.VenueTableUpdate.fromJson(data) as T;
+    }
+    if (t == _iu0tyr2r.VenueTableView) {
+      return _iu0tyr2r.VenueTableView.fromJson(data) as T;
+    }
     if (t == _is.getType<_i4a4wzkt.AccountErrorCode?>()) {
       return (data != null ? _i4a4wzkt.AccountErrorCode.fromJson(data) : null)
           as T;
@@ -923,6 +1051,37 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == _is.getType<_izw8z7ou.Greeting?>()) {
       return (data != null ? _izw8z7ou.Greeting.fromJson(data) : null) as T;
     }
+    if (t == _is.getType<_issw8is0.TableFloorStatus?>()) {
+      return (data != null ? _issw8is0.TableFloorStatus.fromJson(data) : null)
+          as T;
+    }
+    if (t == _is.getType<_i4t52k6g.VenueTable?>()) {
+      return (data != null ? _i4t52k6g.VenueTable.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_iwle9uzy.VenueTableCreate?>()) {
+      return (data != null ? _iwle9uzy.VenueTableCreate.fromJson(data) : null)
+          as T;
+    }
+    if (t == _is.getType<_igqdoyb7.VenueTableErrorCode?>()) {
+      return (data != null
+              ? _igqdoyb7.VenueTableErrorCode.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_iigq9ewv.VenueTableException?>()) {
+      return (data != null
+              ? _iigq9ewv.VenueTableException.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_i04zcocb.VenueTableUpdate?>()) {
+      return (data != null ? _i04zcocb.VenueTableUpdate.fromJson(data) : null)
+          as T;
+    }
+    if (t == _is.getType<_iu0tyr2r.VenueTableView?>()) {
+      return (data != null ? _iu0tyr2r.VenueTableView.fromJson(data) : null)
+          as T;
+    }
     if (t == List<_i60s6nd2.Building>) {
       return (data as List)
               .map((e) => deserialize<_i60s6nd2.Building>(e))
@@ -951,6 +1110,20 @@ class Protocol extends _is.DatabaseSerializationManager {
               : null)
           as T;
     }
+    if (t == List<_i4t52k6g.VenueTable>) {
+      return (data as List)
+              .map((e) => deserialize<_i4t52k6g.VenueTable>(e))
+              .toList()
+          as T;
+    }
+    if (t == _is.getType<List<_i4t52k6g.VenueTable>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map((e) => deserialize<_i4t52k6g.VenueTable>(e))
+                    .toList()
+              : null)
+          as T;
+    }
     if (t == List<_is.UuidValue>) {
       return (data as List).map((e) => deserialize<_is.UuidValue>(e)).toList()
           as T;
@@ -970,6 +1143,12 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == List<_iusy412g.EmployeeView>) {
       return (data as List)
               .map((e) => deserialize<_iusy412g.EmployeeView>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_icmpx87d.VenueTableView>) {
+      return (data as List)
+              .map((e) => deserialize<_icmpx87d.VenueTableView>(e))
               .toList()
           as T;
     }
@@ -1016,6 +1195,13 @@ class Protocol extends _is.DatabaseSerializationManager {
       _ivqpqa05.BuildingUpdate => 'BuildingUpdate',
       _iyqmhcrr.BuildingView => 'BuildingView',
       _izw8z7ou.Greeting => 'Greeting',
+      _issw8is0.TableFloorStatus => 'TableFloorStatus',
+      _i4t52k6g.VenueTable => 'VenueTable',
+      _iwle9uzy.VenueTableCreate => 'VenueTableCreate',
+      _igqdoyb7.VenueTableErrorCode => 'VenueTableErrorCode',
+      _iigq9ewv.VenueTableException => 'VenueTableException',
+      _i04zcocb.VenueTableUpdate => 'VenueTableUpdate',
+      _iu0tyr2r.VenueTableView => 'VenueTableView',
       _ => null,
     };
   }
@@ -1088,6 +1274,20 @@ class Protocol extends _is.DatabaseSerializationManager {
         return 'BuildingView';
       case _izw8z7ou.Greeting():
         return 'Greeting';
+      case _issw8is0.TableFloorStatus():
+        return 'TableFloorStatus';
+      case _i4t52k6g.VenueTable():
+        return 'VenueTable';
+      case _iwle9uzy.VenueTableCreate():
+        return 'VenueTableCreate';
+      case _igqdoyb7.VenueTableErrorCode():
+        return 'VenueTableErrorCode';
+      case _iigq9ewv.VenueTableException():
+        return 'VenueTableException';
+      case _i04zcocb.VenueTableUpdate():
+        return 'VenueTableUpdate';
+      case _iu0tyr2r.VenueTableView():
+        return 'VenueTableView';
     }
     className = _iais.Protocol().getClassNameForObject(data);
     if (className != null) {
@@ -1201,6 +1401,27 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (dataClassName == 'Greeting') {
       return deserialize<_izw8z7ou.Greeting>(data['data']);
     }
+    if (dataClassName == 'TableFloorStatus') {
+      return deserialize<_issw8is0.TableFloorStatus>(data['data']);
+    }
+    if (dataClassName == 'VenueTable') {
+      return deserialize<_i4t52k6g.VenueTable>(data['data']);
+    }
+    if (dataClassName == 'VenueTableCreate') {
+      return deserialize<_iwle9uzy.VenueTableCreate>(data['data']);
+    }
+    if (dataClassName == 'VenueTableErrorCode') {
+      return deserialize<_igqdoyb7.VenueTableErrorCode>(data['data']);
+    }
+    if (dataClassName == 'VenueTableException') {
+      return deserialize<_iigq9ewv.VenueTableException>(data['data']);
+    }
+    if (dataClassName == 'VenueTableUpdate') {
+      return deserialize<_i04zcocb.VenueTableUpdate>(data['data']);
+    }
+    if (dataClassName == 'VenueTableView') {
+      return deserialize<_iu0tyr2r.VenueTableView>(data['data']);
+    }
     if (dataClassName.startsWith('serverpod_auth_idp.')) {
       data['className'] = dataClassName.substring(19);
       return _iais.Protocol().deserializeByClassName(data);
@@ -1254,6 +1475,8 @@ class Protocol extends _is.DatabaseSerializationManager {
         return _iyiwchf3.SuperAdmin.t;
       case _i60s6nd2.Building:
         return _i60s6nd2.Building.t;
+      case _i4t52k6g.VenueTable:
+        return _i4t52k6g.VenueTable.t;
     }
     return null;
   }

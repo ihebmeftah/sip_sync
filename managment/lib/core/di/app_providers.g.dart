@@ -193,6 +193,54 @@ final class EmployeeRepositoryProvider
 String _$employeeRepositoryHash() =>
     r'ef1b4c01ecac48242df944ddc03227ef80daaa19';
 
+@ProviderFor(venueTableRepository)
+const venueTableRepositoryProvider = VenueTableRepositoryProvider._();
+
+final class VenueTableRepositoryProvider
+    extends
+        $FunctionalProvider<
+          VenueTableRepository,
+          VenueTableRepository,
+          VenueTableRepository
+        >
+    with $Provider<VenueTableRepository> {
+  const VenueTableRepositoryProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'venueTableRepositoryProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$venueTableRepositoryHash();
+
+  @$internal
+  @override
+  $ProviderElement<VenueTableRepository> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  VenueTableRepository create(Ref ref) {
+    return venueTableRepository(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(VenueTableRepository value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<VenueTableRepository>(value),
+    );
+  }
+}
+
+String _$venueTableRepositoryHash() =>
+    r'635bd24db8db29d775ebefa6c97df4518167f91c';
+
 @ProviderFor(appSessionStore)
 const appSessionStoreProvider = AppSessionStoreProvider._();
 

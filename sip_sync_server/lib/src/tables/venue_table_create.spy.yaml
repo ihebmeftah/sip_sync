@@ -1,0 +1,7 @@
+class: VenueTableCreate
+fields:
+  buildingId: UuidValue
+  ### How many tables to create; numbers are assigned sequentially by the server.
+  count: int
+  maxSeats: int
+  isActive: bool

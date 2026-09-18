@@ -1,0 +1,17 @@
+### A physical dining table in a venue. Floor status is computed, not stored.
+class: VenueTable
+table: venue_table
+serverOnly: true
+fields:
+  id: UuidValue?, defaultPersist=random_v7
+  building: Building?, relation(name=building_tables, onDelete=Cascade)
+  number: int
+  maxSeats: int
+  isActive: bool, default=true
+  createdAt: DateTime, defaultModel=now
+indexes:
+  venue_table_building_number_idx:
+    fields: buildingId, number
+    unique: true
+  venue_table_building_idx:
+    fields: buildingId

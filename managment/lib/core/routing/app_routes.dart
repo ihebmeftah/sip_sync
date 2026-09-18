@@ -12,6 +12,7 @@ import '../../features/dashboard/views/dashboard_view.dart';
 import '../../features/employees/views/employee_details_view.dart';
 import '../../features/employees/views/employee_form_view.dart';
 import '../../features/employees/views/employees_list_view.dart';
+import '../../features/tables/views/tables_list_view.dart';
 import '../../features/profile/views/profile_view.dart';
 import '../../l10n/generated/app_localizations.dart';
 
@@ -220,8 +221,7 @@ class TablesRoute extends GoRouteData with $TablesRoute {
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    final name = AppLocalizations.of(context)!.navTables;
-    return PlaceholderView(screenName: name);
+    return TablesListView(buildingId: buildingId);
   }
 }
 

@@ -1,0 +1,7 @@
+### Runtime floor status — never persisted; derived from orders/reservations later.
+enum: TableFloorStatus
+serialized: byName
+values:
+  - available
+  - occupied
+  - reserved

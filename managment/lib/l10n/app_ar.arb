@@ -82,7 +82,7 @@
   "dashboardSubtitle": "نقطة البيع والصالة والكتالوج بضغطة. الأرقام الحية تأتي مع الخادم لاحقاً.",
   "dashboardShift": "لوحة الوردية",
   "dashboardPosCue": "الصندوق والتذاكر — قريباً.",
-  "dashboardTablesCue": "خريطة الصالة دون خادم بعد.",
+  "dashboardTablesCue": "مخطط القاعة مع معاينات المقاعد وتصفية الحالة.",
   "dashboardCatalogCue": "أصناف ومكوّنات، واجهة فقط.",
   "dashboardProfileCue": "اسمك والهاتف.",
   "emailLocked": "البريد مرتبط بتسجيل الدخول ولا يُغيَّر هنا.",
@@ -135,5 +135,43 @@
   "pickCurrentPosition": "استخدم الموقع الحالي",
   "errorLocationDenied": "يلزم إذن الموقع لملء العنوان.",
   "errorLocationDisabled": "فعّل خدمات الموقع ثم أعد المحاولة.",
-  "errorLocationFailed": "تعذر قراءة الموقع الحالي."
+  "errorLocationFailed": "تعذر قراءة الموقع الحالي.",
+  "cancel": "إلغاء",
+  "addTable": "إضافة طاولة",
+  "editTable": "تعديل الطاولة",
+  "saveTable": "حفظ الطاولة",
+  "tablesHint": "مخطط القاعة حسب المقاعد. الحالة تأتي لاحقاً من الطلبات والحجوزات.",
+  "tablesEmptyOwner": "أضف أول طاولة لرسم المخطط.",
+  "tablesEmpty": "لا توجد طاولات في هذا الطابق بعد.",
+  "tablesFilterEmpty": "لا توجد طاولات لهذا التصفية.",
+  "tableFormHint": "اختر كم طاولة تريد إضافتها. تُعيَّن الأرقام تلقائياً بالترتيب.",
+  "tableEditHint": "يمكنك تغيير المقاعد والتفعيل فقط. رقم الطاولة ثابت.",
+  "tableNumber": "رقم الطاولة",
+  "tableNumberLocked": "لا يمكن تغيير رقم الطاولة.",
+  "tableCountToAdd": "عدد الطاولات",
+  "tableNumberRange": "ستُنشأ الأرقام {from}–{to}",
+  "@tableNumberRange": {
+    "placeholders": {
+      "from": { "type": "int" },
+      "to": { "type": "int" }
+    }
+  },
+  "tableMaxSeats": "أقصى مقاعد",
+  "tableActive": "نشطة في القاعة",
+  "tableActiveHint": "الطاولات غير النشطة تبقى في القائمة خارج المتاح.",
+  "tableSeatsCount": "{count} مقاعد",
+  "@tableSeatsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "tableFilterAll": "الكل",
+  "tableFilterInactive": "غير نشطة",
+  "tableStatusAvailable": "متاحة",
+  "tableStatusOccupied": "مشغولة",
+  "tableStatusReserved": "محجوزة",
+  "validationTableNumber": "أدخل رقماً من 1 إلى 9999.",
+  "validationTableCount": "أدخل عدداً من 1 إلى 100.",
+  "validationTableSeats": "أدخل مقاعد من 1 إلى 50.",
+  "errorTableNumberTaken": "رقم الطاولة مستخدم هنا بالفعل."
 }

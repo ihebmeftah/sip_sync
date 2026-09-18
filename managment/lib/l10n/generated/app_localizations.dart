@@ -595,7 +595,7 @@ abstract class AppLocalizations {
   /// No description provided for @dashboardTablesCue.
   ///
   /// In en, this message translates to:
-  /// **'Floor map without a backend yet.'**
+  /// **'Floor map with seat previews and status filters.'**
   String get dashboardTablesCue;
 
   /// No description provided for @dashboardCatalogCue.
@@ -867,6 +867,168 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Could not read the current position.'**
   String get errorLocationFailed;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
+  /// No description provided for @addTable.
+  ///
+  /// In en, this message translates to:
+  /// **'Add table'**
+  String get addTable;
+
+  /// No description provided for @editTable.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit table'**
+  String get editTable;
+
+  /// No description provided for @saveTable.
+  ///
+  /// In en, this message translates to:
+  /// **'Save table'**
+  String get saveTable;
+
+  /// No description provided for @tablesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Floor plan by seats. Status comes from orders and reservations later.'**
+  String get tablesHint;
+
+  /// No description provided for @tablesEmptyOwner.
+  ///
+  /// In en, this message translates to:
+  /// **'Add your first table to sketch the floor.'**
+  String get tablesEmptyOwner;
+
+  /// No description provided for @tablesEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No tables on this floor yet.'**
+  String get tablesEmpty;
+
+  /// No description provided for @tablesFilterEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No tables match this filter.'**
+  String get tablesFilterEmpty;
+
+  /// No description provided for @tableFormHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose how many tables to add. Numbers are assigned in order automatically.'**
+  String get tableFormHint;
+
+  /// No description provided for @tableEditHint.
+  ///
+  /// In en, this message translates to:
+  /// **'You can change seats and whether the table is active. The number stays fixed.'**
+  String get tableEditHint;
+
+  /// No description provided for @tableNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Table number'**
+  String get tableNumber;
+
+  /// No description provided for @tableNumberLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Table number cannot be changed.'**
+  String get tableNumberLocked;
+
+  /// No description provided for @tableCountToAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'How many tables'**
+  String get tableCountToAdd;
+
+  /// No description provided for @tableNumberRange.
+  ///
+  /// In en, this message translates to:
+  /// **'Will create numbers {from}–{to}'**
+  String tableNumberRange(int from, int to);
+
+  /// No description provided for @tableMaxSeats.
+  ///
+  /// In en, this message translates to:
+  /// **'Max seats'**
+  String get tableMaxSeats;
+
+  /// No description provided for @tableActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Active on floor'**
+  String get tableActive;
+
+  /// No description provided for @tableActiveHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Inactive tables stay in the list but drop out of Available.'**
+  String get tableActiveHint;
+
+  /// No description provided for @tableSeatsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} seats'**
+  String tableSeatsCount(int count);
+
+  /// No description provided for @tableFilterAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get tableFilterAll;
+
+  /// No description provided for @tableFilterInactive.
+  ///
+  /// In en, this message translates to:
+  /// **'Inactive'**
+  String get tableFilterInactive;
+
+  /// No description provided for @tableStatusAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Available'**
+  String get tableStatusAvailable;
+
+  /// No description provided for @tableStatusOccupied.
+  ///
+  /// In en, this message translates to:
+  /// **'Occupied'**
+  String get tableStatusOccupied;
+
+  /// No description provided for @tableStatusReserved.
+  ///
+  /// In en, this message translates to:
+  /// **'Reserved'**
+  String get tableStatusReserved;
+
+  /// No description provided for @validationTableNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a number from 1 to 9999.'**
+  String get validationTableNumber;
+
+  /// No description provided for @validationTableCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a count from 1 to 100.'**
+  String get validationTableCount;
+
+  /// No description provided for @validationTableSeats.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter seats from 1 to 50.'**
+  String get validationTableSeats;
+
+  /// No description provided for @errorTableNumberTaken.
+  ///
+  /// In en, this message translates to:
+  /// **'That table number is already used here.'**
+  String get errorTableNumberTaken;
 }
 
 class _AppLocalizationsDelegate

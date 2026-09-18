@@ -1,0 +1,4 @@
+exception: VenueTableException
+fields:
+  message: String
+  code: VenueTableErrorCode

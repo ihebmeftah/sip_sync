@@ -15,6 +15,7 @@ import 'package:serverpod/serverpod.dart' as _is;
 import 'package:sip_sync_server/src/generated/protocol.dart' as _iaib1p48;
 import '../auth/employee.dart' as _iujgysn6;
 import '../auth/owner.dart' as _it5d988d;
+import '../tables/venue_table.dart' as _inhrqiu4;
 
 /// A café, restaurant, lounge, bar, or custom venue owned by one owner.
 abstract class Building
@@ -33,6 +34,7 @@ abstract class Building
     required this.currencyCode,
     DateTime? createdAt,
     this.employees,
+    this.tables,
   }) : createdAt = createdAt ?? DateTime.now();
 
   factory Building({
@@ -49,6 +51,7 @@ abstract class Building
     required String currencyCode,
     DateTime? createdAt,
     List<_iujgysn6.Employee>? employees,
+    List<_inhrqiu4.VenueTable>? tables,
   }) = _BuildingImpl;
 
   factory Building.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -79,6 +82,11 @@ abstract class Building
           ? null
           : _iaib1p48.Protocol().deserialize<List<_iujgysn6.Employee>>(
               jsonSerialization['employees'],
+            ),
+      tables: jsonSerialization['tables'] == null
+          ? null
+          : _iaib1p48.Protocol().deserialize<List<_inhrqiu4.VenueTable>>(
+              jsonSerialization['tables'],
             ),
     );
   }
@@ -114,6 +122,8 @@ abstract class Building
 
   List<_iujgysn6.Employee>? employees;
 
+  List<_inhrqiu4.VenueTable>? tables;
+
   @override
   _is.Table<_is.UuidValue?> get table => t;
 
@@ -134,6 +144,7 @@ abstract class Building
     String? currencyCode,
     DateTime? createdAt,
     List<_iujgysn6.Employee>? employees,
+    List<_inhrqiu4.VenueTable>? tables,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -153,6 +164,8 @@ abstract class Building
       'createdAt': createdAt.toJson(),
       if (employees != null)
         'employees': employees?.toJson(valueToJson: (v) => v.toJson()),
+      if (tables != null)
+        'tables': tables?.toJson(valueToJson: (v) => v.toJson()),
     };
   }
 
@@ -164,10 +177,12 @@ abstract class Building
   static BuildingInclude include({
     _it5d988d.OwnerInclude? owner,
     _iujgysn6.EmployeeIncludeList? employees,
+    _inhrqiu4.VenueTableIncludeList? tables,
   }) {
     return BuildingInclude._(
       owner: owner,
       employees: employees,
+      tables: tables,
     );
   }
 
@@ -212,6 +227,7 @@ class _BuildingImpl extends Building {
     required String currencyCode,
     DateTime? createdAt,
     List<_iujgysn6.Employee>? employees,
+    List<_inhrqiu4.VenueTable>? tables,
   }) : super._(
          id: id,
          ownerId: ownerId,
@@ -226,6 +242,7 @@ class _BuildingImpl extends Building {
          currencyCode: currencyCode,
          createdAt: createdAt,
          employees: employees,
+         tables: tables,
        );
 
   /// Returns a shallow copy of this [Building]
@@ -246,6 +263,7 @@ class _BuildingImpl extends Building {
     String? currencyCode,
     DateTime? createdAt,
     Object? employees = _Undefined,
+    Object? tables = _Undefined,
   }) {
     return Building(
       id: id is _is.UuidValue? ? id : this.id,
@@ -263,6 +281,9 @@ class _BuildingImpl extends Building {
       employees: employees is List<_iujgysn6.Employee>?
           ? employees
           : this.employees?.map((e0) => e0.copyWith()).toList(),
+      tables: tables is List<_inhrqiu4.VenueTable>?
+          ? tables
+          : this.tables?.map((e0) => e0.copyWith()).toList(),
     );
   }
 }
@@ -396,6 +417,10 @@ class BuildingTable extends _is.Table<_is.UuidValue?> {
 
   _is.ManyRelation<_iujgysn6.EmployeeTable>? _employees;
 
+  _inhrqiu4.VenueTableTable? ___tables;
+
+  _is.ManyRelation<_inhrqiu4.VenueTableTable>? _tables;
+
   _it5d988d.OwnerTable get owner {
     if (_owner != null) return _owner!;
     _owner = _is.createRelationTable(
@@ -422,6 +447,19 @@ class BuildingTable extends _is.Table<_is.UuidValue?> {
     return ___employees!;
   }
 
+  _inhrqiu4.VenueTableTable get __tables {
+    if (___tables != null) return ___tables!;
+    ___tables = _is.createRelationTable(
+      relationFieldName: '__tables',
+      field: Building.t.id,
+      foreignField: _inhrqiu4.VenueTable.t.buildingId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _inhrqiu4.VenueTableTable(tableRelation: foreignTableRelation),
+    );
+    return ___tables!;
+  }
+
   _is.ManyRelation<_iujgysn6.EmployeeTable> get employees {
     if (_employees != null) return _employees!;
     var relationTable = _is.createRelationTable(
@@ -439,6 +477,25 @@ class BuildingTable extends _is.Table<_is.UuidValue?> {
       ),
     );
     return _employees!;
+  }
+
+  _is.ManyRelation<_inhrqiu4.VenueTableTable> get tables {
+    if (_tables != null) return _tables!;
+    var relationTable = _is.createRelationTable(
+      relationFieldName: 'tables',
+      field: Building.t.id,
+      foreignField: _inhrqiu4.VenueTable.t.buildingId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _inhrqiu4.VenueTableTable(tableRelation: foreignTableRelation),
+    );
+    _tables = _is.ManyRelation<_inhrqiu4.VenueTableTable>(
+      tableWithRelations: relationTable,
+      table: _inhrqiu4.VenueTableTable(
+        tableRelation: relationTable.tableRelation!.lastRelation,
+      ),
+    );
+    return _tables!;
   }
 
   @override
@@ -464,6 +521,9 @@ class BuildingTable extends _is.Table<_is.UuidValue?> {
     if (relationField == 'employees') {
       return __employees;
     }
+    if (relationField == 'tables') {
+      return __tables;
+    }
     return null;
   }
 }
@@ -472,19 +532,24 @@ class BuildingInclude extends _is.IncludeObject {
   BuildingInclude._({
     _it5d988d.OwnerInclude? owner,
     _iujgysn6.EmployeeIncludeList? employees,
+    _inhrqiu4.VenueTableIncludeList? tables,
   }) {
     _owner = owner;
     _employees = employees;
+    _tables = tables;
   }
 
   _it5d988d.OwnerInclude? _owner;
 
   _iujgysn6.EmployeeIncludeList? _employees;
 
+  _inhrqiu4.VenueTableIncludeList? _tables;
+
   @override
   Map<String, _is.Include?> get includes => {
     'owner': _owner,
     'employees': _employees,
+    'tables': _tables,
   };
 
   @override
@@ -942,6 +1007,31 @@ class BuildingAttachRepository {
       transaction: transaction,
     );
   }
+
+  /// Creates a relation between this [Building] and the given [VenueTable]s
+  /// by setting each [VenueTable]'s foreign key `buildingId` to refer to this [Building].
+  Future<void> tables(
+    _is.DatabaseSession session,
+    Building building,
+    List<_inhrqiu4.VenueTable> venueTable, {
+    _is.Transaction? transaction,
+  }) async {
+    if (venueTable.any((e) => e.id == null)) {
+      throw ArgumentError.notNull('venueTable.id');
+    }
+    if (building.id == null) {
+      throw ArgumentError.notNull('building.id');
+    }
+
+    var $venueTable = venueTable
+        .map((e) => e.copyWith(buildingId: building.id))
+        .toList();
+    await session.db.update<_inhrqiu4.VenueTable>(
+      $venueTable,
+      columns: [_inhrqiu4.VenueTable.t.buildingId],
+      transaction: transaction,
+    );
+  }
 }
 
 class BuildingAttachRowRepository {
@@ -989,6 +1079,29 @@ class BuildingAttachRowRepository {
     await session.db.updateRow<_iujgysn6.Employee>(
       $employee,
       columns: [_iujgysn6.Employee.t.buildingId],
+      transaction: transaction,
+    );
+  }
+
+  /// Creates a relation between this [Building] and the given [VenueTable]
+  /// by setting the [VenueTable]'s foreign key `buildingId` to refer to this [Building].
+  Future<void> tables(
+    _is.DatabaseSession session,
+    Building building,
+    _inhrqiu4.VenueTable venueTable, {
+    _is.Transaction? transaction,
+  }) async {
+    if (venueTable.id == null) {
+      throw ArgumentError.notNull('venueTable.id');
+    }
+    if (building.id == null) {
+      throw ArgumentError.notNull('building.id');
+    }
+
+    var $venueTable = venueTable.copyWith(buildingId: building.id);
+    await session.db.updateRow<_inhrqiu4.VenueTable>(
+      $venueTable,
+      columns: [_inhrqiu4.VenueTable.t.buildingId],
       transaction: transaction,
     );
   }

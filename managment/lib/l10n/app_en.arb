@@ -85,7 +85,7 @@
   "dashboardSubtitle": "POS, floor, and catalog sit one tap away. Live counts arrive with the next server slice.",
   "dashboardShift": "Shift board",
   "dashboardPosCue": "Till and tickets — coming next.",
-  "dashboardTablesCue": "Floor map without a backend yet.",
+  "dashboardTablesCue": "Floor map with seat previews and status filters.",
   "dashboardCatalogCue": "Articles and ingredients, UI only.",
   "dashboardProfileCue": "Your name and phone.",
   "emailLocked": "Email is tied to sign-in and cannot be changed here.",
@@ -138,5 +138,43 @@
   "pickCurrentPosition": "Pick current position",
   "errorLocationDenied": "Location permission is required to fill the address.",
   "errorLocationDisabled": "Turn on location services and try again.",
-  "errorLocationFailed": "Could not read the current position."
+  "errorLocationFailed": "Could not read the current position.",
+  "cancel": "Cancel",
+  "addTable": "Add table",
+  "editTable": "Edit table",
+  "saveTable": "Save table",
+  "tablesHint": "Floor plan by seats. Status comes from orders and reservations later.",
+  "tablesEmptyOwner": "Add your first table to sketch the floor.",
+  "tablesEmpty": "No tables on this floor yet.",
+  "tablesFilterEmpty": "No tables match this filter.",
+  "tableFormHint": "Choose how many tables to add. Numbers are assigned in order automatically.",
+  "tableEditHint": "You can change seats and whether the table is active. The number stays fixed.",
+  "tableNumber": "Table number",
+  "tableNumberLocked": "Table number cannot be changed.",
+  "tableCountToAdd": "How many tables",
+  "tableNumberRange": "Will create numbers {from}–{to}",
+  "@tableNumberRange": {
+    "placeholders": {
+      "from": { "type": "int" },
+      "to": { "type": "int" }
+    }
+  },
+  "tableMaxSeats": "Max seats",
+  "tableActive": "Active on floor",
+  "tableActiveHint": "Inactive tables stay in the list but drop out of Available.",
+  "tableSeatsCount": "{count} seats",
+  "@tableSeatsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "tableFilterAll": "All",
+  "tableFilterInactive": "Inactive",
+  "tableStatusAvailable": "Available",
+  "tableStatusOccupied": "Occupied",
+  "tableStatusReserved": "Reserved",
+  "validationTableNumber": "Enter a number from 1 to 9999.",
+  "validationTableCount": "Enter a count from 1 to 100.",
+  "validationTableSeats": "Enter seats from 1 to 50.",
+  "errorTableNumberTaken": "That table number is already used here."
 }

@@ -53,6 +53,12 @@ import 'package:sip_sync_client/src/protocol/buildings/building_view.dart'
     as _ia8vsgay;
 import 'package:sip_sync_client/src/protocol/greetings/greeting.dart'
     as _ijvf1i5e;
+import 'package:sip_sync_client/src/protocol/tables/venue_table_create.dart'
+    as _imol4lsw;
+import 'package:sip_sync_client/src/protocol/tables/venue_table_update.dart'
+    as _i7122nxp;
+import 'package:sip_sync_client/src/protocol/tables/venue_table_view.dart'
+    as _i6tmc6jw;
 import 'protocol.dart' as _il2as5qe;
 
 /// Customer self-register, login, and profile.
@@ -352,6 +358,41 @@ class EndpointGreeting extends _isc.EndpointRef {
       );
 }
 
+/// Floor table RPC for a building.
+/// {@category Endpoint}
+class EndpointVenueTable extends _isc.EndpointRef {
+  EndpointVenueTable(_isc.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'venueTable';
+
+  /// Lists tables for [buildingId] (owner or assigned employee).
+  _ida.Future<List<_i6tmc6jw.VenueTableView>> list(_isc.UuidValue buildingId) =>
+      caller.callServerEndpoint<List<_i6tmc6jw.VenueTableView>>(
+        'venueTable',
+        'list',
+        {'buildingId': buildingId},
+      );
+
+  /// Owner creates one or more tables; numbers are assigned in sequence.
+  _ida.Future<List<_i6tmc6jw.VenueTableView>> create(
+    _imol4lsw.VenueTableCreate request,
+  ) => caller.callServerEndpoint<List<_i6tmc6jw.VenueTableView>>(
+    'venueTable',
+    'create',
+    {'request': request},
+  );
+
+  /// Owner updates seats and active only (number cannot change).
+  _ida.Future<_i6tmc6jw.VenueTableView> update(
+    _i7122nxp.VenueTableUpdate request,
+  ) => caller.callServerEndpoint<_i6tmc6jw.VenueTableView>(
+    'venueTable',
+    'update',
+    {'request': request},
+  );
+}
+
 class Modules {
   Modules(Client client) {
     serverpod_auth_idp = _iaic.Caller(client);
@@ -397,6 +438,7 @@ class Client extends _isc.ServerpodClientShared {
     superAdminAuth = EndpointSuperAdminAuth(this);
     building = EndpointBuilding(this);
     greeting = EndpointGreeting(this);
+    venueTable = EndpointVenueTable(this);
     modules = Modules(this);
   }
 
@@ -414,6 +456,8 @@ class Client extends _isc.ServerpodClientShared {
 
   late final EndpointGreeting greeting;
 
+  late final EndpointVenueTable venueTable;
+
   late final Modules modules;
 
   @override
@@ -425,6 +469,7 @@ class Client extends _isc.ServerpodClientShared {
     'superAdminAuth': superAdminAuth,
     'building': building,
     'greeting': greeting,
+    'venueTable': venueTable,
   };
 
   @override

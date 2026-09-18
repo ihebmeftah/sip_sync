@@ -1,0 +1,5 @@
+class: VenueTableUpdate
+fields:
+  id: UuidValue
+  maxSeats: int
+  isActive: bool

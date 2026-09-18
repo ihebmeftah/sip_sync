@@ -36,3 +36,7 @@ building:
   - listEmployees:
 greeting:
   - hello:
+venueTable:
+  - list:
+  - create:
+  - update:

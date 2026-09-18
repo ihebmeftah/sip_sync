@@ -15,6 +15,7 @@ fields:
   currencyCode: String
   createdAt: DateTime, defaultModel=now
   employees: List<Employee>?, relation(name=building_employees)
+  tables: List<VenueTable>?, relation(name=building_tables)
 indexes:
   building_owner_idx:
     fields: ownerId

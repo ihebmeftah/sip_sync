@@ -4,6 +4,7 @@ import 'package:sip_sync_client/sip_sync_client.dart';
 import '../../data/repositories/building_repository.dart';
 import '../../data/repositories/employee_repository.dart';
 import '../../data/repositories/owner_auth_repository.dart';
+import '../../data/repositories/venue_table_repository.dart';
 import '../../data/services/api_client.dart';
 import 'app_session_store.dart';
 import 'building_session.dart';
@@ -26,5 +27,8 @@ Future<void> setupServiceLocator() async {
   );
   getIt.registerLazySingleton<EmployeeRepository>(
     () => EmployeeRepository(client),
+  );
+  getIt.registerLazySingleton<VenueTableRepository>(
+    () => VenueTableRepository(client),
   );
 }

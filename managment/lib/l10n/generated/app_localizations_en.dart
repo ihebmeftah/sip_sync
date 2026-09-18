@@ -271,7 +271,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dashboardPosCue => 'Till and tickets — coming next.';
 
   @override
-  String get dashboardTablesCue => 'Floor map without a backend yet.';
+  String get dashboardTablesCue =>
+      'Floor map with seat previews and status filters.';
 
   @override
   String get dashboardCatalogCue => 'Articles and ingredients, UI only.';
@@ -422,4 +423,93 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get errorLocationFailed => 'Could not read the current position.';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get addTable => 'Add table';
+
+  @override
+  String get editTable => 'Edit table';
+
+  @override
+  String get saveTable => 'Save table';
+
+  @override
+  String get tablesHint =>
+      'Floor plan by seats. Status comes from orders and reservations later.';
+
+  @override
+  String get tablesEmptyOwner => 'Add your first table to sketch the floor.';
+
+  @override
+  String get tablesEmpty => 'No tables on this floor yet.';
+
+  @override
+  String get tablesFilterEmpty => 'No tables match this filter.';
+
+  @override
+  String get tableFormHint =>
+      'Choose how many tables to add. Numbers are assigned in order automatically.';
+
+  @override
+  String get tableEditHint =>
+      'You can change seats and whether the table is active. The number stays fixed.';
+
+  @override
+  String get tableNumber => 'Table number';
+
+  @override
+  String get tableNumberLocked => 'Table number cannot be changed.';
+
+  @override
+  String get tableCountToAdd => 'How many tables';
+
+  @override
+  String tableNumberRange(int from, int to) {
+    return 'Will create numbers $from–$to';
+  }
+
+  @override
+  String get tableMaxSeats => 'Max seats';
+
+  @override
+  String get tableActive => 'Active on floor';
+
+  @override
+  String get tableActiveHint =>
+      'Inactive tables stay in the list but drop out of Available.';
+
+  @override
+  String tableSeatsCount(int count) {
+    return '$count seats';
+  }
+
+  @override
+  String get tableFilterAll => 'All';
+
+  @override
+  String get tableFilterInactive => 'Inactive';
+
+  @override
+  String get tableStatusAvailable => 'Available';
+
+  @override
+  String get tableStatusOccupied => 'Occupied';
+
+  @override
+  String get tableStatusReserved => 'Reserved';
+
+  @override
+  String get validationTableNumber => 'Enter a number from 1 to 9999.';
+
+  @override
+  String get validationTableCount => 'Enter a count from 1 to 100.';
+
+  @override
+  String get validationTableSeats => 'Enter seats from 1 to 50.';
+
+  @override
+  String get errorTableNumberTaken => 'That table number is already used here.';
 }

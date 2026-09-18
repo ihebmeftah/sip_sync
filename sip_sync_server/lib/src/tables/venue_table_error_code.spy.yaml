@@ -1,0 +1,7 @@
+enum: VenueTableErrorCode
+serialized: byName
+values:
+  - invalidInput
+  - notAuthorized
+  - notFound
+  - numberTaken

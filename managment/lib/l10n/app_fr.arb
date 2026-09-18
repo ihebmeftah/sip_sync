@@ -82,7 +82,7 @@
   "dashboardSubtitle": "Caisse, salle et catalogue à un geste. Les compteurs arriveront avec le serveur.",
   "dashboardShift": "Tableau de service",
   "dashboardPosCue": "Caisse et tickets — bientôt.",
-  "dashboardTablesCue": "Plan de salle sans backend pour l’instant.",
+  "dashboardTablesCue": "Plan de salle avec aperçus et filtres de statut.",
   "dashboardCatalogCue": "Articles et ingrédients, interface seulement.",
   "dashboardProfileCue": "Votre nom et téléphone.",
   "emailLocked": "L’e-mail est lié à la connexion et ne change pas ici.",
@@ -135,5 +135,43 @@
   "pickCurrentPosition": "Utiliser la position actuelle",
   "errorLocationDenied": "L’autorisation de localisation est requise pour remplir l’adresse.",
   "errorLocationDisabled": "Activez la localisation puis réessayez.",
-  "errorLocationFailed": "Impossible de lire la position actuelle."
+  "errorLocationFailed": "Impossible de lire la position actuelle.",
+  "cancel": "Annuler",
+  "addTable": "Ajouter une table",
+  "editTable": "Modifier la table",
+  "saveTable": "Enregistrer",
+  "tablesHint": "Plan de salle selon les places. Le statut viendra des commandes et réservations.",
+  "tablesEmptyOwner": "Ajoutez votre première table pour dessiner le plan.",
+  "tablesEmpty": "Aucune table sur ce plan pour l’instant.",
+  "tablesFilterEmpty": "Aucune table pour ce filtre.",
+  "tableFormHint": "Choisissez combien de tables ajouter. Les numéros sont attribués automatiquement dans l’ordre.",
+  "tableEditHint": "Vous pouvez changer les places et l’activation. Le numéro reste fixe.",
+  "tableNumber": "Numéro de table",
+  "tableNumberLocked": "Le numéro de table ne peut pas être modifié.",
+  "tableCountToAdd": "Combien de tables",
+  "tableNumberRange": "Créera les numéros {from}–{to}",
+  "@tableNumberRange": {
+    "placeholders": {
+      "from": { "type": "int" },
+      "to": { "type": "int" }
+    }
+  },
+  "tableMaxSeats": "Places max",
+  "tableActive": "Active au plan",
+  "tableActiveHint": "Les tables inactives restent listées mais hors Disponibles.",
+  "tableSeatsCount": "{count} places",
+  "@tableSeatsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "tableFilterAll": "Toutes",
+  "tableFilterInactive": "Inactive",
+  "tableStatusAvailable": "Disponible",
+  "tableStatusOccupied": "Occupée",
+  "tableStatusReserved": "Réservée",
+  "validationTableNumber": "Entrez un numéro entre 1 et 9999.",
+  "validationTableCount": "Entrez un nombre entre 1 et 100.",
+  "validationTableSeats": "Entrez entre 1 et 50 places.",
+  "errorTableNumberTaken": "Ce numéro de table est déjà utilisé ici."
 }

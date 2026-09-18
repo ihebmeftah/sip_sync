@@ -33,6 +33,10 @@ import 'package:sip_sync_server/src/generated/buildings/building_create.dart'
     as _iikuia2o;
 import 'package:sip_sync_server/src/generated/buildings/building_update.dart'
     as _ipidi05l;
+import 'package:sip_sync_server/src/generated/tables/venue_table_create.dart'
+    as _ij730ie3;
+import 'package:sip_sync_server/src/generated/tables/venue_table_update.dart'
+    as _ixxdkctx;
 import '../auth/customer_auth_endpoint.dart' as _i4yxnu3z;
 import '../auth/employee_auth_endpoint.dart' as _i6neyhet;
 import '../auth/employee_endpoint.dart' as _i3t5tbp4;
@@ -40,6 +44,7 @@ import '../auth/owner_auth_endpoint.dart' as _is2qyeee;
 import '../auth/super_admin_auth_endpoint.dart' as _itmp66ay;
 import '../buildings/building_endpoint.dart' as _i69ygv7j;
 import '../greetings/greeting_endpoint.dart' as _il624ik7;
+import '../tables/venue_table_endpoint.dart' as _ira8yrq4;
 
 class Endpoints extends _is.EndpointDispatch {
   @override
@@ -85,6 +90,12 @@ class Endpoints extends _is.EndpointDispatch {
         ..initialize(
           server,
           'greeting',
+          null,
+        ),
+      'venueTable': _ira8yrq4.VenueTableEndpoint()
+        ..initialize(
+          server,
+          'venueTable',
           null,
         ),
     };
@@ -646,6 +657,72 @@ class Endpoints extends _is.EndpointDispatch {
                     session,
                     params['name'],
                   ),
+        ),
+      },
+    );
+    connectors['venueTable'] = _is.EndpointConnector(
+      name: 'venueTable',
+      endpoint: endpoints['venueTable']!,
+      methodConnectors: {
+        'list': _is.MethodConnector(
+          name: 'list',
+          params: {
+            'buildingId': _is.ParameterDescription(
+              name: 'buildingId',
+              type: _is.getType<_is.UuidValue>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['venueTable'] as _ira8yrq4.VenueTableEndpoint)
+                      .list(
+                        session,
+                        params['buildingId'],
+                      ),
+        ),
+        'create': _is.MethodConnector(
+          name: 'create',
+          params: {
+            'request': _is.ParameterDescription(
+              name: 'request',
+              type: _is.getType<_ij730ie3.VenueTableCreate>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['venueTable'] as _ira8yrq4.VenueTableEndpoint)
+                      .create(
+                        session,
+                        params['request'],
+                      ),
+        ),
+        'update': _is.MethodConnector(
+          name: 'update',
+          params: {
+            'request': _is.ParameterDescription(
+              name: 'request',
+              type: _is.getType<_ixxdkctx.VenueTableUpdate>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['venueTable'] as _ira8yrq4.VenueTableEndpoint)
+                      .update(
+                        session,
+                        params['request'],
+                      ),
         ),
       },
     );

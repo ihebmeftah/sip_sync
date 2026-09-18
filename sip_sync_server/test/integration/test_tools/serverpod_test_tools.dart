@@ -51,6 +51,12 @@ import 'package:sip_sync_server/src/generated/buildings/building_view.dart'
     as _iughhy8g;
 import 'package:sip_sync_server/src/generated/greetings/greeting.dart'
     as _igj77q9p;
+import 'package:sip_sync_server/src/generated/tables/venue_table_create.dart'
+    as _ij730ie3;
+import 'package:sip_sync_server/src/generated/tables/venue_table_update.dart'
+    as _ixxdkctx;
+import 'package:sip_sync_server/src/generated/tables/venue_table_view.dart'
+    as _icmpx87d;
 import 'package:sip_sync_server/src/generated/protocol.dart';
 import 'package:sip_sync_server/src/generated/endpoints.dart';
 export 'package:serverpod_test/serverpod_test_public_exports.dart';
@@ -192,6 +198,8 @@ class TestEndpoints {
   late final _BuildingEndpoint building;
 
   late final _GreetingEndpoint greeting;
+
+  late final _VenueTableEndpoint venueTable;
 }
 
 class _InternalTestEndpoints extends TestEndpoints
@@ -226,6 +234,10 @@ class _InternalTestEndpoints extends TestEndpoints
       serializationManager,
     );
     greeting = _GreetingEndpoint(
+      endpoints,
+      serializationManager,
+    );
+    venueTable = _VenueTableEndpoint(
       endpoints,
       serializationManager,
     );
@@ -1247,6 +1259,110 @@ class _GreetingEndpoint {
                   _localCallContext.arguments,
                 )
                 as _ida.Future<_igj77q9p.Greeting>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+}
+
+class _VenueTableEndpoint {
+  _VenueTableEndpoint(
+    this._endpointDispatch,
+    this._serializationManager,
+  );
+
+  final _is.EndpointDispatch _endpointDispatch;
+
+  final _is.SerializationManager _serializationManager;
+
+  _ida.Future<List<_icmpx87d.VenueTableView>> list(
+    _ist.TestSessionBuilder sessionBuilder,
+    _is.UuidValue buildingId,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'venueTable',
+            method: 'list',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'venueTable',
+          methodName: 'list',
+          parameters: _ist.testObjectToJson({'buildingId': buildingId}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<List<_icmpx87d.VenueTableView>>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<List<_icmpx87d.VenueTableView>> create(
+    _ist.TestSessionBuilder sessionBuilder,
+    _ij730ie3.VenueTableCreate request,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'venueTable',
+            method: 'create',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'venueTable',
+          methodName: 'create',
+          parameters: _ist.testObjectToJson({'request': request}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<List<_icmpx87d.VenueTableView>>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<_icmpx87d.VenueTableView> update(
+    _ist.TestSessionBuilder sessionBuilder,
+    _ixxdkctx.VenueTableUpdate request,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'venueTable',
+            method: 'update',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'venueTable',
+          methodName: 'update',
+          parameters: _ist.testObjectToJson({'request': request}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_icmpx87d.VenueTableView>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();

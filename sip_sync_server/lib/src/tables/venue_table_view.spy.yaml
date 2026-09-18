@@ -1,0 +1,9 @@
+class: VenueTableView
+fields:
+  id: UuidValue
+  buildingId: UuidValue
+  number: int
+  maxSeats: int
+  isActive: bool
+  ### Computed floor status (not a DB column).
+  status: TableFloorStatus

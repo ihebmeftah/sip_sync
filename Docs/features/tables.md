@@ -1,0 +1,40 @@
+# Floor tables
+
+Status: shipped
+
+## Apps
+
+`sip_sync_server`, `managment`.
+
+## Actors and permissions
+
+- **Owner** — list, create, update, and activate/deactivate tables for buildings they own.
+- **Employee** — list tables for their assigned building (floor view). Cannot create/edit.
+- Enforced on `VenueTableEndpoint` via `AuthGuard` + building ownership / assignment.
+
+## Flow
+
+1. Open a venue → **Tables** in the ops rail (`/b/:buildingId/tables`).
+2. Floor grid shows each table as a seat-based dining preview (round for ≤4 seats, oblong for more; chairs match `maxSeats`).
+3. Filter chips: All / Available / Occupied / Reserved / Inactive.
+4. Owner taps **Add table** → dialog asks **how many** tables, max seats, and active. Server assigns sequential numbers continuing after the highest existing number.
+5. Owner taps a table tile to edit **seats** and **active** only (number is locked).
+
+## Data
+
+Persisted (`venue_table`):
+
+| Field | Notes |
+| --- | --- |
+| `id` | UUID |
+| `buildingId` | → `building` |
+| `number` | Unique per building (1–9999) |
+| `maxSeats` | 1–50 |
+| `isActive` | default `true` |
+| `createdAt` | |
+
+**Not persisted:** `status` (`available` \| `occupied` \| `reserved`). Returned on `VenueTableView` only. Today always `available`; later derived from open orders / reservations.
+
+## Realtime
+
+None yet (orders/reservations will drive status later).

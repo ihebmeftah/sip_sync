@@ -27,6 +27,14 @@ Failure mapError(Object error) {
       BuildingErrorCode.notFound => 'errorNotFound',
     });
   }
+  if (error is VenueTableException) {
+    return Failure(switch (error.code) {
+      VenueTableErrorCode.invalidInput => 'errorInvalidInput',
+      VenueTableErrorCode.notAuthorized => 'errorNotAuthorized',
+      VenueTableErrorCode.notFound => 'errorNotFound',
+      VenueTableErrorCode.numberTaken => 'errorTableNumberTaken',
+    });
+  }
   return const Failure('errorGeneric');
 }
 
@@ -47,6 +55,7 @@ String lookupError(dynamic l10n, String key) {
     'errorLocationDenied' => l10n.errorLocationDenied,
     'errorLocationDisabled' => l10n.errorLocationDisabled,
     'errorLocationFailed' => l10n.errorLocationFailed,
+    'errorTableNumberTaken' => l10n.errorTableNumberTaken,
     _ => l10n.errorGeneric,
   };
 }

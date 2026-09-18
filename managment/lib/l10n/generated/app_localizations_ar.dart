@@ -266,7 +266,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get dashboardPosCue => 'الصندوق والتذاكر — قريباً.';
 
   @override
-  String get dashboardTablesCue => 'خريطة الصالة دون خادم بعد.';
+  String get dashboardTablesCue =>
+      'مخطط القاعة مع معاينات المقاعد وتصفية الحالة.';
 
   @override
   String get dashboardCatalogCue => 'أصناف ومكوّنات، واجهة فقط.';
@@ -414,4 +415,93 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get errorLocationFailed => 'تعذر قراءة الموقع الحالي.';
+
+  @override
+  String get cancel => 'إلغاء';
+
+  @override
+  String get addTable => 'إضافة طاولة';
+
+  @override
+  String get editTable => 'تعديل الطاولة';
+
+  @override
+  String get saveTable => 'حفظ الطاولة';
+
+  @override
+  String get tablesHint =>
+      'مخطط القاعة حسب المقاعد. الحالة تأتي لاحقاً من الطلبات والحجوزات.';
+
+  @override
+  String get tablesEmptyOwner => 'أضف أول طاولة لرسم المخطط.';
+
+  @override
+  String get tablesEmpty => 'لا توجد طاولات في هذا الطابق بعد.';
+
+  @override
+  String get tablesFilterEmpty => 'لا توجد طاولات لهذا التصفية.';
+
+  @override
+  String get tableFormHint =>
+      'اختر كم طاولة تريد إضافتها. تُعيَّن الأرقام تلقائياً بالترتيب.';
+
+  @override
+  String get tableEditHint =>
+      'يمكنك تغيير المقاعد والتفعيل فقط. رقم الطاولة ثابت.';
+
+  @override
+  String get tableNumber => 'رقم الطاولة';
+
+  @override
+  String get tableNumberLocked => 'لا يمكن تغيير رقم الطاولة.';
+
+  @override
+  String get tableCountToAdd => 'عدد الطاولات';
+
+  @override
+  String tableNumberRange(int from, int to) {
+    return 'ستُنشأ الأرقام $from–$to';
+  }
+
+  @override
+  String get tableMaxSeats => 'أقصى مقاعد';
+
+  @override
+  String get tableActive => 'نشطة في القاعة';
+
+  @override
+  String get tableActiveHint =>
+      'الطاولات غير النشطة تبقى في القائمة خارج المتاح.';
+
+  @override
+  String tableSeatsCount(int count) {
+    return '$count مقاعد';
+  }
+
+  @override
+  String get tableFilterAll => 'الكل';
+
+  @override
+  String get tableFilterInactive => 'غير نشطة';
+
+  @override
+  String get tableStatusAvailable => 'متاحة';
+
+  @override
+  String get tableStatusOccupied => 'مشغولة';
+
+  @override
+  String get tableStatusReserved => 'محجوزة';
+
+  @override
+  String get validationTableNumber => 'أدخل رقماً من 1 إلى 9999.';
+
+  @override
+  String get validationTableCount => 'أدخل عدداً من 1 إلى 100.';
+
+  @override
+  String get validationTableSeats => 'أدخل مقاعد من 1 إلى 50.';
+
+  @override
+  String get errorTableNumberTaken => 'رقم الطاولة مستخدم هنا بالفعل.';
 }
