@@ -1215,6 +1215,276 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'That article name is already used here.'**
   String get errorArticleNameTaken;
+
+  /// No description provided for @delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get delete;
+
+  /// No description provided for @ingredientsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Track stock by unit. Low stock highlights when current is at or below the threshold.'**
+  String get ingredientsHint;
+
+  /// No description provided for @ingredientsEmptyOwner.
+  ///
+  /// In en, this message translates to:
+  /// **'Add your first ingredient to start inventory.'**
+  String get ingredientsEmptyOwner;
+
+  /// No description provided for @ingredientsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No ingredients in this venue yet.'**
+  String get ingredientsEmpty;
+
+  /// No description provided for @addIngredient.
+  ///
+  /// In en, this message translates to:
+  /// **'Add ingredient'**
+  String get addIngredient;
+
+  /// No description provided for @deleteIngredient.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete ingredient'**
+  String get deleteIngredient;
+
+  /// No description provided for @deleteIngredientConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete {name}? This cannot be undone.'**
+  String deleteIngredientConfirm(String name);
+
+  /// No description provided for @ingredientFormHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Name is unique in this building. Choose the unit you reorder by.'**
+  String get ingredientFormHint;
+
+  /// No description provided for @ingredientName.
+  ///
+  /// In en, this message translates to:
+  /// **'Ingredient name'**
+  String get ingredientName;
+
+  /// No description provided for @ingredientUnit.
+  ///
+  /// In en, this message translates to:
+  /// **'Unit'**
+  String get ingredientUnit;
+
+  /// No description provided for @ingredientCurrentStock.
+  ///
+  /// In en, this message translates to:
+  /// **'Current stock'**
+  String get ingredientCurrentStock;
+
+  /// No description provided for @ingredientThresholdStock.
+  ///
+  /// In en, this message translates to:
+  /// **'Low-stock threshold'**
+  String get ingredientThresholdStock;
+
+  /// No description provided for @ingredientThresholdHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Warn when current stock reaches this level.'**
+  String get ingredientThresholdHint;
+
+  /// No description provided for @ingredientStockLine.
+  ///
+  /// In en, this message translates to:
+  /// **'{current} {unit} · threshold {threshold}'**
+  String ingredientStockLine(String current, String unit, String threshold);
+
+  /// No description provided for @validationIngredientName.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a name up to 80 characters.'**
+  String get validationIngredientName;
+
+  /// No description provided for @validationIngredientStock.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter 0 or a positive number.'**
+  String get validationIngredientStock;
+
+  /// No description provided for @errorIngredientNameTaken.
+  ///
+  /// In en, this message translates to:
+  /// **'That ingredient name is already used here.'**
+  String get errorIngredientNameTaken;
+
+  /// No description provided for @unitGram.
+  ///
+  /// In en, this message translates to:
+  /// **'Gram (g)'**
+  String get unitGram;
+
+  /// No description provided for @unitKilogram.
+  ///
+  /// In en, this message translates to:
+  /// **'Kilogram (kg)'**
+  String get unitKilogram;
+
+  /// No description provided for @unitMilliliter.
+  ///
+  /// In en, this message translates to:
+  /// **'Milliliter (ml)'**
+  String get unitMilliliter;
+
+  /// No description provided for @unitCentiliter.
+  ///
+  /// In en, this message translates to:
+  /// **'Centiliter (cl)'**
+  String get unitCentiliter;
+
+  /// No description provided for @unitLiter.
+  ///
+  /// In en, this message translates to:
+  /// **'Liter (L)'**
+  String get unitLiter;
+
+  /// No description provided for @unitPiece.
+  ///
+  /// In en, this message translates to:
+  /// **'Piece (each)'**
+  String get unitPiece;
+
+  /// No description provided for @unitBottle.
+  ///
+  /// In en, this message translates to:
+  /// **'Bottle'**
+  String get unitBottle;
+
+  /// No description provided for @unitCan.
+  ///
+  /// In en, this message translates to:
+  /// **'Can'**
+  String get unitCan;
+
+  /// No description provided for @unitPack.
+  ///
+  /// In en, this message translates to:
+  /// **'Pack'**
+  String get unitPack;
+
+  /// No description provided for @unitBox.
+  ///
+  /// In en, this message translates to:
+  /// **'Box'**
+  String get unitBox;
+
+  /// No description provided for @unitBunch.
+  ///
+  /// In en, this message translates to:
+  /// **'Bunch'**
+  String get unitBunch;
+
+  /// No description provided for @unitTeaspoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Teaspoon (tsp)'**
+  String get unitTeaspoon;
+
+  /// No description provided for @unitTablespoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Tablespoon (tbsp)'**
+  String get unitTablespoon;
+
+  /// No description provided for @unitCup.
+  ///
+  /// In en, this message translates to:
+  /// **'Cup'**
+  String get unitCup;
+
+  /// No description provided for @unitAbbrevGram.
+  ///
+  /// In en, this message translates to:
+  /// **'g'**
+  String get unitAbbrevGram;
+
+  /// No description provided for @unitAbbrevKilogram.
+  ///
+  /// In en, this message translates to:
+  /// **'kg'**
+  String get unitAbbrevKilogram;
+
+  /// No description provided for @unitAbbrevMilliliter.
+  ///
+  /// In en, this message translates to:
+  /// **'ml'**
+  String get unitAbbrevMilliliter;
+
+  /// No description provided for @unitAbbrevCentiliter.
+  ///
+  /// In en, this message translates to:
+  /// **'cl'**
+  String get unitAbbrevCentiliter;
+
+  /// No description provided for @unitAbbrevLiter.
+  ///
+  /// In en, this message translates to:
+  /// **'L'**
+  String get unitAbbrevLiter;
+
+  /// No description provided for @unitAbbrevPiece.
+  ///
+  /// In en, this message translates to:
+  /// **'pcs'**
+  String get unitAbbrevPiece;
+
+  /// No description provided for @unitAbbrevBottle.
+  ///
+  /// In en, this message translates to:
+  /// **'btl'**
+  String get unitAbbrevBottle;
+
+  /// No description provided for @unitAbbrevCan.
+  ///
+  /// In en, this message translates to:
+  /// **'can'**
+  String get unitAbbrevCan;
+
+  /// No description provided for @unitAbbrevPack.
+  ///
+  /// In en, this message translates to:
+  /// **'pack'**
+  String get unitAbbrevPack;
+
+  /// No description provided for @unitAbbrevBox.
+  ///
+  /// In en, this message translates to:
+  /// **'box'**
+  String get unitAbbrevBox;
+
+  /// No description provided for @unitAbbrevBunch.
+  ///
+  /// In en, this message translates to:
+  /// **'bunch'**
+  String get unitAbbrevBunch;
+
+  /// No description provided for @unitAbbrevTeaspoon.
+  ///
+  /// In en, this message translates to:
+  /// **'tsp'**
+  String get unitAbbrevTeaspoon;
+
+  /// No description provided for @unitAbbrevTablespoon.
+  ///
+  /// In en, this message translates to:
+  /// **'tbsp'**
+  String get unitAbbrevTablespoon;
+
+  /// No description provided for @unitAbbrevCup.
+  ///
+  /// In en, this message translates to:
+  /// **'cup'**
+  String get unitAbbrevCup;
 }
 
 class _AppLocalizationsDelegate

@@ -204,5 +204,63 @@
   "validationArticleName": "Entrez un nom de 1 à 80 caractères.",
   "validationArticlePrice": "Entrez un prix supérieur à 0.",
   "validationArticleCategory": "Choisissez une catégorie.",
-  "errorArticleNameTaken": "Ce nom d’article est déjà utilisé ici."
+"errorArticleNameTaken": "Ce nom d’article est déjà utilisé ici.",
+  "delete": "Supprimer",
+  "ingredientsHint": "Suivez le stock par unité. Alerte quand le stock actuel atteint le seuil.",
+  "ingredientsEmptyOwner": "Ajoutez votre premier ingrédient pour démarrer le stock.",
+  "ingredientsEmpty": "Aucun ingrédient dans ce lieu pour l’instant.",
+  "addIngredient": "Ajouter un ingrédient",
+  "deleteIngredient": "Supprimer l’ingrédient",
+  "deleteIngredientConfirm": "Supprimer {name} ? Action irréversible.",
+  "@deleteIngredientConfirm": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "ingredientFormHint": "Le nom est unique dans ce lieu. Choisissez l’unité de réapprovisionnement.",
+  "ingredientName": "Nom de l’ingrédient",
+  "ingredientUnit": "Unité",
+  "ingredientCurrentStock": "Stock actuel",
+  "ingredientThresholdStock": "Seuil bas",
+  "ingredientThresholdHint": "Alerte quand le stock atteint ce niveau.",
+  "ingredientStockLine": "{current} {unit} · seuil {threshold}",
+  "@ingredientStockLine": {
+    "placeholders": {
+      "current": { "type": "String" },
+      "unit": { "type": "String" },
+      "threshold": { "type": "String" }
+    }
+  },
+  "validationIngredientName": "Entrez un nom de 1 à 80 caractères.",
+  "validationIngredientStock": "Entrez 0 ou un nombre positif.",
+  "errorIngredientNameTaken": "Ce nom d’ingrédient est déjà utilisé ici.",
+  "unitGram": "Gramme (g)",
+  "unitKilogram": "Kilogramme (kg)",
+  "unitMilliliter": "Millilitre (ml)",
+  "unitCentiliter": "Centilitre (cl)",
+  "unitLiter": "Litre (L)",
+  "unitPiece": "Pièce (unité)",
+  "unitBottle": "Bouteille",
+  "unitCan": "Boîte de conserve",
+  "unitPack": "Paquet",
+  "unitBox": "Carton",
+  "unitBunch": "Botte",
+  "unitTeaspoon": "Cuillère à café (c. à c.)",
+  "unitTablespoon": "Cuillère à soupe (c. à s.)",
+  "unitCup": "Tasse",
+  "unitAbbrevGram": "g",
+  "unitAbbrevKilogram": "kg",
+  "unitAbbrevMilliliter": "ml",
+  "unitAbbrevCentiliter": "cl",
+  "unitAbbrevLiter": "L",
+  "unitAbbrevPiece": "pce",
+  "unitAbbrevBottle": "btl",
+  "unitAbbrevCan": "boîte",
+  "unitAbbrevPack": "paq.",
+  "unitAbbrevBox": "ctn",
+  "unitAbbrevBunch": "botte",
+  "unitAbbrevTeaspoon": "c.à.c.",
+  "unitAbbrevTablespoon": "c.à.s.",
+  "unitAbbrevCup": "tasse"
 }
+

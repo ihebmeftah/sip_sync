@@ -23,6 +23,8 @@ import 'package:sip_sync_server/src/generated/auth/super_admin_view.dart'
     as _i3qefl0x;
 import 'package:sip_sync_server/src/generated/buildings/building_view.dart'
     as _iughhy8g;
+import 'package:sip_sync_server/src/generated/menu/ingredient_view.dart'
+    as _i4kd1htu;
 import 'package:sip_sync_server/src/generated/menu/menu_article_view.dart'
     as _ilv9ypte;
 import 'package:sip_sync_server/src/generated/menu/menu_category_view.dart'
@@ -58,6 +60,11 @@ import 'buildings/building_exception.dart' as _i7fakgop;
 import 'buildings/building_update.dart' as _ivqpqa05;
 import 'buildings/building_view.dart' as _iyqmhcrr;
 import 'greetings/greeting.dart' as _izw8z7ou;
+import 'menu/ingredient.dart' as _iryfi8gu;
+import 'menu/ingredient_create.dart' as _isicyc96;
+import 'menu/ingredient_error_code.dart' as _imprl5lf;
+import 'menu/ingredient_exception.dart' as _iwzgj6vp;
+import 'menu/ingredient_view.dart' as _i2mc0cdd;
 import 'menu/menu_article.dart' as _ip0o9c0i;
 import 'menu/menu_article_create.dart' as _i7hj1jb2;
 import 'menu/menu_article_error_code.dart' as _i46cm0v4;
@@ -70,6 +77,7 @@ import 'menu/menu_category_error_code.dart' as _ifc6ty9l;
 import 'menu/menu_category_exception.dart' as _ikojmx8s;
 import 'menu/menu_category_update.dart' as _i152aql3;
 import 'menu/menu_category_view.dart' as _i9ogfgfu;
+import 'menu/units_type.dart' as _iug3z7z3;
 import 'tables/table_floor_status.dart' as _issw8is0;
 import 'tables/venue_table.dart' as _i4t52k6g;
 import 'tables/venue_table_create.dart' as _iwle9uzy;
@@ -106,6 +114,11 @@ export 'buildings/building_exception.dart';
 export 'buildings/building_update.dart';
 export 'buildings/building_view.dart';
 export 'greetings/greeting.dart';
+export 'menu/ingredient.dart';
+export 'menu/ingredient_create.dart';
+export 'menu/ingredient_error_code.dart';
+export 'menu/ingredient_exception.dart';
+export 'menu/ingredient_view.dart';
 export 'menu/menu_article.dart';
 export 'menu/menu_article_create.dart';
 export 'menu/menu_article_error_code.dart';
@@ -118,6 +131,7 @@ export 'menu/menu_category_error_code.dart';
 export 'menu/menu_category_exception.dart';
 export 'menu/menu_category_update.dart';
 export 'menu/menu_category_view.dart';
+export 'menu/units_type.dart';
 export 'tables/table_floor_status.dart';
 export 'tables/venue_table.dart';
 export 'tables/venue_table_create.dart';
@@ -554,6 +568,102 @@ class Protocol extends _is.DatabaseSerializationManager {
             _isp.IndexElementDefinition(
               type: _isp.IndexElementDefinitionType.column,
               definition: 'ownerId',
+            ),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
+    _isp.TableDefinition(
+      name: 'ingredient',
+      dartName: 'Ingredient',
+      schema: 'public',
+      module: 'sip_sync',
+      columns: [
+        _isp.ColumnDefinition(
+          name: 'id',
+          columnType: _isp.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue?',
+          columnDefault: 'random_v7',
+        ),
+        _isp.ColumnDefinition(
+          name: 'buildingId',
+          columnType: _isp.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue',
+        ),
+        _isp.ColumnDefinition(
+          name: 'name',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _isp.ColumnDefinition(
+          name: 'unit',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'protocol:UnitsType',
+        ),
+        _isp.ColumnDefinition(
+          name: 'currentStock',
+          columnType: _isp.ColumnType.doublePrecision,
+          isNullable: false,
+          dartType: 'double',
+        ),
+        _isp.ColumnDefinition(
+          name: 'thresholdStock',
+          columnType: _isp.ColumnType.doublePrecision,
+          isNullable: false,
+          dartType: 'double',
+        ),
+        _isp.ColumnDefinition(
+          name: 'createdAt',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+        ),
+      ],
+      foreignKeys: [
+        _isp.ForeignKeyDefinition(
+          constraintName: 'ingredient_fk_0',
+          columns: ['buildingId'],
+          referenceTable: 'building',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.cascade,
+          matchType: null,
+        ),
+      ],
+      indexes: [
+        _isp.IndexDefinition(
+          indexName: 'ingredient_building_name_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'buildingId',
+            ),
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'name',
+            ),
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: false,
+        ),
+        _isp.IndexDefinition(
+          indexName: 'ingredient_building_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'buildingId',
             ),
           ],
           type: 'btree',
@@ -1145,6 +1255,21 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == _izw8z7ou.Greeting) {
       return _izw8z7ou.Greeting.fromJson(data) as T;
     }
+    if (t == _iryfi8gu.Ingredient) {
+      return _iryfi8gu.Ingredient.fromJson(data) as T;
+    }
+    if (t == _isicyc96.IngredientCreate) {
+      return _isicyc96.IngredientCreate.fromJson(data) as T;
+    }
+    if (t == _imprl5lf.IngredientErrorCode) {
+      return _imprl5lf.IngredientErrorCode.fromJson(data) as T;
+    }
+    if (t == _iwzgj6vp.IngredientException) {
+      return _iwzgj6vp.IngredientException.fromJson(data) as T;
+    }
+    if (t == _i2mc0cdd.IngredientView) {
+      return _i2mc0cdd.IngredientView.fromJson(data) as T;
+    }
     if (t == _ip0o9c0i.MenuArticle) {
       return _ip0o9c0i.MenuArticle.fromJson(data) as T;
     }
@@ -1180,6 +1305,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     if (t == _i9ogfgfu.MenuCategoryView) {
       return _i9ogfgfu.MenuCategoryView.fromJson(data) as T;
+    }
+    if (t == _iug3z7z3.UnitsType) {
+      return _iug3z7z3.UnitsType.fromJson(data) as T;
     }
     if (t == _issw8is0.TableFloorStatus) {
       return _issw8is0.TableFloorStatus.fromJson(data) as T;
@@ -1318,6 +1446,29 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == _is.getType<_izw8z7ou.Greeting?>()) {
       return (data != null ? _izw8z7ou.Greeting.fromJson(data) : null) as T;
     }
+    if (t == _is.getType<_iryfi8gu.Ingredient?>()) {
+      return (data != null ? _iryfi8gu.Ingredient.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_isicyc96.IngredientCreate?>()) {
+      return (data != null ? _isicyc96.IngredientCreate.fromJson(data) : null)
+          as T;
+    }
+    if (t == _is.getType<_imprl5lf.IngredientErrorCode?>()) {
+      return (data != null
+              ? _imprl5lf.IngredientErrorCode.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_iwzgj6vp.IngredientException?>()) {
+      return (data != null
+              ? _iwzgj6vp.IngredientException.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_i2mc0cdd.IngredientView?>()) {
+      return (data != null ? _i2mc0cdd.IngredientView.fromJson(data) : null)
+          as T;
+    }
     if (t == _is.getType<_ip0o9c0i.MenuArticle?>()) {
       return (data != null ? _ip0o9c0i.MenuArticle.fromJson(data) : null) as T;
     }
@@ -1371,6 +1522,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == _is.getType<_i9ogfgfu.MenuCategoryView?>()) {
       return (data != null ? _i9ogfgfu.MenuCategoryView.fromJson(data) : null)
           as T;
+    }
+    if (t == _is.getType<_iug3z7z3.UnitsType?>()) {
+      return (data != null ? _iug3z7z3.UnitsType.fromJson(data) : null) as T;
     }
     if (t == _is.getType<_issw8is0.TableFloorStatus?>()) {
       return (data != null ? _issw8is0.TableFloorStatus.fromJson(data) : null)
@@ -1473,6 +1627,20 @@ class Protocol extends _is.DatabaseSerializationManager {
               : null)
           as T;
     }
+    if (t == List<_iryfi8gu.Ingredient>) {
+      return (data as List)
+              .map((e) => deserialize<_iryfi8gu.Ingredient>(e))
+              .toList()
+          as T;
+    }
+    if (t == _is.getType<List<_iryfi8gu.Ingredient>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map((e) => deserialize<_iryfi8gu.Ingredient>(e))
+                    .toList()
+              : null)
+          as T;
+    }
     if (t == List<_is.UuidValue>) {
       return (data as List).map((e) => deserialize<_is.UuidValue>(e)).toList()
           as T;
@@ -1492,6 +1660,12 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == List<_iusy412g.EmployeeView>) {
       return (data as List)
               .map((e) => deserialize<_iusy412g.EmployeeView>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_i4kd1htu.IngredientView>) {
+      return (data as List)
+              .map((e) => deserialize<_i4kd1htu.IngredientView>(e))
               .toList()
           as T;
     }
@@ -1556,6 +1730,11 @@ class Protocol extends _is.DatabaseSerializationManager {
       _ivqpqa05.BuildingUpdate => 'BuildingUpdate',
       _iyqmhcrr.BuildingView => 'BuildingView',
       _izw8z7ou.Greeting => 'Greeting',
+      _iryfi8gu.Ingredient => 'Ingredient',
+      _isicyc96.IngredientCreate => 'IngredientCreate',
+      _imprl5lf.IngredientErrorCode => 'IngredientErrorCode',
+      _iwzgj6vp.IngredientException => 'IngredientException',
+      _i2mc0cdd.IngredientView => 'IngredientView',
       _ip0o9c0i.MenuArticle => 'MenuArticle',
       _i7hj1jb2.MenuArticleCreate => 'MenuArticleCreate',
       _i46cm0v4.MenuArticleErrorCode => 'MenuArticleErrorCode',
@@ -1568,6 +1747,7 @@ class Protocol extends _is.DatabaseSerializationManager {
       _ikojmx8s.MenuCategoryException => 'MenuCategoryException',
       _i152aql3.MenuCategoryUpdate => 'MenuCategoryUpdate',
       _i9ogfgfu.MenuCategoryView => 'MenuCategoryView',
+      _iug3z7z3.UnitsType => 'UnitsType',
       _issw8is0.TableFloorStatus => 'TableFloorStatus',
       _i4t52k6g.VenueTable => 'VenueTable',
       _iwle9uzy.VenueTableCreate => 'VenueTableCreate',
@@ -1647,6 +1827,16 @@ class Protocol extends _is.DatabaseSerializationManager {
         return 'BuildingView';
       case _izw8z7ou.Greeting():
         return 'Greeting';
+      case _iryfi8gu.Ingredient():
+        return 'Ingredient';
+      case _isicyc96.IngredientCreate():
+        return 'IngredientCreate';
+      case _imprl5lf.IngredientErrorCode():
+        return 'IngredientErrorCode';
+      case _iwzgj6vp.IngredientException():
+        return 'IngredientException';
+      case _i2mc0cdd.IngredientView():
+        return 'IngredientView';
       case _ip0o9c0i.MenuArticle():
         return 'MenuArticle';
       case _i7hj1jb2.MenuArticleCreate():
@@ -1671,6 +1861,8 @@ class Protocol extends _is.DatabaseSerializationManager {
         return 'MenuCategoryUpdate';
       case _i9ogfgfu.MenuCategoryView():
         return 'MenuCategoryView';
+      case _iug3z7z3.UnitsType():
+        return 'UnitsType';
       case _issw8is0.TableFloorStatus():
         return 'TableFloorStatus';
       case _i4t52k6g.VenueTable():
@@ -1798,6 +1990,21 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (dataClassName == 'Greeting') {
       return deserialize<_izw8z7ou.Greeting>(data['data']);
     }
+    if (dataClassName == 'Ingredient') {
+      return deserialize<_iryfi8gu.Ingredient>(data['data']);
+    }
+    if (dataClassName == 'IngredientCreate') {
+      return deserialize<_isicyc96.IngredientCreate>(data['data']);
+    }
+    if (dataClassName == 'IngredientErrorCode') {
+      return deserialize<_imprl5lf.IngredientErrorCode>(data['data']);
+    }
+    if (dataClassName == 'IngredientException') {
+      return deserialize<_iwzgj6vp.IngredientException>(data['data']);
+    }
+    if (dataClassName == 'IngredientView') {
+      return deserialize<_i2mc0cdd.IngredientView>(data['data']);
+    }
     if (dataClassName == 'MenuArticle') {
       return deserialize<_ip0o9c0i.MenuArticle>(data['data']);
     }
@@ -1833,6 +2040,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     if (dataClassName == 'MenuCategoryView') {
       return deserialize<_i9ogfgfu.MenuCategoryView>(data['data']);
+    }
+    if (dataClassName == 'UnitsType') {
+      return deserialize<_iug3z7z3.UnitsType>(data['data']);
     }
     if (dataClassName == 'TableFloorStatus') {
       return deserialize<_issw8is0.TableFloorStatus>(data['data']);
@@ -1908,6 +2118,8 @@ class Protocol extends _is.DatabaseSerializationManager {
         return _iyiwchf3.SuperAdmin.t;
       case _i60s6nd2.Building:
         return _i60s6nd2.Building.t;
+      case _iryfi8gu.Ingredient:
+        return _iryfi8gu.Ingredient.t;
       case _ip0o9c0i.MenuArticle:
         return _ip0o9c0i.MenuArticle.t;
       case _i7sxg44v.MenuCategory:

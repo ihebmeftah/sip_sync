@@ -1,0 +1,4 @@
+exception: IngredientException
+fields:
+  message: String
+  code: IngredientErrorCode

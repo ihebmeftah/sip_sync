@@ -204,5 +204,63 @@
   "validationArticleName": "أدخل اسماً حتى 80 حرفاً.",
   "validationArticlePrice": "أدخل سعراً أكبر من 0.",
   "validationArticleCategory": "اختر فئة.",
-  "errorArticleNameTaken": "اسم الصنف مستخدم هنا بالفعل."
+"errorArticleNameTaken": "اسم الصنف مستخدم هنا بالفعل.",
+  "delete": "حذف",
+  "ingredientsHint": "تتبع المخزون حسب الوحدة. تنبيه عند وصول المخزون الحالي إلى العتبة.",
+  "ingredientsEmptyOwner": "أضف أول مكوّن لبدء المخزون.",
+  "ingredientsEmpty": "لا توجد مكوّنات في هذا المكان بعد.",
+  "addIngredient": "إضافة مكوّن",
+  "deleteIngredient": "حذف المكوّن",
+  "deleteIngredientConfirm": "حذف {name}؟ لا يمكن التراجع.",
+  "@deleteIngredientConfirm": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "ingredientFormHint": "الاسم فريد في هذا المكان. اختر وحدة إعادة التموين.",
+  "ingredientName": "اسم المكوّن",
+  "ingredientUnit": "الوحدة",
+  "ingredientCurrentStock": "المخزون الحالي",
+  "ingredientThresholdStock": "عتبة المخزون المنخفض",
+  "ingredientThresholdHint": "تنبيه عند وصول المخزون إلى هذا المستوى.",
+  "ingredientStockLine": "{current} {unit} · العتبة {threshold}",
+  "@ingredientStockLine": {
+    "placeholders": {
+      "current": { "type": "String" },
+      "unit": { "type": "String" },
+      "threshold": { "type": "String" }
+    }
+  },
+  "validationIngredientName": "أدخل اسماً حتى 80 حرفاً.",
+  "validationIngredientStock": "أدخل 0 أو رقماً موجباً.",
+  "errorIngredientNameTaken": "اسم المكوّن مستخدم هنا بالفعل.",
+  "unitGram": "غرام (غ)",
+  "unitKilogram": "كيلوغرام (كغ)",
+  "unitMilliliter": "مليلتر (مل)",
+  "unitCentiliter": "سنتيلتر (سل)",
+  "unitLiter": "لتر (ل)",
+  "unitPiece": "قطعة (وحدة)",
+  "unitBottle": "زجاجة",
+  "unitCan": "علبة معدنية",
+  "unitPack": "عبوة",
+  "unitBox": "صندوق",
+  "unitBunch": "ربطة",
+  "unitTeaspoon": "ملعقة صغيرة",
+  "unitTablespoon": "ملعقة كبيرة",
+  "unitCup": "كوب",
+  "unitAbbrevGram": "غ",
+  "unitAbbrevKilogram": "كغ",
+  "unitAbbrevMilliliter": "مل",
+  "unitAbbrevCentiliter": "سل",
+  "unitAbbrevLiter": "ل",
+  "unitAbbrevPiece": "قطعة",
+  "unitAbbrevBottle": "زجاجة",
+  "unitAbbrevCan": "علبة",
+  "unitAbbrevPack": "عبوة",
+  "unitAbbrevBox": "صندوق",
+  "unitAbbrevBunch": "ربطة",
+  "unitAbbrevTeaspoon": "م.ص",
+  "unitAbbrevTablespoon": "م.ك",
+  "unitAbbrevCup": "كوب"
 }
+

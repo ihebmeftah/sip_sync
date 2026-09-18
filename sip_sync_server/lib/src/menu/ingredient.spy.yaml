@@ -1,0 +1,18 @@
+### An inventory ingredient scoped to one building.
+class: Ingredient
+table: ingredient
+serverOnly: true
+fields:
+  id: UuidValue?, defaultPersist=random_v7
+  building: Building?, relation(name=building_ingredients, onDelete=Cascade)
+  name: String
+  unit: UnitsType
+  currentStock: double
+  thresholdStock: double
+  createdAt: DateTime, defaultModel=now
+indexes:
+  ingredient_building_name_idx:
+    fields: buildingId, name
+    unique: true
+  ingredient_building_idx:
+    fields: buildingId

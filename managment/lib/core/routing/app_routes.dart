@@ -14,6 +14,7 @@ import '../../features/employees/views/employee_form_view.dart';
 import '../../features/employees/views/employees_list_view.dart';
 import '../../features/products/views/articles_list_view.dart';
 import '../../features/products/views/categories_list_view.dart';
+import '../../features/products/views/ingredients_list_view.dart';
 import '../../features/tables/views/tables_list_view.dart';
 import '../../features/profile/views/profile_view.dart';
 import '../../l10n/generated/app_localizations.dart';
@@ -260,7 +261,6 @@ class IngredientsRoute extends GoRouteData with $IngredientsRoute {
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    final name = AppLocalizations.of(context)!.navIngredients;
-    return PlaceholderView(screenName: name);
+    return IngredientsListView(buildingId: buildingId);
   }
 }

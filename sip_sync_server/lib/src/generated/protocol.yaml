@@ -36,6 +36,10 @@ building:
   - listEmployees:
 greeting:
   - hello:
+ingredient:
+  - list:
+  - create:
+  - delete:
 menuArticle:
   - list:
   - create:

@@ -1,0 +1,7 @@
+enum: IngredientErrorCode
+serialized: byName
+values:
+  - invalidInput
+  - notAuthorized
+  - notFound
+  - nameTaken

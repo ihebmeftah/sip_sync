@@ -53,6 +53,10 @@ import 'package:sip_sync_client/src/protocol/buildings/building_view.dart'
     as _ia8vsgay;
 import 'package:sip_sync_client/src/protocol/greetings/greeting.dart'
     as _ijvf1i5e;
+import 'package:sip_sync_client/src/protocol/menu/ingredient_create.dart'
+    as _ixn96e4f;
+import 'package:sip_sync_client/src/protocol/menu/ingredient_view.dart'
+    as _ibgg9iyt;
 import 'package:sip_sync_client/src/protocol/menu/menu_article_create.dart'
     as _iubk8tjs;
 import 'package:sip_sync_client/src/protocol/menu/menu_article_update.dart'
@@ -370,6 +374,40 @@ class EndpointGreeting extends _isc.EndpointRef {
       );
 }
 
+/// Ingredient inventory RPC for a building (create, list, delete).
+/// {@category Endpoint}
+class EndpointIngredient extends _isc.EndpointRef {
+  EndpointIngredient(_isc.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'ingredient';
+
+  /// Lists ingredients for [buildingId] (owner or assigned employee).
+  _ida.Future<List<_ibgg9iyt.IngredientView>> list(_isc.UuidValue buildingId) =>
+      caller.callServerEndpoint<List<_ibgg9iyt.IngredientView>>(
+        'ingredient',
+        'list',
+        {'buildingId': buildingId},
+      );
+
+  /// Owner creates an ingredient.
+  _ida.Future<_ibgg9iyt.IngredientView> create(
+    _ixn96e4f.IngredientCreate request,
+  ) => caller.callServerEndpoint<_ibgg9iyt.IngredientView>(
+    'ingredient',
+    'create',
+    {'request': request},
+  );
+
+  /// Owner deletes an ingredient by [id].
+  _ida.Future<void> delete(_isc.UuidValue id) =>
+      caller.callServerEndpoint<void>(
+        'ingredient',
+        'delete',
+        {'id': id},
+      );
+}
+
 /// Menu article RPC for a building.
 /// {@category Endpoint}
 class EndpointMenuArticle extends _isc.EndpointRef {
@@ -522,6 +560,7 @@ class Client extends _isc.ServerpodClientShared {
     superAdminAuth = EndpointSuperAdminAuth(this);
     building = EndpointBuilding(this);
     greeting = EndpointGreeting(this);
+    ingredient = EndpointIngredient(this);
     menuArticle = EndpointMenuArticle(this);
     menuCategory = EndpointMenuCategory(this);
     venueTable = EndpointVenueTable(this);
@@ -542,6 +581,8 @@ class Client extends _isc.ServerpodClientShared {
 
   late final EndpointGreeting greeting;
 
+  late final EndpointIngredient ingredient;
+
   late final EndpointMenuArticle menuArticle;
 
   late final EndpointMenuCategory menuCategory;
@@ -559,6 +600,7 @@ class Client extends _isc.ServerpodClientShared {
     'superAdminAuth': superAdminAuth,
     'building': building,
     'greeting': greeting,
+    'ingredient': ingredient,
     'menuArticle': menuArticle,
     'menuCategory': menuCategory,
     'venueTable': venueTable,

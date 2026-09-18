@@ -207,5 +207,63 @@
   "validationArticleName": "Enter a name up to 80 characters.",
   "validationArticlePrice": "Enter a price greater than 0.",
   "validationArticleCategory": "Choose a category.",
-  "errorArticleNameTaken": "That article name is already used here."
+"errorArticleNameTaken": "That article name is already used here.",
+  "delete": "Delete",
+  "ingredientsHint": "Track stock by unit. Low stock highlights when current is at or below the threshold.",
+  "ingredientsEmptyOwner": "Add your first ingredient to start inventory.",
+  "ingredientsEmpty": "No ingredients in this venue yet.",
+  "addIngredient": "Add ingredient",
+  "deleteIngredient": "Delete ingredient",
+  "deleteIngredientConfirm": "Delete {name}? This cannot be undone.",
+  "@deleteIngredientConfirm": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "ingredientFormHint": "Name is unique in this building. Choose the unit you reorder by.",
+  "ingredientName": "Ingredient name",
+  "ingredientUnit": "Unit",
+  "ingredientCurrentStock": "Current stock",
+  "ingredientThresholdStock": "Low-stock threshold",
+  "ingredientThresholdHint": "Warn when current stock reaches this level.",
+  "ingredientStockLine": "{current} {unit} · threshold {threshold}",
+  "@ingredientStockLine": {
+    "placeholders": {
+      "current": { "type": "String" },
+      "unit": { "type": "String" },
+      "threshold": { "type": "String" }
+    }
+  },
+  "validationIngredientName": "Enter a name up to 80 characters.",
+  "validationIngredientStock": "Enter 0 or a positive number.",
+  "errorIngredientNameTaken": "That ingredient name is already used here.",
+  "unitGram": "Gram (g)",
+  "unitKilogram": "Kilogram (kg)",
+  "unitMilliliter": "Milliliter (ml)",
+  "unitCentiliter": "Centiliter (cl)",
+  "unitLiter": "Liter (L)",
+  "unitPiece": "Piece (each)",
+  "unitBottle": "Bottle",
+  "unitCan": "Can",
+  "unitPack": "Pack",
+  "unitBox": "Box",
+  "unitBunch": "Bunch",
+  "unitTeaspoon": "Teaspoon (tsp)",
+  "unitTablespoon": "Tablespoon (tbsp)",
+  "unitCup": "Cup",
+  "unitAbbrevGram": "g",
+  "unitAbbrevKilogram": "kg",
+  "unitAbbrevMilliliter": "ml",
+  "unitAbbrevCentiliter": "cl",
+  "unitAbbrevLiter": "L",
+  "unitAbbrevPiece": "pcs",
+  "unitAbbrevBottle": "btl",
+  "unitAbbrevCan": "can",
+  "unitAbbrevPack": "pack",
+  "unitAbbrevBox": "box",
+  "unitAbbrevBunch": "bunch",
+  "unitAbbrevTeaspoon": "tsp",
+  "unitAbbrevTablespoon": "tbsp",
+  "unitAbbrevCup": "cup"
 }
+

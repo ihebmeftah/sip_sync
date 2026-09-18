@@ -22,6 +22,8 @@ import 'package:sip_sync_client/src/protocol/auth/super_admin_view.dart'
     as _iddpd7et;
 import 'package:sip_sync_client/src/protocol/buildings/building_view.dart'
     as _ia8vsgay;
+import 'package:sip_sync_client/src/protocol/menu/ingredient_view.dart'
+    as _ibgg9iyt;
 import 'package:sip_sync_client/src/protocol/menu/menu_article_view.dart'
     as _ijqfjmuy;
 import 'package:sip_sync_client/src/protocol/menu/menu_category_view.dart'
@@ -51,6 +53,10 @@ import 'buildings/building_exception.dart' as _i7fakgop;
 import 'buildings/building_update.dart' as _ivqpqa05;
 import 'buildings/building_view.dart' as _iyqmhcrr;
 import 'greetings/greeting.dart' as _izw8z7ou;
+import 'menu/ingredient_create.dart' as _isicyc96;
+import 'menu/ingredient_error_code.dart' as _imprl5lf;
+import 'menu/ingredient_exception.dart' as _iwzgj6vp;
+import 'menu/ingredient_view.dart' as _i2mc0cdd;
 import 'menu/menu_article_create.dart' as _i7hj1jb2;
 import 'menu/menu_article_error_code.dart' as _i46cm0v4;
 import 'menu/menu_article_exception.dart' as _iwbmeh47;
@@ -61,6 +67,7 @@ import 'menu/menu_category_error_code.dart' as _ifc6ty9l;
 import 'menu/menu_category_exception.dart' as _ikojmx8s;
 import 'menu/menu_category_update.dart' as _i152aql3;
 import 'menu/menu_category_view.dart' as _i9ogfgfu;
+import 'menu/units_type.dart' as _iug3z7z3;
 import 'tables/table_floor_status.dart' as _issw8is0;
 import 'tables/venue_table_create.dart' as _iwle9uzy;
 import 'tables/venue_table_error_code.dart' as _igqdoyb7;
@@ -90,6 +97,10 @@ export 'buildings/building_exception.dart';
 export 'buildings/building_update.dart';
 export 'buildings/building_view.dart';
 export 'greetings/greeting.dart';
+export 'menu/ingredient_create.dart';
+export 'menu/ingredient_error_code.dart';
+export 'menu/ingredient_exception.dart';
+export 'menu/ingredient_view.dart';
 export 'menu/menu_article_create.dart';
 export 'menu/menu_article_error_code.dart';
 export 'menu/menu_article_exception.dart';
@@ -100,6 +111,7 @@ export 'menu/menu_category_error_code.dart';
 export 'menu/menu_category_exception.dart';
 export 'menu/menu_category_update.dart';
 export 'menu/menu_category_view.dart';
+export 'menu/units_type.dart';
 export 'tables/table_floor_status.dart';
 export 'tables/venue_table_create.dart';
 export 'tables/venue_table_error_code.dart';
@@ -211,6 +223,18 @@ class Protocol extends _isc.SerializationManager {
     if (t == _izw8z7ou.Greeting) {
       return _izw8z7ou.Greeting.fromJson(data) as T;
     }
+    if (t == _isicyc96.IngredientCreate) {
+      return _isicyc96.IngredientCreate.fromJson(data) as T;
+    }
+    if (t == _imprl5lf.IngredientErrorCode) {
+      return _imprl5lf.IngredientErrorCode.fromJson(data) as T;
+    }
+    if (t == _iwzgj6vp.IngredientException) {
+      return _iwzgj6vp.IngredientException.fromJson(data) as T;
+    }
+    if (t == _i2mc0cdd.IngredientView) {
+      return _i2mc0cdd.IngredientView.fromJson(data) as T;
+    }
     if (t == _i7hj1jb2.MenuArticleCreate) {
       return _i7hj1jb2.MenuArticleCreate.fromJson(data) as T;
     }
@@ -240,6 +264,9 @@ class Protocol extends _isc.SerializationManager {
     }
     if (t == _i9ogfgfu.MenuCategoryView) {
       return _i9ogfgfu.MenuCategoryView.fromJson(data) as T;
+    }
+    if (t == _iug3z7z3.UnitsType) {
+      return _iug3z7z3.UnitsType.fromJson(data) as T;
     }
     if (t == _issw8is0.TableFloorStatus) {
       return _issw8is0.TableFloorStatus.fromJson(data) as T;
@@ -357,6 +384,26 @@ class Protocol extends _isc.SerializationManager {
     if (t == _isc.getType<_izw8z7ou.Greeting?>()) {
       return (data != null ? _izw8z7ou.Greeting.fromJson(data) : null) as T;
     }
+    if (t == _isc.getType<_isicyc96.IngredientCreate?>()) {
+      return (data != null ? _isicyc96.IngredientCreate.fromJson(data) : null)
+          as T;
+    }
+    if (t == _isc.getType<_imprl5lf.IngredientErrorCode?>()) {
+      return (data != null
+              ? _imprl5lf.IngredientErrorCode.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _isc.getType<_iwzgj6vp.IngredientException?>()) {
+      return (data != null
+              ? _iwzgj6vp.IngredientException.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _isc.getType<_i2mc0cdd.IngredientView?>()) {
+      return (data != null ? _i2mc0cdd.IngredientView.fromJson(data) : null)
+          as T;
+    }
     if (t == _isc.getType<_i7hj1jb2.MenuArticleCreate?>()) {
       return (data != null ? _i7hj1jb2.MenuArticleCreate.fromJson(data) : null)
           as T;
@@ -405,6 +452,9 @@ class Protocol extends _isc.SerializationManager {
       return (data != null ? _i9ogfgfu.MenuCategoryView.fromJson(data) : null)
           as T;
     }
+    if (t == _isc.getType<_iug3z7z3.UnitsType?>()) {
+      return (data != null ? _iug3z7z3.UnitsType.fromJson(data) : null) as T;
+    }
     if (t == _isc.getType<_issw8is0.TableFloorStatus?>()) {
       return (data != null ? _issw8is0.TableFloorStatus.fromJson(data) : null)
           as T;
@@ -452,6 +502,12 @@ class Protocol extends _isc.SerializationManager {
     if (t == List<_ix96cplr.EmployeeView>) {
       return (data as List)
               .map((e) => deserialize<_ix96cplr.EmployeeView>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_ibgg9iyt.IngredientView>) {
+      return (data as List)
+              .map((e) => deserialize<_ibgg9iyt.IngredientView>(e))
               .toList()
           as T;
     }
@@ -507,6 +563,10 @@ class Protocol extends _isc.SerializationManager {
       _ivqpqa05.BuildingUpdate => 'BuildingUpdate',
       _iyqmhcrr.BuildingView => 'BuildingView',
       _izw8z7ou.Greeting => 'Greeting',
+      _isicyc96.IngredientCreate => 'IngredientCreate',
+      _imprl5lf.IngredientErrorCode => 'IngredientErrorCode',
+      _iwzgj6vp.IngredientException => 'IngredientException',
+      _i2mc0cdd.IngredientView => 'IngredientView',
       _i7hj1jb2.MenuArticleCreate => 'MenuArticleCreate',
       _i46cm0v4.MenuArticleErrorCode => 'MenuArticleErrorCode',
       _iwbmeh47.MenuArticleException => 'MenuArticleException',
@@ -517,6 +577,7 @@ class Protocol extends _isc.SerializationManager {
       _ikojmx8s.MenuCategoryException => 'MenuCategoryException',
       _i152aql3.MenuCategoryUpdate => 'MenuCategoryUpdate',
       _i9ogfgfu.MenuCategoryView => 'MenuCategoryView',
+      _iug3z7z3.UnitsType => 'UnitsType',
       _issw8is0.TableFloorStatus => 'TableFloorStatus',
       _iwle9uzy.VenueTableCreate => 'VenueTableCreate',
       _igqdoyb7.VenueTableErrorCode => 'VenueTableErrorCode',
@@ -583,6 +644,14 @@ class Protocol extends _isc.SerializationManager {
         return 'BuildingView';
       case _izw8z7ou.Greeting():
         return 'Greeting';
+      case _isicyc96.IngredientCreate():
+        return 'IngredientCreate';
+      case _imprl5lf.IngredientErrorCode():
+        return 'IngredientErrorCode';
+      case _iwzgj6vp.IngredientException():
+        return 'IngredientException';
+      case _i2mc0cdd.IngredientView():
+        return 'IngredientView';
       case _i7hj1jb2.MenuArticleCreate():
         return 'MenuArticleCreate';
       case _i46cm0v4.MenuArticleErrorCode():
@@ -603,6 +672,8 @@ class Protocol extends _isc.SerializationManager {
         return 'MenuCategoryUpdate';
       case _i9ogfgfu.MenuCategoryView():
         return 'MenuCategoryView';
+      case _iug3z7z3.UnitsType():
+        return 'UnitsType';
       case _issw8is0.TableFloorStatus():
         return 'TableFloorStatus';
       case _iwle9uzy.VenueTableCreate():
@@ -706,6 +777,18 @@ class Protocol extends _isc.SerializationManager {
     if (dataClassName == 'Greeting') {
       return deserialize<_izw8z7ou.Greeting>(data['data']);
     }
+    if (dataClassName == 'IngredientCreate') {
+      return deserialize<_isicyc96.IngredientCreate>(data['data']);
+    }
+    if (dataClassName == 'IngredientErrorCode') {
+      return deserialize<_imprl5lf.IngredientErrorCode>(data['data']);
+    }
+    if (dataClassName == 'IngredientException') {
+      return deserialize<_iwzgj6vp.IngredientException>(data['data']);
+    }
+    if (dataClassName == 'IngredientView') {
+      return deserialize<_i2mc0cdd.IngredientView>(data['data']);
+    }
     if (dataClassName == 'MenuArticleCreate') {
       return deserialize<_i7hj1jb2.MenuArticleCreate>(data['data']);
     }
@@ -735,6 +818,9 @@ class Protocol extends _isc.SerializationManager {
     }
     if (dataClassName == 'MenuCategoryView') {
       return deserialize<_i9ogfgfu.MenuCategoryView>(data['data']);
+    }
+    if (dataClassName == 'UnitsType') {
+      return deserialize<_iug3z7z3.UnitsType>(data['data']);
     }
     if (dataClassName == 'TableFloorStatus') {
       return deserialize<_issw8is0.TableFloorStatus>(data['data']);

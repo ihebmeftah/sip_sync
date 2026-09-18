@@ -33,6 +33,8 @@ import 'package:sip_sync_server/src/generated/buildings/building_create.dart'
     as _iikuia2o;
 import 'package:sip_sync_server/src/generated/buildings/building_update.dart'
     as _ipidi05l;
+import 'package:sip_sync_server/src/generated/menu/ingredient_create.dart'
+    as _i0zbq4gg;
 import 'package:sip_sync_server/src/generated/menu/menu_article_create.dart'
     as _io67qn2p;
 import 'package:sip_sync_server/src/generated/menu/menu_article_update.dart'
@@ -52,6 +54,7 @@ import '../auth/owner_auth_endpoint.dart' as _is2qyeee;
 import '../auth/super_admin_auth_endpoint.dart' as _itmp66ay;
 import '../buildings/building_endpoint.dart' as _i69ygv7j;
 import '../greetings/greeting_endpoint.dart' as _il624ik7;
+import '../menu/ingredient_endpoint.dart' as _i7cjtizz;
 import '../menu/menu_article_endpoint.dart' as _iefktwfq;
 import '../menu/menu_category_endpoint.dart' as _i1h28rjj;
 import '../tables/venue_table_endpoint.dart' as _ira8yrq4;
@@ -100,6 +103,12 @@ class Endpoints extends _is.EndpointDispatch {
         ..initialize(
           server,
           'greeting',
+          null,
+        ),
+      'ingredient': _i7cjtizz.IngredientEndpoint()
+        ..initialize(
+          server,
+          'ingredient',
           null,
         ),
       'menuArticle': _iefktwfq.MenuArticleEndpoint()
@@ -679,6 +688,72 @@ class Endpoints extends _is.EndpointDispatch {
                     session,
                     params['name'],
                   ),
+        ),
+      },
+    );
+    connectors['ingredient'] = _is.EndpointConnector(
+      name: 'ingredient',
+      endpoint: endpoints['ingredient']!,
+      methodConnectors: {
+        'list': _is.MethodConnector(
+          name: 'list',
+          params: {
+            'buildingId': _is.ParameterDescription(
+              name: 'buildingId',
+              type: _is.getType<_is.UuidValue>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['ingredient'] as _i7cjtizz.IngredientEndpoint)
+                      .list(
+                        session,
+                        params['buildingId'],
+                      ),
+        ),
+        'create': _is.MethodConnector(
+          name: 'create',
+          params: {
+            'request': _is.ParameterDescription(
+              name: 'request',
+              type: _is.getType<_i0zbq4gg.IngredientCreate>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['ingredient'] as _i7cjtizz.IngredientEndpoint)
+                      .create(
+                        session,
+                        params['request'],
+                      ),
+        ),
+        'delete': _is.MethodConnector(
+          name: 'delete',
+          params: {
+            'id': _is.ParameterDescription(
+              name: 'id',
+              type: _is.getType<_is.UuidValue>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['ingredient'] as _i7cjtizz.IngredientEndpoint)
+                      .delete(
+                        session,
+                        params['id'],
+                      ),
         ),
       },
     );

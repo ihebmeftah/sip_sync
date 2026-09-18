@@ -1,0 +1,151 @@
+import 'package:serverpod/serverpod.dart';
+
+import '../auth/auth_guard.dart';
+import '../generated/protocol.dart';
+
+/// Building-scoped ingredient create / list / delete.
+class IngredientService {
+  /// Lists ingredients for a building the caller can access.
+  Future<List<IngredientView>> listForBuilding(
+    Session session,
+    UuidValue buildingId,
+  ) async {
+    await _requireBuildingAccess(session, buildingId);
+    final rows = await Ingredient.db.find(
+      session,
+      where: (t) => t.buildingId.equals(buildingId),
+      orderBy: (t) => t.name,
+    );
+    return rows.map(_view).toList();
+  }
+
+  /// Owner-only create.
+  Future<IngredientView> create(
+    Session session,
+    IngredientCreate request,
+  ) async {
+    final ownerId = AuthGuard.requireOwner(session);
+    await _requireOwnedBuilding(session, ownerId, request.buildingId);
+    final name = _validateName(request.name);
+    final currentStock = _validateStock(request.currentStock, field: 'current');
+    final thresholdStock = _validateStock(
+      request.thresholdStock,
+      field: 'threshold',
+    );
+    await _assertNameAvailable(session, request.buildingId, name);
+
+    final row = await Ingredient.db.insertRow(
+      session,
+      Ingredient(
+        buildingId: request.buildingId,
+        name: name,
+        unit: request.unit,
+        currentStock: currentStock,
+        thresholdStock: thresholdStock,
+      ),
+    );
+    return _view(row);
+  }
+
+  /// Owner-only delete.
+  Future<void> delete(Session session, UuidValue id) async {
+    final ownerId = AuthGuard.requireOwner(session);
+    final existing = await Ingredient.db.findById(session, id);
+    if (existing == null) {
+      throw IngredientException(
+        message: 'Ingredient not found.',
+        code: IngredientErrorCode.notFound,
+      );
+    }
+    await _requireOwnedBuilding(session, ownerId, existing.buildingId);
+    await Ingredient.db.deleteRow(session, existing);
+  }
+
+  IngredientView _view(Ingredient row) => IngredientView(
+    id: row.id!,
+    buildingId: row.buildingId,
+    name: row.name,
+    unit: row.unit,
+    currentStock: row.currentStock,
+    thresholdStock: row.thresholdStock,
+  );
+
+  String _validateName(String raw) {
+    final name = raw.trim();
+    if (name.isEmpty || name.length > 80) {
+      throw IngredientException(
+        message: 'Ingredient name must be 1–80 characters.',
+        code: IngredientErrorCode.invalidInput,
+      );
+    }
+    return name;
+  }
+
+  double _validateStock(double value, {required String field}) {
+    if (value < 0 || value > 100000000) {
+      throw IngredientException(
+        message: 'Stock $field must be 0 or greater.',
+        code: IngredientErrorCode.invalidInput,
+      );
+    }
+    return value;
+  }
+
+  Future<void> _assertNameAvailable(
+    Session session,
+    UuidValue buildingId,
+    String name,
+  ) async {
+    final clash = await Ingredient.db.findFirstRow(
+      session,
+      where: (t) => t.buildingId.equals(buildingId) & t.name.ilike(name),
+    );
+    if (clash != null) {
+      throw IngredientException(
+        message: 'An ingredient with that name already exists here.',
+        code: IngredientErrorCode.nameTaken,
+      );
+    }
+  }
+
+  Future<void> _requireBuildingAccess(
+    Session session,
+    UuidValue buildingId,
+  ) async {
+    final building = await Building.db.findById(session, buildingId);
+    if (building == null) {
+      throw IngredientException(
+        message: 'Building not found.',
+        code: IngredientErrorCode.notFound,
+      );
+    }
+    final ctx = AuthGuard.requireAny(session);
+    if (ctx.actorType == ActorType.owner && building.ownerId == ctx.actorId) {
+      return;
+    }
+    if (ctx.actorType == ActorType.employee) {
+      final employee = await Employee.db.findById(session, ctx.actorId);
+      if (employee != null && employee.buildingId == buildingId) {
+        return;
+      }
+    }
+    throw IngredientException(
+      message: 'Not allowed for this building.',
+      code: IngredientErrorCode.notAuthorized,
+    );
+  }
+
+  Future<void> _requireOwnedBuilding(
+    Session session,
+    UuidValue ownerId,
+    UuidValue buildingId,
+  ) async {
+    final building = await Building.db.findById(session, buildingId);
+    if (building == null || building.ownerId != ownerId) {
+      throw IngredientException(
+        message: 'Building not found.',
+        code: IngredientErrorCode.notFound,
+      );
+    }
+  }
+}

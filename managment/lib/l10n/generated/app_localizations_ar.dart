@@ -598,4 +598,146 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get errorArticleNameTaken => 'اسم الصنف مستخدم هنا بالفعل.';
+
+  @override
+  String get delete => 'حذف';
+
+  @override
+  String get ingredientsHint =>
+      'تتبع المخزون حسب الوحدة. تنبيه عند وصول المخزون الحالي إلى العتبة.';
+
+  @override
+  String get ingredientsEmptyOwner => 'أضف أول مكوّن لبدء المخزون.';
+
+  @override
+  String get ingredientsEmpty => 'لا توجد مكوّنات في هذا المكان بعد.';
+
+  @override
+  String get addIngredient => 'إضافة مكوّن';
+
+  @override
+  String get deleteIngredient => 'حذف المكوّن';
+
+  @override
+  String deleteIngredientConfirm(String name) {
+    return 'حذف $name؟ لا يمكن التراجع.';
+  }
+
+  @override
+  String get ingredientFormHint =>
+      'الاسم فريد في هذا المكان. اختر وحدة إعادة التموين.';
+
+  @override
+  String get ingredientName => 'اسم المكوّن';
+
+  @override
+  String get ingredientUnit => 'الوحدة';
+
+  @override
+  String get ingredientCurrentStock => 'المخزون الحالي';
+
+  @override
+  String get ingredientThresholdStock => 'عتبة المخزون المنخفض';
+
+  @override
+  String get ingredientThresholdHint =>
+      'تنبيه عند وصول المخزون إلى هذا المستوى.';
+
+  @override
+  String ingredientStockLine(String current, String unit, String threshold) {
+    return '$current $unit · العتبة $threshold';
+  }
+
+  @override
+  String get validationIngredientName => 'أدخل اسماً حتى 80 حرفاً.';
+
+  @override
+  String get validationIngredientStock => 'أدخل 0 أو رقماً موجباً.';
+
+  @override
+  String get errorIngredientNameTaken => 'اسم المكوّن مستخدم هنا بالفعل.';
+
+  @override
+  String get unitGram => 'غرام (غ)';
+
+  @override
+  String get unitKilogram => 'كيلوغرام (كغ)';
+
+  @override
+  String get unitMilliliter => 'مليلتر (مل)';
+
+  @override
+  String get unitCentiliter => 'سنتيلتر (سل)';
+
+  @override
+  String get unitLiter => 'لتر (ل)';
+
+  @override
+  String get unitPiece => 'قطعة (وحدة)';
+
+  @override
+  String get unitBottle => 'زجاجة';
+
+  @override
+  String get unitCan => 'علبة معدنية';
+
+  @override
+  String get unitPack => 'عبوة';
+
+  @override
+  String get unitBox => 'صندوق';
+
+  @override
+  String get unitBunch => 'ربطة';
+
+  @override
+  String get unitTeaspoon => 'ملعقة صغيرة';
+
+  @override
+  String get unitTablespoon => 'ملعقة كبيرة';
+
+  @override
+  String get unitCup => 'كوب';
+
+  @override
+  String get unitAbbrevGram => 'غ';
+
+  @override
+  String get unitAbbrevKilogram => 'كغ';
+
+  @override
+  String get unitAbbrevMilliliter => 'مل';
+
+  @override
+  String get unitAbbrevCentiliter => 'سل';
+
+  @override
+  String get unitAbbrevLiter => 'ل';
+
+  @override
+  String get unitAbbrevPiece => 'قطعة';
+
+  @override
+  String get unitAbbrevBottle => 'زجاجة';
+
+  @override
+  String get unitAbbrevCan => 'علبة';
+
+  @override
+  String get unitAbbrevPack => 'عبوة';
+
+  @override
+  String get unitAbbrevBox => 'صندوق';
+
+  @override
+  String get unitAbbrevBunch => 'ربطة';
+
+  @override
+  String get unitAbbrevTeaspoon => 'م.ص';
+
+  @override
+  String get unitAbbrevTablespoon => 'م.ك';
+
+  @override
+  String get unitAbbrevCup => 'كوب';
 }

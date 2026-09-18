@@ -622,4 +622,149 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get errorArticleNameTaken => 'Ce nom d’article est déjà utilisé ici.';
+
+  @override
+  String get delete => 'Supprimer';
+
+  @override
+  String get ingredientsHint =>
+      'Suivez le stock par unité. Alerte quand le stock actuel atteint le seuil.';
+
+  @override
+  String get ingredientsEmptyOwner =>
+      'Ajoutez votre premier ingrédient pour démarrer le stock.';
+
+  @override
+  String get ingredientsEmpty =>
+      'Aucun ingrédient dans ce lieu pour l’instant.';
+
+  @override
+  String get addIngredient => 'Ajouter un ingrédient';
+
+  @override
+  String get deleteIngredient => 'Supprimer l’ingrédient';
+
+  @override
+  String deleteIngredientConfirm(String name) {
+    return 'Supprimer $name ? Action irréversible.';
+  }
+
+  @override
+  String get ingredientFormHint =>
+      'Le nom est unique dans ce lieu. Choisissez l’unité de réapprovisionnement.';
+
+  @override
+  String get ingredientName => 'Nom de l’ingrédient';
+
+  @override
+  String get ingredientUnit => 'Unité';
+
+  @override
+  String get ingredientCurrentStock => 'Stock actuel';
+
+  @override
+  String get ingredientThresholdStock => 'Seuil bas';
+
+  @override
+  String get ingredientThresholdHint =>
+      'Alerte quand le stock atteint ce niveau.';
+
+  @override
+  String ingredientStockLine(String current, String unit, String threshold) {
+    return '$current $unit · seuil $threshold';
+  }
+
+  @override
+  String get validationIngredientName => 'Entrez un nom de 1 à 80 caractères.';
+
+  @override
+  String get validationIngredientStock => 'Entrez 0 ou un nombre positif.';
+
+  @override
+  String get errorIngredientNameTaken =>
+      'Ce nom d’ingrédient est déjà utilisé ici.';
+
+  @override
+  String get unitGram => 'Gramme (g)';
+
+  @override
+  String get unitKilogram => 'Kilogramme (kg)';
+
+  @override
+  String get unitMilliliter => 'Millilitre (ml)';
+
+  @override
+  String get unitCentiliter => 'Centilitre (cl)';
+
+  @override
+  String get unitLiter => 'Litre (L)';
+
+  @override
+  String get unitPiece => 'Pièce (unité)';
+
+  @override
+  String get unitBottle => 'Bouteille';
+
+  @override
+  String get unitCan => 'Boîte de conserve';
+
+  @override
+  String get unitPack => 'Paquet';
+
+  @override
+  String get unitBox => 'Carton';
+
+  @override
+  String get unitBunch => 'Botte';
+
+  @override
+  String get unitTeaspoon => 'Cuillère à café (c. à c.)';
+
+  @override
+  String get unitTablespoon => 'Cuillère à soupe (c. à s.)';
+
+  @override
+  String get unitCup => 'Tasse';
+
+  @override
+  String get unitAbbrevGram => 'g';
+
+  @override
+  String get unitAbbrevKilogram => 'kg';
+
+  @override
+  String get unitAbbrevMilliliter => 'ml';
+
+  @override
+  String get unitAbbrevCentiliter => 'cl';
+
+  @override
+  String get unitAbbrevLiter => 'L';
+
+  @override
+  String get unitAbbrevPiece => 'pce';
+
+  @override
+  String get unitAbbrevBottle => 'btl';
+
+  @override
+  String get unitAbbrevCan => 'boîte';
+
+  @override
+  String get unitAbbrevPack => 'paq.';
+
+  @override
+  String get unitAbbrevBox => 'ctn';
+
+  @override
+  String get unitAbbrevBunch => 'botte';
+
+  @override
+  String get unitAbbrevTeaspoon => 'c.à.c.';
+
+  @override
+  String get unitAbbrevTablespoon => 'c.à.s.';
+
+  @override
+  String get unitAbbrevCup => 'tasse';
 }

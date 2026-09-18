@@ -15,6 +15,7 @@ import 'package:serverpod/serverpod.dart' as _is;
 import 'package:sip_sync_server/src/generated/protocol.dart' as _iaib1p48;
 import '../auth/employee.dart' as _iujgysn6;
 import '../auth/owner.dart' as _it5d988d;
+import '../menu/ingredient.dart' as _ir4v63ce;
 import '../menu/menu_article.dart' as _if01ezzg;
 import '../menu/menu_category.dart' as _iotiu00c;
 import '../tables/venue_table.dart' as _inhrqiu4;
@@ -39,6 +40,7 @@ abstract class Building
     this.tables,
     this.menuCategories,
     this.menuArticles,
+    this.ingredients,
   }) : createdAt = createdAt ?? DateTime.now();
 
   factory Building({
@@ -58,6 +60,7 @@ abstract class Building
     List<_inhrqiu4.VenueTable>? tables,
     List<_iotiu00c.MenuCategory>? menuCategories,
     List<_if01ezzg.MenuArticle>? menuArticles,
+    List<_ir4v63ce.Ingredient>? ingredients,
   }) = _BuildingImpl;
 
   factory Building.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -104,6 +107,11 @@ abstract class Building
           : _iaib1p48.Protocol().deserialize<List<_if01ezzg.MenuArticle>>(
               jsonSerialization['menuArticles'],
             ),
+      ingredients: jsonSerialization['ingredients'] == null
+          ? null
+          : _iaib1p48.Protocol().deserialize<List<_ir4v63ce.Ingredient>>(
+              jsonSerialization['ingredients'],
+            ),
     );
   }
 
@@ -144,6 +152,8 @@ abstract class Building
 
   List<_if01ezzg.MenuArticle>? menuArticles;
 
+  List<_ir4v63ce.Ingredient>? ingredients;
+
   @override
   _is.Table<_is.UuidValue?> get table => t;
 
@@ -167,6 +177,7 @@ abstract class Building
     List<_inhrqiu4.VenueTable>? tables,
     List<_iotiu00c.MenuCategory>? menuCategories,
     List<_if01ezzg.MenuArticle>? menuArticles,
+    List<_ir4v63ce.Ingredient>? ingredients,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -194,6 +205,8 @@ abstract class Building
         ),
       if (menuArticles != null)
         'menuArticles': menuArticles?.toJson(valueToJson: (v) => v.toJson()),
+      if (ingredients != null)
+        'ingredients': ingredients?.toJson(valueToJson: (v) => v.toJson()),
     };
   }
 
@@ -208,6 +221,7 @@ abstract class Building
     _inhrqiu4.VenueTableIncludeList? tables,
     _iotiu00c.MenuCategoryIncludeList? menuCategories,
     _if01ezzg.MenuArticleIncludeList? menuArticles,
+    _ir4v63ce.IngredientIncludeList? ingredients,
   }) {
     return BuildingInclude._(
       owner: owner,
@@ -215,6 +229,7 @@ abstract class Building
       tables: tables,
       menuCategories: menuCategories,
       menuArticles: menuArticles,
+      ingredients: ingredients,
     );
   }
 
@@ -262,6 +277,7 @@ class _BuildingImpl extends Building {
     List<_inhrqiu4.VenueTable>? tables,
     List<_iotiu00c.MenuCategory>? menuCategories,
     List<_if01ezzg.MenuArticle>? menuArticles,
+    List<_ir4v63ce.Ingredient>? ingredients,
   }) : super._(
          id: id,
          ownerId: ownerId,
@@ -279,6 +295,7 @@ class _BuildingImpl extends Building {
          tables: tables,
          menuCategories: menuCategories,
          menuArticles: menuArticles,
+         ingredients: ingredients,
        );
 
   /// Returns a shallow copy of this [Building]
@@ -302,6 +319,7 @@ class _BuildingImpl extends Building {
     Object? tables = _Undefined,
     Object? menuCategories = _Undefined,
     Object? menuArticles = _Undefined,
+    Object? ingredients = _Undefined,
   }) {
     return Building(
       id: id is _is.UuidValue? ? id : this.id,
@@ -328,6 +346,9 @@ class _BuildingImpl extends Building {
       menuArticles: menuArticles is List<_if01ezzg.MenuArticle>?
           ? menuArticles
           : this.menuArticles?.map((e0) => e0.copyWith()).toList(),
+      ingredients: ingredients is List<_ir4v63ce.Ingredient>?
+          ? ingredients
+          : this.ingredients?.map((e0) => e0.copyWith()).toList(),
     );
   }
 }
@@ -473,6 +494,10 @@ class BuildingTable extends _is.Table<_is.UuidValue?> {
 
   _is.ManyRelation<_if01ezzg.MenuArticleTable>? _menuArticles;
 
+  _ir4v63ce.IngredientTable? ___ingredients;
+
+  _is.ManyRelation<_ir4v63ce.IngredientTable>? _ingredients;
+
   _it5d988d.OwnerTable get owner {
     if (_owner != null) return _owner!;
     _owner = _is.createRelationTable(
@@ -536,6 +561,19 @@ class BuildingTable extends _is.Table<_is.UuidValue?> {
           _if01ezzg.MenuArticleTable(tableRelation: foreignTableRelation),
     );
     return ___menuArticles!;
+  }
+
+  _ir4v63ce.IngredientTable get __ingredients {
+    if (___ingredients != null) return ___ingredients!;
+    ___ingredients = _is.createRelationTable(
+      relationFieldName: '__ingredients',
+      field: Building.t.id,
+      foreignField: _ir4v63ce.Ingredient.t.buildingId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _ir4v63ce.IngredientTable(tableRelation: foreignTableRelation),
+    );
+    return ___ingredients!;
   }
 
   _is.ManyRelation<_iujgysn6.EmployeeTable> get employees {
@@ -614,6 +652,25 @@ class BuildingTable extends _is.Table<_is.UuidValue?> {
     return _menuArticles!;
   }
 
+  _is.ManyRelation<_ir4v63ce.IngredientTable> get ingredients {
+    if (_ingredients != null) return _ingredients!;
+    var relationTable = _is.createRelationTable(
+      relationFieldName: 'ingredients',
+      field: Building.t.id,
+      foreignField: _ir4v63ce.Ingredient.t.buildingId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _ir4v63ce.IngredientTable(tableRelation: foreignTableRelation),
+    );
+    _ingredients = _is.ManyRelation<_ir4v63ce.IngredientTable>(
+      tableWithRelations: relationTable,
+      table: _ir4v63ce.IngredientTable(
+        tableRelation: relationTable.tableRelation!.lastRelation,
+      ),
+    );
+    return _ingredients!;
+  }
+
   @override
   List<_is.Column> get columns => [
     id,
@@ -646,6 +703,9 @@ class BuildingTable extends _is.Table<_is.UuidValue?> {
     if (relationField == 'menuArticles') {
       return __menuArticles;
     }
+    if (relationField == 'ingredients') {
+      return __ingredients;
+    }
     return null;
   }
 }
@@ -657,12 +717,14 @@ class BuildingInclude extends _is.IncludeObject {
     _inhrqiu4.VenueTableIncludeList? tables,
     _iotiu00c.MenuCategoryIncludeList? menuCategories,
     _if01ezzg.MenuArticleIncludeList? menuArticles,
+    _ir4v63ce.IngredientIncludeList? ingredients,
   }) {
     _owner = owner;
     _employees = employees;
     _tables = tables;
     _menuCategories = menuCategories;
     _menuArticles = menuArticles;
+    _ingredients = ingredients;
   }
 
   _it5d988d.OwnerInclude? _owner;
@@ -675,6 +737,8 @@ class BuildingInclude extends _is.IncludeObject {
 
   _if01ezzg.MenuArticleIncludeList? _menuArticles;
 
+  _ir4v63ce.IngredientIncludeList? _ingredients;
+
   @override
   Map<String, _is.Include?> get includes => {
     'owner': _owner,
@@ -682,6 +746,7 @@ class BuildingInclude extends _is.IncludeObject {
     'tables': _tables,
     'menuCategories': _menuCategories,
     'menuArticles': _menuArticles,
+    'ingredients': _ingredients,
   };
 
   @override
@@ -1214,6 +1279,31 @@ class BuildingAttachRepository {
       transaction: transaction,
     );
   }
+
+  /// Creates a relation between this [Building] and the given [Ingredient]s
+  /// by setting each [Ingredient]'s foreign key `buildingId` to refer to this [Building].
+  Future<void> ingredients(
+    _is.DatabaseSession session,
+    Building building,
+    List<_ir4v63ce.Ingredient> ingredient, {
+    _is.Transaction? transaction,
+  }) async {
+    if (ingredient.any((e) => e.id == null)) {
+      throw ArgumentError.notNull('ingredient.id');
+    }
+    if (building.id == null) {
+      throw ArgumentError.notNull('building.id');
+    }
+
+    var $ingredient = ingredient
+        .map((e) => e.copyWith(buildingId: building.id))
+        .toList();
+    await session.db.update<_ir4v63ce.Ingredient>(
+      $ingredient,
+      columns: [_ir4v63ce.Ingredient.t.buildingId],
+      transaction: transaction,
+    );
+  }
 }
 
 class BuildingAttachRowRepository {
@@ -1330,6 +1420,29 @@ class BuildingAttachRowRepository {
     await session.db.updateRow<_if01ezzg.MenuArticle>(
       $menuArticle,
       columns: [_if01ezzg.MenuArticle.t.buildingId],
+      transaction: transaction,
+    );
+  }
+
+  /// Creates a relation between this [Building] and the given [Ingredient]
+  /// by setting the [Ingredient]'s foreign key `buildingId` to refer to this [Building].
+  Future<void> ingredients(
+    _is.DatabaseSession session,
+    Building building,
+    _ir4v63ce.Ingredient ingredient, {
+    _is.Transaction? transaction,
+  }) async {
+    if (ingredient.id == null) {
+      throw ArgumentError.notNull('ingredient.id');
+    }
+    if (building.id == null) {
+      throw ArgumentError.notNull('building.id');
+    }
+
+    var $ingredient = ingredient.copyWith(buildingId: building.id);
+    await session.db.updateRow<_ir4v63ce.Ingredient>(
+      $ingredient,
+      columns: [_ir4v63ce.Ingredient.t.buildingId],
       transaction: transaction,
     );
   }

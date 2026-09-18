@@ -614,4 +614,148 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get errorArticleNameTaken => 'That article name is already used here.';
+
+  @override
+  String get delete => 'Delete';
+
+  @override
+  String get ingredientsHint =>
+      'Track stock by unit. Low stock highlights when current is at or below the threshold.';
+
+  @override
+  String get ingredientsEmptyOwner =>
+      'Add your first ingredient to start inventory.';
+
+  @override
+  String get ingredientsEmpty => 'No ingredients in this venue yet.';
+
+  @override
+  String get addIngredient => 'Add ingredient';
+
+  @override
+  String get deleteIngredient => 'Delete ingredient';
+
+  @override
+  String deleteIngredientConfirm(String name) {
+    return 'Delete $name? This cannot be undone.';
+  }
+
+  @override
+  String get ingredientFormHint =>
+      'Name is unique in this building. Choose the unit you reorder by.';
+
+  @override
+  String get ingredientName => 'Ingredient name';
+
+  @override
+  String get ingredientUnit => 'Unit';
+
+  @override
+  String get ingredientCurrentStock => 'Current stock';
+
+  @override
+  String get ingredientThresholdStock => 'Low-stock threshold';
+
+  @override
+  String get ingredientThresholdHint =>
+      'Warn when current stock reaches this level.';
+
+  @override
+  String ingredientStockLine(String current, String unit, String threshold) {
+    return '$current $unit · threshold $threshold';
+  }
+
+  @override
+  String get validationIngredientName => 'Enter a name up to 80 characters.';
+
+  @override
+  String get validationIngredientStock => 'Enter 0 or a positive number.';
+
+  @override
+  String get errorIngredientNameTaken =>
+      'That ingredient name is already used here.';
+
+  @override
+  String get unitGram => 'Gram (g)';
+
+  @override
+  String get unitKilogram => 'Kilogram (kg)';
+
+  @override
+  String get unitMilliliter => 'Milliliter (ml)';
+
+  @override
+  String get unitCentiliter => 'Centiliter (cl)';
+
+  @override
+  String get unitLiter => 'Liter (L)';
+
+  @override
+  String get unitPiece => 'Piece (each)';
+
+  @override
+  String get unitBottle => 'Bottle';
+
+  @override
+  String get unitCan => 'Can';
+
+  @override
+  String get unitPack => 'Pack';
+
+  @override
+  String get unitBox => 'Box';
+
+  @override
+  String get unitBunch => 'Bunch';
+
+  @override
+  String get unitTeaspoon => 'Teaspoon (tsp)';
+
+  @override
+  String get unitTablespoon => 'Tablespoon (tbsp)';
+
+  @override
+  String get unitCup => 'Cup';
+
+  @override
+  String get unitAbbrevGram => 'g';
+
+  @override
+  String get unitAbbrevKilogram => 'kg';
+
+  @override
+  String get unitAbbrevMilliliter => 'ml';
+
+  @override
+  String get unitAbbrevCentiliter => 'cl';
+
+  @override
+  String get unitAbbrevLiter => 'L';
+
+  @override
+  String get unitAbbrevPiece => 'pcs';
+
+  @override
+  String get unitAbbrevBottle => 'btl';
+
+  @override
+  String get unitAbbrevCan => 'can';
+
+  @override
+  String get unitAbbrevPack => 'pack';
+
+  @override
+  String get unitAbbrevBox => 'box';
+
+  @override
+  String get unitAbbrevBunch => 'bunch';
+
+  @override
+  String get unitAbbrevTeaspoon => 'tsp';
+
+  @override
+  String get unitAbbrevTablespoon => 'tbsp';
+
+  @override
+  String get unitAbbrevCup => 'cup';
 }

@@ -3,6 +3,7 @@ import 'package:sip_sync_client/sip_sync_client.dart';
 
 import '../../data/repositories/building_repository.dart';
 import '../../data/repositories/employee_repository.dart';
+import '../../data/repositories/ingredient_repository.dart';
 import '../../data/repositories/menu_article_repository.dart';
 import '../../data/repositories/menu_category_repository.dart';
 import '../../data/repositories/owner_auth_repository.dart';
@@ -37,6 +38,10 @@ MenuCategoryRepository menuCategoryRepository(Ref ref) =>
 @Riverpod(keepAlive: true)
 MenuArticleRepository menuArticleRepository(Ref ref) =>
     getIt<MenuArticleRepository>();
+
+@Riverpod(keepAlive: true)
+IngredientRepository ingredientRepository(Ref ref) =>
+    getIt<IngredientRepository>();
 
 @Riverpod(keepAlive: true)
 AppSessionStore appSessionStore(Ref ref) {

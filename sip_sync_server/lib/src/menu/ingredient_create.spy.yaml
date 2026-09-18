@@ -1,0 +1,7 @@
+class: IngredientCreate
+fields:
+  buildingId: UuidValue
+  name: String
+  unit: UnitsType
+  currentStock: double
+  thresholdStock: double

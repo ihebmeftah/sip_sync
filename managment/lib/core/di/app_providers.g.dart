@@ -337,6 +337,54 @@ final class MenuArticleRepositoryProvider
 String _$menuArticleRepositoryHash() =>
     r'823fabf37abaf733fff3533635409471602c822a';
 
+@ProviderFor(ingredientRepository)
+const ingredientRepositoryProvider = IngredientRepositoryProvider._();
+
+final class IngredientRepositoryProvider
+    extends
+        $FunctionalProvider<
+          IngredientRepository,
+          IngredientRepository,
+          IngredientRepository
+        >
+    with $Provider<IngredientRepository> {
+  const IngredientRepositoryProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'ingredientRepositoryProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$ingredientRepositoryHash();
+
+  @$internal
+  @override
+  $ProviderElement<IngredientRepository> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  IngredientRepository create(Ref ref) {
+    return ingredientRepository(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(IngredientRepository value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<IngredientRepository>(value),
+    );
+  }
+}
+
+String _$ingredientRepositoryHash() =>
+    r'82d1d21a9f5b09af39310d0b2b711556510012da';
+
 @ProviderFor(appSessionStore)
 const appSessionStoreProvider = AppSessionStoreProvider._();
 
