@@ -177,13 +177,6 @@ class OpsSideBar extends ConsumerWidget {
                       onTap: () =>
                           DashboardRoute(buildingId: buildingId).go(context),
                     ),
-                    _NavTile(
-                      icon: Icons.person_outline,
-                      label: l10n.navProfile,
-                      selected: location.endsWith('/profile'),
-                      onTap: () =>
-                          ProfileRoute(buildingId: buildingId).go(context),
-                    ),
                     if (isOwner)
                       _NavTile(
                         icon: Icons.groups_outlined,
