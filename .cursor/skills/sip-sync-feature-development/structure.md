@@ -32,11 +32,11 @@ lib/
 lib/
   server.dart
   src/
-    auth/
     <feature>/
-      <feature>.spy.yaml          # tables + protocol types
+      entity/                 # table models (*.spy.yaml with table:)
+      dtos/                   # Create / Update / View / Exception / enums
       <feature>_endpoint.dart
-      <feature>_service.dart      # optional domain service
+      <feature>_service.dart  # optional domain service
 ```
 
-Group by feature, not by "all endpoints in one file". Keep generated code untouched.
+Group by feature. Put persisted models in `entity/`, protocol-only types in `dtos/`. Keep endpoints and services at the feature root. Never edit `lib/src/generated/` or `sip_sync_client`.

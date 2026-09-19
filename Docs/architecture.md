@@ -38,7 +38,7 @@ Auth uses `AuthShell` (wide split / compact stack). Signed-in `managment` uses `
 - Endpoints: `requireLogin`, Sip Sync scopes (`sip.owner`, `sip.employee`, `sip.backoffice`, …), building membership
 - One `AuthUser` per person; apps attach roles instead of duplicating accounts
 - Routes: go_router `redirect` for UX
-- DTOs: narrow create/update/view models; ids are UUID
+- DTOs: narrow create/update/view models under each feature’s `dtos/`; table models under `entity/`; ids are UUID
 
 ## Agent conventions
 

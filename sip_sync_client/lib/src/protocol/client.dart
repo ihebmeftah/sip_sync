@@ -17,68 +17,68 @@ import 'package:serverpod_auth_core_client/serverpod_auth_core_client.dart'
 import 'package:serverpod_auth_idp_client/serverpod_auth_idp_client.dart'
     as _iaic;
 import 'package:serverpod_client/serverpod_client.dart' as _isc;
-import 'package:sip_sync_client/src/protocol/auth/auth_token_result.dart'
-    as _iqlrpljp;
-import 'package:sip_sync_client/src/protocol/auth/customer_session_view.dart'
-    as _i22eeawk;
-import 'package:sip_sync_client/src/protocol/auth/email_login_request.dart'
-    as _ia66v70m;
-import 'package:sip_sync_client/src/protocol/auth/email_register_create.dart'
-    as _i7tbe1ul;
-import 'package:sip_sync_client/src/protocol/auth/employee_create.dart'
-    as _i0ndf5ud;
-import 'package:sip_sync_client/src/protocol/auth/employee_session_view.dart'
-    as _i39hruwu;
-import 'package:sip_sync_client/src/protocol/auth/employee_update.dart'
-    as _itl0g0fc;
-import 'package:sip_sync_client/src/protocol/auth/employee_view.dart'
-    as _ix96cplr;
-import 'package:sip_sync_client/src/protocol/auth/owner_session_view.dart'
-    as _iu6l1hb5;
-import 'package:sip_sync_client/src/protocol/auth/profile_update.dart'
-    as _ijw3vapc;
-import 'package:sip_sync_client/src/protocol/auth/super_admin_create.dart'
-    as _idilg51n;
-import 'package:sip_sync_client/src/protocol/auth/super_admin_session_view.dart'
-    as _ighxe7ge;
-import 'package:sip_sync_client/src/protocol/auth/super_admin_view.dart'
-    as _iddpd7et;
-import 'package:sip_sync_client/src/protocol/auth/username_login_request.dart'
-    as _irmg40wx;
-import 'package:sip_sync_client/src/protocol/buildings/building_create.dart'
-    as _iekc365h;
-import 'package:sip_sync_client/src/protocol/buildings/building_update.dart'
-    as _i2rxmt9c;
-import 'package:sip_sync_client/src/protocol/buildings/building_view.dart'
-    as _ia8vsgay;
-import 'package:sip_sync_client/src/protocol/menu/article_composition_create.dart'
-    as _i3gfy8f8;
-import 'package:sip_sync_client/src/protocol/menu/article_composition_update.dart'
-    as _i2330s36;
-import 'package:sip_sync_client/src/protocol/menu/article_composition_view.dart'
-    as _iagubt76;
-import 'package:sip_sync_client/src/protocol/menu/ingredient_create.dart'
-    as _ixn96e4f;
-import 'package:sip_sync_client/src/protocol/menu/ingredient_view.dart'
-    as _ibgg9iyt;
-import 'package:sip_sync_client/src/protocol/menu/menu_article_create.dart'
-    as _iubk8tjs;
-import 'package:sip_sync_client/src/protocol/menu/menu_article_update.dart'
-    as _igfjpiyj;
-import 'package:sip_sync_client/src/protocol/menu/menu_article_view.dart'
-    as _ijqfjmuy;
-import 'package:sip_sync_client/src/protocol/menu/menu_category_create.dart'
-    as _iozirify;
-import 'package:sip_sync_client/src/protocol/menu/menu_category_update.dart'
-    as _i7i0pa16;
-import 'package:sip_sync_client/src/protocol/menu/menu_category_view.dart'
-    as _i0q757fl;
-import 'package:sip_sync_client/src/protocol/tables/venue_table_create.dart'
-    as _imol4lsw;
-import 'package:sip_sync_client/src/protocol/tables/venue_table_update.dart'
-    as _i7122nxp;
-import 'package:sip_sync_client/src/protocol/tables/venue_table_view.dart'
-    as _i6tmc6jw;
+import 'package:sip_sync_client/src/protocol/auth/dtos/auth_token_result.dart'
+    as _itdxfou6;
+import 'package:sip_sync_client/src/protocol/auth/dtos/customer_session_view.dart'
+    as _ii1pag0e;
+import 'package:sip_sync_client/src/protocol/auth/dtos/email_login_request.dart'
+    as _i0krxdyg;
+import 'package:sip_sync_client/src/protocol/auth/dtos/email_register_create.dart'
+    as _imyts17l;
+import 'package:sip_sync_client/src/protocol/auth/dtos/employee_create.dart'
+    as _ic5onu3b;
+import 'package:sip_sync_client/src/protocol/auth/dtos/employee_session_view.dart'
+    as _igulf7jx;
+import 'package:sip_sync_client/src/protocol/auth/dtos/employee_update.dart'
+    as _ix639qfv;
+import 'package:sip_sync_client/src/protocol/auth/dtos/employee_view.dart'
+    as _iz70mzqw;
+import 'package:sip_sync_client/src/protocol/auth/dtos/owner_session_view.dart'
+    as _ibxh18gx;
+import 'package:sip_sync_client/src/protocol/auth/dtos/profile_update.dart'
+    as _i9d1xwh7;
+import 'package:sip_sync_client/src/protocol/auth/dtos/super_admin_create.dart'
+    as _itncnxe5;
+import 'package:sip_sync_client/src/protocol/auth/dtos/super_admin_session_view.dart'
+    as _i6jd5pnx;
+import 'package:sip_sync_client/src/protocol/auth/dtos/super_admin_view.dart'
+    as _ia930tyq;
+import 'package:sip_sync_client/src/protocol/auth/dtos/username_login_request.dart'
+    as _ijt6q2rq;
+import 'package:sip_sync_client/src/protocol/buildings/dtos/building_create.dart'
+    as _iu09iw1h;
+import 'package:sip_sync_client/src/protocol/buildings/dtos/building_update.dart'
+    as _iimah2gv;
+import 'package:sip_sync_client/src/protocol/buildings/dtos/building_view.dart'
+    as _ik35q5v8;
+import 'package:sip_sync_client/src/protocol/menu/dtos/article_composition_create.dart'
+    as _itg09r98;
+import 'package:sip_sync_client/src/protocol/menu/dtos/article_composition_update.dart'
+    as _iwjumayb;
+import 'package:sip_sync_client/src/protocol/menu/dtos/article_composition_view.dart'
+    as _ier7rmyd;
+import 'package:sip_sync_client/src/protocol/menu/dtos/ingredient_create.dart'
+    as _iv1xmy57;
+import 'package:sip_sync_client/src/protocol/menu/dtos/ingredient_view.dart'
+    as _i25phy6n;
+import 'package:sip_sync_client/src/protocol/menu/dtos/menu_article_create.dart'
+    as _ibs3aevp;
+import 'package:sip_sync_client/src/protocol/menu/dtos/menu_article_update.dart'
+    as _ixix58yq;
+import 'package:sip_sync_client/src/protocol/menu/dtos/menu_article_view.dart'
+    as _i8rrzffs;
+import 'package:sip_sync_client/src/protocol/menu/dtos/menu_category_create.dart'
+    as _iqn5nclg;
+import 'package:sip_sync_client/src/protocol/menu/dtos/menu_category_update.dart'
+    as _ifcginy4;
+import 'package:sip_sync_client/src/protocol/menu/dtos/menu_category_view.dart'
+    as _i6z5knea;
+import 'package:sip_sync_client/src/protocol/tables/dtos/venue_table_create.dart'
+    as _i5q3abjq;
+import 'package:sip_sync_client/src/protocol/tables/dtos/venue_table_update.dart'
+    as _inqlnrkj;
+import 'package:sip_sync_client/src/protocol/tables/dtos/venue_table_view.dart'
+    as _ihz72ioq;
 import 'protocol.dart' as _il2as5qe;
 
 /// Customer self-register, login, and profile.
@@ -89,32 +89,32 @@ class EndpointCustomerAuth extends _isc.EndpointRef {
   @override
   String get name => 'customerAuth';
 
-  _ida.Future<_iqlrpljp.AuthTokenResult> register(
-    _i7tbe1ul.EmailRegisterCreate request,
-  ) => caller.callServerEndpoint<_iqlrpljp.AuthTokenResult>(
+  _ida.Future<_itdxfou6.AuthTokenResult> register(
+    _imyts17l.EmailRegisterCreate request,
+  ) => caller.callServerEndpoint<_itdxfou6.AuthTokenResult>(
     'customerAuth',
     'register',
     {'request': request},
   );
 
-  _ida.Future<_iqlrpljp.AuthTokenResult> login(
-    _ia66v70m.EmailLoginRequest request,
-  ) => caller.callServerEndpoint<_iqlrpljp.AuthTokenResult>(
+  _ida.Future<_itdxfou6.AuthTokenResult> login(
+    _i0krxdyg.EmailLoginRequest request,
+  ) => caller.callServerEndpoint<_itdxfou6.AuthTokenResult>(
     'customerAuth',
     'login',
     {'request': request},
   );
 
-  _ida.Future<_i22eeawk.CustomerSessionView> me() =>
-      caller.callServerEndpoint<_i22eeawk.CustomerSessionView>(
+  _ida.Future<_ii1pag0e.CustomerSessionView> me() =>
+      caller.callServerEndpoint<_ii1pag0e.CustomerSessionView>(
         'customerAuth',
         'me',
         {},
       );
 
-  _ida.Future<_i22eeawk.CustomerSessionView> updateMyProfile(
-    _ijw3vapc.ProfileUpdate request,
-  ) => caller.callServerEndpoint<_i22eeawk.CustomerSessionView>(
+  _ida.Future<_ii1pag0e.CustomerSessionView> updateMyProfile(
+    _i9d1xwh7.ProfileUpdate request,
+  ) => caller.callServerEndpoint<_ii1pag0e.CustomerSessionView>(
     'customerAuth',
     'updateMyProfile',
     {'request': request},
@@ -135,24 +135,24 @@ class EndpointEmployeeAuth extends _isc.EndpointRef {
   @override
   String get name => 'employeeAuth';
 
-  _ida.Future<_iqlrpljp.AuthTokenResult> login(
-    _irmg40wx.UsernameLoginRequest request,
-  ) => caller.callServerEndpoint<_iqlrpljp.AuthTokenResult>(
+  _ida.Future<_itdxfou6.AuthTokenResult> login(
+    _ijt6q2rq.UsernameLoginRequest request,
+  ) => caller.callServerEndpoint<_itdxfou6.AuthTokenResult>(
     'employeeAuth',
     'login',
     {'request': request},
   );
 
-  _ida.Future<_i39hruwu.EmployeeSessionView> me() =>
-      caller.callServerEndpoint<_i39hruwu.EmployeeSessionView>(
+  _ida.Future<_igulf7jx.EmployeeSessionView> me() =>
+      caller.callServerEndpoint<_igulf7jx.EmployeeSessionView>(
         'employeeAuth',
         'me',
         {},
       );
 
-  _ida.Future<_i39hruwu.EmployeeSessionView> updateMyProfile(
-    _ijw3vapc.ProfileUpdate request,
-  ) => caller.callServerEndpoint<_i39hruwu.EmployeeSessionView>(
+  _ida.Future<_igulf7jx.EmployeeSessionView> updateMyProfile(
+    _i9d1xwh7.ProfileUpdate request,
+  ) => caller.callServerEndpoint<_igulf7jx.EmployeeSessionView>(
     'employeeAuth',
     'updateMyProfile',
     {'request': request},
@@ -173,32 +173,32 @@ class EndpointEmployee extends _isc.EndpointRef {
   @override
   String get name => 'employee';
 
-  _ida.Future<_ix96cplr.EmployeeView> get(_isc.UuidValue employeeId) =>
-      caller.callServerEndpoint<_ix96cplr.EmployeeView>(
+  _ida.Future<_iz70mzqw.EmployeeView> get(_isc.UuidValue employeeId) =>
+      caller.callServerEndpoint<_iz70mzqw.EmployeeView>(
         'employee',
         'get',
         {'employeeId': employeeId},
       );
 
-  _ida.Future<_ix96cplr.EmployeeView> add(_i0ndf5ud.EmployeeCreate request) =>
-      caller.callServerEndpoint<_ix96cplr.EmployeeView>(
+  _ida.Future<_iz70mzqw.EmployeeView> add(_ic5onu3b.EmployeeCreate request) =>
+      caller.callServerEndpoint<_iz70mzqw.EmployeeView>(
         'employee',
         'add',
         {'request': request},
       );
 
-  _ida.Future<_ix96cplr.EmployeeView> update(
-    _itl0g0fc.EmployeeUpdate request,
-  ) => caller.callServerEndpoint<_ix96cplr.EmployeeView>(
+  _ida.Future<_iz70mzqw.EmployeeView> update(
+    _ix639qfv.EmployeeUpdate request,
+  ) => caller.callServerEndpoint<_iz70mzqw.EmployeeView>(
     'employee',
     'update',
     {'request': request},
   );
 
-  _ida.Future<_ix96cplr.EmployeeView> setEnabled(
+  _ida.Future<_iz70mzqw.EmployeeView> setEnabled(
     _isc.UuidValue employeeId,
     bool isEnabled,
-  ) => caller.callServerEndpoint<_ix96cplr.EmployeeView>(
+  ) => caller.callServerEndpoint<_iz70mzqw.EmployeeView>(
     'employee',
     'setEnabled',
     {
@@ -216,32 +216,32 @@ class EndpointOwnerAuth extends _isc.EndpointRef {
   @override
   String get name => 'ownerAuth';
 
-  _ida.Future<_iqlrpljp.AuthTokenResult> register(
-    _i7tbe1ul.EmailRegisterCreate request,
-  ) => caller.callServerEndpoint<_iqlrpljp.AuthTokenResult>(
+  _ida.Future<_itdxfou6.AuthTokenResult> register(
+    _imyts17l.EmailRegisterCreate request,
+  ) => caller.callServerEndpoint<_itdxfou6.AuthTokenResult>(
     'ownerAuth',
     'register',
     {'request': request},
   );
 
-  _ida.Future<_iqlrpljp.AuthTokenResult> login(
-    _ia66v70m.EmailLoginRequest request,
-  ) => caller.callServerEndpoint<_iqlrpljp.AuthTokenResult>(
+  _ida.Future<_itdxfou6.AuthTokenResult> login(
+    _i0krxdyg.EmailLoginRequest request,
+  ) => caller.callServerEndpoint<_itdxfou6.AuthTokenResult>(
     'ownerAuth',
     'login',
     {'request': request},
   );
 
-  _ida.Future<_iu6l1hb5.OwnerSessionView> me() =>
-      caller.callServerEndpoint<_iu6l1hb5.OwnerSessionView>(
+  _ida.Future<_ibxh18gx.OwnerSessionView> me() =>
+      caller.callServerEndpoint<_ibxh18gx.OwnerSessionView>(
         'ownerAuth',
         'me',
         {},
       );
 
-  _ida.Future<_iu6l1hb5.OwnerSessionView> updateMyProfile(
-    _ijw3vapc.ProfileUpdate request,
-  ) => caller.callServerEndpoint<_iu6l1hb5.OwnerSessionView>(
+  _ida.Future<_ibxh18gx.OwnerSessionView> updateMyProfile(
+    _i9d1xwh7.ProfileUpdate request,
+  ) => caller.callServerEndpoint<_ibxh18gx.OwnerSessionView>(
     'ownerAuth',
     'updateMyProfile',
     {'request': request},
@@ -262,16 +262,16 @@ class EndpointSuperAdminAuth extends _isc.EndpointRef {
   @override
   String get name => 'superAdminAuth';
 
-  _ida.Future<_iqlrpljp.AuthTokenResult> login(
-    _ia66v70m.EmailLoginRequest request,
-  ) => caller.callServerEndpoint<_iqlrpljp.AuthTokenResult>(
+  _ida.Future<_itdxfou6.AuthTokenResult> login(
+    _i0krxdyg.EmailLoginRequest request,
+  ) => caller.callServerEndpoint<_itdxfou6.AuthTokenResult>(
     'superAdminAuth',
     'login',
     {'request': request},
   );
 
-  _ida.Future<_ighxe7ge.SuperAdminSessionView> me() =>
-      caller.callServerEndpoint<_ighxe7ge.SuperAdminSessionView>(
+  _ida.Future<_i6jd5pnx.SuperAdminSessionView> me() =>
+      caller.callServerEndpoint<_i6jd5pnx.SuperAdminSessionView>(
         'superAdminAuth',
         'me',
         {},
@@ -283,16 +283,16 @@ class EndpointSuperAdminAuth extends _isc.EndpointRef {
     {},
   );
 
-  _ida.Future<_iddpd7et.SuperAdminView> add(
-    _idilg51n.SuperAdminCreate request,
-  ) => caller.callServerEndpoint<_iddpd7et.SuperAdminView>(
+  _ida.Future<_ia930tyq.SuperAdminView> add(
+    _itncnxe5.SuperAdminCreate request,
+  ) => caller.callServerEndpoint<_ia930tyq.SuperAdminView>(
     'superAdminAuth',
     'add',
     {'request': request},
   );
 
-  _ida.Future<List<_iddpd7et.SuperAdminView>> list() =>
-      caller.callServerEndpoint<List<_iddpd7et.SuperAdminView>>(
+  _ida.Future<List<_ia930tyq.SuperAdminView>> list() =>
+      caller.callServerEndpoint<List<_ia930tyq.SuperAdminView>>(
         'superAdminAuth',
         'list',
         {},
@@ -321,39 +321,39 @@ class EndpointBuilding extends _isc.EndpointRef {
   @override
   String get name => 'building';
 
-  _ida.Future<List<_ia8vsgay.BuildingView>> listMine() =>
-      caller.callServerEndpoint<List<_ia8vsgay.BuildingView>>(
+  _ida.Future<List<_ik35q5v8.BuildingView>> listMine() =>
+      caller.callServerEndpoint<List<_ik35q5v8.BuildingView>>(
         'building',
         'listMine',
         {},
       );
 
-  _ida.Future<_ia8vsgay.BuildingView> get(_isc.UuidValue buildingId) =>
-      caller.callServerEndpoint<_ia8vsgay.BuildingView>(
+  _ida.Future<_ik35q5v8.BuildingView> get(_isc.UuidValue buildingId) =>
+      caller.callServerEndpoint<_ik35q5v8.BuildingView>(
         'building',
         'get',
         {'buildingId': buildingId},
       );
 
-  _ida.Future<_ia8vsgay.BuildingView> create(
-    _iekc365h.BuildingCreate request,
-  ) => caller.callServerEndpoint<_ia8vsgay.BuildingView>(
+  _ida.Future<_ik35q5v8.BuildingView> create(
+    _iu09iw1h.BuildingCreate request,
+  ) => caller.callServerEndpoint<_ik35q5v8.BuildingView>(
     'building',
     'create',
     {'request': request},
   );
 
-  _ida.Future<_ia8vsgay.BuildingView> update(
-    _i2rxmt9c.BuildingUpdate request,
-  ) => caller.callServerEndpoint<_ia8vsgay.BuildingView>(
+  _ida.Future<_ik35q5v8.BuildingView> update(
+    _iimah2gv.BuildingUpdate request,
+  ) => caller.callServerEndpoint<_ik35q5v8.BuildingView>(
     'building',
     'update',
     {'request': request},
   );
 
-  _ida.Future<List<_ix96cplr.EmployeeView>> listEmployees(
+  _ida.Future<List<_iz70mzqw.EmployeeView>> listEmployees(
     _isc.UuidValue buildingId,
-  ) => caller.callServerEndpoint<List<_ix96cplr.EmployeeView>>(
+  ) => caller.callServerEndpoint<List<_iz70mzqw.EmployeeView>>(
     'building',
     'listEmployees',
     {'buildingId': buildingId},
@@ -369,27 +369,27 @@ class EndpointArticleComposition extends _isc.EndpointRef {
   String get name => 'articleComposition';
 
   /// Lists composition lines for [articleId] (owner or assigned employee).
-  _ida.Future<List<_iagubt76.ArticleCompositionView>> list(
+  _ida.Future<List<_ier7rmyd.ArticleCompositionView>> list(
     _isc.UuidValue articleId,
-  ) => caller.callServerEndpoint<List<_iagubt76.ArticleCompositionView>>(
+  ) => caller.callServerEndpoint<List<_ier7rmyd.ArticleCompositionView>>(
     'articleComposition',
     'list',
     {'articleId': articleId},
   );
 
   /// Owner adds a composition line.
-  _ida.Future<_iagubt76.ArticleCompositionView> create(
-    _i3gfy8f8.ArticleCompositionCreate request,
-  ) => caller.callServerEndpoint<_iagubt76.ArticleCompositionView>(
+  _ida.Future<_ier7rmyd.ArticleCompositionView> create(
+    _itg09r98.ArticleCompositionCreate request,
+  ) => caller.callServerEndpoint<_ier7rmyd.ArticleCompositionView>(
     'articleComposition',
     'create',
     {'request': request},
   );
 
   /// Owner updates a line quantity.
-  _ida.Future<_iagubt76.ArticleCompositionView> update(
-    _i2330s36.ArticleCompositionUpdate request,
-  ) => caller.callServerEndpoint<_iagubt76.ArticleCompositionView>(
+  _ida.Future<_ier7rmyd.ArticleCompositionView> update(
+    _iwjumayb.ArticleCompositionUpdate request,
+  ) => caller.callServerEndpoint<_ier7rmyd.ArticleCompositionView>(
     'articleComposition',
     'update',
     {'request': request},
@@ -413,17 +413,17 @@ class EndpointIngredient extends _isc.EndpointRef {
   String get name => 'ingredient';
 
   /// Lists ingredients for [buildingId] (owner or assigned employee).
-  _ida.Future<List<_ibgg9iyt.IngredientView>> list(_isc.UuidValue buildingId) =>
-      caller.callServerEndpoint<List<_ibgg9iyt.IngredientView>>(
+  _ida.Future<List<_i25phy6n.IngredientView>> list(_isc.UuidValue buildingId) =>
+      caller.callServerEndpoint<List<_i25phy6n.IngredientView>>(
         'ingredient',
         'list',
         {'buildingId': buildingId},
       );
 
   /// Owner creates an ingredient.
-  _ida.Future<_ibgg9iyt.IngredientView> create(
-    _ixn96e4f.IngredientCreate request,
-  ) => caller.callServerEndpoint<_ibgg9iyt.IngredientView>(
+  _ida.Future<_i25phy6n.IngredientView> create(
+    _iv1xmy57.IngredientCreate request,
+  ) => caller.callServerEndpoint<_i25phy6n.IngredientView>(
     'ingredient',
     'create',
     {'request': request},
@@ -447,27 +447,27 @@ class EndpointMenuArticle extends _isc.EndpointRef {
   String get name => 'menuArticle';
 
   /// Lists articles for [buildingId] (owner or assigned employee).
-  _ida.Future<List<_ijqfjmuy.MenuArticleView>> list(
+  _ida.Future<List<_i8rrzffs.MenuArticleView>> list(
     _isc.UuidValue buildingId,
-  ) => caller.callServerEndpoint<List<_ijqfjmuy.MenuArticleView>>(
+  ) => caller.callServerEndpoint<List<_i8rrzffs.MenuArticleView>>(
     'menuArticle',
     'list',
     {'buildingId': buildingId},
   );
 
   /// Owner creates an article.
-  _ida.Future<_ijqfjmuy.MenuArticleView> create(
-    _iubk8tjs.MenuArticleCreate request,
-  ) => caller.callServerEndpoint<_ijqfjmuy.MenuArticleView>(
+  _ida.Future<_i8rrzffs.MenuArticleView> create(
+    _ibs3aevp.MenuArticleCreate request,
+  ) => caller.callServerEndpoint<_i8rrzffs.MenuArticleView>(
     'menuArticle',
     'create',
     {'request': request},
   );
 
   /// Owner updates an article.
-  _ida.Future<_ijqfjmuy.MenuArticleView> update(
-    _igfjpiyj.MenuArticleUpdate request,
-  ) => caller.callServerEndpoint<_ijqfjmuy.MenuArticleView>(
+  _ida.Future<_i8rrzffs.MenuArticleView> update(
+    _ixix58yq.MenuArticleUpdate request,
+  ) => caller.callServerEndpoint<_i8rrzffs.MenuArticleView>(
     'menuArticle',
     'update',
     {'request': request},
@@ -483,27 +483,27 @@ class EndpointMenuCategory extends _isc.EndpointRef {
   String get name => 'menuCategory';
 
   /// Lists categories for [buildingId] (owner or assigned employee).
-  _ida.Future<List<_i0q757fl.MenuCategoryView>> list(
+  _ida.Future<List<_i6z5knea.MenuCategoryView>> list(
     _isc.UuidValue buildingId,
-  ) => caller.callServerEndpoint<List<_i0q757fl.MenuCategoryView>>(
+  ) => caller.callServerEndpoint<List<_i6z5knea.MenuCategoryView>>(
     'menuCategory',
     'list',
     {'buildingId': buildingId},
   );
 
   /// Owner creates a category.
-  _ida.Future<_i0q757fl.MenuCategoryView> create(
-    _iozirify.MenuCategoryCreate request,
-  ) => caller.callServerEndpoint<_i0q757fl.MenuCategoryView>(
+  _ida.Future<_i6z5knea.MenuCategoryView> create(
+    _iqn5nclg.MenuCategoryCreate request,
+  ) => caller.callServerEndpoint<_i6z5knea.MenuCategoryView>(
     'menuCategory',
     'create',
     {'request': request},
   );
 
   /// Owner updates a category.
-  _ida.Future<_i0q757fl.MenuCategoryView> update(
-    _i7i0pa16.MenuCategoryUpdate request,
-  ) => caller.callServerEndpoint<_i0q757fl.MenuCategoryView>(
+  _ida.Future<_i6z5knea.MenuCategoryView> update(
+    _ifcginy4.MenuCategoryUpdate request,
+  ) => caller.callServerEndpoint<_i6z5knea.MenuCategoryView>(
     'menuCategory',
     'update',
     {'request': request},
@@ -519,26 +519,26 @@ class EndpointVenueTable extends _isc.EndpointRef {
   String get name => 'venueTable';
 
   /// Lists tables for [buildingId] (owner or assigned employee).
-  _ida.Future<List<_i6tmc6jw.VenueTableView>> list(_isc.UuidValue buildingId) =>
-      caller.callServerEndpoint<List<_i6tmc6jw.VenueTableView>>(
+  _ida.Future<List<_ihz72ioq.VenueTableView>> list(_isc.UuidValue buildingId) =>
+      caller.callServerEndpoint<List<_ihz72ioq.VenueTableView>>(
         'venueTable',
         'list',
         {'buildingId': buildingId},
       );
 
   /// Owner creates one or more tables; numbers are assigned in sequence.
-  _ida.Future<List<_i6tmc6jw.VenueTableView>> create(
-    _imol4lsw.VenueTableCreate request,
-  ) => caller.callServerEndpoint<List<_i6tmc6jw.VenueTableView>>(
+  _ida.Future<List<_ihz72ioq.VenueTableView>> create(
+    _i5q3abjq.VenueTableCreate request,
+  ) => caller.callServerEndpoint<List<_ihz72ioq.VenueTableView>>(
     'venueTable',
     'create',
     {'request': request},
   );
 
   /// Owner updates seats and active only (number cannot change).
-  _ida.Future<_i6tmc6jw.VenueTableView> update(
-    _i7122nxp.VenueTableUpdate request,
-  ) => caller.callServerEndpoint<_i6tmc6jw.VenueTableView>(
+  _ida.Future<_ihz72ioq.VenueTableView> update(
+    _inqlnrkj.VenueTableUpdate request,
+  ) => caller.callServerEndpoint<_ihz72ioq.VenueTableView>(
     'venueTable',
     'update',
     {'request': request},

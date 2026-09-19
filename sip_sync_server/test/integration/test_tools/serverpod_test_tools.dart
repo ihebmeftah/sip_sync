@@ -15,68 +15,68 @@ import 'dart:async' as _ida;
 import 'dart:io' as _idi;
 import 'package:serverpod/serverpod.dart' as _is;
 import 'package:serverpod_test/serverpod_test.dart' as _ist;
-import 'package:sip_sync_server/src/generated/auth/auth_token_result.dart'
-    as _i3z807il;
-import 'package:sip_sync_server/src/generated/auth/customer_session_view.dart'
-    as _i6zelgrl;
-import 'package:sip_sync_server/src/generated/auth/email_login_request.dart'
-    as _i61r4gix;
-import 'package:sip_sync_server/src/generated/auth/email_register_create.dart'
-    as _ihm3fhv0;
-import 'package:sip_sync_server/src/generated/auth/employee_create.dart'
-    as _itsh5tmy;
-import 'package:sip_sync_server/src/generated/auth/employee_session_view.dart'
-    as _in8iynda;
-import 'package:sip_sync_server/src/generated/auth/employee_update.dart'
-    as _isn5wmy3;
-import 'package:sip_sync_server/src/generated/auth/employee_view.dart'
-    as _iusy412g;
-import 'package:sip_sync_server/src/generated/auth/owner_session_view.dart'
-    as _iqkx9riy;
-import 'package:sip_sync_server/src/generated/auth/profile_update.dart'
-    as _id6sv1bw;
-import 'package:sip_sync_server/src/generated/auth/super_admin_create.dart'
-    as _id6ub811;
-import 'package:sip_sync_server/src/generated/auth/super_admin_session_view.dart'
-    as _irxwe8xn;
-import 'package:sip_sync_server/src/generated/auth/super_admin_view.dart'
-    as _i3qefl0x;
-import 'package:sip_sync_server/src/generated/auth/username_login_request.dart'
-    as _i4u41mzh;
-import 'package:sip_sync_server/src/generated/buildings/building_create.dart'
-    as _iikuia2o;
-import 'package:sip_sync_server/src/generated/buildings/building_update.dart'
-    as _ipidi05l;
-import 'package:sip_sync_server/src/generated/buildings/building_view.dart'
-    as _iughhy8g;
-import 'package:sip_sync_server/src/generated/menu/article_composition_create.dart'
-    as _ipe8oys4;
-import 'package:sip_sync_server/src/generated/menu/article_composition_update.dart'
-    as _iu2e6gft;
-import 'package:sip_sync_server/src/generated/menu/article_composition_view.dart'
-    as _i874587v;
-import 'package:sip_sync_server/src/generated/menu/ingredient_create.dart'
-    as _i0zbq4gg;
-import 'package:sip_sync_server/src/generated/menu/ingredient_view.dart'
-    as _i4kd1htu;
-import 'package:sip_sync_server/src/generated/menu/menu_article_create.dart'
-    as _io67qn2p;
-import 'package:sip_sync_server/src/generated/menu/menu_article_update.dart'
-    as _igs394lv;
-import 'package:sip_sync_server/src/generated/menu/menu_article_view.dart'
-    as _ilv9ypte;
-import 'package:sip_sync_server/src/generated/menu/menu_category_create.dart'
-    as _ickdwlcc;
-import 'package:sip_sync_server/src/generated/menu/menu_category_update.dart'
-    as _i4izftei;
-import 'package:sip_sync_server/src/generated/menu/menu_category_view.dart'
-    as _iwilrax0;
-import 'package:sip_sync_server/src/generated/tables/venue_table_create.dart'
-    as _ij730ie3;
-import 'package:sip_sync_server/src/generated/tables/venue_table_update.dart'
-    as _ixxdkctx;
-import 'package:sip_sync_server/src/generated/tables/venue_table_view.dart'
-    as _icmpx87d;
+import 'package:sip_sync_server/src/generated/auth/dtos/auth_token_result.dart'
+    as _ifpnmg9t;
+import 'package:sip_sync_server/src/generated/auth/dtos/customer_session_view.dart'
+    as _i5lhhh2h;
+import 'package:sip_sync_server/src/generated/auth/dtos/email_login_request.dart'
+    as _ibnmpi7x;
+import 'package:sip_sync_server/src/generated/auth/dtos/email_register_create.dart'
+    as _i3wgjxde;
+import 'package:sip_sync_server/src/generated/auth/dtos/employee_create.dart'
+    as _iohyx14n;
+import 'package:sip_sync_server/src/generated/auth/dtos/employee_session_view.dart'
+    as _im3kt6yf;
+import 'package:sip_sync_server/src/generated/auth/dtos/employee_update.dart'
+    as _il4f6nhz;
+import 'package:sip_sync_server/src/generated/auth/dtos/employee_view.dart'
+    as _im8o31wm;
+import 'package:sip_sync_server/src/generated/auth/dtos/owner_session_view.dart'
+    as _ir1cwv55;
+import 'package:sip_sync_server/src/generated/auth/dtos/profile_update.dart'
+    as _itbs72nt;
+import 'package:sip_sync_server/src/generated/auth/dtos/super_admin_create.dart'
+    as _in2dfwpu;
+import 'package:sip_sync_server/src/generated/auth/dtos/super_admin_session_view.dart'
+    as _ih5b3z5q;
+import 'package:sip_sync_server/src/generated/auth/dtos/super_admin_view.dart'
+    as _iubtczqk;
+import 'package:sip_sync_server/src/generated/auth/dtos/username_login_request.dart'
+    as _imoptt9g;
+import 'package:sip_sync_server/src/generated/buildings/dtos/building_create.dart'
+    as _iwyazuzj;
+import 'package:sip_sync_server/src/generated/buildings/dtos/building_update.dart'
+    as _ikeccdvf;
+import 'package:sip_sync_server/src/generated/buildings/dtos/building_view.dart'
+    as _ihha274w;
+import 'package:sip_sync_server/src/generated/menu/dtos/article_composition_create.dart'
+    as _i1npuv27;
+import 'package:sip_sync_server/src/generated/menu/dtos/article_composition_update.dart'
+    as _ismlqq4o;
+import 'package:sip_sync_server/src/generated/menu/dtos/article_composition_view.dart'
+    as _ismrnuo7;
+import 'package:sip_sync_server/src/generated/menu/dtos/ingredient_create.dart'
+    as _iplysw6f;
+import 'package:sip_sync_server/src/generated/menu/dtos/ingredient_view.dart'
+    as _i9jh3lrs;
+import 'package:sip_sync_server/src/generated/menu/dtos/menu_article_create.dart'
+    as _ijrbnog1;
+import 'package:sip_sync_server/src/generated/menu/dtos/menu_article_update.dart'
+    as _i7h46pya;
+import 'package:sip_sync_server/src/generated/menu/dtos/menu_article_view.dart'
+    as _iftzx4at;
+import 'package:sip_sync_server/src/generated/menu/dtos/menu_category_create.dart'
+    as _i2o0r9sg;
+import 'package:sip_sync_server/src/generated/menu/dtos/menu_category_update.dart'
+    as _i8wyftia;
+import 'package:sip_sync_server/src/generated/menu/dtos/menu_category_view.dart'
+    as _i87rh1jz;
+import 'package:sip_sync_server/src/generated/tables/dtos/venue_table_create.dart'
+    as _ituaoqeh;
+import 'package:sip_sync_server/src/generated/tables/dtos/venue_table_update.dart'
+    as _iishhke5;
+import 'package:sip_sync_server/src/generated/tables/dtos/venue_table_view.dart'
+    as _i8j8iq89;
 import 'package:sip_sync_server/src/generated/protocol.dart';
 import 'package:sip_sync_server/src/generated/endpoints.dart';
 export 'package:serverpod_test/serverpod_test_public_exports.dart';
@@ -292,9 +292,9 @@ class _CustomerAuthEndpoint {
 
   final _is.SerializationManager _serializationManager;
 
-  _ida.Future<_i3z807il.AuthTokenResult> register(
+  _ida.Future<_ifpnmg9t.AuthTokenResult> register(
     _ist.TestSessionBuilder sessionBuilder,
-    _ihm3fhv0.EmailRegisterCreate request,
+    _i3wgjxde.EmailRegisterCreate request,
   ) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -315,7 +315,7 @@ class _CustomerAuthEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _ida.Future<_i3z807il.AuthTokenResult>);
+                as _ida.Future<_ifpnmg9t.AuthTokenResult>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -323,9 +323,9 @@ class _CustomerAuthEndpoint {
     });
   }
 
-  _ida.Future<_i3z807il.AuthTokenResult> login(
+  _ida.Future<_ifpnmg9t.AuthTokenResult> login(
     _ist.TestSessionBuilder sessionBuilder,
-    _i61r4gix.EmailLoginRequest request,
+    _ibnmpi7x.EmailLoginRequest request,
   ) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -346,7 +346,7 @@ class _CustomerAuthEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _ida.Future<_i3z807il.AuthTokenResult>);
+                as _ida.Future<_ifpnmg9t.AuthTokenResult>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -354,7 +354,7 @@ class _CustomerAuthEndpoint {
     });
   }
 
-  _ida.Future<_i6zelgrl.CustomerSessionView> me(
+  _ida.Future<_i5lhhh2h.CustomerSessionView> me(
     _ist.TestSessionBuilder sessionBuilder,
   ) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
@@ -376,7 +376,7 @@ class _CustomerAuthEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _ida.Future<_i6zelgrl.CustomerSessionView>);
+                as _ida.Future<_i5lhhh2h.CustomerSessionView>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -384,9 +384,9 @@ class _CustomerAuthEndpoint {
     });
   }
 
-  _ida.Future<_i6zelgrl.CustomerSessionView> updateMyProfile(
+  _ida.Future<_i5lhhh2h.CustomerSessionView> updateMyProfile(
     _ist.TestSessionBuilder sessionBuilder,
-    _id6sv1bw.ProfileUpdate request,
+    _itbs72nt.ProfileUpdate request,
   ) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -407,7 +407,7 @@ class _CustomerAuthEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _ida.Future<_i6zelgrl.CustomerSessionView>);
+                as _ida.Future<_i5lhhh2h.CustomerSessionView>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -454,9 +454,9 @@ class _EmployeeAuthEndpoint {
 
   final _is.SerializationManager _serializationManager;
 
-  _ida.Future<_i3z807il.AuthTokenResult> login(
+  _ida.Future<_ifpnmg9t.AuthTokenResult> login(
     _ist.TestSessionBuilder sessionBuilder,
-    _i4u41mzh.UsernameLoginRequest request,
+    _imoptt9g.UsernameLoginRequest request,
   ) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -477,7 +477,7 @@ class _EmployeeAuthEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _ida.Future<_i3z807il.AuthTokenResult>);
+                as _ida.Future<_ifpnmg9t.AuthTokenResult>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -485,7 +485,7 @@ class _EmployeeAuthEndpoint {
     });
   }
 
-  _ida.Future<_in8iynda.EmployeeSessionView> me(
+  _ida.Future<_im3kt6yf.EmployeeSessionView> me(
     _ist.TestSessionBuilder sessionBuilder,
   ) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
@@ -507,7 +507,7 @@ class _EmployeeAuthEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _ida.Future<_in8iynda.EmployeeSessionView>);
+                as _ida.Future<_im3kt6yf.EmployeeSessionView>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -515,9 +515,9 @@ class _EmployeeAuthEndpoint {
     });
   }
 
-  _ida.Future<_in8iynda.EmployeeSessionView> updateMyProfile(
+  _ida.Future<_im3kt6yf.EmployeeSessionView> updateMyProfile(
     _ist.TestSessionBuilder sessionBuilder,
-    _id6sv1bw.ProfileUpdate request,
+    _itbs72nt.ProfileUpdate request,
   ) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -538,7 +538,7 @@ class _EmployeeAuthEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _ida.Future<_in8iynda.EmployeeSessionView>);
+                as _ida.Future<_im3kt6yf.EmployeeSessionView>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -585,7 +585,7 @@ class _EmployeeEndpoint {
 
   final _is.SerializationManager _serializationManager;
 
-  _ida.Future<_iusy412g.EmployeeView> get(
+  _ida.Future<_im8o31wm.EmployeeView> get(
     _ist.TestSessionBuilder sessionBuilder,
     _is.UuidValue employeeId,
   ) async {
@@ -608,7 +608,7 @@ class _EmployeeEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _ida.Future<_iusy412g.EmployeeView>);
+                as _ida.Future<_im8o31wm.EmployeeView>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -616,9 +616,9 @@ class _EmployeeEndpoint {
     });
   }
 
-  _ida.Future<_iusy412g.EmployeeView> add(
+  _ida.Future<_im8o31wm.EmployeeView> add(
     _ist.TestSessionBuilder sessionBuilder,
-    _itsh5tmy.EmployeeCreate request,
+    _iohyx14n.EmployeeCreate request,
   ) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -639,7 +639,7 @@ class _EmployeeEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _ida.Future<_iusy412g.EmployeeView>);
+                as _ida.Future<_im8o31wm.EmployeeView>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -647,9 +647,9 @@ class _EmployeeEndpoint {
     });
   }
 
-  _ida.Future<_iusy412g.EmployeeView> update(
+  _ida.Future<_im8o31wm.EmployeeView> update(
     _ist.TestSessionBuilder sessionBuilder,
-    _isn5wmy3.EmployeeUpdate request,
+    _il4f6nhz.EmployeeUpdate request,
   ) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -670,7 +670,7 @@ class _EmployeeEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _ida.Future<_iusy412g.EmployeeView>);
+                as _ida.Future<_im8o31wm.EmployeeView>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -678,7 +678,7 @@ class _EmployeeEndpoint {
     });
   }
 
-  _ida.Future<_iusy412g.EmployeeView> setEnabled(
+  _ida.Future<_im8o31wm.EmployeeView> setEnabled(
     _ist.TestSessionBuilder sessionBuilder,
     _is.UuidValue employeeId,
     bool isEnabled,
@@ -705,7 +705,7 @@ class _EmployeeEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _ida.Future<_iusy412g.EmployeeView>);
+                as _ida.Future<_im8o31wm.EmployeeView>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -724,9 +724,9 @@ class _OwnerAuthEndpoint {
 
   final _is.SerializationManager _serializationManager;
 
-  _ida.Future<_i3z807il.AuthTokenResult> register(
+  _ida.Future<_ifpnmg9t.AuthTokenResult> register(
     _ist.TestSessionBuilder sessionBuilder,
-    _ihm3fhv0.EmailRegisterCreate request,
+    _i3wgjxde.EmailRegisterCreate request,
   ) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -747,7 +747,7 @@ class _OwnerAuthEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _ida.Future<_i3z807il.AuthTokenResult>);
+                as _ida.Future<_ifpnmg9t.AuthTokenResult>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -755,9 +755,9 @@ class _OwnerAuthEndpoint {
     });
   }
 
-  _ida.Future<_i3z807il.AuthTokenResult> login(
+  _ida.Future<_ifpnmg9t.AuthTokenResult> login(
     _ist.TestSessionBuilder sessionBuilder,
-    _i61r4gix.EmailLoginRequest request,
+    _ibnmpi7x.EmailLoginRequest request,
   ) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -778,7 +778,7 @@ class _OwnerAuthEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _ida.Future<_i3z807il.AuthTokenResult>);
+                as _ida.Future<_ifpnmg9t.AuthTokenResult>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -786,7 +786,7 @@ class _OwnerAuthEndpoint {
     });
   }
 
-  _ida.Future<_iqkx9riy.OwnerSessionView> me(
+  _ida.Future<_ir1cwv55.OwnerSessionView> me(
     _ist.TestSessionBuilder sessionBuilder,
   ) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
@@ -808,7 +808,7 @@ class _OwnerAuthEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _ida.Future<_iqkx9riy.OwnerSessionView>);
+                as _ida.Future<_ir1cwv55.OwnerSessionView>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -816,9 +816,9 @@ class _OwnerAuthEndpoint {
     });
   }
 
-  _ida.Future<_iqkx9riy.OwnerSessionView> updateMyProfile(
+  _ida.Future<_ir1cwv55.OwnerSessionView> updateMyProfile(
     _ist.TestSessionBuilder sessionBuilder,
-    _id6sv1bw.ProfileUpdate request,
+    _itbs72nt.ProfileUpdate request,
   ) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -839,7 +839,7 @@ class _OwnerAuthEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _ida.Future<_iqkx9riy.OwnerSessionView>);
+                as _ida.Future<_ir1cwv55.OwnerSessionView>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -886,9 +886,9 @@ class _SuperAdminAuthEndpoint {
 
   final _is.SerializationManager _serializationManager;
 
-  _ida.Future<_i3z807il.AuthTokenResult> login(
+  _ida.Future<_ifpnmg9t.AuthTokenResult> login(
     _ist.TestSessionBuilder sessionBuilder,
-    _i61r4gix.EmailLoginRequest request,
+    _ibnmpi7x.EmailLoginRequest request,
   ) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -909,7 +909,7 @@ class _SuperAdminAuthEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _ida.Future<_i3z807il.AuthTokenResult>);
+                as _ida.Future<_ifpnmg9t.AuthTokenResult>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -917,7 +917,7 @@ class _SuperAdminAuthEndpoint {
     });
   }
 
-  _ida.Future<_irxwe8xn.SuperAdminSessionView> me(
+  _ida.Future<_ih5b3z5q.SuperAdminSessionView> me(
     _ist.TestSessionBuilder sessionBuilder,
   ) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
@@ -939,7 +939,7 @@ class _SuperAdminAuthEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _ida.Future<_irxwe8xn.SuperAdminSessionView>);
+                as _ida.Future<_ih5b3z5q.SuperAdminSessionView>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -975,9 +975,9 @@ class _SuperAdminAuthEndpoint {
     });
   }
 
-  _ida.Future<_i3qefl0x.SuperAdminView> add(
+  _ida.Future<_iubtczqk.SuperAdminView> add(
     _ist.TestSessionBuilder sessionBuilder,
-    _id6ub811.SuperAdminCreate request,
+    _in2dfwpu.SuperAdminCreate request,
   ) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -998,7 +998,7 @@ class _SuperAdminAuthEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _ida.Future<_i3qefl0x.SuperAdminView>);
+                as _ida.Future<_iubtczqk.SuperAdminView>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1006,7 +1006,7 @@ class _SuperAdminAuthEndpoint {
     });
   }
 
-  _ida.Future<List<_i3qefl0x.SuperAdminView>> list(
+  _ida.Future<List<_iubtczqk.SuperAdminView>> list(
     _ist.TestSessionBuilder sessionBuilder,
   ) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
@@ -1028,7 +1028,7 @@ class _SuperAdminAuthEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _ida.Future<List<_i3qefl0x.SuperAdminView>>);
+                as _ida.Future<List<_iubtczqk.SuperAdminView>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1108,7 +1108,7 @@ class _BuildingEndpoint {
 
   final _is.SerializationManager _serializationManager;
 
-  _ida.Future<List<_iughhy8g.BuildingView>> listMine(
+  _ida.Future<List<_ihha274w.BuildingView>> listMine(
     _ist.TestSessionBuilder sessionBuilder,
   ) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
@@ -1130,7 +1130,7 @@ class _BuildingEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _ida.Future<List<_iughhy8g.BuildingView>>);
+                as _ida.Future<List<_ihha274w.BuildingView>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1138,7 +1138,7 @@ class _BuildingEndpoint {
     });
   }
 
-  _ida.Future<_iughhy8g.BuildingView> get(
+  _ida.Future<_ihha274w.BuildingView> get(
     _ist.TestSessionBuilder sessionBuilder,
     _is.UuidValue buildingId,
   ) async {
@@ -1161,7 +1161,7 @@ class _BuildingEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _ida.Future<_iughhy8g.BuildingView>);
+                as _ida.Future<_ihha274w.BuildingView>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1169,9 +1169,9 @@ class _BuildingEndpoint {
     });
   }
 
-  _ida.Future<_iughhy8g.BuildingView> create(
+  _ida.Future<_ihha274w.BuildingView> create(
     _ist.TestSessionBuilder sessionBuilder,
-    _iikuia2o.BuildingCreate request,
+    _iwyazuzj.BuildingCreate request,
   ) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -1192,7 +1192,7 @@ class _BuildingEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _ida.Future<_iughhy8g.BuildingView>);
+                as _ida.Future<_ihha274w.BuildingView>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1200,9 +1200,9 @@ class _BuildingEndpoint {
     });
   }
 
-  _ida.Future<_iughhy8g.BuildingView> update(
+  _ida.Future<_ihha274w.BuildingView> update(
     _ist.TestSessionBuilder sessionBuilder,
-    _ipidi05l.BuildingUpdate request,
+    _ikeccdvf.BuildingUpdate request,
   ) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -1223,7 +1223,7 @@ class _BuildingEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _ida.Future<_iughhy8g.BuildingView>);
+                as _ida.Future<_ihha274w.BuildingView>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1231,7 +1231,7 @@ class _BuildingEndpoint {
     });
   }
 
-  _ida.Future<List<_iusy412g.EmployeeView>> listEmployees(
+  _ida.Future<List<_im8o31wm.EmployeeView>> listEmployees(
     _ist.TestSessionBuilder sessionBuilder,
     _is.UuidValue buildingId,
   ) async {
@@ -1254,7 +1254,7 @@ class _BuildingEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _ida.Future<List<_iusy412g.EmployeeView>>);
+                as _ida.Future<List<_im8o31wm.EmployeeView>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1273,7 +1273,7 @@ class _ArticleCompositionEndpoint {
 
   final _is.SerializationManager _serializationManager;
 
-  _ida.Future<List<_i874587v.ArticleCompositionView>> list(
+  _ida.Future<List<_ismrnuo7.ArticleCompositionView>> list(
     _ist.TestSessionBuilder sessionBuilder,
     _is.UuidValue articleId,
   ) async {
@@ -1296,7 +1296,7 @@ class _ArticleCompositionEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _ida.Future<List<_i874587v.ArticleCompositionView>>);
+                as _ida.Future<List<_ismrnuo7.ArticleCompositionView>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1304,9 +1304,9 @@ class _ArticleCompositionEndpoint {
     });
   }
 
-  _ida.Future<_i874587v.ArticleCompositionView> create(
+  _ida.Future<_ismrnuo7.ArticleCompositionView> create(
     _ist.TestSessionBuilder sessionBuilder,
-    _ipe8oys4.ArticleCompositionCreate request,
+    _i1npuv27.ArticleCompositionCreate request,
   ) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -1327,7 +1327,7 @@ class _ArticleCompositionEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _ida.Future<_i874587v.ArticleCompositionView>);
+                as _ida.Future<_ismrnuo7.ArticleCompositionView>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1335,9 +1335,9 @@ class _ArticleCompositionEndpoint {
     });
   }
 
-  _ida.Future<_i874587v.ArticleCompositionView> update(
+  _ida.Future<_ismrnuo7.ArticleCompositionView> update(
     _ist.TestSessionBuilder sessionBuilder,
-    _iu2e6gft.ArticleCompositionUpdate request,
+    _ismlqq4o.ArticleCompositionUpdate request,
   ) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -1358,7 +1358,7 @@ class _ArticleCompositionEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _ida.Future<_i874587v.ArticleCompositionView>);
+                as _ida.Future<_ismrnuo7.ArticleCompositionView>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1408,7 +1408,7 @@ class _IngredientEndpoint {
 
   final _is.SerializationManager _serializationManager;
 
-  _ida.Future<List<_i4kd1htu.IngredientView>> list(
+  _ida.Future<List<_i9jh3lrs.IngredientView>> list(
     _ist.TestSessionBuilder sessionBuilder,
     _is.UuidValue buildingId,
   ) async {
@@ -1431,7 +1431,7 @@ class _IngredientEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _ida.Future<List<_i4kd1htu.IngredientView>>);
+                as _ida.Future<List<_i9jh3lrs.IngredientView>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1439,9 +1439,9 @@ class _IngredientEndpoint {
     });
   }
 
-  _ida.Future<_i4kd1htu.IngredientView> create(
+  _ida.Future<_i9jh3lrs.IngredientView> create(
     _ist.TestSessionBuilder sessionBuilder,
-    _i0zbq4gg.IngredientCreate request,
+    _iplysw6f.IngredientCreate request,
   ) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -1462,7 +1462,7 @@ class _IngredientEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _ida.Future<_i4kd1htu.IngredientView>);
+                as _ida.Future<_i9jh3lrs.IngredientView>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1512,7 +1512,7 @@ class _MenuArticleEndpoint {
 
   final _is.SerializationManager _serializationManager;
 
-  _ida.Future<List<_ilv9ypte.MenuArticleView>> list(
+  _ida.Future<List<_iftzx4at.MenuArticleView>> list(
     _ist.TestSessionBuilder sessionBuilder,
     _is.UuidValue buildingId,
   ) async {
@@ -1535,7 +1535,7 @@ class _MenuArticleEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _ida.Future<List<_ilv9ypte.MenuArticleView>>);
+                as _ida.Future<List<_iftzx4at.MenuArticleView>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1543,9 +1543,9 @@ class _MenuArticleEndpoint {
     });
   }
 
-  _ida.Future<_ilv9ypte.MenuArticleView> create(
+  _ida.Future<_iftzx4at.MenuArticleView> create(
     _ist.TestSessionBuilder sessionBuilder,
-    _io67qn2p.MenuArticleCreate request,
+    _ijrbnog1.MenuArticleCreate request,
   ) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -1566,7 +1566,7 @@ class _MenuArticleEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _ida.Future<_ilv9ypte.MenuArticleView>);
+                as _ida.Future<_iftzx4at.MenuArticleView>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1574,9 +1574,9 @@ class _MenuArticleEndpoint {
     });
   }
 
-  _ida.Future<_ilv9ypte.MenuArticleView> update(
+  _ida.Future<_iftzx4at.MenuArticleView> update(
     _ist.TestSessionBuilder sessionBuilder,
-    _igs394lv.MenuArticleUpdate request,
+    _i7h46pya.MenuArticleUpdate request,
   ) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -1597,7 +1597,7 @@ class _MenuArticleEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _ida.Future<_ilv9ypte.MenuArticleView>);
+                as _ida.Future<_iftzx4at.MenuArticleView>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1616,7 +1616,7 @@ class _MenuCategoryEndpoint {
 
   final _is.SerializationManager _serializationManager;
 
-  _ida.Future<List<_iwilrax0.MenuCategoryView>> list(
+  _ida.Future<List<_i87rh1jz.MenuCategoryView>> list(
     _ist.TestSessionBuilder sessionBuilder,
     _is.UuidValue buildingId,
   ) async {
@@ -1639,7 +1639,7 @@ class _MenuCategoryEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _ida.Future<List<_iwilrax0.MenuCategoryView>>);
+                as _ida.Future<List<_i87rh1jz.MenuCategoryView>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1647,9 +1647,9 @@ class _MenuCategoryEndpoint {
     });
   }
 
-  _ida.Future<_iwilrax0.MenuCategoryView> create(
+  _ida.Future<_i87rh1jz.MenuCategoryView> create(
     _ist.TestSessionBuilder sessionBuilder,
-    _ickdwlcc.MenuCategoryCreate request,
+    _i2o0r9sg.MenuCategoryCreate request,
   ) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -1670,7 +1670,7 @@ class _MenuCategoryEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _ida.Future<_iwilrax0.MenuCategoryView>);
+                as _ida.Future<_i87rh1jz.MenuCategoryView>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1678,9 +1678,9 @@ class _MenuCategoryEndpoint {
     });
   }
 
-  _ida.Future<_iwilrax0.MenuCategoryView> update(
+  _ida.Future<_i87rh1jz.MenuCategoryView> update(
     _ist.TestSessionBuilder sessionBuilder,
-    _i4izftei.MenuCategoryUpdate request,
+    _i8wyftia.MenuCategoryUpdate request,
   ) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -1701,7 +1701,7 @@ class _MenuCategoryEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _ida.Future<_iwilrax0.MenuCategoryView>);
+                as _ida.Future<_i87rh1jz.MenuCategoryView>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1720,7 +1720,7 @@ class _VenueTableEndpoint {
 
   final _is.SerializationManager _serializationManager;
 
-  _ida.Future<List<_icmpx87d.VenueTableView>> list(
+  _ida.Future<List<_i8j8iq89.VenueTableView>> list(
     _ist.TestSessionBuilder sessionBuilder,
     _is.UuidValue buildingId,
   ) async {
@@ -1743,7 +1743,7 @@ class _VenueTableEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _ida.Future<List<_icmpx87d.VenueTableView>>);
+                as _ida.Future<List<_i8j8iq89.VenueTableView>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1751,9 +1751,9 @@ class _VenueTableEndpoint {
     });
   }
 
-  _ida.Future<List<_icmpx87d.VenueTableView>> create(
+  _ida.Future<List<_i8j8iq89.VenueTableView>> create(
     _ist.TestSessionBuilder sessionBuilder,
-    _ij730ie3.VenueTableCreate request,
+    _ituaoqeh.VenueTableCreate request,
   ) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -1774,7 +1774,7 @@ class _VenueTableEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _ida.Future<List<_icmpx87d.VenueTableView>>);
+                as _ida.Future<List<_i8j8iq89.VenueTableView>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1782,9 +1782,9 @@ class _VenueTableEndpoint {
     });
   }
 
-  _ida.Future<_icmpx87d.VenueTableView> update(
+  _ida.Future<_i8j8iq89.VenueTableView> update(
     _ist.TestSessionBuilder sessionBuilder,
-    _ixxdkctx.VenueTableUpdate request,
+    _iishhke5.VenueTableUpdate request,
   ) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -1805,7 +1805,7 @@ class _VenueTableEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _ida.Future<_icmpx87d.VenueTableView>);
+                as _ida.Future<_i8j8iq89.VenueTableView>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
