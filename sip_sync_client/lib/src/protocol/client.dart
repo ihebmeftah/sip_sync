@@ -51,8 +51,12 @@ import 'package:sip_sync_client/src/protocol/buildings/building_update.dart'
     as _i2rxmt9c;
 import 'package:sip_sync_client/src/protocol/buildings/building_view.dart'
     as _ia8vsgay;
-import 'package:sip_sync_client/src/protocol/greetings/greeting.dart'
-    as _ijvf1i5e;
+import 'package:sip_sync_client/src/protocol/menu/article_composition_create.dart'
+    as _i3gfy8f8;
+import 'package:sip_sync_client/src/protocol/menu/article_composition_update.dart'
+    as _i2330s36;
+import 'package:sip_sync_client/src/protocol/menu/article_composition_view.dart'
+    as _iagubt76;
 import 'package:sip_sync_client/src/protocol/menu/ingredient_create.dart'
     as _ixn96e4f;
 import 'package:sip_sync_client/src/protocol/menu/ingredient_view.dart'
@@ -356,21 +360,47 @@ class EndpointBuilding extends _isc.EndpointRef {
   );
 }
 
-/// This is an example endpoint that returns a greeting message through
-/// its [hello] method.
+/// Optional article recipe lines (ingredient + quantity).
 /// {@category Endpoint}
-class EndpointGreeting extends _isc.EndpointRef {
-  EndpointGreeting(_isc.EndpointCaller caller) : super(caller);
+class EndpointArticleComposition extends _isc.EndpointRef {
+  EndpointArticleComposition(_isc.EndpointCaller caller) : super(caller);
 
   @override
-  String get name => 'greeting';
+  String get name => 'articleComposition';
 
-  /// Returns a personalized greeting message: "Hello {name}".
-  _ida.Future<_ijvf1i5e.Greeting> hello(String name) =>
-      caller.callServerEndpoint<_ijvf1i5e.Greeting>(
-        'greeting',
-        'hello',
-        {'name': name},
+  /// Lists composition lines for [articleId] (owner or assigned employee).
+  _ida.Future<List<_iagubt76.ArticleCompositionView>> list(
+    _isc.UuidValue articleId,
+  ) => caller.callServerEndpoint<List<_iagubt76.ArticleCompositionView>>(
+    'articleComposition',
+    'list',
+    {'articleId': articleId},
+  );
+
+  /// Owner adds a composition line.
+  _ida.Future<_iagubt76.ArticleCompositionView> create(
+    _i3gfy8f8.ArticleCompositionCreate request,
+  ) => caller.callServerEndpoint<_iagubt76.ArticleCompositionView>(
+    'articleComposition',
+    'create',
+    {'request': request},
+  );
+
+  /// Owner updates a line quantity.
+  _ida.Future<_iagubt76.ArticleCompositionView> update(
+    _i2330s36.ArticleCompositionUpdate request,
+  ) => caller.callServerEndpoint<_iagubt76.ArticleCompositionView>(
+    'articleComposition',
+    'update',
+    {'request': request},
+  );
+
+  /// Owner deletes a composition line.
+  _ida.Future<void> delete(_isc.UuidValue id) =>
+      caller.callServerEndpoint<void>(
+        'articleComposition',
+        'delete',
+        {'id': id},
       );
 }
 
@@ -559,7 +589,7 @@ class Client extends _isc.ServerpodClientShared {
     ownerAuth = EndpointOwnerAuth(this);
     superAdminAuth = EndpointSuperAdminAuth(this);
     building = EndpointBuilding(this);
-    greeting = EndpointGreeting(this);
+    articleComposition = EndpointArticleComposition(this);
     ingredient = EndpointIngredient(this);
     menuArticle = EndpointMenuArticle(this);
     menuCategory = EndpointMenuCategory(this);
@@ -579,7 +609,7 @@ class Client extends _isc.ServerpodClientShared {
 
   late final EndpointBuilding building;
 
-  late final EndpointGreeting greeting;
+  late final EndpointArticleComposition articleComposition;
 
   late final EndpointIngredient ingredient;
 
@@ -599,7 +629,7 @@ class Client extends _isc.ServerpodClientShared {
     'ownerAuth': ownerAuth,
     'superAdminAuth': superAdminAuth,
     'building': building,
-    'greeting': greeting,
+    'articleComposition': articleComposition,
     'ingredient': ingredient,
     'menuArticle': menuArticle,
     'menuCategory': menuCategory,

@@ -1,0 +1,4 @@
+class: ArticleCompositionUpdate
+fields:
+  id: UuidValue
+  quantity: double

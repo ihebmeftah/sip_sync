@@ -1,0 +1,7 @@
+enum: ArticleCompositionErrorCode
+serialized: byName
+values:
+  - invalidInput
+  - notAuthorized
+  - notFound
+  - ingredientTaken

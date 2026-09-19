@@ -14,6 +14,7 @@
 import 'package:serverpod/serverpod.dart' as _is;
 import 'package:sip_sync_server/src/generated/protocol.dart' as _iaib1p48;
 import '../buildings/building.dart' as _idz3611u;
+import '../menu/article_composition.dart' as _is4tbz3i;
 import '../menu/menu_category.dart' as _iotiu00c;
 
 /// A sellable menu article in one building, belonging to a category.
@@ -29,6 +30,7 @@ abstract class MenuArticle
     this.description,
     required this.price,
     DateTime? createdAt,
+    this.compositions,
   }) : createdAt = createdAt ?? DateTime.now();
 
   factory MenuArticle({
@@ -41,6 +43,7 @@ abstract class MenuArticle
     String? description,
     required double price,
     DateTime? createdAt,
+    List<_is4tbz3i.ArticleComposition>? compositions,
   }) = _MenuArticleImpl;
 
   factory MenuArticle.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -70,6 +73,12 @@ abstract class MenuArticle
       createdAt: jsonSerialization['createdAt'] == null
           ? null
           : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
+      compositions: jsonSerialization['compositions'] == null
+          ? null
+          : _iaib1p48.Protocol()
+                .deserialize<List<_is4tbz3i.ArticleComposition>>(
+                  jsonSerialization['compositions'],
+                ),
     );
   }
 
@@ -96,6 +105,8 @@ abstract class MenuArticle
 
   DateTime createdAt;
 
+  List<_is4tbz3i.ArticleComposition>? compositions;
+
   @override
   _is.Table<_is.UuidValue?> get table => t;
 
@@ -112,6 +123,7 @@ abstract class MenuArticle
     String? description,
     double? price,
     DateTime? createdAt,
+    List<_is4tbz3i.ArticleComposition>? compositions,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -126,6 +138,8 @@ abstract class MenuArticle
       if (description != null) 'description': description,
       'price': price,
       'createdAt': createdAt.toJson(),
+      if (compositions != null)
+        'compositions': compositions?.toJson(valueToJson: (v) => v.toJson()),
     };
   }
 
@@ -137,10 +151,12 @@ abstract class MenuArticle
   static MenuArticleInclude include({
     _idz3611u.BuildingInclude? building,
     _iotiu00c.MenuCategoryInclude? category,
+    _is4tbz3i.ArticleCompositionIncludeList? compositions,
   }) {
     return MenuArticleInclude._(
       building: building,
       category: category,
+      compositions: compositions,
     );
   }
 
@@ -181,6 +197,7 @@ class _MenuArticleImpl extends MenuArticle {
     String? description,
     required double price,
     DateTime? createdAt,
+    List<_is4tbz3i.ArticleComposition>? compositions,
   }) : super._(
          id: id,
          buildingId: buildingId,
@@ -191,6 +208,7 @@ class _MenuArticleImpl extends MenuArticle {
          description: description,
          price: price,
          createdAt: createdAt,
+         compositions: compositions,
        );
 
   /// Returns a shallow copy of this [MenuArticle]
@@ -207,6 +225,7 @@ class _MenuArticleImpl extends MenuArticle {
     Object? description = _Undefined,
     double? price,
     DateTime? createdAt,
+    Object? compositions = _Undefined,
   }) {
     return MenuArticle(
       id: id is _is.UuidValue? ? id : this.id,
@@ -222,6 +241,9 @@ class _MenuArticleImpl extends MenuArticle {
       description: description is String? ? description : this.description,
       price: price ?? this.price,
       createdAt: createdAt ?? this.createdAt,
+      compositions: compositions is List<_is4tbz3i.ArticleComposition>?
+          ? compositions
+          : this.compositions?.map((e0) => e0.copyWith()).toList(),
     );
   }
 }
@@ -312,6 +334,10 @@ class MenuArticleTable extends _is.Table<_is.UuidValue?> {
 
   late final _is.ColumnDateTime createdAt;
 
+  _is4tbz3i.ArticleCompositionTable? ___compositions;
+
+  _is.ManyRelation<_is4tbz3i.ArticleCompositionTable>? _compositions;
+
   _idz3611u.BuildingTable get building {
     if (_building != null) return _building!;
     _building = _is.createRelationTable(
@@ -338,6 +364,40 @@ class MenuArticleTable extends _is.Table<_is.UuidValue?> {
     return _category!;
   }
 
+  _is4tbz3i.ArticleCompositionTable get __compositions {
+    if (___compositions != null) return ___compositions!;
+    ___compositions = _is.createRelationTable(
+      relationFieldName: '__compositions',
+      field: MenuArticle.t.id,
+      foreignField: _is4tbz3i.ArticleComposition.t.articleId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) => _is4tbz3i.ArticleCompositionTable(
+        tableRelation: foreignTableRelation,
+      ),
+    );
+    return ___compositions!;
+  }
+
+  _is.ManyRelation<_is4tbz3i.ArticleCompositionTable> get compositions {
+    if (_compositions != null) return _compositions!;
+    var relationTable = _is.createRelationTable(
+      relationFieldName: 'compositions',
+      field: MenuArticle.t.id,
+      foreignField: _is4tbz3i.ArticleComposition.t.articleId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) => _is4tbz3i.ArticleCompositionTable(
+        tableRelation: foreignTableRelation,
+      ),
+    );
+    _compositions = _is.ManyRelation<_is4tbz3i.ArticleCompositionTable>(
+      tableWithRelations: relationTable,
+      table: _is4tbz3i.ArticleCompositionTable(
+        tableRelation: relationTable.tableRelation!.lastRelation,
+      ),
+    );
+    return _compositions!;
+  }
+
   @override
   List<_is.Column> get columns => [
     id,
@@ -357,6 +417,9 @@ class MenuArticleTable extends _is.Table<_is.UuidValue?> {
     if (relationField == 'category') {
       return category;
     }
+    if (relationField == 'compositions') {
+      return __compositions;
+    }
     return null;
   }
 }
@@ -365,19 +428,24 @@ class MenuArticleInclude extends _is.IncludeObject {
   MenuArticleInclude._({
     _idz3611u.BuildingInclude? building,
     _iotiu00c.MenuCategoryInclude? category,
+    _is4tbz3i.ArticleCompositionIncludeList? compositions,
   }) {
     _building = building;
     _category = category;
+    _compositions = compositions;
   }
 
   _idz3611u.BuildingInclude? _building;
 
   _iotiu00c.MenuCategoryInclude? _category;
 
+  _is4tbz3i.ArticleCompositionIncludeList? _compositions;
+
   @override
   Map<String, _is.Include?> get includes => {
     'building': _building,
     'category': _category,
+    'compositions': _compositions,
   };
 
   @override
@@ -405,6 +473,8 @@ class MenuArticleIncludeList extends _is.IncludeList {
 
 class MenuArticleRepository {
   const MenuArticleRepository._();
+
+  final attach = const MenuArticleAttachRepository._();
 
   final attachRow = const MenuArticleAttachRowRepository._();
 
@@ -806,6 +876,35 @@ class MenuArticleRepository {
   }
 }
 
+class MenuArticleAttachRepository {
+  const MenuArticleAttachRepository._();
+
+  /// Creates a relation between this [MenuArticle] and the given [ArticleComposition]s
+  /// by setting each [ArticleComposition]'s foreign key `articleId` to refer to this [MenuArticle].
+  Future<void> compositions(
+    _is.DatabaseSession session,
+    MenuArticle menuArticle,
+    List<_is4tbz3i.ArticleComposition> articleComposition, {
+    _is.Transaction? transaction,
+  }) async {
+    if (articleComposition.any((e) => e.id == null)) {
+      throw ArgumentError.notNull('articleComposition.id');
+    }
+    if (menuArticle.id == null) {
+      throw ArgumentError.notNull('menuArticle.id');
+    }
+
+    var $articleComposition = articleComposition
+        .map((e) => e.copyWith(articleId: menuArticle.id))
+        .toList();
+    await session.db.update<_is4tbz3i.ArticleComposition>(
+      $articleComposition,
+      columns: [_is4tbz3i.ArticleComposition.t.articleId],
+      transaction: transaction,
+    );
+  }
+}
+
 class MenuArticleAttachRowRepository {
   const MenuArticleAttachRowRepository._();
 
@@ -851,6 +950,31 @@ class MenuArticleAttachRowRepository {
     await session.db.updateRow<MenuArticle>(
       $menuArticle,
       columns: [MenuArticle.t.categoryId],
+      transaction: transaction,
+    );
+  }
+
+  /// Creates a relation between this [MenuArticle] and the given [ArticleComposition]
+  /// by setting the [ArticleComposition]'s foreign key `articleId` to refer to this [MenuArticle].
+  Future<void> compositions(
+    _is.DatabaseSession session,
+    MenuArticle menuArticle,
+    _is4tbz3i.ArticleComposition articleComposition, {
+    _is.Transaction? transaction,
+  }) async {
+    if (articleComposition.id == null) {
+      throw ArgumentError.notNull('articleComposition.id');
+    }
+    if (menuArticle.id == null) {
+      throw ArgumentError.notNull('menuArticle.id');
+    }
+
+    var $articleComposition = articleComposition.copyWith(
+      articleId: menuArticle.id,
+    );
+    await session.db.updateRow<_is4tbz3i.ArticleComposition>(
+      $articleComposition,
+      columns: [_is4tbz3i.ArticleComposition.t.articleId],
       transaction: transaction,
     );
   }

@@ -658,6 +658,68 @@ class AppLocalizationsAr extends AppLocalizations {
   String get errorIngredientNameTaken => 'اسم المكوّن مستخدم هنا بالفعل.';
 
   @override
+  String get errorIngredientInUse =>
+      'أزل هذا المكوّن من وصفات الأصناف قبل حذفه.';
+
+  @override
+  String get errorCompositionIngredientTaken =>
+      'هذا المكوّن موجود بالفعل في هذا الصنف.';
+
+  @override
+  String get save => 'حفظ';
+
+  @override
+  String get close => 'إغلاق';
+
+  @override
+  String articleCompositionTitle(String name) {
+    return 'التركيبة · $name';
+  }
+
+  @override
+  String get articleCompositionHint =>
+      'اختياري. أضف المكوّنات المستخدمة لحصة واحدة من هذا الصنف.';
+
+  @override
+  String get compositionEmpty => 'لا توجد بنود تركيبة بعد — وهذا مقبول.';
+
+  @override
+  String get compositionNone => 'بدون تركيبة';
+
+  @override
+  String compositionCount(int count) {
+    return '$count مكوّنات';
+  }
+
+  @override
+  String get compositionNeedIngredients =>
+      'أضف مكوّنات أولاً ثم ابنِ التركيبة.';
+
+  @override
+  String get compositionAllIngredientsUsed =>
+      'كل المكوّنات موجودة بالفعل في هذا الصنف.';
+
+  @override
+  String get compositionIngredient => 'المكوّن';
+
+  @override
+  String get compositionQuantity => 'الكمية لكل صنف';
+
+  @override
+  String get addCompositionLine => 'إضافة للتركيبة';
+
+  @override
+  String get editCompositionQuantity => 'تعديل الكمية';
+
+  @override
+  String get removeCompositionLine => 'إزالة من التركيبة';
+
+  @override
+  String removeCompositionLineConfirm(String name) {
+    return 'إزالة $name من هذه التركيبة؟';
+  }
+
+  @override
   String get unitGram => 'غرام (غ)';
 
   @override

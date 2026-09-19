@@ -34,8 +34,11 @@ building:
   - create:
   - update:
   - listEmployees:
-greeting:
-  - hello:
+articleComposition:
+  - list:
+  - create:
+  - update:
+  - delete:
 ingredient:
   - list:
   - create:

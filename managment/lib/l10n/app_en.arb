@@ -237,6 +237,32 @@
   "validationIngredientName": "Enter a name up to 80 characters.",
   "validationIngredientStock": "Enter 0 or a positive number.",
   "errorIngredientNameTaken": "That ingredient name is already used here.",
+  "errorIngredientInUse": "Remove this ingredient from article recipes before deleting it.",
+  "errorCompositionIngredientTaken": "That ingredient is already on this article.",
+  "save": "Save",
+  "close": "Close",
+  "articleCompositionTitle": "Recipe · {name}",
+  "@articleCompositionTitle": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "articleCompositionHint": "Optional. Add ingredients used for one serving of this article.",
+  "compositionEmpty": "No recipe lines yet — that is fine.",
+  "compositionNone": "No recipe",
+  "compositionCount": "{count} ingredients",
+  "@compositionCount": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "compositionNeedIngredients": "Add ingredients first, then build the recipe.",
+  "compositionAllIngredientsUsed": "Every ingredient is already on this article.",
+  "compositionIngredient": "Ingredient",
+  "compositionQuantity": "Quantity per article",
+  "addCompositionLine": "Add to recipe",
+  "editCompositionQuantity": "Edit quantity",
+  "removeCompositionLine": "Remove from recipe",
+  "removeCompositionLineConfirm": "Remove {name} from this recipe?",
+  "@removeCompositionLineConfirm": {
+    "placeholders": { "name": { "type": "String" } }
+  },
   "unitGram": "Gram (g)",
   "unitKilogram": "Kilogram (kg)",
   "unitMilliliter": "Milliliter (ml)",

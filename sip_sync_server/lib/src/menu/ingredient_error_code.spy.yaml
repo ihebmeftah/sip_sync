@@ -5,3 +5,4 @@ values:
   - notAuthorized
   - notFound
   - nameTaken
+  - inUse

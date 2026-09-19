@@ -1,6 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:sip_sync_client/sip_sync_client.dart';
 
+import '../../data/repositories/article_composition_repository.dart';
 import '../../data/repositories/building_repository.dart';
 import '../../data/repositories/employee_repository.dart';
 import '../../data/repositories/ingredient_repository.dart';
@@ -42,5 +43,8 @@ Future<void> setupServiceLocator() async {
   );
   getIt.registerLazySingleton<IngredientRepository>(
     () => IngredientRepository(client),
+  );
+  getIt.registerLazySingleton<ArticleCompositionRepository>(
+    () => ArticleCompositionRepository(client),
   );
 }

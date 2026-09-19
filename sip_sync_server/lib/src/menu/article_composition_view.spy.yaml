@@ -1,0 +1,8 @@
+class: ArticleCompositionView
+fields:
+  id: UuidValue
+  articleId: UuidValue
+  ingredientId: UuidValue
+  ingredientName: String
+  unit: UnitsType
+  quantity: double

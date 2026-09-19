@@ -234,6 +234,32 @@
   "validationIngredientName": "أدخل اسماً حتى 80 حرفاً.",
   "validationIngredientStock": "أدخل 0 أو رقماً موجباً.",
   "errorIngredientNameTaken": "اسم المكوّن مستخدم هنا بالفعل.",
+  "errorIngredientInUse": "أزل هذا المكوّن من وصفات الأصناف قبل حذفه.",
+  "errorCompositionIngredientTaken": "هذا المكوّن موجود بالفعل في هذا الصنف.",
+  "save": "حفظ",
+  "close": "إغلاق",
+  "articleCompositionTitle": "التركيبة · {name}",
+  "@articleCompositionTitle": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "articleCompositionHint": "اختياري. أضف المكوّنات المستخدمة لحصة واحدة من هذا الصنف.",
+  "compositionEmpty": "لا توجد بنود تركيبة بعد — وهذا مقبول.",
+  "compositionNone": "بدون تركيبة",
+  "compositionCount": "{count} مكوّنات",
+  "@compositionCount": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "compositionNeedIngredients": "أضف مكوّنات أولاً ثم ابنِ التركيبة.",
+  "compositionAllIngredientsUsed": "كل المكوّنات موجودة بالفعل في هذا الصنف.",
+  "compositionIngredient": "المكوّن",
+  "compositionQuantity": "الكمية لكل صنف",
+  "addCompositionLine": "إضافة للتركيبة",
+  "editCompositionQuantity": "تعديل الكمية",
+  "removeCompositionLine": "إزالة من التركيبة",
+  "removeCompositionLineConfirm": "إزالة {name} من هذه التركيبة؟",
+  "@removeCompositionLineConfirm": {
+    "placeholders": { "name": { "type": "String" } }
+  },
   "unitGram": "غرام (غ)",
   "unitKilogram": "كيلوغرام (كغ)",
   "unitMilliliter": "مليلتر (مل)",

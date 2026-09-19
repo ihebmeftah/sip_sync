@@ -23,6 +23,8 @@ import 'package:sip_sync_server/src/generated/auth/super_admin_view.dart'
     as _i3qefl0x;
 import 'package:sip_sync_server/src/generated/buildings/building_view.dart'
     as _iughhy8g;
+import 'package:sip_sync_server/src/generated/menu/article_composition_view.dart'
+    as _i874587v;
 import 'package:sip_sync_server/src/generated/menu/ingredient_view.dart'
     as _i4kd1htu;
 import 'package:sip_sync_server/src/generated/menu/menu_article_view.dart'
@@ -59,7 +61,12 @@ import 'buildings/building_error_code.dart' as _isz6zhld;
 import 'buildings/building_exception.dart' as _i7fakgop;
 import 'buildings/building_update.dart' as _ivqpqa05;
 import 'buildings/building_view.dart' as _iyqmhcrr;
-import 'greetings/greeting.dart' as _izw8z7ou;
+import 'menu/article_composition.dart' as _idvdbrom;
+import 'menu/article_composition_create.dart' as _ipqw8yxq;
+import 'menu/article_composition_error_code.dart' as _isxzi4pl;
+import 'menu/article_composition_exception.dart' as _ip2k6ele;
+import 'menu/article_composition_update.dart' as _i5uv9xda;
+import 'menu/article_composition_view.dart' as _iczyl2up;
 import 'menu/ingredient.dart' as _iryfi8gu;
 import 'menu/ingredient_create.dart' as _isicyc96;
 import 'menu/ingredient_error_code.dart' as _imprl5lf;
@@ -113,7 +120,12 @@ export 'buildings/building_error_code.dart';
 export 'buildings/building_exception.dart';
 export 'buildings/building_update.dart';
 export 'buildings/building_view.dart';
-export 'greetings/greeting.dart';
+export 'menu/article_composition.dart';
+export 'menu/article_composition_create.dart';
+export 'menu/article_composition_error_code.dart';
+export 'menu/article_composition_exception.dart';
+export 'menu/article_composition_update.dart';
+export 'menu/article_composition_view.dart';
 export 'menu/ingredient.dart';
 export 'menu/ingredient_create.dart';
 export 'menu/ingredient_error_code.dart';
@@ -148,6 +160,113 @@ class Protocol extends _is.DatabaseSerializationManager {
   static final Protocol _instance = Protocol._().._registerHostProtocols();
 
   static List<_isp.TableDefinition> get targetTableDefinitions => [
+    _isp.TableDefinition(
+      name: 'article_composition',
+      dartName: 'ArticleComposition',
+      schema: 'public',
+      module: 'sip_sync',
+      columns: [
+        _isp.ColumnDefinition(
+          name: 'id',
+          columnType: _isp.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue?',
+          columnDefault: 'random_v7',
+        ),
+        _isp.ColumnDefinition(
+          name: 'articleId',
+          columnType: _isp.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue',
+        ),
+        _isp.ColumnDefinition(
+          name: 'ingredientId',
+          columnType: _isp.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue',
+        ),
+        _isp.ColumnDefinition(
+          name: 'quantity',
+          columnType: _isp.ColumnType.doublePrecision,
+          isNullable: false,
+          dartType: 'double',
+        ),
+        _isp.ColumnDefinition(
+          name: 'createdAt',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+        ),
+      ],
+      foreignKeys: [
+        _isp.ForeignKeyDefinition(
+          constraintName: 'article_composition_fk_0',
+          columns: ['articleId'],
+          referenceTable: 'menu_article',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.cascade,
+          matchType: null,
+        ),
+        _isp.ForeignKeyDefinition(
+          constraintName: 'article_composition_fk_1',
+          columns: ['ingredientId'],
+          referenceTable: 'ingredient',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.restrict,
+          matchType: null,
+        ),
+      ],
+      indexes: [
+        _isp.IndexDefinition(
+          indexName: 'article_composition_article_ingredient_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'articleId',
+            ),
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'ingredientId',
+            ),
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: false,
+        ),
+        _isp.IndexDefinition(
+          indexName: 'article_composition_article_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'articleId',
+            ),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+        _isp.IndexDefinition(
+          indexName: 'article_composition_ingredient_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'ingredientId',
+            ),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
     _isp.TableDefinition(
       name: 'auth_session',
       dartName: 'AuthSession',
@@ -1252,8 +1371,23 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == _iyqmhcrr.BuildingView) {
       return _iyqmhcrr.BuildingView.fromJson(data) as T;
     }
-    if (t == _izw8z7ou.Greeting) {
-      return _izw8z7ou.Greeting.fromJson(data) as T;
+    if (t == _idvdbrom.ArticleComposition) {
+      return _idvdbrom.ArticleComposition.fromJson(data) as T;
+    }
+    if (t == _ipqw8yxq.ArticleCompositionCreate) {
+      return _ipqw8yxq.ArticleCompositionCreate.fromJson(data) as T;
+    }
+    if (t == _isxzi4pl.ArticleCompositionErrorCode) {
+      return _isxzi4pl.ArticleCompositionErrorCode.fromJson(data) as T;
+    }
+    if (t == _ip2k6ele.ArticleCompositionException) {
+      return _ip2k6ele.ArticleCompositionException.fromJson(data) as T;
+    }
+    if (t == _i5uv9xda.ArticleCompositionUpdate) {
+      return _i5uv9xda.ArticleCompositionUpdate.fromJson(data) as T;
+    }
+    if (t == _iczyl2up.ArticleCompositionView) {
+      return _iczyl2up.ArticleCompositionView.fromJson(data) as T;
     }
     if (t == _iryfi8gu.Ingredient) {
       return _iryfi8gu.Ingredient.fromJson(data) as T;
@@ -1443,8 +1577,39 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == _is.getType<_iyqmhcrr.BuildingView?>()) {
       return (data != null ? _iyqmhcrr.BuildingView.fromJson(data) : null) as T;
     }
-    if (t == _is.getType<_izw8z7ou.Greeting?>()) {
-      return (data != null ? _izw8z7ou.Greeting.fromJson(data) : null) as T;
+    if (t == _is.getType<_idvdbrom.ArticleComposition?>()) {
+      return (data != null ? _idvdbrom.ArticleComposition.fromJson(data) : null)
+          as T;
+    }
+    if (t == _is.getType<_ipqw8yxq.ArticleCompositionCreate?>()) {
+      return (data != null
+              ? _ipqw8yxq.ArticleCompositionCreate.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_isxzi4pl.ArticleCompositionErrorCode?>()) {
+      return (data != null
+              ? _isxzi4pl.ArticleCompositionErrorCode.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_ip2k6ele.ArticleCompositionException?>()) {
+      return (data != null
+              ? _ip2k6ele.ArticleCompositionException.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_i5uv9xda.ArticleCompositionUpdate?>()) {
+      return (data != null
+              ? _i5uv9xda.ArticleCompositionUpdate.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_iczyl2up.ArticleCompositionView?>()) {
+      return (data != null
+              ? _iczyl2up.ArticleCompositionView.fromJson(data)
+              : null)
+          as T;
     }
     if (t == _is.getType<_iryfi8gu.Ingredient?>()) {
       return (data != null ? _iryfi8gu.Ingredient.fromJson(data) : null) as T;
@@ -1645,6 +1810,20 @@ class Protocol extends _is.DatabaseSerializationManager {
       return (data as List).map((e) => deserialize<_is.UuidValue>(e)).toList()
           as T;
     }
+    if (t == List<_idvdbrom.ArticleComposition>) {
+      return (data as List)
+              .map((e) => deserialize<_idvdbrom.ArticleComposition>(e))
+              .toList()
+          as T;
+    }
+    if (t == _is.getType<List<_idvdbrom.ArticleComposition>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map((e) => deserialize<_idvdbrom.ArticleComposition>(e))
+                    .toList()
+              : null)
+          as T;
+    }
     if (t == List<_i3qefl0x.SuperAdminView>) {
       return (data as List)
               .map((e) => deserialize<_i3qefl0x.SuperAdminView>(e))
@@ -1660,6 +1839,12 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == List<_iusy412g.EmployeeView>) {
       return (data as List)
               .map((e) => deserialize<_iusy412g.EmployeeView>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_i874587v.ArticleCompositionView>) {
+      return (data as List)
+              .map((e) => deserialize<_i874587v.ArticleCompositionView>(e))
               .toList()
           as T;
     }
@@ -1729,7 +1914,12 @@ class Protocol extends _is.DatabaseSerializationManager {
       _i7fakgop.BuildingException => 'BuildingException',
       _ivqpqa05.BuildingUpdate => 'BuildingUpdate',
       _iyqmhcrr.BuildingView => 'BuildingView',
-      _izw8z7ou.Greeting => 'Greeting',
+      _idvdbrom.ArticleComposition => 'ArticleComposition',
+      _ipqw8yxq.ArticleCompositionCreate => 'ArticleCompositionCreate',
+      _isxzi4pl.ArticleCompositionErrorCode => 'ArticleCompositionErrorCode',
+      _ip2k6ele.ArticleCompositionException => 'ArticleCompositionException',
+      _i5uv9xda.ArticleCompositionUpdate => 'ArticleCompositionUpdate',
+      _iczyl2up.ArticleCompositionView => 'ArticleCompositionView',
       _iryfi8gu.Ingredient => 'Ingredient',
       _isicyc96.IngredientCreate => 'IngredientCreate',
       _imprl5lf.IngredientErrorCode => 'IngredientErrorCode',
@@ -1825,8 +2015,18 @@ class Protocol extends _is.DatabaseSerializationManager {
         return 'BuildingUpdate';
       case _iyqmhcrr.BuildingView():
         return 'BuildingView';
-      case _izw8z7ou.Greeting():
-        return 'Greeting';
+      case _idvdbrom.ArticleComposition():
+        return 'ArticleComposition';
+      case _ipqw8yxq.ArticleCompositionCreate():
+        return 'ArticleCompositionCreate';
+      case _isxzi4pl.ArticleCompositionErrorCode():
+        return 'ArticleCompositionErrorCode';
+      case _ip2k6ele.ArticleCompositionException():
+        return 'ArticleCompositionException';
+      case _i5uv9xda.ArticleCompositionUpdate():
+        return 'ArticleCompositionUpdate';
+      case _iczyl2up.ArticleCompositionView():
+        return 'ArticleCompositionView';
       case _iryfi8gu.Ingredient():
         return 'Ingredient';
       case _isicyc96.IngredientCreate():
@@ -1987,8 +2187,23 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (dataClassName == 'BuildingView') {
       return deserialize<_iyqmhcrr.BuildingView>(data['data']);
     }
-    if (dataClassName == 'Greeting') {
-      return deserialize<_izw8z7ou.Greeting>(data['data']);
+    if (dataClassName == 'ArticleComposition') {
+      return deserialize<_idvdbrom.ArticleComposition>(data['data']);
+    }
+    if (dataClassName == 'ArticleCompositionCreate') {
+      return deserialize<_ipqw8yxq.ArticleCompositionCreate>(data['data']);
+    }
+    if (dataClassName == 'ArticleCompositionErrorCode') {
+      return deserialize<_isxzi4pl.ArticleCompositionErrorCode>(data['data']);
+    }
+    if (dataClassName == 'ArticleCompositionException') {
+      return deserialize<_ip2k6ele.ArticleCompositionException>(data['data']);
+    }
+    if (dataClassName == 'ArticleCompositionUpdate') {
+      return deserialize<_i5uv9xda.ArticleCompositionUpdate>(data['data']);
+    }
+    if (dataClassName == 'ArticleCompositionView') {
+      return deserialize<_iczyl2up.ArticleCompositionView>(data['data']);
     }
     if (dataClassName == 'Ingredient') {
       return deserialize<_iryfi8gu.Ingredient>(data['data']);
@@ -2118,6 +2333,8 @@ class Protocol extends _is.DatabaseSerializationManager {
         return _iyiwchf3.SuperAdmin.t;
       case _i60s6nd2.Building:
         return _i60s6nd2.Building.t;
+      case _idvdbrom.ArticleComposition:
+        return _idvdbrom.ArticleComposition.t;
       case _iryfi8gu.Ingredient:
         return _iryfi8gu.Ingredient.t;
       case _ip0o9c0i.MenuArticle:

@@ -9,6 +9,7 @@ import '../../../core/widgets/app_controls.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../view_models/articles_view_model.dart';
 import '../view_models/categories_view_model.dart';
+import '../widgets/article_composition_dialog.dart';
 import '../widgets/article_dialog.dart';
 
 /// Per-building article list with owner create/edit dialogs.
@@ -113,12 +114,33 @@ class ArticlesListView extends ConsumerWidget {
                                   article.description!,
                               ].join(' · '),
                             ),
-                            trailing: Text(
-                              _formatMoney(article.price, currency),
-                              style: text.titleSmall?.copyWith(
-                                color: scheme.primary,
-                                fontWeight: FontWeight.w700,
-                              ),
+                            trailing: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                TextButton.icon(
+                                  onPressed: () => showArticleCompositionDialog(
+                                    context,
+                                    buildingId: buildingId,
+                                    article: article,
+                                  ),
+                                  icon: const Icon(Icons.blender_outlined),
+                                  label: Text(
+                                    article.compositionLineCount == 0
+                                        ? l10n.compositionNone
+                                        : l10n.compositionCount(
+                                            article.compositionLineCount,
+                                          ),
+                                  ),
+                                ),
+                                const SizedBox(width: AppSpacing.sm),
+                                Text(
+                                  _formatMoney(article.price, currency),
+                                  style: text.titleSmall?.copyWith(
+                                    color: scheme.primary,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                              ],
                             ),
                             onTap: isOwner
                                 ? () => showArticleDialog(

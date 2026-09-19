@@ -22,6 +22,7 @@ abstract class MenuArticleView
     required this.name,
     this.description,
     required this.price,
+    required this.compositionLineCount,
   });
 
   factory MenuArticleView({
@@ -32,6 +33,7 @@ abstract class MenuArticleView
     required String name,
     String? description,
     required double price,
+    required int compositionLineCount,
   }) = _MenuArticleViewImpl;
 
   factory MenuArticleView.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -47,6 +49,7 @@ abstract class MenuArticleView
       name: jsonSerialization['name'] as String,
       description: jsonSerialization['description'] as String?,
       price: (jsonSerialization['price'] as num).toDouble(),
+      compositionLineCount: jsonSerialization['compositionLineCount'] as int,
     );
   }
 
@@ -64,6 +67,9 @@ abstract class MenuArticleView
 
   double price;
 
+  /// Number of recipe lines; 0 means no composition yet (allowed).
+  int compositionLineCount;
+
   /// Returns a shallow copy of this [MenuArticleView]
   /// with some or all fields replaced by the given arguments.
   @_is.useResult
@@ -75,6 +81,7 @@ abstract class MenuArticleView
     String? name,
     String? description,
     double? price,
+    int? compositionLineCount,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -87,6 +94,7 @@ abstract class MenuArticleView
       'name': name,
       if (description != null) 'description': description,
       'price': price,
+      'compositionLineCount': compositionLineCount,
     };
   }
 
@@ -101,6 +109,7 @@ abstract class MenuArticleView
       'name': name,
       if (description != null) 'description': description,
       'price': price,
+      'compositionLineCount': compositionLineCount,
     };
   }
 
@@ -121,6 +130,7 @@ class _MenuArticleViewImpl extends MenuArticleView {
     required String name,
     String? description,
     required double price,
+    required int compositionLineCount,
   }) : super._(
          id: id,
          buildingId: buildingId,
@@ -129,6 +139,7 @@ class _MenuArticleViewImpl extends MenuArticleView {
          name: name,
          description: description,
          price: price,
+         compositionLineCount: compositionLineCount,
        );
 
   /// Returns a shallow copy of this [MenuArticleView]
@@ -143,6 +154,7 @@ class _MenuArticleViewImpl extends MenuArticleView {
     String? name,
     Object? description = _Undefined,
     double? price,
+    int? compositionLineCount,
   }) {
     return MenuArticleView(
       id: id ?? this.id,
@@ -152,6 +164,7 @@ class _MenuArticleViewImpl extends MenuArticleView {
       name: name ?? this.name,
       description: description is String? ? description : this.description,
       price: price ?? this.price,
+      compositionLineCount: compositionLineCount ?? this.compositionLineCount,
     );
   }
 }

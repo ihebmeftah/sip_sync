@@ -17,7 +17,13 @@ class MenuArticleService {
       orderBy: (t) => t.name,
       include: MenuArticle.include(category: MenuCategory.include()),
     );
-    return rows.map(_view).toList();
+    final counts = await _compositionCounts(
+      session,
+      rows.map((r) => r.id!).toSet(),
+    );
+    return rows
+        .map((row) => _view(row, compositionLineCount: counts[row.id!] ?? 0))
+        .toList();
   }
 
   /// Owner-only create.
@@ -55,6 +61,7 @@ class MenuArticleService {
       name: row.name,
       description: row.description,
       price: row.price,
+      compositionLineCount: 0,
     );
   }
 
@@ -96,6 +103,10 @@ class MenuArticleService {
         price: price,
       ),
     );
+    final lineCount = await ArticleComposition.db.count(
+      session,
+      where: (t) => t.articleId.equals(updated.id!),
+    );
     return MenuArticleView(
       id: updated.id!,
       buildingId: updated.buildingId,
@@ -104,10 +115,32 @@ class MenuArticleService {
       name: updated.name,
       description: updated.description,
       price: updated.price,
+      compositionLineCount: lineCount,
     );
   }
 
-  MenuArticleView _view(MenuArticle row) => MenuArticleView(
+  Future<Map<UuidValue, int>> _compositionCounts(
+    Session session,
+    Set<UuidValue> articleIds,
+  ) async {
+    if (articleIds.isEmpty) {
+      return {};
+    }
+    final lines = await ArticleComposition.db.find(
+      session,
+      where: (t) => t.articleId.inSet(articleIds),
+    );
+    final counts = <UuidValue, int>{};
+    for (final line in lines) {
+      counts[line.articleId] = (counts[line.articleId] ?? 0) + 1;
+    }
+    return counts;
+  }
+
+  MenuArticleView _view(
+    MenuArticle row, {
+    required int compositionLineCount,
+  }) => MenuArticleView(
     id: row.id!,
     buildingId: row.buildingId,
     categoryId: row.categoryId,
@@ -115,6 +148,7 @@ class MenuArticleService {
     name: row.name,
     description: row.description,
     price: row.price,
+    compositionLineCount: compositionLineCount,
   );
 
   String _validateName(String raw) {

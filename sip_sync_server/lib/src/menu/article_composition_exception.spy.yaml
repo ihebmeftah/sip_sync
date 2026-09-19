@@ -1,0 +1,4 @@
+exception: ArticleCompositionException
+fields:
+  message: String
+  code: ArticleCompositionErrorCode

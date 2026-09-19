@@ -234,6 +234,32 @@
   "validationIngredientName": "Entrez un nom de 1 à 80 caractères.",
   "validationIngredientStock": "Entrez 0 ou un nombre positif.",
   "errorIngredientNameTaken": "Ce nom d’ingrédient est déjà utilisé ici.",
+  "errorIngredientInUse": "Retirez cet ingrédient des recettes avant de le supprimer.",
+  "errorCompositionIngredientTaken": "Cet ingrédient est déjà sur cet article.",
+  "save": "Enregistrer",
+  "close": "Fermer",
+  "articleCompositionTitle": "Recette · {name}",
+  "@articleCompositionTitle": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "articleCompositionHint": "Facultatif. Ajoutez les ingrédients pour une portion de cet article.",
+  "compositionEmpty": "Aucune ligne de recette — c’est normal.",
+  "compositionNone": "Sans recette",
+  "compositionCount": "{count} ingrédients",
+  "@compositionCount": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "compositionNeedIngredients": "Ajoutez d’abord des ingrédients, puis la recette.",
+  "compositionAllIngredientsUsed": "Tous les ingrédients sont déjà sur cet article.",
+  "compositionIngredient": "Ingrédient",
+  "compositionQuantity": "Quantité par article",
+  "addCompositionLine": "Ajouter à la recette",
+  "editCompositionQuantity": "Modifier la quantité",
+  "removeCompositionLine": "Retirer de la recette",
+  "removeCompositionLineConfirm": "Retirer {name} de cette recette ?",
+  "@removeCompositionLineConfirm": {
+    "placeholders": { "name": { "type": "String" } }
+  },
   "unitGram": "Gramme (g)",
   "unitKilogram": "Kilogramme (kg)",
   "unitMilliliter": "Millilitre (ml)",

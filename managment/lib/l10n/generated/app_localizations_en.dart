@@ -676,6 +676,68 @@ class AppLocalizationsEn extends AppLocalizations {
       'That ingredient name is already used here.';
 
   @override
+  String get errorIngredientInUse =>
+      'Remove this ingredient from article recipes before deleting it.';
+
+  @override
+  String get errorCompositionIngredientTaken =>
+      'That ingredient is already on this article.';
+
+  @override
+  String get save => 'Save';
+
+  @override
+  String get close => 'Close';
+
+  @override
+  String articleCompositionTitle(String name) {
+    return 'Recipe · $name';
+  }
+
+  @override
+  String get articleCompositionHint =>
+      'Optional. Add ingredients used for one serving of this article.';
+
+  @override
+  String get compositionEmpty => 'No recipe lines yet — that is fine.';
+
+  @override
+  String get compositionNone => 'No recipe';
+
+  @override
+  String compositionCount(int count) {
+    return '$count ingredients';
+  }
+
+  @override
+  String get compositionNeedIngredients =>
+      'Add ingredients first, then build the recipe.';
+
+  @override
+  String get compositionAllIngredientsUsed =>
+      'Every ingredient is already on this article.';
+
+  @override
+  String get compositionIngredient => 'Ingredient';
+
+  @override
+  String get compositionQuantity => 'Quantity per article';
+
+  @override
+  String get addCompositionLine => 'Add to recipe';
+
+  @override
+  String get editCompositionQuantity => 'Edit quantity';
+
+  @override
+  String get removeCompositionLine => 'Remove from recipe';
+
+  @override
+  String removeCompositionLineConfirm(String name) {
+    return 'Remove $name from this recipe?';
+  }
+
+  @override
   String get unitGram => 'Gram (g)';
 
   @override

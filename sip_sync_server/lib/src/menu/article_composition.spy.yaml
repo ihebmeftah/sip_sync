@@ -1,0 +1,18 @@
+### One ingredient line in an article recipe. Articles may have zero lines.
+class: ArticleComposition
+table: article_composition
+serverOnly: true
+fields:
+  id: UuidValue?, defaultPersist=random_v7
+  article: MenuArticle?, relation(name=article_compositions, onDelete=Cascade)
+  ingredient: Ingredient?, relation(name=ingredient_compositions, onDelete=Restrict)
+  quantity: double
+  createdAt: DateTime, defaultModel=now
+indexes:
+  article_composition_article_ingredient_idx:
+    fields: articleId, ingredientId
+    unique: true
+  article_composition_article_idx:
+    fields: articleId
+  article_composition_ingredient_idx:
+    fields: ingredientId

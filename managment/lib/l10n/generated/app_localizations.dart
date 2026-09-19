@@ -1318,6 +1318,108 @@ abstract class AppLocalizations {
   /// **'That ingredient name is already used here.'**
   String get errorIngredientNameTaken;
 
+  /// No description provided for @errorIngredientInUse.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove this ingredient from article recipes before deleting it.'**
+  String get errorIngredientInUse;
+
+  /// No description provided for @errorCompositionIngredientTaken.
+  ///
+  /// In en, this message translates to:
+  /// **'That ingredient is already on this article.'**
+  String get errorCompositionIngredientTaken;
+
+  /// No description provided for @save.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get save;
+
+  /// No description provided for @close.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get close;
+
+  /// No description provided for @articleCompositionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Recipe · {name}'**
+  String articleCompositionTitle(String name);
+
+  /// No description provided for @articleCompositionHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional. Add ingredients used for one serving of this article.'**
+  String get articleCompositionHint;
+
+  /// No description provided for @compositionEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No recipe lines yet — that is fine.'**
+  String get compositionEmpty;
+
+  /// No description provided for @compositionNone.
+  ///
+  /// In en, this message translates to:
+  /// **'No recipe'**
+  String get compositionNone;
+
+  /// No description provided for @compositionCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} ingredients'**
+  String compositionCount(int count);
+
+  /// No description provided for @compositionNeedIngredients.
+  ///
+  /// In en, this message translates to:
+  /// **'Add ingredients first, then build the recipe.'**
+  String get compositionNeedIngredients;
+
+  /// No description provided for @compositionAllIngredientsUsed.
+  ///
+  /// In en, this message translates to:
+  /// **'Every ingredient is already on this article.'**
+  String get compositionAllIngredientsUsed;
+
+  /// No description provided for @compositionIngredient.
+  ///
+  /// In en, this message translates to:
+  /// **'Ingredient'**
+  String get compositionIngredient;
+
+  /// No description provided for @compositionQuantity.
+  ///
+  /// In en, this message translates to:
+  /// **'Quantity per article'**
+  String get compositionQuantity;
+
+  /// No description provided for @addCompositionLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to recipe'**
+  String get addCompositionLine;
+
+  /// No description provided for @editCompositionQuantity.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit quantity'**
+  String get editCompositionQuantity;
+
+  /// No description provided for @removeCompositionLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove from recipe'**
+  String get removeCompositionLine;
+
+  /// No description provided for @removeCompositionLineConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove {name} from this recipe?'**
+  String removeCompositionLineConfirm(String name);
+
   /// No description provided for @unitGram.
   ///
   /// In en, this message translates to:

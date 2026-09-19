@@ -1,0 +1,5 @@
+class: ArticleCompositionCreate
+fields:
+  articleId: UuidValue
+  ingredientId: UuidValue
+  quantity: double

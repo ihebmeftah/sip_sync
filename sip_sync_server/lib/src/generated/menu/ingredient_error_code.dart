@@ -16,7 +16,8 @@ enum IngredientErrorCode implements _is.SerializableModel {
   invalidInput,
   notAuthorized,
   notFound,
-  nameTaken;
+  nameTaken,
+  inUse;
 
   static IngredientErrorCode fromJson(String name) {
     switch (name) {
@@ -28,6 +29,8 @@ enum IngredientErrorCode implements _is.SerializableModel {
         return IngredientErrorCode.notFound;
       case 'nameTaken':
         return IngredientErrorCode.nameTaken;
+      case 'inUse':
+        return IngredientErrorCode.inUse;
       default:
         throw ArgumentError(
           'Value "$name" cannot be converted to "IngredientErrorCode"',

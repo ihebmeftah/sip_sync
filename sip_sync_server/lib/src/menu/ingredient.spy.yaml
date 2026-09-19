@@ -10,6 +10,7 @@ fields:
   currentStock: double
   thresholdStock: double
   createdAt: DateTime, defaultModel=now
+  compositions: List<ArticleComposition>?, relation(name=ingredient_compositions)
 indexes:
   ingredient_building_name_idx:
     fields: buildingId, name

@@ -22,6 +22,8 @@ import 'package:sip_sync_client/src/protocol/auth/super_admin_view.dart'
     as _iddpd7et;
 import 'package:sip_sync_client/src/protocol/buildings/building_view.dart'
     as _ia8vsgay;
+import 'package:sip_sync_client/src/protocol/menu/article_composition_view.dart'
+    as _iagubt76;
 import 'package:sip_sync_client/src/protocol/menu/ingredient_view.dart'
     as _ibgg9iyt;
 import 'package:sip_sync_client/src/protocol/menu/menu_article_view.dart'
@@ -52,7 +54,11 @@ import 'buildings/building_error_code.dart' as _isz6zhld;
 import 'buildings/building_exception.dart' as _i7fakgop;
 import 'buildings/building_update.dart' as _ivqpqa05;
 import 'buildings/building_view.dart' as _iyqmhcrr;
-import 'greetings/greeting.dart' as _izw8z7ou;
+import 'menu/article_composition_create.dart' as _ipqw8yxq;
+import 'menu/article_composition_error_code.dart' as _isxzi4pl;
+import 'menu/article_composition_exception.dart' as _ip2k6ele;
+import 'menu/article_composition_update.dart' as _i5uv9xda;
+import 'menu/article_composition_view.dart' as _iczyl2up;
 import 'menu/ingredient_create.dart' as _isicyc96;
 import 'menu/ingredient_error_code.dart' as _imprl5lf;
 import 'menu/ingredient_exception.dart' as _iwzgj6vp;
@@ -96,7 +102,11 @@ export 'buildings/building_error_code.dart';
 export 'buildings/building_exception.dart';
 export 'buildings/building_update.dart';
 export 'buildings/building_view.dart';
-export 'greetings/greeting.dart';
+export 'menu/article_composition_create.dart';
+export 'menu/article_composition_error_code.dart';
+export 'menu/article_composition_exception.dart';
+export 'menu/article_composition_update.dart';
+export 'menu/article_composition_view.dart';
 export 'menu/ingredient_create.dart';
 export 'menu/ingredient_error_code.dart';
 export 'menu/ingredient_exception.dart';
@@ -220,8 +230,20 @@ class Protocol extends _isc.SerializationManager {
     if (t == _iyqmhcrr.BuildingView) {
       return _iyqmhcrr.BuildingView.fromJson(data) as T;
     }
-    if (t == _izw8z7ou.Greeting) {
-      return _izw8z7ou.Greeting.fromJson(data) as T;
+    if (t == _ipqw8yxq.ArticleCompositionCreate) {
+      return _ipqw8yxq.ArticleCompositionCreate.fromJson(data) as T;
+    }
+    if (t == _isxzi4pl.ArticleCompositionErrorCode) {
+      return _isxzi4pl.ArticleCompositionErrorCode.fromJson(data) as T;
+    }
+    if (t == _ip2k6ele.ArticleCompositionException) {
+      return _ip2k6ele.ArticleCompositionException.fromJson(data) as T;
+    }
+    if (t == _i5uv9xda.ArticleCompositionUpdate) {
+      return _i5uv9xda.ArticleCompositionUpdate.fromJson(data) as T;
+    }
+    if (t == _iczyl2up.ArticleCompositionView) {
+      return _iczyl2up.ArticleCompositionView.fromJson(data) as T;
     }
     if (t == _isicyc96.IngredientCreate) {
       return _isicyc96.IngredientCreate.fromJson(data) as T;
@@ -381,8 +403,35 @@ class Protocol extends _isc.SerializationManager {
     if (t == _isc.getType<_iyqmhcrr.BuildingView?>()) {
       return (data != null ? _iyqmhcrr.BuildingView.fromJson(data) : null) as T;
     }
-    if (t == _isc.getType<_izw8z7ou.Greeting?>()) {
-      return (data != null ? _izw8z7ou.Greeting.fromJson(data) : null) as T;
+    if (t == _isc.getType<_ipqw8yxq.ArticleCompositionCreate?>()) {
+      return (data != null
+              ? _ipqw8yxq.ArticleCompositionCreate.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _isc.getType<_isxzi4pl.ArticleCompositionErrorCode?>()) {
+      return (data != null
+              ? _isxzi4pl.ArticleCompositionErrorCode.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _isc.getType<_ip2k6ele.ArticleCompositionException?>()) {
+      return (data != null
+              ? _ip2k6ele.ArticleCompositionException.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _isc.getType<_i5uv9xda.ArticleCompositionUpdate?>()) {
+      return (data != null
+              ? _i5uv9xda.ArticleCompositionUpdate.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _isc.getType<_iczyl2up.ArticleCompositionView?>()) {
+      return (data != null
+              ? _iczyl2up.ArticleCompositionView.fromJson(data)
+              : null)
+          as T;
     }
     if (t == _isc.getType<_isicyc96.IngredientCreate?>()) {
       return (data != null ? _isicyc96.IngredientCreate.fromJson(data) : null)
@@ -505,6 +554,12 @@ class Protocol extends _isc.SerializationManager {
               .toList()
           as T;
     }
+    if (t == List<_iagubt76.ArticleCompositionView>) {
+      return (data as List)
+              .map((e) => deserialize<_iagubt76.ArticleCompositionView>(e))
+              .toList()
+          as T;
+    }
     if (t == List<_ibgg9iyt.IngredientView>) {
       return (data as List)
               .map((e) => deserialize<_ibgg9iyt.IngredientView>(e))
@@ -562,7 +617,11 @@ class Protocol extends _isc.SerializationManager {
       _i7fakgop.BuildingException => 'BuildingException',
       _ivqpqa05.BuildingUpdate => 'BuildingUpdate',
       _iyqmhcrr.BuildingView => 'BuildingView',
-      _izw8z7ou.Greeting => 'Greeting',
+      _ipqw8yxq.ArticleCompositionCreate => 'ArticleCompositionCreate',
+      _isxzi4pl.ArticleCompositionErrorCode => 'ArticleCompositionErrorCode',
+      _ip2k6ele.ArticleCompositionException => 'ArticleCompositionException',
+      _i5uv9xda.ArticleCompositionUpdate => 'ArticleCompositionUpdate',
+      _iczyl2up.ArticleCompositionView => 'ArticleCompositionView',
       _isicyc96.IngredientCreate => 'IngredientCreate',
       _imprl5lf.IngredientErrorCode => 'IngredientErrorCode',
       _iwzgj6vp.IngredientException => 'IngredientException',
@@ -642,8 +701,16 @@ class Protocol extends _isc.SerializationManager {
         return 'BuildingUpdate';
       case _iyqmhcrr.BuildingView():
         return 'BuildingView';
-      case _izw8z7ou.Greeting():
-        return 'Greeting';
+      case _ipqw8yxq.ArticleCompositionCreate():
+        return 'ArticleCompositionCreate';
+      case _isxzi4pl.ArticleCompositionErrorCode():
+        return 'ArticleCompositionErrorCode';
+      case _ip2k6ele.ArticleCompositionException():
+        return 'ArticleCompositionException';
+      case _i5uv9xda.ArticleCompositionUpdate():
+        return 'ArticleCompositionUpdate';
+      case _iczyl2up.ArticleCompositionView():
+        return 'ArticleCompositionView';
       case _isicyc96.IngredientCreate():
         return 'IngredientCreate';
       case _imprl5lf.IngredientErrorCode():
@@ -774,8 +841,20 @@ class Protocol extends _isc.SerializationManager {
     if (dataClassName == 'BuildingView') {
       return deserialize<_iyqmhcrr.BuildingView>(data['data']);
     }
-    if (dataClassName == 'Greeting') {
-      return deserialize<_izw8z7ou.Greeting>(data['data']);
+    if (dataClassName == 'ArticleCompositionCreate') {
+      return deserialize<_ipqw8yxq.ArticleCompositionCreate>(data['data']);
+    }
+    if (dataClassName == 'ArticleCompositionErrorCode') {
+      return deserialize<_isxzi4pl.ArticleCompositionErrorCode>(data['data']);
+    }
+    if (dataClassName == 'ArticleCompositionException') {
+      return deserialize<_ip2k6ele.ArticleCompositionException>(data['data']);
+    }
+    if (dataClassName == 'ArticleCompositionUpdate') {
+      return deserialize<_i5uv9xda.ArticleCompositionUpdate>(data['data']);
+    }
+    if (dataClassName == 'ArticleCompositionView') {
+      return deserialize<_iczyl2up.ArticleCompositionView>(data['data']);
     }
     if (dataClassName == 'IngredientCreate') {
       return deserialize<_isicyc96.IngredientCreate>(data['data']);

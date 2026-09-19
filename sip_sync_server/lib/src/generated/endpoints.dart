@@ -33,6 +33,10 @@ import 'package:sip_sync_server/src/generated/buildings/building_create.dart'
     as _iikuia2o;
 import 'package:sip_sync_server/src/generated/buildings/building_update.dart'
     as _ipidi05l;
+import 'package:sip_sync_server/src/generated/menu/article_composition_create.dart'
+    as _ipe8oys4;
+import 'package:sip_sync_server/src/generated/menu/article_composition_update.dart'
+    as _iu2e6gft;
 import 'package:sip_sync_server/src/generated/menu/ingredient_create.dart'
     as _i0zbq4gg;
 import 'package:sip_sync_server/src/generated/menu/menu_article_create.dart'
@@ -53,7 +57,7 @@ import '../auth/employee_endpoint.dart' as _i3t5tbp4;
 import '../auth/owner_auth_endpoint.dart' as _is2qyeee;
 import '../auth/super_admin_auth_endpoint.dart' as _itmp66ay;
 import '../buildings/building_endpoint.dart' as _i69ygv7j;
-import '../greetings/greeting_endpoint.dart' as _il624ik7;
+import '../menu/article_composition_endpoint.dart' as _iavtsxat;
 import '../menu/ingredient_endpoint.dart' as _i7cjtizz;
 import '../menu/menu_article_endpoint.dart' as _iefktwfq;
 import '../menu/menu_category_endpoint.dart' as _i1h28rjj;
@@ -99,10 +103,10 @@ class Endpoints extends _is.EndpointDispatch {
           'building',
           null,
         ),
-      'greeting': _il624ik7.GreetingEndpoint()
+      'articleComposition': _iavtsxat.ArticleCompositionEndpoint()
         ..initialize(
           server,
-          'greeting',
+          'articleComposition',
           null,
         ),
       'ingredient': _i7cjtizz.IngredientEndpoint()
@@ -666,16 +670,16 @@ class Endpoints extends _is.EndpointDispatch {
         ),
       },
     );
-    connectors['greeting'] = _is.EndpointConnector(
-      name: 'greeting',
-      endpoint: endpoints['greeting']!,
+    connectors['articleComposition'] = _is.EndpointConnector(
+      name: 'articleComposition',
+      endpoint: endpoints['articleComposition']!,
       methodConnectors: {
-        'hello': _is.MethodConnector(
-          name: 'hello',
+        'list': _is.MethodConnector(
+          name: 'list',
           params: {
-            'name': _is.ParameterDescription(
-              name: 'name',
-              type: _is.getType<String>(),
+            'articleId': _is.ParameterDescription(
+              name: 'articleId',
+              type: _is.getType<_is.UuidValue>(),
               nullable: false,
             ),
           },
@@ -684,10 +688,75 @@ class Endpoints extends _is.EndpointDispatch {
                 _is.Session session,
                 Map<String, dynamic> params,
               ) async =>
-                  (endpoints['greeting'] as _il624ik7.GreetingEndpoint).hello(
-                    session,
-                    params['name'],
-                  ),
+                  (endpoints['articleComposition']
+                          as _iavtsxat.ArticleCompositionEndpoint)
+                      .list(
+                        session,
+                        params['articleId'],
+                      ),
+        ),
+        'create': _is.MethodConnector(
+          name: 'create',
+          params: {
+            'request': _is.ParameterDescription(
+              name: 'request',
+              type: _is.getType<_ipe8oys4.ArticleCompositionCreate>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['articleComposition']
+                          as _iavtsxat.ArticleCompositionEndpoint)
+                      .create(
+                        session,
+                        params['request'],
+                      ),
+        ),
+        'update': _is.MethodConnector(
+          name: 'update',
+          params: {
+            'request': _is.ParameterDescription(
+              name: 'request',
+              type: _is.getType<_iu2e6gft.ArticleCompositionUpdate>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['articleComposition']
+                          as _iavtsxat.ArticleCompositionEndpoint)
+                      .update(
+                        session,
+                        params['request'],
+                      ),
+        ),
+        'delete': _is.MethodConnector(
+          name: 'delete',
+          params: {
+            'id': _is.ParameterDescription(
+              name: 'id',
+              type: _is.getType<_is.UuidValue>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['articleComposition']
+                          as _iavtsxat.ArticleCompositionEndpoint)
+                      .delete(
+                        session,
+                        params['id'],
+                      ),
         ),
       },
     );

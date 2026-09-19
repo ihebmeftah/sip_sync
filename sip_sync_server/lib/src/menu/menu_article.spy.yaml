@@ -10,6 +10,7 @@ fields:
   description: String?
   price: double
   createdAt: DateTime, defaultModel=now
+  compositions: List<ArticleComposition>?, relation(name=article_compositions)
 indexes:
   menu_article_building_name_idx:
     fields: buildingId, name

@@ -58,6 +58,16 @@ class IngredientService {
       );
     }
     await _requireOwnedBuilding(session, ownerId, existing.buildingId);
+    final inUse = await ArticleComposition.db.count(
+      session,
+      where: (t) => t.ingredientId.equals(id),
+    );
+    if (inUse > 0) {
+      throw IngredientException(
+        message: 'Ingredient is used in an article composition.',
+        code: IngredientErrorCode.inUse,
+      );
+    }
     await Ingredient.db.deleteRow(session, existing);
   }
 

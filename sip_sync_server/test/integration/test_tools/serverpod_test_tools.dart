@@ -49,8 +49,12 @@ import 'package:sip_sync_server/src/generated/buildings/building_update.dart'
     as _ipidi05l;
 import 'package:sip_sync_server/src/generated/buildings/building_view.dart'
     as _iughhy8g;
-import 'package:sip_sync_server/src/generated/greetings/greeting.dart'
-    as _igj77q9p;
+import 'package:sip_sync_server/src/generated/menu/article_composition_create.dart'
+    as _ipe8oys4;
+import 'package:sip_sync_server/src/generated/menu/article_composition_update.dart'
+    as _iu2e6gft;
+import 'package:sip_sync_server/src/generated/menu/article_composition_view.dart'
+    as _i874587v;
 import 'package:sip_sync_server/src/generated/menu/ingredient_create.dart'
     as _i0zbq4gg;
 import 'package:sip_sync_server/src/generated/menu/ingredient_view.dart'
@@ -213,7 +217,7 @@ class TestEndpoints {
 
   late final _BuildingEndpoint building;
 
-  late final _GreetingEndpoint greeting;
+  late final _ArticleCompositionEndpoint articleComposition;
 
   late final _IngredientEndpoint ingredient;
 
@@ -255,7 +259,7 @@ class _InternalTestEndpoints extends TestEndpoints
       endpoints,
       serializationManager,
     );
-    greeting = _GreetingEndpoint(
+    articleComposition = _ArticleCompositionEndpoint(
       endpoints,
       serializationManager,
     );
@@ -1259,8 +1263,8 @@ class _BuildingEndpoint {
   }
 }
 
-class _GreetingEndpoint {
-  _GreetingEndpoint(
+class _ArticleCompositionEndpoint {
+  _ArticleCompositionEndpoint(
     this._endpointDispatch,
     this._serializationManager,
   );
@@ -1269,22 +1273,22 @@ class _GreetingEndpoint {
 
   final _is.SerializationManager _serializationManager;
 
-  _ida.Future<_igj77q9p.Greeting> hello(
+  _ida.Future<List<_i874587v.ArticleCompositionView>> list(
     _ist.TestSessionBuilder sessionBuilder,
-    String name,
+    _is.UuidValue articleId,
   ) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
           (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
-            endpoint: 'greeting',
-            method: 'hello',
+            endpoint: 'articleComposition',
+            method: 'list',
           );
       try {
         var _localCallContext = await _endpointDispatch.getMethodCallContext(
           createSessionCallback: (_) => _localUniqueSession,
-          endpointPath: 'greeting',
-          methodName: 'hello',
-          parameters: _ist.testObjectToJson({'name': name}),
+          endpointPath: 'articleComposition',
+          methodName: 'list',
+          parameters: _ist.testObjectToJson({'articleId': articleId}),
           serializationManager: _serializationManager,
         );
         var _localReturnValue =
@@ -1292,7 +1296,100 @@ class _GreetingEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _ida.Future<_igj77q9p.Greeting>);
+                as _ida.Future<List<_i874587v.ArticleCompositionView>>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<_i874587v.ArticleCompositionView> create(
+    _ist.TestSessionBuilder sessionBuilder,
+    _ipe8oys4.ArticleCompositionCreate request,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'articleComposition',
+            method: 'create',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'articleComposition',
+          methodName: 'create',
+          parameters: _ist.testObjectToJson({'request': request}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_i874587v.ArticleCompositionView>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<_i874587v.ArticleCompositionView> update(
+    _ist.TestSessionBuilder sessionBuilder,
+    _iu2e6gft.ArticleCompositionUpdate request,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'articleComposition',
+            method: 'update',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'articleComposition',
+          methodName: 'update',
+          parameters: _ist.testObjectToJson({'request': request}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_i874587v.ArticleCompositionView>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<void> delete(
+    _ist.TestSessionBuilder sessionBuilder,
+    _is.UuidValue id,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'articleComposition',
+            method: 'delete',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'articleComposition',
+          methodName: 'delete',
+          parameters: _ist.testObjectToJson({'id': id}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<void>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();

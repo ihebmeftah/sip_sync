@@ -1,6 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sip_sync_client/sip_sync_client.dart';
 
+import '../../data/repositories/article_composition_repository.dart';
 import '../../data/repositories/building_repository.dart';
 import '../../data/repositories/employee_repository.dart';
 import '../../data/repositories/ingredient_repository.dart';
@@ -42,6 +43,10 @@ MenuArticleRepository menuArticleRepository(Ref ref) =>
 @Riverpod(keepAlive: true)
 IngredientRepository ingredientRepository(Ref ref) =>
     getIt<IngredientRepository>();
+
+@Riverpod(keepAlive: true)
+ArticleCompositionRepository articleCompositionRepository(Ref ref) =>
+    getIt<ArticleCompositionRepository>();
 
 @Riverpod(keepAlive: true)
 AppSessionStore appSessionStore(Ref ref) {

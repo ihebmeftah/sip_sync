@@ -685,6 +685,68 @@ class AppLocalizationsFr extends AppLocalizations {
       'Ce nom d’ingrédient est déjà utilisé ici.';
 
   @override
+  String get errorIngredientInUse =>
+      'Retirez cet ingrédient des recettes avant de le supprimer.';
+
+  @override
+  String get errorCompositionIngredientTaken =>
+      'Cet ingrédient est déjà sur cet article.';
+
+  @override
+  String get save => 'Enregistrer';
+
+  @override
+  String get close => 'Fermer';
+
+  @override
+  String articleCompositionTitle(String name) {
+    return 'Recette · $name';
+  }
+
+  @override
+  String get articleCompositionHint =>
+      'Facultatif. Ajoutez les ingrédients pour une portion de cet article.';
+
+  @override
+  String get compositionEmpty => 'Aucune ligne de recette — c’est normal.';
+
+  @override
+  String get compositionNone => 'Sans recette';
+
+  @override
+  String compositionCount(int count) {
+    return '$count ingrédients';
+  }
+
+  @override
+  String get compositionNeedIngredients =>
+      'Ajoutez d’abord des ingrédients, puis la recette.';
+
+  @override
+  String get compositionAllIngredientsUsed =>
+      'Tous les ingrédients sont déjà sur cet article.';
+
+  @override
+  String get compositionIngredient => 'Ingrédient';
+
+  @override
+  String get compositionQuantity => 'Quantité par article';
+
+  @override
+  String get addCompositionLine => 'Ajouter à la recette';
+
+  @override
+  String get editCompositionQuantity => 'Modifier la quantité';
+
+  @override
+  String get removeCompositionLine => 'Retirer de la recette';
+
+  @override
+  String removeCompositionLineConfirm(String name) {
+    return 'Retirer $name de cette recette ?';
+  }
+
+  @override
   String get unitGram => 'Gramme (g)';
 
   @override

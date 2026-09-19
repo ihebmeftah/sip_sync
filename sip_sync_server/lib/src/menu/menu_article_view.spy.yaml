@@ -7,3 +7,5 @@ fields:
   name: String
   description: String?
   price: double
+  ### Number of recipe lines; 0 means no composition yet (allowed).
+  compositionLineCount: int

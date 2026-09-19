@@ -57,6 +57,16 @@ Failure mapError(Object error) {
       IngredientErrorCode.notAuthorized => 'errorNotAuthorized',
       IngredientErrorCode.notFound => 'errorNotFound',
       IngredientErrorCode.nameTaken => 'errorIngredientNameTaken',
+      IngredientErrorCode.inUse => 'errorIngredientInUse',
+    });
+  }
+  if (error is ArticleCompositionException) {
+    return Failure(switch (error.code) {
+      ArticleCompositionErrorCode.invalidInput => 'errorInvalidInput',
+      ArticleCompositionErrorCode.notAuthorized => 'errorNotAuthorized',
+      ArticleCompositionErrorCode.notFound => 'errorNotFound',
+      ArticleCompositionErrorCode.ingredientTaken =>
+        'errorCompositionIngredientTaken',
     });
   }
   return const Failure('errorGeneric');
@@ -83,6 +93,8 @@ String lookupError(dynamic l10n, String key) {
     'errorCategoryNameTaken' => l10n.errorCategoryNameTaken,
     'errorArticleNameTaken' => l10n.errorArticleNameTaken,
     'errorIngredientNameTaken' => l10n.errorIngredientNameTaken,
+    'errorIngredientInUse' => l10n.errorIngredientInUse,
+    'errorCompositionIngredientTaken' => l10n.errorCompositionIngredientTaken,
     _ => l10n.errorGeneric,
   };
 }
