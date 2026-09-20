@@ -349,6 +349,40 @@ class AppLocalizationsEn extends AppLocalizations {
   String get currencyCode => 'Currency';
 
   @override
+  String get buildingTableMultiOrder => 'Multiple orders per table';
+
+  @override
+  String get buildingTableMultiOrderHint =>
+      'When on, staff can open another order on a table that already has one. When off, an occupied table must be paid or cancelled first.';
+
+  @override
+  String get buildingAllowAppendingItems =>
+      'Allow adding articles to open orders';
+
+  @override
+  String get buildingAllowAppendingItemsHint =>
+      'When on, staff can append articles to an existing open order. When off, the Add articles button is disabled.';
+
+  @override
+  String get buildingStrictMode => 'Strict item workflow';
+
+  @override
+  String get buildingStrictModeHint =>
+      'When on, each order line must follow enabled steps in order. When off, staff can mark payed without the earlier steps.';
+
+  @override
+  String get buildingStrictModeStepsTitle => 'Workflow steps';
+
+  @override
+  String get buildingStrictModeStepsHint =>
+      'Toggle which steps are required. Order is fixed; only enable or disable.';
+
+  @override
+  String buildingStrictModeStepRank(int rank) {
+    return 'Step $rank';
+  }
+
+  @override
   String get buildingStaff => 'Staff at this venue';
 
   @override
@@ -886,7 +920,14 @@ class AppLocalizationsEn extends AppLocalizations {
       'That table is inactive. Choose an active table.';
 
   @override
+  String get orderTableOccupied => 'This table already has an open order.';
+
+  @override
   String get orderAppendArticles => 'Add articles';
+
+  @override
+  String get orderAppendArticlesDisabled =>
+      'This venue does not allow adding articles to open orders.';
 
   @override
   String get orderNoActiveTables => 'No active tables. Create tables first.';
@@ -1046,9 +1087,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get orderItemStatusCancelled => 'Cancelled';
 
   @override
+  String get orderItemPayNow => 'Pay now';
+
+  @override
   String get errorOrderInvalidStatus => 'That status change is not allowed.';
 
   @override
   String get errorOrderInsufficientStock =>
       'Not enough ingredient stock for this order.';
+
+  @override
+  String get errorOrderTableOccupied => 'This table already has an open order.';
+
+  @override
+  String get errorOrderAppendNotAllowed =>
+      'Adding articles to open orders is not allowed for this venue.';
 }

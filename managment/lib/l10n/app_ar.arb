@@ -107,6 +107,18 @@
   "openingTime": "يفتح",
   "closingTime": "يغلق",
   "currencyCode": "العملة",
+  "buildingTableMultiOrder": "طلبات متعددة لكل طاولة",
+  "buildingTableMultiOrderHint": "عند التفعيل يمكن فتح طلب آخر على طاولة لديها طلب مفتوح. عند الإيقاف يجب دفع أو إلغاء الطلب الحالي أولاً.",
+  "buildingAllowAppendingItems": "السماح بإضافة أصناف للطلبات المفتوحة",
+  "buildingAllowAppendingItemsHint": "عند التفعيل يمكن إضافة أصناف لطلب مفتوح. عند الإيقاف يكون زر إضافة الأصناف معطّلاً.",
+  "buildingStrictMode": "مسار حالات صارم",
+  "buildingStrictModeHint": "عند التفعيل يمرّ كل بند بالخطوات المفعّلة بالترتيب. عند الإيقاف يمكن تعليم الدفع مباشرة دون الخطوات السابقة.",
+  "buildingStrictModeStepsTitle": "خطوات المسار",
+  "buildingStrictModeStepsHint": "فعّل أو عطّل الخطوات فقط. الترتيب ثابت ولا يمكن تغييره.",
+  "buildingStrictModeStepRank": "الخطوة {rank}",
+  "@buildingStrictModeStepRank": {
+    "placeholders": { "rank": { "type": "int" } }
+  },
   "buildingStaff": "فريق هذا المكان",
   "buildingStaffEmpty": "لا يوجد موظفون بعد. أضفهم بعد حفظ المكان.",
   "buildingsOwnerHint": "أنشئ مكاناً ثم افتحه لإدارة الصالة. باقي الأدوات تبقى مقفلة حتى تختار واحداً.",
@@ -315,7 +327,9 @@
   "orderSelectTablePrompt": "اختر طاولة لهذا الطلب.",
   "orderSelectTableFloorHint": "اضغط طاولة على خريطة الصالة لمتابعة إضافة الأصناف.",
   "orderTableInactive": "هذه الطاولة غير نشطة. اختر طاولة نشطة.",
+  "orderTableOccupied": "هذه الطاولة لديها طلب مفتوح بالفعل.",
   "orderAppendArticles": "إضافة أصناف",
+  "orderAppendArticlesDisabled": "هذا المكان لا يسمح بإضافة أصناف للطلبات المفتوحة.",
   "orderNoActiveTables": "لا توجد طاولات نشطة. أنشئ طاولات أولاً.",
   "orderSearchArticles": "ابحث عن الأصناف بالاسم",
   "orderAllCategories": "الكل",
@@ -379,6 +393,9 @@
   "orderItemStatusServed": "مقدَّم",
   "orderItemStatusPayed": "مدفوع",
   "orderItemStatusCancelled": "ملغى",
+  "orderItemPayNow": "ادفع الآن",
   "errorOrderInvalidStatus": "تغيير الحالة غير مسموح.",
-  "errorOrderInsufficientStock": "مخزون المكونات غير كافٍ لهذا الطلب."
+  "errorOrderInsufficientStock": "مخزون المكونات غير كافٍ لهذا الطلب.",
+  "errorOrderTableOccupied": "هذه الطاولة لديها طلب مفتوح بالفعل.",
+  "errorOrderAppendNotAllowed": "إضافة أصناف للطلبات المفتوحة غير مسموحة لهذا المكان."
 }

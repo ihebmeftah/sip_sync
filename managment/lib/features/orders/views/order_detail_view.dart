@@ -11,6 +11,7 @@ import '../../../l10n/generated/app_localizations.dart';
 import '../view_models/order_draft_view_model.dart';
 import '../view_models/orders_view_model.dart';
 import '../widgets/order_item_info_sheet.dart';
+import '../widgets/order_item_workflow.dart';
 import '../widgets/order_status_labels.dart';
 
 /// Full-screen order detail: compact item actions, table summary, add lines.
@@ -43,8 +44,25 @@ class _OrderDetailViewState extends ConsumerState<OrderDetailView> {
   }
 
   Future<void> _advance(OrderItemView item) async {
-    final next = nextOrderItemStatus(item.status);
+    final building = ref.read(buildingSelectionProvider);
+    final next = nextOrderItemStatusForBuilding(
+      item.status,
+      strictMode: building?.strictMode ?? false,
+      steps: normalizeStrictModeSteps(building?.strictModeSteps),
+    );
     if (next == null || _busyItemId != null) return;
+    await _setItemStatus(item, next);
+  }
+
+  Future<void> _pay(OrderItemView item) async {
+    if (_busyItemId != null) return;
+    await _setItemStatus(item, OrderItemStatus.payed);
+  }
+
+  Future<void> _setItemStatus(
+    OrderItemView item,
+    OrderItemStatus status,
+  ) async {
     setState(() {
       _busyItemId = item.id;
       _errorKey = null;
@@ -52,7 +70,7 @@ class _OrderDetailViewState extends ConsumerState<OrderDetailView> {
     try {
       await ref
           .read(ordersViewModelProvider(widget.buildingId).notifier)
-          .updateItemStatus(id: item.id, status: next);
+          .updateItemStatus(id: item.id, status: status);
     } catch (error) {
       if (!mounted) return;
       setState(() => _errorKey = mapError(error).l10nKey);
@@ -63,20 +81,7 @@ class _OrderDetailViewState extends ConsumerState<OrderDetailView> {
 
   Future<void> _cancelLine(OrderItemView item) async {
     if (_busyItemId != null) return;
-    setState(() {
-      _busyItemId = item.id;
-      _errorKey = null;
-    });
-    try {
-      await ref
-          .read(ordersViewModelProvider(widget.buildingId).notifier)
-          .updateItemStatus(id: item.id, status: OrderItemStatus.cancelled);
-    } catch (error) {
-      if (!mounted) return;
-      setState(() => _errorKey = mapError(error).l10nKey);
-    } finally {
-      if (mounted) setState(() => _busyItemId = null);
-    }
+    await _setItemStatus(item, OrderItemStatus.cancelled);
   }
 
   void _addArticles(OrderView order) {
@@ -191,6 +196,11 @@ class _OrderDetailViewState extends ConsumerState<OrderDetailView> {
                             order.venueTableId != null
                         ? () => _addArticles(order)
                         : null,
+                    addArticlesEnabled:
+                        ref
+                            .watch(buildingSelectionProvider)
+                            ?.allowAppendingItemsToOrder ??
+                        true,
                     onCancelOrder: order.status == OrderStatus.progress
                         ? () => _cancelOrder(order)
                         : null,
@@ -211,7 +221,14 @@ class _OrderDetailViewState extends ConsumerState<OrderDetailView> {
                       orderOpen: order.status == OrderStatus.progress,
                       busy: _busyItemId == item.id,
                       actionsLocked: _cancellingOrder,
+                      strictMode:
+                          ref.watch(buildingSelectionProvider)?.strictMode ??
+                          false,
+                      strictModeSteps: normalizeStrictModeSteps(
+                        ref.watch(buildingSelectionProvider)?.strictModeSteps,
+                      ),
                       onAdvance: () => _advance(item),
+                      onPay: () => _pay(item),
                       onCancel: () => _cancelLine(item),
                       onInfo: () => showOrderItemInfoDialog(
                         context,
@@ -241,6 +258,7 @@ class _OrderHeaderCard extends StatelessWidget {
     required this.cancelling,
     required this.busyItem,
     this.onAddArticles,
+    this.addArticlesEnabled = true,
     this.onCancelOrder,
   });
 
@@ -250,6 +268,7 @@ class _OrderHeaderCard extends StatelessWidget {
   final bool cancelling;
   final bool busyItem;
   final VoidCallback? onAddArticles;
+  final bool addArticlesEnabled;
   final VoidCallback? onCancelOrder;
 
   @override
@@ -380,15 +399,22 @@ class _OrderHeaderCard extends StatelessWidget {
             Row(
               children: [
                 if (onAddArticles != null)
-                  FilledButton.tonalIcon(
-                    style: FilledButton.styleFrom(
-                      visualDensity: VisualDensity.compact,
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      minimumSize: const Size(0, 36),
+                  Tooltip(
+                    message: addArticlesEnabled
+                        ? l10n.orderAppendArticles
+                        : l10n.orderAppendArticlesDisabled,
+                    child: FilledButton.tonalIcon(
+                      style: FilledButton.styleFrom(
+                        visualDensity: VisualDensity.compact,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        minimumSize: const Size(0, 36),
+                      ),
+                      onPressed: cancelling || busyItem || !addArticlesEnabled
+                          ? null
+                          : onAddArticles,
+                      icon: const Icon(Icons.add, size: 18),
+                      label: Text(l10n.orderAppendArticles),
                     ),
-                    onPressed: cancelling || busyItem ? null : onAddArticles,
-                    icon: const Icon(Icons.add, size: 18),
-                    label: Text(l10n.orderAppendArticles),
                   ),
                 const Spacer(),
                 if (onCancelOrder != null)
@@ -432,7 +458,10 @@ class _OrderItemCard extends StatelessWidget {
     required this.orderOpen,
     required this.busy,
     required this.actionsLocked,
+    required this.strictMode,
+    required this.strictModeSteps,
     required this.onAdvance,
+    required this.onPay,
     required this.onCancel,
     required this.onInfo,
   });
@@ -442,7 +471,10 @@ class _OrderItemCard extends StatelessWidget {
   final bool orderOpen;
   final bool busy;
   final bool actionsLocked;
+  final bool strictMode;
+  final List<StrictModeStep> strictModeSteps;
   final VoidCallback onAdvance;
+  final VoidCallback onPay;
   final VoidCallback onCancel;
   final VoidCallback onInfo;
 
@@ -451,7 +483,14 @@ class _OrderItemCard extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final text = Theme.of(context).textTheme;
     final scheme = Theme.of(context).colorScheme;
-    final next = nextOrderItemStatus(item.status);
+    final next = nextOrderItemStatusForBuilding(
+      item.status,
+      strictMode: strictMode,
+      steps: strictModeSteps,
+    );
+    final showPay =
+        canJumpToPayed(item.status, strictMode: strictMode) &&
+        next != OrderItemStatus.payed;
     final canAct =
         orderOpen &&
         item.status != OrderItemStatus.payed &&
@@ -556,6 +595,24 @@ class _OrderItemCard extends StatelessWidget {
                   )
                 else
                   const Spacer(),
+                if (canAct && showPay) ...[
+                  const SizedBox(width: AppSpacing.sm),
+                  FilledButton(
+                    onPressed: busy || actionsLocked ? null : onPay,
+                    style: FilledButton.styleFrom(
+                      backgroundColor: const Color(0xFFE8F5E9),
+                      foregroundColor: const Color(0xFF2E7D32),
+                      visualDensity: VisualDensity.compact,
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 8,
+                      ),
+                      minimumSize: const Size(0, 34),
+                    ),
+                    child: Text(l10n.orderItemPayNow),
+                  ),
+                ],
                 if (canAct) ...[
                   const SizedBox(width: AppSpacing.sm),
                   Tooltip(

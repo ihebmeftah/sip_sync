@@ -53,6 +53,16 @@ class _TablesListViewState extends ConsumerState<TablesListView> {
         );
         return;
       }
+      final multiOrder =
+          ref.read(buildingSelectionProvider)?.tableMultiOrder ?? false;
+      if (!multiOrder && table.status == TableFloorStatus.occupied) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.orderTableOccupied),
+          ),
+        );
+        return;
+      }
       ref
           .read(orderDraftViewModelProvider(widget.buildingId).notifier)
           .selectTable(id: table.id, number: table.number);

@@ -1,0 +1,7 @@
+### One fixed-rank step in a building's order-item workflow.
+### Clients may toggle [enabled] only; [rank] and [status] stay fixed.
+class: StrictModeStep
+fields:
+  rank: int
+  status: OrderItemStatus
+  enabled: bool

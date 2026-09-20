@@ -2,6 +2,7 @@ import 'package:serverpod/serverpod.dart';
 
 import '../auth/auth_context.dart';
 import '../auth/auth_guard.dart';
+import '../buildings/strict_mode.dart';
 import '../generated/protocol.dart';
 
 /// Create / list / status updates for building orders.
@@ -44,6 +45,11 @@ class OrderService {
       request.buildingId,
       request.venueTableId,
     );
+    await _assertTableAcceptsNewOrder(
+      session,
+      buildingId: request.buildingId,
+      tableId: tableId,
+    );
     final articles = await _resolveArticles(
       session,
       request.buildingId,
@@ -83,6 +89,19 @@ class OrderService {
       throw OrderException(
         message: 'Only open orders can accept new items.',
         code: OrderErrorCode.invalidStatus,
+      );
+    }
+    final building = await Building.db.findById(session, order.buildingId);
+    if (building == null) {
+      throw OrderException(
+        message: 'Building not found.',
+        code: OrderErrorCode.notFound,
+      );
+    }
+    if (!building.allowAppendingItemsToOrder) {
+      throw OrderException(
+        message: 'Appending articles to this order is not allowed.',
+        code: OrderErrorCode.appendNotAllowed,
       );
     }
     final lines = _validateLines(request.items);
@@ -132,7 +151,19 @@ class OrderService {
         code: OrderErrorCode.invalidStatus,
       );
     }
-    _assertItemTransition(item.status, request.status);
+    final building = await Building.db.findById(session, order.buildingId);
+    if (building == null) {
+      throw OrderException(
+        message: 'Building not found.',
+        code: OrderErrorCode.notFound,
+      );
+    }
+    _assertItemTransition(
+      item.status,
+      request.status,
+      strictMode: building.strictMode,
+      steps: normalizeStrictModeSteps(building.strictModeSteps),
+    );
 
     final now = DateTime.now().toUtc();
     var next = item.copyWith(
@@ -378,7 +409,41 @@ class OrderService {
     return table.id;
   }
 
-  void _assertItemTransition(OrderItemStatus from, OrderItemStatus to) {
+  /// Blocks a second open order on the same table when [Building.tableMultiOrder] is false.
+  Future<void> _assertTableAcceptsNewOrder(
+    Session session, {
+    required UuidValue buildingId,
+    required UuidValue? tableId,
+  }) async {
+    if (tableId == null) return;
+    final building = await Building.db.findById(session, buildingId);
+    if (building == null) {
+      throw OrderException(
+        message: 'Building not found.',
+        code: OrderErrorCode.notFound,
+      );
+    }
+    if (building.tableMultiOrder) return;
+    final openCount = await VenueOrder.db.count(
+      session,
+      where: (t) =>
+          t.venueTableId.equals(tableId) &
+          t.status.equals(OrderStatus.progress),
+    );
+    if (openCount > 0) {
+      throw OrderException(
+        message: 'This table already has an open order.',
+        code: OrderErrorCode.tableOccupied,
+      );
+    }
+  }
+
+  void _assertItemTransition(
+    OrderItemStatus from,
+    OrderItemStatus to, {
+    required bool strictMode,
+    required List<StrictModeStep> steps,
+  }) {
     if (from == to) {
       return;
     }
@@ -391,26 +456,27 @@ class OrderService {
     if (to == OrderItemStatus.cancelled) {
       return;
     }
-    const forward = {
-      OrderItemStatus.progress: {
-        OrderItemStatus.picked,
-        OrderItemStatus.cancelled,
-      },
-      OrderItemStatus.picked: {
-        OrderItemStatus.ready,
-        OrderItemStatus.cancelled,
-      },
-      OrderItemStatus.ready: {
-        OrderItemStatus.served,
-        OrderItemStatus.cancelled,
-      },
-      OrderItemStatus.served: {
-        OrderItemStatus.payed,
-        OrderItemStatus.cancelled,
-      },
-    };
-    final allowed = forward[from] ?? const <OrderItemStatus>{};
-    if (!allowed.contains(to)) {
+
+    if (!strictMode) {
+      final linear = switch (from) {
+        OrderItemStatus.progress => OrderItemStatus.picked,
+        OrderItemStatus.picked => OrderItemStatus.ready,
+        OrderItemStatus.ready => OrderItemStatus.served,
+        OrderItemStatus.served => OrderItemStatus.payed,
+        OrderItemStatus.payed || OrderItemStatus.cancelled => null,
+      };
+      // Non-strict: one step forward, or jump straight to payed.
+      if (to == linear || to == OrderItemStatus.payed) {
+        return;
+      }
+      throw OrderException(
+        message: 'Invalid status change for this line.',
+        code: OrderErrorCode.invalidStatus,
+      );
+    }
+
+    final expected = nextEnabledStrictStatus(from, steps);
+    if (expected == null || to != expected) {
       throw OrderException(
         message: 'Invalid status change for this line.',
         code: OrderErrorCode.invalidStatus,

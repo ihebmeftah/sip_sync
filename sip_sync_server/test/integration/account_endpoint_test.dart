@@ -28,98 +28,105 @@ void main() {
       expect(login.owner?.id, registered.owner?.id);
     });
 
-    test('customer registers separately from owner with same email allowed', () async {
-      await endpoints.ownerAuth.register(
-        sessionBuilder,
-        EmailRegisterCreate(
-          email: 'both@example.com',
-          password: 'password1',
-          phoneNumber: '+21620000002',
-          firstName: 'Own',
-          lastName: 'Er',
-        ),
-      );
-      final customer = await endpoints.customerAuth.register(
-        sessionBuilder,
-        EmailRegisterCreate(
-          email: 'both@example.com',
-          password: 'password1',
-          phoneNumber: '+21620000003',
-          firstName: 'Cust',
-          lastName: 'Omer',
-        ),
-      );
-      expect(customer.actorType, ActorType.customer);
-      expect(customer.customer?.email, 'both@example.com');
-    });
+    test(
+      'customer registers separately from owner with same email allowed',
+      () async {
+        await endpoints.ownerAuth.register(
+          sessionBuilder,
+          EmailRegisterCreate(
+            email: 'both@example.com',
+            password: 'password1',
+            phoneNumber: '+21620000002',
+            firstName: 'Own',
+            lastName: 'Er',
+          ),
+        );
+        final customer = await endpoints.customerAuth.register(
+          sessionBuilder,
+          EmailRegisterCreate(
+            email: 'both@example.com',
+            password: 'password1',
+            phoneNumber: '+21620000003',
+            firstName: 'Cust',
+            lastName: 'Omer',
+          ),
+        );
+        expect(customer.actorType, ActorType.customer);
+        expect(customer.customer?.email, 'both@example.com');
+      },
+    );
 
-    test('owner creates building then employee can login and list that building', () async {
-      final ownerAuth = await endpoints.ownerAuth.register(
-        sessionBuilder,
-        EmailRegisterCreate(
-          email: 'venue@example.com',
-          password: 'password1',
-          phoneNumber: '+21620000004',
-          firstName: 'Venue',
-          lastName: 'Owner',
-        ),
-      );
-      final ownerSession = sessionBuilder.copyWith(
-        authentication: AuthenticationOverride.authenticationInfo(
-          ownerAuth.owner!.id.uuid,
-          {Scope('sip.owner')},
-          authId: 'test-session-owner',
-        ),
-      );
+    test(
+      'owner creates building then employee can login and list that building',
+      () async {
+        final ownerAuth = await endpoints.ownerAuth.register(
+          sessionBuilder,
+          EmailRegisterCreate(
+            email: 'venue@example.com',
+            password: 'password1',
+            phoneNumber: '+21620000004',
+            firstName: 'Venue',
+            lastName: 'Owner',
+          ),
+        );
+        final ownerSession = sessionBuilder.copyWith(
+          authentication: AuthenticationOverride.authenticationInfo(
+            ownerAuth.owner!.id.uuid,
+            {Scope('sip.owner')},
+            authId: 'test-session-owner',
+          ),
+        );
 
-      final building = await endpoints.building.create(
-        ownerSession,
-        BuildingCreate(
-          name: 'Maison',
-          type: 'cafe',
-          address: '12 Rue Habib',
-          latitude: 36.8,
-          longitude: 10.18,
-          openingMinutes: 480,
-          closingMinutes: 1380,
-          currencyCode: 'TND',
-        ),
-      );
-      expect(building.ownerId, ownerAuth.owner!.id);
-      expect(building.employeeIds, isEmpty);
+        final building = await endpoints.building.create(
+          ownerSession,
+          BuildingCreate(
+            name: 'Maison',
+            type: 'cafe',
+            address: '12 Rue Habib',
+            latitude: 36.8,
+            longitude: 10.18,
+            openingMinutes: 480,
+            closingMinutes: 1380,
+            currencyCode: 'TND',
+            strictModeSteps: [],
+          ),
+        );
+        expect(building.ownerId, ownerAuth.owner!.id);
+        expect(building.employeeIds, isEmpty);
 
-      final employee = await endpoints.employee.add(
-        ownerSession,
-        EmployeeCreate(
-          password: 'password1',
-          phoneNumber: '+21620000005',
-          firstName: 'Floor',
-          lastName: 'Staff',
-          buildingId: building.id,
-        ),
-      );
-      expect(employee.buildingId, building.id);
-      expect(employee.username, startsWith('floor.staff'));
+        final employee = await endpoints.employee.add(
+          ownerSession,
+          EmployeeCreate(
+            password: 'password1',
+            phoneNumber: '+21620000005',
+            firstName: 'Floor',
+            lastName: 'Staff',
+            buildingId: building.id,
+          ),
+        );
+        expect(employee.buildingId, building.id);
+        expect(employee.username, startsWith('floor.staff'));
 
-      final staffLogin = await endpoints.employeeAuth.login(
-        sessionBuilder,
-        UsernameLoginRequest(
-          username: employee.username,
-          password: 'password1',
-        ),
-      );
-      expect(staffLogin.employee?.buildingId, building.id);
+        final staffLogin = await endpoints.employeeAuth.login(
+          sessionBuilder,
+          UsernameLoginRequest(
+            username: employee.username,
+            password: 'password1',
+          ),
+        );
+        expect(staffLogin.employee?.buildingId, building.id);
 
-      final staffSession = sessionBuilder.copyWith(
-        authentication: AuthenticationOverride.authenticationInfo(
-          staffLogin.employee!.id.uuid,
-          {Scope('sip.employee')},
-          authId: 'test-session-employee',
-        ),
-      );
-      final listed = await endpoints.building.listMine(staffSession);
-      expect(listed.single.id, building.id);
-    });
+        final staffSession = sessionBuilder.copyWith(
+          authentication: AuthenticationOverride.authenticationInfo(
+            staffLogin.employee!.id.uuid,
+            {Scope('sip.employee')},
+            authId: 'test-session-employee',
+          ),
+        );
+        final listed = await endpoints.building.listMine(staffSession);
+        expect(listed.single.id, building.id);
+      },
+    );
 
     test('disabled employee cannot login', () async {
       final ownerAuth = await endpoints.ownerAuth.register(
@@ -150,6 +157,7 @@ void main() {
           openingMinutes: 480,
           closingMinutes: 100,
           currencyCode: 'TND',
+          strictModeSteps: [],
         ),
       );
       final employee = await endpoints.employee.add(
@@ -212,6 +220,7 @@ void main() {
             openingMinutes: 0,
             closingMinutes: 60,
             currencyCode: 'DINA',
+            strictModeSteps: [],
           ),
         ),
         throwsA(

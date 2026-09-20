@@ -343,6 +343,40 @@ class AppLocalizationsAr extends AppLocalizations {
   String get currencyCode => 'العملة';
 
   @override
+  String get buildingTableMultiOrder => 'طلبات متعددة لكل طاولة';
+
+  @override
+  String get buildingTableMultiOrderHint =>
+      'عند التفعيل يمكن فتح طلب آخر على طاولة لديها طلب مفتوح. عند الإيقاف يجب دفع أو إلغاء الطلب الحالي أولاً.';
+
+  @override
+  String get buildingAllowAppendingItems =>
+      'السماح بإضافة أصناف للطلبات المفتوحة';
+
+  @override
+  String get buildingAllowAppendingItemsHint =>
+      'عند التفعيل يمكن إضافة أصناف لطلب مفتوح. عند الإيقاف يكون زر إضافة الأصناف معطّلاً.';
+
+  @override
+  String get buildingStrictMode => 'مسار حالات صارم';
+
+  @override
+  String get buildingStrictModeHint =>
+      'عند التفعيل يمرّ كل بند بالخطوات المفعّلة بالترتيب. عند الإيقاف يمكن تعليم الدفع مباشرة دون الخطوات السابقة.';
+
+  @override
+  String get buildingStrictModeStepsTitle => 'خطوات المسار';
+
+  @override
+  String get buildingStrictModeStepsHint =>
+      'فعّل أو عطّل الخطوات فقط. الترتيب ثابت ولا يمكن تغييره.';
+
+  @override
+  String buildingStrictModeStepRank(int rank) {
+    return 'الخطوة $rank';
+  }
+
+  @override
   String get buildingStaff => 'فريق هذا المكان';
 
   @override
@@ -865,7 +899,14 @@ class AppLocalizationsAr extends AppLocalizations {
   String get orderTableInactive => 'هذه الطاولة غير نشطة. اختر طاولة نشطة.';
 
   @override
+  String get orderTableOccupied => 'هذه الطاولة لديها طلب مفتوح بالفعل.';
+
+  @override
   String get orderAppendArticles => 'إضافة أصناف';
+
+  @override
+  String get orderAppendArticlesDisabled =>
+      'هذا المكان لا يسمح بإضافة أصناف للطلبات المفتوحة.';
 
   @override
   String get orderNoActiveTables => 'لا توجد طاولات نشطة. أنشئ طاولات أولاً.';
@@ -1024,9 +1065,19 @@ class AppLocalizationsAr extends AppLocalizations {
   String get orderItemStatusCancelled => 'ملغى';
 
   @override
+  String get orderItemPayNow => 'ادفع الآن';
+
+  @override
   String get errorOrderInvalidStatus => 'تغيير الحالة غير مسموح.';
 
   @override
   String get errorOrderInsufficientStock =>
       'مخزون المكونات غير كافٍ لهذا الطلب.';
+
+  @override
+  String get errorOrderTableOccupied => 'هذه الطاولة لديها طلب مفتوح بالفعل.';
+
+  @override
+  String get errorOrderAppendNotAllowed =>
+      'إضافة أصناف للطلبات المفتوحة غير مسموحة لهذا المكان.';
 }

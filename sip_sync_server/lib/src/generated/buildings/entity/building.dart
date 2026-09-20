@@ -15,6 +15,7 @@ import 'package:serverpod/serverpod.dart' as _is;
 import 'package:sip_sync_server/src/generated/protocol.dart' as _iaib1p48;
 import '../../auth/entity/employee.dart' as _ie30fksv;
 import '../../auth/entity/owner.dart' as _i2wy11ca;
+import '../../buildings/dtos/strict_mode_step.dart' as _ik04yv2w;
 import '../../menu/entity/ingredient.dart' as _ixki5cxr;
 import '../../menu/entity/menu_article.dart' as _is7gdyz6;
 import '../../menu/entity/menu_category.dart' as _illkjvef;
@@ -36,6 +37,10 @@ abstract class Building
     required this.openingMinutes,
     required this.closingMinutes,
     required this.currencyCode,
+    bool? tableMultiOrder,
+    bool? allowAppendingItemsToOrder,
+    bool? strictMode,
+    required this.strictModeSteps,
     DateTime? createdAt,
     this.employees,
     this.tables,
@@ -43,7 +48,10 @@ abstract class Building
     this.menuArticles,
     this.ingredients,
     this.orders,
-  }) : createdAt = createdAt ?? DateTime.now();
+  }) : tableMultiOrder = tableMultiOrder ?? false,
+       allowAppendingItemsToOrder = allowAppendingItemsToOrder ?? true,
+       strictMode = strictMode ?? false,
+       createdAt = createdAt ?? DateTime.now();
 
   factory Building({
     _is.UuidValue? id,
@@ -57,6 +65,10 @@ abstract class Building
     required int openingMinutes,
     required int closingMinutes,
     required String currencyCode,
+    bool? tableMultiOrder,
+    bool? allowAppendingItemsToOrder,
+    bool? strictMode,
+    required List<_ik04yv2w.StrictModeStep> strictModeSteps,
     DateTime? createdAt,
     List<_ie30fksv.Employee>? employees,
     List<_ilcfc7kr.VenueTable>? tables,
@@ -87,6 +99,24 @@ abstract class Building
       openingMinutes: jsonSerialization['openingMinutes'] as int,
       closingMinutes: jsonSerialization['closingMinutes'] as int,
       currencyCode: jsonSerialization['currencyCode'] as String,
+      tableMultiOrder: jsonSerialization['tableMultiOrder'] == null
+          ? null
+          : _is.BoolJsonExtension.fromJson(
+              jsonSerialization['tableMultiOrder'],
+            ),
+      allowAppendingItemsToOrder:
+          jsonSerialization['allowAppendingItemsToOrder'] == null
+          ? null
+          : _is.BoolJsonExtension.fromJson(
+              jsonSerialization['allowAppendingItemsToOrder'],
+            ),
+      strictMode: jsonSerialization['strictMode'] == null
+          ? null
+          : _is.BoolJsonExtension.fromJson(jsonSerialization['strictMode']),
+      strictModeSteps: _iaib1p48.Protocol()
+          .deserialize<List<_ik04yv2w.StrictModeStep>>(
+            jsonSerialization['strictModeSteps'],
+          ),
       createdAt: jsonSerialization['createdAt'] == null
           ? null
           : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
@@ -150,6 +180,18 @@ abstract class Building
 
   String currencyCode;
 
+  /// When false, a table with an open (progress) order cannot receive another order.
+  bool tableMultiOrder;
+
+  /// When false, staff cannot append articles to an existing open order.
+  bool allowAppendingItemsToOrder;
+
+  /// When true, item status must follow enabled [strictModeSteps] in rank order.
+  bool strictMode;
+
+  /// Fixed pipeline steps (picked → … → payed); enable/disable only, no reorder.
+  List<_ik04yv2w.StrictModeStep> strictModeSteps;
+
   DateTime createdAt;
 
   List<_ie30fksv.Employee>? employees;
@@ -182,6 +224,10 @@ abstract class Building
     int? openingMinutes,
     int? closingMinutes,
     String? currencyCode,
+    bool? tableMultiOrder,
+    bool? allowAppendingItemsToOrder,
+    bool? strictMode,
+    List<_ik04yv2w.StrictModeStep>? strictModeSteps,
     DateTime? createdAt,
     List<_ie30fksv.Employee>? employees,
     List<_ilcfc7kr.VenueTable>? tables,
@@ -205,6 +251,10 @@ abstract class Building
       'openingMinutes': openingMinutes,
       'closingMinutes': closingMinutes,
       'currencyCode': currencyCode,
+      'tableMultiOrder': tableMultiOrder,
+      'allowAppendingItemsToOrder': allowAppendingItemsToOrder,
+      'strictMode': strictMode,
+      'strictModeSteps': strictModeSteps.toJson(valueToJson: (v) => v.toJson()),
       'createdAt': createdAt.toJson(),
       if (employees != null)
         'employees': employees?.toJson(valueToJson: (v) => v.toJson()),
@@ -287,6 +337,10 @@ class _BuildingImpl extends Building {
     required int openingMinutes,
     required int closingMinutes,
     required String currencyCode,
+    bool? tableMultiOrder,
+    bool? allowAppendingItemsToOrder,
+    bool? strictMode,
+    required List<_ik04yv2w.StrictModeStep> strictModeSteps,
     DateTime? createdAt,
     List<_ie30fksv.Employee>? employees,
     List<_ilcfc7kr.VenueTable>? tables,
@@ -306,6 +360,10 @@ class _BuildingImpl extends Building {
          openingMinutes: openingMinutes,
          closingMinutes: closingMinutes,
          currencyCode: currencyCode,
+         tableMultiOrder: tableMultiOrder,
+         allowAppendingItemsToOrder: allowAppendingItemsToOrder,
+         strictMode: strictMode,
+         strictModeSteps: strictModeSteps,
          createdAt: createdAt,
          employees: employees,
          tables: tables,
@@ -331,6 +389,10 @@ class _BuildingImpl extends Building {
     int? openingMinutes,
     int? closingMinutes,
     String? currencyCode,
+    bool? tableMultiOrder,
+    bool? allowAppendingItemsToOrder,
+    bool? strictMode,
+    List<_ik04yv2w.StrictModeStep>? strictModeSteps,
     DateTime? createdAt,
     Object? employees = _Undefined,
     Object? tables = _Undefined,
@@ -351,6 +413,13 @@ class _BuildingImpl extends Building {
       openingMinutes: openingMinutes ?? this.openingMinutes,
       closingMinutes: closingMinutes ?? this.closingMinutes,
       currencyCode: currencyCode ?? this.currencyCode,
+      tableMultiOrder: tableMultiOrder ?? this.tableMultiOrder,
+      allowAppendingItemsToOrder:
+          allowAppendingItemsToOrder ?? this.allowAppendingItemsToOrder,
+      strictMode: strictMode ?? this.strictMode,
+      strictModeSteps:
+          strictModeSteps ??
+          this.strictModeSteps.map((e0) => e0.copyWith()).toList(),
       createdAt: createdAt ?? this.createdAt,
       employees: employees is List<_ie30fksv.Employee>?
           ? employees
@@ -423,6 +492,31 @@ class BuildingUpdateTable extends _is.UpdateTable<BuildingTable> {
     value,
   );
 
+  _is.ColumnValue<bool, bool> tableMultiOrder(bool value) => _is.ColumnValue(
+    table.tableMultiOrder,
+    value,
+  );
+
+  _is.ColumnValue<bool, bool> allowAppendingItemsToOrder(bool value) =>
+      _is.ColumnValue(
+        table.allowAppendingItemsToOrder,
+        value,
+      );
+
+  _is.ColumnValue<bool, bool> strictMode(bool value) => _is.ColumnValue(
+    table.strictMode,
+    value,
+  );
+
+  _is.ColumnValue<
+    List<_ik04yv2w.StrictModeStep>,
+    List<_ik04yv2w.StrictModeStep>
+  >
+  strictModeSteps(List<_ik04yv2w.StrictModeStep> value) => _is.ColumnValue(
+    table.strictModeSteps,
+    value,
+  );
+
   _is.ColumnValue<DateTime, DateTime> createdAt(DateTime value) =>
       _is.ColumnValue(
         table.createdAt,
@@ -469,6 +563,22 @@ class BuildingTable extends _is.Table<_is.UuidValue?> {
       'currencyCode',
       this,
     );
+    tableMultiOrder = _is.ColumnBool(
+      'tableMultiOrder',
+      this,
+    );
+    allowAppendingItemsToOrder = _is.ColumnBool(
+      'allowAppendingItemsToOrder',
+      this,
+    );
+    strictMode = _is.ColumnBool(
+      'strictMode',
+      this,
+    );
+    strictModeSteps = _is.ColumnSerializable<List<_ik04yv2w.StrictModeStep>>(
+      'strictModeSteps',
+      this,
+    );
     createdAt = _is.ColumnDateTime(
       'createdAt',
       this,
@@ -496,6 +606,19 @@ class BuildingTable extends _is.Table<_is.UuidValue?> {
   late final _is.ColumnInt closingMinutes;
 
   late final _is.ColumnString currencyCode;
+
+  /// When false, a table with an open (progress) order cannot receive another order.
+  late final _is.ColumnBool tableMultiOrder;
+
+  /// When false, staff cannot append articles to an existing open order.
+  late final _is.ColumnBool allowAppendingItemsToOrder;
+
+  /// When true, item status must follow enabled [strictModeSteps] in rank order.
+  late final _is.ColumnBool strictMode;
+
+  /// Fixed pipeline steps (picked → … → payed); enable/disable only, no reorder.
+  late final _is.ColumnSerializable<List<_ik04yv2w.StrictModeStep>>
+  strictModeSteps;
 
   late final _is.ColumnDateTime createdAt;
 
@@ -740,6 +863,10 @@ class BuildingTable extends _is.Table<_is.UuidValue?> {
     openingMinutes,
     closingMinutes,
     currencyCode,
+    tableMultiOrder,
+    allowAppendingItemsToOrder,
+    strictMode,
+    strictModeSteps,
     createdAt,
   ];
 

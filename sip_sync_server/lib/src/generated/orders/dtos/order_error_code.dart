@@ -19,7 +19,13 @@ enum OrderErrorCode implements _is.SerializableModel {
   invalidStatus,
 
   /// Not enough ingredient stock for an ordered article's composition.
-  insufficientStock;
+  insufficientStock,
+
+  /// Table already has an open order and building.tableMultiOrder is false.
+  tableOccupied,
+
+  /// Building does not allow appending articles to an existing order.
+  appendNotAllowed;
 
   static OrderErrorCode fromJson(String name) {
     switch (name) {
@@ -33,6 +39,10 @@ enum OrderErrorCode implements _is.SerializableModel {
         return OrderErrorCode.invalidStatus;
       case 'insufficientStock':
         return OrderErrorCode.insufficientStock;
+      case 'tableOccupied':
+        return OrderErrorCode.tableOccupied;
+      case 'appendNotAllowed':
+        return OrderErrorCode.appendNotAllowed;
       default:
         throw ArgumentError(
           'Value "$name" cannot be converted to "OrderErrorCode"',

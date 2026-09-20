@@ -742,6 +742,60 @@ abstract class AppLocalizations {
   /// **'Currency'**
   String get currencyCode;
 
+  /// No description provided for @buildingTableMultiOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Multiple orders per table'**
+  String get buildingTableMultiOrder;
+
+  /// No description provided for @buildingTableMultiOrderHint.
+  ///
+  /// In en, this message translates to:
+  /// **'When on, staff can open another order on a table that already has one. When off, an occupied table must be paid or cancelled first.'**
+  String get buildingTableMultiOrderHint;
+
+  /// No description provided for @buildingAllowAppendingItems.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow adding articles to open orders'**
+  String get buildingAllowAppendingItems;
+
+  /// No description provided for @buildingAllowAppendingItemsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'When on, staff can append articles to an existing open order. When off, the Add articles button is disabled.'**
+  String get buildingAllowAppendingItemsHint;
+
+  /// No description provided for @buildingStrictMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Strict item workflow'**
+  String get buildingStrictMode;
+
+  /// No description provided for @buildingStrictModeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'When on, each order line must follow enabled steps in order. When off, staff can mark payed without the earlier steps.'**
+  String get buildingStrictModeHint;
+
+  /// No description provided for @buildingStrictModeStepsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Workflow steps'**
+  String get buildingStrictModeStepsTitle;
+
+  /// No description provided for @buildingStrictModeStepsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Toggle which steps are required. Order is fixed; only enable or disable.'**
+  String get buildingStrictModeStepsHint;
+
+  /// No description provided for @buildingStrictModeStepRank.
+  ///
+  /// In en, this message translates to:
+  /// **'Step {rank}'**
+  String buildingStrictModeStepRank(int rank);
+
   /// No description provided for @buildingStaff.
   ///
   /// In en, this message translates to:
@@ -1696,11 +1750,23 @@ abstract class AppLocalizations {
   /// **'That table is inactive. Choose an active table.'**
   String get orderTableInactive;
 
+  /// No description provided for @orderTableOccupied.
+  ///
+  /// In en, this message translates to:
+  /// **'This table already has an open order.'**
+  String get orderTableOccupied;
+
   /// No description provided for @orderAppendArticles.
   ///
   /// In en, this message translates to:
   /// **'Add articles'**
   String get orderAppendArticles;
+
+  /// No description provided for @orderAppendArticlesDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'This venue does not allow adding articles to open orders.'**
+  String get orderAppendArticlesDisabled;
 
   /// No description provided for @orderNoActiveTables.
   ///
@@ -1978,6 +2044,12 @@ abstract class AppLocalizations {
   /// **'Cancelled'**
   String get orderItemStatusCancelled;
 
+  /// No description provided for @orderItemPayNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay now'**
+  String get orderItemPayNow;
+
   /// No description provided for @errorOrderInvalidStatus.
   ///
   /// In en, this message translates to:
@@ -1989,6 +2061,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Not enough ingredient stock for this order.'**
   String get errorOrderInsufficientStock;
+
+  /// No description provided for @errorOrderTableOccupied.
+  ///
+  /// In en, this message translates to:
+  /// **'This table already has an open order.'**
+  String get errorOrderTableOccupied;
+
+  /// No description provided for @errorOrderAppendNotAllowed.
+  ///
+  /// In en, this message translates to:
+  /// **'Adding articles to open orders is not allowed for this venue.'**
+  String get errorOrderAppendNotAllowed;
 }
 
 class _AppLocalizationsDelegate

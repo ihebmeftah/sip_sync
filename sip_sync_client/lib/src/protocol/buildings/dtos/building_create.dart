@@ -11,6 +11,8 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _isc;
+import 'package:sip_sync_client/src/protocol/protocol.dart' as _iozg9o5r;
+import '../../buildings/dtos/strict_mode_step.dart' as _ik04yv2w;
 
 abstract class BuildingCreate
     implements _isc.SerializableModel, _isc.ProtocolSerialization {
@@ -23,7 +25,13 @@ abstract class BuildingCreate
     required this.openingMinutes,
     required this.closingMinutes,
     required this.currencyCode,
-  });
+    bool? tableMultiOrder,
+    bool? allowAppendingItemsToOrder,
+    bool? strictMode,
+    required this.strictModeSteps,
+  }) : tableMultiOrder = tableMultiOrder ?? false,
+       allowAppendingItemsToOrder = allowAppendingItemsToOrder ?? true,
+       strictMode = strictMode ?? false;
 
   factory BuildingCreate({
     required String name,
@@ -34,6 +42,10 @@ abstract class BuildingCreate
     required int openingMinutes,
     required int closingMinutes,
     required String currencyCode,
+    bool? tableMultiOrder,
+    bool? allowAppendingItemsToOrder,
+    bool? strictMode,
+    required List<_ik04yv2w.StrictModeStep> strictModeSteps,
   }) = _BuildingCreateImpl;
 
   factory BuildingCreate.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -46,6 +58,24 @@ abstract class BuildingCreate
       openingMinutes: jsonSerialization['openingMinutes'] as int,
       closingMinutes: jsonSerialization['closingMinutes'] as int,
       currencyCode: jsonSerialization['currencyCode'] as String,
+      tableMultiOrder: jsonSerialization['tableMultiOrder'] == null
+          ? null
+          : _isc.BoolJsonExtension.fromJson(
+              jsonSerialization['tableMultiOrder'],
+            ),
+      allowAppendingItemsToOrder:
+          jsonSerialization['allowAppendingItemsToOrder'] == null
+          ? null
+          : _isc.BoolJsonExtension.fromJson(
+              jsonSerialization['allowAppendingItemsToOrder'],
+            ),
+      strictMode: jsonSerialization['strictMode'] == null
+          ? null
+          : _isc.BoolJsonExtension.fromJson(jsonSerialization['strictMode']),
+      strictModeSteps: _iozg9o5r.Protocol()
+          .deserialize<List<_ik04yv2w.StrictModeStep>>(
+            jsonSerialization['strictModeSteps'],
+          ),
     );
   }
 
@@ -65,6 +95,14 @@ abstract class BuildingCreate
 
   String currencyCode;
 
+  bool tableMultiOrder;
+
+  bool allowAppendingItemsToOrder;
+
+  bool strictMode;
+
+  List<_ik04yv2w.StrictModeStep> strictModeSteps;
+
   /// Returns a shallow copy of this [BuildingCreate]
   /// with some or all fields replaced by the given arguments.
   @_isc.useResult
@@ -77,6 +115,10 @@ abstract class BuildingCreate
     int? openingMinutes,
     int? closingMinutes,
     String? currencyCode,
+    bool? tableMultiOrder,
+    bool? allowAppendingItemsToOrder,
+    bool? strictMode,
+    List<_ik04yv2w.StrictModeStep>? strictModeSteps,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -90,6 +132,10 @@ abstract class BuildingCreate
       'openingMinutes': openingMinutes,
       'closingMinutes': closingMinutes,
       'currencyCode': currencyCode,
+      'tableMultiOrder': tableMultiOrder,
+      'allowAppendingItemsToOrder': allowAppendingItemsToOrder,
+      'strictMode': strictMode,
+      'strictModeSteps': strictModeSteps.toJson(valueToJson: (v) => v.toJson()),
     };
   }
 
@@ -105,6 +151,12 @@ abstract class BuildingCreate
       'openingMinutes': openingMinutes,
       'closingMinutes': closingMinutes,
       'currencyCode': currencyCode,
+      'tableMultiOrder': tableMultiOrder,
+      'allowAppendingItemsToOrder': allowAppendingItemsToOrder,
+      'strictMode': strictMode,
+      'strictModeSteps': strictModeSteps.toJson(
+        valueToJson: (v) => v.toJsonForProtocol(),
+      ),
     };
   }
 
@@ -124,6 +176,10 @@ class _BuildingCreateImpl extends BuildingCreate {
     required int openingMinutes,
     required int closingMinutes,
     required String currencyCode,
+    bool? tableMultiOrder,
+    bool? allowAppendingItemsToOrder,
+    bool? strictMode,
+    required List<_ik04yv2w.StrictModeStep> strictModeSteps,
   }) : super._(
          name: name,
          type: type,
@@ -133,6 +189,10 @@ class _BuildingCreateImpl extends BuildingCreate {
          openingMinutes: openingMinutes,
          closingMinutes: closingMinutes,
          currencyCode: currencyCode,
+         tableMultiOrder: tableMultiOrder,
+         allowAppendingItemsToOrder: allowAppendingItemsToOrder,
+         strictMode: strictMode,
+         strictModeSteps: strictModeSteps,
        );
 
   /// Returns a shallow copy of this [BuildingCreate]
@@ -148,6 +208,10 @@ class _BuildingCreateImpl extends BuildingCreate {
     int? openingMinutes,
     int? closingMinutes,
     String? currencyCode,
+    bool? tableMultiOrder,
+    bool? allowAppendingItemsToOrder,
+    bool? strictMode,
+    List<_ik04yv2w.StrictModeStep>? strictModeSteps,
   }) {
     return BuildingCreate(
       name: name ?? this.name,
@@ -158,6 +222,13 @@ class _BuildingCreateImpl extends BuildingCreate {
       openingMinutes: openingMinutes ?? this.openingMinutes,
       closingMinutes: closingMinutes ?? this.closingMinutes,
       currencyCode: currencyCode ?? this.currencyCode,
+      tableMultiOrder: tableMultiOrder ?? this.tableMultiOrder,
+      allowAppendingItemsToOrder:
+          allowAppendingItemsToOrder ?? this.allowAppendingItemsToOrder,
+      strictMode: strictMode ?? this.strictMode,
+      strictModeSteps:
+          strictModeSteps ??
+          this.strictModeSteps.map((e0) => e0.copyWith()).toList(),
     );
   }
 }

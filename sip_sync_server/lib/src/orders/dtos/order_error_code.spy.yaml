@@ -7,3 +7,7 @@ values:
   - invalidStatus
   ### Not enough ingredient stock for an ordered article's composition.
   - insufficientStock
+  ### Table already has an open order and building.tableMultiOrder is false.
+  - tableOccupied
+  ### Building does not allow appending articles to an existing order.
+  - appendNotAllowed

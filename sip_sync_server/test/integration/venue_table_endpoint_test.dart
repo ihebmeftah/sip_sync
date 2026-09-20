@@ -38,6 +38,7 @@ void main() {
           openingMinutes: 480,
           closingMinutes: 1380,
           currencyCode: 'TND',
+          strictModeSteps: [],
         ),
       );
       return (ownerSession: ownerSession, building: building);

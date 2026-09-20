@@ -18,6 +18,10 @@ class BuildingRepository {
     required int openingMinutes,
     required int closingMinutes,
     required String currencyCode,
+    required bool tableMultiOrder,
+    required bool allowAppendingItemsToOrder,
+    required bool strictMode,
+    required List<StrictModeStep> strictModeSteps,
   }) {
     return _client.building.create(
       BuildingCreate(
@@ -29,6 +33,10 @@ class BuildingRepository {
         openingMinutes: openingMinutes,
         closingMinutes: closingMinutes,
         currencyCode: currencyCode,
+        tableMultiOrder: tableMultiOrder,
+        allowAppendingItemsToOrder: allowAppendingItemsToOrder,
+        strictMode: strictMode,
+        strictModeSteps: strictModeSteps,
       ),
     );
   }
@@ -43,6 +51,10 @@ class BuildingRepository {
     required int openingMinutes,
     required int closingMinutes,
     required String currencyCode,
+    required bool tableMultiOrder,
+    required bool allowAppendingItemsToOrder,
+    required bool strictMode,
+    required List<StrictModeStep> strictModeSteps,
   }) {
     return _client.building.update(
       BuildingUpdate(
@@ -55,6 +67,10 @@ class BuildingRepository {
         openingMinutes: openingMinutes,
         closingMinutes: closingMinutes,
         currencyCode: currencyCode,
+        tableMultiOrder: tableMultiOrder,
+        allowAppendingItemsToOrder: allowAppendingItemsToOrder,
+        strictMode: strictMode,
+        strictModeSteps: strictModeSteps,
       ),
     );
   }

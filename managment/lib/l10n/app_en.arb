@@ -110,6 +110,18 @@
   "openingTime": "Opens",
   "closingTime": "Closes",
   "currencyCode": "Currency",
+  "buildingTableMultiOrder": "Multiple orders per table",
+  "buildingTableMultiOrderHint": "When on, staff can open another order on a table that already has one. When off, an occupied table must be paid or cancelled first.",
+  "buildingAllowAppendingItems": "Allow adding articles to open orders",
+  "buildingAllowAppendingItemsHint": "When on, staff can append articles to an existing open order. When off, the Add articles button is disabled.",
+  "buildingStrictMode": "Strict item workflow",
+  "buildingStrictModeHint": "When on, each order line must follow enabled steps in order. When off, staff can mark payed without the earlier steps.",
+  "buildingStrictModeStepsTitle": "Workflow steps",
+  "buildingStrictModeStepsHint": "Toggle which steps are required. Order is fixed; only enable or disable.",
+  "buildingStrictModeStepRank": "Step {rank}",
+  "@buildingStrictModeStepRank": {
+    "placeholders": { "rank": { "type": "int" } }
+  },
   "buildingStaff": "Staff at this venue",
   "buildingStaffEmpty": "No employees yet. Add staff after you save this venue.",
   "buildingsOwnerHint": "Create a venue, then open it to run the floor. Other tools stay locked until you pick one.",
@@ -318,7 +330,9 @@
   "orderSelectTablePrompt": "Select a table for this order.",
   "orderSelectTableFloorHint": "Tap a table on the floor map to continue adding articles.",
   "orderTableInactive": "That table is inactive. Choose an active table.",
+  "orderTableOccupied": "This table already has an open order.",
   "orderAppendArticles": "Add articles",
+  "orderAppendArticlesDisabled": "This venue does not allow adding articles to open orders.",
   "orderNoActiveTables": "No active tables. Create tables first.",
   "orderSearchArticles": "Search articles by name",
   "orderAllCategories": "All",
@@ -382,6 +396,9 @@
   "orderItemStatusServed": "Served",
   "orderItemStatusPayed": "Payed",
   "orderItemStatusCancelled": "Cancelled",
+  "orderItemPayNow": "Pay now",
   "errorOrderInvalidStatus": "That status change is not allowed.",
-  "errorOrderInsufficientStock": "Not enough ingredient stock for this order."
+  "errorOrderInsufficientStock": "Not enough ingredient stock for this order.",
+  "errorOrderTableOccupied": "This table already has an open order.",
+  "errorOrderAppendNotAllowed": "Adding articles to open orders is not allowed for this venue."
 }

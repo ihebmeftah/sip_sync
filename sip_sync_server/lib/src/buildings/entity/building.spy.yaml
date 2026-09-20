@@ -13,6 +13,14 @@ fields:
   openingMinutes: int
   closingMinutes: int
   currencyCode: String
+  ### When false, a table with an open (progress) order cannot receive another order.
+  tableMultiOrder: bool, defaultModel=false
+  ### When false, staff cannot append articles to an existing open order.
+  allowAppendingItemsToOrder: bool, defaultModel=true
+  ### When true, item status must follow enabled [strictModeSteps] in rank order.
+  strictMode: bool, defaultModel=false
+  ### Fixed pipeline steps (picked → … → payed); enable/disable only, no reorder.
+  strictModeSteps: List<StrictModeStep>
   createdAt: DateTime, defaultModel=now
   employees: List<Employee>?, relation(name=building_employees)
   tables: List<VenueTable>?, relation(name=building_tables)

@@ -62,8 +62,8 @@ Attribution actor ids are owner/employee (or later customer) UUIDs with matching
 1. **New order** FAB on any ops screen → Tables floor map in pick mode.
 2. Tap a table → article selection (category chips, name search, **+/−** adds/removes units; each unit becomes its own order line).
 3. **Confirm order** → server create → deducts composition stock per unit → **order detail** with colored status chips, currency amounts, created/updated times, and advance / cancel actions.
-4. Detail: compact advance / cancel on each line (only that card shows a spinner). **Add articles** appends more units (and deducts stock again). Info icon opens item attribution. Table chip opens the floor map.
-5. When an order is open on a table, that table’s floor status is **occupied**; after pay/cancel it returns to **available**.
+4. Detail: compact advance / cancel on each line (only that card shows a spinner). With **strict mode off**, a **Pay now** shortcut jumps to payed. **Add articles** appends more units (and deducts stock again) when the building’s `allowAppendingItemsToOrder` is **true**; otherwise the button is disabled and `addItems` returns `appendNotAllowed`. Info icon opens item attribution. Table chip opens the floor map.
+5. When an order is open on a table, that table’s floor status is **occupied**; after pay/cancel it returns to **available**. If the building’s `tableMultiOrder` is **false**, a second order on that table is blocked (server + floor picker).
 6. Cancel whole order when still in progress; stay on the detail screen (shows cancelled state). Cancelling a line or order **restores** composition stock for non-payed lines.
 7. Orders list can filter by status (All / In progress / Payed / Cancelled). Server returns orders by `createdAt` desc; detail lines stay in stable `createdAt` (+ id) order with **payed** items at the bottom (`paidAt` desc among payed). Intermediate status changes do not reorder lines.
 8. Create / append fails with `insufficientStock` when any ingredient would go below zero.

@@ -53,6 +53,10 @@ class BuildingFormViewModel extends _$BuildingFormViewModel {
     required int openingMinutes,
     required int closingMinutes,
     required String currencyCode,
+    required bool tableMultiOrder,
+    required bool allowAppendingItemsToOrder,
+    required bool strictMode,
+    required List<StrictModeStep> strictModeSteps,
   }) async {
     try {
       final existing = state.asData?.value;
@@ -69,6 +73,10 @@ class BuildingFormViewModel extends _$BuildingFormViewModel {
               openingMinutes: openingMinutes,
               closingMinutes: closingMinutes,
               currencyCode: currencyCode,
+              tableMultiOrder: tableMultiOrder,
+              allowAppendingItemsToOrder: allowAppendingItemsToOrder,
+              strictMode: strictMode,
+              strictModeSteps: strictModeSteps,
             );
       } else {
         saved = await ref
@@ -83,6 +91,10 @@ class BuildingFormViewModel extends _$BuildingFormViewModel {
               openingMinutes: openingMinutes,
               closingMinutes: closingMinutes,
               currencyCode: currencyCode,
+              tableMultiOrder: tableMultiOrder,
+              allowAppendingItemsToOrder: allowAppendingItemsToOrder,
+              strictMode: strictMode,
+              strictModeSteps: strictModeSteps,
             );
       }
       getIt<BuildingSession>().upsert(saved);

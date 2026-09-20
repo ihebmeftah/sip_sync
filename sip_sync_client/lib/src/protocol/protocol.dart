@@ -56,6 +56,7 @@ import 'buildings/dtos/building_error_code.dart' as _ip56joo9;
 import 'buildings/dtos/building_exception.dart' as _ihbyyehn;
 import 'buildings/dtos/building_update.dart' as _irbupqdx;
 import 'buildings/dtos/building_view.dart' as _i9ph7g7s;
+import 'buildings/dtos/strict_mode_step.dart' as _i70klpnb;
 import 'menu/dtos/article_composition_create.dart' as _i6nq3709;
 import 'menu/dtos/article_composition_error_code.dart' as _ibkg9l4z;
 import 'menu/dtos/article_composition_exception.dart' as _if82n88l;
@@ -115,6 +116,7 @@ export 'buildings/dtos/building_error_code.dart';
 export 'buildings/dtos/building_exception.dart';
 export 'buildings/dtos/building_update.dart';
 export 'buildings/dtos/building_view.dart';
+export 'buildings/dtos/strict_mode_step.dart';
 export 'menu/dtos/article_composition_create.dart';
 export 'menu/dtos/article_composition_error_code.dart';
 export 'menu/dtos/article_composition_exception.dart';
@@ -253,6 +255,9 @@ class Protocol extends _isc.SerializationManager {
     }
     if (t == _i9ph7g7s.BuildingView) {
       return _i9ph7g7s.BuildingView.fromJson(data) as T;
+    }
+    if (t == _i70klpnb.StrictModeStep) {
+      return _i70klpnb.StrictModeStep.fromJson(data) as T;
     }
     if (t == _i6nq3709.ArticleCompositionCreate) {
       return _i6nq3709.ArticleCompositionCreate.fromJson(data) as T;
@@ -460,6 +465,10 @@ class Protocol extends _isc.SerializationManager {
     if (t == _isc.getType<_i9ph7g7s.BuildingView?>()) {
       return (data != null ? _i9ph7g7s.BuildingView.fromJson(data) : null) as T;
     }
+    if (t == _isc.getType<_i70klpnb.StrictModeStep?>()) {
+      return (data != null ? _i70klpnb.StrictModeStep.fromJson(data) : null)
+          as T;
+    }
     if (t == _isc.getType<_i6nq3709.ArticleCompositionCreate?>()) {
       return (data != null
               ? _i6nq3709.ArticleCompositionCreate.fromJson(data)
@@ -634,6 +643,12 @@ class Protocol extends _isc.SerializationManager {
       return (data != null ? _ifz0lfor.VenueTableView.fromJson(data) : null)
           as T;
     }
+    if (t == List<_i70klpnb.StrictModeStep>) {
+      return (data as List)
+              .map((e) => deserialize<_i70klpnb.StrictModeStep>(e))
+              .toList()
+          as T;
+    }
     if (t == List<_isc.UuidValue>) {
       return (data as List).map((e) => deserialize<_isc.UuidValue>(e)).toList()
           as T;
@@ -737,6 +752,7 @@ class Protocol extends _isc.SerializationManager {
       _ihbyyehn.BuildingException => 'BuildingException',
       _irbupqdx.BuildingUpdate => 'BuildingUpdate',
       _i9ph7g7s.BuildingView => 'BuildingView',
+      _i70klpnb.StrictModeStep => 'StrictModeStep',
       _i6nq3709.ArticleCompositionCreate => 'ArticleCompositionCreate',
       _ibkg9l4z.ArticleCompositionErrorCode => 'ArticleCompositionErrorCode',
       _if82n88l.ArticleCompositionException => 'ArticleCompositionException',
@@ -832,6 +848,8 @@ class Protocol extends _isc.SerializationManager {
         return 'BuildingUpdate';
       case _i9ph7g7s.BuildingView():
         return 'BuildingView';
+      case _i70klpnb.StrictModeStep():
+        return 'StrictModeStep';
       case _i6nq3709.ArticleCompositionCreate():
         return 'ArticleCompositionCreate';
       case _ibkg9l4z.ArticleCompositionErrorCode():
@@ -993,6 +1011,9 @@ class Protocol extends _isc.SerializationManager {
     }
     if (dataClassName == 'BuildingView') {
       return deserialize<_i9ph7g7s.BuildingView>(data['data']);
+    }
+    if (dataClassName == 'StrictModeStep') {
+      return deserialize<_i70klpnb.StrictModeStep>(data['data']);
     }
     if (dataClassName == 'ArticleCompositionCreate') {
       return deserialize<_i6nq3709.ArticleCompositionCreate>(data['data']);

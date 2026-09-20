@@ -10,6 +10,8 @@ import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
 import '../../../l10n/generated/app_localizations.dart';
+import '../../orders/widgets/order_item_workflow.dart';
+import '../../orders/widgets/order_status_labels.dart';
 import '../venue_location.dart';
 import '../view_models/buildings_view_model.dart';
 
@@ -42,6 +44,10 @@ class _BuildingFormViewState extends ConsumerState<BuildingFormView> {
   var _filled = false;
   var _saving = false;
   var _locating = false;
+  var _tableMultiOrder = false;
+  var _allowAppendingItemsToOrder = true;
+  var _strictMode = false;
+  List<StrictModeStep> _strictModeSteps = defaultStrictModeSteps();
   String? _locationErrorKey;
   final _locationPicker = VenueLocationPicker();
 
@@ -85,6 +91,10 @@ class _BuildingFormViewState extends ConsumerState<BuildingFormView> {
       hour: building.closingMinutes ~/ 60,
       minute: building.closingMinutes % 60,
     );
+    _tableMultiOrder = building.tableMultiOrder;
+    _allowAppendingItemsToOrder = building.allowAppendingItemsToOrder;
+    _strictMode = building.strictMode;
+    _strictModeSteps = normalizeStrictModeSteps(building.strictModeSteps);
     _syncTimeFields();
     if (_predefinedTypes.contains(building.type)) {
       _type = building.type;
@@ -333,6 +343,65 @@ class _BuildingFormViewState extends ConsumerState<BuildingFormView> {
                           }
                         },
                       ),
+                      SwitchListTile(
+                        contentPadding: EdgeInsets.zero,
+                        title: Text(l10n.buildingTableMultiOrder),
+                        subtitle: Text(l10n.buildingTableMultiOrderHint),
+                        value: _tableMultiOrder,
+                        onChanged: (value) =>
+                            setState(() => _tableMultiOrder = value),
+                      ),
+                      SwitchListTile(
+                        contentPadding: EdgeInsets.zero,
+                        title: Text(l10n.buildingAllowAppendingItems),
+                        subtitle: Text(l10n.buildingAllowAppendingItemsHint),
+                        value: _allowAppendingItemsToOrder,
+                        onChanged: (value) => setState(
+                          () => _allowAppendingItemsToOrder = value,
+                        ),
+                      ),
+                      SwitchListTile(
+                        contentPadding: EdgeInsets.zero,
+                        title: Text(l10n.buildingStrictMode),
+                        subtitle: Text(l10n.buildingStrictModeHint),
+                        value: _strictMode,
+                        onChanged: (value) =>
+                            setState(() => _strictMode = value),
+                      ),
+                      Text(
+                        l10n.buildingStrictModeStepsTitle,
+                        style: Theme.of(context).textTheme.titleSmall,
+                      ),
+                      const SizedBox(height: AppSpacing.xs),
+                      Text(
+                        l10n.buildingStrictModeStepsHint,
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                      const SizedBox(height: AppSpacing.sm),
+                      for (final step in _strictModeSteps)
+                        SwitchListTile(
+                          contentPadding: EdgeInsets.zero,
+                          title: Text(orderItemStatusLabel(l10n, step.status)),
+                          subtitle: Text(
+                            l10n.buildingStrictModeStepRank(step.rank),
+                          ),
+                          value: step.enabled,
+                          onChanged: (enabled) {
+                            setState(() {
+                              _strictModeSteps = [
+                                for (final s in _strictModeSteps)
+                                  if (s.status == step.status)
+                                    StrictModeStep(
+                                      rank: s.rank,
+                                      status: s.status,
+                                      enabled: enabled,
+                                    )
+                                  else
+                                    s,
+                              ];
+                            });
+                          },
+                        ),
                       if (async.hasError)
                         AppErrorBanner(
                           message: lookupError(
@@ -363,6 +432,11 @@ class _BuildingFormViewState extends ConsumerState<BuildingFormView> {
                                 openingMinutes: minutesFromTimeOfDay(_opens),
                                 closingMinutes: minutesFromTimeOfDay(_closes),
                                 currencyCode: _currency,
+                                tableMultiOrder: _tableMultiOrder,
+                                allowAppendingItemsToOrder:
+                                    _allowAppendingItemsToOrder,
+                                strictMode: _strictMode,
+                                strictModeSteps: _strictModeSteps,
                               );
                           if (!context.mounted) {
                             return;

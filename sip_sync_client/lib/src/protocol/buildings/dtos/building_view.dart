@@ -12,6 +12,7 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _isc;
 import 'package:sip_sync_client/src/protocol/protocol.dart' as _iozg9o5r;
+import '../../buildings/dtos/strict_mode_step.dart' as _ik04yv2w;
 
 abstract class BuildingView
     implements _isc.SerializableModel, _isc.ProtocolSerialization {
@@ -26,6 +27,10 @@ abstract class BuildingView
     required this.openingMinutes,
     required this.closingMinutes,
     required this.currencyCode,
+    required this.tableMultiOrder,
+    required this.allowAppendingItemsToOrder,
+    required this.strictMode,
+    required this.strictModeSteps,
     required this.employeeIds,
   });
 
@@ -40,6 +45,10 @@ abstract class BuildingView
     required int openingMinutes,
     required int closingMinutes,
     required String currencyCode,
+    required bool tableMultiOrder,
+    required bool allowAppendingItemsToOrder,
+    required bool strictMode,
+    required List<_ik04yv2w.StrictModeStep> strictModeSteps,
     required List<_isc.UuidValue> employeeIds,
   }) = _BuildingViewImpl;
 
@@ -57,6 +66,19 @@ abstract class BuildingView
       openingMinutes: jsonSerialization['openingMinutes'] as int,
       closingMinutes: jsonSerialization['closingMinutes'] as int,
       currencyCode: jsonSerialization['currencyCode'] as String,
+      tableMultiOrder: _isc.BoolJsonExtension.fromJson(
+        jsonSerialization['tableMultiOrder'],
+      ),
+      allowAppendingItemsToOrder: _isc.BoolJsonExtension.fromJson(
+        jsonSerialization['allowAppendingItemsToOrder'],
+      ),
+      strictMode: _isc.BoolJsonExtension.fromJson(
+        jsonSerialization['strictMode'],
+      ),
+      strictModeSteps: _iozg9o5r.Protocol()
+          .deserialize<List<_ik04yv2w.StrictModeStep>>(
+            jsonSerialization['strictModeSteps'],
+          ),
       employeeIds: _iozg9o5r.Protocol().deserialize<List<_isc.UuidValue>>(
         jsonSerialization['employeeIds'],
       ),
@@ -83,6 +105,14 @@ abstract class BuildingView
 
   String currencyCode;
 
+  bool tableMultiOrder;
+
+  bool allowAppendingItemsToOrder;
+
+  bool strictMode;
+
+  List<_ik04yv2w.StrictModeStep> strictModeSteps;
+
   List<_isc.UuidValue> employeeIds;
 
   /// Returns a shallow copy of this [BuildingView]
@@ -99,6 +129,10 @@ abstract class BuildingView
     int? openingMinutes,
     int? closingMinutes,
     String? currencyCode,
+    bool? tableMultiOrder,
+    bool? allowAppendingItemsToOrder,
+    bool? strictMode,
+    List<_ik04yv2w.StrictModeStep>? strictModeSteps,
     List<_isc.UuidValue>? employeeIds,
   });
   @override
@@ -115,6 +149,10 @@ abstract class BuildingView
       'openingMinutes': openingMinutes,
       'closingMinutes': closingMinutes,
       'currencyCode': currencyCode,
+      'tableMultiOrder': tableMultiOrder,
+      'allowAppendingItemsToOrder': allowAppendingItemsToOrder,
+      'strictMode': strictMode,
+      'strictModeSteps': strictModeSteps.toJson(valueToJson: (v) => v.toJson()),
       'employeeIds': employeeIds.toJson(valueToJson: (v) => v.toJson()),
     };
   }
@@ -133,6 +171,12 @@ abstract class BuildingView
       'openingMinutes': openingMinutes,
       'closingMinutes': closingMinutes,
       'currencyCode': currencyCode,
+      'tableMultiOrder': tableMultiOrder,
+      'allowAppendingItemsToOrder': allowAppendingItemsToOrder,
+      'strictMode': strictMode,
+      'strictModeSteps': strictModeSteps.toJson(
+        valueToJson: (v) => v.toJsonForProtocol(),
+      ),
       'employeeIds': employeeIds.toJson(valueToJson: (v) => v.toJson()),
     };
   }
@@ -155,6 +199,10 @@ class _BuildingViewImpl extends BuildingView {
     required int openingMinutes,
     required int closingMinutes,
     required String currencyCode,
+    required bool tableMultiOrder,
+    required bool allowAppendingItemsToOrder,
+    required bool strictMode,
+    required List<_ik04yv2w.StrictModeStep> strictModeSteps,
     required List<_isc.UuidValue> employeeIds,
   }) : super._(
          id: id,
@@ -167,6 +215,10 @@ class _BuildingViewImpl extends BuildingView {
          openingMinutes: openingMinutes,
          closingMinutes: closingMinutes,
          currencyCode: currencyCode,
+         tableMultiOrder: tableMultiOrder,
+         allowAppendingItemsToOrder: allowAppendingItemsToOrder,
+         strictMode: strictMode,
+         strictModeSteps: strictModeSteps,
          employeeIds: employeeIds,
        );
 
@@ -185,6 +237,10 @@ class _BuildingViewImpl extends BuildingView {
     int? openingMinutes,
     int? closingMinutes,
     String? currencyCode,
+    bool? tableMultiOrder,
+    bool? allowAppendingItemsToOrder,
+    bool? strictMode,
+    List<_ik04yv2w.StrictModeStep>? strictModeSteps,
     List<_isc.UuidValue>? employeeIds,
   }) {
     return BuildingView(
@@ -198,6 +254,13 @@ class _BuildingViewImpl extends BuildingView {
       openingMinutes: openingMinutes ?? this.openingMinutes,
       closingMinutes: closingMinutes ?? this.closingMinutes,
       currencyCode: currencyCode ?? this.currencyCode,
+      tableMultiOrder: tableMultiOrder ?? this.tableMultiOrder,
+      allowAppendingItemsToOrder:
+          allowAppendingItemsToOrder ?? this.allowAppendingItemsToOrder,
+      strictMode: strictMode ?? this.strictMode,
+      strictModeSteps:
+          strictModeSteps ??
+          this.strictModeSteps.map((e0) => e0.copyWith()).toList(),
       employeeIds: employeeIds ?? this.employeeIds.map((e0) => e0).toList(),
     );
   }

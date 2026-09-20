@@ -62,6 +62,7 @@ import 'buildings/dtos/building_error_code.dart' as _ip56joo9;
 import 'buildings/dtos/building_exception.dart' as _ihbyyehn;
 import 'buildings/dtos/building_update.dart' as _irbupqdx;
 import 'buildings/dtos/building_view.dart' as _i9ph7g7s;
+import 'buildings/dtos/strict_mode_step.dart' as _i70klpnb;
 import 'buildings/entity/building.dart' as _iit041ql;
 import 'menu/dtos/article_composition_create.dart' as _i6nq3709;
 import 'menu/dtos/article_composition_error_code.dart' as _ibkg9l4z;
@@ -134,6 +135,7 @@ export 'buildings/dtos/building_error_code.dart';
 export 'buildings/dtos/building_exception.dart';
 export 'buildings/dtos/building_update.dart';
 export 'buildings/dtos/building_view.dart';
+export 'buildings/dtos/strict_mode_step.dart';
 export 'buildings/entity/building.dart';
 export 'menu/dtos/article_composition_create.dart';
 export 'menu/dtos/article_composition_error_code.dart';
@@ -459,6 +461,30 @@ class Protocol extends _is.DatabaseSerializationManager {
           columnType: _isp.ColumnType.text,
           isNullable: false,
           dartType: 'String',
+        ),
+        _isp.ColumnDefinition(
+          name: 'tableMultiOrder',
+          columnType: _isp.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+        ),
+        _isp.ColumnDefinition(
+          name: 'allowAppendingItemsToOrder',
+          columnType: _isp.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+        ),
+        _isp.ColumnDefinition(
+          name: 'strictMode',
+          columnType: _isp.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+        ),
+        _isp.ColumnDefinition(
+          name: 'strictModeSteps',
+          columnType: _isp.ColumnType.json,
+          isNullable: false,
+          dartType: 'List<protocol:StrictModeStep>',
         ),
         _isp.ColumnDefinition(
           name: 'createdAt',
@@ -1768,6 +1794,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == _i9ph7g7s.BuildingView) {
       return _i9ph7g7s.BuildingView.fromJson(data) as T;
     }
+    if (t == _i70klpnb.StrictModeStep) {
+      return _i70klpnb.StrictModeStep.fromJson(data) as T;
+    }
     if (t == _iit041ql.Building) {
       return _iit041ql.Building.fromJson(data) as T;
     }
@@ -2013,6 +2042,10 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == _is.getType<_i9ph7g7s.BuildingView?>()) {
       return (data != null ? _i9ph7g7s.BuildingView.fromJson(data) : null) as T;
     }
+    if (t == _is.getType<_i70klpnb.StrictModeStep?>()) {
+      return (data != null ? _i70klpnb.StrictModeStep.fromJson(data) : null)
+          as T;
+    }
     if (t == _is.getType<_iit041ql.Building?>()) {
       return (data != null ? _iit041ql.Building.fromJson(data) : null) as T;
     }
@@ -2241,6 +2274,12 @@ class Protocol extends _is.DatabaseSerializationManager {
               : null)
           as T;
     }
+    if (t == List<_i70klpnb.StrictModeStep>) {
+      return (data as List)
+              .map((e) => deserialize<_i70klpnb.StrictModeStep>(e))
+              .toList()
+          as T;
+    }
     if (t == List<_is.UuidValue>) {
       return (data as List).map((e) => deserialize<_is.UuidValue>(e)).toList()
           as T;
@@ -2450,6 +2489,7 @@ class Protocol extends _is.DatabaseSerializationManager {
       _ihbyyehn.BuildingException => 'BuildingException',
       _irbupqdx.BuildingUpdate => 'BuildingUpdate',
       _i9ph7g7s.BuildingView => 'BuildingView',
+      _i70klpnb.StrictModeStep => 'StrictModeStep',
       _iit041ql.Building => 'Building',
       _i6nq3709.ArticleCompositionCreate => 'ArticleCompositionCreate',
       _ibkg9l4z.ArticleCompositionErrorCode => 'ArticleCompositionErrorCode',
@@ -2563,6 +2603,8 @@ class Protocol extends _is.DatabaseSerializationManager {
         return 'BuildingUpdate';
       case _i9ph7g7s.BuildingView():
         return 'BuildingView';
+      case _i70klpnb.StrictModeStep():
+        return 'StrictModeStep';
       case _iit041ql.Building():
         return 'Building';
       case _i6nq3709.ArticleCompositionCreate():
@@ -2759,6 +2801,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     if (dataClassName == 'BuildingView') {
       return deserialize<_i9ph7g7s.BuildingView>(data['data']);
+    }
+    if (dataClassName == 'StrictModeStep') {
+      return deserialize<_i70klpnb.StrictModeStep>(data['data']);
     }
     if (dataClassName == 'Building') {
       return deserialize<_iit041ql.Building>(data['data']);

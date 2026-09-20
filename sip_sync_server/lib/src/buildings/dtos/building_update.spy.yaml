@@ -9,3 +9,7 @@ fields:
   openingMinutes: int
   closingMinutes: int
   currencyCode: String
+  tableMultiOrder: bool
+  allowAppendingItemsToOrder: bool
+  strictMode: bool
+  strictModeSteps: List<StrictModeStep>

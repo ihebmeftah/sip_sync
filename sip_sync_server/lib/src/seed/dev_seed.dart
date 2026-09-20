@@ -1,6 +1,7 @@
 import 'package:serverpod/serverpod.dart';
 
 import '../auth/auth_support.dart';
+import '../buildings/strict_mode.dart';
 import '../generated/protocol.dart';
 
 /// Idempotent demo data for local development (two owners + menu + stock).
@@ -207,6 +208,10 @@ class DevSeed {
         openingMinutes: 480,
         closingMinutes: 1380,
         currencyCode: currencyCode,
+        tableMultiOrder: false,
+        allowAppendingItemsToOrder: true,
+        strictMode: false,
+        strictModeSteps: defaultStrictModeSteps(),
       ),
     );
 

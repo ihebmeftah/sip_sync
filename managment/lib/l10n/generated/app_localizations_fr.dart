@@ -353,6 +353,40 @@ class AppLocalizationsFr extends AppLocalizations {
   String get currencyCode => 'Devise';
 
   @override
+  String get buildingTableMultiOrder => 'Plusieurs commandes par table';
+
+  @override
+  String get buildingTableMultiOrderHint =>
+      'Activé : le personnel peut ouvrir une autre commande sur une table déjà occupée. Désactivé : il faut d’abord encaisser ou annuler la commande en cours.';
+
+  @override
+  String get buildingAllowAppendingItems =>
+      'Autoriser l’ajout d’articles aux commandes ouvertes';
+
+  @override
+  String get buildingAllowAppendingItemsHint =>
+      'Activé : le personnel peut ajouter des articles à une commande ouverte. Désactivé : le bouton Ajouter des articles est grisé.';
+
+  @override
+  String get buildingStrictMode => 'Workflow d’articles strict';
+
+  @override
+  String get buildingStrictModeHint =>
+      'Activé : chaque ligne suit les étapes activées dans l’ordre. Désactivé : le personnel peut passer directement à payé.';
+
+  @override
+  String get buildingStrictModeStepsTitle => 'Étapes du workflow';
+
+  @override
+  String get buildingStrictModeStepsHint =>
+      'Activez ou désactivez les étapes seulement. L’ordre est fixe.';
+
+  @override
+  String buildingStrictModeStepRank(int rank) {
+    return 'Étape $rank';
+  }
+
+  @override
   String get buildingStaff => 'Équipe de ce lieu';
 
   @override
@@ -898,7 +932,14 @@ class AppLocalizationsFr extends AppLocalizations {
       'Cette table est inactive. Choisissez une table active.';
 
   @override
+  String get orderTableOccupied => 'Cette table a déjà une commande ouverte.';
+
+  @override
   String get orderAppendArticles => 'Ajouter des articles';
+
+  @override
+  String get orderAppendArticlesDisabled =>
+      'Ce lieu n’autorise pas l’ajout d’articles aux commandes ouvertes.';
 
   @override
   String get orderNoActiveTables =>
@@ -1060,10 +1101,21 @@ class AppLocalizationsFr extends AppLocalizations {
   String get orderItemStatusCancelled => 'Annulée';
 
   @override
+  String get orderItemPayNow => 'Encaisser';
+
+  @override
   String get errorOrderInvalidStatus =>
       'Ce changement de statut n’est pas autorisé.';
 
   @override
   String get errorOrderInsufficientStock =>
       'Stock d’ingrédients insuffisant pour cette commande.';
+
+  @override
+  String get errorOrderTableOccupied =>
+      'Cette table a déjà une commande ouverte.';
+
+  @override
+  String get errorOrderAppendNotAllowed =>
+      'L’ajout d’articles aux commandes ouvertes n’est pas autorisé pour ce lieu.';
 }

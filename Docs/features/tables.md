@@ -35,6 +35,8 @@ Persisted (`venue_table`):
 
 **Not persisted:** `status` (`available` \| `occupied` \| `reserved`). Returned on `VenueTableView` only. **Occupied** when the table has at least one order with status `progress`; otherwise **available** (reservations later).
 
+New-order floor pick: if the building’s `tableMultiOrder` is **false**, tapping an occupied table is blocked with a snackbar (server also rejects create).
+
 ## Realtime
 
 None yet (status refreshes when the tables list is loaded / after order create, pay, or cancel).

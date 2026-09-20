@@ -2,6 +2,7 @@ import 'package:serverpod/serverpod.dart';
 
 import '../auth/auth_guard.dart';
 import '../generated/protocol.dart';
+import 'strict_mode.dart';
 
 /// Owner venues; employees can read their assigned building.
 class BuildingService {
@@ -58,6 +59,10 @@ class BuildingService {
         openingMinutes: request.openingMinutes,
         closingMinutes: request.closingMinutes,
         currencyCode: request.currencyCode.trim().toUpperCase(),
+        tableMultiOrder: request.tableMultiOrder,
+        allowAppendingItemsToOrder: request.allowAppendingItemsToOrder,
+        strictMode: request.strictMode,
+        strictModeSteps: normalizeStrictModeSteps(request.strictModeSteps),
       ),
     );
     return _view(session, row);
@@ -87,6 +92,10 @@ class BuildingService {
         openingMinutes: request.openingMinutes,
         closingMinutes: request.closingMinutes,
         currencyCode: request.currencyCode.trim().toUpperCase(),
+        tableMultiOrder: request.tableMultiOrder,
+        allowAppendingItemsToOrder: request.allowAppendingItemsToOrder,
+        strictMode: request.strictMode,
+        strictModeSteps: normalizeStrictModeSteps(request.strictModeSteps),
       ),
     );
     return _view(session, updated);
@@ -168,6 +177,10 @@ class BuildingService {
       openingMinutes: row.openingMinutes,
       closingMinutes: row.closingMinutes,
       currencyCode: row.currencyCode,
+      tableMultiOrder: row.tableMultiOrder,
+      allowAppendingItemsToOrder: row.allowAppendingItemsToOrder,
+      strictMode: row.strictMode,
+      strictModeSteps: normalizeStrictModeSteps(row.strictModeSteps),
       employeeIds: staff.map((s) => s.id!).toList(),
     );
   }

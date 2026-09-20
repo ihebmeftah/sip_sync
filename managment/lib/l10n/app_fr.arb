@@ -107,6 +107,18 @@
   "openingTime": "Ouverture",
   "closingTime": "Fermeture",
   "currencyCode": "Devise",
+  "buildingTableMultiOrder": "Plusieurs commandes par table",
+  "buildingTableMultiOrderHint": "Activé : le personnel peut ouvrir une autre commande sur une table déjà occupée. Désactivé : il faut d’abord encaisser ou annuler la commande en cours.",
+  "buildingAllowAppendingItems": "Autoriser l’ajout d’articles aux commandes ouvertes",
+  "buildingAllowAppendingItemsHint": "Activé : le personnel peut ajouter des articles à une commande ouverte. Désactivé : le bouton Ajouter des articles est grisé.",
+  "buildingStrictMode": "Workflow d’articles strict",
+  "buildingStrictModeHint": "Activé : chaque ligne suit les étapes activées dans l’ordre. Désactivé : le personnel peut passer directement à payé.",
+  "buildingStrictModeStepsTitle": "Étapes du workflow",
+  "buildingStrictModeStepsHint": "Activez ou désactivez les étapes seulement. L’ordre est fixe.",
+  "buildingStrictModeStepRank": "Étape {rank}",
+  "@buildingStrictModeStepRank": {
+    "placeholders": { "rank": { "type": "int" } }
+  },
   "buildingStaff": "Équipe de ce lieu",
   "buildingStaffEmpty": "Pas encore d’employés. Ajoutez-les après avoir enregistré le lieu.",
   "buildingsOwnerHint": "Créez un lieu, puis ouvrez-le pour gérer la salle. Le reste reste verrouillé jusqu’au choix.",
@@ -315,7 +327,9 @@
   "orderSelectTablePrompt": "Sélectionnez une table pour cette commande.",
   "orderSelectTableFloorHint": "Touchez une table sur le plan de salle pour continuer avec les articles.",
   "orderTableInactive": "Cette table est inactive. Choisissez une table active.",
+  "orderTableOccupied": "Cette table a déjà une commande ouverte.",
   "orderAppendArticles": "Ajouter des articles",
+  "orderAppendArticlesDisabled": "Ce lieu n’autorise pas l’ajout d’articles aux commandes ouvertes.",
   "orderNoActiveTables": "Aucune table active. Créez d’abord des tables.",
   "orderSearchArticles": "Rechercher des articles par nom",
   "orderAllCategories": "Tous",
@@ -379,6 +393,9 @@
   "orderItemStatusServed": "Servie",
   "orderItemStatusPayed": "Payée",
   "orderItemStatusCancelled": "Annulée",
+  "orderItemPayNow": "Encaisser",
   "errorOrderInvalidStatus": "Ce changement de statut n’est pas autorisé.",
-  "errorOrderInsufficientStock": "Stock d’ingrédients insuffisant pour cette commande."
+  "errorOrderInsufficientStock": "Stock d’ingrédients insuffisant pour cette commande.",
+  "errorOrderTableOccupied": "Cette table a déjà une commande ouverte.",
+  "errorOrderAppendNotAllowed": "L’ajout d’articles aux commandes ouvertes n’est pas autorisé pour ce lieu."
 }
