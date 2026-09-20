@@ -28,6 +28,9 @@ class OpsShell extends ConsumerStatefulWidget {
 }
 
 class _OpsShellState extends ConsumerState<OpsShell> {
+  /// Cancels an in-flight hydrate when the route building changes.
+  Object? _hydrateToken;
+
   @override
   void initState() {
     super.initState();
@@ -42,6 +45,10 @@ class _OpsShellState extends ConsumerState<OpsShell> {
     }
   }
 
+  /// Keeps [BuildingSession] aligned with `/b/:buildingId/...`.
+  ///
+  /// On browser refresh the session is empty — only the route id survives —
+  /// so we load full details via [BuildingRepository.get].
   void _syncBuilding() {
     final raw = widget.buildingId;
     if (raw == null || raw.isEmpty) {
@@ -52,6 +59,26 @@ class _OpsShellState extends ConsumerState<OpsShell> {
     if (session.selectedId != id) {
       session.select(id);
     }
+    if (session.selected != null) {
+      return;
+    }
+    final token = Object();
+    _hydrateToken = token;
+    Future<void>(() async {
+      try {
+        final building = await ref.read(buildingRepositoryProvider).get(id);
+        if (!mounted || !identical(_hydrateToken, token)) {
+          return;
+        }
+        if (widget.buildingId != raw) {
+          return;
+        }
+        session.upsert(building);
+        session.select(building.id);
+      } catch (_) {
+        // Leave selection as id-only; screens degrade until user re-picks.
+      }
+    });
   }
 
   @override
