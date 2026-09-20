@@ -486,6 +486,10 @@ class AppLocalizationsFr extends AppLocalizations {
       'Plan de salle selon les places. Le statut viendra des commandes et réservations.';
 
   @override
+  String get tablesEmployeeOrderHint =>
+      'Touchez une table pour démarrer une commande.';
+
+  @override
   String get tablesEmptyOwner =>
       'Ajoutez votre première table pour dessiner le plan.';
 
@@ -913,6 +917,18 @@ class AppLocalizationsFr extends AppLocalizations {
   String get newOrder => 'Nouvelle commande';
 
   @override
+  String get cancelOrderDraft => 'Annuler la sélection';
+
+  @override
+  String get orderResetArticles => 'Réinitialiser les articles';
+
+  @override
+  String get orderChangeTable => 'Changer de table';
+
+  @override
+  String get orderCancelCreate => 'Annuler la commande';
+
+  @override
   String get createOrder => 'Créer la commande';
 
   @override
@@ -1014,6 +1030,9 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get orderItemInfo => 'Détails de l’article';
+
+  @override
+  String get orderInfo => 'Dates de la commande';
 
   @override
   String get orderFieldCreatedAt => 'Créé';

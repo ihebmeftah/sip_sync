@@ -481,6 +481,9 @@ class AppLocalizationsEn extends AppLocalizations {
       'Floor plan by seats. Status comes from orders and reservations later.';
 
   @override
+  String get tablesEmployeeOrderHint => 'Tap a table to start a new order.';
+
+  @override
   String get tablesEmptyOwner => 'Add your first table to sketch the floor.';
 
   @override
@@ -902,6 +905,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get newOrder => 'New order';
 
   @override
+  String get cancelOrderDraft => 'Cancel selection';
+
+  @override
+  String get orderResetArticles => 'Reset articles';
+
+  @override
+  String get orderChangeTable => 'Change table';
+
+  @override
+  String get orderCancelCreate => 'Cancel order';
+
+  @override
   String get createOrder => 'Create order';
 
   @override
@@ -1000,6 +1015,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get orderItemInfo => 'Item details';
+
+  @override
+  String get orderInfo => 'Order dates';
 
   @override
   String get orderFieldCreatedAt => 'Created';

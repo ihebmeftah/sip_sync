@@ -79,6 +79,27 @@ class _OrderCreateArticlesViewState
     }
   }
 
+  void _resetArticles() {
+    ref
+        .read(orderDraftViewModelProvider(widget.buildingId).notifier)
+        .clearArticles();
+  }
+
+  void _changeTable() {
+    setState(() => _confirming = true);
+    ref
+        .read(orderDraftViewModelProvider(widget.buildingId).notifier)
+        .changeTable();
+    TablesRoute(buildingId: widget.buildingId).go(context);
+  }
+
+  /// Abandon create and open the floor map in normal view (not pick mode).
+  void _cancelCreate() {
+    setState(() => _confirming = true);
+    ref.read(orderDraftViewModelProvider(widget.buildingId).notifier).clear();
+    TablesRoute(buildingId: widget.buildingId).go(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -114,6 +135,10 @@ class _OrderCreateArticlesViewState
         TablesRoute(buildingId: widget.buildingId).go(context);
       });
     }
+
+    final draftVm = ref.read(
+      orderDraftViewModelProvider(widget.buildingId).notifier,
+    );
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -155,6 +180,40 @@ class _OrderCreateArticlesViewState
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
+                    Wrap(
+                      spacing: AppSpacing.sm,
+                      runSpacing: AppSpacing.sm,
+                      children: [
+                        OutlinedButton.icon(
+                          onPressed: _confirming || draft.totalArticleCount == 0
+                              ? null
+                              : _resetArticles,
+                          icon: const Icon(Icons.restart_alt, size: 18),
+                          label: Text(l10n.orderResetArticles),
+                        ),
+                        if (!draft.isAppending)
+                          OutlinedButton.icon(
+                            onPressed: _confirming ? null : _changeTable,
+                            icon: const Icon(
+                              Icons.table_restaurant_outlined,
+                              size: 18,
+                            ),
+                            label: Text(l10n.orderChangeTable),
+                          ),
+                        OutlinedButton.icon(
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: scheme.error,
+                            side: BorderSide(
+                              color: scheme.error.withValues(alpha: 0.5),
+                            ),
+                          ),
+                          onPressed: _confirming ? null : _cancelCreate,
+                          icon: const Icon(Icons.close, size: 18),
+                          label: Text(l10n.orderCancelCreate),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: AppSpacing.md),
                     TextField(
                       controller: _search,
                       decoration: InputDecoration(
@@ -223,11 +282,6 @@ class _OrderCreateArticlesViewState
                       itemBuilder: (context, index) {
                         final article = filtered[index];
                         final count = draft.unitCounts[article.id.uuid] ?? 0;
-                        final draftVm = ref.read(
-                          orderDraftViewModelProvider(
-                            widget.buildingId,
-                          ).notifier,
-                        );
                         return AppSurfaceCard(
                           child: Row(
                             children: [

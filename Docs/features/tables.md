@@ -19,6 +19,7 @@ Status: shipped
 3. Filter chips: All / Available / Occupied / Reserved / Inactive.
 4. Owner taps **Add table** → dialog asks **how many** tables, max seats, and active. Server assigns sequential numbers continuing after the highest existing number.
 5. Owner taps a table tile to edit **seats** and **active** only (number is locked).
+6. **Employee** taps a table to start a new order (no FAB). Inactive / occupied (when `tableMultiOrder` is off) tables are blocked with a snackbar.
 
 ## Data
 

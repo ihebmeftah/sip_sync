@@ -473,6 +473,9 @@ class AppLocalizationsAr extends AppLocalizations {
       'مخطط القاعة حسب المقاعد. الحالة تأتي لاحقاً من الطلبات والحجوزات.';
 
   @override
+  String get tablesEmployeeOrderHint => 'اضغط على طاولة لبدء طلب جديد.';
+
+  @override
   String get tablesEmptyOwner => 'أضف أول طاولة لرسم المخطط.';
 
   @override
@@ -883,6 +886,18 @@ class AppLocalizationsAr extends AppLocalizations {
   String get newOrder => 'طلب جديد';
 
   @override
+  String get cancelOrderDraft => 'إلغاء التحديد';
+
+  @override
+  String get orderResetArticles => 'إعادة ضبط الأصناف';
+
+  @override
+  String get orderChangeTable => 'تغيير الطاولة';
+
+  @override
+  String get orderCancelCreate => 'إلغاء الطلب';
+
+  @override
   String get createOrder => 'إنشاء الطلب';
 
   @override
@@ -978,6 +993,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get orderItemInfo => 'تفاصيل الصنف';
+
+  @override
+  String get orderInfo => 'تواريخ الطلب';
 
   @override
   String get orderFieldCreatedAt => 'أُنشئ';

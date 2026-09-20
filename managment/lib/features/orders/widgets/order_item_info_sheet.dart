@@ -131,6 +131,87 @@ Future<void> showOrderItemInfoDialog(
   );
 }
 
+/// Bottom sheet with order-level timestamps (created / updated / cancelled…).
+Future<void> showOrderInfoDialog(
+  BuildContext context, {
+  required OrderView order,
+  required String currency,
+}) {
+  final l10n = AppLocalizations.of(context)!;
+  return showModalBottomSheet<void>(
+    context: context,
+    showDragHandle: true,
+    isScrollControlled: true,
+    builder: (context) {
+      final text = Theme.of(context).textTheme;
+      return SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(
+            AppSpacing.xl,
+            AppSpacing.sm,
+            AppSpacing.xl,
+            AppSpacing.xl,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      order.tableNumber == null
+                          ? l10n.orderNoTable
+                          : l10n.orderTableNumber(order.tableNumber!),
+                      style: text.titleLarge,
+                    ),
+                  ),
+                  OrderStatusChip(status: order.status),
+                ],
+              ),
+              const SizedBox(height: AppSpacing.sm),
+              Text(
+                formatOrderMoney(order.totalAmount, currency),
+                style: text.titleMedium?.copyWith(
+                  color: Theme.of(context).colorScheme.primary,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.lg),
+              _InfoRow(
+                label: l10n.orderFieldCreatedAt,
+                value: formatOrderDateTime(context, order.createdAt),
+              ),
+              _InfoRow(
+                label: l10n.orderFieldUpdatedAt,
+                value: formatOrderDateTime(context, order.updatedAt),
+              ),
+              if (order.cancelledAt != null)
+                _InfoRow(
+                  label: l10n.orderFieldCancelledAt,
+                  value: formatOrderDateTime(context, order.cancelledAt!),
+                ),
+              if (order.lastPaidAt != null)
+                _InfoRow(
+                  label: l10n.orderFieldPaidAt,
+                  value: formatOrderDateTime(context, order.lastPaidAt!),
+                ),
+              const SizedBox(height: AppSpacing.lg),
+              Align(
+                alignment: Alignment.centerRight,
+                child: TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text(l10n.close),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
+}
+
 class _InfoRow extends StatelessWidget {
   const _InfoRow({required this.label, required this.value});
 

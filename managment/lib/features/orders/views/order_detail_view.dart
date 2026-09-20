@@ -276,7 +276,6 @@ class _OrderHeaderCard extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final text = Theme.of(context).textTheme;
     final scheme = Theme.of(context).colorScheme;
-    final muted = text.bodySmall?.copyWith(color: scheme.onSurfaceVariant);
 
     return AppSurfaceCard(
       child: Column(
@@ -319,15 +318,30 @@ class _OrderHeaderCard extends StatelessWidget {
                 ),
               ),
               const Spacer(),
+              Text(
+                formatOrderMoney(order.totalAmount, currency),
+                style: text.titleMedium?.copyWith(
+                  color: scheme.primary,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const SizedBox(width: AppSpacing.sm),
               OrderStatusChip(status: order.status),
+              IconButton(
+                tooltip: l10n.orderInfo,
+                visualDensity: VisualDensity.compact,
+                constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                padding: EdgeInsets.zero,
+                onPressed: () => showOrderInfoDialog(
+                  context,
+                  order: order,
+                  currency: currency,
+                ),
+                icon: const Icon(Icons.info_outline, size: 20),
+              ),
             ],
           ),
-          const SizedBox(height: AppSpacing.md),
-          Text(
-            formatOrderMoney(order.totalAmount, currency),
-            style: text.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
-          ),
-          const SizedBox(height: AppSpacing.xs),
+          const SizedBox(height: AppSpacing.sm),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -352,46 +366,6 @@ class _OrderHeaderCard extends StatelessWidget {
             Text(
               l10n.orderCancelledBy(order.cancelledByType!.name),
               style: text.bodySmall,
-            ),
-          ],
-          const SizedBox(height: AppSpacing.sm),
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  l10n.orderFieldCreatedAtLabel(
-                    formatOrderDateTime(context, order.createdAt),
-                  ),
-                  style: muted,
-                ),
-              ),
-              Expanded(
-                child: Text(
-                  l10n.orderFieldUpdatedAtLabel(
-                    formatOrderDateTime(context, order.updatedAt),
-                  ),
-                  style: muted,
-                  textAlign: TextAlign.end,
-                ),
-              ),
-            ],
-          ),
-          if (order.cancelledAt != null) ...[
-            const SizedBox(height: 4),
-            Text(
-              l10n.orderFieldCancelledAtLabel(
-                formatOrderDateTime(context, order.cancelledAt!),
-              ),
-              style: muted,
-            ),
-          ],
-          if (order.lastPaidAt != null) ...[
-            const SizedBox(height: 4),
-            Text(
-              l10n.orderFieldPaidAtLabel(
-                formatOrderDateTime(context, order.lastPaidAt!),
-              ),
-              style: muted,
             ),
           ],
           if (onAddArticles != null || onCancelOrder != null) ...[
@@ -503,22 +477,14 @@ class _OrderItemCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(item.articleName, style: text.titleSmall),
-                      const SizedBox(height: 2),
-                      Text(
-                        formatOrderMoney(item.unitPrice, currency),
-                        style: text.labelLarge?.copyWith(
-                          color: scheme.primary,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ],
+                Expanded(child: Text(item.articleName, style: text.titleSmall)),
+                Text(
+                  formatOrderMoney(item.unitPrice, currency),
+                  style: text.labelLarge?.copyWith(
+                    color: scheme.primary,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
                 IconButton(

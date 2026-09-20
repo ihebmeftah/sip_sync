@@ -17,8 +17,8 @@ import '../widgets/venue_table_dialog.dart';
 
 /// Floor map for a building: seat-based previews, status filters, add dialog.
 ///
-/// When [OrderDraftViewModel] is in [OrderDraftState.pickingTable] mode, taps
-/// select the table and continue to article selection instead of editing.
+/// Owner FAB pick mode and employee taps both select a table and continue to
+/// article selection. Owners edit tables when not picking.
 class TablesListView extends ConsumerStatefulWidget {
   const TablesListView({super.key, required this.buildingId});
 
@@ -43,36 +43,53 @@ class _TablesListViewState extends ConsumerState<TablesListView> {
     );
   }
 
+  bool _canStartOrderOn(VenueTableView table) {
+    final l10n = AppLocalizations.of(context)!;
+    if (!table.isActive) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.orderTableInactive)));
+      return false;
+    }
+    final multiOrder =
+        ref.read(buildingSelectionProvider)?.tableMultiOrder ?? false;
+    if (!multiOrder && table.status == TableFloorStatus.occupied) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.orderTableOccupied)));
+      return false;
+    }
+    return true;
+  }
+
+  void _startOrderOnTable(VenueTableView table, {required bool fromPick}) {
+    if (!_canStartOrderOn(table)) {
+      return;
+    }
+    final draft = ref.read(
+      orderDraftViewModelProvider(widget.buildingId).notifier,
+    );
+    if (fromPick) {
+      draft.selectTable(id: table.id, number: table.number);
+    } else {
+      draft.startOnTable(id: table.id, number: table.number);
+    }
+    OrderCreateArticlesRoute(buildingId: widget.buildingId).go(context);
+  }
+
   void _onTableTap(VenueTableView table, {required bool picking}) {
     if (picking) {
-      if (!table.isActive) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context)!.orderTableInactive),
-          ),
-        );
-        return;
-      }
-      final multiOrder =
-          ref.read(buildingSelectionProvider)?.tableMultiOrder ?? false;
-      if (!multiOrder && table.status == TableFloorStatus.occupied) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context)!.orderTableOccupied),
-          ),
-        );
-        return;
-      }
-      ref
-          .read(orderDraftViewModelProvider(widget.buildingId).notifier)
-          .selectTable(id: table.id, number: table.number);
-      OrderCreateArticlesRoute(buildingId: widget.buildingId).go(context);
+      _startOrderOnTable(table, fromPick: true);
       return;
     }
 
-    final isOwner = ref.read(appSessionStoreProvider).isOwner;
-    if (isOwner) {
+    final store = ref.read(appSessionStoreProvider);
+    if (store.isOwner) {
       _openDialog(existing: table);
+      return;
+    }
+    if (store.isEmployee) {
+      _startOrderOnTable(table, fromPick: false);
     }
   }
 
@@ -81,7 +98,9 @@ class _TablesListViewState extends ConsumerState<TablesListView> {
     final l10n = AppLocalizations.of(context)!;
     final text = Theme.of(context).textTheme;
     final scheme = Theme.of(context).colorScheme;
-    final isOwner = ref.watch(appSessionStoreProvider).isOwner;
+    final store = ref.watch(appSessionStoreProvider);
+    final isOwner = store.isOwner;
+    final isEmployee = store.isEmployee;
     final draft = ref.watch(orderDraftViewModelProvider(widget.buildingId));
     final picking = draft.pickingTable;
     final async = ref.watch(tablesViewModelProvider(widget.buildingId));
@@ -90,6 +109,11 @@ class _TablesListViewState extends ConsumerState<TablesListView> {
         ? 1
         : tables.map((t) => t.number).reduce(math.max) + 1;
     final visible = filterTables(tables, _filter);
+    final hint = picking
+        ? l10n.orderSelectTablePrompt
+        : isEmployee
+        ? l10n.tablesEmployeeOrderHint
+        : l10n.tablesHint;
 
     return ColoredBox(
       color: Theme.of(context).scaffoldBackgroundColor,
@@ -115,12 +139,7 @@ class _TablesListViewState extends ConsumerState<TablesListView> {
                         children: [
                           Text(l10n.navTables, style: text.headlineSmall),
                           const SizedBox(height: AppSpacing.xs),
-                          Text(
-                            picking
-                                ? l10n.orderSelectTablePrompt
-                                : l10n.tablesHint,
-                            style: text.bodyMedium,
-                          ),
+                          Text(hint, style: text.bodyMedium),
                         ],
                       ),
                     ),
@@ -235,8 +254,9 @@ class _TablesListViewState extends ConsumerState<TablesListView> {
                               width: tileWidth,
                               child: TableFloorPreview(
                                 table: table,
-                                onTap: picking || isOwner
-                                    ? () => _onTableTap(table, picking: picking)
+                                onTap: picking || isOwner || isEmployee
+                                    ? () =>
+                                          _onTableTap(table, picking: picking)
                                     : null,
                               ),
                             ),

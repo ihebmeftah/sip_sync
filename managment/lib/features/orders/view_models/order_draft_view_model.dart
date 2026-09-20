@@ -26,6 +26,13 @@ class OrderDraftState {
 
   bool get isAppending => appendOrderId != null;
 
+  /// True while creating or appending (table pick, cart, or open append).
+  bool get hasDraft =>
+      pickingTable ||
+      venueTableId != null ||
+      appendOrderId != null ||
+      unitCounts.isNotEmpty;
+
   int get totalArticleCount => unitCounts.values.fold(0, (sum, q) => sum + q);
 
   OrderDraftState copyWith({
@@ -70,6 +77,11 @@ class OrderDraftViewModel extends _$OrderDraftViewModel {
     );
   }
 
+  /// Start a new order on a known table (employee tap / skip pick mode).
+  void startOnTable({required UuidValue id, required int number}) {
+    state = OrderDraftState(venueTableId: id, tableNumber: number);
+  }
+
   void selectTable({required UuidValue id, required int number}) {
     state = state.copyWith(
       pickingTable: false,
@@ -85,6 +97,20 @@ class OrderDraftViewModel extends _$OrderDraftViewModel {
 
   void clearTable() {
     state = state.copyWith(clearTable: true, pickingTable: true);
+  }
+
+  /// Clears the article cart without leaving the create flow.
+  void clearArticles() {
+    state = state.copyWith(unitCounts: const {});
+  }
+
+  /// Drop the chosen table and return to floor-map pick (keeps articles).
+  void changeTable() {
+    state = state.copyWith(
+      clearTable: true,
+      pickingTable: true,
+      clearAppend: true,
+    );
   }
 
   void setUnitCount(UuidValue articleId, int count) {

@@ -14,7 +14,8 @@ import '../routing/app_routes.dart';
 import '../theme/app_tokens.dart';
 import 'app_controls.dart';
 
-/// Persistent operations chrome: slate rail on wide screens, drawer on compact.
+/// Persistent operations chrome: slate rail on wide screens; app bar, drawer,
+/// bottom nav (dashboard / tables / orders), and order FAB on compact.
 ///
 /// Requires a [buildingId] path segment; the buildings gate has no sidebar.
 class OpsShell extends ConsumerStatefulWidget {
@@ -30,6 +31,9 @@ class OpsShell extends ConsumerStatefulWidget {
 class _OpsShellState extends ConsumerState<OpsShell> {
   /// Cancels an in-flight hydrate when the route building changes.
   Object? _hydrateToken;
+
+  /// Last primary tab while visiting drawer-only screens (employees, products…).
+  var _lastBottomIndex = 0;
 
   @override
   void initState() {
@@ -81,6 +85,75 @@ class _OpsShellState extends ConsumerState<OpsShell> {
     });
   }
 
+  int? _bottomIndexFor(String location) {
+    if (location.contains('/orders')) {
+      return 2;
+    }
+    if (location.endsWith('/tables')) {
+      return 1;
+    }
+    if (location.endsWith('/dashboard')) {
+      return 0;
+    }
+    return null;
+  }
+
+  void _onBottomNavSelected(String buildingId, int index) {
+    setState(() => _lastBottomIndex = index);
+    switch (index) {
+      case 0:
+        DashboardRoute(buildingId: buildingId).go(context);
+      case 1:
+        TablesRoute(buildingId: buildingId).go(context);
+      case 2:
+        OrdersRoute(buildingId: buildingId).go(context);
+      default:
+        break;
+    }
+  }
+
+  void _onFabPressed(String buildingId, String location, bool hasDraft) {
+    final draft = ref.read(orderDraftViewModelProvider(buildingId).notifier);
+    if (hasDraft) {
+      draft.clear();
+      if (location.contains('/orders/new')) {
+        TablesRoute(buildingId: buildingId).go(context);
+      }
+      return;
+    }
+    draft.beginCreate();
+    TablesRoute(buildingId: buildingId).go(context);
+  }
+
+  Widget? _buildFab({
+    required String buildingId,
+    required String location,
+    required AppLocalizations l10n,
+    required ColorScheme scheme,
+    required OrderDraftState draft,
+    required bool isEmployee,
+  }) {
+    // Employees start orders by tapping a table on the floor map.
+    if (buildingId.isEmpty || isEmployee || location.contains('/orders/new')) {
+      return null;
+    }
+    // Toggle: start table pick, or cancel pick while still on the floor map.
+    if (draft.pickingTable) {
+      return FloatingActionButton.extended(
+        backgroundColor: scheme.error,
+        foregroundColor: scheme.onError,
+        onPressed: () => _onFabPressed(buildingId, location, true),
+        icon: const Icon(Icons.close),
+        label: Text(l10n.cancelOrderDraft),
+      );
+    }
+    return FloatingActionButton.extended(
+      onPressed: () => _onFabPressed(buildingId, location, false),
+      icon: const Icon(Icons.add),
+      label: Text(l10n.newOrder),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
@@ -88,21 +161,20 @@ class _OpsShellState extends ConsumerState<OpsShell> {
         final wide = constraints.maxWidth >= AppBreakpoints.expanded;
         final buildingId = widget.buildingId ?? '';
         final location = GoRouterState.of(context).uri.path;
-        final hideNewOrderFab =
-            buildingId.isEmpty || location.contains('/orders/new');
-
-        final fab = hideNewOrderFab
-            ? null
-            : FloatingActionButton.extended(
-                onPressed: () {
-                  ref
-                      .read(orderDraftViewModelProvider(buildingId).notifier)
-                      .beginCreate();
-                  TablesRoute(buildingId: buildingId).go(context);
-                },
-                icon: const Icon(Icons.add),
-                label: Text(AppLocalizations.of(context)!.newOrder),
-              );
+        final l10n = AppLocalizations.of(context)!;
+        final scheme = Theme.of(context).colorScheme;
+        final isEmployee = ref.watch(appSessionStoreProvider).isEmployee;
+        final draft = buildingId.isEmpty
+            ? const OrderDraftState()
+            : ref.watch(orderDraftViewModelProvider(buildingId));
+        final fab = _buildFab(
+          buildingId: buildingId,
+          location: location,
+          l10n: l10n,
+          scheme: scheme,
+          draft: draft,
+          isEmployee: isEmployee,
+        );
 
         if (wide) {
           return Scaffold(
@@ -115,15 +187,41 @@ class _OpsShellState extends ConsumerState<OpsShell> {
             ),
           );
         }
+
+        final routeIndex = _bottomIndexFor(location);
+        final bottomIndex = routeIndex ?? _lastBottomIndex;
+
         return Scaffold(
           appBar: AppBar(
-            title: Text(AppLocalizations.of(context)!.appTitle),
+            title: Text(l10n.appTitle),
             actions: const [_ThemeToggle(), LocaleMenuButton()],
           ),
           drawer: Drawer(
             child: OpsSideBar(buildingId: buildingId, inDrawer: true),
           ),
           floatingActionButton: fab,
+          bottomNavigationBar: NavigationBar(
+            selectedIndex: bottomIndex,
+            onDestinationSelected: (index) =>
+                _onBottomNavSelected(buildingId, index),
+            destinations: [
+              NavigationDestination(
+                icon: const Icon(Icons.grid_view_outlined),
+                selectedIcon: const Icon(Icons.grid_view_rounded),
+                label: l10n.navDashboard,
+              ),
+              NavigationDestination(
+                icon: const Icon(Icons.table_restaurant_outlined),
+                selectedIcon: const Icon(Icons.table_restaurant),
+                label: l10n.navTables,
+              ),
+              NavigationDestination(
+                icon: const Icon(Icons.receipt_long_outlined),
+                selectedIcon: const Icon(Icons.receipt_long),
+                label: l10n.navOrders,
+              ),
+            ],
+          ),
           body: widget.child,
         );
       },

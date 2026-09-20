@@ -964,6 +964,12 @@ abstract class AppLocalizations {
   /// **'Floor plan by seats. Status comes from orders and reservations later.'**
   String get tablesHint;
 
+  /// No description provided for @tablesEmployeeOrderHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap a table to start a new order.'**
+  String get tablesEmployeeOrderHint;
+
   /// No description provided for @tablesEmptyOwner.
   ///
   /// In en, this message translates to:
@@ -1720,6 +1726,30 @@ abstract class AppLocalizations {
   /// **'New order'**
   String get newOrder;
 
+  /// No description provided for @cancelOrderDraft.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel selection'**
+  String get cancelOrderDraft;
+
+  /// No description provided for @orderResetArticles.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset articles'**
+  String get orderResetArticles;
+
+  /// No description provided for @orderChangeTable.
+  ///
+  /// In en, this message translates to:
+  /// **'Change table'**
+  String get orderChangeTable;
+
+  /// No description provided for @orderCancelCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel order'**
+  String get orderCancelCreate;
+
   /// No description provided for @createOrder.
   ///
   /// In en, this message translates to:
@@ -1893,6 +1923,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Item details'**
   String get orderItemInfo;
+
+  /// No description provided for @orderInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Order dates'**
+  String get orderInfo;
 
   /// No description provided for @orderFieldCreatedAt.
   ///
