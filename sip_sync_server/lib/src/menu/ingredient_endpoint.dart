@@ -30,4 +30,12 @@ class IngredientEndpoint extends Endpoint {
   Future<void> delete(Session session, UuidValue id) {
     return _ingredients.delete(session, id);
   }
+
+  /// Owner or employee adds incoming quantity to stock.
+  Future<IngredientView> restock(
+    Session session,
+    IngredientRestock request,
+  ) {
+    return _ingredients.restock(session, request);
+  }
 }

@@ -20,8 +20,11 @@ abstract class IngredientView
     required this.buildingId,
     required this.name,
     required this.unit,
+    required this.initialStock,
     required this.currentStock,
     required this.thresholdStock,
+    required this.belowThreshold,
+    required this.stockProgress,
   });
 
   factory IngredientView({
@@ -29,8 +32,11 @@ abstract class IngredientView
     required _is.UuidValue buildingId,
     required String name,
     required _imlqt1yb.UnitsType unit,
+    required double initialStock,
     required double currentStock,
     required double thresholdStock,
+    required bool belowThreshold,
+    required double stockProgress,
   }) = _IngredientViewImpl;
 
   factory IngredientView.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -41,8 +47,13 @@ abstract class IngredientView
       ),
       name: jsonSerialization['name'] as String,
       unit: _imlqt1yb.UnitsType.fromJson((jsonSerialization['unit'] as String)),
+      initialStock: (jsonSerialization['initialStock'] as num).toDouble(),
       currentStock: (jsonSerialization['currentStock'] as num).toDouble(),
       thresholdStock: (jsonSerialization['thresholdStock'] as num).toDouble(),
+      belowThreshold: _is.BoolJsonExtension.fromJson(
+        jsonSerialization['belowThreshold'],
+      ),
+      stockProgress: (jsonSerialization['stockProgress'] as num).toDouble(),
     );
   }
 
@@ -54,9 +65,17 @@ abstract class IngredientView
 
   _imlqt1yb.UnitsType unit;
 
+  double initialStock;
+
   double currentStock;
 
   double thresholdStock;
+
+  /// True when currentStock <= thresholdStock (alert the floor).
+  bool belowThreshold;
+
+  /// currentStock / initialStock clamped to 0..1 for the fill bar.
+  double stockProgress;
 
   /// Returns a shallow copy of this [IngredientView]
   /// with some or all fields replaced by the given arguments.
@@ -66,8 +85,11 @@ abstract class IngredientView
     _is.UuidValue? buildingId,
     String? name,
     _imlqt1yb.UnitsType? unit,
+    double? initialStock,
     double? currentStock,
     double? thresholdStock,
+    bool? belowThreshold,
+    double? stockProgress,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -77,8 +99,11 @@ abstract class IngredientView
       'buildingId': buildingId.toJson(),
       'name': name,
       'unit': unit.toJson(),
+      'initialStock': initialStock,
       'currentStock': currentStock,
       'thresholdStock': thresholdStock,
+      'belowThreshold': belowThreshold,
+      'stockProgress': stockProgress,
     };
   }
 
@@ -90,8 +115,11 @@ abstract class IngredientView
       'buildingId': buildingId.toJson(),
       'name': name,
       'unit': unit.toJson(),
+      'initialStock': initialStock,
       'currentStock': currentStock,
       'thresholdStock': thresholdStock,
+      'belowThreshold': belowThreshold,
+      'stockProgress': stockProgress,
     };
   }
 
@@ -107,15 +135,21 @@ class _IngredientViewImpl extends IngredientView {
     required _is.UuidValue buildingId,
     required String name,
     required _imlqt1yb.UnitsType unit,
+    required double initialStock,
     required double currentStock,
     required double thresholdStock,
+    required bool belowThreshold,
+    required double stockProgress,
   }) : super._(
          id: id,
          buildingId: buildingId,
          name: name,
          unit: unit,
+         initialStock: initialStock,
          currentStock: currentStock,
          thresholdStock: thresholdStock,
+         belowThreshold: belowThreshold,
+         stockProgress: stockProgress,
        );
 
   /// Returns a shallow copy of this [IngredientView]
@@ -127,16 +161,22 @@ class _IngredientViewImpl extends IngredientView {
     _is.UuidValue? buildingId,
     String? name,
     _imlqt1yb.UnitsType? unit,
+    double? initialStock,
     double? currentStock,
     double? thresholdStock,
+    bool? belowThreshold,
+    double? stockProgress,
   }) {
     return IngredientView(
       id: id ?? this.id,
       buildingId: buildingId ?? this.buildingId,
       name: name ?? this.name,
       unit: unit ?? this.unit,
+      initialStock: initialStock ?? this.initialStock,
       currentStock: currentStock ?? this.currentStock,
       thresholdStock: thresholdStock ?? this.thresholdStock,
+      belowThreshold: belowThreshold ?? this.belowThreshold,
+      stockProgress: stockProgress ?? this.stockProgress,
     );
   }
 }

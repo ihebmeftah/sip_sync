@@ -4,5 +4,10 @@ fields:
   buildingId: UuidValue
   name: String
   unit: UnitsType
+  initialStock: double
   currentStock: double
   thresholdStock: double
+  ### True when currentStock <= thresholdStock (alert the floor).
+  belowThreshold: bool
+  ### currentStock / initialStock clamped to 0..1 for the fill bar.
+  stockProgress: double

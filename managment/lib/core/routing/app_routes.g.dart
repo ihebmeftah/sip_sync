@@ -211,6 +211,24 @@ RouteBase get $opsShellRoute => ShellRouteData.$route(
       factory: $PosRoute._fromState,
     ),
     GoRouteData.$route(
+      path: '/b/:buildingId/orders/new/articles',
+      name: 'orderCreateArticles',
+      hasOverriddenOnExit: false,
+      factory: $OrderCreateArticlesRoute._fromState,
+    ),
+    GoRouteData.$route(
+      path: '/b/:buildingId/orders/:orderId',
+      name: 'orderDetail',
+      hasOverriddenOnExit: false,
+      factory: $OrderDetailRoute._fromState,
+    ),
+    GoRouteData.$route(
+      path: '/b/:buildingId/orders',
+      name: 'orders',
+      hasOverriddenOnExit: false,
+      factory: $OrdersRoute._fromState,
+    ),
+    GoRouteData.$route(
       path: '/b/:buildingId/tables',
       name: 'tables',
       hasOverriddenOnExit: false,
@@ -405,6 +423,83 @@ mixin $PosRoute on GoRouteData {
   @override
   String get location =>
       GoRouteData.$location('/b/${Uri.encodeComponent(_self.buildingId)}/pos');
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+mixin $OrderCreateArticlesRoute on GoRouteData {
+  static OrderCreateArticlesRoute _fromState(GoRouterState state) =>
+      OrderCreateArticlesRoute(buildingId: state.pathParameters['buildingId']!);
+
+  OrderCreateArticlesRoute get _self => this as OrderCreateArticlesRoute;
+
+  @override
+  String get location => GoRouteData.$location(
+    '/b/${Uri.encodeComponent(_self.buildingId)}/orders/new/articles',
+  );
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+mixin $OrderDetailRoute on GoRouteData {
+  static OrderDetailRoute _fromState(GoRouterState state) => OrderDetailRoute(
+    buildingId: state.pathParameters['buildingId']!,
+    orderId: state.pathParameters['orderId']!,
+  );
+
+  OrderDetailRoute get _self => this as OrderDetailRoute;
+
+  @override
+  String get location => GoRouteData.$location(
+    '/b/${Uri.encodeComponent(_self.buildingId)}/orders/${Uri.encodeComponent(_self.orderId)}',
+  );
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+mixin $OrdersRoute on GoRouteData {
+  static OrdersRoute _fromState(GoRouterState state) =>
+      OrdersRoute(buildingId: state.pathParameters['buildingId']!);
+
+  OrdersRoute get _self => this as OrdersRoute;
+
+  @override
+  String get location => GoRouteData.$location(
+    '/b/${Uri.encodeComponent(_self.buildingId)}/orders',
+  );
 
   @override
   void go(BuildContext context) => context.go(location);

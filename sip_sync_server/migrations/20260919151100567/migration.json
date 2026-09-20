@@ -1,0 +1,48 @@
+{
+  "__className__": "serverpod.DatabaseMigration",
+  "actions": [
+    {
+      "__className__": "serverpod.DatabaseMigrationAction",
+      "type": "alterTable",
+      "alterTable": {
+        "__className__": "serverpod.TableMigration",
+        "name": "venue_order_item",
+        "schema": "public",
+        "addColumns": [],
+        "deleteColumns": [
+          "quantity"
+        ],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "__className__": "serverpod.DatabaseMigrationWarning",
+            "type": "columnDropped",
+            "message": "Column \"quantity\" of table \"venue_order_item\" will be dropped.",
+            "table": "venue_order_item",
+            "columns": [
+              "quantity"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    }
+  ],
+  "warnings": [
+    {
+      "__className__": "serverpod.DatabaseMigrationWarning",
+      "type": "columnDropped",
+      "message": "Column \"quantity\" of table \"venue_order_item\" will be dropped.",
+      "table": "venue_order_item",
+      "columns": [
+        "quantity"
+      ],
+      "destrucive": true
+    }
+  ],
+  "migrationApiVersion": 1
+}

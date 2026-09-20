@@ -16,7 +16,8 @@ class VenueTableService {
       where: (t) => t.buildingId.equals(buildingId),
       orderBy: (t) => t.number,
     );
-    return rows.map(_view).toList();
+    final occupiedIds = await _occupiedTableIds(session, buildingId);
+    return rows.map((row) => _view(row, occupiedIds)).toList();
   }
 
   /// Owner-only: create [request.count] tables with sequential numbers.
@@ -57,7 +58,8 @@ class VenueTableService {
       );
       created.add(row);
     }
-    return created.map(_view).toList();
+    final occupiedIds = await _occupiedTableIds(session, request.buildingId);
+    return created.map((row) => _view(row, occupiedIds)).toList();
   }
 
   /// Owner-only: update seats and active flag (table number is immutable).
@@ -83,18 +85,39 @@ class VenueTableService {
         isActive: request.isActive,
       ),
     );
-    return _view(updated);
+    final occupiedIds = await _occupiedTableIds(session, updated.buildingId);
+    return _view(updated, occupiedIds);
   }
 
-  VenueTableView _view(VenueTable row) => VenueTableView(
-    id: row.id!,
-    buildingId: row.buildingId,
-    number: row.number,
-    maxSeats: row.maxSeats,
-    isActive: row.isActive,
-    // Until orders/reservations exist, every active table is available.
-    status: TableFloorStatus.available,
-  );
+  /// Tables with at least one open ([OrderStatus.progress]) order.
+  Future<Set<UuidValue>> _occupiedTableIds(
+    Session session,
+    UuidValue buildingId,
+  ) async {
+    final open = await VenueOrder.db.find(
+      session,
+      where: (t) =>
+          t.buildingId.equals(buildingId) &
+          t.status.equals(OrderStatus.progress) &
+          t.venueTableId.notEquals(null),
+    );
+    return {
+      for (final order in open)
+        if (order.venueTableId != null) order.venueTableId!,
+    };
+  }
+
+  VenueTableView _view(VenueTable row, Set<UuidValue> occupiedIds) {
+    final occupied = row.id != null && occupiedIds.contains(row.id);
+    return VenueTableView(
+      id: row.id!,
+      buildingId: row.buildingId,
+      number: row.number,
+      maxSeats: row.maxSeats,
+      isActive: row.isActive,
+      status: occupied ? TableFloorStatus.occupied : TableFloorStatus.available,
+    );
+  }
 
   void _validateCount(int count) {
     if (count < 1 || count > 100) {

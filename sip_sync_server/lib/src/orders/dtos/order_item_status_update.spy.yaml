@@ -1,0 +1,4 @@
+class: OrderItemStatusUpdate
+fields:
+  id: UuidValue
+  status: OrderItemStatus

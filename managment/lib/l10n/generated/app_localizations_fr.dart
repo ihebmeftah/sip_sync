@@ -229,6 +229,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get navPos => 'Caisse';
 
   @override
+  String get navOrders => 'Commandes';
+
+  @override
   String get navTables => 'Tables';
 
   @override
@@ -675,6 +678,34 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
+  String get ingredientRestock => 'Réapprovisionner';
+
+  @override
+  String ingredientRestockHint(String name) {
+    return 'Ajouter la quantité entrante pour $name.';
+  }
+
+  @override
+  String get ingredientRestockQuantity => 'Quantité entrante';
+
+  @override
+  String get validationIngredientRestock =>
+      'Entrez une quantité supérieure à 0.';
+
+  @override
+  String get ingredientLowStockBadge => 'Bas';
+
+  @override
+  String ingredientLowStockBanner(int count) {
+    return '$count ingrédients au seuil ou en dessous';
+  }
+
+  @override
+  String ingredientStockPercent(int percent) {
+    return '$percent% de la capacité';
+  }
+
+  @override
   String get validationIngredientName => 'Entrez un nom de 1 à 80 caractères.';
 
   @override
@@ -829,4 +860,210 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get unitAbbrevCup => 'tasse';
+
+  @override
+  String get ordersHint =>
+      'Créez des commandes, avancez le statut cuisine et enregistrez le paiement.';
+
+  @override
+  String get ordersEmpty =>
+      'Aucune commande. Appuyez sur Nouvelle commande pour commencer.';
+
+  @override
+  String get ordersFilterAll => 'Toutes';
+
+  @override
+  String get ordersFilterEmpty => 'Aucune commande pour ce statut.';
+
+  @override
+  String get newOrder => 'Nouvelle commande';
+
+  @override
+  String get createOrder => 'Créer la commande';
+
+  @override
+  String get newOrderHint =>
+      'Choisissez une table, puis ajoutez des articles. Vous êtes enregistré comme lanceur.';
+
+  @override
+  String get orderSelectTablePrompt =>
+      'Sélectionnez une table pour cette commande.';
+
+  @override
+  String get orderSelectTableFloorHint =>
+      'Touchez une table sur le plan de salle pour continuer avec les articles.';
+
+  @override
+  String get orderTableInactive =>
+      'Cette table est inactive. Choisissez une table active.';
+
+  @override
+  String get orderAppendArticles => 'Ajouter des articles';
+
+  @override
+  String get orderNoActiveTables =>
+      'Aucune table active. Créez d’abord des tables.';
+
+  @override
+  String get orderSearchArticles => 'Rechercher des articles par nom';
+
+  @override
+  String get orderAllCategories => 'Tous';
+
+  @override
+  String get orderNoArticlesMatch => 'Aucun article ne correspond à ce filtre.';
+
+  @override
+  String get orderConfirm => 'Confirmer la commande';
+
+  @override
+  String get orderAddUnit => 'Ajouter une unité';
+
+  @override
+  String get orderRemoveUnit => 'Retirer une unité';
+
+  @override
+  String get orderTableOptional => 'Table (facultatif)';
+
+  @override
+  String get orderNoTable => 'Sans table';
+
+  @override
+  String orderTableNumber(int number) {
+    return 'Table $number';
+  }
+
+  @override
+  String get orderNeedArticles =>
+      'Ajoutez des articles dans Produits avant de commander.';
+
+  @override
+  String get validationOrderItems => 'Ajoutez au moins un article.';
+
+  @override
+  String get orderItemsLabel => 'articles';
+
+  @override
+  String get orderItemsHeading => 'Articles';
+
+  @override
+  String orderDetailTitle(String table) {
+    return 'Commande · $table';
+  }
+
+  @override
+  String orderLaunchedBy(String actor) {
+    return 'Lancée par $actor';
+  }
+
+  @override
+  String orderLastPaidBy(String actor) {
+    return 'Dernier paiement par $actor';
+  }
+
+  @override
+  String get cancelOrder => 'Annuler la commande';
+
+  @override
+  String get cancelOrderConfirm =>
+      'Annuler cette commande et les lignes ouvertes ?';
+
+  @override
+  String get cancelOrderItem => 'Annuler l’article';
+
+  @override
+  String get orderItemInfo => 'Détails de l’article';
+
+  @override
+  String get orderFieldCreatedAt => 'Créé';
+
+  @override
+  String get orderFieldUpdatedAt => 'Mis à jour';
+
+  @override
+  String get orderFieldPreparedAt => 'Préparé';
+
+  @override
+  String get orderFieldServedAt => 'Servi';
+
+  @override
+  String get orderFieldPaidAt => 'Payé';
+
+  @override
+  String orderFieldPaidAtLabel(String when) {
+    return 'Payé $when';
+  }
+
+  @override
+  String get orderFieldPassedBy => 'Passé par';
+
+  @override
+  String get orderFieldPreparedBy => 'Préparé par';
+
+  @override
+  String get orderFieldServedBy => 'Servi par';
+
+  @override
+  String get orderFieldPaidTo => 'Encaissé par';
+
+  @override
+  String get orderFieldCancelledBy => 'Annulé par';
+
+  @override
+  String get orderFieldCancelledAt => 'Annulé';
+
+  @override
+  String orderCancelledBy(String actor) {
+    return 'Annulé par $actor';
+  }
+
+  @override
+  String orderFieldCancelledAtLabel(String when) {
+    return 'Annulé $when';
+  }
+
+  @override
+  String orderFieldCreatedAtLabel(String when) {
+    return 'Créé $when';
+  }
+
+  @override
+  String orderFieldUpdatedAtLabel(String when) {
+    return 'Mis à jour $when';
+  }
+
+  @override
+  String get orderStatusProgress => 'En cours';
+
+  @override
+  String get orderStatusPayed => 'Payée';
+
+  @override
+  String get orderStatusCancelled => 'Annulée';
+
+  @override
+  String get orderItemStatusProgress => 'En cours';
+
+  @override
+  String get orderItemStatusPicked => 'Prise';
+
+  @override
+  String get orderItemStatusReady => 'Prête';
+
+  @override
+  String get orderItemStatusServed => 'Servie';
+
+  @override
+  String get orderItemStatusPayed => 'Payée';
+
+  @override
+  String get orderItemStatusCancelled => 'Annulée';
+
+  @override
+  String get errorOrderInvalidStatus =>
+      'Ce changement de statut n’est pas autorisé.';
+
+  @override
+  String get errorOrderInsufficientStock =>
+      'Stock d’ingrédients insuffisant pour cette commande.';
 }

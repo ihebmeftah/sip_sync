@@ -1,0 +1,24 @@
+class: OrderItemView
+fields:
+  id: UuidValue
+  orderId: UuidValue
+  articleId: UuidValue
+  articleName: String
+  unitPrice: double
+  status: OrderItemStatus
+  passedByType: ActorType?
+  passedById: UuidValue?
+  preparedByType: ActorType?
+  preparedById: UuidValue?
+  servedByType: ActorType?
+  servedById: UuidValue?
+  paidToType: ActorType?
+  paidToId: UuidValue?
+  cancelledByType: ActorType?
+  cancelledById: UuidValue?
+  createdAt: DateTime
+  updatedAt: DateTime
+  preparedAt: DateTime?
+  servedAt: DateTime?
+  paidAt: DateTime?
+  cancelledAt: DateTime?

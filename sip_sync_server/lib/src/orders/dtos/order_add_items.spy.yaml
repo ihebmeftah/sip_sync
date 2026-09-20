@@ -1,0 +1,4 @@
+class: OrderAddItems
+fields:
+  orderId: UuidValue
+  items: List<OrderItemCreateLine>

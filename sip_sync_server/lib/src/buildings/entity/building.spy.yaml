@@ -19,6 +19,7 @@ fields:
   menuCategories: List<MenuCategory>?, relation(name=building_menu_categories)
   menuArticles: List<MenuArticle>?, relation(name=building_menu_articles)
   ingredients: List<Ingredient>?, relation(name=building_ingredients)
+  orders: List<VenueOrder>?, relation(name=building_orders)
 indexes:
   building_owner_idx:
     fields: ownerId

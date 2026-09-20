@@ -1,0 +1,10 @@
+### Lifecycle of a venue order (open → payed / cancelled).
+enum: OrderStatus
+serialized: byName
+values:
+  ### Open order; items may still be prepared or unpaid.
+  - progress
+  ### Every non-cancelled line is payed.
+  - payed
+  ### Order cancelled; no further prep or payment.
+  - cancelled

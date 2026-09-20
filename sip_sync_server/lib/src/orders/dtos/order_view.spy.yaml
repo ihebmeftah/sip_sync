@@ -1,0 +1,19 @@
+class: OrderView
+fields:
+  id: UuidValue
+  buildingId: UuidValue
+  venueTableId: UuidValue?
+  tableNumber: int?
+  status: OrderStatus
+  launchedByType: ActorType
+  launchedById: UuidValue
+  lastPaidByType: ActorType?
+  lastPaidById: UuidValue?
+  lastPaidAt: DateTime?
+  cancelledByType: ActorType?
+  cancelledById: UuidValue?
+  cancelledAt: DateTime?
+  createdAt: DateTime
+  updatedAt: DateTime
+  items: List<OrderItemView>
+  totalAmount: double

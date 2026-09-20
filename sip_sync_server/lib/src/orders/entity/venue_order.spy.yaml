@@ -1,0 +1,27 @@
+### A guest order for one building (optional table). Customer launch later.
+class: VenueOrder
+table: venue_order
+serverOnly: true
+fields:
+  id: UuidValue?, defaultPersist=random_v7
+  building: Building?, relation(name=building_orders, onDelete=Cascade)
+  venueTable: VenueTable?, relation(name=table_orders, optional, onDelete=SetNull)
+  status: OrderStatus
+  launchedByType: ActorType
+  launchedById: UuidValue
+  lastPaidByType: ActorType?
+  lastPaidById: UuidValue?
+  lastPaidAt: DateTime?
+  cancelledByType: ActorType?
+  cancelledById: UuidValue?
+  cancelledAt: DateTime?
+  createdAt: DateTime, defaultModel=now
+  updatedAt: DateTime, defaultModel=now
+  items: List<VenueOrderItem>?, relation(name=order_items)
+indexes:
+  venue_order_building_idx:
+    fields: buildingId
+  venue_order_building_status_idx:
+    fields: buildingId, status
+  venue_order_table_idx:
+    fields: venueTableId

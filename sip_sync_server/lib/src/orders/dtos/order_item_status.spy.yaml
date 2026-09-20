@@ -1,0 +1,16 @@
+### Lifecycle of a single order line (kitchen / floor / payment).
+enum: OrderItemStatus
+serialized: byName
+values:
+  ### Line created; waiting to be picked up for prep.
+  - progress
+  ### Taken by kitchen / prep station.
+  - picked
+  ### Prepared and waiting to be served.
+  - ready
+  ### Delivered to the guest.
+  - served
+  ### Payment recorded for this line.
+  - payed
+  ### Line cancelled.
+  - cancelled

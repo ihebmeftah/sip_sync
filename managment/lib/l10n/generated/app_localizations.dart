@@ -508,6 +508,12 @@ abstract class AppLocalizations {
   /// **'POS'**
   String get navPos;
 
+  /// No description provided for @navOrders.
+  ///
+  /// In en, this message translates to:
+  /// **'Orders'**
+  String get navOrders;
+
   /// No description provided for @navTables.
   ///
   /// In en, this message translates to:
@@ -1300,6 +1306,48 @@ abstract class AppLocalizations {
   /// **'{current} {unit} · threshold {threshold}'**
   String ingredientStockLine(String current, String unit, String threshold);
 
+  /// No description provided for @ingredientRestock.
+  ///
+  /// In en, this message translates to:
+  /// **'Restock'**
+  String get ingredientRestock;
+
+  /// No description provided for @ingredientRestockHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Add incoming quantity for {name}.'**
+  String ingredientRestockHint(String name);
+
+  /// No description provided for @ingredientRestockQuantity.
+  ///
+  /// In en, this message translates to:
+  /// **'Incoming quantity'**
+  String get ingredientRestockQuantity;
+
+  /// No description provided for @validationIngredientRestock.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a quantity greater than 0.'**
+  String get validationIngredientRestock;
+
+  /// No description provided for @ingredientLowStockBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Low'**
+  String get ingredientLowStockBadge;
+
+  /// No description provided for @ingredientLowStockBanner.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} ingredients at or below threshold'**
+  String ingredientLowStockBanner(int count);
+
+  /// No description provided for @ingredientStockPercent.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}% of capacity'**
+  String ingredientStockPercent(int percent);
+
   /// No description provided for @validationIngredientName.
   ///
   /// In en, this message translates to:
@@ -1587,6 +1635,360 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'cup'**
   String get unitAbbrevCup;
+
+  /// No description provided for @ordersHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Create floor orders, advance kitchen status, and record payment.'**
+  String get ordersHint;
+
+  /// No description provided for @ordersEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No orders yet. Tap New order to start.'**
+  String get ordersEmpty;
+
+  /// No description provided for @ordersFilterAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get ordersFilterAll;
+
+  /// No description provided for @ordersFilterEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No orders match this status.'**
+  String get ordersFilterEmpty;
+
+  /// No description provided for @newOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'New order'**
+  String get newOrder;
+
+  /// No description provided for @createOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Create order'**
+  String get createOrder;
+
+  /// No description provided for @newOrderHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a table, then add articles. You are recorded as the launcher.'**
+  String get newOrderHint;
+
+  /// No description provided for @orderSelectTablePrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a table for this order.'**
+  String get orderSelectTablePrompt;
+
+  /// No description provided for @orderSelectTableFloorHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap a table on the floor map to continue adding articles.'**
+  String get orderSelectTableFloorHint;
+
+  /// No description provided for @orderTableInactive.
+  ///
+  /// In en, this message translates to:
+  /// **'That table is inactive. Choose an active table.'**
+  String get orderTableInactive;
+
+  /// No description provided for @orderAppendArticles.
+  ///
+  /// In en, this message translates to:
+  /// **'Add articles'**
+  String get orderAppendArticles;
+
+  /// No description provided for @orderNoActiveTables.
+  ///
+  /// In en, this message translates to:
+  /// **'No active tables. Create tables first.'**
+  String get orderNoActiveTables;
+
+  /// No description provided for @orderSearchArticles.
+  ///
+  /// In en, this message translates to:
+  /// **'Search articles by name'**
+  String get orderSearchArticles;
+
+  /// No description provided for @orderAllCategories.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get orderAllCategories;
+
+  /// No description provided for @orderNoArticlesMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'No articles match this filter.'**
+  String get orderNoArticlesMatch;
+
+  /// No description provided for @orderConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm order'**
+  String get orderConfirm;
+
+  /// No description provided for @orderAddUnit.
+  ///
+  /// In en, this message translates to:
+  /// **'Add unit'**
+  String get orderAddUnit;
+
+  /// No description provided for @orderRemoveUnit.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove unit'**
+  String get orderRemoveUnit;
+
+  /// No description provided for @orderTableOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Table (optional)'**
+  String get orderTableOptional;
+
+  /// No description provided for @orderNoTable.
+  ///
+  /// In en, this message translates to:
+  /// **'No table'**
+  String get orderNoTable;
+
+  /// No description provided for @orderTableNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Table {number}'**
+  String orderTableNumber(int number);
+
+  /// No description provided for @orderNeedArticles.
+  ///
+  /// In en, this message translates to:
+  /// **'Add articles in Products before creating an order.'**
+  String get orderNeedArticles;
+
+  /// No description provided for @validationOrderItems.
+  ///
+  /// In en, this message translates to:
+  /// **'Add at least one article.'**
+  String get validationOrderItems;
+
+  /// No description provided for @orderItemsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'items'**
+  String get orderItemsLabel;
+
+  /// No description provided for @orderItemsHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'Items'**
+  String get orderItemsHeading;
+
+  /// No description provided for @orderDetailTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Order · {table}'**
+  String orderDetailTitle(String table);
+
+  /// No description provided for @orderLaunchedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Launched by {actor}'**
+  String orderLaunchedBy(String actor);
+
+  /// No description provided for @orderLastPaidBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Last payment by {actor}'**
+  String orderLastPaidBy(String actor);
+
+  /// No description provided for @cancelOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel order'**
+  String get cancelOrder;
+
+  /// No description provided for @cancelOrderConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel this order and open lines?'**
+  String get cancelOrderConfirm;
+
+  /// No description provided for @cancelOrderItem.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel item'**
+  String get cancelOrderItem;
+
+  /// No description provided for @orderItemInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Item details'**
+  String get orderItemInfo;
+
+  /// No description provided for @orderFieldCreatedAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Created'**
+  String get orderFieldCreatedAt;
+
+  /// No description provided for @orderFieldUpdatedAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Updated'**
+  String get orderFieldUpdatedAt;
+
+  /// No description provided for @orderFieldPreparedAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Prepared'**
+  String get orderFieldPreparedAt;
+
+  /// No description provided for @orderFieldServedAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Served'**
+  String get orderFieldServedAt;
+
+  /// No description provided for @orderFieldPaidAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Paid'**
+  String get orderFieldPaidAt;
+
+  /// No description provided for @orderFieldPaidAtLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Paid {when}'**
+  String orderFieldPaidAtLabel(String when);
+
+  /// No description provided for @orderFieldPassedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Passed by'**
+  String get orderFieldPassedBy;
+
+  /// No description provided for @orderFieldPreparedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Prepared by'**
+  String get orderFieldPreparedBy;
+
+  /// No description provided for @orderFieldServedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Served by'**
+  String get orderFieldServedBy;
+
+  /// No description provided for @orderFieldPaidTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Paid to'**
+  String get orderFieldPaidTo;
+
+  /// No description provided for @orderFieldCancelledBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled by'**
+  String get orderFieldCancelledBy;
+
+  /// No description provided for @orderFieldCancelledAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled'**
+  String get orderFieldCancelledAt;
+
+  /// No description provided for @orderCancelledBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled by {actor}'**
+  String orderCancelledBy(String actor);
+
+  /// No description provided for @orderFieldCancelledAtLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled {when}'**
+  String orderFieldCancelledAtLabel(String when);
+
+  /// No description provided for @orderFieldCreatedAtLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Created {when}'**
+  String orderFieldCreatedAtLabel(String when);
+
+  /// No description provided for @orderFieldUpdatedAtLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Updated {when}'**
+  String orderFieldUpdatedAtLabel(String when);
+
+  /// No description provided for @orderStatusProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'In progress'**
+  String get orderStatusProgress;
+
+  /// No description provided for @orderStatusPayed.
+  ///
+  /// In en, this message translates to:
+  /// **'Payed'**
+  String get orderStatusPayed;
+
+  /// No description provided for @orderStatusCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled'**
+  String get orderStatusCancelled;
+
+  /// No description provided for @orderItemStatusProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Progress'**
+  String get orderItemStatusProgress;
+
+  /// No description provided for @orderItemStatusPicked.
+  ///
+  /// In en, this message translates to:
+  /// **'Picked'**
+  String get orderItemStatusPicked;
+
+  /// No description provided for @orderItemStatusReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready'**
+  String get orderItemStatusReady;
+
+  /// No description provided for @orderItemStatusServed.
+  ///
+  /// In en, this message translates to:
+  /// **'Served'**
+  String get orderItemStatusServed;
+
+  /// No description provided for @orderItemStatusPayed.
+  ///
+  /// In en, this message translates to:
+  /// **'Payed'**
+  String get orderItemStatusPayed;
+
+  /// No description provided for @orderItemStatusCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled'**
+  String get orderItemStatusCancelled;
+
+  /// No description provided for @errorOrderInvalidStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'That status change is not allowed.'**
+  String get errorOrderInvalidStatus;
+
+  /// No description provided for @errorOrderInsufficientStock.
+  ///
+  /// In en, this message translates to:
+  /// **'Not enough ingredient stock for this order.'**
+  String get errorOrderInsufficientStock;
 }
 
 class _AppLocalizationsDelegate

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:sip_sync_client/sip_sync_client.dart';
 
 import '../../features/auth/view_models/auth_view_model.dart';
+import '../../features/orders/view_models/order_draft_view_model.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../di/app_providers.dart';
 import '../di/building_session.dart';
@@ -58,11 +59,30 @@ class _OpsShellState extends ConsumerState<OpsShell> {
     return LayoutBuilder(
       builder: (context, constraints) {
         final wide = constraints.maxWidth >= AppBreakpoints.expanded;
+        final buildingId = widget.buildingId ?? '';
+        final location = GoRouterState.of(context).uri.path;
+        final hideNewOrderFab =
+            buildingId.isEmpty || location.contains('/orders/new');
+
+        final fab = hideNewOrderFab
+            ? null
+            : FloatingActionButton.extended(
+                onPressed: () {
+                  ref
+                      .read(orderDraftViewModelProvider(buildingId).notifier)
+                      .beginCreate();
+                  TablesRoute(buildingId: buildingId).go(context);
+                },
+                icon: const Icon(Icons.add),
+                label: Text(AppLocalizations.of(context)!.newOrder),
+              );
+
         if (wide) {
           return Scaffold(
+            floatingActionButton: fab,
             body: Row(
               children: [
-                OpsSideBar(buildingId: widget.buildingId ?? ''),
+                OpsSideBar(buildingId: buildingId),
                 Expanded(child: widget.child),
               ],
             ),
@@ -74,11 +94,9 @@ class _OpsShellState extends ConsumerState<OpsShell> {
             actions: const [_ThemeToggle(), LocaleMenuButton()],
           ),
           drawer: Drawer(
-            child: OpsSideBar(
-              buildingId: widget.buildingId ?? '',
-              inDrawer: true,
-            ),
+            child: OpsSideBar(buildingId: buildingId, inDrawer: true),
           ),
+          floatingActionButton: fab,
           body: widget.child,
         );
       },
@@ -243,10 +261,11 @@ class OpsSideBar extends ConsumerWidget {
                       ),
                     ),
                     _NavTile(
-                      icon: Icons.point_of_sale_outlined,
-                      label: l10n.navPos,
-                      selected: location.endsWith('/pos'),
-                      onTap: () => PosRoute(buildingId: buildingId).go(context),
+                      icon: Icons.receipt_long_outlined,
+                      label: l10n.navOrders,
+                      selected: location.contains('/orders'),
+                      onTap: () =>
+                          OrdersRoute(buildingId: buildingId).go(context),
                     ),
                     _NavTile(
                       icon: Icons.table_restaurant_outlined,

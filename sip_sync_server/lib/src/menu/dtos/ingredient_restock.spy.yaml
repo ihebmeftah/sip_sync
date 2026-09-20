@@ -1,0 +1,5 @@
+class: IngredientRestock
+fields:
+  id: UuidValue
+  ### Quantity to add to current stock (must be > 0).
+  quantity: double

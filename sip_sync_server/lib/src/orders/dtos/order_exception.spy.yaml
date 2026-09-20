@@ -1,0 +1,4 @@
+exception: OrderException
+fields:
+  message: String
+  code: OrderErrorCode

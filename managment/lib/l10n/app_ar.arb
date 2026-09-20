@@ -68,6 +68,7 @@
   "navArticles": "الأصناف",
   "navIngredients": "المكوّنات",
   "navPos": "نقطة البيع",
+  "navOrders": "الطلبات",
   "navTables": "الطاولات",
   "helloScreen": "مرحباً، {screen}",
   "placeholderBody": "هذه الشاشة غير متصلة بالخادم بعد.",
@@ -231,6 +232,22 @@
       "threshold": { "type": "String" }
     }
   },
+  "ingredientRestock": "إعادة التخزين",
+  "ingredientRestockHint": "أضف الكمية الواردة لـ {name}.",
+  "@ingredientRestockHint": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "ingredientRestockQuantity": "الكمية الواردة",
+  "validationIngredientRestock": "أدخل كمية أكبر من 0.",
+  "ingredientLowStockBadge": "منخفض",
+  "ingredientLowStockBanner": "{count} مكوّنات عند العتبة أو أقل",
+  "@ingredientLowStockBanner": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "ingredientStockPercent": "{percent}% من السعة",
+  "@ingredientStockPercent": {
+    "placeholders": { "percent": { "type": "int" } }
+  },
   "validationIngredientName": "أدخل اسماً حتى 80 حرفاً.",
   "validationIngredientStock": "أدخل 0 أو رقماً موجباً.",
   "errorIngredientNameTaken": "اسم المكوّن مستخدم هنا بالفعل.",
@@ -287,6 +304,81 @@
   "unitAbbrevBunch": "ربطة",
   "unitAbbrevTeaspoon": "م.ص",
   "unitAbbrevTablespoon": "م.ك",
-  "unitAbbrevCup": "كوب"
+  "unitAbbrevCup": "كوب",
+  "ordersHint": "أنشئ الطلبات وتقدّم حالة المطبخ وسجّل الدفع.",
+  "ordersEmpty": "لا توجد طلبات بعد. اضغط طلب جديد للبدء.",
+  "ordersFilterAll": "الكل",
+  "ordersFilterEmpty": "لا توجد طلبات بهذه الحالة.",
+  "newOrder": "طلب جديد",
+  "createOrder": "إنشاء الطلب",
+  "newOrderHint": "اختر طاولة ثم أضف الأصناف. تُسجَّل كمنشئ الطلب.",
+  "orderSelectTablePrompt": "اختر طاولة لهذا الطلب.",
+  "orderSelectTableFloorHint": "اضغط طاولة على خريطة الصالة لمتابعة إضافة الأصناف.",
+  "orderTableInactive": "هذه الطاولة غير نشطة. اختر طاولة نشطة.",
+  "orderAppendArticles": "إضافة أصناف",
+  "orderNoActiveTables": "لا توجد طاولات نشطة. أنشئ طاولات أولاً.",
+  "orderSearchArticles": "ابحث عن الأصناف بالاسم",
+  "orderAllCategories": "الكل",
+  "orderNoArticlesMatch": "لا توجد أصناف مطابقة لهذا التصفية.",
+  "orderConfirm": "تأكيد الطلب",
+  "orderAddUnit": "إضافة وحدة",
+  "orderRemoveUnit": "إزالة وحدة",
+  "orderTableOptional": "الطاولة (اختياري)",
+  "orderNoTable": "بدون طاولة",
+  "orderTableNumber": "طاولة {number}",
+  "@orderTableNumber": { "placeholders": { "number": { "type": "int" } } },
+  "orderNeedArticles": "أضف أصنافاً في المنتجات قبل إنشاء طلب.",
+  "validationOrderItems": "أضف صنفاً واحداً على الأقل.",
+  "orderItemsLabel": "أصناف",
+  "orderItemsHeading": "الأصناف",
+  "orderDetailTitle": "طلب · {table}",
+  "@orderDetailTitle": { "placeholders": { "table": { "type": "String" } } },
+  "orderLaunchedBy": "أنشأه {actor}",
+  "@orderLaunchedBy": { "placeholders": { "actor": { "type": "String" } } },
+  "orderLastPaidBy": "آخر دفع بواسطة {actor}",
+  "@orderLastPaidBy": { "placeholders": { "actor": { "type": "String" } } },
+  "cancelOrder": "إلغاء الطلب",
+  "cancelOrderConfirm": "إلغاء هذا الطلب والبنود المفتوحة؟",
+  "cancelOrderItem": "إلغاء الصنف",
+  "orderItemInfo": "تفاصيل الصنف",
+  "orderFieldCreatedAt": "أُنشئ",
+  "orderFieldUpdatedAt": "حُدّث",
+  "orderFieldPreparedAt": "أُعدّ",
+  "orderFieldServedAt": "قُدّم",
+  "orderFieldPaidAt": "دُفع",
+  "orderFieldPaidAtLabel": "دُفع {when}",
+  "@orderFieldPaidAtLabel": {
+    "placeholders": { "when": { "type": "String" } }
+  },
+  "orderFieldPassedBy": "مرّره",
+  "orderFieldPreparedBy": "أعدّه",
+  "orderFieldServedBy": "قدّمه",
+  "orderFieldPaidTo": "قبض",
+  "orderFieldCancelledBy": "ألغاه",
+  "orderFieldCancelledAt": "أُلغي",
+  "orderCancelledBy": "ألغاه {actor}",
+  "@orderCancelledBy": { "placeholders": { "actor": { "type": "String" } } },
+  "orderFieldCancelledAtLabel": "أُلغي {when}",
+  "@orderFieldCancelledAtLabel": {
+    "placeholders": { "when": { "type": "String" } }
+  },
+  "orderFieldCreatedAtLabel": "أُنشئ {when}",
+  "@orderFieldCreatedAtLabel": {
+    "placeholders": { "when": { "type": "String" } }
+  },
+  "orderFieldUpdatedAtLabel": "حُدّث {when}",
+  "@orderFieldUpdatedAtLabel": {
+    "placeholders": { "when": { "type": "String" } }
+  },
+  "orderStatusProgress": "قيد التنفيذ",
+  "orderStatusPayed": "مدفوع",
+  "orderStatusCancelled": "ملغى",
+  "orderItemStatusProgress": "قيد التنفيذ",
+  "orderItemStatusPicked": "مأخوذ",
+  "orderItemStatusReady": "جاهز",
+  "orderItemStatusServed": "مقدَّم",
+  "orderItemStatusPayed": "مدفوع",
+  "orderItemStatusCancelled": "ملغى",
+  "errorOrderInvalidStatus": "تغيير الحالة غير مسموح.",
+  "errorOrderInsufficientStock": "مخزون المكونات غير كافٍ لهذا الطلب."
 }
-

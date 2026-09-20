@@ -434,6 +434,48 @@ final class ArticleCompositionRepositoryProvider
 String _$articleCompositionRepositoryHash() =>
     r'2e6943f9bdf3ec55bd9926cee37728bdccfde15b';
 
+@ProviderFor(orderRepository)
+const orderRepositoryProvider = OrderRepositoryProvider._();
+
+final class OrderRepositoryProvider
+    extends
+        $FunctionalProvider<OrderRepository, OrderRepository, OrderRepository>
+    with $Provider<OrderRepository> {
+  const OrderRepositoryProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'orderRepositoryProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$orderRepositoryHash();
+
+  @$internal
+  @override
+  $ProviderElement<OrderRepository> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  OrderRepository create(Ref ref) {
+    return orderRepository(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(OrderRepository value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<OrderRepository>(value),
+    );
+  }
+}
+
+String _$orderRepositoryHash() => r'123bae3919b9677cdc746da0f56d37ca35bdb5c1';
+
 @ProviderFor(appSessionStore)
 const appSessionStoreProvider = AppSessionStoreProvider._();
 

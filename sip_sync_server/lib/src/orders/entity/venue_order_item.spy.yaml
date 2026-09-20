@@ -1,0 +1,34 @@
+### One article unit on an order (repeat the article for multiple units).
+class: VenueOrderItem
+table: venue_order_item
+serverOnly: true
+fields:
+  id: UuidValue?, defaultPersist=random_v7
+  order: VenueOrder?, relation(name=order_items, onDelete=Cascade)
+  article: MenuArticle?, relation(name=article_order_items, onDelete=Restrict)
+  articleName: String
+  unitPrice: double
+  status: OrderItemStatus
+  passedByType: ActorType?
+  passedById: UuidValue?
+  preparedByType: ActorType?
+  preparedById: UuidValue?
+  servedByType: ActorType?
+  servedById: UuidValue?
+  paidToType: ActorType?
+  paidToId: UuidValue?
+  cancelledByType: ActorType?
+  cancelledById: UuidValue?
+  createdAt: DateTime, defaultModel=now
+  updatedAt: DateTime, defaultModel=now
+  preparedAt: DateTime?
+  servedAt: DateTime?
+  paidAt: DateTime?
+  cancelledAt: DateTime?
+indexes:
+  venue_order_item_order_idx:
+    fields: orderId
+  venue_order_item_article_idx:
+    fields: articleId
+  venue_order_item_status_idx:
+    fields: status

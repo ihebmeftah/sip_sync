@@ -30,6 +30,8 @@ import 'package:sip_sync_client/src/protocol/menu/dtos/menu_article_view.dart'
     as _i8rrzffs;
 import 'package:sip_sync_client/src/protocol/menu/dtos/menu_category_view.dart'
     as _i6z5knea;
+import 'package:sip_sync_client/src/protocol/orders/dtos/order_view.dart'
+    as _i5f9osh7;
 import 'package:sip_sync_client/src/protocol/tables/dtos/venue_table_view.dart'
     as _ihz72ioq;
 import 'auth/dtos/account_error_code.dart' as _ipvvun4w;
@@ -62,6 +64,7 @@ import 'menu/dtos/article_composition_view.dart' as _ibgf2aer;
 import 'menu/dtos/ingredient_create.dart' as _ii1yylu5;
 import 'menu/dtos/ingredient_error_code.dart' as _i7okswdu;
 import 'menu/dtos/ingredient_exception.dart' as _i6yqbuhf;
+import 'menu/dtos/ingredient_restock.dart' as _i1tfcnyz;
 import 'menu/dtos/ingredient_view.dart' as _i8smn6k1;
 import 'menu/dtos/menu_article_create.dart' as _ilqdzk9u;
 import 'menu/dtos/menu_article_error_code.dart' as _i5kcaxik;
@@ -74,6 +77,16 @@ import 'menu/dtos/menu_category_exception.dart' as _idwl0wi8;
 import 'menu/dtos/menu_category_update.dart' as _iu0xgttg;
 import 'menu/dtos/menu_category_view.dart' as _igs74mgr;
 import 'menu/dtos/units_type.dart' as _ipcoxh71;
+import 'orders/dtos/order_add_items.dart' as _iqdnv1pi;
+import 'orders/dtos/order_create.dart' as _iwmhqcsn;
+import 'orders/dtos/order_error_code.dart' as _iepprhv5;
+import 'orders/dtos/order_exception.dart' as _iumotmt8;
+import 'orders/dtos/order_item_create_line.dart' as _ihzk2s8h;
+import 'orders/dtos/order_item_status.dart' as _ihsl512g;
+import 'orders/dtos/order_item_status_update.dart' as _i8vmkag3;
+import 'orders/dtos/order_item_view.dart' as _in19xqkp;
+import 'orders/dtos/order_status.dart' as _iaqxrbm9;
+import 'orders/dtos/order_view.dart' as _i5x25q0s;
 import 'tables/dtos/table_floor_status.dart' as _i64byz7d;
 import 'tables/dtos/venue_table_create.dart' as _iui9xd5q;
 import 'tables/dtos/venue_table_error_code.dart' as _iqjhym86;
@@ -110,6 +123,7 @@ export 'menu/dtos/article_composition_view.dart';
 export 'menu/dtos/ingredient_create.dart';
 export 'menu/dtos/ingredient_error_code.dart';
 export 'menu/dtos/ingredient_exception.dart';
+export 'menu/dtos/ingredient_restock.dart';
 export 'menu/dtos/ingredient_view.dart';
 export 'menu/dtos/menu_article_create.dart';
 export 'menu/dtos/menu_article_error_code.dart';
@@ -122,6 +136,16 @@ export 'menu/dtos/menu_category_exception.dart';
 export 'menu/dtos/menu_category_update.dart';
 export 'menu/dtos/menu_category_view.dart';
 export 'menu/dtos/units_type.dart';
+export 'orders/dtos/order_add_items.dart';
+export 'orders/dtos/order_create.dart';
+export 'orders/dtos/order_error_code.dart';
+export 'orders/dtos/order_exception.dart';
+export 'orders/dtos/order_item_create_line.dart';
+export 'orders/dtos/order_item_status.dart';
+export 'orders/dtos/order_item_status_update.dart';
+export 'orders/dtos/order_item_view.dart';
+export 'orders/dtos/order_status.dart';
+export 'orders/dtos/order_view.dart';
 export 'tables/dtos/table_floor_status.dart';
 export 'tables/dtos/venue_table_create.dart';
 export 'tables/dtos/venue_table_error_code.dart';
@@ -254,6 +278,9 @@ class Protocol extends _isc.SerializationManager {
     if (t == _i6yqbuhf.IngredientException) {
       return _i6yqbuhf.IngredientException.fromJson(data) as T;
     }
+    if (t == _i1tfcnyz.IngredientRestock) {
+      return _i1tfcnyz.IngredientRestock.fromJson(data) as T;
+    }
     if (t == _i8smn6k1.IngredientView) {
       return _i8smn6k1.IngredientView.fromJson(data) as T;
     }
@@ -289,6 +316,36 @@ class Protocol extends _isc.SerializationManager {
     }
     if (t == _ipcoxh71.UnitsType) {
       return _ipcoxh71.UnitsType.fromJson(data) as T;
+    }
+    if (t == _iqdnv1pi.OrderAddItems) {
+      return _iqdnv1pi.OrderAddItems.fromJson(data) as T;
+    }
+    if (t == _iwmhqcsn.OrderCreate) {
+      return _iwmhqcsn.OrderCreate.fromJson(data) as T;
+    }
+    if (t == _iepprhv5.OrderErrorCode) {
+      return _iepprhv5.OrderErrorCode.fromJson(data) as T;
+    }
+    if (t == _iumotmt8.OrderException) {
+      return _iumotmt8.OrderException.fromJson(data) as T;
+    }
+    if (t == _ihzk2s8h.OrderItemCreateLine) {
+      return _ihzk2s8h.OrderItemCreateLine.fromJson(data) as T;
+    }
+    if (t == _ihsl512g.OrderItemStatus) {
+      return _ihsl512g.OrderItemStatus.fromJson(data) as T;
+    }
+    if (t == _i8vmkag3.OrderItemStatusUpdate) {
+      return _i8vmkag3.OrderItemStatusUpdate.fromJson(data) as T;
+    }
+    if (t == _in19xqkp.OrderItemView) {
+      return _in19xqkp.OrderItemView.fromJson(data) as T;
+    }
+    if (t == _iaqxrbm9.OrderStatus) {
+      return _iaqxrbm9.OrderStatus.fromJson(data) as T;
+    }
+    if (t == _i5x25q0s.OrderView) {
+      return _i5x25q0s.OrderView.fromJson(data) as T;
     }
     if (t == _i64byz7d.TableFloorStatus) {
       return _i64byz7d.TableFloorStatus.fromJson(data) as T;
@@ -449,6 +506,10 @@ class Protocol extends _isc.SerializationManager {
               : null)
           as T;
     }
+    if (t == _isc.getType<_i1tfcnyz.IngredientRestock?>()) {
+      return (data != null ? _i1tfcnyz.IngredientRestock.fromJson(data) : null)
+          as T;
+    }
     if (t == _isc.getType<_i8smn6k1.IngredientView?>()) {
       return (data != null ? _i8smn6k1.IngredientView.fromJson(data) : null)
           as T;
@@ -504,6 +565,47 @@ class Protocol extends _isc.SerializationManager {
     if (t == _isc.getType<_ipcoxh71.UnitsType?>()) {
       return (data != null ? _ipcoxh71.UnitsType.fromJson(data) : null) as T;
     }
+    if (t == _isc.getType<_iqdnv1pi.OrderAddItems?>()) {
+      return (data != null ? _iqdnv1pi.OrderAddItems.fromJson(data) : null)
+          as T;
+    }
+    if (t == _isc.getType<_iwmhqcsn.OrderCreate?>()) {
+      return (data != null ? _iwmhqcsn.OrderCreate.fromJson(data) : null) as T;
+    }
+    if (t == _isc.getType<_iepprhv5.OrderErrorCode?>()) {
+      return (data != null ? _iepprhv5.OrderErrorCode.fromJson(data) : null)
+          as T;
+    }
+    if (t == _isc.getType<_iumotmt8.OrderException?>()) {
+      return (data != null ? _iumotmt8.OrderException.fromJson(data) : null)
+          as T;
+    }
+    if (t == _isc.getType<_ihzk2s8h.OrderItemCreateLine?>()) {
+      return (data != null
+              ? _ihzk2s8h.OrderItemCreateLine.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _isc.getType<_ihsl512g.OrderItemStatus?>()) {
+      return (data != null ? _ihsl512g.OrderItemStatus.fromJson(data) : null)
+          as T;
+    }
+    if (t == _isc.getType<_i8vmkag3.OrderItemStatusUpdate?>()) {
+      return (data != null
+              ? _i8vmkag3.OrderItemStatusUpdate.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _isc.getType<_in19xqkp.OrderItemView?>()) {
+      return (data != null ? _in19xqkp.OrderItemView.fromJson(data) : null)
+          as T;
+    }
+    if (t == _isc.getType<_iaqxrbm9.OrderStatus?>()) {
+      return (data != null ? _iaqxrbm9.OrderStatus.fromJson(data) : null) as T;
+    }
+    if (t == _isc.getType<_i5x25q0s.OrderView?>()) {
+      return (data != null ? _i5x25q0s.OrderView.fromJson(data) : null) as T;
+    }
     if (t == _isc.getType<_i64byz7d.TableFloorStatus?>()) {
       return (data != null ? _i64byz7d.TableFloorStatus.fromJson(data) : null)
           as T;
@@ -534,6 +636,18 @@ class Protocol extends _isc.SerializationManager {
     }
     if (t == List<_isc.UuidValue>) {
       return (data as List).map((e) => deserialize<_isc.UuidValue>(e)).toList()
+          as T;
+    }
+    if (t == List<_ihzk2s8h.OrderItemCreateLine>) {
+      return (data as List)
+              .map((e) => deserialize<_ihzk2s8h.OrderItemCreateLine>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_in19xqkp.OrderItemView>) {
+      return (data as List)
+              .map((e) => deserialize<_in19xqkp.OrderItemView>(e))
+              .toList()
           as T;
     }
     if (t == List<_ia930tyq.SuperAdminView>) {
@@ -575,6 +689,12 @@ class Protocol extends _isc.SerializationManager {
     if (t == List<_i6z5knea.MenuCategoryView>) {
       return (data as List)
               .map((e) => deserialize<_i6z5knea.MenuCategoryView>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_i5f9osh7.OrderView>) {
+      return (data as List)
+              .map((e) => deserialize<_i5f9osh7.OrderView>(e))
               .toList()
           as T;
     }
@@ -625,6 +745,7 @@ class Protocol extends _isc.SerializationManager {
       _ii1yylu5.IngredientCreate => 'IngredientCreate',
       _i7okswdu.IngredientErrorCode => 'IngredientErrorCode',
       _i6yqbuhf.IngredientException => 'IngredientException',
+      _i1tfcnyz.IngredientRestock => 'IngredientRestock',
       _i8smn6k1.IngredientView => 'IngredientView',
       _ilqdzk9u.MenuArticleCreate => 'MenuArticleCreate',
       _i5kcaxik.MenuArticleErrorCode => 'MenuArticleErrorCode',
@@ -637,6 +758,16 @@ class Protocol extends _isc.SerializationManager {
       _iu0xgttg.MenuCategoryUpdate => 'MenuCategoryUpdate',
       _igs74mgr.MenuCategoryView => 'MenuCategoryView',
       _ipcoxh71.UnitsType => 'UnitsType',
+      _iqdnv1pi.OrderAddItems => 'OrderAddItems',
+      _iwmhqcsn.OrderCreate => 'OrderCreate',
+      _iepprhv5.OrderErrorCode => 'OrderErrorCode',
+      _iumotmt8.OrderException => 'OrderException',
+      _ihzk2s8h.OrderItemCreateLine => 'OrderItemCreateLine',
+      _ihsl512g.OrderItemStatus => 'OrderItemStatus',
+      _i8vmkag3.OrderItemStatusUpdate => 'OrderItemStatusUpdate',
+      _in19xqkp.OrderItemView => 'OrderItemView',
+      _iaqxrbm9.OrderStatus => 'OrderStatus',
+      _i5x25q0s.OrderView => 'OrderView',
       _i64byz7d.TableFloorStatus => 'TableFloorStatus',
       _iui9xd5q.VenueTableCreate => 'VenueTableCreate',
       _iqjhym86.VenueTableErrorCode => 'VenueTableErrorCode',
@@ -717,6 +848,8 @@ class Protocol extends _isc.SerializationManager {
         return 'IngredientErrorCode';
       case _i6yqbuhf.IngredientException():
         return 'IngredientException';
+      case _i1tfcnyz.IngredientRestock():
+        return 'IngredientRestock';
       case _i8smn6k1.IngredientView():
         return 'IngredientView';
       case _ilqdzk9u.MenuArticleCreate():
@@ -741,6 +874,26 @@ class Protocol extends _isc.SerializationManager {
         return 'MenuCategoryView';
       case _ipcoxh71.UnitsType():
         return 'UnitsType';
+      case _iqdnv1pi.OrderAddItems():
+        return 'OrderAddItems';
+      case _iwmhqcsn.OrderCreate():
+        return 'OrderCreate';
+      case _iepprhv5.OrderErrorCode():
+        return 'OrderErrorCode';
+      case _iumotmt8.OrderException():
+        return 'OrderException';
+      case _ihzk2s8h.OrderItemCreateLine():
+        return 'OrderItemCreateLine';
+      case _ihsl512g.OrderItemStatus():
+        return 'OrderItemStatus';
+      case _i8vmkag3.OrderItemStatusUpdate():
+        return 'OrderItemStatusUpdate';
+      case _in19xqkp.OrderItemView():
+        return 'OrderItemView';
+      case _iaqxrbm9.OrderStatus():
+        return 'OrderStatus';
+      case _i5x25q0s.OrderView():
+        return 'OrderView';
       case _i64byz7d.TableFloorStatus():
         return 'TableFloorStatus';
       case _iui9xd5q.VenueTableCreate():
@@ -865,6 +1018,9 @@ class Protocol extends _isc.SerializationManager {
     if (dataClassName == 'IngredientException') {
       return deserialize<_i6yqbuhf.IngredientException>(data['data']);
     }
+    if (dataClassName == 'IngredientRestock') {
+      return deserialize<_i1tfcnyz.IngredientRestock>(data['data']);
+    }
     if (dataClassName == 'IngredientView') {
       return deserialize<_i8smn6k1.IngredientView>(data['data']);
     }
@@ -900,6 +1056,36 @@ class Protocol extends _isc.SerializationManager {
     }
     if (dataClassName == 'UnitsType') {
       return deserialize<_ipcoxh71.UnitsType>(data['data']);
+    }
+    if (dataClassName == 'OrderAddItems') {
+      return deserialize<_iqdnv1pi.OrderAddItems>(data['data']);
+    }
+    if (dataClassName == 'OrderCreate') {
+      return deserialize<_iwmhqcsn.OrderCreate>(data['data']);
+    }
+    if (dataClassName == 'OrderErrorCode') {
+      return deserialize<_iepprhv5.OrderErrorCode>(data['data']);
+    }
+    if (dataClassName == 'OrderException') {
+      return deserialize<_iumotmt8.OrderException>(data['data']);
+    }
+    if (dataClassName == 'OrderItemCreateLine') {
+      return deserialize<_ihzk2s8h.OrderItemCreateLine>(data['data']);
+    }
+    if (dataClassName == 'OrderItemStatus') {
+      return deserialize<_ihsl512g.OrderItemStatus>(data['data']);
+    }
+    if (dataClassName == 'OrderItemStatusUpdate') {
+      return deserialize<_i8vmkag3.OrderItemStatusUpdate>(data['data']);
+    }
+    if (dataClassName == 'OrderItemView') {
+      return deserialize<_in19xqkp.OrderItemView>(data['data']);
+    }
+    if (dataClassName == 'OrderStatus') {
+      return deserialize<_iaqxrbm9.OrderStatus>(data['data']);
+    }
+    if (dataClassName == 'OrderView') {
+      return deserialize<_i5x25q0s.OrderView>(data['data']);
     }
     if (dataClassName == 'TableFloorStatus') {
       return deserialize<_i64byz7d.TableFloorStatus>(data['data']);

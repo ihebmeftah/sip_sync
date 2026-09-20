@@ -3,7 +3,6 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/widgets/buildings_gate_shell.dart';
 import '../../core/widgets/ops_shell.dart';
-import '../../core/widgets/placeholder_view.dart';
 import '../../features/auth/views/register_view.dart';
 import '../../features/auth/views/sign_in_view.dart';
 import '../../features/buildings/views/building_form_view.dart';
@@ -12,12 +11,14 @@ import '../../features/dashboard/views/dashboard_view.dart';
 import '../../features/employees/views/employee_details_view.dart';
 import '../../features/employees/views/employee_form_view.dart';
 import '../../features/employees/views/employees_list_view.dart';
+import '../../features/orders/views/order_create_articles_view.dart';
+import '../../features/orders/views/order_detail_view.dart';
+import '../../features/orders/views/orders_list_view.dart';
 import '../../features/products/views/articles_list_view.dart';
 import '../../features/products/views/categories_list_view.dart';
 import '../../features/products/views/ingredients_list_view.dart';
 import '../../features/tables/views/tables_list_view.dart';
 import '../../features/profile/views/profile_view.dart';
-import '../../l10n/generated/app_localizations.dart';
 
 part 'app_routes.g.dart';
 
@@ -115,6 +116,15 @@ class BuildingEditRoute extends GoRouteData with $BuildingEditRoute {
       name: 'employeeDetails',
     ),
     TypedGoRoute<PosRoute>(path: '/b/:buildingId/pos', name: 'pos'),
+    TypedGoRoute<OrderCreateArticlesRoute>(
+      path: '/b/:buildingId/orders/new/articles',
+      name: 'orderCreateArticles',
+    ),
+    TypedGoRoute<OrderDetailRoute>(
+      path: '/b/:buildingId/orders/:orderId',
+      name: 'orderDetail',
+    ),
+    TypedGoRoute<OrdersRoute>(path: '/b/:buildingId/orders', name: 'orders'),
     TypedGoRoute<TablesRoute>(path: '/b/:buildingId/tables', name: 'tables'),
     TypedGoRoute<CategoriesRoute>(
       path: '/b/:buildingId/products/categories',
@@ -216,8 +226,42 @@ class PosRoute extends GoRouteData with $PosRoute {
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    final name = AppLocalizations.of(context)!.navPos;
-    return PlaceholderView(screenName: name);
+    return OrdersListView(buildingId: buildingId);
+  }
+}
+
+class OrdersRoute extends GoRouteData with $OrdersRoute {
+  const OrdersRoute({required this.buildingId});
+
+  final String buildingId;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return OrdersListView(buildingId: buildingId);
+  }
+}
+
+class OrderCreateArticlesRoute extends GoRouteData
+    with $OrderCreateArticlesRoute {
+  const OrderCreateArticlesRoute({required this.buildingId});
+
+  final String buildingId;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return OrderCreateArticlesView(buildingId: buildingId);
+  }
+}
+
+class OrderDetailRoute extends GoRouteData with $OrderDetailRoute {
+  const OrderDetailRoute({required this.buildingId, required this.orderId});
+
+  final String buildingId;
+  final String orderId;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return OrderDetailView(buildingId: buildingId, orderId: orderId);
   }
 }
 

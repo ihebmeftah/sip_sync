@@ -59,6 +59,8 @@ import 'package:sip_sync_client/src/protocol/menu/dtos/article_composition_view.
     as _ier7rmyd;
 import 'package:sip_sync_client/src/protocol/menu/dtos/ingredient_create.dart'
     as _iv1xmy57;
+import 'package:sip_sync_client/src/protocol/menu/dtos/ingredient_restock.dart'
+    as _iif93805;
 import 'package:sip_sync_client/src/protocol/menu/dtos/ingredient_view.dart'
     as _i25phy6n;
 import 'package:sip_sync_client/src/protocol/menu/dtos/menu_article_create.dart'
@@ -73,6 +75,14 @@ import 'package:sip_sync_client/src/protocol/menu/dtos/menu_category_update.dart
     as _ifcginy4;
 import 'package:sip_sync_client/src/protocol/menu/dtos/menu_category_view.dart'
     as _i6z5knea;
+import 'package:sip_sync_client/src/protocol/orders/dtos/order_add_items.dart'
+    as _ie4jvepd;
+import 'package:sip_sync_client/src/protocol/orders/dtos/order_create.dart'
+    as _i0prt93r;
+import 'package:sip_sync_client/src/protocol/orders/dtos/order_item_status_update.dart'
+    as _i6knlbz9;
+import 'package:sip_sync_client/src/protocol/orders/dtos/order_view.dart'
+    as _i5f9osh7;
 import 'package:sip_sync_client/src/protocol/tables/dtos/venue_table_create.dart'
     as _i5q3abjq;
 import 'package:sip_sync_client/src/protocol/tables/dtos/venue_table_update.dart'
@@ -436,6 +446,15 @@ class EndpointIngredient extends _isc.EndpointRef {
         'delete',
         {'id': id},
       );
+
+  /// Owner or employee adds incoming quantity to stock.
+  _ida.Future<_i25phy6n.IngredientView> restock(
+    _iif93805.IngredientRestock request,
+  ) => caller.callServerEndpoint<_i25phy6n.IngredientView>(
+    'ingredient',
+    'restock',
+    {'request': request},
+  );
 }
 
 /// Menu article RPC for a building.
@@ -508,6 +527,64 @@ class EndpointMenuCategory extends _isc.EndpointRef {
     'update',
     {'request': request},
   );
+}
+
+/// Floor / POS order RPC for a building.
+/// {@category Endpoint}
+class EndpointOrder extends _isc.EndpointRef {
+  EndpointOrder(_isc.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'order';
+
+  /// Lists orders for [buildingId] (owner or assigned employee).
+  _ida.Future<List<_i5f9osh7.OrderView>> list(_isc.UuidValue buildingId) =>
+      caller.callServerEndpoint<List<_i5f9osh7.OrderView>>(
+        'order',
+        'list',
+        {'buildingId': buildingId},
+      );
+
+  /// Loads one order with items.
+  _ida.Future<_i5f9osh7.OrderView> get(_isc.UuidValue orderId) =>
+      caller.callServerEndpoint<_i5f9osh7.OrderView>(
+        'order',
+        'get',
+        {'orderId': orderId},
+      );
+
+  /// Owner or employee creates an order with lines.
+  _ida.Future<_i5f9osh7.OrderView> create(_i0prt93r.OrderCreate request) =>
+      caller.callServerEndpoint<_i5f9osh7.OrderView>(
+        'order',
+        'create',
+        {'request': request},
+      );
+
+  /// Adds lines to an open order.
+  _ida.Future<_i5f9osh7.OrderView> addItems(_ie4jvepd.OrderAddItems request) =>
+      caller.callServerEndpoint<_i5f9osh7.OrderView>(
+        'order',
+        'addItems',
+        {'request': request},
+      );
+
+  /// Advances or cancels one order line (sets attribution).
+  _ida.Future<_i5f9osh7.OrderView> updateItemStatus(
+    _i6knlbz9.OrderItemStatusUpdate request,
+  ) => caller.callServerEndpoint<_i5f9osh7.OrderView>(
+    'order',
+    'updateItemStatus',
+    {'request': request},
+  );
+
+  /// Cancels an open order.
+  _ida.Future<_i5f9osh7.OrderView> cancel(_isc.UuidValue orderId) =>
+      caller.callServerEndpoint<_i5f9osh7.OrderView>(
+        'order',
+        'cancel',
+        {'orderId': orderId},
+      );
 }
 
 /// Floor table RPC for a building.
@@ -593,6 +670,7 @@ class Client extends _isc.ServerpodClientShared {
     ingredient = EndpointIngredient(this);
     menuArticle = EndpointMenuArticle(this);
     menuCategory = EndpointMenuCategory(this);
+    order = EndpointOrder(this);
     venueTable = EndpointVenueTable(this);
     modules = Modules(this);
   }
@@ -617,6 +695,8 @@ class Client extends _isc.ServerpodClientShared {
 
   late final EndpointMenuCategory menuCategory;
 
+  late final EndpointOrder order;
+
   late final EndpointVenueTable venueTable;
 
   late final Modules modules;
@@ -633,6 +713,7 @@ class Client extends _isc.ServerpodClientShared {
     'ingredient': ingredient,
     'menuArticle': menuArticle,
     'menuCategory': menuCategory,
+    'order': order,
     'venueTable': venueTable,
   };
 

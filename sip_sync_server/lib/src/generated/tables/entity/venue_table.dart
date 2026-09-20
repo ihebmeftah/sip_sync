@@ -14,6 +14,7 @@
 import 'package:serverpod/serverpod.dart' as _is;
 import 'package:sip_sync_server/src/generated/protocol.dart' as _iaib1p48;
 import '../../buildings/entity/building.dart' as _iaohraio;
+import '../../orders/entity/venue_order.dart' as _iwamn8sj;
 
 /// A physical dining table in a venue. Floor status is computed, not stored.
 abstract class VenueTable
@@ -26,6 +27,7 @@ abstract class VenueTable
     required this.maxSeats,
     bool? isActive,
     DateTime? createdAt,
+    this.orders,
   }) : isActive = isActive ?? true,
        createdAt = createdAt ?? DateTime.now();
 
@@ -37,6 +39,7 @@ abstract class VenueTable
     required int maxSeats,
     bool? isActive,
     DateTime? createdAt,
+    List<_iwamn8sj.VenueOrder>? orders,
   }) = _VenueTableImpl;
 
   factory VenueTable.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -60,6 +63,11 @@ abstract class VenueTable
       createdAt: jsonSerialization['createdAt'] == null
           ? null
           : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
+      orders: jsonSerialization['orders'] == null
+          ? null
+          : _iaib1p48.Protocol().deserialize<List<_iwamn8sj.VenueOrder>>(
+              jsonSerialization['orders'],
+            ),
     );
   }
 
@@ -82,6 +90,8 @@ abstract class VenueTable
 
   DateTime createdAt;
 
+  List<_iwamn8sj.VenueOrder>? orders;
+
   @override
   _is.Table<_is.UuidValue?> get table => t;
 
@@ -96,6 +106,7 @@ abstract class VenueTable
     int? maxSeats,
     bool? isActive,
     DateTime? createdAt,
+    List<_iwamn8sj.VenueOrder>? orders,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -108,6 +119,8 @@ abstract class VenueTable
       'maxSeats': maxSeats,
       'isActive': isActive,
       'createdAt': createdAt.toJson(),
+      if (orders != null)
+        'orders': orders?.toJson(valueToJson: (v) => v.toJson()),
     };
   }
 
@@ -116,8 +129,14 @@ abstract class VenueTable
     return {};
   }
 
-  static VenueTableInclude include({_iaohraio.BuildingInclude? building}) {
-    return VenueTableInclude._(building: building);
+  static VenueTableInclude include({
+    _iaohraio.BuildingInclude? building,
+    _iwamn8sj.VenueOrderIncludeList? orders,
+  }) {
+    return VenueTableInclude._(
+      building: building,
+      orders: orders,
+    );
   }
 
   static VenueTableIncludeList includeList({
@@ -155,6 +174,7 @@ class _VenueTableImpl extends VenueTable {
     required int maxSeats,
     bool? isActive,
     DateTime? createdAt,
+    List<_iwamn8sj.VenueOrder>? orders,
   }) : super._(
          id: id,
          buildingId: buildingId,
@@ -163,6 +183,7 @@ class _VenueTableImpl extends VenueTable {
          maxSeats: maxSeats,
          isActive: isActive,
          createdAt: createdAt,
+         orders: orders,
        );
 
   /// Returns a shallow copy of this [VenueTable]
@@ -177,6 +198,7 @@ class _VenueTableImpl extends VenueTable {
     int? maxSeats,
     bool? isActive,
     DateTime? createdAt,
+    Object? orders = _Undefined,
   }) {
     return VenueTable(
       id: id is _is.UuidValue? ? id : this.id,
@@ -188,6 +210,9 @@ class _VenueTableImpl extends VenueTable {
       maxSeats: maxSeats ?? this.maxSeats,
       isActive: isActive ?? this.isActive,
       createdAt: createdAt ?? this.createdAt,
+      orders: orders is List<_iwamn8sj.VenueOrder>?
+          ? orders
+          : this.orders?.map((e0) => e0.copyWith()).toList(),
     );
   }
 }
@@ -264,6 +289,10 @@ class VenueTableTable extends _is.Table<_is.UuidValue?> {
 
   late final _is.ColumnDateTime createdAt;
 
+  _iwamn8sj.VenueOrderTable? ___orders;
+
+  _is.ManyRelation<_iwamn8sj.VenueOrderTable>? _orders;
+
   _iaohraio.BuildingTable get building {
     if (_building != null) return _building!;
     _building = _is.createRelationTable(
@@ -275,6 +304,38 @@ class VenueTableTable extends _is.Table<_is.UuidValue?> {
           _iaohraio.BuildingTable(tableRelation: foreignTableRelation),
     );
     return _building!;
+  }
+
+  _iwamn8sj.VenueOrderTable get __orders {
+    if (___orders != null) return ___orders!;
+    ___orders = _is.createRelationTable(
+      relationFieldName: '__orders',
+      field: VenueTable.t.id,
+      foreignField: _iwamn8sj.VenueOrder.t.venueTableId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _iwamn8sj.VenueOrderTable(tableRelation: foreignTableRelation),
+    );
+    return ___orders!;
+  }
+
+  _is.ManyRelation<_iwamn8sj.VenueOrderTable> get orders {
+    if (_orders != null) return _orders!;
+    var relationTable = _is.createRelationTable(
+      relationFieldName: 'orders',
+      field: VenueTable.t.id,
+      foreignField: _iwamn8sj.VenueOrder.t.venueTableId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _iwamn8sj.VenueOrderTable(tableRelation: foreignTableRelation),
+    );
+    _orders = _is.ManyRelation<_iwamn8sj.VenueOrderTable>(
+      tableWithRelations: relationTable,
+      table: _iwamn8sj.VenueOrderTable(
+        tableRelation: relationTable.tableRelation!.lastRelation,
+      ),
+    );
+    return _orders!;
   }
 
   @override
@@ -292,19 +353,31 @@ class VenueTableTable extends _is.Table<_is.UuidValue?> {
     if (relationField == 'building') {
       return building;
     }
+    if (relationField == 'orders') {
+      return __orders;
+    }
     return null;
   }
 }
 
 class VenueTableInclude extends _is.IncludeObject {
-  VenueTableInclude._({_iaohraio.BuildingInclude? building}) {
+  VenueTableInclude._({
+    _iaohraio.BuildingInclude? building,
+    _iwamn8sj.VenueOrderIncludeList? orders,
+  }) {
     _building = building;
+    _orders = orders;
   }
 
   _iaohraio.BuildingInclude? _building;
 
+  _iwamn8sj.VenueOrderIncludeList? _orders;
+
   @override
-  Map<String, _is.Include?> get includes => {'building': _building};
+  Map<String, _is.Include?> get includes => {
+    'building': _building,
+    'orders': _orders,
+  };
 
   @override
   _is.Table<_is.UuidValue?> get table => VenueTable.t;
@@ -332,7 +405,13 @@ class VenueTableIncludeList extends _is.IncludeList {
 class VenueTableRepository {
   const VenueTableRepository._();
 
+  final attach = const VenueTableAttachRepository._();
+
   final attachRow = const VenueTableAttachRowRepository._();
+
+  final detach = const VenueTableDetachRepository._();
+
+  final detachRow = const VenueTableDetachRowRepository._();
 
   /// Returns a list of [VenueTable]s matching the given query parameters.
   ///
@@ -732,6 +811,35 @@ class VenueTableRepository {
   }
 }
 
+class VenueTableAttachRepository {
+  const VenueTableAttachRepository._();
+
+  /// Creates a relation between this [VenueTable] and the given [VenueOrder]s
+  /// by setting each [VenueOrder]'s foreign key `venueTableId` to refer to this [VenueTable].
+  Future<void> orders(
+    _is.DatabaseSession session,
+    VenueTable venueTable,
+    List<_iwamn8sj.VenueOrder> venueOrder, {
+    _is.Transaction? transaction,
+  }) async {
+    if (venueOrder.any((e) => e.id == null)) {
+      throw ArgumentError.notNull('venueOrder.id');
+    }
+    if (venueTable.id == null) {
+      throw ArgumentError.notNull('venueTable.id');
+    }
+
+    var $venueOrder = venueOrder
+        .map((e) => e.copyWith(venueTableId: venueTable.id))
+        .toList();
+    await session.db.update<_iwamn8sj.VenueOrder>(
+      $venueOrder,
+      columns: [_iwamn8sj.VenueOrder.t.venueTableId],
+      transaction: transaction,
+    );
+  }
+}
+
 class VenueTableAttachRowRepository {
   const VenueTableAttachRowRepository._();
 
@@ -754,6 +862,83 @@ class VenueTableAttachRowRepository {
     await session.db.updateRow<VenueTable>(
       $venueTable,
       columns: [VenueTable.t.buildingId],
+      transaction: transaction,
+    );
+  }
+
+  /// Creates a relation between this [VenueTable] and the given [VenueOrder]
+  /// by setting the [VenueOrder]'s foreign key `venueTableId` to refer to this [VenueTable].
+  Future<void> orders(
+    _is.DatabaseSession session,
+    VenueTable venueTable,
+    _iwamn8sj.VenueOrder venueOrder, {
+    _is.Transaction? transaction,
+  }) async {
+    if (venueOrder.id == null) {
+      throw ArgumentError.notNull('venueOrder.id');
+    }
+    if (venueTable.id == null) {
+      throw ArgumentError.notNull('venueTable.id');
+    }
+
+    var $venueOrder = venueOrder.copyWith(venueTableId: venueTable.id);
+    await session.db.updateRow<_iwamn8sj.VenueOrder>(
+      $venueOrder,
+      columns: [_iwamn8sj.VenueOrder.t.venueTableId],
+      transaction: transaction,
+    );
+  }
+}
+
+class VenueTableDetachRepository {
+  const VenueTableDetachRepository._();
+
+  /// Detaches the relation between this [VenueTable] and the given [VenueOrder]
+  /// by setting the [VenueOrder]'s foreign key `venueTableId` to `null`.
+  ///
+  /// This removes the association between the two models without deleting
+  /// the related record.
+  Future<void> orders(
+    _is.DatabaseSession session,
+    List<_iwamn8sj.VenueOrder> venueOrder, {
+    _is.Transaction? transaction,
+  }) async {
+    if (venueOrder.any((e) => e.id == null)) {
+      throw ArgumentError.notNull('venueOrder.id');
+    }
+
+    var $venueOrder = venueOrder
+        .map((e) => e.copyWith(venueTableId: null))
+        .toList();
+    await session.db.update<_iwamn8sj.VenueOrder>(
+      $venueOrder,
+      columns: [_iwamn8sj.VenueOrder.t.venueTableId],
+      transaction: transaction,
+    );
+  }
+}
+
+class VenueTableDetachRowRepository {
+  const VenueTableDetachRowRepository._();
+
+  /// Detaches the relation between this [VenueTable] and the given [VenueOrder]
+  /// by setting the [VenueOrder]'s foreign key `venueTableId` to `null`.
+  ///
+  /// This removes the association between the two models without deleting
+  /// the related record.
+  Future<void> orders(
+    _is.DatabaseSession session,
+    _iwamn8sj.VenueOrder venueOrder, {
+    _is.Transaction? transaction,
+  }) async {
+    if (venueOrder.id == null) {
+      throw ArgumentError.notNull('venueOrder.id');
+    }
+
+    var $venueOrder = venueOrder.copyWith(venueTableId: null);
+    await session.db.updateRow<_iwamn8sj.VenueOrder>(
+      $venueOrder,
+      columns: [_iwamn8sj.VenueOrder.t.venueTableId],
       transaction: transaction,
     );
   }

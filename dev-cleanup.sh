@@ -1,0 +1,1689 @@
+#!/usr/bin/env bash
+
+# -----------------------------------------------------------------------------
+# 🚀 Dev Cleanup Utility 🧹
+# -----------------------------------------------------------------------------
+
+# --- Colors for pretty printing ---
+if [ -t 1 ]; then
+    GREEN="\033[0;32m"
+    YELLOW="\033[0;33m"
+    RED="\033[0;31m"
+    BLUE="\033[0;34m"
+    CYAN="\033[0;36m"
+    MAGENTA="\033[0;35m"
+    NC="\033[0m"
+    BOLD="\033[1m"
+    FAINT="\033[2m"
+else
+    GREEN=""
+    YELLOW=""
+    RED=""
+    BLUE=""
+    CYAN=""
+    MAGENTA=""
+    NC=""
+    BOLD=""
+    FAINT=""
+fi
+
+# --- Global Variables ---
+SCRIPT_VERSION="1.2.0"
+GITHUB_REPO="https://github.com/jemishavasoya/dev-cleaner"
+DRY_RUN=false
+
+# Check if FLUTTER_SEARCH_DIR is already set as environment variable
+if [ -z "${FLUTTER_SEARCH_DIR}" ]; then
+    FLUTTER_SEARCH_DIR="."  # Default search directory for Flutter cleanup
+    FLUTTER_DIR_SOURCE="default"
+else
+    # Expand ~ to home directory if present in environment variable
+    FLUTTER_SEARCH_DIR="${FLUTTER_SEARCH_DIR/#\~/$HOME}"
+    FLUTTER_DIR_SOURCE="environment"
+    
+    # Validate environment variable directory
+    if [ ! -d "$FLUTTER_SEARCH_DIR" ]; then
+        echo -e "${YELLOW}Warning: FLUTTER_SEARCH_DIR environment variable points to non-existent directory: ${FLUTTER_SEARCH_DIR}${NC}"
+        echo -e "${YELLOW}Falling back to current directory.${NC}"
+        FLUTTER_SEARCH_DIR="."
+        FLUTTER_DIR_SOURCE="default"
+    fi
+fi
+
+# Logo
+print_logo() {
+    echo -e "${CYAN}${BOLD}"
+    # Using 'cat << "EOF"' with no leading space on the logo lines ensures perfect alignment.
+    cat << "EOF"
+██████╗ ███████╗██╗    ██╗     ██████╗██╗     ███████╗ █████╗ ███╗   ██╗███████╗██████╗
+██╔══██╗██╔════╝██║    ██║    ██╔════╝██║     ██╔════╝██╔══██╗████╗  ██║██╔════╝██╔══██╗
+██║  ██║█████╗  ██║    ██║    ██║     ██║     █████╗  ███████║██╔██╗ ██║█████╗  ██████╔╝
+██║  ██║██╔══╝  ╚██╗ ██╔╝     ██║     ██║     ██╔══╝  ██╔══██║██║╚██╗██║██╔══╝  ██╔══██╗
+██████╔╝███████╗ ╚████╔╝      ╚██████╗███████╗███████╗██║  ██║██║ ╚████║███████╗██║  ██║
+╚═════╝ ╚══════╝  ╚═══╝        ╚═════╝╚══════╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═══╝╚══════╝╚═╝  ╚═╝
+EOF
+    echo -e "${NC}"
+}
+
+# --- Helper Functions ---
+print_header_line() {
+    local char="${1:-─}"
+    printf "%$(tput cols)s\n" "" | tr " " "$char"
+}
+
+print_section_header() {
+    echo -e "${BLUE}${BOLD}➤ $1${NC}"
+    print_header_line "─"
+}
+
+print_item() {
+    local icon="${1}"
+    local color="${2}"
+    local text="${3}"
+    echo -e "${color}${icon} ${text}${NC}"
+}
+
+get_disk_space_kb() {
+    df -k . | awk 'NR==2 {print $4}'
+}
+
+get_disk_space() {
+    human_kb "$(get_disk_space_kb)"
+}
+
+# macOS refuses to delete parts of /Library (notably the CoreSimulator dyld
+# cache) unless the *terminal app* running this script holds Full Disk Access.
+# The check is TCC/per-app, not per-user, so sudo alone does not lift it and
+# rm fails with EPERM. Reading the TCC database is the canonical probe.
+# Memoized: the answer cannot change while the script runs.
+FULL_DISK_ACCESS=""
+has_full_disk_access() {
+    [ "$(uname)" = "Darwin" ] || return 0
+    if [ -z "$FULL_DISK_ACCESS" ]; then
+        if head -c 1 "/Library/Application Support/com.apple.TCC/TCC.db" >/dev/null 2>&1; then
+            FULL_DISK_ACCESS="yes"
+        else
+            FULL_DISK_ACCESS="no"
+        fi
+    fi
+    [ "$FULL_DISK_ACCESS" = "yes" ]
+}
+
+print_full_disk_access_hint() {
+    print_item "→" "${CYAN}" "Grant Full Disk Access to your terminal, then re-run:"
+    echo -e "  ${FAINT}System Settings → Privacy & Security → Full Disk Access → enable your terminal app (Terminal, iTerm, VS Code…), then restart it.${NC}"
+}
+
+# --- Estimation helpers (read-only: never delete anything) ---
+
+# Format a size given in KB into a human-readable string using the same
+# binary units as `df -h` on macOS (Gi/Mi/Ki), so the estimate matches the
+# "Free Space" figure shown at the top of the menu.
+human_kb() {
+    awk -v kb="${1:-0}" 'BEGIN {
+        if (kb >= 1048576)      printf "%.1fGi", kb / 1048576;
+        else if (kb >= 1024)    printf "%.1fMi", kb / 1024;
+        else                    printf "%dKi", kb;
+    }'
+}
+
+# Convert a Docker size string (Docker uses DECIMAL units: B/kB/MB/GB/TB,
+# e.g. "1.02GB", "728.5MB", "32.8kB", "0B") into KiB so Docker's own
+# self-reported sizes can be summed and fed to human_kb() like every other
+# estimate. Suffix order matters: kB/MB/GB/TB all end in "B", so the bare
+# "B" case must be checked last. Read-only.
+docker_size_to_kb() {
+    awk -v s="${1:-0B}" 'BEGIN {
+        if      (s ~ /TB$/) { sub(/TB$/,"",s); printf "%d", s*1e12/1024 }
+        else if (s ~ /GB$/) { sub(/GB$/,"",s); printf "%d", s*1e9/1024 }
+        else if (s ~ /MB$/) { sub(/MB$/,"",s); printf "%d", s*1e6/1024 }
+        else if (s ~ /kB$/) { sub(/kB$/,"",s); printf "%d", s*1e3/1024 }
+        else if (s ~  /B$/) { sub(/B$/,"",s);  printf "%d", s/1024 }
+        else                { printf "0" }
+    }'
+}
+
+# Sum the disk usage (in KB) of the given paths/globs. Read-only.
+# Glob handling mirrors safe_rm() so the estimate matches what cleanup deletes.
+# Usage: du_kb_sum <path-or-glob> [<path-or-glob> ...]
+du_kb_sum() {
+    local total=0 path expanded_path kb
+    local expanded_paths=()
+    for path in "$@"; do
+        expanded_paths=()
+        shopt -s nullglob
+        if [[ "$path" == *\** || "$path" == *\?* ]]; then
+            # Intentional glob expansion (same pattern as safe_rm)
+            # shellcheck disable=SC2206
+            expanded_paths=($path)
+        else
+            expanded_paths=("$path")
+        fi
+        shopt -u nullglob
+
+        for expanded_path in "${expanded_paths[@]}"; do
+            if [[ -e "$expanded_path" ]]; then
+                kb=$(du -sk "$expanded_path" 2>/dev/null | awk '{print $1}')
+                [[ -n "$kb" ]] && total=$((total + kb))
+            fi
+        done
+    done
+    echo "$total"
+}
+
+# Same as du_kb_sum but for paths that require elevated privileges.
+# The sudo session is already kept alive by main_loop(), so no extra prompt.
+sudo_du_kb_sum() {
+    local total=0 path expanded_path kb
+    local expanded_paths=()
+    for path in "$@"; do
+        expanded_paths=()
+        shopt -s nullglob
+        if [[ "$path" == *\** || "$path" == *\?* ]]; then
+            # Intentional glob expansion (same pattern as safe_sudo_rm)
+            # shellcheck disable=SC2206
+            expanded_paths=($path)
+        else
+            expanded_paths=("$path")
+        fi
+        shopt -u nullglob
+
+        for expanded_path in "${expanded_paths[@]}"; do
+            if [[ -e "$expanded_path" ]] || sudo test -e "$expanded_path" 2>/dev/null; then
+                kb=$(sudo du -sk "$expanded_path" 2>/dev/null | awk '{print $1}')
+                [[ -n "$kb" ]] && total=$((total + kb))
+            fi
+        done
+    done
+    echo "$total"
+}
+
+# KB of the Homebrew cache that `brew cleanup --prune=all` can actually free:
+# the downloads, minus the JSON API metadata and the bootsnap compile cache,
+# which the prune leaves in place. Read-only. Shared by estimate_all() and the
+# dry-run credit so option 6's estimate and "Would reclaim" cannot drift apart.
+brew_reclaimable_kb() {
+    local cache="${1:-}"
+    [ -n "$cache" ] || cache="$(brew --cache 2>/dev/null)"
+    [ -n "$cache" ] || { echo 0; return 0; }
+    local kb
+    kb=$(( $(du_kb_sum "$cache") - $(du_kb_sum "$cache/api" "$cache/bootsnap") ))
+    [ "$kb" -gt 0 ] && echo "$kb" || echo 0
+}
+
+# --- Claude Code versions ---
+# Claude Code's native installer keeps every version it has ever installed
+# under versions/ and never removes the old ones (~190 MB per release). Unlike
+# every other target in this script that is NOT a cache directory: one of those
+# files is the binary the `claude` command actually runs, so the active version
+# must survive. These two helpers are read-only and are the single source of
+# truth for "what is deletable", shared by estimate_all() and
+# cleanup_claude_code() so the estimate and the cleanup cannot drift apart.
+CLAUDE_VERSIONS_DIR="$HOME/.local/share/claude/versions"
+CLAUDE_LAUNCHER="$HOME/.local/bin/claude"
+
+# Echo the versions/<release> file the launcher resolves to. Read-only.
+#   rc 0 -> path echoed
+#   rc 1 -> versions/ does not exist (Claude Code not installed this way)
+#   rc 2 -> active version undeterminable; the caller must skip the target
+claude_active_version() {
+    [ -d "$CLAUDE_VERSIONS_DIR" ] || return 1
+    # A regular file (or nothing) means the user replaced the launcher with
+    # their own script or binary. Claude Code itself then keeps every version
+    # on disk because it cannot tell which one that launcher needs, and
+    # neither can we.
+    [ -L "$CLAUDE_LAUNCHER" ] || return 2
+    # A dangling launcher names a version that is no longer on disk, so the
+    # active one cannot be identified: skip rather than prune everything.
+    [ -e "$CLAUDE_LAUNCHER" ] || return 2
+
+    local target dir versions_dir
+    target=$(readlink "$CLAUDE_LAUNCHER") || return 2
+    # readlink may hand back a path relative to the link's own directory
+    case "$target" in
+        /*) ;;
+        *) target="$(dirname "$CLAUDE_LAUNCHER")/$target" ;;
+    esac
+    # Resolve ".." and symlinked parents on both sides before comparing them:
+    # a relative link reads "../share/claude/versions/<x>", which as a plain
+    # string never prefix-matches $CLAUDE_VERSIONS_DIR.
+    dir="$(cd "$(dirname "$target")" 2>/dev/null && pwd -P)" || return 2
+    versions_dir="$(cd "$CLAUDE_VERSIONS_DIR" 2>/dev/null && pwd -P)" || return 2
+    # A launcher pointing anywhere but straight into versions/ is someone
+    # else's launcher too.
+    [ -n "$dir" ] && [ "$dir" = "$versions_dir" ] || return 2
+
+    echo "$dir/$(basename "$target")"
+}
+
+# Echo one removable version file per line. Read-only.
+# An empty list with rc 0 is a valid answer: only the active version is left.
+# Same rc contract as claude_active_version().
+claude_removable_versions() {
+    local active status active_name
+    active=$(claude_active_version); status=$?
+    [ $status -eq 0 ] || return $status
+    active_name="$(basename "$active")"
+
+    local f
+    for f in "$CLAUDE_VERSIONS_DIR"/*; do
+        # Skips subdirectories and the unexpanded glob of an empty directory
+        [ -f "$f" ] || continue
+        # Compared by name, not by path string: $active is canonical while $f
+        # is spelled as the glob produced it, and both are known to sit
+        # directly in versions/, where names are unique.
+        [ "$(basename "$f")" = "$active_name" ] && continue
+        # An older session may still be running from an old binary. `pgrep -x
+        # claude` cannot find it: the files are named after the release, so the
+        # process name is e.g. "2.1.258", not "claude". lsof on the file is the
+        # reliable test. stderr is always dropped ("can't stat()" warnings
+        # would land in the middle of the menu output).
+        if command -v lsof >/dev/null 2>&1 && [ -n "$(lsof -t -- "$f" 2>/dev/null)" ]; then
+            continue
+        fi
+        echo "$f"
+    done
+    return 0
+}
+
+# --- Reclaimed-space accounting ---
+# Free space (df) is a poor progress meter for a cleaner on macOS: on APFS the
+# blocks of a deleted file stay allocated as long as a Time Machine local
+# snapshot still references them (Finder calls that space "purgeable"), so
+# "before vs after" can read the same number right after deleting gigabytes.
+# Every deletion path therefore measures what it removes and adds it here, and
+# the end-of-run summary reports this measured figure next to the df delta.
+RECLAIMED_KB=0
+# Subset of RECLAIMED_KB that host free space can never reflect (Docker frees
+# it inside its own disk image). Excluded when deciding whether the free-space
+# reading "should" have moved, so Docker never triggers the snapshot hint.
+HOST_INVISIBLE_KB=0
+
+add_reclaimed_kb() {
+    local kb="${1:-0}"
+    [[ "$kb" =~ ^[0-9]+$ ]] || return 0
+    RECLAIMED_KB=$((RECLAIMED_KB + kb))
+}
+
+# Number of Time Machine local snapshots on the boot volume. These are what
+# usually keep just-deleted data on disk. Read-only, no sudo needed.
+local_snapshot_count() {
+    [ "$(uname)" = "Darwin" ] || { echo 0; return 0; }
+    tmutil listlocalsnapshots / 2>/dev/null | grep -c 'com.apple.TimeMachine'
+}
+
+# Explain the gap when gigabytes were deleted but free space barely moved,
+# instead of leaving the user staring at "21Gi → 21Gi". On APFS that gap is
+# almost always a Time Machine local snapshot still pinning the deleted blocks.
+# Usage: print_reclaim_hint <reclaimed_kb> <free_space_delta_kb>
+print_reclaim_hint() {
+    local reclaimed_kb="${1:-0}" delta_kb="${2:-0}"
+    [ "$(uname)" = "Darwin" ] || return 0
+    # Only worth explaining when something sizable went away (>100Mi) and free
+    # space did not follow. Half is a generous margin for whatever else the
+    # system wrote to disk while the cleanup was running.
+    [ "$reclaimed_kb" -ge 102400 ] || return 0
+    [ "$delta_kb" -lt $((reclaimed_kb / 2)) ] || return 0
+
+    local snaps
+    snaps=$(local_snapshot_count)
+    echo ""
+    if [ "${snaps:-0}" -gt 0 ]; then
+        print_item "ℹ️" "${YELLOW}" "Free space has not caught up: ${snaps} Time Machine local snapshot(s) still reference the deleted files, so APFS keeps their blocks allocated."
+        print_item "→" "${CYAN}" "macOS releases them on its own (usually within 24h, sooner if the disk fills up), or run option 17 to delete the snapshots now."
+    else
+        print_item "ℹ️" "${YELLOW}" "Free space has not caught up: macOS still counts the deleted data as 'purgeable'."
+        print_item "→" "${CYAN}" "Apps holding the deleted files open (Xcode, Simulator, Docker, browsers) keep that space allocated until they quit."
+    fi
+}
+
+# Run a cleanup command that shrinks a cache *in place* (npm/brew/dotnet/…
+# manage their own directories, so safe_rm never sees those bytes) and credit
+# the size difference to the reclaimed total.
+# Dry-run aware like safe_rm: the command is announced and its cache measured,
+# never executed. Keeping that guard here rather than in every caller is what
+# makes it impossible for a new call site to delete files under --dry-run.
+# Usage: tracked_run <path> [<path> ...] -- <command> [<args> ...]
+tracked_run() {
+    local paths=()
+    while [[ $# -gt 0 && "$1" != "--" ]]; do
+        paths+=("$1")
+        shift
+    done
+    [ $# -gt 0 ] && shift  # drop the --
+
+    if $DRY_RUN; then
+        # Upper bound: these tools empty their cache dir (pnpm/brew only prune
+        # part of it), which is also what estimate_all() measures, so the
+        # dry-run total and the menu estimate stay consistent.
+        local kb
+        kb=$(du_kb_sum "${paths[@]}")
+        add_reclaimed_kb "$kb"
+        echo -e "${YELLOW}[DRY-RUN] Would run: $* ($(human_kb "$kb"))${NC}"
+        return 0
+    fi
+
+    local before after status
+    before=$(du_kb_sum "${paths[@]}")
+    "$@"
+    status=$?
+    after=$(du_kb_sum "${paths[@]}")
+    [ "$before" -gt "$after" ] && add_reclaimed_kb $((before - after))
+    return $status
+}
+
+# Dry-run aware file/directory removal
+# Usage: safe_rm [-r] <path> [<path> ...]
+safe_rm() {
+    local recursive=""
+    local paths=()
+    
+    # Parse arguments
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            -r|-rf|-fr)
+                recursive="-rf"
+                shift
+                ;;
+            *)
+                paths+=("$1")
+                shift
+                ;;
+        esac
+    done
+    
+    for path in "${paths[@]}"; do
+        # Expand globs and handle paths
+        local expanded_paths=()
+        # Use nullglob to handle non-matching patterns
+        shopt -s nullglob
+        if [[ "$path" == *\** || "$path" == *\?* ]]; then
+            expanded_paths=($path)
+        else
+            expanded_paths=("$path")
+        fi
+        shopt -u nullglob
+        
+        for expanded_path in "${expanded_paths[@]}"; do
+            if [[ -e "$expanded_path" ]]; then
+                # Measure before deleting: afterwards the size is gone with it.
+                # This is what the summary reports as "Reclaimed", since df
+                # cannot be trusted right after the deletion (see RECLAIMED_KB).
+                local kb
+                kb=$(du -sk "$expanded_path" 2>/dev/null | awk '{print $1}')
+                add_reclaimed_kb "${kb:-0}"
+                if $DRY_RUN; then
+                    if [[ -d "$expanded_path" ]]; then
+                        echo -e "${YELLOW}[DRY-RUN] Would delete directory: ${expanded_path} ($(human_kb "${kb:-0}"))${NC}"
+                    else
+                        echo -e "${YELLOW}[DRY-RUN] Would delete file: ${expanded_path} ($(human_kb "${kb:-0}"))${NC}"
+                    fi
+                else
+                    if [[ -n "$recursive" ]]; then
+                        rm -rf "$expanded_path"
+                    else
+                        rm -f "$expanded_path"
+                    fi
+                fi
+            fi
+        done
+    done
+}
+
+# Dry-run aware sudo file/directory removal
+# Returns non-zero if any removal failed (e.g. macOS denied it), so callers
+# can print an actionable hint instead of leaving raw rm errors on screen.
+# Usage: safe_sudo_rm [-r] <path> [<path> ...]
+safe_sudo_rm() {
+    local recursive=""
+    local status=0
+    local paths=()
+    
+    # Parse arguments
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            -r|-rf|-fr)
+                recursive="-rf"
+                shift
+                ;;
+            *)
+                paths+=("$1")
+                shift
+                ;;
+        esac
+    done
+    
+    for path in "${paths[@]}"; do
+        # Expand globs and handle paths
+        local expanded_paths=()
+        shopt -s nullglob
+        if [[ "$path" == *\** || "$path" == *\?* ]]; then
+            expanded_paths=($path)
+        else
+            expanded_paths=("$path")
+        fi
+        shopt -u nullglob
+        
+        for expanded_path in "${expanded_paths[@]}"; do
+            if [[ -e "$expanded_path" ]] || sudo test -e "$expanded_path" 2>/dev/null; then
+                # Measured before the deletion, like safe_rm: feeds "Reclaimed".
+                local kb
+                kb=$(sudo du -sk "$expanded_path" 2>/dev/null | awk '{print $1}')
+                add_reclaimed_kb "${kb:-0}"
+                if $DRY_RUN; then
+                    if [[ -d "$expanded_path" ]] || sudo test -d "$expanded_path" 2>/dev/null; then
+                        echo -e "${YELLOW}[DRY-RUN] Would delete directory (sudo): ${expanded_path} ($(human_kb "${kb:-0}"))${NC}"
+                    else
+                        echo -e "${YELLOW}[DRY-RUN] Would delete file (sudo): ${expanded_path} ($(human_kb "${kb:-0}"))${NC}"
+                    fi
+                else
+                    if [[ -n "$recursive" ]]; then
+                        sudo rm -rf "$expanded_path" || status=1
+                    else
+                        sudo rm -f "$expanded_path" || status=1
+                    fi
+                fi
+            fi
+        done
+    done
+
+    return $status
+}
+
+# --- Cleanup Functions ---
+cleanup_xcode() {
+    print_item "✓" "${GREEN}" "Clearing Xcode DerivedData..."
+    safe_rm -rf ~/Library/Developer/Xcode/DerivedData/
+    print_item "✓" "${GREEN}" "Removing old Simulator devices..."
+    safe_rm -rf ~/Library/Developer/CoreSimulator/Devices/
+    print_item "✓" "${GREEN}" "Removing CoreSimulator caches..."
+    safe_rm -rf ~/Library/Developer/CoreSimulator/Caches/*
+    # System-level CoreSimulator cache lives under /Library and needs sudo *and*
+    # Full Disk Access; without the latter macOS denies every unlink and rm
+    # floods the screen with "Operation not permitted". Check first, then act.
+    # Close Xcode/Simulator first so we don't clear files still in use.
+    if compgen -G "/Library/Developer/CoreSimulator/Caches/*" >/dev/null; then
+        if has_full_disk_access; then
+            print_item "ℹ️" "${YELLOW}" "Make sure Xcode and Simulator are closed before clearing the system CoreSimulator cache."
+            print_item "✓" "${GREEN}" "Removing system CoreSimulator caches (sudo)..."
+            if ! safe_sudo_rm -rf /Library/Developer/CoreSimulator/Caches/* 2>/dev/null; then
+                print_item "✕" "${YELLOW}" "System CoreSimulator cache could not be removed: macOS denied it even with sudo."
+                print_item "→" "${CYAN}" "Quit Xcode and Simulator and try again; it is rebuilt automatically on next simulator launch."
+            fi
+        else
+            print_item "✕" "${YELLOW}" "Skipping system CoreSimulator cache: macOS blocks it without Full Disk Access."
+            print_full_disk_access_hint
+        fi
+    fi
+    print_item "✓" "${GREEN}" "Removing old device support files..."
+    safe_rm -rf ~/Library/Developer/Xcode/iOS\ DeviceSupport/
+    print_item "✓" "${GREEN}" "Removing Xcode caches..."
+    safe_rm -rf ~/Library/Caches/com.apple.dt.Xcode/
+    print_item "✓" "${GREEN}" "Removing Xcode Archives..."
+    safe_rm -rf ~/Library/Developer/Xcode/Archives/
+    print_item "✓" "${GREEN}" "Removing Xcode build Products..."
+    safe_rm -rf ~/Library/Developer/Xcode/Products/
+    print_item "✓" "${GREEN}" "Removing Xcode DocumentationCache..."
+    safe_rm -rf ~/Library/Developer/Xcode/DocumentationCache/
+    print_item "✓" "${GREEN}" "Cleaning CoreDevice cache..."
+    safe_rm -rf ~/Library/Containers/com.apple.CoreDevice.CoreDeviceService/Data/Library/Caches/*
+}
+
+cleanup_android() {
+    if [ -d "$HOME/.gradle" ]; then
+        print_item "✓" "${GREEN}" "Cleaning Gradle caches..."
+        safe_rm -rf ~/.gradle/caches/
+        safe_rm -rf ~/.gradle/daemon/
+        # Downloaded Gradle distributions; re-fetched on next wrapper run.
+        safe_rm -rf ~/.gradle/wrapper/
+    else
+        print_item "✕" "${YELLOW}" "Gradle directory not found. Skipping."
+    fi
+    if [ -d "$HOME/.android" ]; then
+        print_item "✓" "${GREEN}" "Cleaning Android tool caches..."
+        # Legacy AVD/build caches under ~/.android; regenerated on demand.
+        safe_rm -rf ~/.android/cache/
+        safe_rm -rf ~/.android/build-cache/
+    fi
+    print_item "✓" "${GREEN}" "Cleaning Android Studio caches..."
+    safe_rm -rf ~/Library/Caches/Google/AndroidStudio*
+    safe_rm -rf ~/Library/Caches/JetBrains/AndroidStudio*
+}
+
+cleanup_android_sdk() {
+    if [ -d "$HOME/Library/Android/sdk" ]; then
+        print_item "✓" "${GREEN}" "Cleaning old Android SDK build-tools (keeping latest 2 versions)..."
+        # Keep only latest 2 versions of build-tools
+        if [ -d "$HOME/Library/Android/sdk/build-tools" ]; then
+            cd "$HOME/Library/Android/sdk/build-tools" 2>/dev/null || return
+            if $DRY_RUN; then
+                ls -t | tail -n +3 | while read -r dir; do
+                    echo -e "${YELLOW}[DRY-RUN] Would delete: $HOME/Library/Android/sdk/build-tools/$dir${NC}"
+                done
+            else
+                ls -t | tail -n +3 | xargs -I {} rm -rf {}
+            fi
+        fi
+
+        print_item "✓" "${GREEN}" "Cleaning old Android platform-tools..."
+        safe_rm -rf ~/Library/Android/sdk/.temp
+
+        # For Apple Silicon Macs, remove x86 emulator images if they exist
+        if [ "$(uname -m)" = "arm64" ]; then
+            print_item "✓" "${GREEN}" "Removing x86 emulator images (ARM Mac detected)..."
+            if $DRY_RUN; then
+                find ~/Library/Android/sdk/system-images -type d -name "x86" 2>/dev/null | while read -r dir; do
+                    echo -e "${YELLOW}[DRY-RUN] Would delete: $dir${NC}"
+                done
+            else
+                find ~/Library/Android/sdk/system-images -type d -name "x86" -exec rm -rf {} + 2>/dev/null || true
+            fi
+        fi
+    else
+        print_item "✕" "${YELLOW}" "Android SDK not found. Skipping."
+    fi
+}
+
+cleanup_flutter() {
+    local search_dir="${1:-.}"  # Directory to search, current by default
+    
+    if command -v flutter &> /dev/null; then
+        print_item "✓" "${GREEN}" "Cleaning Flutter projects recursively from: $search_dir"
+        
+        # Validate that the directory exists
+        if [ ! -d "$search_dir" ]; then
+            print_item "✕" "${RED}" "Directory not found: $search_dir"
+            return 1
+        fi
+        
+        # Find all pubspec.yaml files recursively and clean each project
+        local cleaned_count=0
+        while IFS= read -r -d '' pubspec; do
+            project_dir=$(cd "$(dirname "$pubspec")" 2>/dev/null && pwd)
+            if [ -z "$project_dir" ]; then
+                continue
+            fi
+            
+            echo -e "${CYAN}  🧹 Cleaning: $project_dir${NC}"
+            
+            cd "$project_dir" 2>/dev/null || { 
+                print_item "⚠️" "${YELLOW}" "Skipped (can't access $project_dir)"
+                continue
+            }
+            
+            # Deletions go through safe_rm so they honour --dry-run and count
+            # towards the reclaimed total like every other cleanup option.
+
+            # --- 1. FVM destroy ---
+            if [ -d ".fvm" ]; then
+                echo -e "${FAINT}    🔥 Destroying FVM SDK cache...${NC}"
+                if $DRY_RUN; then
+                    echo -e "${YELLOW}[DRY-RUN] Would run: fvm destroy in ${project_dir}${NC}"
+                else
+                    yes | fvm destroy >/dev/null 2>&1 || true
+                fi
+            fi
+
+            # --- 2. Remove FVM configs ---
+            if [ -d ".fvm" ] || [ -f ".fvmrc" ]; then
+                echo -e "${FAINT}    🔥 Removing FVM folders...${NC}"
+                safe_rm -r .fvm .fvmrc
+            fi
+
+            # --- 3. Clean Flutter build & cache dirs ---
+            echo -e "${FAINT}    🔥 Removing Flutter build and Pub Dev caches...${NC}"
+            safe_rm -r build .dart_tool .packages pubspec.lock
+
+            # --- 4. Clean Gradle caches ---
+            if [ -d "android" ]; then
+                echo -e "${FAINT}    🔥 Removing Gradle caches...${NC}"
+                safe_rm -r android/.gradle android/build android/app/build
+            fi
+
+            # --- 5. Clean CocoaPods (iOS) ---
+            if [ -d "ios" ]; then
+                echo -e "${FAINT}    🔥 Removing CocoaPods caches...${NC}"
+                safe_rm -r ios/Pods ios/Podfile.lock ios/.symlinks ios/Flutter/Flutter.framework ios/Flutter/Flutter.podspec
+            fi
+            
+            cleaned_count=$((cleaned_count + 1))
+            echo -e "${GREEN}  ✅ Cleaned $project_dir${NC}"
+        done < <(find "$search_dir" -type f -name "pubspec.yaml" -print0 2>/dev/null)
+        
+        if [ $cleaned_count -gt 0 ]; then
+            print_item "✓" "${GREEN}" "Cleaned $cleaned_count Flutter project(s)"
+        else
+            print_item "ℹ️" "${YELLOW}" "No Flutter projects found to clean in: $search_dir"
+        fi
+        
+        print_item "✓" "${GREEN}" "Cleaning Flutter global cache..."
+        # The SDK cache sits next to the flutter binary; measure it around the
+        # call so it lands in the reclaimed total (flutter clears it itself).
+        local froot flutter_cache=""
+        froot="$(cd "$(dirname "$(command -v flutter)")" 2>/dev/null && pwd)"
+        [ -n "$froot" ] && flutter_cache="$froot/cache"
+        tracked_run "$flutter_cache" -- flutter cache clean 2>/dev/null || true
+    else
+        print_item "✕" "${YELLOW}" "Flutter command not found. Skipping."
+    fi
+}
+
+cleanup_platformIO() {
+    local PIO_BIN="$HOME/.platformio/penv/bin/pio"
+
+    if [ -x "$PIO_BIN" ]; then
+        :
+    elif command -v pio >/dev/null 2>&1; then
+        PIO_BIN="$(command -v pio)"
+    else
+        print_item "✕" "${YELLOW}" "pio command not found. Skipping."
+        return 0
+    fi
+
+    print_item "✓" "${GREEN}" "Cleaning PlatformIO project builds (pio run clean)..."
+
+    # Find pubspec.yaml and run 'pio run -t clean' in each directory
+    # -print0 handles spaces/newlines safely
+    find ~/ -maxdepth 4 -type d -name "Library" -prune -o -name "platformio.ini" -print0 | while IFS= read -r -d '' file; do
+        dir="$(dirname "$file")"
+        printf 'Running: %s run clean in %s\n' "$PIO_BIN" "$dir"
+
+        # Run in a subshell to avoid changing caller's CWD
+        ( cd "$dir" && "$PIO_BIN" run -t clean )
+    done
+}
+
+cleanup_npm_yarn() {
+    # These tools manage their own cache directories, so safe_rm never sees the
+    # bytes: wrap them in tracked_run so they still land in the "Reclaimed" total.
+    local cache_dir
+    if command -v npm &> /dev/null; then
+        print_item "✓" "${GREEN}" "Cleaning npm cache..."
+        cache_dir="$(npm config get cache 2>/dev/null)"
+        case "$cache_dir" in ""|undefined|null) cache_dir="$HOME/.npm" ;; esac
+        tracked_run "$cache_dir/_cacache" -- npm cache clean --force
+    else
+        print_item "✕" "${YELLOW}" "npm not found. Skipping."
+    fi
+    if command -v yarn &> /dev/null; then
+        print_item "✓" "${GREEN}" "Cleaning yarn cache..."
+        cache_dir="$(yarn cache dir 2>/dev/null)"
+        tracked_run "${cache_dir:-$HOME/Library/Caches/Yarn}" -- yarn cache clean
+    else
+        print_item "✕" "${YELLOW}" "yarn not found. Skipping."
+    fi
+    if command -v pnpm &> /dev/null; then
+        print_item "✓" "${GREEN}" "Pruning pnpm store..."
+        cache_dir="$(pnpm store path 2>/dev/null)"
+        tracked_run "${cache_dir:-$HOME/Library/pnpm/store}" -- pnpm store prune
+    else
+        print_item "✕" "${YELLOW}" "pnpm not found. Skipping."
+    fi
+}
+
+cleanup_nuget() {
+    if command -v dotnet &> /dev/null; then
+        print_item "✓" "${GREEN}" "Clearing all NuGet caches (global-packages, http-cache, temp, plugins)..."
+        # 'all' covers global-packages (extracted packages, the bulk),
+        # http-cache, temp and plugins-cache; all re-created on next restore.
+        # Matches the Windows dev-cleaner.ps1 which also clears 'all'.
+        # Enumerate the cache dirs first so their size can be credited to the
+        # "Reclaimed" total (dotnet clears them itself, safe_rm never sees them).
+        # NuGet has no --dry-run of its own; tracked_run honours the flag.
+        local nuget_dirs=() nuget_dir
+        while IFS= read -r nuget_dir; do
+            [ -n "$nuget_dir" ] && nuget_dirs+=("$nuget_dir")
+        done < <(dotnet nuget locals all --list 2>/dev/null | sed 's/^[a-z-]*: //' | tr -d '\r')
+        tracked_run "${nuget_dirs[@]}" -- dotnet nuget locals all --clear
+    else
+        print_item "✕" "${YELLOW}" "dotnet (NuGet) not found. Skipping."
+    fi
+}
+
+cleanup_homebrew() {
+    if command -v brew &> /dev/null; then
+        print_item "✓" "${GREEN}" "Cleaning Homebrew (brew)..."
+        # --prune=all empties the whole download cache (bottles, casks, bottle
+        # manifests) instead of only entries older than 120 days
+        # (HOMEBREW_CLEANUP_MAX_AGE_DAYS), which on a recently-updated machine
+        # frees nothing at all. Everything there is re-downloadable from
+        # Homebrew's CDN, so the only cost is bandwidth on the next
+        # install/upgrade. It is also what estimate_all() measures below, so
+        # plain `brew cleanup` made the estimate promise space it would not
+        # reclaim.
+        # brew is the one exception to tracked_run's dry-run handling: it has a
+        # native --dry-run worth showing, and only part of its cache dir is
+        # reclaimable, so credit brew_reclaimable_kb() instead of the whole dir.
+        local brew_cache
+        brew_cache="$(brew --cache 2>/dev/null)"
+        if $DRY_RUN; then
+            echo -e "${YELLOW}[DRY-RUN] Would run: brew cleanup --prune=all${NC}"
+            brew cleanup --prune=all --dry-run
+            add_reclaimed_kb "$(brew_reclaimable_kb "$brew_cache")"
+        else
+            # brew prunes its own cache dir, so measure that dir around the call.
+            tracked_run "$brew_cache" -- brew cleanup --prune=all
+        fi
+    else
+        print_item "✕" "${YELLOW}" "Homebrew not found. Skipping."
+    fi
+}
+
+cleanup_cocoapods() {
+    if [ -d "$HOME/.cocoapods" ]; then
+        print_item "✓" "${GREEN}" "Cleaning CocoaPods cache..."
+        safe_rm -r ~/.cocoapods/repos/
+        safe_rm -r ~/Library/Caches/CocoaPods/
+    else
+        print_item "✕" "${YELLOW}" "CocoaPods not found. Skipping."
+    fi
+}
+
+cleanup_ide_caches() {
+    print_item "✓" "${GREEN}" "Cleaning general JetBrains IDE caches..."
+    safe_rm -r ~/Library/Caches/JetBrains/
+    print_item "✓" "${GREEN}" "Cleaning VSCode cache..."
+    safe_rm -r "$HOME/Library/Application Support/Code/Cache/"
+    safe_rm -r "$HOME/Library/Application Support/Code/CachedData/"
+    safe_rm -r "$HOME/Library/Application Support/Code/User/workspaceStorage/"
+    # Downloaded extension .vsix installers; re-fetched if an extension reinstalls.
+    safe_rm -r "$HOME/Library/Application Support/Code/CachedExtensionVSIXs/"
+}
+
+cleanup_system_junk() {
+    print_item "✓" "${GREEN}" "Emptying the Trash..."
+    safe_sudo_rm -r ~/.Trash/*
+    safe_sudo_rm -r /Volumes/*/.Trashes/*
+    print_item "✓" "${GREEN}" "Cleaning system-level library caches..."
+    safe_sudo_rm -r /Library/Caches/*
+    print_item "✓" "${GREEN}" "Cleaning user-level log files..."
+    safe_rm -r ~/Library/Logs/*
+    print_item "✓" "${GREEN}" "Cleaning system-level log files..."
+    safe_sudo_rm -r /private/var/log/*
+    safe_sudo_rm -r /Library/Logs/*
+}
+
+cleanup_browser_caches() {
+    if [ -d "$HOME/Library/Caches/Google/Chrome" ]; then
+        print_item "✓" "${GREEN}" "Cleaning Chrome cache..."
+        safe_rm -r ~/Library/Caches/Google/Chrome/*
+    else
+        print_item "✕" "${YELLOW}" "Chrome cache not found. Skipping."
+    fi
+    if [ -d "$HOME/Library/Caches/BraveSoftware/Brave-Browser" ]; then
+        print_item "✓" "${GREEN}" "Cleaning Brave cache..."
+        safe_rm -r ~/Library/Caches/BraveSoftware/Brave-Browser/*
+    else
+        print_item "✕" "${YELLOW}" "Brave cache not found. Skipping."
+    fi
+    if [ -d "$HOME/Library/Caches/Firefox" ]; then
+        print_item "✓" "${GREEN}" "Cleaning Firefox cache..."
+        safe_rm -r ~/Library/Caches/Firefox/*
+    else
+        print_item "✕" "${YELLOW}" "Firefox cache not found. Skipping."
+    fi
+    if [ -d "$HOME/Library/Caches/com.apple.Safari" ]; then
+        print_item "✓" "${GREEN}" "Cleaning Safari cache..."
+        safe_rm -r ~/Library/Caches/com.apple.Safari/*
+    else
+        print_item "✕" "${YELLOW}" "Safari cache not found. Skipping."
+    fi
+    if [ -d "$HOME/Library/Caches/Microsoft Edge" ]; then
+        print_item "✓" "${GREEN}" "Cleaning Microsoft Edge cache..."
+        safe_rm -r "$HOME/Library/Caches/Microsoft Edge/"*
+    elif [ -d "$HOME/Library/Caches/com.microsoft.edgemac" ]; then
+        print_item "✓" "${GREEN}" "Cleaning Microsoft Edge cache..."
+        safe_rm -r ~/Library/Caches/com.microsoft.edgemac/*
+    else
+        print_item "✕" "${YELLOW}" "Microsoft Edge cache not found. Skipping."
+    fi
+    if [ -d "$HOME/Library/Caches/com.operasoftware.Opera" ]; then
+        print_item "✓" "${GREEN}" "Cleaning Opera cache..."
+        safe_rm -r ~/Library/Caches/com.operasoftware.Opera/*
+    else
+        print_item "✕" "${YELLOW}" "Opera cache not found. Skipping."
+    fi
+    if [ -d "$HOME/Library/Caches/com.operasoftware.OperaGX" ]; then
+        print_item "✓" "${GREEN}" "Cleaning Opera GX cache..."
+        safe_rm -r ~/Library/Caches/com.operasoftware.OperaGX/*
+    fi
+}
+
+cleanup_app_containers() {
+    print_item "✓" "${GREEN}" "Cleaning app container caches..."
+
+    # Slack
+    if [ -d "$HOME/Library/Containers/com.tinyspeck.slackmacgap" ]; then
+        print_item "✓" "${GREEN}" "Cleaning Slack cache..."
+        safe_rm -r ~/Library/Containers/com.tinyspeck.slackmacgap/Data/Library/Caches/*
+    fi
+
+    # Microsoft Teams
+    if [ -d "$HOME/Library/Containers/com.microsoft.teams2" ]; then
+        print_item "✓" "${GREEN}" "Cleaning Microsoft Teams cache..."
+        safe_rm -r ~/Library/Containers/com.microsoft.teams2/Data/Library/Caches/*
+    fi
+
+    # WhatsApp
+    if [ -d "$HOME/Library/Containers/net.whatsapp.WhatsApp" ]; then
+        print_item "✓" "${GREEN}" "Cleaning WhatsApp cache..."
+        safe_rm -r ~/Library/Containers/net.whatsapp.WhatsApp/Data/Library/Caches/*
+    fi
+
+    # Discord
+    if [ -d "$HOME/Library/Application Support/discord" ]; then
+        print_item "✓" "${GREEN}" "Cleaning Discord cache..."
+        safe_rm -r "$HOME/Library/Application Support/discord/Cache/"*
+        safe_rm -r "$HOME/Library/Application Support/discord/Code Cache/"*
+    fi
+
+    # Spotify
+    if [ -d "$HOME/Library/Caches/com.spotify.client" ]; then
+        print_item "✓" "${GREEN}" "Cleaning Spotify cache..."
+        safe_rm -r ~/Library/Caches/com.spotify.client/*
+    fi
+    if [ -d "$HOME/Library/Application Support/Spotify/PersistentCache" ]; then
+        safe_rm -r "$HOME/Library/Application Support/Spotify/PersistentCache/"*
+    fi
+}
+
+cleanup_timemachine_snapshots() {
+    print_item "✓" "${GREEN}" "Removing Time Machine local snapshots..."
+
+    # List and delete local snapshots
+    local snapshot_count=0
+    local free_before=$(get_disk_space_kb)
+    while IFS= read -r snapshot; do
+        if [[ "$snapshot" == *"com.apple.TimeMachine"* ]]; then
+            local snapshot_date=$(echo "$snapshot" | grep -o '[0-9-]*$')
+            if [ -n "$snapshot_date" ]; then
+                if $DRY_RUN; then
+                    echo -e "${YELLOW}[DRY-RUN] Would delete Time Machine snapshot: $snapshot_date${NC}"
+                else
+                    print_item "✓" "${GREEN}" "Deleting snapshot: $snapshot_date"
+                    sudo tmutil deletelocalsnapshots "$snapshot_date" 2>/dev/null || true
+                fi
+                snapshot_count=$((snapshot_count + 1))
+            fi
+        fi
+    done < <(sudo tmutil listlocalsnapshots / 2>/dev/null)
+
+    if [ $snapshot_count -eq 0 ]; then
+        print_item "ℹ️" "${YELLOW}" "No Time Machine local snapshots found"
+    else
+        print_item "✓" "${GREEN}" "Deleted $snapshot_count Time Machine snapshot(s)"
+    fi
+
+    # Snapshots hold no files of their own, so there is nothing to measure with
+    # du: deleting them is the one case where df reacts immediately, so credit
+    # its delta. Skipped when another cleanup already ran this round ("Clear
+    # All"), because those same blocks were counted as deleted files already.
+    if ! $DRY_RUN && [ $snapshot_count -gt 0 ] && [ "$RECLAIMED_KB" -eq 0 ]; then
+        local freed_kb=$(( $(get_disk_space_kb) - free_before ))
+        [ "$freed_kb" -gt 0 ] && add_reclaimed_kb "$freed_kb"
+    fi
+}
+
+cleanup_cordova() {
+    if [ -d "$HOME/.cordova" ]; then
+        print_item "✓" "${GREEN}" "Cleaning Cordova tmp files..."
+        # Cordova leaves stale npm tarballs/extractions under lib/tmp*
+        safe_rm -rf ~/.cordova/lib/tmp*
+    else
+        print_item "✕" "${YELLOW}" "Cordova not found. Skipping."
+    fi
+}
+
+cleanup_electron() {
+    if [ -d "$HOME/Library/Caches/electron" ]; then
+        print_item "✓" "${GREEN}" "Cleaning Electron cache..."
+        # Cached prebuilt binaries; wipe contents, keep the dir electron expects
+        safe_rm -rf ~/Library/Caches/electron/*
+    else
+        print_item "✕" "${YELLOW}" "Electron not found. Skipping."
+    fi
+}
+
+# Prunes ~/.local/share/claude/versions, keeping the version the `claude`
+# launcher points at (plus any binary a running session still has open).
+# Never touches ~/.claude/ or ~/.claude.json: settings, MCP config and
+# session history live there.
+cleanup_claude_code() {
+    local out status active v
+    # Command substitution, not a pipeline: `claude_removable_versions | while
+    # read` would leave $? holding the loop's status, not the helper's.
+    out="$(claude_removable_versions)"; status=$?
+
+    if [ $status -eq 1 ]; then
+        print_item "✕" "${YELLOW}" "Claude Code not found. Skipping."
+        return
+    fi
+    if [ $status -eq 2 ]; then
+        print_item "✕" "${YELLOW}" "Claude Code: ${CLAUDE_LAUNCHER} does not resolve into versions/ (custom or missing launcher)."
+        print_item "→" "${CYAN}" "The version in use cannot be determined, so nothing is removed."
+        return
+    fi
+    if [ -z "$out" ]; then
+        print_item "✓" "${GREEN}" "Claude Code: only the version in use is installed. Nothing to prune."
+        return
+    fi
+
+    active="$(claude_active_version)"
+    print_item "✓" "${GREEN}" "Removing old Claude Code versions (keeping $(basename "$active"))..."
+    # Quoted read, never `for v in $out`: $HOME may contain spaces.
+    while IFS= read -r v; do
+        [ -n "$v" ] && safe_rm "$v"
+    done <<< "$out"
+}
+
+# Usage: cleanup_docker [interactive]
+#   no arg      -> safe `prune -f` only, no prompt (used by "Clear All Caches"
+#                  so a bulk run never deletes tagged images by surprise)
+#   interactive -> offer the deeper `prune -af` via a secondary prompt
+cleanup_docker() {
+    local mode="${1:-}"
+    if ! command -v docker &> /dev/null; then
+        print_item "✕" "${YELLOW}" "Docker not found. Skipping."
+        return
+    fi
+    # `command -v` only proves the CLI exists; the daemon may still be down.
+    local df_out
+    if ! df_out=$(docker system df 2>/dev/null); then
+        print_item "✕" "${YELLOW}" "Docker daemon not running. Skipping."
+        return
+    fi
+    print_item "✓" "${GREEN}" "Docker disk usage:"
+    echo "$df_out"
+
+    # `prune -f` removes stopped containers, unused networks, dangling
+    # (untagged) images and unused build cache. `-a` additionally removes
+    # EVERY image not used by a container, including tagged ones that may
+    # only exist in a private registry — so it's opt-in via a prompt, never
+    # in the bulk "Clear All" path. (--volumes stays omitted in both: it
+    # would delete named-volume data like databases.)
+    local prune_args="-f"
+    if [ "$mode" = "interactive" ] && ! $DRY_RUN; then
+        echo ""
+        echo -e "${YELLOW}Also remove unused but TAGGED images? Frees more space, but they"
+        echo -e "must be re-pulled/rebuilt (e.g. private-registry images). (y/N):${NC}"
+        local ans
+        read -r ans
+        if [[ "$ans" == "y" || "$ans" == "Y" ]]; then
+            prune_args="-af"
+        fi
+    fi
+
+    # Docker has no real --dry-run, so honour the flag manually like
+    # cleanup_android_sdk: prune is destructive (but rebuildable), so just
+    # announce it under --dry-run instead of running. -f skips docker's own
+    # confirmation (the script already confirmed).
+    if $DRY_RUN; then
+        echo -e "${YELLOW}[DRY-RUN] Would run: docker system prune -f${NC}"
+        echo -e "${FAINT}  (option 15 also offers 'docker system prune -af' to remove unused tagged images)${NC}"
+    else
+        # Capture the output to read docker's own "Total reclaimed space" line
+        # (its data lives inside the VM disk image, so nothing here is visible
+        # to du or df on the host), then print it as usual.
+        local prune_out reclaimed_tok
+        prune_out=$(docker system prune $prune_args 2>&1)
+        echo "$prune_out"
+        reclaimed_tok=$(echo "$prune_out" | awk '/Total reclaimed space:/ {print $NF}')
+        if [ -n "$reclaimed_tok" ]; then
+            local docker_kb
+            docker_kb=$(docker_size_to_kb "$reclaimed_tok")
+            add_reclaimed_kb "$docker_kb"
+            HOST_INVISIBLE_KB=$((HOST_INVISIBLE_KB + docker_kb))
+            if [ "$(uname)" = "Darwin" ]; then
+                print_item "ℹ️" "${YELLOW}" "Docker freed this inside its own disk image; macOS free space follows only once Docker Desktop compacts it."
+            fi
+        fi
+    fi
+}
+
+# --- Reclaimable-space estimation ---
+# Read-only feature: computes the current on-disk size of what every cleanup
+# option would remove, then display_menu() shows it next to each entry.
+# Categories use STABLE string keys (not menu numbers) so the estimate keeps
+# working when the menu is renumbered by later PRs.
+# IMPORTANT: keep these path lists in sync with the cleanup_* functions above.
+# Any new cleanup routine must add its own category to estimate_all() and a
+# matching $(est <key>) in display_menu().
+
+ESTIMATES_READY=false
+
+# Store a formatted estimate label under a stable category key.
+set_estimate() {
+    printf -v "EST_${1}_LABEL" '%s' "$2"
+}
+
+# Echo " (Estimate: <label>)" for a category key, or nothing if not computed.
+est() {
+    [ "$ESTIMATES_READY" = "true" ] || return 0
+    local varname="EST_${1}_LABEL"
+    local label="${!varname}"
+    [ -n "$label" ] || return 0
+    printf ' %s(Estimate: %s)%s' "$FAINT" "$label" "$NC"
+}
+
+estimate_all() {
+    print_item "🔍" "${CYAN}" "Calculating estimates... (this can take a while)"
+
+    local kb total=0
+
+    print_item "•" "${FAINT}" "Measuring Xcode caches..."
+    kb=$(du_kb_sum \
+        "$HOME/Library/Developer/Xcode/DerivedData" \
+        "$HOME/Library/Developer/CoreSimulator/Devices" \
+        "$HOME/Library/Developer/CoreSimulator/Caches"/* \
+        "$HOME/Library/Developer/Xcode/iOS DeviceSupport" \
+        "$HOME/Library/Caches/com.apple.dt.Xcode" \
+        "$HOME/Library/Developer/Xcode/Archives" \
+        "$HOME/Library/Developer/Xcode/Products" \
+        "$HOME/Library/Developer/Xcode/DocumentationCache" \
+        "$HOME/Library/Containers/com.apple.CoreDevice.CoreDeviceService/Data/Library/Caches"/*)
+    # System CoreSimulator cache lives under /Library and needs sudo (already
+    # primed by main_loop) plus Full Disk Access. Only count it when cleanup can
+    # actually delete it, so the estimate never promises unreclaimable space.
+    if has_full_disk_access; then
+        kb=$((kb + $(sudo_du_kb_sum /Library/Developer/CoreSimulator/Caches/*)))
+    fi
+    set_estimate xcode "~$(human_kb "$kb")"
+    total=$((total + kb))
+
+    print_item "•" "${FAINT}" "Measuring Android/Gradle caches..."
+    kb=$(du_kb_sum \
+        "$HOME/.gradle/caches" \
+        "$HOME/.gradle/daemon" \
+        "$HOME/.gradle/wrapper" \
+        "$HOME/.android/cache" \
+        "$HOME/.android/build-cache" \
+        "$HOME/Library/Caches/Google"/AndroidStudio* \
+        "$HOME/Library/Caches/JetBrains"/AndroidStudio*)
+    set_estimate android "$(human_kb "$kb")"
+    total=$((total + kb))
+
+    print_item "•" "${FAINT}" "Measuring Android SDK..."
+    local sdk_kb=0 d
+    if [ -d "$HOME/Library/Android/sdk/build-tools" ]; then
+        # Mirrors cleanup_android_sdk: keep latest 2 build-tools by mtime.
+        # SDK version dir names are plain (e.g. 34.0.0), ls -t is safe here.
+        # shellcheck disable=SC2012
+        while IFS= read -r d; do
+            [ -n "$d" ] || continue
+            sdk_kb=$((sdk_kb + $(du_kb_sum "$HOME/Library/Android/sdk/build-tools/$d")))
+        done < <(cd "$HOME/Library/Android/sdk/build-tools" 2>/dev/null && ls -t | tail -n +3)
+    fi
+    sdk_kb=$((sdk_kb + $(du_kb_sum "$HOME/Library/Android/sdk/.temp")))
+    if [ "$(uname -m)" = "arm64" ]; then
+        while IFS= read -r d; do
+            [ -n "$d" ] || continue
+            sdk_kb=$((sdk_kb + $(du_kb_sum "$d")))
+        done < <(find "$HOME/Library/Android/sdk/system-images" -type d -name "x86" 2>/dev/null)
+    fi
+    set_estimate android_sdk "$(human_kb "$sdk_kb")"
+    total=$((total + sdk_kb))
+
+    print_item "•" "${FAINT}" "Measuring Flutter global cache..."
+    local flutter_kb froot
+    flutter_kb=$(du_kb_sum "$HOME/.pub-cache")
+    if command -v flutter >/dev/null 2>&1; then
+        froot="$(cd "$(dirname "$(command -v flutter)")" 2>/dev/null && pwd)"
+        [ -n "$froot" ] && flutter_kb=$((flutter_kb + $(du_kb_sum "$froot/cache")))
+    fi
+    set_estimate flutter "~$(human_kb "$flutter_kb")"
+    total=$((total + flutter_kb))
+
+    print_item "•" "${FAINT}" "Measuring npm/Yarn/pnpm caches..."
+    local npm_kb npm_cache yarn_dir pnpm_dir
+    npm_cache=""
+    command -v npm >/dev/null 2>&1 && npm_cache="$(npm config get cache 2>/dev/null)"
+    case "$npm_cache" in ""|undefined|null) npm_cache="$HOME/.npm" ;; esac
+    npm_kb=$(du_kb_sum "$npm_cache/_cacache")
+    if command -v yarn >/dev/null 2>&1; then
+        yarn_dir="$(yarn cache dir 2>/dev/null)"
+        [ -n "$yarn_dir" ] && npm_kb=$((npm_kb + $(du_kb_sum "$yarn_dir")))
+    fi
+    if command -v pnpm >/dev/null 2>&1; then
+        pnpm_dir="$(pnpm store path 2>/dev/null)"
+        [ -n "$pnpm_dir" ] && npm_kb=$((npm_kb + $(du_kb_sum "$pnpm_dir")))
+    fi
+    set_estimate npm "~$(human_kb "$npm_kb")"
+    total=$((total + npm_kb))
+
+    print_item "•" "${FAINT}" "Measuring NuGet caches..."
+    local nuget_kb=0 nuget_dir
+    if command -v dotnet >/dev/null 2>&1; then
+        # Enumerate the actual local cache dirs so the estimate matches what
+        # `dotnet nuget locals all --clear` removes (paths are platform-specific).
+        while IFS= read -r nuget_dir; do
+            [ -n "$nuget_dir" ] && nuget_kb=$((nuget_kb + $(du_kb_sum "$nuget_dir")))
+        done < <(dotnet nuget locals all --list 2>/dev/null | sed 's/^[a-z-]*: //' | tr -d '\r')
+    fi
+    # Fallback to the default global-packages dir if enumeration turned up nothing.
+    [ "$nuget_kb" -gt 0 ] || nuget_kb=$(du_kb_sum "$HOME/.nuget/packages")
+    set_estimate nuget "$(human_kb "$nuget_kb")"
+    total=$((total + nuget_kb))
+
+    print_item "•" "${FAINT}" "Measuring Homebrew cache..."
+    local brew_kb=0
+    if command -v brew >/dev/null 2>&1; then
+        brew_kb=$(brew_reclaimable_kb)
+    fi
+    set_estimate homebrew "~$(human_kb "$brew_kb")"
+    total=$((total + brew_kb))
+
+    print_item "•" "${FAINT}" "Measuring CocoaPods cache..."
+    kb=$(du_kb_sum \
+        "$HOME/.cocoapods/repos" \
+        "$HOME/Library/Caches/CocoaPods")
+    set_estimate cocoapods "$(human_kb "$kb")"
+    total=$((total + kb))
+
+    print_item "•" "${FAINT}" "Measuring IDE caches..."
+    kb=$(du_kb_sum \
+        "$HOME/Library/Caches/JetBrains" \
+        "$HOME/Library/Application Support/Code/Cache" \
+        "$HOME/Library/Application Support/Code/CachedData" \
+        "$HOME/Library/Application Support/Code/User/workspaceStorage" \
+        "$HOME/Library/Application Support/Code/CachedExtensionVSIXs")
+    set_estimate ide "$(human_kb "$kb")"
+    total=$((total + kb))
+
+    print_item "•" "${FAINT}" "Measuring system junk & logs (sudo)..."
+    local system_kb
+    system_kb=$(sudo_du_kb_sum \
+        "$HOME/.Trash"/* \
+        /Volumes/*/.Trashes/* \
+        /Library/Caches/* \
+        "$HOME/Library/Logs"/* \
+        /private/var/log/* \
+        /Library/Logs/*)
+    set_estimate system "~$(human_kb "$system_kb")"
+    total=$((total + system_kb))
+
+    print_item "•" "${FAINT}" "Measuring browser caches..."
+    kb=$(du_kb_sum \
+        "$HOME/Library/Caches/Google/Chrome"/* \
+        "$HOME/Library/Caches/BraveSoftware/Brave-Browser"/* \
+        "$HOME/Library/Caches/Firefox"/* \
+        "$HOME/Library/Caches/com.apple.Safari"/* \
+        "$HOME/Library/Caches/Microsoft Edge"/* \
+        "$HOME/Library/Caches/com.microsoft.edgemac"/* \
+        "$HOME/Library/Caches/com.operasoftware.Opera"/* \
+        "$HOME/Library/Caches/com.operasoftware.OperaGX"/*)
+    set_estimate browser "$(human_kb "$kb")"
+    total=$((total + kb))
+
+    print_item "•" "${FAINT}" "Measuring PlatformIO global cache..."
+    local pio_kb
+    pio_kb=$(du_kb_sum "$HOME/.platformio/.cache")
+    set_estimate platformio "~$(human_kb "$pio_kb")"
+    total=$((total + pio_kb))
+
+    print_item "•" "${FAINT}" "Measuring Cordova tmp files..."
+    kb=$(du_kb_sum "$HOME/.cordova/lib"/tmp*)
+    set_estimate cordova "$(human_kb "$kb")"
+    total=$((total + kb))
+
+    print_item "•" "${FAINT}" "Measuring Electron cache..."
+    kb=$(du_kb_sum "$HOME/Library/Caches/electron"/*)
+    set_estimate electron "$(human_kb "$kb")"
+    total=$((total + kb))
+
+    print_item "•" "${FAINT}" "Measuring Claude Code old versions..."
+    local claude_out claude_status claude_v
+    local claude_paths=()
+    claude_out="$(claude_removable_versions)"; claude_status=$?
+    if [ $claude_status -eq 2 ]; then
+        # Not measurable, so not added to the byte total, like the Docker
+        # "daemon not running" case below.
+        set_estimate claude "n/a (custom launcher)"
+    else
+        # The here-string yields one empty iteration even for empty output
+        while IFS= read -r claude_v; do
+            [ -n "$claude_v" ] && claude_paths+=("$claude_v")
+        done <<< "$claude_out"
+        kb=0
+        [ ${#claude_paths[@]} -gt 0 ] && kb=$(du_kb_sum "${claude_paths[@]}")
+        # Exact file sizes, not an approximation: no "~" prefix.
+        set_estimate claude "$(human_kb "$kb")"
+        total=$((total + kb))
+    fi
+
+    # Docker is not path-based: ask docker itself (read-only). Two figures,
+    # because option 15 offers two prune modes:
+    #   -f  : build-cache reclaimable + dangling (untagged) images
+    #   -af : the above + ALL images not used by a container (tagged too)
+    # Build-cache reclaimable comes from the `system df` summary (Docker
+    # computes it correctly; only its Images figure is unreliable with the
+    # containerd image store). Per-image sizes come from `system df -v`,
+    # summing UNIQUE SIZE of 0-container rows so shared layers aren't double
+    # counted. Approximate, so not added to the byte total.
+    print_item "•" "${FAINT}" "Measuring Docker reclaimable space..."
+    local df_fmt
+    if command -v docker &> /dev/null \
+        && df_fmt=$(docker system df --format '{{.Type}}|{{.Reclaimable}}' 2>/dev/null) \
+        && [ -n "$df_fmt" ]; then
+        local cache_tok cache_kb dangling_kb allunused_kb f_kb af_kb
+        cache_tok=$(echo "$df_fmt" | awk -F'|' '$1=="Build Cache"{sub(/ *\(.*/,"",$2);print $2}')
+        cache_kb=$(docker_size_to_kb "${cache_tok:-0B}")
+        # Parse the "Images space usage:" table. CREATED is multi-word
+        # ("4 days ago"), so index fields from the RIGHT: $NF=CONTAINERS,
+        # $(NF-1)=UNIQUE SIZE. d=dangling 0-container, a=all 0-container.
+        read -r dangling_kb allunused_kb < <(docker system df -v 2>/dev/null | awk '
+            function tokb(s) {
+                if      (s ~ /TB$/) { sub(/TB$/,"",s); return s*1e12/1024 }
+                else if (s ~ /GB$/) { sub(/GB$/,"",s); return s*1e9/1024 }
+                else if (s ~ /MB$/) { sub(/MB$/,"",s); return s*1e6/1024 }
+                else if (s ~ /kB$/) { sub(/kB$/,"",s); return s*1e3/1024 }
+                else if (s ~  /B$/) { sub(/B$/,"",s);  return s/1024 }
+                return 0
+            }
+            /^Images space usage:/ { in_img=1; next }
+            in_img && /^REPOSITORY/ { hdr=1; next }
+            in_img && hdr {
+                if (NF==0) { in_img=0; hdr=0; next }
+                if ($NF==0) { a += tokb($(NF-1)); if ($1=="<none>") d += tokb($(NF-1)) }
+                next
+            }
+            END { printf "%d %d\n", d+0, a+0 }')
+        f_kb=$(( cache_kb + ${dangling_kb:-0} ))
+        af_kb=$(( cache_kb + ${allunused_kb:-0} ))
+        if [ "$af_kb" -gt "$f_kb" ]; then
+            set_estimate docker "~$(human_kb "$f_kb") → ~$(human_kb "$af_kb") with -a"
+        else
+            set_estimate docker "~$(human_kb "$f_kb")"
+        fi
+    elif command -v docker &> /dev/null; then
+        set_estimate docker "n/a (daemon not running)"
+    else
+        set_estimate docker "n/a (docker not found)"
+    fi
+
+    print_item "•" "${FAINT}" "Measuring app container caches..."
+    kb=$(du_kb_sum \
+        "$HOME/Library/Containers/com.tinyspeck.slackmacgap/Data/Library/Caches"/* \
+        "$HOME/Library/Containers/com.microsoft.teams2/Data/Library/Caches"/* \
+        "$HOME/Library/Containers/net.whatsapp.WhatsApp/Data/Library/Caches"/* \
+        "$HOME/Library/Application Support/discord/Cache"/* \
+        "$HOME/Library/Application Support/discord/Code Cache"/* \
+        "$HOME/Library/Caches/com.spotify.client"/* \
+        "$HOME/Library/Application Support/Spotify/PersistentCache"/*)
+    set_estimate appcontainers "$(human_kb "$kb")"
+    total=$((total + kb))
+
+    print_item "•" "${FAINT}" "Counting Time Machine local snapshots..."
+    local tm_count
+    tm_count=$(sudo tmutil listlocalsnapshots / 2>/dev/null | grep -c 'com.apple.TimeMachine')
+    [ -n "$tm_count" ] || tm_count=0
+    set_estimate timemachine "${tm_count} snapshot(s)"
+
+    set_estimate total "~$(human_kb "$total")"
+    ESTIMATES_READY=true
+
+    print_item "✓" "${GREEN}" "Estimates ready. ~ marks approximate values."
+}
+
+# --- Main Display Function ---
+display_menu() {
+    clear
+    local current_free_space=$(get_disk_space)
+
+    print_logo
+    echo -e "${FAINT}  Version: v${SCRIPT_VERSION}${NC}" # Display version
+    print_item "✨" "${GREEN}" "Free Space: ${current_free_space}"
+    echo ""
+    print_section_header "Available Options:"
+    echo -e "${RED} 0.${NC} ${BOLD}Exit Program${NC}"
+    echo -e "${GREEN} 1.${NC} Clear All Caches$(est total)"
+    echo -e "${GREEN} 2.${NC} Clear Xcode Caches & DerivedData$(est xcode)"
+    echo -e "${GREEN} 3.${NC} Clear Android/Gradle Caches$(est android)"
+    echo -e "${GREEN} 4.${NC} Clear Flutter Caches ${FAINT}(with custom directory option)${NC}$(est flutter)"
+    echo -e "${GREEN} 5.${NC} Clear npm/Yarn/pnpm Caches$(est npm)"
+    echo -e "${GREEN} 6.${NC} Clean Homebrew Caches ${FAINT}(removes all cached downloads)${NC}$(est homebrew)"
+    echo -e "${GREEN} 7.${NC} Clear CocoaPods Caches$(est cocoapods)"
+    echo -e "${GREEN} 8.${NC} Clear IDE (JetBrains, VSCode) Caches$(est ide)"
+    echo -e "${GREEN} 9.${NC} Clean System Junk & Logs (requires sudo)$(est system)"
+    echo -e "${GREEN}10.${NC} Clear Browser Caches (Chrome, Brave, Firefox, Safari, Edge, Opera)$(est browser)"
+    echo -e "${GREEN}11.${NC} Clear PlatformIO Caches$(est platformio)"
+    echo -e "${GREEN}12.${NC} Clean Android SDK (old build-tools, x86 images)$(est android_sdk)"
+    echo -e "${GREEN}13.${NC} Clear Cordova tmp files$(est cordova)"
+    echo -e "${GREEN}14.${NC} Clear Electron cache$(est electron)"
+    echo -e "${GREEN}15.${NC} Clear Docker (prune containers, dangling images & build cache; asks before removing unused tagged images)$(est docker)"
+    echo -e "${GREEN}16.${NC} Clean App Containers (Slack, Teams, Discord, Spotify, WhatsApp)$(est appcontainers)"
+    echo -e "${GREEN}17.${NC} Remove Time Machine Local Snapshots (requires sudo)$(est timemachine)"
+    echo -e "${GREEN}18.${NC} Clear .NET NuGet Caches (global-packages, http-cache, temp, plugins)$(est nuget)"
+    echo -e "${GREEN}19.${NC} Clear old Claude Code versions ${FAINT}(keeps the version in use)${NC}$(est claude)"
+    echo ""
+    echo -e "${CYAN}99.${NC} Estimate reclaimable space ${FAINT}(read-only, ~ = approximate)${NC}"
+    echo ""
+    echo -e "→ Please enter your choice (0-19, or 99 to estimate): ${NC}\c"
+}
+
+# --- Help function ---
+show_help() {
+    cat << EOF
+Dev Cleanup Utility v${SCRIPT_VERSION}
+A powerful cleanup utility for development environments on macOS
+
+Usage: $0 [OPTIONS]
+
+Options:
+  -h, --help              Show this help message
+  -v, --version           Show version information
+  --dry-run               Show what would be deleted without actually removing files
+  --flutter-dir PATH      Set custom directory for Flutter cleanup (default: current directory)
+                          Example: $0 --flutter-dir ~/Projects
+
+Command-line Flutter cleanup:
+  You can specify a custom directory for Flutter cleanup using the --flutter-dir option.
+  This directory will be used when running the interactive menu or the "Clear All" option.
+
+Interactive menu:
+  Option 99 estimates the reclaimable space for every entry and redraws the
+  menu with "(Estimate: <size>)". It is read-only (only runs 'du', deletes
+  nothing) and works in --dry-run too. A leading "~" marks an approximate
+  value; Flutter and PlatformIO estimates cover the global cache only.
+
+  After a cleanup the summary reports "Reclaimed", measured on what was
+  actually deleted, next to the free-space reading. On macOS the two often
+  disagree: APFS keeps the blocks of a deleted file allocated while a Time
+  Machine local snapshot still references them, so free space can stay flat
+  for hours. The script says so and points at option 17, which deletes those
+  snapshots and releases the space immediately.
+
+Examples:
+  $0                                    # Run interactive menu (searches current directory for Flutter projects)
+  $0 --dry-run                          # Preview what would be deleted without removing anything
+  $0 --flutter-dir ~/Development        # Run with custom Flutter search directory
+  $0 --flutter-dir ~/Projects/Flutter   # Search only in specific Flutter projects folder
+
+Repository: ${GITHUB_REPO}
+EOF
+}
+
+# --- Main Logic ---
+main_loop() {
+    # Request sudo at the start to cover all options that need it
+    echo -e "${YELLOW}This script may require administrator privileges for some cleanup tasks.${NC}"
+    echo -e "${YELLOW}You will be prompted to enter your password if needed.${NC}"
+    sudo -v
+    # Keep sudo session alive in background
+    while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
+    SUDO_PID=$!
+
+    while true; do
+        display_menu
+        read -r choice
+        echo "" # New line for better separation
+
+        # Reset per menu action: the summary reports this run only.
+        RECLAIMED_KB=0
+        HOST_INVISIBLE_KB=0
+        local initial_free_kb=$(get_disk_space_kb)
+
+        case "$choice" in
+            0)
+                echo -e "${GREEN}Exiting cleanup utility. Goodbye!${NC}"
+                break
+                ;;
+            1)
+                print_section_header "Performing ALL Cleanup Tasks"
+                cleanup_xcode
+                cleanup_android
+                cleanup_android_sdk
+                cleanup_flutter "$FLUTTER_SEARCH_DIR"
+                cleanup_platformIO
+                cleanup_npm_yarn
+                cleanup_nuget
+                cleanup_homebrew
+                cleanup_cocoapods
+                cleanup_ide_caches
+                cleanup_system_junk
+                cleanup_browser_caches
+                cleanup_cordova
+                cleanup_electron
+                cleanup_claude_code
+                cleanup_docker
+                cleanup_app_containers
+                cleanup_timemachine_snapshots
+                ;;
+            2)
+                print_section_header "Performing Xcode Cleanup"
+                cleanup_xcode
+                ;;
+            3)
+                print_section_header "Performing Android/Gradle Cleanup"
+                cleanup_android
+                ;;
+            4)
+                print_section_header "Performing Flutter Cleanup"
+                echo -e "${CYAN}Current Flutter search directory: ${FLUTTER_SEARCH_DIR}${NC}"
+                case "$FLUTTER_DIR_SOURCE" in
+                    "environment")
+                        echo -e "${FAINT}  (from FLUTTER_SEARCH_DIR environment variable)${NC}"
+                        ;;
+                    "command-line")
+                        echo -e "${FAINT}  (from --flutter-dir command-line argument)${NC}"
+                        ;;
+                    "default")
+                        echo -e "${FAINT}  (default: current directory)${NC}"
+                        ;;
+                esac
+                echo ""
+                echo -e "${YELLOW}Enter a custom directory path, or press Enter to use current setting:${NC}"
+                read -r custom_flutter_dir
+                
+                # Use custom directory if provided, otherwise use global setting
+                if [ -n "$custom_flutter_dir" ]; then
+                    # Expand ~ to home directory
+                    custom_flutter_dir="${custom_flutter_dir/#\~/$HOME}"
+                    
+                    if [ -d "$custom_flutter_dir" ]; then
+                        echo -e "${CYAN}Using interactive override: ${custom_flutter_dir}${NC}"
+                        cleanup_flutter "$custom_flutter_dir"
+                    else
+                        print_item "✕" "${RED}" "Directory does not exist: $custom_flutter_dir"
+                        case "$FLUTTER_DIR_SOURCE" in
+                            "environment")
+                                echo -e "${YELLOW}Falling back to environment variable setting: ${FLUTTER_SEARCH_DIR}${NC}"
+                                ;;
+                            "command-line")
+                                echo -e "${YELLOW}Falling back to command-line argument: ${FLUTTER_SEARCH_DIR}${NC}"
+                                ;;
+                            "default")
+                                echo -e "${YELLOW}Falling back to default directory: ${FLUTTER_SEARCH_DIR}${NC}"
+                                ;;
+                        esac
+                        cleanup_flutter "$FLUTTER_SEARCH_DIR"
+                    fi
+                else
+                    cleanup_flutter "$FLUTTER_SEARCH_DIR"
+                fi
+                ;;
+            5)
+                print_section_header "Performing npm/Yarn/pnpm Cleanup"
+                cleanup_npm_yarn
+                ;;
+            6)
+                print_section_header "Performing Homebrew Cleanup"
+                cleanup_homebrew
+                ;;
+            7)
+                print_section_header "Performing CocoaPods Cleanup"
+                cleanup_cocoapods
+                ;;
+            8)
+                print_section_header "Performing IDE Caches Cleanup"
+                cleanup_ide_caches
+                ;;
+            9)
+                print_section_header "Performing System Junk & Logs Cleanup"
+                cleanup_system_junk
+                ;;
+            10)
+                print_section_header "Performing Browser Caches Cleanup"
+                cleanup_browser_caches
+                ;;
+            11)
+                print_section_header "Performing PlatformIO Caches cleanup"
+                cleanup_platformIO
+                ;;
+            12)
+                print_section_header "Performing Android SDK Cleanup"
+                cleanup_android_sdk
+                ;;
+            13)
+                print_section_header "Performing Cordova Cleanup"
+                cleanup_cordova
+                ;;
+            14)
+                print_section_header "Performing Electron Cleanup"
+                cleanup_electron
+                ;;
+            15)
+                print_section_header "Performing Docker Cleanup"
+                cleanup_docker interactive
+                ;;
+            16)
+                print_section_header "Performing App Containers Cleanup"
+                cleanup_app_containers
+                ;;
+            17)
+                print_section_header "Performing Time Machine Snapshots Cleanup"
+                cleanup_timemachine_snapshots
+                ;;
+            18)
+                print_section_header "Performing .NET NuGet Cleanup"
+                cleanup_nuget
+                ;;
+            19)
+                print_section_header "Performing Claude Code Version Cleanup"
+                cleanup_claude_code
+                ;;
+            99)
+                print_section_header "Estimating Reclaimable Space"
+                estimate_all
+                # Read-only: skip the before/after summary and redraw the menu
+                # with the freshly computed estimates.
+                continue
+                ;;
+            *)
+                echo -e "${RED}Invalid choice. Please enter a number between 0 and 19.${NC}"
+                sleep 2
+                ;;
+        esac
+
+        local final_free_kb=$(get_disk_space_kb)
+        local free_delta_kb=$((final_free_kb - initial_free_kb))
+        echo ""
+        if $DRY_RUN; then
+            echo -e "${CYAN}🔍 Dry-run analysis completed!${NC}"
+            echo -e "${CYAN}Would reclaim: ~$(human_kb "$RECLAIMED_KB")${NC}"
+            echo -e "${CYAN}No files were deleted. Run without --dry-run to perform actual cleanup.${NC}"
+        else
+            echo -e "${GREEN}✅ Cleanup task(s) completed!${NC}"
+            # "Reclaimed" is measured on what was actually deleted; the free
+            # space line can lag behind it by design (see print_reclaim_hint).
+            echo -e "${BLUE}Reclaimed:  ~$(human_kb "$RECLAIMED_KB")${NC}"
+            echo -e "${BLUE}Free space: $(human_kb "$initial_free_kb") → $(human_kb "$final_free_kb")${NC}"
+            print_reclaim_hint $((RECLAIMED_KB - HOST_INVISIBLE_KB)) "$free_delta_kb"
+        fi
+        echo ""
+        read -p "Press Enter to return to the menu..."
+    done
+
+    # Kill the background sudo-keep-alive process
+    kill "$SUDO_PID" 2>/dev/null
+    echo -e "${GREEN}Cleanup session ended.${NC}"
+}
+
+# --- Handle command line arguments ---
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        -h|--help)
+            show_help
+            exit 0
+            ;;
+        -v|--version)
+            echo "Dev Cleaner v${SCRIPT_VERSION}"
+            echo "A powerful cleanup utility for development environments"
+            echo "Repository: ${GITHUB_REPO}"
+            exit 0
+            ;;
+        --dry-run)
+            DRY_RUN=true
+            shift
+            ;;
+        --flutter-dir)
+            if [ -n "$2" ] && [ "${2:0:1}" != "-" ]; then
+                # Expand ~ to home directory
+                FLUTTER_SEARCH_DIR="${2/#\~/$HOME}"
+                FLUTTER_DIR_SOURCE="command-line"
+                shift 2
+            else
+                echo -e "${RED}Error: --flutter-dir requires a directory path${NC}"
+                echo "Use -h or --help for usage information"
+                exit 1
+            fi
+            ;;
+        *)
+            echo -e "${RED}Error: Unknown option: $1${NC}"
+            echo "Use -h or --help for usage information"
+            exit 1
+            ;;
+    esac
+done
+
+# Validate Flutter search directory if custom one was provided
+if [ "$FLUTTER_SEARCH_DIR" != "." ] && [ ! -d "$FLUTTER_SEARCH_DIR" ]; then
+    echo -e "${RED}Error: Flutter search directory does not exist: ${FLUTTER_SEARCH_DIR}${NC}"
+    echo "Please provide a valid directory path."
+    exit 1
+fi
+
+# --- Initial check for user confirmation before starting the interactive menu ---
+clear
+echo -e "${RED}--- 🚀 Dev Cleanup Utility ---${NC}"
+if $DRY_RUN; then
+    echo -e "${CYAN}${BOLD}🔍 DRY-RUN MODE ENABLED${NC}"
+    echo -e "${CYAN}This will show what would be deleted without actually removing any files.${NC}"
+else
+    echo "This script will permanently delete cache files from your system."
+    echo "Review the options carefully before proceeding."
+fi
+echo ""
+
+# Report Flutter search directory and its source
+if [ "$FLUTTER_SEARCH_DIR" != "." ]; then
+    echo -e "${CYAN}Flutter search directory: ${FLUTTER_SEARCH_DIR}${NC}"
+    case "$FLUTTER_DIR_SOURCE" in
+        "environment")
+            echo -e "${FAINT}  (set via FLUTTER_SEARCH_DIR environment variable)${NC}"
+            ;;
+        "command-line")
+            echo -e "${FAINT}  (set via --flutter-dir command-line argument)${NC}"
+            ;;
+    esac
+    echo ""
+else
+    echo -e "${FAINT}Flutter search directory: current directory (default)${NC}"
+    echo ""
+fi
+
+if $DRY_RUN; then
+    echo -e "${GREEN}✓ Safe to run: No files will be modified in dry-run mode.${NC}"
+    echo ""
+    read -p "Start dry-run analysis? (y/N): " initial_confirm
+else
+    echo -e "${YELLOW}⚠️ This action is IRREVERSIBLE for deleted files. ⚠️${NC}"
+    echo -e "${YELLOW}Please CLOSE all development applications (Xcode, Android Studio, VSCode, etc.) before running.${NC}"
+    echo ""
+    read -p "Are you sure you want to start the cleanup utility? (y/N): " initial_confirm
+fi
+if [[ "$initial_confirm" != "y" && "$initial_confirm" != "Y" ]]; then
+    echo "Cleanup utility cancelled."
+    exit 0
+fi
+
+main_loop

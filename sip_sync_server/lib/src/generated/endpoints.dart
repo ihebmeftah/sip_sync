@@ -39,6 +39,8 @@ import 'package:sip_sync_server/src/generated/menu/dtos/article_composition_upda
     as _ismlqq4o;
 import 'package:sip_sync_server/src/generated/menu/dtos/ingredient_create.dart'
     as _iplysw6f;
+import 'package:sip_sync_server/src/generated/menu/dtos/ingredient_restock.dart'
+    as _ibya07f7;
 import 'package:sip_sync_server/src/generated/menu/dtos/menu_article_create.dart'
     as _ijrbnog1;
 import 'package:sip_sync_server/src/generated/menu/dtos/menu_article_update.dart'
@@ -47,6 +49,12 @@ import 'package:sip_sync_server/src/generated/menu/dtos/menu_category_create.dar
     as _i2o0r9sg;
 import 'package:sip_sync_server/src/generated/menu/dtos/menu_category_update.dart'
     as _i8wyftia;
+import 'package:sip_sync_server/src/generated/orders/dtos/order_add_items.dart'
+    as _im5ws0jm;
+import 'package:sip_sync_server/src/generated/orders/dtos/order_create.dart'
+    as _i5j23umo;
+import 'package:sip_sync_server/src/generated/orders/dtos/order_item_status_update.dart'
+    as _itxma5c4;
 import 'package:sip_sync_server/src/generated/tables/dtos/venue_table_create.dart'
     as _ituaoqeh;
 import 'package:sip_sync_server/src/generated/tables/dtos/venue_table_update.dart'
@@ -61,6 +69,7 @@ import '../menu/article_composition_endpoint.dart' as _iavtsxat;
 import '../menu/ingredient_endpoint.dart' as _i7cjtizz;
 import '../menu/menu_article_endpoint.dart' as _iefktwfq;
 import '../menu/menu_category_endpoint.dart' as _i1h28rjj;
+import '../orders/order_endpoint.dart' as _iuf1spo6;
 import '../tables/venue_table_endpoint.dart' as _ira8yrq4;
 
 class Endpoints extends _is.EndpointDispatch {
@@ -125,6 +134,12 @@ class Endpoints extends _is.EndpointDispatch {
         ..initialize(
           server,
           'menuCategory',
+          null,
+        ),
+      'order': _iuf1spo6.OrderEndpoint()
+        ..initialize(
+          server,
+          'order',
           null,
         ),
       'venueTable': _ira8yrq4.VenueTableEndpoint()
@@ -824,6 +839,26 @@ class Endpoints extends _is.EndpointDispatch {
                         params['id'],
                       ),
         ),
+        'restock': _is.MethodConnector(
+          name: 'restock',
+          params: {
+            'request': _is.ParameterDescription(
+              name: 'request',
+              type: _is.getType<_ibya07f7.IngredientRestock>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['ingredient'] as _i7cjtizz.IngredientEndpoint)
+                      .restock(
+                        session,
+                        params['request'],
+                      ),
+        ),
       },
     );
     connectors['menuArticle'] = _is.EndpointConnector(
@@ -955,6 +990,122 @@ class Endpoints extends _is.EndpointDispatch {
                         session,
                         params['request'],
                       ),
+        ),
+      },
+    );
+    connectors['order'] = _is.EndpointConnector(
+      name: 'order',
+      endpoint: endpoints['order']!,
+      methodConnectors: {
+        'list': _is.MethodConnector(
+          name: 'list',
+          params: {
+            'buildingId': _is.ParameterDescription(
+              name: 'buildingId',
+              type: _is.getType<_is.UuidValue>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['order'] as _iuf1spo6.OrderEndpoint).list(
+                session,
+                params['buildingId'],
+              ),
+        ),
+        'get': _is.MethodConnector(
+          name: 'get',
+          params: {
+            'orderId': _is.ParameterDescription(
+              name: 'orderId',
+              type: _is.getType<_is.UuidValue>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['order'] as _iuf1spo6.OrderEndpoint).get(
+                session,
+                params['orderId'],
+              ),
+        ),
+        'create': _is.MethodConnector(
+          name: 'create',
+          params: {
+            'request': _is.ParameterDescription(
+              name: 'request',
+              type: _is.getType<_i5j23umo.OrderCreate>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['order'] as _iuf1spo6.OrderEndpoint).create(
+                session,
+                params['request'],
+              ),
+        ),
+        'addItems': _is.MethodConnector(
+          name: 'addItems',
+          params: {
+            'request': _is.ParameterDescription(
+              name: 'request',
+              type: _is.getType<_im5ws0jm.OrderAddItems>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['order'] as _iuf1spo6.OrderEndpoint).addItems(
+                    session,
+                    params['request'],
+                  ),
+        ),
+        'updateItemStatus': _is.MethodConnector(
+          name: 'updateItemStatus',
+          params: {
+            'request': _is.ParameterDescription(
+              name: 'request',
+              type: _is.getType<_itxma5c4.OrderItemStatusUpdate>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['order'] as _iuf1spo6.OrderEndpoint)
+                  .updateItemStatus(
+                    session,
+                    params['request'],
+                  ),
+        ),
+        'cancel': _is.MethodConnector(
+          name: 'cancel',
+          params: {
+            'orderId': _is.ParameterDescription(
+              name: 'orderId',
+              type: _is.getType<_is.UuidValue>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['order'] as _iuf1spo6.OrderEndpoint).cancel(
+                session,
+                params['orderId'],
+              ),
         ),
       },
     );

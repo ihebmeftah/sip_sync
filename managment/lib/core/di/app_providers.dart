@@ -7,6 +7,7 @@ import '../../data/repositories/employee_repository.dart';
 import '../../data/repositories/ingredient_repository.dart';
 import '../../data/repositories/menu_article_repository.dart';
 import '../../data/repositories/menu_category_repository.dart';
+import '../../data/repositories/order_repository.dart';
 import '../../data/repositories/owner_auth_repository.dart';
 import '../../data/repositories/venue_table_repository.dart';
 import 'app_session_store.dart';
@@ -47,6 +48,9 @@ IngredientRepository ingredientRepository(Ref ref) =>
 @Riverpod(keepAlive: true)
 ArticleCompositionRepository articleCompositionRepository(Ref ref) =>
     getIt<ArticleCompositionRepository>();
+
+@Riverpod(keepAlive: true)
+OrderRepository orderRepository(Ref ref) => getIt<OrderRepository>();
 
 @Riverpod(keepAlive: true)
 AppSessionStore appSessionStore(Ref ref) {

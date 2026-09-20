@@ -16,6 +16,7 @@ import 'package:sip_sync_server/src/generated/protocol.dart' as _iaib1p48;
 import '../../buildings/entity/building.dart' as _iaohraio;
 import '../../menu/entity/article_composition.dart' as _ifzlh5t7;
 import '../../menu/entity/menu_category.dart' as _illkjvef;
+import '../../orders/entity/venue_order_item.dart' as _io4d4iis;
 
 /// A sellable menu article in one building, belonging to a category.
 abstract class MenuArticle
@@ -31,6 +32,7 @@ abstract class MenuArticle
     required this.price,
     DateTime? createdAt,
     this.compositions,
+    this.orderItems,
   }) : createdAt = createdAt ?? DateTime.now();
 
   factory MenuArticle({
@@ -44,6 +46,7 @@ abstract class MenuArticle
     required double price,
     DateTime? createdAt,
     List<_ifzlh5t7.ArticleComposition>? compositions,
+    List<_io4d4iis.VenueOrderItem>? orderItems,
   }) = _MenuArticleImpl;
 
   factory MenuArticle.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -79,6 +82,11 @@ abstract class MenuArticle
                 .deserialize<List<_ifzlh5t7.ArticleComposition>>(
                   jsonSerialization['compositions'],
                 ),
+      orderItems: jsonSerialization['orderItems'] == null
+          ? null
+          : _iaib1p48.Protocol().deserialize<List<_io4d4iis.VenueOrderItem>>(
+              jsonSerialization['orderItems'],
+            ),
     );
   }
 
@@ -107,6 +115,8 @@ abstract class MenuArticle
 
   List<_ifzlh5t7.ArticleComposition>? compositions;
 
+  List<_io4d4iis.VenueOrderItem>? orderItems;
+
   @override
   _is.Table<_is.UuidValue?> get table => t;
 
@@ -124,6 +134,7 @@ abstract class MenuArticle
     double? price,
     DateTime? createdAt,
     List<_ifzlh5t7.ArticleComposition>? compositions,
+    List<_io4d4iis.VenueOrderItem>? orderItems,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -140,6 +151,8 @@ abstract class MenuArticle
       'createdAt': createdAt.toJson(),
       if (compositions != null)
         'compositions': compositions?.toJson(valueToJson: (v) => v.toJson()),
+      if (orderItems != null)
+        'orderItems': orderItems?.toJson(valueToJson: (v) => v.toJson()),
     };
   }
 
@@ -152,11 +165,13 @@ abstract class MenuArticle
     _iaohraio.BuildingInclude? building,
     _illkjvef.MenuCategoryInclude? category,
     _ifzlh5t7.ArticleCompositionIncludeList? compositions,
+    _io4d4iis.VenueOrderItemIncludeList? orderItems,
   }) {
     return MenuArticleInclude._(
       building: building,
       category: category,
       compositions: compositions,
+      orderItems: orderItems,
     );
   }
 
@@ -198,6 +213,7 @@ class _MenuArticleImpl extends MenuArticle {
     required double price,
     DateTime? createdAt,
     List<_ifzlh5t7.ArticleComposition>? compositions,
+    List<_io4d4iis.VenueOrderItem>? orderItems,
   }) : super._(
          id: id,
          buildingId: buildingId,
@@ -209,6 +225,7 @@ class _MenuArticleImpl extends MenuArticle {
          price: price,
          createdAt: createdAt,
          compositions: compositions,
+         orderItems: orderItems,
        );
 
   /// Returns a shallow copy of this [MenuArticle]
@@ -226,6 +243,7 @@ class _MenuArticleImpl extends MenuArticle {
     double? price,
     DateTime? createdAt,
     Object? compositions = _Undefined,
+    Object? orderItems = _Undefined,
   }) {
     return MenuArticle(
       id: id is _is.UuidValue? ? id : this.id,
@@ -244,6 +262,9 @@ class _MenuArticleImpl extends MenuArticle {
       compositions: compositions is List<_ifzlh5t7.ArticleComposition>?
           ? compositions
           : this.compositions?.map((e0) => e0.copyWith()).toList(),
+      orderItems: orderItems is List<_io4d4iis.VenueOrderItem>?
+          ? orderItems
+          : this.orderItems?.map((e0) => e0.copyWith()).toList(),
     );
   }
 }
@@ -338,6 +359,10 @@ class MenuArticleTable extends _is.Table<_is.UuidValue?> {
 
   _is.ManyRelation<_ifzlh5t7.ArticleCompositionTable>? _compositions;
 
+  _io4d4iis.VenueOrderItemTable? ___orderItems;
+
+  _is.ManyRelation<_io4d4iis.VenueOrderItemTable>? _orderItems;
+
   _iaohraio.BuildingTable get building {
     if (_building != null) return _building!;
     _building = _is.createRelationTable(
@@ -378,6 +403,19 @@ class MenuArticleTable extends _is.Table<_is.UuidValue?> {
     return ___compositions!;
   }
 
+  _io4d4iis.VenueOrderItemTable get __orderItems {
+    if (___orderItems != null) return ___orderItems!;
+    ___orderItems = _is.createRelationTable(
+      relationFieldName: '__orderItems',
+      field: MenuArticle.t.id,
+      foreignField: _io4d4iis.VenueOrderItem.t.articleId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _io4d4iis.VenueOrderItemTable(tableRelation: foreignTableRelation),
+    );
+    return ___orderItems!;
+  }
+
   _is.ManyRelation<_ifzlh5t7.ArticleCompositionTable> get compositions {
     if (_compositions != null) return _compositions!;
     var relationTable = _is.createRelationTable(
@@ -396,6 +434,25 @@ class MenuArticleTable extends _is.Table<_is.UuidValue?> {
       ),
     );
     return _compositions!;
+  }
+
+  _is.ManyRelation<_io4d4iis.VenueOrderItemTable> get orderItems {
+    if (_orderItems != null) return _orderItems!;
+    var relationTable = _is.createRelationTable(
+      relationFieldName: 'orderItems',
+      field: MenuArticle.t.id,
+      foreignField: _io4d4iis.VenueOrderItem.t.articleId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _io4d4iis.VenueOrderItemTable(tableRelation: foreignTableRelation),
+    );
+    _orderItems = _is.ManyRelation<_io4d4iis.VenueOrderItemTable>(
+      tableWithRelations: relationTable,
+      table: _io4d4iis.VenueOrderItemTable(
+        tableRelation: relationTable.tableRelation!.lastRelation,
+      ),
+    );
+    return _orderItems!;
   }
 
   @override
@@ -420,6 +477,9 @@ class MenuArticleTable extends _is.Table<_is.UuidValue?> {
     if (relationField == 'compositions') {
       return __compositions;
     }
+    if (relationField == 'orderItems') {
+      return __orderItems;
+    }
     return null;
   }
 }
@@ -429,10 +489,12 @@ class MenuArticleInclude extends _is.IncludeObject {
     _iaohraio.BuildingInclude? building,
     _illkjvef.MenuCategoryInclude? category,
     _ifzlh5t7.ArticleCompositionIncludeList? compositions,
+    _io4d4iis.VenueOrderItemIncludeList? orderItems,
   }) {
     _building = building;
     _category = category;
     _compositions = compositions;
+    _orderItems = orderItems;
   }
 
   _iaohraio.BuildingInclude? _building;
@@ -441,11 +503,14 @@ class MenuArticleInclude extends _is.IncludeObject {
 
   _ifzlh5t7.ArticleCompositionIncludeList? _compositions;
 
+  _io4d4iis.VenueOrderItemIncludeList? _orderItems;
+
   @override
   Map<String, _is.Include?> get includes => {
     'building': _building,
     'category': _category,
     'compositions': _compositions,
+    'orderItems': _orderItems,
   };
 
   @override
@@ -903,6 +968,31 @@ class MenuArticleAttachRepository {
       transaction: transaction,
     );
   }
+
+  /// Creates a relation between this [MenuArticle] and the given [VenueOrderItem]s
+  /// by setting each [VenueOrderItem]'s foreign key `articleId` to refer to this [MenuArticle].
+  Future<void> orderItems(
+    _is.DatabaseSession session,
+    MenuArticle menuArticle,
+    List<_io4d4iis.VenueOrderItem> venueOrderItem, {
+    _is.Transaction? transaction,
+  }) async {
+    if (venueOrderItem.any((e) => e.id == null)) {
+      throw ArgumentError.notNull('venueOrderItem.id');
+    }
+    if (menuArticle.id == null) {
+      throw ArgumentError.notNull('menuArticle.id');
+    }
+
+    var $venueOrderItem = venueOrderItem
+        .map((e) => e.copyWith(articleId: menuArticle.id))
+        .toList();
+    await session.db.update<_io4d4iis.VenueOrderItem>(
+      $venueOrderItem,
+      columns: [_io4d4iis.VenueOrderItem.t.articleId],
+      transaction: transaction,
+    );
+  }
 }
 
 class MenuArticleAttachRowRepository {
@@ -975,6 +1065,29 @@ class MenuArticleAttachRowRepository {
     await session.db.updateRow<_ifzlh5t7.ArticleComposition>(
       $articleComposition,
       columns: [_ifzlh5t7.ArticleComposition.t.articleId],
+      transaction: transaction,
+    );
+  }
+
+  /// Creates a relation between this [MenuArticle] and the given [VenueOrderItem]
+  /// by setting the [VenueOrderItem]'s foreign key `articleId` to refer to this [MenuArticle].
+  Future<void> orderItems(
+    _is.DatabaseSession session,
+    MenuArticle menuArticle,
+    _io4d4iis.VenueOrderItem venueOrderItem, {
+    _is.Transaction? transaction,
+  }) async {
+    if (venueOrderItem.id == null) {
+      throw ArgumentError.notNull('venueOrderItem.id');
+    }
+    if (menuArticle.id == null) {
+      throw ArgumentError.notNull('menuArticle.id');
+    }
+
+    var $venueOrderItem = venueOrderItem.copyWith(articleId: menuArticle.id);
+    await session.db.updateRow<_io4d4iis.VenueOrderItem>(
+      $venueOrderItem,
+      columns: [_io4d4iis.VenueOrderItem.t.articleId],
       transaction: transaction,
     );
   }

@@ -1,0 +1,4 @@
+### One unit of an article to attach to an order (repeat for multiples).
+class: OrderItemCreateLine
+fields:
+  articleId: UuidValue

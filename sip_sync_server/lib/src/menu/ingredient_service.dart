@@ -1,9 +1,10 @@
 import 'package:serverpod/serverpod.dart';
 
+import '../auth/auth_context.dart';
 import '../auth/auth_guard.dart';
 import '../generated/protocol.dart';
 
-/// Building-scoped ingredient create / list / delete.
+/// Building-scoped ingredient create / list / restock / delete.
 class IngredientService {
   /// Lists ingredients for a building the caller can access.
   Future<List<IngredientView>> listForBuilding(
@@ -40,11 +41,51 @@ class IngredientService {
         buildingId: request.buildingId,
         name: name,
         unit: request.unit,
+        initialStock: currentStock,
         currentStock: currentStock,
         thresholdStock: thresholdStock,
       ),
     );
     return _view(row);
+  }
+
+  /// Owner or employee adds incoming stock to an ingredient.
+  Future<IngredientView> restock(
+    Session session,
+    IngredientRestock request,
+  ) async {
+    final ctx = AuthGuard.requireAny(session);
+    _requireFloorActor(ctx);
+    final existing = await Ingredient.db.findById(session, request.id);
+    if (existing == null) {
+      throw IngredientException(
+        message: 'Ingredient not found.',
+        code: IngredientErrorCode.notFound,
+      );
+    }
+    await _requireBuildingAccess(session, existing.buildingId);
+    if (request.quantity <= 0 || request.quantity > 100000000) {
+      throw IngredientException(
+        message: 'Restock quantity must be greater than 0.',
+        code: IngredientErrorCode.invalidInput,
+      );
+    }
+    final next = existing.currentStock + request.quantity;
+    if (next > 100000000) {
+      throw IngredientException(
+        message: 'Stock would exceed the maximum allowed.',
+        code: IngredientErrorCode.invalidInput,
+      );
+    }
+    // Raise capacity when restock exceeds the previous full level.
+    final nextInitial = next > existing.initialStock
+        ? next
+        : existing.initialStock;
+    final updated = await Ingredient.db.updateRow(
+      session,
+      existing.copyWith(currentStock: next, initialStock: nextInitial),
+    );
+    return _view(updated);
   }
 
   /// Owner-only delete.
@@ -71,14 +112,23 @@ class IngredientService {
     await Ingredient.db.deleteRow(session, existing);
   }
 
-  IngredientView _view(Ingredient row) => IngredientView(
-    id: row.id!,
-    buildingId: row.buildingId,
-    name: row.name,
-    unit: row.unit,
-    currentStock: row.currentStock,
-    thresholdStock: row.thresholdStock,
-  );
+  IngredientView _view(Ingredient row) {
+    final initial = row.initialStock <= 0 ? row.currentStock : row.initialStock;
+    final progress = initial <= 0
+        ? (row.currentStock > 0 ? 1.0 : 0.0)
+        : (row.currentStock / initial).clamp(0.0, 1.0);
+    return IngredientView(
+      id: row.id!,
+      buildingId: row.buildingId,
+      name: row.name,
+      unit: row.unit,
+      initialStock: row.initialStock,
+      currentStock: row.currentStock,
+      thresholdStock: row.thresholdStock,
+      belowThreshold: row.currentStock <= row.thresholdStock,
+      stockProgress: progress,
+    );
+  }
 
   String _validateName(String raw) {
     final name = raw.trim();
@@ -99,6 +149,16 @@ class IngredientService {
       );
     }
     return value;
+  }
+
+  void _requireFloorActor(AuthContext ctx) {
+    if (ctx.actorType != ActorType.owner &&
+        ctx.actorType != ActorType.employee) {
+      throw IngredientException(
+        message: 'Only owners and employees can restock.',
+        code: IngredientErrorCode.notAuthorized,
+      );
+    }
   }
 
   Future<void> _assertNameAvailable(

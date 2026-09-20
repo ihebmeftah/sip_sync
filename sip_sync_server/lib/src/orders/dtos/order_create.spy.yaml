@@ -1,0 +1,5 @@
+class: OrderCreate
+fields:
+  buildingId: UuidValue
+  venueTableId: UuidValue?
+  items: List<OrderItemCreateLine>

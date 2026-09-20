@@ -31,6 +31,8 @@ import 'package:sip_sync_server/src/generated/menu/dtos/menu_article_view.dart'
     as _iftzx4at;
 import 'package:sip_sync_server/src/generated/menu/dtos/menu_category_view.dart'
     as _i87rh1jz;
+import 'package:sip_sync_server/src/generated/orders/dtos/order_view.dart'
+    as _i6r0fe4s;
 import 'package:sip_sync_server/src/generated/tables/dtos/venue_table_view.dart'
     as _i8j8iq89;
 import 'auth/dtos/account_error_code.dart' as _ipvvun4w;
@@ -69,6 +71,7 @@ import 'menu/dtos/article_composition_view.dart' as _ibgf2aer;
 import 'menu/dtos/ingredient_create.dart' as _ii1yylu5;
 import 'menu/dtos/ingredient_error_code.dart' as _i7okswdu;
 import 'menu/dtos/ingredient_exception.dart' as _i6yqbuhf;
+import 'menu/dtos/ingredient_restock.dart' as _i1tfcnyz;
 import 'menu/dtos/ingredient_view.dart' as _i8smn6k1;
 import 'menu/dtos/menu_article_create.dart' as _ilqdzk9u;
 import 'menu/dtos/menu_article_error_code.dart' as _i5kcaxik;
@@ -85,6 +88,18 @@ import 'menu/entity/article_composition.dart' as _i3yk9qsn;
 import 'menu/entity/ingredient.dart' as _idxha5j7;
 import 'menu/entity/menu_article.dart' as _iowcl7dy;
 import 'menu/entity/menu_category.dart' as _iiovp1sp;
+import 'orders/dtos/order_add_items.dart' as _iqdnv1pi;
+import 'orders/dtos/order_create.dart' as _iwmhqcsn;
+import 'orders/dtos/order_error_code.dart' as _iepprhv5;
+import 'orders/dtos/order_exception.dart' as _iumotmt8;
+import 'orders/dtos/order_item_create_line.dart' as _ihzk2s8h;
+import 'orders/dtos/order_item_status.dart' as _ihsl512g;
+import 'orders/dtos/order_item_status_update.dart' as _i8vmkag3;
+import 'orders/dtos/order_item_view.dart' as _in19xqkp;
+import 'orders/dtos/order_status.dart' as _iaqxrbm9;
+import 'orders/dtos/order_view.dart' as _i5x25q0s;
+import 'orders/entity/venue_order.dart' as _ihouontj;
+import 'orders/entity/venue_order_item.dart' as _ixvoqikw;
 import 'tables/dtos/table_floor_status.dart' as _i64byz7d;
 import 'tables/dtos/venue_table_create.dart' as _iui9xd5q;
 import 'tables/dtos/venue_table_error_code.dart' as _iqjhym86;
@@ -128,6 +143,7 @@ export 'menu/dtos/article_composition_view.dart';
 export 'menu/dtos/ingredient_create.dart';
 export 'menu/dtos/ingredient_error_code.dart';
 export 'menu/dtos/ingredient_exception.dart';
+export 'menu/dtos/ingredient_restock.dart';
 export 'menu/dtos/ingredient_view.dart';
 export 'menu/dtos/menu_article_create.dart';
 export 'menu/dtos/menu_article_error_code.dart';
@@ -144,6 +160,18 @@ export 'menu/entity/article_composition.dart';
 export 'menu/entity/ingredient.dart';
 export 'menu/entity/menu_article.dart';
 export 'menu/entity/menu_category.dart';
+export 'orders/dtos/order_add_items.dart';
+export 'orders/dtos/order_create.dart';
+export 'orders/dtos/order_error_code.dart';
+export 'orders/dtos/order_exception.dart';
+export 'orders/dtos/order_item_create_line.dart';
+export 'orders/dtos/order_item_status.dart';
+export 'orders/dtos/order_item_status_update.dart';
+export 'orders/dtos/order_item_view.dart';
+export 'orders/dtos/order_status.dart';
+export 'orders/dtos/order_view.dart';
+export 'orders/entity/venue_order.dart';
+export 'orders/entity/venue_order_item.dart';
 export 'tables/dtos/table_floor_status.dart';
 export 'tables/dtos/venue_table_create.dart';
 export 'tables/dtos/venue_table_error_code.dart';
@@ -728,6 +756,12 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'protocol:UnitsType',
         ),
         _isp.ColumnDefinition(
+          name: 'initialStock',
+          columnType: _isp.ColumnType.doublePrecision,
+          isNullable: false,
+          dartType: 'double',
+        ),
+        _isp.ColumnDefinition(
           name: 'currentStock',
           columnType: _isp.ColumnType.doublePrecision,
           isNullable: false,
@@ -1165,6 +1199,372 @@ class Protocol extends _is.DatabaseSerializationManager {
       managed: true,
     ),
     _isp.TableDefinition(
+      name: 'venue_order',
+      dartName: 'VenueOrder',
+      schema: 'public',
+      module: 'sip_sync',
+      columns: [
+        _isp.ColumnDefinition(
+          name: 'id',
+          columnType: _isp.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue?',
+          columnDefault: 'random_v7',
+        ),
+        _isp.ColumnDefinition(
+          name: 'buildingId',
+          columnType: _isp.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue',
+        ),
+        _isp.ColumnDefinition(
+          name: 'venueTableId',
+          columnType: _isp.ColumnType.uuid,
+          isNullable: true,
+          dartType: 'UuidValue?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'status',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'protocol:OrderStatus',
+        ),
+        _isp.ColumnDefinition(
+          name: 'launchedByType',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'protocol:ActorType',
+        ),
+        _isp.ColumnDefinition(
+          name: 'launchedById',
+          columnType: _isp.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue',
+        ),
+        _isp.ColumnDefinition(
+          name: 'lastPaidByType',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'protocol:ActorType?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'lastPaidById',
+          columnType: _isp.ColumnType.uuid,
+          isNullable: true,
+          dartType: 'UuidValue?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'lastPaidAt',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: true,
+          dartType: 'DateTime?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'cancelledByType',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'protocol:ActorType?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'cancelledById',
+          columnType: _isp.ColumnType.uuid,
+          isNullable: true,
+          dartType: 'UuidValue?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'cancelledAt',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: true,
+          dartType: 'DateTime?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'createdAt',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+        ),
+        _isp.ColumnDefinition(
+          name: 'updatedAt',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+        ),
+      ],
+      foreignKeys: [
+        _isp.ForeignKeyDefinition(
+          constraintName: 'venue_order_fk_0',
+          columns: ['buildingId'],
+          referenceTable: 'building',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.cascade,
+          matchType: null,
+        ),
+        _isp.ForeignKeyDefinition(
+          constraintName: 'venue_order_fk_1',
+          columns: ['venueTableId'],
+          referenceTable: 'venue_table',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.setNull,
+          matchType: null,
+        ),
+      ],
+      indexes: [
+        _isp.IndexDefinition(
+          indexName: 'venue_order_building_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'buildingId',
+            ),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+        _isp.IndexDefinition(
+          indexName: 'venue_order_building_status_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'buildingId',
+            ),
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'status',
+            ),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+        _isp.IndexDefinition(
+          indexName: 'venue_order_table_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'venueTableId',
+            ),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
+    _isp.TableDefinition(
+      name: 'venue_order_item',
+      dartName: 'VenueOrderItem',
+      schema: 'public',
+      module: 'sip_sync',
+      columns: [
+        _isp.ColumnDefinition(
+          name: 'id',
+          columnType: _isp.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue?',
+          columnDefault: 'random_v7',
+        ),
+        _isp.ColumnDefinition(
+          name: 'orderId',
+          columnType: _isp.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue',
+        ),
+        _isp.ColumnDefinition(
+          name: 'articleId',
+          columnType: _isp.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue',
+        ),
+        _isp.ColumnDefinition(
+          name: 'articleName',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _isp.ColumnDefinition(
+          name: 'unitPrice',
+          columnType: _isp.ColumnType.doublePrecision,
+          isNullable: false,
+          dartType: 'double',
+        ),
+        _isp.ColumnDefinition(
+          name: 'status',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'protocol:OrderItemStatus',
+        ),
+        _isp.ColumnDefinition(
+          name: 'passedByType',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'protocol:ActorType?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'passedById',
+          columnType: _isp.ColumnType.uuid,
+          isNullable: true,
+          dartType: 'UuidValue?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'preparedByType',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'protocol:ActorType?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'preparedById',
+          columnType: _isp.ColumnType.uuid,
+          isNullable: true,
+          dartType: 'UuidValue?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'servedByType',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'protocol:ActorType?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'servedById',
+          columnType: _isp.ColumnType.uuid,
+          isNullable: true,
+          dartType: 'UuidValue?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'paidToType',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'protocol:ActorType?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'paidToId',
+          columnType: _isp.ColumnType.uuid,
+          isNullable: true,
+          dartType: 'UuidValue?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'cancelledByType',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'protocol:ActorType?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'cancelledById',
+          columnType: _isp.ColumnType.uuid,
+          isNullable: true,
+          dartType: 'UuidValue?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'createdAt',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+        ),
+        _isp.ColumnDefinition(
+          name: 'updatedAt',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+        ),
+        _isp.ColumnDefinition(
+          name: 'preparedAt',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: true,
+          dartType: 'DateTime?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'servedAt',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: true,
+          dartType: 'DateTime?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'paidAt',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: true,
+          dartType: 'DateTime?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'cancelledAt',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: true,
+          dartType: 'DateTime?',
+        ),
+      ],
+      foreignKeys: [
+        _isp.ForeignKeyDefinition(
+          constraintName: 'venue_order_item_fk_0',
+          columns: ['orderId'],
+          referenceTable: 'venue_order',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.cascade,
+          matchType: null,
+        ),
+        _isp.ForeignKeyDefinition(
+          constraintName: 'venue_order_item_fk_1',
+          columns: ['articleId'],
+          referenceTable: 'menu_article',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.restrict,
+          matchType: null,
+        ),
+      ],
+      indexes: [
+        _isp.IndexDefinition(
+          indexName: 'venue_order_item_order_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'orderId',
+            ),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+        _isp.IndexDefinition(
+          indexName: 'venue_order_item_article_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'articleId',
+            ),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+        _isp.IndexDefinition(
+          indexName: 'venue_order_item_status_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'status',
+            ),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
+    _isp.TableDefinition(
       name: 'venue_table',
       dartName: 'VenueTable',
       schema: 'public',
@@ -1395,6 +1795,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == _i6yqbuhf.IngredientException) {
       return _i6yqbuhf.IngredientException.fromJson(data) as T;
     }
+    if (t == _i1tfcnyz.IngredientRestock) {
+      return _i1tfcnyz.IngredientRestock.fromJson(data) as T;
+    }
     if (t == _i8smn6k1.IngredientView) {
       return _i8smn6k1.IngredientView.fromJson(data) as T;
     }
@@ -1442,6 +1845,42 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     if (t == _iiovp1sp.MenuCategory) {
       return _iiovp1sp.MenuCategory.fromJson(data) as T;
+    }
+    if (t == _iqdnv1pi.OrderAddItems) {
+      return _iqdnv1pi.OrderAddItems.fromJson(data) as T;
+    }
+    if (t == _iwmhqcsn.OrderCreate) {
+      return _iwmhqcsn.OrderCreate.fromJson(data) as T;
+    }
+    if (t == _iepprhv5.OrderErrorCode) {
+      return _iepprhv5.OrderErrorCode.fromJson(data) as T;
+    }
+    if (t == _iumotmt8.OrderException) {
+      return _iumotmt8.OrderException.fromJson(data) as T;
+    }
+    if (t == _ihzk2s8h.OrderItemCreateLine) {
+      return _ihzk2s8h.OrderItemCreateLine.fromJson(data) as T;
+    }
+    if (t == _ihsl512g.OrderItemStatus) {
+      return _ihsl512g.OrderItemStatus.fromJson(data) as T;
+    }
+    if (t == _i8vmkag3.OrderItemStatusUpdate) {
+      return _i8vmkag3.OrderItemStatusUpdate.fromJson(data) as T;
+    }
+    if (t == _in19xqkp.OrderItemView) {
+      return _in19xqkp.OrderItemView.fromJson(data) as T;
+    }
+    if (t == _iaqxrbm9.OrderStatus) {
+      return _iaqxrbm9.OrderStatus.fromJson(data) as T;
+    }
+    if (t == _i5x25q0s.OrderView) {
+      return _i5x25q0s.OrderView.fromJson(data) as T;
+    }
+    if (t == _ihouontj.VenueOrder) {
+      return _ihouontj.VenueOrder.fromJson(data) as T;
+    }
+    if (t == _ixvoqikw.VenueOrderItem) {
+      return _ixvoqikw.VenueOrderItem.fromJson(data) as T;
     }
     if (t == _i64byz7d.TableFloorStatus) {
       return _i64byz7d.TableFloorStatus.fromJson(data) as T;
@@ -1623,6 +2062,10 @@ class Protocol extends _is.DatabaseSerializationManager {
               : null)
           as T;
     }
+    if (t == _is.getType<_i1tfcnyz.IngredientRestock?>()) {
+      return (data != null ? _i1tfcnyz.IngredientRestock.fromJson(data) : null)
+          as T;
+    }
     if (t == _is.getType<_i8smn6k1.IngredientView?>()) {
       return (data != null ? _i8smn6k1.IngredientView.fromJson(data) : null)
           as T;
@@ -1690,6 +2133,54 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     if (t == _is.getType<_iiovp1sp.MenuCategory?>()) {
       return (data != null ? _iiovp1sp.MenuCategory.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_iqdnv1pi.OrderAddItems?>()) {
+      return (data != null ? _iqdnv1pi.OrderAddItems.fromJson(data) : null)
+          as T;
+    }
+    if (t == _is.getType<_iwmhqcsn.OrderCreate?>()) {
+      return (data != null ? _iwmhqcsn.OrderCreate.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_iepprhv5.OrderErrorCode?>()) {
+      return (data != null ? _iepprhv5.OrderErrorCode.fromJson(data) : null)
+          as T;
+    }
+    if (t == _is.getType<_iumotmt8.OrderException?>()) {
+      return (data != null ? _iumotmt8.OrderException.fromJson(data) : null)
+          as T;
+    }
+    if (t == _is.getType<_ihzk2s8h.OrderItemCreateLine?>()) {
+      return (data != null
+              ? _ihzk2s8h.OrderItemCreateLine.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_ihsl512g.OrderItemStatus?>()) {
+      return (data != null ? _ihsl512g.OrderItemStatus.fromJson(data) : null)
+          as T;
+    }
+    if (t == _is.getType<_i8vmkag3.OrderItemStatusUpdate?>()) {
+      return (data != null
+              ? _i8vmkag3.OrderItemStatusUpdate.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_in19xqkp.OrderItemView?>()) {
+      return (data != null ? _in19xqkp.OrderItemView.fromJson(data) : null)
+          as T;
+    }
+    if (t == _is.getType<_iaqxrbm9.OrderStatus?>()) {
+      return (data != null ? _iaqxrbm9.OrderStatus.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_i5x25q0s.OrderView?>()) {
+      return (data != null ? _i5x25q0s.OrderView.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_ihouontj.VenueOrder?>()) {
+      return (data != null ? _ihouontj.VenueOrder.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_ixvoqikw.VenueOrderItem?>()) {
+      return (data != null ? _ixvoqikw.VenueOrderItem.fromJson(data) : null)
+          as T;
     }
     if (t == _is.getType<_i64byz7d.TableFloorStatus?>()) {
       return (data != null ? _i64byz7d.TableFloorStatus.fromJson(data) : null)
@@ -1810,6 +2301,20 @@ class Protocol extends _is.DatabaseSerializationManager {
               : null)
           as T;
     }
+    if (t == List<_ihouontj.VenueOrder>) {
+      return (data as List)
+              .map((e) => deserialize<_ihouontj.VenueOrder>(e))
+              .toList()
+          as T;
+    }
+    if (t == _is.getType<List<_ihouontj.VenueOrder>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map((e) => deserialize<_ihouontj.VenueOrder>(e))
+                    .toList()
+              : null)
+          as T;
+    }
     if (t == List<_i3yk9qsn.ArticleComposition>) {
       return (data as List)
               .map((e) => deserialize<_i3yk9qsn.ArticleComposition>(e))
@@ -1822,6 +2327,32 @@ class Protocol extends _is.DatabaseSerializationManager {
                     .map((e) => deserialize<_i3yk9qsn.ArticleComposition>(e))
                     .toList()
               : null)
+          as T;
+    }
+    if (t == List<_ixvoqikw.VenueOrderItem>) {
+      return (data as List)
+              .map((e) => deserialize<_ixvoqikw.VenueOrderItem>(e))
+              .toList()
+          as T;
+    }
+    if (t == _is.getType<List<_ixvoqikw.VenueOrderItem>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map((e) => deserialize<_ixvoqikw.VenueOrderItem>(e))
+                    .toList()
+              : null)
+          as T;
+    }
+    if (t == List<_ihzk2s8h.OrderItemCreateLine>) {
+      return (data as List)
+              .map((e) => deserialize<_ihzk2s8h.OrderItemCreateLine>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_in19xqkp.OrderItemView>) {
+      return (data as List)
+              .map((e) => deserialize<_in19xqkp.OrderItemView>(e))
+              .toList()
           as T;
     }
     if (t == List<_iubtczqk.SuperAdminView>) {
@@ -1863,6 +2394,12 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == List<_i87rh1jz.MenuCategoryView>) {
       return (data as List)
               .map((e) => deserialize<_i87rh1jz.MenuCategoryView>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_i6r0fe4s.OrderView>) {
+      return (data as List)
+              .map((e) => deserialize<_i6r0fe4s.OrderView>(e))
               .toList()
           as T;
     }
@@ -1922,6 +2459,7 @@ class Protocol extends _is.DatabaseSerializationManager {
       _ii1yylu5.IngredientCreate => 'IngredientCreate',
       _i7okswdu.IngredientErrorCode => 'IngredientErrorCode',
       _i6yqbuhf.IngredientException => 'IngredientException',
+      _i1tfcnyz.IngredientRestock => 'IngredientRestock',
       _i8smn6k1.IngredientView => 'IngredientView',
       _ilqdzk9u.MenuArticleCreate => 'MenuArticleCreate',
       _i5kcaxik.MenuArticleErrorCode => 'MenuArticleErrorCode',
@@ -1938,6 +2476,18 @@ class Protocol extends _is.DatabaseSerializationManager {
       _idxha5j7.Ingredient => 'Ingredient',
       _iowcl7dy.MenuArticle => 'MenuArticle',
       _iiovp1sp.MenuCategory => 'MenuCategory',
+      _iqdnv1pi.OrderAddItems => 'OrderAddItems',
+      _iwmhqcsn.OrderCreate => 'OrderCreate',
+      _iepprhv5.OrderErrorCode => 'OrderErrorCode',
+      _iumotmt8.OrderException => 'OrderException',
+      _ihzk2s8h.OrderItemCreateLine => 'OrderItemCreateLine',
+      _ihsl512g.OrderItemStatus => 'OrderItemStatus',
+      _i8vmkag3.OrderItemStatusUpdate => 'OrderItemStatusUpdate',
+      _in19xqkp.OrderItemView => 'OrderItemView',
+      _iaqxrbm9.OrderStatus => 'OrderStatus',
+      _i5x25q0s.OrderView => 'OrderView',
+      _ihouontj.VenueOrder => 'VenueOrder',
+      _ixvoqikw.VenueOrderItem => 'VenueOrderItem',
       _i64byz7d.TableFloorStatus => 'TableFloorStatus',
       _iui9xd5q.VenueTableCreate => 'VenueTableCreate',
       _iqjhym86.VenueTableErrorCode => 'VenueTableErrorCode',
@@ -2031,6 +2581,8 @@ class Protocol extends _is.DatabaseSerializationManager {
         return 'IngredientErrorCode';
       case _i6yqbuhf.IngredientException():
         return 'IngredientException';
+      case _i1tfcnyz.IngredientRestock():
+        return 'IngredientRestock';
       case _i8smn6k1.IngredientView():
         return 'IngredientView';
       case _ilqdzk9u.MenuArticleCreate():
@@ -2063,6 +2615,30 @@ class Protocol extends _is.DatabaseSerializationManager {
         return 'MenuArticle';
       case _iiovp1sp.MenuCategory():
         return 'MenuCategory';
+      case _iqdnv1pi.OrderAddItems():
+        return 'OrderAddItems';
+      case _iwmhqcsn.OrderCreate():
+        return 'OrderCreate';
+      case _iepprhv5.OrderErrorCode():
+        return 'OrderErrorCode';
+      case _iumotmt8.OrderException():
+        return 'OrderException';
+      case _ihzk2s8h.OrderItemCreateLine():
+        return 'OrderItemCreateLine';
+      case _ihsl512g.OrderItemStatus():
+        return 'OrderItemStatus';
+      case _i8vmkag3.OrderItemStatusUpdate():
+        return 'OrderItemStatusUpdate';
+      case _in19xqkp.OrderItemView():
+        return 'OrderItemView';
+      case _iaqxrbm9.OrderStatus():
+        return 'OrderStatus';
+      case _i5x25q0s.OrderView():
+        return 'OrderView';
+      case _ihouontj.VenueOrder():
+        return 'VenueOrder';
+      case _ixvoqikw.VenueOrderItem():
+        return 'VenueOrderItem';
       case _i64byz7d.TableFloorStatus():
         return 'TableFloorStatus';
       case _iui9xd5q.VenueTableCreate():
@@ -2211,6 +2787,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (dataClassName == 'IngredientException') {
       return deserialize<_i6yqbuhf.IngredientException>(data['data']);
     }
+    if (dataClassName == 'IngredientRestock') {
+      return deserialize<_i1tfcnyz.IngredientRestock>(data['data']);
+    }
     if (dataClassName == 'IngredientView') {
       return deserialize<_i8smn6k1.IngredientView>(data['data']);
     }
@@ -2258,6 +2837,42 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     if (dataClassName == 'MenuCategory') {
       return deserialize<_iiovp1sp.MenuCategory>(data['data']);
+    }
+    if (dataClassName == 'OrderAddItems') {
+      return deserialize<_iqdnv1pi.OrderAddItems>(data['data']);
+    }
+    if (dataClassName == 'OrderCreate') {
+      return deserialize<_iwmhqcsn.OrderCreate>(data['data']);
+    }
+    if (dataClassName == 'OrderErrorCode') {
+      return deserialize<_iepprhv5.OrderErrorCode>(data['data']);
+    }
+    if (dataClassName == 'OrderException') {
+      return deserialize<_iumotmt8.OrderException>(data['data']);
+    }
+    if (dataClassName == 'OrderItemCreateLine') {
+      return deserialize<_ihzk2s8h.OrderItemCreateLine>(data['data']);
+    }
+    if (dataClassName == 'OrderItemStatus') {
+      return deserialize<_ihsl512g.OrderItemStatus>(data['data']);
+    }
+    if (dataClassName == 'OrderItemStatusUpdate') {
+      return deserialize<_i8vmkag3.OrderItemStatusUpdate>(data['data']);
+    }
+    if (dataClassName == 'OrderItemView') {
+      return deserialize<_in19xqkp.OrderItemView>(data['data']);
+    }
+    if (dataClassName == 'OrderStatus') {
+      return deserialize<_iaqxrbm9.OrderStatus>(data['data']);
+    }
+    if (dataClassName == 'OrderView') {
+      return deserialize<_i5x25q0s.OrderView>(data['data']);
+    }
+    if (dataClassName == 'VenueOrder') {
+      return deserialize<_ihouontj.VenueOrder>(data['data']);
+    }
+    if (dataClassName == 'VenueOrderItem') {
+      return deserialize<_ixvoqikw.VenueOrderItem>(data['data']);
     }
     if (dataClassName == 'TableFloorStatus') {
       return deserialize<_i64byz7d.TableFloorStatus>(data['data']);
@@ -2341,6 +2956,10 @@ class Protocol extends _is.DatabaseSerializationManager {
         return _iowcl7dy.MenuArticle.t;
       case _iiovp1sp.MenuCategory:
         return _iiovp1sp.MenuCategory.t;
+      case _ihouontj.VenueOrder:
+        return _ihouontj.VenueOrder.t;
+      case _ixvoqikw.VenueOrderItem:
+        return _ixvoqikw.VenueOrderItem.t;
       case _ik40dtuz.VenueTable:
         return _ik40dtuz.VenueTable.t;
     }

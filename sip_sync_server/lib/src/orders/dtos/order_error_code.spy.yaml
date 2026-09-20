@@ -1,0 +1,9 @@
+enum: OrderErrorCode
+serialized: byName
+values:
+  - invalidInput
+  - notAuthorized
+  - notFound
+  - invalidStatus
+  ### Not enough ingredient stock for an ordered article's composition.
+  - insufficientStock

@@ -70,6 +70,7 @@
   "navArticles": "Articles",
   "navIngredients": "Ingredients",
   "navPos": "POS",
+  "navOrders": "Orders",
   "navTables": "Tables",
   "helloScreen": "Hello, {screen}",
   "@helloScreen": { "placeholders": { "screen": { "type": "String" } } },
@@ -234,6 +235,22 @@
       "threshold": { "type": "String" }
     }
   },
+  "ingredientRestock": "Restock",
+  "ingredientRestockHint": "Add incoming quantity for {name}.",
+  "@ingredientRestockHint": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "ingredientRestockQuantity": "Incoming quantity",
+  "validationIngredientRestock": "Enter a quantity greater than 0.",
+  "ingredientLowStockBadge": "Low",
+  "ingredientLowStockBanner": "{count} ingredients at or below threshold",
+  "@ingredientLowStockBanner": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "ingredientStockPercent": "{percent}% of capacity",
+  "@ingredientStockPercent": {
+    "placeholders": { "percent": { "type": "int" } }
+  },
   "validationIngredientName": "Enter a name up to 80 characters.",
   "validationIngredientStock": "Enter 0 or a positive number.",
   "errorIngredientNameTaken": "That ingredient name is already used here.",
@@ -290,6 +307,81 @@
   "unitAbbrevBunch": "bunch",
   "unitAbbrevTeaspoon": "tsp",
   "unitAbbrevTablespoon": "tbsp",
-  "unitAbbrevCup": "cup"
+  "unitAbbrevCup": "cup",
+  "ordersHint": "Create floor orders, advance kitchen status, and record payment.",
+  "ordersEmpty": "No orders yet. Tap New order to start.",
+  "ordersFilterAll": "All",
+  "ordersFilterEmpty": "No orders match this status.",
+  "newOrder": "New order",
+  "createOrder": "Create order",
+  "newOrderHint": "Select a table, then add articles. You are recorded as the launcher.",
+  "orderSelectTablePrompt": "Select a table for this order.",
+  "orderSelectTableFloorHint": "Tap a table on the floor map to continue adding articles.",
+  "orderTableInactive": "That table is inactive. Choose an active table.",
+  "orderAppendArticles": "Add articles",
+  "orderNoActiveTables": "No active tables. Create tables first.",
+  "orderSearchArticles": "Search articles by name",
+  "orderAllCategories": "All",
+  "orderNoArticlesMatch": "No articles match this filter.",
+  "orderConfirm": "Confirm order",
+  "orderAddUnit": "Add unit",
+  "orderRemoveUnit": "Remove unit",
+  "orderTableOptional": "Table (optional)",
+  "orderNoTable": "No table",
+  "orderTableNumber": "Table {number}",
+  "@orderTableNumber": { "placeholders": { "number": { "type": "int" } } },
+  "orderNeedArticles": "Add articles in Products before creating an order.",
+  "validationOrderItems": "Add at least one article.",
+  "orderItemsLabel": "items",
+  "orderItemsHeading": "Items",
+  "orderDetailTitle": "Order · {table}",
+  "@orderDetailTitle": { "placeholders": { "table": { "type": "String" } } },
+  "orderLaunchedBy": "Launched by {actor}",
+  "@orderLaunchedBy": { "placeholders": { "actor": { "type": "String" } } },
+  "orderLastPaidBy": "Last payment by {actor}",
+  "@orderLastPaidBy": { "placeholders": { "actor": { "type": "String" } } },
+  "cancelOrder": "Cancel order",
+  "cancelOrderConfirm": "Cancel this order and open lines?",
+  "cancelOrderItem": "Cancel item",
+  "orderItemInfo": "Item details",
+  "orderFieldCreatedAt": "Created",
+  "orderFieldUpdatedAt": "Updated",
+  "orderFieldPreparedAt": "Prepared",
+  "orderFieldServedAt": "Served",
+  "orderFieldPaidAt": "Paid",
+  "orderFieldPaidAtLabel": "Paid {when}",
+  "@orderFieldPaidAtLabel": {
+    "placeholders": { "when": { "type": "String" } }
+  },
+  "orderFieldPassedBy": "Passed by",
+  "orderFieldPreparedBy": "Prepared by",
+  "orderFieldServedBy": "Served by",
+  "orderFieldPaidTo": "Paid to",
+  "orderFieldCancelledBy": "Cancelled by",
+  "orderFieldCancelledAt": "Cancelled",
+  "orderCancelledBy": "Cancelled by {actor}",
+  "@orderCancelledBy": { "placeholders": { "actor": { "type": "String" } } },
+  "orderFieldCancelledAtLabel": "Cancelled {when}",
+  "@orderFieldCancelledAtLabel": {
+    "placeholders": { "when": { "type": "String" } }
+  },
+  "orderFieldCreatedAtLabel": "Created {when}",
+  "@orderFieldCreatedAtLabel": {
+    "placeholders": { "when": { "type": "String" } }
+  },
+  "orderFieldUpdatedAtLabel": "Updated {when}",
+  "@orderFieldUpdatedAtLabel": {
+    "placeholders": { "when": { "type": "String" } }
+  },
+  "orderStatusProgress": "In progress",
+  "orderStatusPayed": "Payed",
+  "orderStatusCancelled": "Cancelled",
+  "orderItemStatusProgress": "Progress",
+  "orderItemStatusPicked": "Picked",
+  "orderItemStatusReady": "Ready",
+  "orderItemStatusServed": "Served",
+  "orderItemStatusPayed": "Payed",
+  "orderItemStatusCancelled": "Cancelled",
+  "errorOrderInvalidStatus": "That status change is not allowed.",
+  "errorOrderInsufficientStock": "Not enough ingredient stock for this order."
 }
-

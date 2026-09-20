@@ -28,4 +28,13 @@ class IngredientRepository {
   }
 
   Future<void> delete(UuidValue id) => _client.ingredient.delete(id);
+
+  Future<IngredientView> restock({
+    required UuidValue id,
+    required double quantity,
+  }) {
+    return _client.ingredient.restock(
+      IngredientRestock(id: id, quantity: quantity),
+    );
+  }
 }

@@ -18,6 +18,7 @@ import '../../auth/entity/owner.dart' as _i2wy11ca;
 import '../../menu/entity/ingredient.dart' as _ixki5cxr;
 import '../../menu/entity/menu_article.dart' as _is7gdyz6;
 import '../../menu/entity/menu_category.dart' as _illkjvef;
+import '../../orders/entity/venue_order.dart' as _iwamn8sj;
 import '../../tables/entity/venue_table.dart' as _ilcfc7kr;
 
 /// A café, restaurant, lounge, bar, or custom venue owned by one owner.
@@ -41,6 +42,7 @@ abstract class Building
     this.menuCategories,
     this.menuArticles,
     this.ingredients,
+    this.orders,
   }) : createdAt = createdAt ?? DateTime.now();
 
   factory Building({
@@ -61,6 +63,7 @@ abstract class Building
     List<_illkjvef.MenuCategory>? menuCategories,
     List<_is7gdyz6.MenuArticle>? menuArticles,
     List<_ixki5cxr.Ingredient>? ingredients,
+    List<_iwamn8sj.VenueOrder>? orders,
   }) = _BuildingImpl;
 
   factory Building.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -112,6 +115,11 @@ abstract class Building
           : _iaib1p48.Protocol().deserialize<List<_ixki5cxr.Ingredient>>(
               jsonSerialization['ingredients'],
             ),
+      orders: jsonSerialization['orders'] == null
+          ? null
+          : _iaib1p48.Protocol().deserialize<List<_iwamn8sj.VenueOrder>>(
+              jsonSerialization['orders'],
+            ),
     );
   }
 
@@ -154,6 +162,8 @@ abstract class Building
 
   List<_ixki5cxr.Ingredient>? ingredients;
 
+  List<_iwamn8sj.VenueOrder>? orders;
+
   @override
   _is.Table<_is.UuidValue?> get table => t;
 
@@ -178,6 +188,7 @@ abstract class Building
     List<_illkjvef.MenuCategory>? menuCategories,
     List<_is7gdyz6.MenuArticle>? menuArticles,
     List<_ixki5cxr.Ingredient>? ingredients,
+    List<_iwamn8sj.VenueOrder>? orders,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -207,6 +218,8 @@ abstract class Building
         'menuArticles': menuArticles?.toJson(valueToJson: (v) => v.toJson()),
       if (ingredients != null)
         'ingredients': ingredients?.toJson(valueToJson: (v) => v.toJson()),
+      if (orders != null)
+        'orders': orders?.toJson(valueToJson: (v) => v.toJson()),
     };
   }
 
@@ -222,6 +235,7 @@ abstract class Building
     _illkjvef.MenuCategoryIncludeList? menuCategories,
     _is7gdyz6.MenuArticleIncludeList? menuArticles,
     _ixki5cxr.IngredientIncludeList? ingredients,
+    _iwamn8sj.VenueOrderIncludeList? orders,
   }) {
     return BuildingInclude._(
       owner: owner,
@@ -230,6 +244,7 @@ abstract class Building
       menuCategories: menuCategories,
       menuArticles: menuArticles,
       ingredients: ingredients,
+      orders: orders,
     );
   }
 
@@ -278,6 +293,7 @@ class _BuildingImpl extends Building {
     List<_illkjvef.MenuCategory>? menuCategories,
     List<_is7gdyz6.MenuArticle>? menuArticles,
     List<_ixki5cxr.Ingredient>? ingredients,
+    List<_iwamn8sj.VenueOrder>? orders,
   }) : super._(
          id: id,
          ownerId: ownerId,
@@ -296,6 +312,7 @@ class _BuildingImpl extends Building {
          menuCategories: menuCategories,
          menuArticles: menuArticles,
          ingredients: ingredients,
+         orders: orders,
        );
 
   /// Returns a shallow copy of this [Building]
@@ -320,6 +337,7 @@ class _BuildingImpl extends Building {
     Object? menuCategories = _Undefined,
     Object? menuArticles = _Undefined,
     Object? ingredients = _Undefined,
+    Object? orders = _Undefined,
   }) {
     return Building(
       id: id is _is.UuidValue? ? id : this.id,
@@ -349,6 +367,9 @@ class _BuildingImpl extends Building {
       ingredients: ingredients is List<_ixki5cxr.Ingredient>?
           ? ingredients
           : this.ingredients?.map((e0) => e0.copyWith()).toList(),
+      orders: orders is List<_iwamn8sj.VenueOrder>?
+          ? orders
+          : this.orders?.map((e0) => e0.copyWith()).toList(),
     );
   }
 }
@@ -498,6 +519,10 @@ class BuildingTable extends _is.Table<_is.UuidValue?> {
 
   _is.ManyRelation<_ixki5cxr.IngredientTable>? _ingredients;
 
+  _iwamn8sj.VenueOrderTable? ___orders;
+
+  _is.ManyRelation<_iwamn8sj.VenueOrderTable>? _orders;
+
   _i2wy11ca.OwnerTable get owner {
     if (_owner != null) return _owner!;
     _owner = _is.createRelationTable(
@@ -574,6 +599,19 @@ class BuildingTable extends _is.Table<_is.UuidValue?> {
           _ixki5cxr.IngredientTable(tableRelation: foreignTableRelation),
     );
     return ___ingredients!;
+  }
+
+  _iwamn8sj.VenueOrderTable get __orders {
+    if (___orders != null) return ___orders!;
+    ___orders = _is.createRelationTable(
+      relationFieldName: '__orders',
+      field: Building.t.id,
+      foreignField: _iwamn8sj.VenueOrder.t.buildingId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _iwamn8sj.VenueOrderTable(tableRelation: foreignTableRelation),
+    );
+    return ___orders!;
   }
 
   _is.ManyRelation<_ie30fksv.EmployeeTable> get employees {
@@ -671,6 +709,25 @@ class BuildingTable extends _is.Table<_is.UuidValue?> {
     return _ingredients!;
   }
 
+  _is.ManyRelation<_iwamn8sj.VenueOrderTable> get orders {
+    if (_orders != null) return _orders!;
+    var relationTable = _is.createRelationTable(
+      relationFieldName: 'orders',
+      field: Building.t.id,
+      foreignField: _iwamn8sj.VenueOrder.t.buildingId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _iwamn8sj.VenueOrderTable(tableRelation: foreignTableRelation),
+    );
+    _orders = _is.ManyRelation<_iwamn8sj.VenueOrderTable>(
+      tableWithRelations: relationTable,
+      table: _iwamn8sj.VenueOrderTable(
+        tableRelation: relationTable.tableRelation!.lastRelation,
+      ),
+    );
+    return _orders!;
+  }
+
   @override
   List<_is.Column> get columns => [
     id,
@@ -706,6 +763,9 @@ class BuildingTable extends _is.Table<_is.UuidValue?> {
     if (relationField == 'ingredients') {
       return __ingredients;
     }
+    if (relationField == 'orders') {
+      return __orders;
+    }
     return null;
   }
 }
@@ -718,6 +778,7 @@ class BuildingInclude extends _is.IncludeObject {
     _illkjvef.MenuCategoryIncludeList? menuCategories,
     _is7gdyz6.MenuArticleIncludeList? menuArticles,
     _ixki5cxr.IngredientIncludeList? ingredients,
+    _iwamn8sj.VenueOrderIncludeList? orders,
   }) {
     _owner = owner;
     _employees = employees;
@@ -725,6 +786,7 @@ class BuildingInclude extends _is.IncludeObject {
     _menuCategories = menuCategories;
     _menuArticles = menuArticles;
     _ingredients = ingredients;
+    _orders = orders;
   }
 
   _i2wy11ca.OwnerInclude? _owner;
@@ -739,6 +801,8 @@ class BuildingInclude extends _is.IncludeObject {
 
   _ixki5cxr.IngredientIncludeList? _ingredients;
 
+  _iwamn8sj.VenueOrderIncludeList? _orders;
+
   @override
   Map<String, _is.Include?> get includes => {
     'owner': _owner,
@@ -747,6 +811,7 @@ class BuildingInclude extends _is.IncludeObject {
     'menuCategories': _menuCategories,
     'menuArticles': _menuArticles,
     'ingredients': _ingredients,
+    'orders': _orders,
   };
 
   @override
@@ -1304,6 +1369,31 @@ class BuildingAttachRepository {
       transaction: transaction,
     );
   }
+
+  /// Creates a relation between this [Building] and the given [VenueOrder]s
+  /// by setting each [VenueOrder]'s foreign key `buildingId` to refer to this [Building].
+  Future<void> orders(
+    _is.DatabaseSession session,
+    Building building,
+    List<_iwamn8sj.VenueOrder> venueOrder, {
+    _is.Transaction? transaction,
+  }) async {
+    if (venueOrder.any((e) => e.id == null)) {
+      throw ArgumentError.notNull('venueOrder.id');
+    }
+    if (building.id == null) {
+      throw ArgumentError.notNull('building.id');
+    }
+
+    var $venueOrder = venueOrder
+        .map((e) => e.copyWith(buildingId: building.id))
+        .toList();
+    await session.db.update<_iwamn8sj.VenueOrder>(
+      $venueOrder,
+      columns: [_iwamn8sj.VenueOrder.t.buildingId],
+      transaction: transaction,
+    );
+  }
 }
 
 class BuildingAttachRowRepository {
@@ -1443,6 +1533,29 @@ class BuildingAttachRowRepository {
     await session.db.updateRow<_ixki5cxr.Ingredient>(
       $ingredient,
       columns: [_ixki5cxr.Ingredient.t.buildingId],
+      transaction: transaction,
+    );
+  }
+
+  /// Creates a relation between this [Building] and the given [VenueOrder]
+  /// by setting the [VenueOrder]'s foreign key `buildingId` to refer to this [Building].
+  Future<void> orders(
+    _is.DatabaseSession session,
+    Building building,
+    _iwamn8sj.VenueOrder venueOrder, {
+    _is.Transaction? transaction,
+  }) async {
+    if (venueOrder.id == null) {
+      throw ArgumentError.notNull('venueOrder.id');
+    }
+    if (building.id == null) {
+      throw ArgumentError.notNull('building.id');
+    }
+
+    var $venueOrder = venueOrder.copyWith(buildingId: building.id);
+    await session.db.updateRow<_iwamn8sj.VenueOrder>(
+      $venueOrder,
+      columns: [_iwamn8sj.VenueOrder.t.buildingId],
       transaction: transaction,
     );
   }

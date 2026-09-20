@@ -38,6 +38,17 @@ Passwords are hashed (Argon2id) on the actor row (`passwordHash`). Sessions are 
 - **Employee** — created by an owner for a building; logs in on `managment` with username; session includes `buildingId` → app opens dashboard directly.
 - **Super admin** — seeded default + staff added by an admin; logs in on `backoffice`. Default admin cannot be deleted.
 
+## Local demo seed
+
+On development server boot, if `owner1@sipsync.dev` is missing, [DevSeed](../../sip_sync_server/lib/src/seed/dev_seed.dart) creates two owners (idempotent):
+
+| Email | Password | Building |
+| --- | --- | --- |
+| `owner1@sipsync.dev` | `password1` | Olive Café — Coffee + Pastries, ingredients, compositions, 6 tables |
+| `owner2@sipsync.dev` | `password1` | Harbor Lounge — Cocktails + Snacks, ingredients, compositions, 8 tables |
+
+Wipe `.serverpod/development/pgdata` then `serverpod start` to reset and re-seed.
+
 ## Flow
 
 ### Owner or customer register

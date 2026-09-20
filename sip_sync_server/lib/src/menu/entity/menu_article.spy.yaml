@@ -11,6 +11,7 @@ fields:
   price: double
   createdAt: DateTime, defaultModel=now
   compositions: List<ArticleComposition>?, relation(name=article_compositions)
+  orderItems: List<VenueOrderItem>?, relation(name=article_order_items)
 indexes:
   menu_article_building_name_idx:
     fields: buildingId, name

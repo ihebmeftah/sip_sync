@@ -56,4 +56,23 @@ class IngredientsViewModel extends _$IngredientsViewModel {
     await ref.read(ingredientRepositoryProvider).delete(id);
     await refresh();
   }
+
+  Future<IngredientView> restock({
+    required UuidValue id,
+    required double quantity,
+  }) async {
+    final saved = await ref
+        .read(ingredientRepositoryProvider)
+        .restock(id: id, quantity: quantity);
+    final current = state.asData?.value;
+    if (current == null) {
+      await refresh();
+    } else {
+      state = AsyncData([
+        for (final row in current)
+          if (row.id == saved.id) saved else row,
+      ]);
+    }
+    return saved;
+  }
 }

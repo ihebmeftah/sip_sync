@@ -9,9 +9,10 @@ import '../../../core/widgets/app_controls.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../view_models/ingredients_view_model.dart';
 import '../widgets/ingredient_dialog.dart';
+import '../widgets/ingredient_restock_dialog.dart';
 import '../widgets/unit_labels.dart';
 
-/// Per-building ingredient list with owner create / delete.
+/// Per-building ingredient list with stock bar, restock, and low-stock alerts.
 class IngredientsListView extends ConsumerWidget {
   const IngredientsListView({super.key, required this.buildingId});
 
@@ -23,6 +24,9 @@ class IngredientsListView extends ConsumerWidget {
     }
     return value.toStringAsFixed(2);
   }
+
+  /// Bar fill from server [IngredientView.stockProgress] (current / initial).
+  double _stockProgress(IngredientView ingredient) => ingredient.stockProgress;
 
   Future<void> _confirmDelete(
     BuildContext context,
@@ -79,7 +83,12 @@ class IngredientsListView extends ConsumerWidget {
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: AppBreakpoints.pageMax),
           child: ListView(
-            padding: const EdgeInsets.all(AppSpacing.xl),
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.xl,
+              AppSpacing.xl,
+              AppSpacing.xl,
+              96,
+            ),
             children: [
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -135,55 +144,180 @@ class IngredientsListView extends ConsumerWidget {
                       ),
                     );
                   }
-                  return AppSurfaceCard(
-                    child: Column(
-                      children: [
-                        for (final ingredient in ingredients)
-                          ListTile(
-                            contentPadding: EdgeInsets.zero,
-                            leading: CircleAvatar(
-                              backgroundColor:
-                                  ingredient.currentStock <=
-                                      ingredient.thresholdStock
-                                  ? scheme.errorContainer
-                                  : scheme.secondaryContainer,
-                              foregroundColor:
-                                  ingredient.currentStock <=
-                                      ingredient.thresholdStock
-                                  ? scheme.onErrorContainer
-                                  : scheme.onSecondaryContainer,
-                              child: Icon(
-                                ingredient.currentStock <=
-                                        ingredient.thresholdStock
-                                    ? Icons.warning_amber_outlined
-                                    : Icons.science_outlined,
+                  final lowCount = ingredients
+                      .where((i) => i.belowThreshold)
+                      .length;
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      if (lowCount > 0) ...[
+                        AppSurfaceCard(
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.warning_amber_rounded,
+                                color: scheme.error,
                               ),
-                            ),
-                            title: Text(ingredient.name),
-                            subtitle: Text(
-                              l10n.ingredientStockLine(
-                                _formatQty(ingredient.currentStock),
-                                unitTypeAbbrev(l10n, ingredient.unit),
-                                _formatQty(ingredient.thresholdStock),
+                              const SizedBox(width: AppSpacing.md),
+                              Expanded(
+                                child: Text(
+                                  l10n.ingredientLowStockBanner(lowCount),
+                                  style: text.bodyMedium?.copyWith(
+                                    color: scheme.error,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
                               ),
-                            ),
-                            trailing: isOwner
-                                ? IconButton(
-                                    tooltip: l10n.deleteIngredient,
-                                    onPressed: () => _confirmDelete(
-                                      context,
-                                      ref,
-                                      ingredient,
-                                    ),
-                                    icon: Icon(
-                                      Icons.delete_outline,
-                                      color: scheme.error,
-                                    ),
-                                  )
-                                : null,
+                            ],
                           ),
+                        ),
+                        const SizedBox(height: AppSpacing.md),
                       ],
-                    ),
+                      for (final ingredient in ingredients) ...[
+                        AppSurfaceCard(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  CircleAvatar(
+                                    backgroundColor: ingredient.belowThreshold
+                                        ? scheme.errorContainer
+                                        : scheme.secondaryContainer,
+                                    foregroundColor: ingredient.belowThreshold
+                                        ? scheme.onErrorContainer
+                                        : scheme.onSecondaryContainer,
+                                    child: Icon(
+                                      ingredient.belowThreshold
+                                          ? Icons.warning_amber_outlined
+                                          : Icons.science_outlined,
+                                    ),
+                                  ),
+                                  const SizedBox(width: AppSpacing.md),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Expanded(
+                                              child: Text(
+                                                ingredient.name,
+                                                style: text.titleSmall,
+                                              ),
+                                            ),
+                                            if (ingredient.belowThreshold)
+                                              Container(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                      horizontal: 8,
+                                                      vertical: 2,
+                                                    ),
+                                                decoration: BoxDecoration(
+                                                  color: scheme.errorContainer,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                        999,
+                                                      ),
+                                                ),
+                                                child: Text(
+                                                  l10n.ingredientLowStockBadge,
+                                                  style: text.labelSmall
+                                                      ?.copyWith(
+                                                        color: scheme
+                                                            .onErrorContainer,
+                                                        fontWeight:
+                                                            FontWeight.w700,
+                                                      ),
+                                                ),
+                                              ),
+                                          ],
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          l10n.ingredientStockLine(
+                                            _formatQty(ingredient.currentStock),
+                                            unitTypeAbbrev(
+                                              l10n,
+                                              ingredient.unit,
+                                            ),
+                                            _formatQty(
+                                              ingredient.thresholdStock,
+                                            ),
+                                          ),
+                                          style: text.bodySmall,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: AppSpacing.md),
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(999),
+                                child: LinearProgressIndicator(
+                                  value: _stockProgress(ingredient),
+                                  minHeight: 8,
+                                  backgroundColor:
+                                      scheme.surfaceContainerHighest,
+                                  color: ingredient.belowThreshold
+                                      ? scheme.error
+                                      : scheme.primary,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                l10n.ingredientStockPercent(
+                                  (_stockProgress(ingredient) * 100).round(),
+                                ),
+                                style: text.labelSmall?.copyWith(
+                                  color: scheme.onSurfaceVariant,
+                                ),
+                              ),
+                              const SizedBox(height: AppSpacing.sm),
+                              Row(
+                                children: [
+                                  FilledButton.tonalIcon(
+                                    style: FilledButton.styleFrom(
+                                      visualDensity: VisualDensity.compact,
+                                      tapTargetSize:
+                                          MaterialTapTargetSize.shrinkWrap,
+                                      minimumSize: const Size(0, 32),
+                                    ),
+                                    onPressed: () =>
+                                        showIngredientRestockDialog(
+                                          context,
+                                          buildingId: buildingId,
+                                          ingredient: ingredient,
+                                        ),
+                                    icon: const Icon(Icons.add, size: 16),
+                                    label: Text(l10n.ingredientRestock),
+                                  ),
+                                  const Spacer(),
+                                  if (isOwner)
+                                    IconButton(
+                                      tooltip: l10n.deleteIngredient,
+                                      visualDensity: VisualDensity.compact,
+                                      onPressed: () => _confirmDelete(
+                                        context,
+                                        ref,
+                                        ingredient,
+                                      ),
+                                      icon: Icon(
+                                        Icons.delete_outline,
+                                        color: scheme.error,
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: AppSpacing.sm),
+                      ],
+                    ],
                   );
                 },
               ),

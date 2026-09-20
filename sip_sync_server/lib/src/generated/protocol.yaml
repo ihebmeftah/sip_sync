@@ -43,6 +43,7 @@ ingredient:
   - list:
   - create:
   - delete:
+  - restock:
 menuArticle:
   - list:
   - create:
@@ -51,6 +52,13 @@ menuCategory:
   - list:
   - create:
   - update:
+order:
+  - list:
+  - get:
+  - create:
+  - addItems:
+  - updateItemStatus:
+  - cancel:
 venueTable:
   - list:
   - create:

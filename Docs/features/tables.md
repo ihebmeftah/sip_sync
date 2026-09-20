@@ -33,8 +33,8 @@ Persisted (`venue_table`):
 | `isActive` | default `true` |
 | `createdAt` | |
 
-**Not persisted:** `status` (`available` \| `occupied` \| `reserved`). Returned on `VenueTableView` only. Today always `available`; later derived from open orders / reservations.
+**Not persisted:** `status` (`available` \| `occupied` \| `reserved`). Returned on `VenueTableView` only. **Occupied** when the table has at least one order with status `progress`; otherwise **available** (reservations later).
 
 ## Realtime
 
-None yet (orders/reservations will drive status later).
+None yet (status refreshes when the tables list is loaded / after order create, pay, or cancel).

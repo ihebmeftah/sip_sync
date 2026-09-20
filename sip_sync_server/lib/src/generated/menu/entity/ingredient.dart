@@ -26,6 +26,7 @@ abstract class Ingredient
     this.building,
     required this.name,
     required this.unit,
+    required this.initialStock,
     required this.currentStock,
     required this.thresholdStock,
     DateTime? createdAt,
@@ -38,6 +39,7 @@ abstract class Ingredient
     _iaohraio.Building? building,
     required String name,
     required _imlqt1yb.UnitsType unit,
+    required double initialStock,
     required double currentStock,
     required double thresholdStock,
     DateTime? createdAt,
@@ -59,6 +61,7 @@ abstract class Ingredient
             ),
       name: jsonSerialization['name'] as String,
       unit: _imlqt1yb.UnitsType.fromJson((jsonSerialization['unit'] as String)),
+      initialStock: (jsonSerialization['initialStock'] as num).toDouble(),
       currentStock: (jsonSerialization['currentStock'] as num).toDouble(),
       thresholdStock: (jsonSerialization['thresholdStock'] as num).toDouble(),
       createdAt: jsonSerialization['createdAt'] == null
@@ -88,6 +91,9 @@ abstract class Ingredient
 
   _imlqt1yb.UnitsType unit;
 
+  /// Reference "full" level for the stock bar (set on create; raised if restock exceeds it).
+  double initialStock;
+
   double currentStock;
 
   double thresholdStock;
@@ -108,6 +114,7 @@ abstract class Ingredient
     _iaohraio.Building? building,
     String? name,
     _imlqt1yb.UnitsType? unit,
+    double? initialStock,
     double? currentStock,
     double? thresholdStock,
     DateTime? createdAt,
@@ -122,6 +129,7 @@ abstract class Ingredient
       if (building != null) 'building': building?.toJson(),
       'name': name,
       'unit': unit.toJson(),
+      'initialStock': initialStock,
       'currentStock': currentStock,
       'thresholdStock': thresholdStock,
       'createdAt': createdAt.toJson(),
@@ -178,6 +186,7 @@ class _IngredientImpl extends Ingredient {
     _iaohraio.Building? building,
     required String name,
     required _imlqt1yb.UnitsType unit,
+    required double initialStock,
     required double currentStock,
     required double thresholdStock,
     DateTime? createdAt,
@@ -188,6 +197,7 @@ class _IngredientImpl extends Ingredient {
          building: building,
          name: name,
          unit: unit,
+         initialStock: initialStock,
          currentStock: currentStock,
          thresholdStock: thresholdStock,
          createdAt: createdAt,
@@ -204,6 +214,7 @@ class _IngredientImpl extends Ingredient {
     Object? building = _Undefined,
     String? name,
     _imlqt1yb.UnitsType? unit,
+    double? initialStock,
     double? currentStock,
     double? thresholdStock,
     DateTime? createdAt,
@@ -217,6 +228,7 @@ class _IngredientImpl extends Ingredient {
           : this.building?.copyWith(),
       name: name ?? this.name,
       unit: unit ?? this.unit,
+      initialStock: initialStock ?? this.initialStock,
       currentStock: currentStock ?? this.currentStock,
       thresholdStock: thresholdStock ?? this.thresholdStock,
       createdAt: createdAt ?? this.createdAt,
@@ -246,6 +258,11 @@ class IngredientUpdateTable extends _is.UpdateTable<IngredientTable> {
     _imlqt1yb.UnitsType value,
   ) => _is.ColumnValue(
     table.unit,
+    value,
+  );
+
+  _is.ColumnValue<double, double> initialStock(double value) => _is.ColumnValue(
+    table.initialStock,
     value,
   );
 
@@ -283,6 +300,10 @@ class IngredientTable extends _is.Table<_is.UuidValue?> {
       this,
       _is.EnumSerialization.byName,
     );
+    initialStock = _is.ColumnDouble(
+      'initialStock',
+      this,
+    );
     currentStock = _is.ColumnDouble(
       'currentStock',
       this,
@@ -306,6 +327,9 @@ class IngredientTable extends _is.Table<_is.UuidValue?> {
   late final _is.ColumnString name;
 
   late final _is.ColumnEnum<_imlqt1yb.UnitsType> unit;
+
+  /// Reference "full" level for the stock bar (set on create; raised if restock exceeds it).
+  late final _is.ColumnDouble initialStock;
 
   late final _is.ColumnDouble currentStock;
 
@@ -370,6 +394,7 @@ class IngredientTable extends _is.Table<_is.UuidValue?> {
     buildingId,
     name,
     unit,
+    initialStock,
     currentStock,
     thresholdStock,
     createdAt,

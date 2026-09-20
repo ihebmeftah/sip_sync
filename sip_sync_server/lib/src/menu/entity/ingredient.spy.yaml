@@ -7,6 +7,8 @@ fields:
   building: Building?, relation(name=building_ingredients, onDelete=Cascade)
   name: String
   unit: UnitsType
+  ### Reference "full" level for the stock bar (set on create; raised if restock exceeds it).
+  initialStock: double
   currentStock: double
   thresholdStock: double
   createdAt: DateTime, defaultModel=now

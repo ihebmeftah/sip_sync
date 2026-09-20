@@ -7,6 +7,7 @@ import '../../data/repositories/employee_repository.dart';
 import '../../data/repositories/ingredient_repository.dart';
 import '../../data/repositories/menu_article_repository.dart';
 import '../../data/repositories/menu_category_repository.dart';
+import '../../data/repositories/order_repository.dart';
 import '../../data/repositories/owner_auth_repository.dart';
 import '../../data/repositories/venue_table_repository.dart';
 import '../../data/services/api_client.dart';
@@ -47,4 +48,5 @@ Future<void> setupServiceLocator() async {
   getIt.registerLazySingleton<ArticleCompositionRepository>(
     () => ArticleCompositionRepository(client),
   );
+  getIt.registerLazySingleton<OrderRepository>(() => OrderRepository(client));
 }

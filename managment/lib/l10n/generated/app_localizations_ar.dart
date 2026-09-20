@@ -221,6 +221,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get navPos => 'نقطة البيع';
 
   @override
+  String get navOrders => 'الطلبات';
+
+  @override
   String get navTables => 'الطاولات';
 
   @override
@@ -649,6 +652,33 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
+  String get ingredientRestock => 'إعادة التخزين';
+
+  @override
+  String ingredientRestockHint(String name) {
+    return 'أضف الكمية الواردة لـ $name.';
+  }
+
+  @override
+  String get ingredientRestockQuantity => 'الكمية الواردة';
+
+  @override
+  String get validationIngredientRestock => 'أدخل كمية أكبر من 0.';
+
+  @override
+  String get ingredientLowStockBadge => 'منخفض';
+
+  @override
+  String ingredientLowStockBanner(int count) {
+    return '$count مكوّنات عند العتبة أو أقل';
+  }
+
+  @override
+  String ingredientStockPercent(int percent) {
+    return '$percent% من السعة';
+  }
+
+  @override
   String get validationIngredientName => 'أدخل اسماً حتى 80 حرفاً.';
 
   @override
@@ -802,4 +832,201 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get unitAbbrevCup => 'كوب';
+
+  @override
+  String get ordersHint => 'أنشئ الطلبات وتقدّم حالة المطبخ وسجّل الدفع.';
+
+  @override
+  String get ordersEmpty => 'لا توجد طلبات بعد. اضغط طلب جديد للبدء.';
+
+  @override
+  String get ordersFilterAll => 'الكل';
+
+  @override
+  String get ordersFilterEmpty => 'لا توجد طلبات بهذه الحالة.';
+
+  @override
+  String get newOrder => 'طلب جديد';
+
+  @override
+  String get createOrder => 'إنشاء الطلب';
+
+  @override
+  String get newOrderHint => 'اختر طاولة ثم أضف الأصناف. تُسجَّل كمنشئ الطلب.';
+
+  @override
+  String get orderSelectTablePrompt => 'اختر طاولة لهذا الطلب.';
+
+  @override
+  String get orderSelectTableFloorHint =>
+      'اضغط طاولة على خريطة الصالة لمتابعة إضافة الأصناف.';
+
+  @override
+  String get orderTableInactive => 'هذه الطاولة غير نشطة. اختر طاولة نشطة.';
+
+  @override
+  String get orderAppendArticles => 'إضافة أصناف';
+
+  @override
+  String get orderNoActiveTables => 'لا توجد طاولات نشطة. أنشئ طاولات أولاً.';
+
+  @override
+  String get orderSearchArticles => 'ابحث عن الأصناف بالاسم';
+
+  @override
+  String get orderAllCategories => 'الكل';
+
+  @override
+  String get orderNoArticlesMatch => 'لا توجد أصناف مطابقة لهذا التصفية.';
+
+  @override
+  String get orderConfirm => 'تأكيد الطلب';
+
+  @override
+  String get orderAddUnit => 'إضافة وحدة';
+
+  @override
+  String get orderRemoveUnit => 'إزالة وحدة';
+
+  @override
+  String get orderTableOptional => 'الطاولة (اختياري)';
+
+  @override
+  String get orderNoTable => 'بدون طاولة';
+
+  @override
+  String orderTableNumber(int number) {
+    return 'طاولة $number';
+  }
+
+  @override
+  String get orderNeedArticles => 'أضف أصنافاً في المنتجات قبل إنشاء طلب.';
+
+  @override
+  String get validationOrderItems => 'أضف صنفاً واحداً على الأقل.';
+
+  @override
+  String get orderItemsLabel => 'أصناف';
+
+  @override
+  String get orderItemsHeading => 'الأصناف';
+
+  @override
+  String orderDetailTitle(String table) {
+    return 'طلب · $table';
+  }
+
+  @override
+  String orderLaunchedBy(String actor) {
+    return 'أنشأه $actor';
+  }
+
+  @override
+  String orderLastPaidBy(String actor) {
+    return 'آخر دفع بواسطة $actor';
+  }
+
+  @override
+  String get cancelOrder => 'إلغاء الطلب';
+
+  @override
+  String get cancelOrderConfirm => 'إلغاء هذا الطلب والبنود المفتوحة؟';
+
+  @override
+  String get cancelOrderItem => 'إلغاء الصنف';
+
+  @override
+  String get orderItemInfo => 'تفاصيل الصنف';
+
+  @override
+  String get orderFieldCreatedAt => 'أُنشئ';
+
+  @override
+  String get orderFieldUpdatedAt => 'حُدّث';
+
+  @override
+  String get orderFieldPreparedAt => 'أُعدّ';
+
+  @override
+  String get orderFieldServedAt => 'قُدّم';
+
+  @override
+  String get orderFieldPaidAt => 'دُفع';
+
+  @override
+  String orderFieldPaidAtLabel(String when) {
+    return 'دُفع $when';
+  }
+
+  @override
+  String get orderFieldPassedBy => 'مرّره';
+
+  @override
+  String get orderFieldPreparedBy => 'أعدّه';
+
+  @override
+  String get orderFieldServedBy => 'قدّمه';
+
+  @override
+  String get orderFieldPaidTo => 'قبض';
+
+  @override
+  String get orderFieldCancelledBy => 'ألغاه';
+
+  @override
+  String get orderFieldCancelledAt => 'أُلغي';
+
+  @override
+  String orderCancelledBy(String actor) {
+    return 'ألغاه $actor';
+  }
+
+  @override
+  String orderFieldCancelledAtLabel(String when) {
+    return 'أُلغي $when';
+  }
+
+  @override
+  String orderFieldCreatedAtLabel(String when) {
+    return 'أُنشئ $when';
+  }
+
+  @override
+  String orderFieldUpdatedAtLabel(String when) {
+    return 'حُدّث $when';
+  }
+
+  @override
+  String get orderStatusProgress => 'قيد التنفيذ';
+
+  @override
+  String get orderStatusPayed => 'مدفوع';
+
+  @override
+  String get orderStatusCancelled => 'ملغى';
+
+  @override
+  String get orderItemStatusProgress => 'قيد التنفيذ';
+
+  @override
+  String get orderItemStatusPicked => 'مأخوذ';
+
+  @override
+  String get orderItemStatusReady => 'جاهز';
+
+  @override
+  String get orderItemStatusServed => 'مقدَّم';
+
+  @override
+  String get orderItemStatusPayed => 'مدفوع';
+
+  @override
+  String get orderItemStatusCancelled => 'ملغى';
+
+  @override
+  String get errorOrderInvalidStatus => 'تغيير الحالة غير مسموح.';
+
+  @override
+  String get errorOrderInsufficientStock =>
+      'مخزون المكونات غير كافٍ لهذا الطلب.';
 }

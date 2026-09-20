@@ -134,11 +134,11 @@ class DashboardView extends ConsumerWidget {
                             constraints.maxWidth >= AppBreakpoints.expanded;
                         final cards = [
                           _DashTile(
-                            title: l10n.navPos,
+                            title: l10n.navOrders,
                             body: l10n.dashboardPosCue,
-                            icon: Icons.point_of_sale_outlined,
+                            icon: Icons.receipt_long_outlined,
                             onTap: () =>
-                                PosRoute(buildingId: buildingId).go(context),
+                                OrdersRoute(buildingId: buildingId).go(context),
                           ),
                           _DashTile(
                             title: l10n.navTables,

@@ -68,6 +68,7 @@
   "navArticles": "Articles",
   "navIngredients": "Ingrédients",
   "navPos": "Caisse",
+  "navOrders": "Commandes",
   "navTables": "Tables",
   "helloScreen": "Bonjour, {screen}",
   "placeholderBody": "Cet écran n’est pas encore branché au serveur.",
@@ -231,6 +232,22 @@
       "threshold": { "type": "String" }
     }
   },
+  "ingredientRestock": "Réapprovisionner",
+  "ingredientRestockHint": "Ajouter la quantité entrante pour {name}.",
+  "@ingredientRestockHint": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "ingredientRestockQuantity": "Quantité entrante",
+  "validationIngredientRestock": "Entrez une quantité supérieure à 0.",
+  "ingredientLowStockBadge": "Bas",
+  "ingredientLowStockBanner": "{count} ingrédients au seuil ou en dessous",
+  "@ingredientLowStockBanner": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "ingredientStockPercent": "{percent}% de la capacité",
+  "@ingredientStockPercent": {
+    "placeholders": { "percent": { "type": "int" } }
+  },
   "validationIngredientName": "Entrez un nom de 1 à 80 caractères.",
   "validationIngredientStock": "Entrez 0 ou un nombre positif.",
   "errorIngredientNameTaken": "Ce nom d’ingrédient est déjà utilisé ici.",
@@ -287,6 +304,81 @@
   "unitAbbrevBunch": "botte",
   "unitAbbrevTeaspoon": "c.à.c.",
   "unitAbbrevTablespoon": "c.à.s.",
-  "unitAbbrevCup": "tasse"
+  "unitAbbrevCup": "tasse",
+  "ordersHint": "Créez des commandes, avancez le statut cuisine et enregistrez le paiement.",
+  "ordersEmpty": "Aucune commande. Appuyez sur Nouvelle commande pour commencer.",
+  "ordersFilterAll": "Toutes",
+  "ordersFilterEmpty": "Aucune commande pour ce statut.",
+  "newOrder": "Nouvelle commande",
+  "createOrder": "Créer la commande",
+  "newOrderHint": "Choisissez une table, puis ajoutez des articles. Vous êtes enregistré comme lanceur.",
+  "orderSelectTablePrompt": "Sélectionnez une table pour cette commande.",
+  "orderSelectTableFloorHint": "Touchez une table sur le plan de salle pour continuer avec les articles.",
+  "orderTableInactive": "Cette table est inactive. Choisissez une table active.",
+  "orderAppendArticles": "Ajouter des articles",
+  "orderNoActiveTables": "Aucune table active. Créez d’abord des tables.",
+  "orderSearchArticles": "Rechercher des articles par nom",
+  "orderAllCategories": "Tous",
+  "orderNoArticlesMatch": "Aucun article ne correspond à ce filtre.",
+  "orderConfirm": "Confirmer la commande",
+  "orderAddUnit": "Ajouter une unité",
+  "orderRemoveUnit": "Retirer une unité",
+  "orderTableOptional": "Table (facultatif)",
+  "orderNoTable": "Sans table",
+  "orderTableNumber": "Table {number}",
+  "@orderTableNumber": { "placeholders": { "number": { "type": "int" } } },
+  "orderNeedArticles": "Ajoutez des articles dans Produits avant de commander.",
+  "validationOrderItems": "Ajoutez au moins un article.",
+  "orderItemsLabel": "articles",
+  "orderItemsHeading": "Articles",
+  "orderDetailTitle": "Commande · {table}",
+  "@orderDetailTitle": { "placeholders": { "table": { "type": "String" } } },
+  "orderLaunchedBy": "Lancée par {actor}",
+  "@orderLaunchedBy": { "placeholders": { "actor": { "type": "String" } } },
+  "orderLastPaidBy": "Dernier paiement par {actor}",
+  "@orderLastPaidBy": { "placeholders": { "actor": { "type": "String" } } },
+  "cancelOrder": "Annuler la commande",
+  "cancelOrderConfirm": "Annuler cette commande et les lignes ouvertes ?",
+  "cancelOrderItem": "Annuler l’article",
+  "orderItemInfo": "Détails de l’article",
+  "orderFieldCreatedAt": "Créé",
+  "orderFieldUpdatedAt": "Mis à jour",
+  "orderFieldPreparedAt": "Préparé",
+  "orderFieldServedAt": "Servi",
+  "orderFieldPaidAt": "Payé",
+  "orderFieldPaidAtLabel": "Payé {when}",
+  "@orderFieldPaidAtLabel": {
+    "placeholders": { "when": { "type": "String" } }
+  },
+  "orderFieldPassedBy": "Passé par",
+  "orderFieldPreparedBy": "Préparé par",
+  "orderFieldServedBy": "Servi par",
+  "orderFieldPaidTo": "Encaissé par",
+  "orderFieldCancelledBy": "Annulé par",
+  "orderFieldCancelledAt": "Annulé",
+  "orderCancelledBy": "Annulé par {actor}",
+  "@orderCancelledBy": { "placeholders": { "actor": { "type": "String" } } },
+  "orderFieldCancelledAtLabel": "Annulé {when}",
+  "@orderFieldCancelledAtLabel": {
+    "placeholders": { "when": { "type": "String" } }
+  },
+  "orderFieldCreatedAtLabel": "Créé {when}",
+  "@orderFieldCreatedAtLabel": {
+    "placeholders": { "when": { "type": "String" } }
+  },
+  "orderFieldUpdatedAtLabel": "Mis à jour {when}",
+  "@orderFieldUpdatedAtLabel": {
+    "placeholders": { "when": { "type": "String" } }
+  },
+  "orderStatusProgress": "En cours",
+  "orderStatusPayed": "Payée",
+  "orderStatusCancelled": "Annulée",
+  "orderItemStatusProgress": "En cours",
+  "orderItemStatusPicked": "Prise",
+  "orderItemStatusReady": "Prête",
+  "orderItemStatusServed": "Servie",
+  "orderItemStatusPayed": "Payée",
+  "orderItemStatusCancelled": "Annulée",
+  "errorOrderInvalidStatus": "Ce changement de statut n’est pas autorisé.",
+  "errorOrderInsufficientStock": "Stock d’ingrédients insuffisant pour cette commande."
 }
-

@@ -51,7 +51,7 @@ final class IngredientsViewModelProvider
 }
 
 String _$ingredientsViewModelHash() =>
-    r'3fec9a4fdbd0fe9ccf1463743dd5ba94b34df8ee';
+    r'824c4ef182db2d2cb98e10213969c993ff49263f';
 
 final class IngredientsViewModelFamily extends $Family
     with

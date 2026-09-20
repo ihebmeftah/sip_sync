@@ -6,14 +6,19 @@ import 'package:sip_sync_client/sip_sync_client.dart';
 
 import '../../../core/di/app_providers.dart';
 import '../../../core/errors/error_mapper.dart';
+import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
 import '../../../l10n/generated/app_localizations.dart';
+import '../../orders/view_models/order_draft_view_model.dart';
 import '../view_models/tables_view_model.dart';
 import '../widgets/table_floor_preview.dart';
 import '../widgets/venue_table_dialog.dart';
 
 /// Floor map for a building: seat-based previews, status filters, add dialog.
+///
+/// When [OrderDraftViewModel] is in [OrderDraftState.pickingTable] mode, taps
+/// select the table and continue to article selection instead of editing.
 class TablesListView extends ConsumerStatefulWidget {
   const TablesListView({super.key, required this.buildingId});
 
@@ -30,7 +35,6 @@ class _TablesListViewState extends ConsumerState<TablesListView> {
     VenueTableView? existing,
     int? suggestedNumber,
   }) async {
-    // Create/update already refresh the list inside TablesViewModel.
     await showVenueTableDialog(
       context,
       buildingId: widget.buildingId,
@@ -39,12 +43,37 @@ class _TablesListViewState extends ConsumerState<TablesListView> {
     );
   }
 
+  void _onTableTap(VenueTableView table, {required bool picking}) {
+    if (picking) {
+      if (!table.isActive) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.orderTableInactive),
+          ),
+        );
+        return;
+      }
+      ref
+          .read(orderDraftViewModelProvider(widget.buildingId).notifier)
+          .selectTable(id: table.id, number: table.number);
+      OrderCreateArticlesRoute(buildingId: widget.buildingId).go(context);
+      return;
+    }
+
+    final isOwner = ref.read(appSessionStoreProvider).isOwner;
+    if (isOwner) {
+      _openDialog(existing: table);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final text = Theme.of(context).textTheme;
     final scheme = Theme.of(context).colorScheme;
     final isOwner = ref.watch(appSessionStoreProvider).isOwner;
+    final draft = ref.watch(orderDraftViewModelProvider(widget.buildingId));
+    final picking = draft.pickingTable;
     final async = ref.watch(tablesViewModelProvider(widget.buildingId));
     final tables = async.asData?.value ?? const <VenueTableView>[];
     final nextNumber = tables.isEmpty
@@ -60,7 +89,12 @@ class _TablesListViewState extends ConsumerState<TablesListView> {
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: AppBreakpoints.pageMax),
             child: ListView(
-              padding: const EdgeInsets.all(AppSpacing.xl),
+              padding: const EdgeInsets.fromLTRB(
+                AppSpacing.xl,
+                AppSpacing.xl,
+                AppSpacing.xl,
+                96,
+              ),
               children: [
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -71,11 +105,29 @@ class _TablesListViewState extends ConsumerState<TablesListView> {
                         children: [
                           Text(l10n.navTables, style: text.headlineSmall),
                           const SizedBox(height: AppSpacing.xs),
-                          Text(l10n.tablesHint, style: text.bodyMedium),
+                          Text(
+                            picking
+                                ? l10n.orderSelectTablePrompt
+                                : l10n.tablesHint,
+                            style: text.bodyMedium,
+                          ),
                         ],
                       ),
                     ),
-                    if (isOwner)
+                    if (picking)
+                      TextButton(
+                        onPressed: () {
+                          ref
+                              .read(
+                                orderDraftViewModelProvider(
+                                  widget.buildingId,
+                                ).notifier,
+                              )
+                              .cancelPicking();
+                        },
+                        child: Text(l10n.cancel),
+                      )
+                    else if (isOwner)
                       FilledButton.icon(
                         style: FilledButton.styleFrom(
                           minimumSize: const Size(0, 44),
@@ -87,6 +139,23 @@ class _TablesListViewState extends ConsumerState<TablesListView> {
                       ),
                   ],
                 ),
+                if (picking) ...[
+                  const SizedBox(height: AppSpacing.lg),
+                  AppSurfaceCard(
+                    child: Row(
+                      children: [
+                        Icon(Icons.touch_app_outlined, color: scheme.primary),
+                        const SizedBox(width: AppSpacing.md),
+                        Expanded(
+                          child: Text(
+                            l10n.orderSelectTableFloorHint,
+                            style: text.bodyLarge,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
                 const SizedBox(height: AppSpacing.lg),
                 SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
@@ -156,8 +225,8 @@ class _TablesListViewState extends ConsumerState<TablesListView> {
                               width: tileWidth,
                               child: TableFloorPreview(
                                 table: table,
-                                onTap: isOwner
-                                    ? () => _openDialog(existing: table)
+                                onTap: picking || isOwner
+                                    ? () => _onTableTap(table, picking: picking)
                                     : null,
                               ),
                             ),

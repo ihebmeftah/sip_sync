@@ -69,6 +69,15 @@ Failure mapError(Object error) {
         'errorCompositionIngredientTaken',
     });
   }
+  if (error is OrderException) {
+    return Failure(switch (error.code) {
+      OrderErrorCode.invalidInput => 'errorInvalidInput',
+      OrderErrorCode.notAuthorized => 'errorNotAuthorized',
+      OrderErrorCode.notFound => 'errorNotFound',
+      OrderErrorCode.invalidStatus => 'errorOrderInvalidStatus',
+      OrderErrorCode.insufficientStock => 'errorOrderInsufficientStock',
+    });
+  }
   return const Failure('errorGeneric');
 }
 
@@ -95,6 +104,8 @@ String lookupError(dynamic l10n, String key) {
     'errorIngredientNameTaken' => l10n.errorIngredientNameTaken,
     'errorIngredientInUse' => l10n.errorIngredientInUse,
     'errorCompositionIngredientTaken' => l10n.errorCompositionIngredientTaken,
+    'errorOrderInvalidStatus' => l10n.errorOrderInvalidStatus,
+    'errorOrderInsufficientStock' => l10n.errorOrderInsufficientStock,
     _ => l10n.errorGeneric,
   };
 }
