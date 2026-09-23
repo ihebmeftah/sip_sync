@@ -207,6 +207,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get navDashboard => 'لوحة التحكم';
 
   @override
+  String get navScanTable => 'مسح';
+
+  @override
   String get navProfile => 'الملف الشخصي';
 
   @override
@@ -551,6 +554,35 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get errorTableNumberTaken => 'رقم الطاولة مستخدم هنا بالفعل.';
+
+  @override
+  String get tableQrExportPdf => 'تصدير QR PDF';
+
+  @override
+  String get tableQrExportEmpty => 'أضف طاولات قبل تصدير رموز QR.';
+
+  @override
+  String get tableQrExportFailed => 'تعذر إنشاء ملف PDF للـ QR. حاول مجدداً.';
+
+  @override
+  String get tableQrScanTitle => 'مسح الطاولة';
+
+  @override
+  String get tableQrScanHint => 'وجّه الكاميرا إلى ملصق QR للطاولة لبدء الطلب.';
+
+  @override
+  String tableQrScanSuccess(int number) {
+    return 'الطاولة $number جاهزة — أضف الأصناف.';
+  }
+
+  @override
+  String get tableQrInvalid => 'هذا الرمز ليس ملصق طاولة Sip Sync.';
+
+  @override
+  String get tableQrWrongBuilding => 'رمز QR هذا يخص مكاناً آخر.';
+
+  @override
+  String get tableQrUnknownTable => 'لا توجد طاولة مطابقة في هذا الطابق.';
 
   @override
   String get optionalFieldHint => 'اختياري';

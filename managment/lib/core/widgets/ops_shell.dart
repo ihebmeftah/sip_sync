@@ -97,7 +97,19 @@ class _OpsShellState extends ConsumerState<OpsShell> {
     });
   }
 
-  int? _bottomIndexFor(String location) {
+  int? _bottomIndexFor(String location, {required bool isEmployee}) {
+    if (isEmployee) {
+      if (location.contains('/orders')) {
+        return 2;
+      }
+      if (location.contains('/tables/scan')) {
+        return 1;
+      }
+      if (location.endsWith('/tables') || location.contains('/tables/')) {
+        return 0;
+      }
+      return null;
+    }
     if (location.contains('/orders')) {
       return 2;
     }
@@ -110,8 +122,25 @@ class _OpsShellState extends ConsumerState<OpsShell> {
     return null;
   }
 
-  void _onBottomNavSelected(String buildingId, int index) {
+  void _onBottomNavSelected(
+    String buildingId,
+    int index, {
+    required bool isEmployee,
+  }) {
     setState(() => _lastBottomIndex = index);
+    if (isEmployee) {
+      switch (index) {
+        case 0:
+          TablesRoute(buildingId: buildingId).go(context);
+        case 1:
+          TableQrScanRoute(buildingId: buildingId).go(context);
+        case 2:
+          OrdersRoute(buildingId: buildingId).go(context);
+        default:
+          break;
+      }
+      return;
+    }
     switch (index) {
       case 0:
         DashboardRoute(buildingId: buildingId).go(context);
@@ -137,9 +166,10 @@ class _OpsShellState extends ConsumerState<OpsShell> {
     TablesRoute(buildingId: buildingId).go(context);
   }
 
-  /// Article picker or order detail — focused flows that own their own AppBar.
+  /// Article picker, order detail, or QR scan — focused flows that own chrome.
   bool _isImmersiveOrderScreen(String location) =>
-      RegExp(r'/orders/[^/]+').hasMatch(location);
+      RegExp(r'/orders/[^/]+').hasMatch(location) ||
+      location.contains('/tables/scan');
 
   Widget? _buildFab({
     required String buildingId,
@@ -151,9 +181,7 @@ class _OpsShellState extends ConsumerState<OpsShell> {
     required bool compactFab,
   }) {
     // Employees start orders by tapping a table on the floor map.
-    if (buildingId.isEmpty ||
-        isEmployee ||
-        _isImmersiveOrderScreen(location)) {
+    if (buildingId.isEmpty || isEmployee || _isImmersiveOrderScreen(location)) {
       return null;
     }
     // Toggle: start table pick, or cancel pick while still on the floor map.
@@ -225,10 +253,10 @@ class _OpsShellState extends ConsumerState<OpsShell> {
           );
         }
 
-        final routeIndex = _bottomIndexFor(location);
+        final routeIndex = _bottomIndexFor(location, isEmployee: isEmployee);
         final bottomIndex = routeIndex ?? _lastBottomIndex;
-        // Article picker / order detail: drop shell chrome so the screen's own
-        // AppBar owns the viewport (FAB already hidden via [_buildFab]).
+        // Article picker / order detail / QR scan: drop shell chrome so the
+        // screen's own AppBar owns the viewport (FAB already hidden via [_buildFab]).
         final immersiveOrderScreen = _isImmersiveOrderScreen(location);
 
         return Scaffold(
@@ -247,26 +275,47 @@ class _OpsShellState extends ConsumerState<OpsShell> {
           bottomNavigationBar: immersiveOrderScreen
               ? null
               : NavigationBar(
-                  selectedIndex: bottomIndex,
-                  onDestinationSelected: (index) =>
-                      _onBottomNavSelected(buildingId, index),
-                  destinations: [
-                    NavigationDestination(
-                      icon: const Icon(Icons.grid_view_outlined),
-                      selectedIcon: const Icon(Icons.grid_view_rounded),
-                      label: l10n.navDashboard,
-                    ),
-                    NavigationDestination(
-                      icon: const Icon(Icons.table_restaurant_outlined),
-                      selectedIcon: const Icon(Icons.table_restaurant),
-                      label: l10n.navTables,
-                    ),
-                    NavigationDestination(
-                      icon: const Icon(Icons.receipt_long_outlined),
-                      selectedIcon: const Icon(Icons.receipt_long),
-                      label: l10n.navOrders,
-                    ),
-                  ],
+                  selectedIndex: bottomIndex.clamp(0, 2),
+                  onDestinationSelected: (index) => _onBottomNavSelected(
+                    buildingId,
+                    index,
+                    isEmployee: isEmployee,
+                  ),
+                  destinations: isEmployee
+                      ? [
+                          NavigationDestination(
+                            icon: const Icon(Icons.table_restaurant_outlined),
+                            selectedIcon: const Icon(Icons.table_restaurant),
+                            label: l10n.navTables,
+                          ),
+                          NavigationDestination(
+                            icon: const Icon(Icons.qr_code_scanner_outlined),
+                            selectedIcon: const Icon(Icons.qr_code_scanner),
+                            label: l10n.navScanTable,
+                          ),
+                          NavigationDestination(
+                            icon: const Icon(Icons.receipt_long_outlined),
+                            selectedIcon: const Icon(Icons.receipt_long),
+                            label: l10n.navOrders,
+                          ),
+                        ]
+                      : [
+                          NavigationDestination(
+                            icon: const Icon(Icons.grid_view_outlined),
+                            selectedIcon: const Icon(Icons.grid_view_rounded),
+                            label: l10n.navDashboard,
+                          ),
+                          NavigationDestination(
+                            icon: const Icon(Icons.table_restaurant_outlined),
+                            selectedIcon: const Icon(Icons.table_restaurant),
+                            label: l10n.navTables,
+                          ),
+                          NavigationDestination(
+                            icon: const Icon(Icons.receipt_long_outlined),
+                            selectedIcon: const Icon(Icons.receipt_long),
+                            label: l10n.navOrders,
+                          ),
+                        ],
                 ),
           body: widget.child,
         );
@@ -292,6 +341,7 @@ class OpsSideBar extends ConsumerWidget {
     final scheme = Theme.of(context).colorScheme;
     final store = ref.watch(appSessionStoreProvider);
     final isOwner = store.isOwner;
+    final isEmployee = store.isEmployee;
     final firstName = store.owner?.firstName ?? store.employee?.firstName ?? '';
     final lastName = store.owner?.lastName ?? store.employee?.lastName ?? '';
     final subtitle = isOwner
@@ -361,13 +411,14 @@ class OpsSideBar extends ConsumerWidget {
                         selected: false,
                         onTap: () => const BuildingsRoute().go(context),
                       ),
-                    _NavTile(
-                      icon: Icons.grid_view_rounded,
-                      label: l10n.navDashboard,
-                      selected: location.endsWith('/dashboard'),
-                      onTap: () =>
-                          DashboardRoute(buildingId: buildingId).go(context),
-                    ),
+                    if (isOwner)
+                      _NavTile(
+                        icon: Icons.grid_view_rounded,
+                        label: l10n.navDashboard,
+                        selected: location.endsWith('/dashboard'),
+                        onTap: () =>
+                            DashboardRoute(buildingId: buildingId).go(context),
+                      ),
                     if (isOwner)
                       _NavTile(
                         icon: Icons.groups_outlined,
@@ -443,10 +494,22 @@ class OpsSideBar extends ConsumerWidget {
                     _NavTile(
                       icon: Icons.table_restaurant_outlined,
                       label: l10n.navTables,
-                      selected: location.endsWith('/tables'),
+                      selected:
+                          location.endsWith('/tables') ||
+                          (location.contains('/tables/') &&
+                              !location.contains('/tables/scan')),
                       onTap: () =>
                           TablesRoute(buildingId: buildingId).go(context),
                     ),
+                    if (isEmployee)
+                      _NavTile(
+                        icon: Icons.qr_code_scanner_outlined,
+                        label: l10n.navScanTable,
+                        selected: location.contains('/tables/scan'),
+                        onTap: () => TableQrScanRoute(
+                          buildingId: buildingId,
+                        ).go(context),
+                      ),
                   ],
                 ),
               ),

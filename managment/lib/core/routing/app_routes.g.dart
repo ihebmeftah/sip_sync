@@ -235,6 +235,12 @@ RouteBase get $opsShellRoute => ShellRouteData.$route(
       factory: $TablesRoute._fromState,
     ),
     GoRouteData.$route(
+      path: '/b/:buildingId/tables/scan',
+      name: 'tableQrScan',
+      hasOverriddenOnExit: false,
+      factory: $TableQrScanRoute._fromState,
+    ),
+    GoRouteData.$route(
       path: '/b/:buildingId/tables/new',
       name: 'tableCreate',
       hasOverriddenOnExit: false,
@@ -572,6 +578,31 @@ mixin $TablesRoute on GoRouteData {
   @override
   String get location => GoRouteData.$location(
     '/b/${Uri.encodeComponent(_self.buildingId)}/tables',
+  );
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+mixin $TableQrScanRoute on GoRouteData {
+  static TableQrScanRoute _fromState(GoRouterState state) =>
+      TableQrScanRoute(buildingId: state.pathParameters['buildingId']!);
+
+  TableQrScanRoute get _self => this as TableQrScanRoute;
+
+  @override
+  String get location => GoRouteData.$location(
+    '/b/${Uri.encodeComponent(_self.buildingId)}/tables/scan',
   );
 
   @override

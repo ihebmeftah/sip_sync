@@ -13,7 +13,10 @@ Status: in progress
    - **Employee** → `/b/:buildingId/dashboard` (ops shell)
 2. Owner picks a venue → ops shell under `/b/:buildingId/...`
 3. **Wide**: rail with dashboard, employees, products (**categories**, articles, ingredients), **Orders**, **tables**. Profile opens from the bottom account tile. **Buildings** link for owners only.
-4. **Compact (mobile)**: bottom navigation for **Dashboard**, **Tables**, and **Orders**; other destinations stay in the drawer. Owners get a **New order** FAB (table pick / cancel). Employees have no FAB — they start orders by tapping a table. On the **article-picker** and **order detail** screens the FAB, shared AppBar, drawer, and bottom nav are hidden so those screens own the chrome.
+4. **Compact (mobile)**:
+   - **Owner**: bottom nav **Dashboard** | **Tables** | **Orders**; other destinations in the drawer. **New order** FAB (table pick / cancel).
+   - **Employee**: bottom nav **Tables** | **Scan** | **Orders** (no Dashboard). No FAB — start orders by tapping a table or scanning its QR. Home is Tables.
+   - On the **article-picker**, **order detail**, and **QR scan** screens the FAB, shared AppBar, drawer, and bottom nav are hidden so those screens own the chrome.
 5. Auth is custom bearer tokens (`AppSessionStore`), not Serverpod `client.auth`.
 
 ## Realtime

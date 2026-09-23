@@ -68,9 +68,7 @@ class TableFloorPreview extends StatelessWidget {
                           child: Text(
                             '${table.number}',
                             style:
-                                (compact
-                                        ? text.titleLarge
-                                        : text.headlineSmall)
+                                (compact ? text.titleLarge : text.headlineSmall)
                                     ?.copyWith(
                                       color: colors.onFill,
                                       fontWeight: FontWeight.w800,
@@ -80,9 +78,7 @@ class TableFloorPreview extends StatelessWidget {
                         ),
                       ),
                     ),
-                    SizedBox(
-                      height: compact ? AppSpacing.sm : AppSpacing.md,
-                    ),
+                    SizedBox(height: compact ? AppSpacing.sm : AppSpacing.md),
                     Text(
                       l10n.tableSeatsCount(table.maxSeats),
                       style: text.titleSmall?.copyWith(color: scheme.onSurface),

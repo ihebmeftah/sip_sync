@@ -63,6 +63,7 @@
   "dashboardEmployeesCue": "أضف الفريق وعدّل بياناته وفعّل أو عطّل الدخول.",
   "opsRailTagline": "قيادة الصالة",
   "navDashboard": "لوحة التحكم",
+  "navScanTable": "مسح",
   "navProfile": "الملف الشخصي",
   "navProducts": "المنتجات",
   "navCategories": "الفئات",
@@ -190,6 +191,20 @@
   "validationTableCount": "أدخل عدداً من 1 إلى 100.",
   "validationTableSeats": "أدخل مقاعد من 1 إلى 50.",
   "errorTableNumberTaken": "رقم الطاولة مستخدم هنا بالفعل.",
+  "tableQrExportPdf": "تصدير QR PDF",
+  "tableQrExportEmpty": "أضف طاولات قبل تصدير رموز QR.",
+  "tableQrExportFailed": "تعذر إنشاء ملف PDF للـ QR. حاول مجدداً.",
+  "tableQrScanTitle": "مسح الطاولة",
+  "tableQrScanHint": "وجّه الكاميرا إلى ملصق QR للطاولة لبدء الطلب.",
+  "tableQrScanSuccess": "الطاولة {number} جاهزة — أضف الأصناف.",
+  "@tableQrScanSuccess": {
+    "placeholders": {
+      "number": { "type": "int" }
+    }
+  },
+  "tableQrInvalid": "هذا الرمز ليس ملصق طاولة Sip Sync.",
+  "tableQrWrongBuilding": "رمز QR هذا يخص مكاناً آخر.",
+  "tableQrUnknownTable": "لا توجد طاولة مطابقة في هذا الطابق.",
   "optionalFieldHint": "اختياري",
   "noDescription": "بدون وصف",
   "categoriesHint": "نظّم قائمة هذا المكان. يجب أن تكون الأسماء فريدة هنا.",

@@ -11,6 +11,7 @@ import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../orders/view_models/order_draft_view_model.dart';
+import '../table_qr_pdf_service.dart';
 import '../view_models/tables_view_model.dart';
 import '../widgets/table_floor_preview.dart';
 import '../widgets/venue_table_dialog.dart';
@@ -31,6 +32,38 @@ class TablesListView extends ConsumerStatefulWidget {
 
 class _TablesListViewState extends ConsumerState<TablesListView> {
   var _filter = TableFloorFilter.all;
+  var _exportingQr = false;
+
+  Future<void> _exportQrPdf(List<VenueTableView> tables) async {
+    final l10n = AppLocalizations.of(context)!;
+    if (tables.isEmpty) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.tableQrExportEmpty)));
+      return;
+    }
+    setState(() => _exportingQr = true);
+    try {
+      final building = ref.read(buildingSelectionProvider);
+      final name = building?.name ?? l10n.navTables;
+      await TableQrPdfService().exportStickers(
+        buildingName: name,
+        buildingId: UuidValue.fromString(widget.buildingId),
+        tables: tables,
+      );
+    } catch (_) {
+      if (!mounted) {
+        return;
+      }
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.tableQrExportFailed)));
+    } finally {
+      if (mounted) {
+        setState(() => _exportingQr = false);
+      }
+    }
+  }
 
   Future<void> _openForm({
     VenueTableView? existing,
@@ -163,14 +196,39 @@ class _TablesListViewState extends ConsumerState<TablesListView> {
                         child: Text(l10n.cancel),
                       )
                     else if (isOwner)
-                      FilledButton.icon(
-                        style: FilledButton.styleFrom(
-                          minimumSize: const Size(0, 44),
-                        ),
-                        onPressed: () =>
-                            _openForm(suggestedNumber: nextNumber),
-                        icon: const Icon(Icons.add),
-                        label: AppButtonLabel(l10n.addTable),
+                      Wrap(
+                        spacing: AppSpacing.sm,
+                        runSpacing: AppSpacing.sm,
+                        alignment: WrapAlignment.end,
+                        children: [
+                          OutlinedButton.icon(
+                            style: OutlinedButton.styleFrom(
+                              minimumSize: const Size(0, 44),
+                            ),
+                            onPressed: _exportingQr || tables.isEmpty
+                                ? null
+                                : () => _exportQrPdf(tables),
+                            icon: _exportingQr
+                                ? const SizedBox(
+                                    width: 18,
+                                    height: 18,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                    ),
+                                  )
+                                : const Icon(Icons.qr_code_2_outlined),
+                            label: AppButtonLabel(l10n.tableQrExportPdf),
+                          ),
+                          FilledButton.icon(
+                            style: FilledButton.styleFrom(
+                              minimumSize: const Size(0, 44),
+                            ),
+                            onPressed: () =>
+                                _openForm(suggestedNumber: nextNumber),
+                            icon: const Icon(Icons.add),
+                            label: AppButtonLabel(l10n.addTable),
+                          ),
+                        ],
                       ),
                   ],
                 ),
@@ -256,8 +314,7 @@ class _TablesListViewState extends ConsumerState<TablesListView> {
                           ? 3
                           : 2;
                       final gap = AppSpacing.lg;
-                      final tileWidth =
-                          (width - gap * (columns - 1)) / columns;
+                      final tileWidth = (width - gap * (columns - 1)) / columns;
                       return Wrap(
                         spacing: gap,
                         runSpacing: gap,
@@ -268,8 +325,7 @@ class _TablesListViewState extends ConsumerState<TablesListView> {
                               child: TableFloorPreview(
                                 table: table,
                                 onTap: picking || isOwner || isEmployee
-                                    ? () =>
-                                          _onTableTap(table, picking: picking)
+                                    ? () => _onTableTap(table, picking: picking)
                                     : null,
                               ),
                             ),

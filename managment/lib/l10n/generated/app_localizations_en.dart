@@ -211,6 +211,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get navDashboard => 'Dashboard';
 
   @override
+  String get navScanTable => 'Scan';
+
+  @override
   String get navProfile => 'Profile';
 
   @override
@@ -559,6 +562,36 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get errorTableNumberTaken => 'That table number is already used here.';
+
+  @override
+  String get tableQrExportPdf => 'Export QR PDF';
+
+  @override
+  String get tableQrExportEmpty => 'Add tables before exporting QR codes.';
+
+  @override
+  String get tableQrExportFailed => 'Could not build the QR PDF. Try again.';
+
+  @override
+  String get tableQrScanTitle => 'Scan table';
+
+  @override
+  String get tableQrScanHint =>
+      'Point the camera at a table QR sticker to start an order.';
+
+  @override
+  String tableQrScanSuccess(int number) {
+    return 'Table $number ready — add articles.';
+  }
+
+  @override
+  String get tableQrInvalid => 'That code is not a Sip Sync table sticker.';
+
+  @override
+  String get tableQrWrongBuilding => 'This QR belongs to another venue.';
+
+  @override
+  String get tableQrUnknownTable => 'No matching table on this floor.';
 
   @override
   String get optionalFieldHint => 'Optional';

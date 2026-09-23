@@ -63,6 +63,7 @@
   "dashboardEmployeesCue": "Ajouter, modifier et activer ou désactiver l’accès.",
   "opsRailTagline": "Commande de salle",
   "navDashboard": "Tableau de bord",
+  "navScanTable": "Scan",
   "navProfile": "Profil",
   "navProducts": "Produits",
   "navCategories": "Catégories",
@@ -190,6 +191,20 @@
   "validationTableCount": "Entrez un nombre entre 1 et 100.",
   "validationTableSeats": "Entrez entre 1 et 50 places.",
   "errorTableNumberTaken": "Ce numéro de table est déjà utilisé ici.",
+  "tableQrExportPdf": "Exporter PDF QR",
+  "tableQrExportEmpty": "Ajoutez des tables avant d’exporter les QR.",
+  "tableQrExportFailed": "Impossible de créer le PDF QR. Réessayez.",
+  "tableQrScanTitle": "Scanner une table",
+  "tableQrScanHint": "Pointez la caméra sur le QR de la table pour démarrer une commande.",
+  "tableQrScanSuccess": "Table {number} prête — ajoutez des articles.",
+  "@tableQrScanSuccess": {
+    "placeholders": {
+      "number": { "type": "int" }
+    }
+  },
+  "tableQrInvalid": "Ce code n’est pas un QR de table Sip Sync.",
+  "tableQrWrongBuilding": "Ce QR appartient à un autre établissement.",
+  "tableQrUnknownTable": "Aucune table correspondante sur ce plan.",
   "optionalFieldHint": "Facultatif",
   "noDescription": "Sans description",
   "categoriesHint": "Regroupez le menu de ce lieu. Les noms doivent être uniques ici.",

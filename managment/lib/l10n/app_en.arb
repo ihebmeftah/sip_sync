@@ -65,6 +65,7 @@
   "dashboardEmployeesCue": "Add staff, edit details, and enable or disable access.",
   "opsRailTagline": "Floor command",
   "navDashboard": "Dashboard",
+  "navScanTable": "Scan",
   "navProfile": "Profile",
   "navProducts": "Products",
   "navCategories": "Categories",
@@ -193,6 +194,20 @@
   "validationTableCount": "Enter a count from 1 to 100.",
   "validationTableSeats": "Enter seats from 1 to 50.",
   "errorTableNumberTaken": "That table number is already used here.",
+  "tableQrExportPdf": "Export QR PDF",
+  "tableQrExportEmpty": "Add tables before exporting QR codes.",
+  "tableQrExportFailed": "Could not build the QR PDF. Try again.",
+  "tableQrScanTitle": "Scan table",
+  "tableQrScanHint": "Point the camera at a table QR sticker to start an order.",
+  "tableQrScanSuccess": "Table {number} ready — add articles.",
+  "@tableQrScanSuccess": {
+    "placeholders": {
+      "number": { "type": "int" }
+    }
+  },
+  "tableQrInvalid": "That code is not a Sip Sync table sticker.",
+  "tableQrWrongBuilding": "This QR belongs to another venue.",
+  "tableQrUnknownTable": "No matching table on this floor.",
   "optionalFieldHint": "Optional",
   "noDescription": "No description",
   "categoriesHint": "Group the menu for this venue. Names must be unique here.",

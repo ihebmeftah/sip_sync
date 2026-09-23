@@ -478,6 +478,12 @@ abstract class AppLocalizations {
   /// **'Dashboard'**
   String get navDashboard;
 
+  /// No description provided for @navScanTable.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan'**
+  String get navScanTable;
+
   /// No description provided for @navProfile.
   ///
   /// In en, this message translates to:
@@ -1107,6 +1113,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'That table number is already used here.'**
   String get errorTableNumberTaken;
+
+  /// No description provided for @tableQrExportPdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Export QR PDF'**
+  String get tableQrExportPdf;
+
+  /// No description provided for @tableQrExportEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Add tables before exporting QR codes.'**
+  String get tableQrExportEmpty;
+
+  /// No description provided for @tableQrExportFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not build the QR PDF. Try again.'**
+  String get tableQrExportFailed;
+
+  /// No description provided for @tableQrScanTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan table'**
+  String get tableQrScanTitle;
+
+  /// No description provided for @tableQrScanHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Point the camera at a table QR sticker to start an order.'**
+  String get tableQrScanHint;
+
+  /// No description provided for @tableQrScanSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Table {number} ready — add articles.'**
+  String tableQrScanSuccess(int number);
+
+  /// No description provided for @tableQrInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'That code is not a Sip Sync table sticker.'**
+  String get tableQrInvalid;
+
+  /// No description provided for @tableQrWrongBuilding.
+  ///
+  /// In en, this message translates to:
+  /// **'This QR belongs to another venue.'**
+  String get tableQrWrongBuilding;
+
+  /// No description provided for @tableQrUnknownTable.
+  ///
+  /// In en, this message translates to:
+  /// **'No matching table on this floor.'**
+  String get tableQrUnknownTable;
 
   /// No description provided for @optionalFieldHint.
   ///

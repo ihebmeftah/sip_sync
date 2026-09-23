@@ -22,6 +22,7 @@ import '../../features/products/views/categories_list_view.dart';
 import '../../features/products/views/category_form_view.dart';
 import '../../features/products/views/ingredient_form_view.dart';
 import '../../features/products/views/ingredients_list_view.dart';
+import '../../features/tables/views/table_qr_scan_view.dart';
 import '../../features/tables/views/tables_list_view.dart';
 import '../../features/tables/views/venue_table_form_view.dart';
 import '../../features/profile/views/profile_view.dart';
@@ -132,6 +133,10 @@ class BuildingEditRoute extends GoRouteData with $BuildingEditRoute {
     ),
     TypedGoRoute<OrdersRoute>(path: '/b/:buildingId/orders', name: 'orders'),
     TypedGoRoute<TablesRoute>(path: '/b/:buildingId/tables', name: 'tables'),
+    TypedGoRoute<TableQrScanRoute>(
+      path: '/b/:buildingId/tables/scan',
+      name: 'tableQrScan',
+    ),
     TypedGoRoute<TableCreateRoute>(
       path: '/b/:buildingId/tables/new',
       name: 'tableCreate',
@@ -311,6 +316,17 @@ class TablesRoute extends GoRouteData with $TablesRoute {
   @override
   Widget build(BuildContext context, GoRouterState state) {
     return TablesListView(buildingId: buildingId);
+  }
+}
+
+class TableQrScanRoute extends GoRouteData with $TableQrScanRoute {
+  const TableQrScanRoute({required this.buildingId});
+
+  final String buildingId;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return TableQrScanView(buildingId: buildingId);
   }
 }
 

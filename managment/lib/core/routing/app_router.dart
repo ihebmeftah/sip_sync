@@ -12,7 +12,7 @@ String? _employeeHome() {
   if (id == null) {
     return null;
   }
-  return DashboardRoute(buildingId: id.uuid).location;
+  return TablesRoute(buildingId: id.uuid).location;
 }
 
 @Riverpod(keepAlive: true)
