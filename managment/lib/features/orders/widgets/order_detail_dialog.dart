@@ -176,48 +176,53 @@ class _OrderDetailDialogState extends ConsumerState<_OrderDetailDialog> {
                   const SizedBox(height: AppSpacing.lg),
                   ConstrainedBox(
                     constraints: const BoxConstraints(maxHeight: 320),
-                    child: ListView(
-                      shrinkWrap: true,
-                      children: [
-                        for (final item in order.items)
-                          ListTile(
-                            contentPadding: EdgeInsets.zero,
-                            title: Text(item.articleName),
-                            subtitle: Text(
-                              orderItemStatusLabel(l10n, item.status),
-                            ),
-                            trailing:
-                                order.status == OrderStatus.progress &&
-                                    item.status != OrderItemStatus.payed &&
-                                    item.status != OrderItemStatus.cancelled
-                                ? Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      if (nextOrderItemStatus(item.status) !=
-                                          null)
-                                        TextButton(
-                                          onPressed: _busy
-                                              ? null
-                                              : () => _advance(item),
-                                          child: Text(
-                                            orderItemStatusLabel(
-                                              l10n,
-                                              nextOrderItemStatus(item.status)!,
+                    child: Material(
+                      type: MaterialType.transparency,
+                      child: ListView(
+                        shrinkWrap: true,
+                        children: [
+                          for (final item in order.items)
+                            ListTile(
+                              contentPadding: EdgeInsets.zero,
+                              title: Text(item.articleName),
+                              subtitle: Text(
+                                orderItemStatusLabel(l10n, item.status),
+                              ),
+                              trailing:
+                                  order.status == OrderStatus.progress &&
+                                      item.status != OrderItemStatus.payed &&
+                                      item.status != OrderItemStatus.cancelled
+                                  ? Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        if (nextOrderItemStatus(item.status) !=
+                                            null)
+                                          TextButton(
+                                            onPressed: _busy
+                                                ? null
+                                                : () => _advance(item),
+                                            child: Text(
+                                              orderItemStatusLabel(
+                                                l10n,
+                                                nextOrderItemStatus(
+                                                  item.status,
+                                                )!,
+                                              ),
                                             ),
                                           ),
+                                        IconButton(
+                                          tooltip: l10n.cancelOrderItem,
+                                          onPressed: _busy
+                                              ? null
+                                              : () => _cancelLine(item),
+                                          icon: const Icon(Icons.close),
                                         ),
-                                      IconButton(
-                                        tooltip: l10n.cancelOrderItem,
-                                        onPressed: _busy
-                                            ? null
-                                            : () => _cancelLine(item),
-                                        icon: const Icon(Icons.close),
-                                      ),
-                                    ],
-                                  )
-                                : null,
-                          ),
-                      ],
+                                      ],
+                                    )
+                                  : null,
+                            ),
+                        ],
+                      ),
                     ),
                   ),
                   if (_errorKey != null)

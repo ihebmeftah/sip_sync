@@ -240,79 +240,86 @@ class _BuildingFormViewState extends ConsumerState<BuildingFormView> {
                         ),
                       Padding(
                         padding: const EdgeInsets.only(bottom: AppSpacing.lg),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                        child: Column(
                           children: [
-                            Expanded(
-                              flex: 2,
-                              child: AppTextField(
-                                controller: _address,
-                                label: l10n.buildingAddress,
-                                prefixIcon: Icons.place_outlined,
-                                compact: true,
-                                validator: (value) =>
-                                    FormValidators.address(l10n, value),
+                            AppTextField(
+                              controller: _address,
+                              label: l10n.buildingAddress,
+                              prefixIcon: Icons.place_outlined,
+                              compact: true,
+                              validator: (value) =>
+                                  FormValidators.address(l10n, value),
+                            ),
+                            const SizedBox(height: AppSpacing.sm),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                bottom: AppSpacing.lg,
+                              ),
+                              child: Align(
+                                alignment: AlignmentDirectional.centerStart,
+                                child: OutlinedButton.icon(
+                                  onPressed: _locating
+                                      ? null
+                                      : _pickCurrentPosition,
+                                  icon: _locating
+                                      ? SizedBox(
+                                          width: 18,
+                                          height: 18,
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 2,
+                                            color: Theme.of(
+                                              context,
+                                            ).colorScheme.primary,
+                                          ),
+                                        )
+                                      : const Icon(Icons.my_location_outlined),
+                                  label: Text(l10n.pickCurrentPosition),
+                                ),
                               ),
                             ),
-                            const SizedBox(width: AppSpacing.md),
-                            Expanded(
-                              child: AppTextField(
-                                controller: _longitude,
-                                label: l10n.longitude,
-                                compact: true,
-                                keyboardType:
-                                    const TextInputType.numberWithOptions(
-                                      decimal: true,
-                                      signed: true,
-                                    ),
-                                validator: (value) =>
-                                    FormValidators.longitude(l10n, value),
+                            if (_locationErrorKey != null)
+                              AppErrorBanner(
+                                message: lookupError(l10n, _locationErrorKey!),
                               ),
-                            ),
-                            const SizedBox(width: AppSpacing.md),
-                            Expanded(
-                              child: AppTextField(
-                                controller: _latitude,
-                                label: l10n.latitude,
-                                compact: true,
-                                keyboardType:
-                                    const TextInputType.numberWithOptions(
-                                      decimal: true,
-                                      signed: true,
-                                    ),
-                                validator: (value) =>
-                                    FormValidators.latitude(l10n, value),
-                              ),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const SizedBox(width: AppSpacing.md),
+                                Expanded(
+                                  child: AppTextField(
+                                    controller: _longitude,
+                                    label: l10n.longitude,
+                                    compact: true,
+                                    keyboardType:
+                                        const TextInputType.numberWithOptions(
+                                          decimal: true,
+                                          signed: true,
+                                        ),
+                                    validator: (value) =>
+                                        FormValidators.longitude(l10n, value),
+                                  ),
+                                ),
+                                const SizedBox(width: AppSpacing.md),
+                                Expanded(
+                                  child: AppTextField(
+                                    controller: _latitude,
+                                    label: l10n.latitude,
+                                    compact: true,
+                                    keyboardType:
+                                        const TextInputType.numberWithOptions(
+                                          decimal: true,
+                                          signed: true,
+                                        ),
+                                    validator: (value) =>
+                                        FormValidators.latitude(l10n, value),
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: AppSpacing.lg),
-                        child: Align(
-                          alignment: AlignmentDirectional.centerStart,
-                          child: OutlinedButton.icon(
-                            onPressed: _locating ? null : _pickCurrentPosition,
-                            icon: _locating
-                                ? SizedBox(
-                                    width: 18,
-                                    height: 18,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                      color: Theme.of(
-                                        context,
-                                      ).colorScheme.primary,
-                                    ),
-                                  )
-                                : const Icon(Icons.my_location_outlined),
-                            label: Text(l10n.pickCurrentPosition),
-                          ),
-                        ),
-                      ),
-                      if (_locationErrorKey != null)
-                        AppErrorBanner(
-                          message: lookupError(l10n, _locationErrorKey!),
-                        ),
+
                       AppTextField(
                         controller: _opensText,
                         label: l10n.openingTime,
@@ -356,9 +363,8 @@ class _BuildingFormViewState extends ConsumerState<BuildingFormView> {
                         title: Text(l10n.buildingAllowAppendingItems),
                         subtitle: Text(l10n.buildingAllowAppendingItemsHint),
                         value: _allowAppendingItemsToOrder,
-                        onChanged: (value) => setState(
-                          () => _allowAppendingItemsToOrder = value,
-                        ),
+                        onChanged: (value) =>
+                            setState(() => _allowAppendingItemsToOrder = value),
                       ),
                       SwitchListTile(
                         contentPadding: EdgeInsets.zero,

@@ -99,20 +99,27 @@ class IngredientsListView extends ConsumerWidget {
                       children: [
                         Text(l10n.navIngredients, style: text.headlineSmall),
                         const SizedBox(height: AppSpacing.xs),
-                        Text(l10n.ingredientsHint, style: text.bodyMedium),
+                        Text(
+                          l10n.ingredientsHint,
+                          style: text.bodyMedium,
+                          maxLines: 3,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ],
                     ),
                   ),
-                  if (isOwner)
+                  if (isOwner) ...[
+                    const SizedBox(width: AppSpacing.sm),
                     FilledButton.icon(
                       style: FilledButton.styleFrom(
                         minimumSize: const Size(0, 44),
                       ),
                       onPressed: () =>
-                          showIngredientDialog(context, buildingId: buildingId),
+                          openIngredientForm(context, buildingId: buildingId),
                       icon: const Icon(Icons.add),
-                      label: Text(l10n.addIngredient),
+                      label: AppButtonLabel(l10n.addIngredient),
                     ),
+                  ],
                 ],
               ),
               const SizedBox(height: AppSpacing.lg),

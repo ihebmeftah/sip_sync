@@ -143,24 +143,30 @@ class _OrderCreateArticlesViewState
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
+        leading: Padding(
+          padding: const EdgeInsets.only(right: AppSpacing.md),
+          child: Center(
+            child: Badge(
+              isLabelVisible: draft.totalArticleCount > 0,
+              label: Text('${draft.totalArticleCount}'),
+              child: Icon(Icons.shopping_bag_outlined, color: scheme.onSurface),
+            ),
+          ),
+        ),
         title: Text(
           draft.tableNumber == null
               ? l10n.orderAppendArticles
               : '${l10n.orderAppendArticles} · ${l10n.orderTableNumber(draft.tableNumber!)}',
         ),
         actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: AppSpacing.md),
-            child: Center(
-              child: Badge(
-                isLabelVisible: draft.totalArticleCount > 0,
-                label: Text('${draft.totalArticleCount}'),
-                child: Icon(
-                  Icons.shopping_bag_outlined,
-                  color: scheme.onSurface,
-                ),
-              ),
+          OutlinedButton.icon(
+            style: OutlinedButton.styleFrom(
+              foregroundColor: scheme.error,
+              side: BorderSide(color: scheme.error.withValues(alpha: 0.5)),
             ),
+            onPressed: _confirming ? null : _cancelCreate,
+            icon: const Icon(Icons.close, size: 18),
+            label: AppButtonLabel(l10n.orderCancelCreate),
           ),
         ],
       ),
@@ -189,7 +195,7 @@ class _OrderCreateArticlesViewState
                               ? null
                               : _resetArticles,
                           icon: const Icon(Icons.restart_alt, size: 18),
-                          label: Text(l10n.orderResetArticles),
+                          label: AppButtonLabel(l10n.orderResetArticles),
                         ),
                         if (!draft.isAppending)
                           OutlinedButton.icon(
@@ -198,25 +204,16 @@ class _OrderCreateArticlesViewState
                               Icons.table_restaurant_outlined,
                               size: 18,
                             ),
-                            label: Text(l10n.orderChangeTable),
+                            label: AppButtonLabel(l10n.orderChangeTable),
                           ),
-                        OutlinedButton.icon(
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: scheme.error,
-                            side: BorderSide(
-                              color: scheme.error.withValues(alpha: 0.5),
-                            ),
-                          ),
-                          onPressed: _confirming ? null : _cancelCreate,
-                          icon: const Icon(Icons.close, size: 18),
-                          label: Text(l10n.orderCancelCreate),
-                        ),
                       ],
                     ),
                     const SizedBox(height: AppSpacing.md),
                     TextField(
+                      onTapOutside: (event) => FocusScope.of(context).unfocus(),
                       controller: _search,
                       decoration: InputDecoration(
+                        contentPadding: EdgeInsets.zero,
                         hintText: l10n.orderSearchArticles,
                         prefixIcon: const Icon(Icons.search),
                         border: const OutlineInputBorder(),
@@ -344,9 +341,7 @@ class _OrderCreateArticlesViewState
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.lg),
           child: FilledButton.icon(
-            style: FilledButton.styleFrom(
-              minimumSize: const Size.fromHeight(48),
-            ),
+            style: FilledButton.styleFrom(minimumSize: const Size(0, 48)),
             onPressed: _confirming || draft.totalArticleCount == 0
                 ? null
                 : _confirm,
@@ -361,7 +356,7 @@ class _OrderCreateArticlesViewState
                     label: Text('${draft.totalArticleCount}'),
                     child: const Icon(Icons.check),
                   ),
-            label: Text(l10n.orderConfirm),
+            label: AppButtonLabel(l10n.orderConfirm),
           ),
         ),
       ),

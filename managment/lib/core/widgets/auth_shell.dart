@@ -40,7 +40,15 @@ class AuthShell extends StatelessWidget {
           return Column(
             children: [
               SizedBox(
-                height: math.min(260, constraints.maxHeight * 0.32),
+                // Keep enough room for the badge + title + body on phones;
+                // never steal more than ~38% from the form.
+                height: math
+                    .min(
+                      260.0,
+                      math.max(168.0, constraints.maxHeight * 0.32),
+                    )
+                    .clamp(0.0, constraints.maxHeight * 0.38)
+                    .toDouble(),
                 width: double.infinity,
                 child: _HeroPanel(l10n: l10n, expanded: false),
               ),
@@ -106,59 +114,90 @@ class _HeroPanel extends StatelessWidget {
       fit: StackFit.expand,
       children: [
         CustomPaint(painter: _OpsPainter(scheme: scheme)),
-        Padding(
-          padding: EdgeInsets.all(expanded ? AppSpacing.xxl : AppSpacing.xl),
-          child: Align(
-            alignment: AlignmentDirectional.bottomStart,
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 460),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(AppRadii.sm),
-                    child: BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                      child: DecoratedBox(
-                        decoration: BoxDecoration(
-                          color: scheme.primary.withValues(alpha: 0.14),
+        LayoutBuilder(
+          builder: (context, constraints) {
+            final tight = !expanded && constraints.maxHeight < 200;
+            final pad = expanded
+                ? AppSpacing.xxl
+                : (tight ? AppSpacing.md : AppSpacing.xl);
+            return Padding(
+              padding: EdgeInsets.all(pad),
+              child: Align(
+                alignment: AlignmentDirectional.bottomStart,
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  alignment: AlignmentDirectional.bottomStart,
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxWidth: math.min(460, constraints.maxWidth - pad * 2),
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ClipRRect(
                           borderRadius: BorderRadius.circular(AppRadii.sm),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: AppSpacing.lg,
-                            vertical: AppSpacing.sm,
-                          ),
-                          child: Text(
-                            l10n.appTitle,
-                            style: text.labelLarge?.copyWith(
-                              color: scheme.primary,
-                              letterSpacing: 1.6,
+                          child: BackdropFilter(
+                            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                            child: DecoratedBox(
+                              decoration: BoxDecoration(
+                                color: scheme.primary.withValues(alpha: 0.14),
+                                borderRadius: BorderRadius.circular(
+                                  AppRadii.sm,
+                                ),
+                              ),
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: tight
+                                      ? AppSpacing.md
+                                      : AppSpacing.lg,
+                                  vertical: AppSpacing.sm,
+                                ),
+                                child: Text(
+                                  l10n.appTitle,
+                                  style: text.labelLarge?.copyWith(
+                                    color: scheme.primary,
+                                    letterSpacing: 1.6,
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
                         ),
-                      ),
+                        SizedBox(
+                          height: tight ? AppSpacing.sm : AppSpacing.lg,
+                        ),
+                        Text(
+                          l10n.atmosphereTitle,
+                          maxLines: tight ? 2 : 3,
+                          overflow: TextOverflow.ellipsis,
+                          style:
+                              (expanded
+                                      ? text.displayMedium
+                                      : text.headlineSmall)
+                                  ?.copyWith(color: scheme.onPrimaryContainer),
+                        ),
+                        SizedBox(
+                          height: tight ? AppSpacing.xs : AppSpacing.md,
+                        ),
+                        Text(
+                          l10n.atmosphereBody,
+                          maxLines: tight ? 2 : 4,
+                          overflow: TextOverflow.ellipsis,
+                          style: text.bodyLarge?.copyWith(
+                            color: scheme.onPrimaryContainer.withValues(
+                              alpha: 0.82,
+                            ),
+                            height: 1.4,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(height: AppSpacing.lg),
-                  Text(
-                    l10n.atmosphereTitle,
-                    style: (expanded ? text.displayMedium : text.headlineSmall)
-                        ?.copyWith(color: scheme.onPrimaryContainer),
-                  ),
-                  const SizedBox(height: AppSpacing.md),
-                  Text(
-                    l10n.atmosphereBody,
-                    style: text.bodyLarge?.copyWith(
-                      color: scheme.onPrimaryContainer.withValues(alpha: 0.82),
-                      height: 1.4,
-                    ),
-                  ),
-                ],
+                ),
               ),
-            ),
-          ),
+            );
+          },
         ),
       ],
     );

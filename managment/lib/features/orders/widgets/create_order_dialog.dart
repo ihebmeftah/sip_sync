@@ -113,37 +113,48 @@ class _CreateOrderDialogState extends ConsumerState<_CreateOrderDialog> {
               if (articles.isEmpty)
                 AppErrorBanner(message: l10n.orderNeedArticles)
               else
-                for (final article in articles)
-                  ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    title: Text(article.name),
-                    subtitle: Text(
-                      '${article.price == article.price.roundToDouble() ? article.price.round() : article.price.toStringAsFixed(2)} · ${article.categoryName}',
-                    ),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          onPressed: () {
-                            final q = _qtyByArticle[article.id] ?? 0;
-                            if (q <= 0) {
-                              return;
-                            }
-                            setState(() => _qtyByArticle[article.id] = q - 1);
-                          },
-                          icon: const Icon(Icons.remove_circle_outline),
+                Material(
+                  type: MaterialType.transparency,
+                  child: Column(
+                    children: [
+                      for (final article in articles)
+                        ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          title: Text(article.name),
+                          subtitle: Text(
+                            '${article.price == article.price.roundToDouble() ? article.price.round() : article.price.toStringAsFixed(2)} · ${article.categoryName}',
+                          ),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                onPressed: () {
+                                  final q = _qtyByArticle[article.id] ?? 0;
+                                  if (q <= 0) {
+                                    return;
+                                  }
+                                  setState(
+                                    () => _qtyByArticle[article.id] = q - 1,
+                                  );
+                                },
+                                icon: const Icon(Icons.remove_circle_outline),
+                              ),
+                              Text('${_qtyByArticle[article.id] ?? 0}'),
+                              IconButton(
+                                onPressed: () {
+                                  final q = _qtyByArticle[article.id] ?? 0;
+                                  setState(
+                                    () => _qtyByArticle[article.id] = q + 1,
+                                  );
+                                },
+                                icon: const Icon(Icons.add_circle_outline),
+                              ),
+                            ],
+                          ),
                         ),
-                        Text('${_qtyByArticle[article.id] ?? 0}'),
-                        IconButton(
-                          onPressed: () {
-                            final q = _qtyByArticle[article.id] ?? 0;
-                            setState(() => _qtyByArticle[article.id] = q + 1);
-                          },
-                          icon: const Icon(Icons.add_circle_outline),
-                        ),
-                      ],
-                    ),
+                    ],
                   ),
+                ),
               if (_errorKey != null)
                 AppErrorBanner(
                   message: _errorKey == 'validationOrderItems'

@@ -32,6 +32,9 @@ class _OpsShellState extends ConsumerState<OpsShell> {
   /// Cancels an in-flight hydrate when the route building changes.
   Object? _hydrateToken;
 
+  /// Id currently being fetched — prevents duplicate [building.get] calls.
+  UuidValue? _hydratingId;
+
   /// Last primary tab while visiting drawer-only screens (employees, products…).
   var _lastBottomIndex = 0;
 
@@ -51,8 +54,8 @@ class _OpsShellState extends ConsumerState<OpsShell> {
 
   /// Keeps [BuildingSession] aligned with `/b/:buildingId/...`.
   ///
-  /// On browser refresh the session is empty — only the route id survives —
-  /// so we load full details via [BuildingRepository.get].
+  /// On browser refresh / employee login the session may only have the route id
+  /// — load full details once via [BuildingRepository.get].
   void _syncBuilding() {
     final raw = widget.buildingId;
     if (raw == null || raw.isEmpty) {
@@ -66,8 +69,12 @@ class _OpsShellState extends ConsumerState<OpsShell> {
     if (session.selected != null) {
       return;
     }
+    if (_hydratingId == id) {
+      return;
+    }
     final token = Object();
     _hydrateToken = token;
+    _hydratingId = id;
     Future<void>(() async {
       try {
         final building = await ref.read(buildingRepositoryProvider).get(id);
@@ -81,6 +88,11 @@ class _OpsShellState extends ConsumerState<OpsShell> {
         session.select(building.id);
       } catch (_) {
         // Leave selection as id-only; screens degrade until user re-picks.
+      } finally {
+        if (identical(_hydrateToken, token)) {
+          _hydrateToken = null;
+          _hydratingId = null;
+        }
       }
     });
   }
@@ -125,6 +137,10 @@ class _OpsShellState extends ConsumerState<OpsShell> {
     TablesRoute(buildingId: buildingId).go(context);
   }
 
+  /// Article picker or order detail — focused flows that own their own AppBar.
+  bool _isImmersiveOrderScreen(String location) =>
+      RegExp(r'/orders/[^/]+').hasMatch(location);
+
   Widget? _buildFab({
     required String buildingId,
     required String location,
@@ -132,25 +148,44 @@ class _OpsShellState extends ConsumerState<OpsShell> {
     required ColorScheme scheme,
     required OrderDraftState draft,
     required bool isEmployee,
+    required bool compactFab,
   }) {
     // Employees start orders by tapping a table on the floor map.
-    if (buildingId.isEmpty || isEmployee || location.contains('/orders/new')) {
+    if (buildingId.isEmpty ||
+        isEmployee ||
+        _isImmersiveOrderScreen(location)) {
       return null;
     }
     // Toggle: start table pick, or cancel pick while still on the floor map.
     if (draft.pickingTable) {
+      if (compactFab) {
+        return FloatingActionButton(
+          backgroundColor: scheme.error,
+          foregroundColor: scheme.onError,
+          tooltip: l10n.cancelOrderDraft,
+          onPressed: () => _onFabPressed(buildingId, location, true),
+          child: const Icon(Icons.close),
+        );
+      }
       return FloatingActionButton.extended(
         backgroundColor: scheme.error,
         foregroundColor: scheme.onError,
         onPressed: () => _onFabPressed(buildingId, location, true),
         icon: const Icon(Icons.close),
-        label: Text(l10n.cancelOrderDraft),
+        label: AppButtonLabel(l10n.cancelOrderDraft),
+      );
+    }
+    if (compactFab) {
+      return FloatingActionButton(
+        tooltip: l10n.newOrder,
+        onPressed: () => _onFabPressed(buildingId, location, false),
+        child: const Icon(Icons.add),
       );
     }
     return FloatingActionButton.extended(
       onPressed: () => _onFabPressed(buildingId, location, false),
       icon: const Icon(Icons.add),
-      label: Text(l10n.newOrder),
+      label: AppButtonLabel(l10n.newOrder),
     );
   }
 
@@ -159,6 +194,7 @@ class _OpsShellState extends ConsumerState<OpsShell> {
     return LayoutBuilder(
       builder: (context, constraints) {
         final wide = constraints.maxWidth >= AppBreakpoints.expanded;
+        final compactFab = constraints.maxWidth < 420;
         final buildingId = widget.buildingId ?? '';
         final location = GoRouterState.of(context).uri.path;
         final l10n = AppLocalizations.of(context)!;
@@ -174,6 +210,7 @@ class _OpsShellState extends ConsumerState<OpsShell> {
           scheme: scheme,
           draft: draft,
           isEmployee: isEmployee,
+          compactFab: compactFab,
         );
 
         if (wide) {
@@ -190,38 +227,47 @@ class _OpsShellState extends ConsumerState<OpsShell> {
 
         final routeIndex = _bottomIndexFor(location);
         final bottomIndex = routeIndex ?? _lastBottomIndex;
+        // Article picker / order detail: drop shell chrome so the screen's own
+        // AppBar owns the viewport (FAB already hidden via [_buildFab]).
+        final immersiveOrderScreen = _isImmersiveOrderScreen(location);
 
         return Scaffold(
-          appBar: AppBar(
-            title: Text(l10n.appTitle),
-            actions: const [_ThemeToggle(), LocaleMenuButton()],
-          ),
-          drawer: Drawer(
-            child: OpsSideBar(buildingId: buildingId, inDrawer: true),
-          ),
+          appBar: immersiveOrderScreen
+              ? null
+              : AppBar(
+                  title: Text(l10n.appTitle),
+                  actions: const [_ThemeToggle(), LocaleMenuButton()],
+                ),
+          drawer: immersiveOrderScreen
+              ? null
+              : Drawer(
+                  child: OpsSideBar(buildingId: buildingId, inDrawer: true),
+                ),
           floatingActionButton: fab,
-          bottomNavigationBar: NavigationBar(
-            selectedIndex: bottomIndex,
-            onDestinationSelected: (index) =>
-                _onBottomNavSelected(buildingId, index),
-            destinations: [
-              NavigationDestination(
-                icon: const Icon(Icons.grid_view_outlined),
-                selectedIcon: const Icon(Icons.grid_view_rounded),
-                label: l10n.navDashboard,
-              ),
-              NavigationDestination(
-                icon: const Icon(Icons.table_restaurant_outlined),
-                selectedIcon: const Icon(Icons.table_restaurant),
-                label: l10n.navTables,
-              ),
-              NavigationDestination(
-                icon: const Icon(Icons.receipt_long_outlined),
-                selectedIcon: const Icon(Icons.receipt_long),
-                label: l10n.navOrders,
-              ),
-            ],
-          ),
+          bottomNavigationBar: immersiveOrderScreen
+              ? null
+              : NavigationBar(
+                  selectedIndex: bottomIndex,
+                  onDestinationSelected: (index) =>
+                      _onBottomNavSelected(buildingId, index),
+                  destinations: [
+                    NavigationDestination(
+                      icon: const Icon(Icons.grid_view_outlined),
+                      selectedIcon: const Icon(Icons.grid_view_rounded),
+                      label: l10n.navDashboard,
+                    ),
+                    NavigationDestination(
+                      icon: const Icon(Icons.table_restaurant_outlined),
+                      selectedIcon: const Icon(Icons.table_restaurant),
+                      label: l10n.navTables,
+                    ),
+                    NavigationDestination(
+                      icon: const Icon(Icons.receipt_long_outlined),
+                      selectedIcon: const Icon(Icons.receipt_long),
+                      label: l10n.navOrders,
+                    ),
+                  ],
+                ),
           body: widget.child,
         );
       },
@@ -258,7 +304,9 @@ class OpsSideBar extends ConsumerWidget {
         location.endsWith('/products/articles') ||
         location.endsWith('/products/ingredients');
 
-    return ColoredBox(
+    // Material (not ColoredBox): ExpansionTile/ListTile ink must paint on a
+    // Material ancestor without an intervening opaque ColoredBox.
+    return Material(
       color: scheme.surfaceContainerHigh,
       child: SafeArea(
         child: SizedBox(
@@ -425,22 +473,27 @@ class OpsSideBar extends ConsumerWidget {
                           ],
                         ),
                       if (inDrawer)
-                        ListTile(
-                          leading: Icon(Icons.logout, color: scheme.onSurface),
-                          title: Text(
-                            l10n.signOut,
-                            style: TextStyle(color: scheme.onSurface),
+                        Material(
+                          type: MaterialType.transparency,
+                          child: ListTile(
+                            leading: Icon(
+                              Icons.logout,
+                              color: scheme.onSurface,
+                            ),
+                            title: Text(
+                              l10n.signOut,
+                              style: TextStyle(color: scheme.onSurface),
+                            ),
+                            onTap: () => ref
+                                .read(authViewModelProvider.notifier)
+                                .signOut(),
                           ),
-                          onTap: () => ref
-                              .read(authViewModelProvider.notifier)
-                              .signOut(),
                         ),
                       const SizedBox(height: AppSpacing.sm),
-                      DecoratedBox(
-                        decoration: BoxDecoration(
-                          color: scheme.onSurface.withValues(alpha: 0.08),
-                          borderRadius: BorderRadius.circular(AppRadii.md),
-                        ),
+                      Material(
+                        color: scheme.onSurface.withValues(alpha: 0.08),
+                        borderRadius: BorderRadius.circular(AppRadii.md),
+                        clipBehavior: Clip.antiAlias,
                         child: ListTile(
                           onTap: () =>
                               ProfileRoute(buildingId: buildingId).go(context),

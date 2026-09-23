@@ -59,7 +59,7 @@ Attribution actor ids are owner/employee (or later customer) UUIDs with matching
 
 ## Flow (management)
 
-1. **Owner**: **New order** FAB → Tables floor map in pick mode. Tap the FAB again (red) to cancel selection while still picking. On the **article** step the FAB is hidden; use **Reset articles**, **Change table**, or **Cancel order** (returns to tables in normal view).
+1. **Owner**: **New order** FAB → Tables floor map in pick mode. Tap the FAB again (red) to cancel selection while still picking. On the **article** and **order detail** steps the FAB and (on mobile) shared AppBar / bottom nav / drawer are hidden so those screens are immersive; use **Reset articles**, **Change table**, or **Cancel order** (returns to tables in normal view).
 2. **Employee**: no FAB — open **Tables** and tap a table to start ordering (same inactive / occupied rules as pick mode).
 3. Article selection (category chips, name search, **+/−** adds/removes units; each unit becomes its own order line).
 4. **Confirm order** → server create → deducts composition stock per unit → **order detail** with colored status chips, currency amounts, created/updated times, and advance / cancel actions.

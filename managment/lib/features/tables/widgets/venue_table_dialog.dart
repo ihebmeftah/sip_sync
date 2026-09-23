@@ -3,10 +3,39 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sip_sync_client/sip_sync_client.dart';
 
 import '../../../core/errors/error_mapper.dart';
+import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
+import '../../../core/widgets/form_presentation.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../view_models/tables_view_model.dart';
+
+/// Opens table create/edit — full screen on mobile, dialog on wide layouts.
+Future<bool> openVenueTableForm(
+  BuildContext context, {
+  required String buildingId,
+  VenueTableView? existing,
+  int? suggestedNumber,
+}) async {
+  if (!useFormDialog(context)) {
+    final result = existing == null
+        ? await TableCreateRoute(
+            buildingId: buildingId,
+            suggestedNumber: suggestedNumber,
+          ).push<bool>(context)
+        : await TableEditRoute(
+            buildingId: buildingId,
+            tableId: existing.id.uuid,
+          ).push<bool>(context);
+    return result ?? false;
+  }
+  return showVenueTableDialog(
+    context,
+    buildingId: buildingId,
+    existing: existing,
+    suggestedNumber: suggestedNumber,
+  );
+}
 
 /// Owner dialog to create a batch of tables or edit seats / active.
 Future<bool> showVenueTableDialog(

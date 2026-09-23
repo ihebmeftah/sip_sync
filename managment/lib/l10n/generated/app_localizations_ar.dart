@@ -130,6 +130,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get errorGeneric => 'حدث خطأ. حاول مجدداً.';
 
   @override
+  String get errorCannotReachServer =>
+      'تعذّر الوصول إلى الخادم. على جهاز حقيقي شغّل التطبيق بـ --dart-define=SERVER_URL=http://IP_جهازك:8080 (نفس شبكة الواي فاي).';
+
+  @override
   String get errorInvalidInput => 'تحقق من النموذج وحاول مجدداً.';
 
   @override

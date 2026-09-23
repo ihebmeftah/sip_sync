@@ -4,12 +4,33 @@ import 'package:sip_sync_client/sip_sync_client.dart';
 
 import '../../../core/di/app_providers.dart';
 import '../../../core/errors/error_mapper.dart';
+import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
+import '../../../core/widgets/form_presentation.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../view_models/article_composition_view_model.dart';
 import '../view_models/ingredients_view_model.dart';
 import 'unit_labels.dart';
+
+/// Opens composition — full screen on mobile, dialog on wide layouts.
+Future<void> openArticleComposition(
+  BuildContext context, {
+  required String buildingId,
+  required MenuArticleView article,
+}) {
+  if (!useFormDialog(context)) {
+    return ArticleCompositionRoute(
+      buildingId: buildingId,
+      articleId: article.id.uuid,
+    ).push<void>(context);
+  }
+  return showArticleCompositionDialog(
+    context,
+    buildingId: buildingId,
+    article: article,
+  );
+}
 
 /// Owner/employee sheet to view optional recipe lines; owner can mutate.
 Future<void> showArticleCompositionDialog(
@@ -231,40 +252,43 @@ class _CompositionDialogState extends ConsumerState<_CompositionDialog> {
                 }
                 return ConstrainedBox(
                   constraints: const BoxConstraints(maxHeight: 240),
-                  child: ListView(
-                    shrinkWrap: true,
-                    children: [
-                      for (final line in lines)
-                        ListTile(
-                          contentPadding: EdgeInsets.zero,
-                          title: Text(line.ingredientName),
-                          subtitle: Text(
-                            '${_formatQty(line.quantity)} ${unitTypeAbbrev(l10n, line.unit)}',
-                          ),
-                          trailing: isOwner
-                              ? Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    IconButton(
-                                      tooltip: l10n.editCompositionQuantity,
-                                      onPressed: () => _editQuantity(line),
-                                      icon: const Icon(Icons.edit_outlined),
-                                    ),
-                                    IconButton(
-                                      tooltip: l10n.removeCompositionLine,
-                                      onPressed: () => _delete(line),
-                                      icon: Icon(
-                                        Icons.delete_outline,
-                                        color: Theme.of(
-                                          context,
-                                        ).colorScheme.error,
+                  child: Material(
+                    type: MaterialType.transparency,
+                    child: ListView(
+                      shrinkWrap: true,
+                      children: [
+                        for (final line in lines)
+                          ListTile(
+                            contentPadding: EdgeInsets.zero,
+                            title: Text(line.ingredientName),
+                            subtitle: Text(
+                              '${_formatQty(line.quantity)} ${unitTypeAbbrev(l10n, line.unit)}',
+                            ),
+                            trailing: isOwner
+                                ? Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      IconButton(
+                                        tooltip: l10n.editCompositionQuantity,
+                                        onPressed: () => _editQuantity(line),
+                                        icon: const Icon(Icons.edit_outlined),
                                       ),
-                                    ),
-                                  ],
-                                )
-                              : null,
-                        ),
-                    ],
+                                      IconButton(
+                                        tooltip: l10n.removeCompositionLine,
+                                        onPressed: () => _delete(line),
+                                        icon: Icon(
+                                          Icons.delete_outline,
+                                          color: Theme.of(
+                                            context,
+                                          ).colorScheme.error,
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                : null,
+                          ),
+                      ],
+                    ),
                   ),
                 );
               },

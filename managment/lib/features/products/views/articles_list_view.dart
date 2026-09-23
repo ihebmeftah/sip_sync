@@ -48,20 +48,27 @@ class ArticlesListView extends ConsumerWidget {
                       children: [
                         Text(l10n.navArticles, style: text.headlineSmall),
                         const SizedBox(height: AppSpacing.xs),
-                        Text(l10n.articlesHint, style: text.bodyMedium),
+                        Text(
+                          l10n.articlesHint,
+                          style: text.bodyMedium,
+                          maxLines: 3,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ],
                     ),
                   ),
-                  if (isOwner)
+                  if (isOwner) ...[
+                    const SizedBox(width: AppSpacing.sm),
                     FilledButton.icon(
                       style: FilledButton.styleFrom(
                         minimumSize: const Size(0, 44),
                       ),
                       onPressed: () =>
-                          showArticleDialog(context, buildingId: buildingId),
+                          openArticleForm(context, buildingId: buildingId),
                       icon: const Icon(Icons.add),
-                      label: Text(l10n.addArticle),
+                      label: AppButtonLabel(l10n.addArticle),
                     ),
+                  ],
                 ],
               ),
               const SizedBox(height: AppSpacing.lg),
@@ -98,57 +105,61 @@ class ArticlesListView extends ConsumerWidget {
                     child: Column(
                       children: [
                         for (final article in articles)
-                          ListTile(
-                            contentPadding: EdgeInsets.zero,
-                            leading: CircleAvatar(
-                              backgroundColor: scheme.secondaryContainer,
-                              foregroundColor: scheme.onSecondaryContainer,
-                              child: const Icon(Icons.restaurant_menu_outlined),
-                            ),
-                            title: Text(article.name),
-                            subtitle: Text(
-                              [
-                                article.categoryName,
-                                if (article.description?.trim().isNotEmpty ??
-                                    false)
-                                  article.description!,
-                              ].join(' · '),
-                            ),
-                            trailing: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                TextButton.icon(
-                                  onPressed: () => showArticleCompositionDialog(
-                                    context,
-                                    buildingId: buildingId,
-                                    article: article,
-                                  ),
-                                  icon: const Icon(Icons.blender_outlined),
-                                  label: Text(
-                                    article.compositionLineCount == 0
-                                        ? l10n.compositionNone
-                                        : l10n.compositionCount(
-                                            article.compositionLineCount,
-                                          ),
+                          Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              ListTile(
+                                contentPadding: EdgeInsets.zero,
+                                leading: CircleAvatar(
+                                  backgroundColor: scheme.secondaryContainer,
+                                  foregroundColor: scheme.onSecondaryContainer,
+                                  child: const Icon(
+                                    Icons.restaurant_menu_outlined,
                                   ),
                                 ),
-                                const SizedBox(width: AppSpacing.sm),
-                                Text(
+                                title: Text(article.name),
+                                subtitle: Text(
+                                  [
+                                    article.categoryName,
+                                    if (article.description
+                                            ?.trim()
+                                            .isNotEmpty ??
+                                        false)
+                                      article.description!,
+                                  ].join(' · '),
+                                ),
+                                trailing: Text(
                                   _formatMoney(article.price, currency),
                                   style: text.titleSmall?.copyWith(
                                     color: scheme.primary,
                                     fontWeight: FontWeight.w700,
                                   ),
                                 ),
-                              ],
-                            ),
-                            onTap: isOwner
-                                ? () => showArticleDialog(
-                                    context,
-                                    buildingId: buildingId,
-                                    existing: article,
-                                  )
-                                : null,
+                                onTap: isOwner
+                                    ? () => openArticleForm(
+                                        context,
+                                        buildingId: buildingId,
+                                        existing: article,
+                                      )
+                                    : null,
+                              ),
+                              TextButton.icon(
+                                onPressed: () => openArticleComposition(
+                                  context,
+                                  buildingId: buildingId,
+                                  article: article,
+                                ),
+                                icon: const Icon(Icons.blender_outlined),
+                                label: Text(
+                                  article.compositionLineCount == 0
+                                      ? l10n.compositionNone
+                                      : l10n.compositionCount(
+                                          article.compositionLineCount,
+                                        ),
+                                ),
+                              ),
+                              Divider(),
+                            ],
                           ),
                       ],
                     ),

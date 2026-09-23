@@ -6,7 +6,6 @@ import '../../../core/di/app_session_store.dart';
 import '../../../core/di/building_session.dart';
 import '../../../core/di/service_locator.dart';
 import '../../../core/errors/error_mapper.dart';
-import '../../../data/repositories/building_repository.dart';
 import '../../../data/repositories/owner_auth_repository.dart';
 
 part 'auth_view_model.g.dart';
@@ -67,12 +66,8 @@ class AuthViewModel extends _$AuthViewModel {
           _store.employee != null) {
         final me = await _repo.employeeMe();
         await _store.setEmployee(me);
+        // Id only — [OpsShell] hydrates full [BuildingView] once.
         getIt<BuildingSession>().select(me.buildingId);
-        try {
-          final building = await getIt<BuildingRepository>().get(me.buildingId);
-          getIt<BuildingSession>().upsert(building);
-          getIt<BuildingSession>().select(building.id);
-        } catch (_) {}
       } else {
         // Token without actor metadata — force re-login.
         await _store.clear();
@@ -112,12 +107,8 @@ class AuthViewModel extends _$AuthViewModel {
         password: password,
       );
       final buildingId = result.employee!.buildingId;
+      // Id only — [OpsShell] hydrates full [BuildingView] once on entry.
       getIt<BuildingSession>().select(buildingId);
-      try {
-        final building = await getIt<BuildingRepository>().get(buildingId);
-        getIt<BuildingSession>().upsert(building);
-        getIt<BuildingSession>().select(building.id);
-      } catch (_) {}
       state = state.copyWith(isLoading: false);
       return true;
     } catch (error) {

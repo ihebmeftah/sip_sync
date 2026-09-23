@@ -133,6 +133,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get errorGeneric => 'Something went wrong. Try again.';
 
   @override
+  String get errorCannotReachServer =>
+      'Cannot reach the server. On a physical device, run with --dart-define=SERVER_URL=http://YOUR_COMPUTER_LAN_IP:8080 (same Wi‑Fi as the phone).';
+
+  @override
   String get errorInvalidInput => 'Check the form and try again.';
 
   @override

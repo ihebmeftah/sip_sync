@@ -213,7 +213,19 @@ class AppSurfaceCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    final scheme = Theme.of(context).colorScheme;
+    // Use a single Material so ListTile ink/splashes stay visible (Card + nested
+    // ListTile often triggers Flutter's "ink may be invisible" warning).
+    return Material(
+      color: scheme.surfaceContainerLowest,
+      elevation: 0,
+      shadowColor: Colors.transparent,
+      surfaceTintColor: Colors.transparent,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppRadii.lg),
+        side: BorderSide(color: scheme.outline.withValues(alpha: 0.7)),
+      ),
+      clipBehavior: Clip.antiAlias,
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.xl),
         child: child,
@@ -260,6 +272,51 @@ class LocaleMenuButton extends ConsumerWidget {
         PopupMenuItem(value: Locale('fr'), child: Text('FR')),
         PopupMenuItem(value: Locale('ar'), child: Text('AR')),
       ],
+    );
+  }
+}
+
+/// Single-line button / chip label that ellipsizes instead of overflowing
+/// (important for longer French / Arabic copy on narrow screens).
+class AppButtonLabel extends StatelessWidget {
+  const AppButtonLabel(this.text, {super.key});
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      text,
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+      softWrap: false,
+    );
+  }
+}
+
+/// Wraps action buttons so long localized labels stack instead of overflowing.
+class AppActionsWrap extends StatelessWidget {
+  const AppActionsWrap({
+    super.key,
+    required this.children,
+    this.spacing = AppSpacing.sm,
+    this.runSpacing = AppSpacing.sm,
+    this.alignment = WrapAlignment.spaceBetween,
+  });
+
+  final List<Widget> children;
+  final double spacing;
+  final double runSpacing;
+  final WrapAlignment alignment;
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      spacing: spacing,
+      runSpacing: runSpacing,
+      alignment: alignment,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: children,
     );
   }
 }

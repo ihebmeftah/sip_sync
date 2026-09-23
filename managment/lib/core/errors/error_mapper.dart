@@ -3,6 +3,9 @@ import 'package:sip_sync_client/sip_sync_client.dart';
 import 'failure.dart';
 
 Failure mapError(Object error) {
+  if (error is ServerpodClientNetworkException) {
+    return const Failure('errorCannotReachServer');
+  }
   if (error is AccountException) {
     return Failure(switch (error.code) {
       AccountErrorCode.invalidInput => 'errorInvalidInput',
@@ -110,6 +113,7 @@ String lookupError(dynamic l10n, String key) {
     'errorOrderInsufficientStock' => l10n.errorOrderInsufficientStock,
     'errorOrderTableOccupied' => l10n.errorOrderTableOccupied,
     'errorOrderAppendNotAllowed' => l10n.errorOrderAppendNotAllowed,
+    'errorCannotReachServer' => l10n.errorCannotReachServer,
     _ => l10n.errorGeneric,
   };
 }

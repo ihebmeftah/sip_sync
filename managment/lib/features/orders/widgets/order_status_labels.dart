@@ -143,6 +143,8 @@ class _StatusChip extends StatelessWidget {
       ),
       child: Text(
         label,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
         style: Theme.of(context).textTheme.labelMedium?.copyWith(
           color: foreground,
           fontWeight: FontWeight.w700,

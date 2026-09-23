@@ -39,6 +39,7 @@
   "empty": "لا شيء بعد",
   "language": "اللغة",
   "errorGeneric": "حدث خطأ. حاول مجدداً.",
+  "errorCannotReachServer": "تعذّر الوصول إلى الخادم. على جهاز حقيقي شغّل التطبيق بـ --dart-define=SERVER_URL=http://IP_جهازك:8080 (نفس شبكة الواي فاي).",
   "errorInvalidInput": "تحقق من النموذج وحاول مجدداً.",
   "errorEmailTaken": "هذا البريد مستخدم بكلمة مرور مختلفة.",
   "errorUsernameTaken": "اسم المستخدم محجوز.",

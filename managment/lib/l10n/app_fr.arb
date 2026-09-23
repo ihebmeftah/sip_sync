@@ -39,6 +39,7 @@
   "empty": "Rien pour le moment",
   "language": "Langue",
   "errorGeneric": "Une erreur s'est produite. Réessayez.",
+  "errorCannotReachServer": "Impossible de joindre le serveur. Sur un appareil physique, lancez avec --dart-define=SERVER_URL=http://IP_LOCALE_DU_MAC:8080 (même Wi‑Fi).",
   "errorInvalidInput": "Vérifiez le formulaire et réessayez.",
   "errorEmailTaken": "Cet e-mail est déjà utilisé avec un autre mot de passe.",
   "errorUsernameTaken": "Ce nom d'utilisateur est pris.",

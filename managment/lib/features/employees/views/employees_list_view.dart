@@ -45,7 +45,7 @@ class EmployeesListView extends ConsumerWidget {
                         buildingId: buildingId,
                       ).go(context),
                       icon: const Icon(Icons.add),
-                      label: Text(l10n.addEmployee),
+                      label: AppButtonLabel(l10n.addEmployee),
                     ),
                 ],
               ),

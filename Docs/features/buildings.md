@@ -18,7 +18,7 @@ Status: in progress
 2. Employee signs in → dashboard for their `buildingId`.
 3. Create/update: name, type, address, lat/long, hours, currency, and **Multiple orders per table** (`tableMultiOrder`). No employee picker.
 4. Owner opens a row → `/b/:buildingId/dashboard`. Staff listed via `building.listEmployees`.
-5. Ops shell hydrates the current venue with `building.get(buildingId)` whenever `/b/:buildingId/...` is opened and the in-memory [BuildingSession] has no details (e.g. browser refresh) so currency and flags stay available.
+5. Ops shell hydrates the current venue with `building.get(buildingId)` whenever `/b/:buildingId/...` is opened and the in-memory [BuildingSession] has no details (e.g. browser refresh or employee login, which only selects the id) so currency and flags stay available. Auth does **not** call `building.get` itself.
 
 ## Configuration
 

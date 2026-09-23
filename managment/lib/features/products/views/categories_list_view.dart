@@ -9,7 +9,7 @@ import '../../../l10n/generated/app_localizations.dart';
 import '../view_models/categories_view_model.dart';
 import '../widgets/category_dialog.dart';
 
-/// Per-building category list with owner create/edit dialogs.
+/// Per-building category list; owner create/edit uses screen on mobile, dialog on wide.
 class CategoriesListView extends ConsumerWidget {
   const CategoriesListView({super.key, required this.buildingId});
 
@@ -51,9 +51,9 @@ class CategoriesListView extends ConsumerWidget {
                         minimumSize: const Size(0, 44),
                       ),
                       onPressed: () =>
-                          showCategoryDialog(context, buildingId: buildingId),
+                          openCategoryForm(context, buildingId: buildingId),
                       icon: const Icon(Icons.add),
-                      label: Text(l10n.addCategory),
+                      label: AppButtonLabel(l10n.addCategory),
                     ),
                 ],
               ),
@@ -104,7 +104,7 @@ class CategoriesListView extends ConsumerWidget {
                                   : l10n.noDescription,
                             ),
                             onTap: isOwner
-                                ? () => showCategoryDialog(
+                                ? () => openCategoryForm(
                                     context,
                                     buildingId: buildingId,
                                     existing: category,

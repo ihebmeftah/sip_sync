@@ -235,10 +235,34 @@ RouteBase get $opsShellRoute => ShellRouteData.$route(
       factory: $TablesRoute._fromState,
     ),
     GoRouteData.$route(
+      path: '/b/:buildingId/tables/new',
+      name: 'tableCreate',
+      hasOverriddenOnExit: false,
+      factory: $TableCreateRoute._fromState,
+    ),
+    GoRouteData.$route(
+      path: '/b/:buildingId/tables/:tableId/edit',
+      name: 'tableEdit',
+      hasOverriddenOnExit: false,
+      factory: $TableEditRoute._fromState,
+    ),
+    GoRouteData.$route(
       path: '/b/:buildingId/products/categories',
       name: 'categories',
       hasOverriddenOnExit: false,
       factory: $CategoriesRoute._fromState,
+    ),
+    GoRouteData.$route(
+      path: '/b/:buildingId/products/categories/new',
+      name: 'categoryCreate',
+      hasOverriddenOnExit: false,
+      factory: $CategoryCreateRoute._fromState,
+    ),
+    GoRouteData.$route(
+      path: '/b/:buildingId/products/categories/:categoryId/edit',
+      name: 'categoryEdit',
+      hasOverriddenOnExit: false,
+      factory: $CategoryEditRoute._fromState,
     ),
     GoRouteData.$route(
       path: '/b/:buildingId/products/articles',
@@ -247,10 +271,34 @@ RouteBase get $opsShellRoute => ShellRouteData.$route(
       factory: $ArticlesRoute._fromState,
     ),
     GoRouteData.$route(
+      path: '/b/:buildingId/products/articles/new',
+      name: 'articleCreate',
+      hasOverriddenOnExit: false,
+      factory: $ArticleCreateRoute._fromState,
+    ),
+    GoRouteData.$route(
+      path: '/b/:buildingId/products/articles/:articleId/edit',
+      name: 'articleEdit',
+      hasOverriddenOnExit: false,
+      factory: $ArticleEditRoute._fromState,
+    ),
+    GoRouteData.$route(
+      path: '/b/:buildingId/products/articles/:articleId/composition',
+      name: 'articleComposition',
+      hasOverriddenOnExit: false,
+      factory: $ArticleCompositionRoute._fromState,
+    ),
+    GoRouteData.$route(
       path: '/b/:buildingId/products/ingredients',
       name: 'ingredients',
       hasOverriddenOnExit: false,
       factory: $IngredientsRoute._fromState,
+    ),
+    GoRouteData.$route(
+      path: '/b/:buildingId/products/ingredients/new',
+      name: 'ingredientCreate',
+      hasOverriddenOnExit: false,
+      factory: $IngredientCreateRoute._fromState,
     ),
   ],
 );
@@ -540,6 +588,68 @@ mixin $TablesRoute on GoRouteData {
   void replace(BuildContext context) => context.replace(location);
 }
 
+mixin $TableCreateRoute on GoRouteData {
+  static TableCreateRoute _fromState(GoRouterState state) => TableCreateRoute(
+    buildingId: state.pathParameters['buildingId']!,
+    suggestedNumber: _$convertMapValue(
+      'suggested-number',
+      state.uri.queryParameters,
+      int.tryParse,
+    ),
+  );
+
+  TableCreateRoute get _self => this as TableCreateRoute;
+
+  @override
+  String get location => GoRouteData.$location(
+    '/b/${Uri.encodeComponent(_self.buildingId)}/tables/new',
+    queryParams: {
+      if (_self.suggestedNumber != null)
+        'suggested-number': _self.suggestedNumber!.toString(),
+    },
+  );
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+mixin $TableEditRoute on GoRouteData {
+  static TableEditRoute _fromState(GoRouterState state) => TableEditRoute(
+    buildingId: state.pathParameters['buildingId']!,
+    tableId: state.pathParameters['tableId']!,
+  );
+
+  TableEditRoute get _self => this as TableEditRoute;
+
+  @override
+  String get location => GoRouteData.$location(
+    '/b/${Uri.encodeComponent(_self.buildingId)}/tables/${Uri.encodeComponent(_self.tableId)}/edit',
+  );
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
 mixin $CategoriesRoute on GoRouteData {
   static CategoriesRoute _fromState(GoRouterState state) =>
       CategoriesRoute(buildingId: state.pathParameters['buildingId']!);
@@ -549,6 +659,58 @@ mixin $CategoriesRoute on GoRouteData {
   @override
   String get location => GoRouteData.$location(
     '/b/${Uri.encodeComponent(_self.buildingId)}/products/categories',
+  );
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+mixin $CategoryCreateRoute on GoRouteData {
+  static CategoryCreateRoute _fromState(GoRouterState state) =>
+      CategoryCreateRoute(buildingId: state.pathParameters['buildingId']!);
+
+  CategoryCreateRoute get _self => this as CategoryCreateRoute;
+
+  @override
+  String get location => GoRouteData.$location(
+    '/b/${Uri.encodeComponent(_self.buildingId)}/products/categories/new',
+  );
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+mixin $CategoryEditRoute on GoRouteData {
+  static CategoryEditRoute _fromState(GoRouterState state) => CategoryEditRoute(
+    buildingId: state.pathParameters['buildingId']!,
+    categoryId: state.pathParameters['categoryId']!,
+  );
+
+  CategoryEditRoute get _self => this as CategoryEditRoute;
+
+  @override
+  String get location => GoRouteData.$location(
+    '/b/${Uri.encodeComponent(_self.buildingId)}/products/categories/${Uri.encodeComponent(_self.categoryId)}/edit',
   );
 
   @override
@@ -590,6 +752,86 @@ mixin $ArticlesRoute on GoRouteData {
   void replace(BuildContext context) => context.replace(location);
 }
 
+mixin $ArticleCreateRoute on GoRouteData {
+  static ArticleCreateRoute _fromState(GoRouterState state) =>
+      ArticleCreateRoute(buildingId: state.pathParameters['buildingId']!);
+
+  ArticleCreateRoute get _self => this as ArticleCreateRoute;
+
+  @override
+  String get location => GoRouteData.$location(
+    '/b/${Uri.encodeComponent(_self.buildingId)}/products/articles/new',
+  );
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+mixin $ArticleEditRoute on GoRouteData {
+  static ArticleEditRoute _fromState(GoRouterState state) => ArticleEditRoute(
+    buildingId: state.pathParameters['buildingId']!,
+    articleId: state.pathParameters['articleId']!,
+  );
+
+  ArticleEditRoute get _self => this as ArticleEditRoute;
+
+  @override
+  String get location => GoRouteData.$location(
+    '/b/${Uri.encodeComponent(_self.buildingId)}/products/articles/${Uri.encodeComponent(_self.articleId)}/edit',
+  );
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+mixin $ArticleCompositionRoute on GoRouteData {
+  static ArticleCompositionRoute _fromState(GoRouterState state) =>
+      ArticleCompositionRoute(
+        buildingId: state.pathParameters['buildingId']!,
+        articleId: state.pathParameters['articleId']!,
+      );
+
+  ArticleCompositionRoute get _self => this as ArticleCompositionRoute;
+
+  @override
+  String get location => GoRouteData.$location(
+    '/b/${Uri.encodeComponent(_self.buildingId)}/products/articles/${Uri.encodeComponent(_self.articleId)}/composition',
+  );
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
 mixin $IngredientsRoute on GoRouteData {
   static IngredientsRoute _fromState(GoRouterState state) =>
       IngredientsRoute(buildingId: state.pathParameters['buildingId']!);
@@ -613,4 +855,38 @@ mixin $IngredientsRoute on GoRouteData {
 
   @override
   void replace(BuildContext context) => context.replace(location);
+}
+
+mixin $IngredientCreateRoute on GoRouteData {
+  static IngredientCreateRoute _fromState(GoRouterState state) =>
+      IngredientCreateRoute(buildingId: state.pathParameters['buildingId']!);
+
+  IngredientCreateRoute get _self => this as IngredientCreateRoute;
+
+  @override
+  String get location => GoRouteData.$location(
+    '/b/${Uri.encodeComponent(_self.buildingId)}/products/ingredients/new',
+  );
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+T? _$convertMapValue<T>(
+  String key,
+  Map<String, String> map,
+  T? Function(String) converter,
+) {
+  final value = map[key];
+  return value == null ? null : converter(value);
 }

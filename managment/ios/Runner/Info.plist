@@ -4,6 +4,13 @@
 <dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Sip Sync uses your location to fill the venue address.</string>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>Sip Sync connects to your development Serverpod API on the local network.</string>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsLocalNetworking</key>
+		<true/>
+	</dict>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>

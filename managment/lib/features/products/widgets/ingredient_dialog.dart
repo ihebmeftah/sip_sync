@@ -3,11 +3,27 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sip_sync_client/sip_sync_client.dart';
 
 import '../../../core/errors/error_mapper.dart';
+import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
+import '../../../core/widgets/form_presentation.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../view_models/ingredients_view_model.dart';
 import 'unit_labels.dart';
+
+/// Opens ingredient create — full screen on mobile, dialog on wide layouts.
+Future<bool> openIngredientForm(
+  BuildContext context, {
+  required String buildingId,
+}) async {
+  if (!useFormDialog(context)) {
+    final result = await IngredientCreateRoute(
+      buildingId: buildingId,
+    ).push<bool>(context);
+    return result ?? false;
+  }
+  return showIngredientDialog(context, buildingId: buildingId);
+}
 
 /// Owner dialog to create an ingredient.
 Future<bool> showIngredientDialog(

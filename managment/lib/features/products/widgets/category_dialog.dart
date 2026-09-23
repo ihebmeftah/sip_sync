@@ -3,10 +3,34 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sip_sync_client/sip_sync_client.dart';
 
 import '../../../core/errors/error_mapper.dart';
+import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
+import '../../../core/widgets/form_presentation.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../view_models/categories_view_model.dart';
+
+/// Opens category create/edit — full screen on mobile, dialog on wide layouts.
+Future<bool> openCategoryForm(
+  BuildContext context, {
+  required String buildingId,
+  MenuCategoryView? existing,
+}) async {
+  if (!useFormDialog(context)) {
+    final result = existing == null
+        ? await CategoryCreateRoute(buildingId: buildingId).push<bool>(context)
+        : await CategoryEditRoute(
+            buildingId: buildingId,
+            categoryId: existing.id.uuid,
+          ).push<bool>(context);
+    return result ?? false;
+  }
+  return showCategoryDialog(
+    context,
+    buildingId: buildingId,
+    existing: existing,
+  );
+}
 
 /// Owner dialog to create or edit a menu category.
 Future<bool> showCategoryDialog(

@@ -134,6 +134,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get errorGeneric => 'Une erreur s\'est produite. Réessayez.';
 
   @override
+  String get errorCannotReachServer =>
+      'Impossible de joindre le serveur. Sur un appareil physique, lancez avec --dart-define=SERVER_URL=http://IP_LOCALE_DU_MAC:8080 (même Wi‑Fi).';
+
+  @override
   String get errorInvalidInput => 'Vérifiez le formulaire et réessayez.';
 
   @override

@@ -33,6 +33,23 @@ Each Flutter app extends its own tokens in `lib/core/theme/` (`AppColors`, `AppS
 
 Auth uses `AuthShell` (wide split / compact stack). Signed-in `managment` uses `OpsShell` (olive rail / compact drawer). After login the user must pick a **building**; dashboard, employees, products, POS, and tables stay locked until then. Forms use `TextFormField` validators (`FormValidators`) plus server errors. Primary actions and fields come from `AppFilledButton` / `AppTextField`. Arabic is RTL via `MaterialApp` locales. Light and dark `ThemeData` are selected with `ThemeController`.
 
+## Local development on a physical phone
+
+Bundled `assets/config.json` uses `http://localhost:8080`. That works for Flutter **web** and **iOS Simulator**. On a **physical** iOS/Android device, `localhost` is the phone itself — login fails with a network error.
+
+1. Mac and phone on the same Wi‑Fi.
+2. Find the Mac LAN IP (e.g. `ipconfig getifaddr en0` → `192.168.0.67`).
+3. Run the management app with an override (full rebuild, not just hot reload):
+
+```bash
+cd managment
+flutter run --dart-define=SERVER_URL=http://192.168.0.67:8080
+```
+
+Replace the IP with yours. Keep `serverpod start` (or the API on `:8080`) running on the Mac.
+
+iOS also needs local-network HTTP (`NSAllowsLocalNetworking` in `Info.plist`); Android debug allows cleartext HTTP.
+
 ## Security
 
 - Endpoints: `requireLogin`, Sip Sync scopes (`sip.owner`, `sip.employee`, `sip.backoffice`, …), building membership

@@ -14,10 +14,16 @@ import '../../features/employees/views/employees_list_view.dart';
 import '../../features/orders/views/order_create_articles_view.dart';
 import '../../features/orders/views/order_detail_view.dart';
 import '../../features/orders/views/orders_list_view.dart';
+import '../../features/products/views/article_composition_view.dart'
+    show ArticleCompositionFormView;
+import '../../features/products/views/article_form_view.dart';
 import '../../features/products/views/articles_list_view.dart';
 import '../../features/products/views/categories_list_view.dart';
+import '../../features/products/views/category_form_view.dart';
+import '../../features/products/views/ingredient_form_view.dart';
 import '../../features/products/views/ingredients_list_view.dart';
 import '../../features/tables/views/tables_list_view.dart';
+import '../../features/tables/views/venue_table_form_view.dart';
 import '../../features/profile/views/profile_view.dart';
 
 part 'app_routes.g.dart';
@@ -126,17 +132,49 @@ class BuildingEditRoute extends GoRouteData with $BuildingEditRoute {
     ),
     TypedGoRoute<OrdersRoute>(path: '/b/:buildingId/orders', name: 'orders'),
     TypedGoRoute<TablesRoute>(path: '/b/:buildingId/tables', name: 'tables'),
+    TypedGoRoute<TableCreateRoute>(
+      path: '/b/:buildingId/tables/new',
+      name: 'tableCreate',
+    ),
+    TypedGoRoute<TableEditRoute>(
+      path: '/b/:buildingId/tables/:tableId/edit',
+      name: 'tableEdit',
+    ),
     TypedGoRoute<CategoriesRoute>(
       path: '/b/:buildingId/products/categories',
       name: 'categories',
+    ),
+    TypedGoRoute<CategoryCreateRoute>(
+      path: '/b/:buildingId/products/categories/new',
+      name: 'categoryCreate',
+    ),
+    TypedGoRoute<CategoryEditRoute>(
+      path: '/b/:buildingId/products/categories/:categoryId/edit',
+      name: 'categoryEdit',
     ),
     TypedGoRoute<ArticlesRoute>(
       path: '/b/:buildingId/products/articles',
       name: 'articles',
     ),
+    TypedGoRoute<ArticleCreateRoute>(
+      path: '/b/:buildingId/products/articles/new',
+      name: 'articleCreate',
+    ),
+    TypedGoRoute<ArticleEditRoute>(
+      path: '/b/:buildingId/products/articles/:articleId/edit',
+      name: 'articleEdit',
+    ),
+    TypedGoRoute<ArticleCompositionRoute>(
+      path: '/b/:buildingId/products/articles/:articleId/composition',
+      name: 'articleComposition',
+    ),
     TypedGoRoute<IngredientsRoute>(
       path: '/b/:buildingId/products/ingredients',
       name: 'ingredients',
+    ),
+    TypedGoRoute<IngredientCreateRoute>(
+      path: '/b/:buildingId/products/ingredients/new',
+      name: 'ingredientCreate',
     ),
   ],
 )
@@ -276,6 +314,33 @@ class TablesRoute extends GoRouteData with $TablesRoute {
   }
 }
 
+class TableCreateRoute extends GoRouteData with $TableCreateRoute {
+  const TableCreateRoute({required this.buildingId, this.suggestedNumber});
+
+  final String buildingId;
+  final int? suggestedNumber;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return VenueTableFormView(
+      buildingId: buildingId,
+      suggestedNumber: suggestedNumber,
+    );
+  }
+}
+
+class TableEditRoute extends GoRouteData with $TableEditRoute {
+  const TableEditRoute({required this.buildingId, required this.tableId});
+
+  final String buildingId;
+  final String tableId;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return VenueTableFormView(buildingId: buildingId, tableId: tableId);
+  }
+}
+
 class CategoriesRoute extends GoRouteData with $CategoriesRoute {
   const CategoriesRoute({required this.buildingId});
 
@@ -284,6 +349,29 @@ class CategoriesRoute extends GoRouteData with $CategoriesRoute {
   @override
   Widget build(BuildContext context, GoRouterState state) {
     return CategoriesListView(buildingId: buildingId);
+  }
+}
+
+class CategoryCreateRoute extends GoRouteData with $CategoryCreateRoute {
+  const CategoryCreateRoute({required this.buildingId});
+
+  final String buildingId;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return CategoryFormView(buildingId: buildingId);
+  }
+}
+
+class CategoryEditRoute extends GoRouteData with $CategoryEditRoute {
+  const CategoryEditRoute({required this.buildingId, required this.categoryId});
+
+  final String buildingId;
+  final String categoryId;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return CategoryFormView(buildingId: buildingId, categoryId: categoryId);
   }
 }
 
@@ -298,6 +386,48 @@ class ArticlesRoute extends GoRouteData with $ArticlesRoute {
   }
 }
 
+class ArticleCreateRoute extends GoRouteData with $ArticleCreateRoute {
+  const ArticleCreateRoute({required this.buildingId});
+
+  final String buildingId;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return ArticleFormView(buildingId: buildingId);
+  }
+}
+
+class ArticleEditRoute extends GoRouteData with $ArticleEditRoute {
+  const ArticleEditRoute({required this.buildingId, required this.articleId});
+
+  final String buildingId;
+  final String articleId;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return ArticleFormView(buildingId: buildingId, articleId: articleId);
+  }
+}
+
+class ArticleCompositionRoute extends GoRouteData
+    with $ArticleCompositionRoute {
+  const ArticleCompositionRoute({
+    required this.buildingId,
+    required this.articleId,
+  });
+
+  final String buildingId;
+  final String articleId;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return ArticleCompositionFormView(
+      buildingId: buildingId,
+      articleId: articleId,
+    );
+  }
+}
+
 class IngredientsRoute extends GoRouteData with $IngredientsRoute {
   const IngredientsRoute({required this.buildingId});
 
@@ -306,5 +436,16 @@ class IngredientsRoute extends GoRouteData with $IngredientsRoute {
   @override
   Widget build(BuildContext context, GoRouterState state) {
     return IngredientsListView(buildingId: buildingId);
+  }
+}
+
+class IngredientCreateRoute extends GoRouteData with $IngredientCreateRoute {
+  const IngredientCreateRoute({required this.buildingId});
+
+  final String buildingId;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return IngredientFormView(buildingId: buildingId);
   }
 }

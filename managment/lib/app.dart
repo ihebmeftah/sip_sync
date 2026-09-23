@@ -23,6 +23,7 @@ class SipSyncApp extends ConsumerWidget {
       darkTheme: AppTheme.dark(),
       themeMode: ref.watch(themeControllerProvider),
       routerConfig: router,
+      debugShowCheckedModeBanner: false,
       locale: ref.watch(localeControllerProvider),
       supportedLocales: AppLocalizations.supportedLocales,
       localizationsDelegates: const [

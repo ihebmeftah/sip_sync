@@ -15,8 +15,9 @@ import '../view_models/tables_view_model.dart';
 import '../widgets/table_floor_preview.dart';
 import '../widgets/venue_table_dialog.dart';
 
-/// Floor map for a building: seat-based previews, status filters, add dialog.
+/// Floor map for a building: seat-based previews, status filters, add/edit form.
 ///
+/// Owner create/edit uses a full screen on mobile and a dialog on wide layouts.
 /// Owner FAB pick mode and employee taps both select a table and continue to
 /// article selection. Owners edit tables when not picking.
 class TablesListView extends ConsumerStatefulWidget {
@@ -31,11 +32,11 @@ class TablesListView extends ConsumerStatefulWidget {
 class _TablesListViewState extends ConsumerState<TablesListView> {
   var _filter = TableFloorFilter.all;
 
-  Future<void> _openDialog({
+  Future<void> _openForm({
     VenueTableView? existing,
     int? suggestedNumber,
   }) async {
-    await showVenueTableDialog(
+    await openVenueTableForm(
       context,
       buildingId: widget.buildingId,
       existing: existing,
@@ -85,7 +86,7 @@ class _TablesListViewState extends ConsumerState<TablesListView> {
 
     final store = ref.read(appSessionStoreProvider);
     if (store.isOwner) {
-      _openDialog(existing: table);
+      _openForm(existing: table);
       return;
     }
     if (store.isEmployee) {
@@ -139,7 +140,12 @@ class _TablesListViewState extends ConsumerState<TablesListView> {
                         children: [
                           Text(l10n.navTables, style: text.headlineSmall),
                           const SizedBox(height: AppSpacing.xs),
-                          Text(hint, style: text.bodyMedium),
+                          Text(
+                            hint,
+                            style: text.bodyMedium,
+                            maxLines: 3,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ],
                       ),
                     ),
@@ -162,9 +168,9 @@ class _TablesListViewState extends ConsumerState<TablesListView> {
                           minimumSize: const Size(0, 44),
                         ),
                         onPressed: () =>
-                            _openDialog(suggestedNumber: nextNumber),
+                            _openForm(suggestedNumber: nextNumber),
                         icon: const Icon(Icons.add),
-                        label: Text(l10n.addTable),
+                        label: AppButtonLabel(l10n.addTable),
                       ),
                   ],
                 ),
@@ -242,12 +248,19 @@ class _TablesListViewState extends ConsumerState<TablesListView> {
                 else
                   LayoutBuilder(
                     builder: (context, constraints) {
-                      final wide =
-                          constraints.maxWidth >= AppBreakpoints.expanded;
-                      final tileWidth = wide ? 176.0 : 156.0;
+                      final width = constraints.maxWidth;
+                      // Two columns on phones, three on mid, four on wide.
+                      final columns = width >= AppBreakpoints.expanded
+                          ? 4
+                          : width >= 520
+                          ? 3
+                          : 2;
+                      final gap = AppSpacing.lg;
+                      final tileWidth =
+                          (width - gap * (columns - 1)) / columns;
                       return Wrap(
-                        spacing: AppSpacing.lg,
-                        runSpacing: AppSpacing.lg,
+                        spacing: gap,
+                        runSpacing: gap,
                         children: [
                           for (final table in visible)
                             SizedBox(

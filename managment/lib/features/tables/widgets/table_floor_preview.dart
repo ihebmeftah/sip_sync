@@ -20,98 +20,113 @@ class TableFloorPreview extends StatelessWidget {
     final text = Theme.of(context).textTheme;
     final colors = _statusColors(scheme, table);
     final seats = table.maxSeats.clamp(1, 12);
-    final canvasSize = _canvasSize(seats);
 
-    return SizedBox(
-      height: 250,
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(AppRadii.lg),
-          child: Ink(
-            decoration: BoxDecoration(
-              color: scheme.surfaceContainerLowest,
-              borderRadius: BorderRadius.circular(AppRadii.lg),
-              border: Border.all(
-                color: colors.stroke.withValues(alpha: 0.45),
-                width: 1.5,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final tileW = constraints.maxWidth;
+        // Keep the card short on narrow tiles (mobile Wrap width ~140–156).
+        final canvasSize = math.min(_canvasSize(seats), tileW * 0.72);
+        final compact = tileW < 168;
+
+        return Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: onTap,
+            borderRadius: BorderRadius.circular(AppRadii.lg),
+            child: Ink(
+              decoration: BoxDecoration(
+                color: scheme.surfaceContainerLowest,
+                borderRadius: BorderRadius.circular(AppRadii.lg),
+                border: Border.all(
+                  color: colors.stroke.withValues(alpha: 0.45),
+                  width: 1.5,
+                ),
               ),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(
-                AppSpacing.md,
-                AppSpacing.lg,
-                AppSpacing.md,
-                AppSpacing.md,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  SizedBox(
-                    width: canvasSize,
-                    height: canvasSize,
-                    child: CustomPaint(
-                      painter: _DiningTablePainter(
-                        seats: seats,
-                        fill: colors.fill,
-                        stroke: colors.stroke,
-                        chair: colors.chair,
-                        dimmed: !table.isActive,
-                      ),
-                      child: Center(
-                        child: Text(
-                          '${table.number}',
-                          style: text.headlineSmall?.copyWith(
-                            color: colors.onFill,
-                            fontWeight: FontWeight.w800,
-                            height: 1,
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(
+                  AppSpacing.md,
+                  compact ? AppSpacing.md : AppSpacing.lg,
+                  AppSpacing.md,
+                  compact ? AppSpacing.sm : AppSpacing.md,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: canvasSize,
+                      height: canvasSize,
+                      child: CustomPaint(
+                        painter: _DiningTablePainter(
+                          seats: seats,
+                          fill: colors.fill,
+                          stroke: colors.stroke,
+                          chair: colors.chair,
+                          dimmed: !table.isActive,
+                        ),
+                        child: Center(
+                          child: Text(
+                            '${table.number}',
+                            style:
+                                (compact
+                                        ? text.titleLarge
+                                        : text.headlineSmall)
+                                    ?.copyWith(
+                                      color: colors.onFill,
+                                      fontWeight: FontWeight.w800,
+                                      height: 1,
+                                    ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: AppSpacing.md),
-                  Text(
-                    l10n.tableSeatsCount(table.maxSeats),
-                    style: text.titleSmall?.copyWith(color: scheme.onSurface),
-                  ),
-                  const SizedBox(height: AppSpacing.xs),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.sm,
-                      vertical: 2,
+                    SizedBox(
+                      height: compact ? AppSpacing.sm : AppSpacing.md,
                     ),
-                    decoration: BoxDecoration(
-                      color: colors.stroke.withValues(alpha: 0.12),
-                      borderRadius: BorderRadius.circular(AppRadii.sm),
+                    Text(
+                      l10n.tableSeatsCount(table.maxSeats),
+                      style: text.titleSmall?.copyWith(color: scheme.onSurface),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    child: Text(
-                      table.isActive
-                          ? _statusLabel(l10n, table.status)
-                          : l10n.tableFilterInactive,
-                      style: text.labelMedium?.copyWith(
-                        color: colors.stroke,
-                        fontWeight: FontWeight.w600,
+                    const SizedBox(height: AppSpacing.xs),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.sm,
+                        vertical: 2,
+                      ),
+                      decoration: BoxDecoration(
+                        color: colors.stroke.withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(AppRadii.sm),
+                      ),
+                      child: Text(
+                        table.isActive
+                            ? _statusLabel(l10n, table.status)
+                            : l10n.tableFilterInactive,
+                        style: text.labelMedium?.copyWith(
+                          color: colors.stroke,
+                          fontWeight: FontWeight.w600,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
   static double _canvasSize(int seats) {
-    if (seats <= 2) return 108;
-    if (seats <= 4) return 120;
-    if (seats <= 6) return 132;
-    if (seats <= 8) return 144;
-    return 156;
+    if (seats <= 2) return 96;
+    if (seats <= 4) return 108;
+    if (seats <= 6) return 118;
+    if (seats <= 8) return 128;
+    return 136;
   }
 
   static String _statusLabel(AppLocalizations l10n, TableFloorStatus status) {

@@ -151,6 +151,17 @@ class _OrderDetailViewState extends ConsumerState<OrderDetailView> {
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: Text(l10n.navOrders),
+        actions: [
+          IconButton(
+            tooltip: l10n.orderInfo,
+            visualDensity: VisualDensity.compact,
+            constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+            padding: EdgeInsets.zero,
+            onPressed: () =>
+                showOrderInfoDialog(context, order: order!, currency: currency),
+            icon: const Icon(Icons.info_outline, size: 20),
+          ),
+        ],
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () =>
@@ -283,41 +294,47 @@ class _OrderHeaderCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              Material(
-                color: scheme.secondaryContainer,
-                borderRadius: BorderRadius.circular(AppRadii.md),
-                child: InkWell(
-                  onTap: onOpenTables,
+              Flexible(
+                child: Material(
+                  color: scheme.secondaryContainer,
                   borderRadius: BorderRadius.circular(AppRadii.md),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.md,
-                      vertical: AppSpacing.sm,
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          Icons.table_restaurant_outlined,
-                          size: 20,
-                          color: scheme.onSecondaryContainer,
-                        ),
-                        const SizedBox(width: AppSpacing.sm),
-                        Text(
-                          order.tableNumber == null
-                              ? l10n.orderNoTable
-                              : l10n.orderTableNumber(order.tableNumber!),
-                          style: text.titleSmall?.copyWith(
+                  child: InkWell(
+                    onTap: onOpenTables,
+                    borderRadius: BorderRadius.circular(AppRadii.md),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.md,
+                        vertical: AppSpacing.sm,
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.table_restaurant_outlined,
+                            size: 20,
                             color: scheme.onSecondaryContainer,
-                            fontWeight: FontWeight.w700,
                           ),
-                        ),
-                      ],
+                          const SizedBox(width: AppSpacing.sm),
+                          Flexible(
+                            child: Text(
+                              order.tableNumber == null
+                                  ? l10n.orderNoTable
+                                  : l10n.orderTableNumber(order.tableNumber!),
+                              style: text.titleSmall?.copyWith(
+                                color: scheme.onSecondaryContainer,
+                                fontWeight: FontWeight.w700,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
-              const Spacer(),
+              const SizedBox(width: AppSpacing.sm),
               Text(
                 formatOrderMoney(order.totalAmount, currency),
                 style: text.titleMedium?.copyWith(
@@ -327,18 +344,6 @@ class _OrderHeaderCard extends StatelessWidget {
               ),
               const SizedBox(width: AppSpacing.sm),
               OrderStatusChip(status: order.status),
-              IconButton(
-                tooltip: l10n.orderInfo,
-                visualDensity: VisualDensity.compact,
-                constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
-                padding: EdgeInsets.zero,
-                onPressed: () => showOrderInfoDialog(
-                  context,
-                  order: order,
-                  currency: currency,
-                ),
-                icon: const Icon(Icons.info_outline, size: 20),
-              ),
             ],
           ),
           const SizedBox(height: AppSpacing.sm),
@@ -349,6 +354,8 @@ class _OrderHeaderCard extends StatelessWidget {
                 child: Text(
                   l10n.orderLaunchedBy(order.launchedByType.name),
                   style: text.bodySmall,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
               if (order.lastPaidByType != null)
@@ -357,6 +364,8 @@ class _OrderHeaderCard extends StatelessWidget {
                     l10n.orderLastPaidBy(order.lastPaidByType!.name),
                     style: text.bodySmall,
                     textAlign: TextAlign.end,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
             ],
@@ -366,11 +375,13 @@ class _OrderHeaderCard extends StatelessWidget {
             Text(
               l10n.orderCancelledBy(order.cancelledByType!.name),
               style: text.bodySmall,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
             ),
           ],
           if (onAddArticles != null || onCancelOrder != null) ...[
             const SizedBox(height: AppSpacing.md),
-            Row(
+            AppActionsWrap(
               children: [
                 if (onAddArticles != null)
                   Tooltip(
@@ -387,10 +398,9 @@ class _OrderHeaderCard extends StatelessWidget {
                           ? null
                           : onAddArticles,
                       icon: const Icon(Icons.add, size: 18),
-                      label: Text(l10n.orderAppendArticles),
+                      label: AppButtonLabel(l10n.orderAppendArticles),
                     ),
                   ),
-                const Spacer(),
                 if (onCancelOrder != null)
                   OutlinedButton.icon(
                     style: OutlinedButton.styleFrom(
@@ -413,7 +423,7 @@ class _OrderHeaderCard extends StatelessWidget {
                             ),
                           )
                         : const Icon(Icons.cancel_outlined, size: 18),
-                    label: Text(l10n.cancelOrder),
+                    label: AppButtonLabel(l10n.cancelOrder),
                   ),
               ],
             ),
@@ -479,7 +489,15 @@ class _OrderItemCard extends StatelessWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Expanded(child: Text(item.articleName, style: text.titleSmall)),
+                Expanded(
+                  child: Text(
+                    item.articleName,
+                    style: text.titleSmall,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.sm),
                 Text(
                   formatOrderMoney(item.unitPrice, currency),
                   style: text.labelLarge?.copyWith(
@@ -501,51 +519,48 @@ class _OrderItemCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: AppSpacing.sm),
-            Row(
+            AppActionsWrap(
+              alignment: WrapAlignment.start,
               children: [
                 OrderItemStatusChip(status: item.status),
-                const SizedBox(width: AppSpacing.sm),
                 if (canAct && next != null)
-                  Expanded(
-                    child: Align(
-                      alignment: AlignmentDirectional.centerEnd,
-                      child: FilledButton(
-                        onPressed: busy || actionsLocked ? null : onAdvance,
-                        style: FilledButton.styleFrom(
-                          backgroundColor: scheme.secondaryContainer,
-                          foregroundColor: scheme.onSecondaryContainer,
-                          disabledBackgroundColor:
-                              scheme.surfaceContainerHighest,
-                          disabledForegroundColor: scheme.onSurface.withValues(
-                            alpha: 0.38,
-                          ),
-                          visualDensity: VisualDensity.compact,
-                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 8,
-                          ),
-                          minimumSize: const Size(0, 34),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            if (busy)
-                              SizedBox(
-                                width: 14,
-                                height: 14,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  color: scheme.onSecondaryContainer,
-                                ),
-                              )
-                            else ...[
+                  FilledButton(
+                    onPressed: busy || actionsLocked ? null : onAdvance,
+                    style: FilledButton.styleFrom(
+                      backgroundColor: scheme.secondaryContainer,
+                      foregroundColor: scheme.onSecondaryContainer,
+                      disabledBackgroundColor: scheme.surfaceContainerHighest,
+                      disabledForegroundColor: scheme.onSurface.withValues(
+                        alpha: 0.38,
+                      ),
+                      visualDensity: VisualDensity.compact,
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 8,
+                      ),
+                      minimumSize: const Size(0, 34),
+                    ),
+                    child: busy
+                        ? SizedBox(
+                            width: 14,
+                            height: 14,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: scheme.onSecondaryContainer,
+                            ),
+                          )
+                        : Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
                               Text(
                                 orderItemStatusLabel(l10n, next),
                                 style: text.labelMedium?.copyWith(
                                   color: scheme.onSecondaryContainer,
                                   fontWeight: FontWeight.w600,
                                 ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                               ),
                               const SizedBox(width: 6),
                               Icon(
@@ -554,15 +569,9 @@ class _OrderItemCard extends StatelessWidget {
                                 color: scheme.onSecondaryContainer,
                               ),
                             ],
-                          ],
-                        ),
-                      ),
-                    ),
-                  )
-                else
-                  const Spacer(),
-                if (canAct && showPay) ...[
-                  const SizedBox(width: AppSpacing.sm),
+                          ),
+                  ),
+                if (canAct && showPay)
                   FilledButton(
                     onPressed: busy || actionsLocked ? null : onPay,
                     style: FilledButton.styleFrom(
@@ -576,11 +585,9 @@ class _OrderItemCard extends StatelessWidget {
                       ),
                       minimumSize: const Size(0, 34),
                     ),
-                    child: Text(l10n.orderItemPayNow),
+                    child: AppButtonLabel(l10n.orderItemPayNow),
                   ),
-                ],
-                if (canAct) ...[
-                  const SizedBox(width: AppSpacing.sm),
+                if (canAct)
                   Tooltip(
                     message: l10n.cancelOrderItem,
                     child: Material(
@@ -601,7 +608,6 @@ class _OrderItemCard extends StatelessWidget {
                       ),
                     ),
                   ),
-                ],
               ],
             ),
           ],

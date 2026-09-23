@@ -334,6 +334,12 @@ abstract class AppLocalizations {
   /// **'Something went wrong. Try again.'**
   String get errorGeneric;
 
+  /// No description provided for @errorCannotReachServer.
+  ///
+  /// In en, this message translates to:
+  /// **'Cannot reach the server. On a physical device, run with --dart-define=SERVER_URL=http://YOUR_COMPUTER_LAN_IP:8080 (same Wi‑Fi as the phone).'**
+  String get errorCannotReachServer;
+
   /// No description provided for @errorInvalidInput.
   ///
   /// In en, this message translates to:

@@ -59,7 +59,7 @@ final class OrderDraftViewModelProvider
 }
 
 String _$orderDraftViewModelHash() =>
-    r'07d54fb57b27610e3b3dcf113251ba4be0535751';
+    r'43c36fbb09315fe4395d98ff73c51b6887589f5f';
 
 final class OrderDraftViewModelFamily extends $Family
     with

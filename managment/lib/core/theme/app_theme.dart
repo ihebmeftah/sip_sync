@@ -153,7 +153,9 @@ abstract final class AppTheme {
         style: FilledButton.styleFrom(
           backgroundColor: scheme.primary,
           foregroundColor: scheme.onPrimary,
-          minimumSize: const Size.fromHeight(52),
+          // Finite width so buttons can sit in Rows; full-bleed actions still
+          // wrap with SizedBox(width: double.infinity) (see AppFilledButton).
+          minimumSize: const Size(0, 52),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppRadii.sm),
           ),

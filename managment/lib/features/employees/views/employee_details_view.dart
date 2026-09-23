@@ -78,6 +78,11 @@ class _EmployeeDetailsPageState extends ConsumerState<EmployeeDetailsPage> {
                       ),
                     ),
                     FilledButton.tonal(
+                      style: FilledButton.styleFrom(
+                        minimumSize: const Size(0, 40),
+                        visualDensity: VisualDensity.compact,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
                       onPressed: () => EmployeeEditRoute(
                         buildingId: widget.buildingId,
                         employeeId: widget.employeeId,
