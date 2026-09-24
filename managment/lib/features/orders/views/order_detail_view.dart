@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sip_sync_client/sip_sync_client.dart';
 
+import '../../../core/access/floor_access.dart';
 import '../../../core/di/app_providers.dart';
 import '../../../core/errors/error_mapper.dart';
 import '../../../core/routing/app_routes.dart';
@@ -151,9 +152,7 @@ class _OrderDetailViewState extends ConsumerState<OrderDetailView> {
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: Text(
-          order == null
-              ? l10n.navOrders
-              : l10n.orderRefTitle(order.ref),
+          order == null ? l10n.navOrders : l10n.orderRefTitle(order.ref),
         ),
         actions: [
           IconButton(
@@ -213,7 +212,10 @@ class _OrderDetailViewState extends ConsumerState<OrderDetailView> {
                         TablesRoute(buildingId: widget.buildingId).go(context),
                     onAddArticles:
                         order.status == OrderStatus.progress &&
-                            order.venueTableId != null
+                            order.venueTableId != null &&
+                            FloorAccess.fromSession(
+                              ref.watch(appSessionStoreProvider),
+                            ).canCreateOrders
                         ? () => _addArticles(order)
                         : null,
                     addArticlesEnabled:
@@ -221,7 +223,11 @@ class _OrderDetailViewState extends ConsumerState<OrderDetailView> {
                             .watch(buildingSelectionProvider)
                             ?.allowAppendingItemsToOrder ??
                         true,
-                    onCancelOrder: order.status == OrderStatus.progress
+                    onCancelOrder:
+                        order.status == OrderStatus.progress &&
+                            FloorAccess.fromSession(
+                              ref.watch(appSessionStoreProvider),
+                            ).canCancel
                         ? () => _cancelOrder(order)
                         : null,
                   ),
@@ -241,6 +247,9 @@ class _OrderDetailViewState extends ConsumerState<OrderDetailView> {
                       orderOpen: order.status == OrderStatus.progress,
                       busy: _busyItemId == item.id,
                       actionsLocked: _cancellingOrder,
+                      floorAccess: FloorAccess.fromSession(
+                        ref.watch(appSessionStoreProvider),
+                      ),
                       strictMode:
                           ref.watch(buildingSelectionProvider)?.strictMode ??
                           false,
@@ -361,7 +370,9 @@ class _OrderHeaderCard extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  l10n.orderLaunchedBy(formatOrderActor(l10n, order.launchedBy)),
+                  l10n.orderLaunchedBy(
+                    formatOrderActor(l10n, order.launchedBy),
+                  ),
                   style: text.bodySmall,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
@@ -453,6 +464,7 @@ class _OrderItemCard extends StatelessWidget {
     required this.orderOpen,
     required this.busy,
     required this.actionsLocked,
+    required this.floorAccess,
     required this.strictMode,
     required this.strictModeSteps,
     required this.onAdvance,
@@ -466,12 +478,29 @@ class _OrderItemCard extends StatelessWidget {
   final bool orderOpen;
   final bool busy;
   final bool actionsLocked;
+  final FloorAccess floorAccess;
   final bool strictMode;
   final List<StrictModeStep> strictModeSteps;
   final VoidCallback onAdvance;
   final VoidCallback onPay;
   final VoidCallback onCancel;
   final VoidCallback onInfo;
+
+  bool _allowedFor(OrderItemStatus status) {
+    switch (status) {
+      case OrderItemStatus.picked:
+      case OrderItemStatus.ready:
+        return floorAccess.canPrepare;
+      case OrderItemStatus.served:
+        return floorAccess.canServe;
+      case OrderItemStatus.payed:
+        return floorAccess.canPay;
+      case OrderItemStatus.cancelled:
+        return floorAccess.canCancel;
+      case OrderItemStatus.progress:
+        return true;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -485,11 +514,14 @@ class _OrderItemCard extends StatelessWidget {
     );
     final showPay =
         canJumpToPayed(item.status, strictMode: strictMode) &&
-        next != OrderItemStatus.payed;
+        next != OrderItemStatus.payed &&
+        floorAccess.canPay;
     final canAct =
         orderOpen &&
         item.status != OrderItemStatus.payed &&
         item.status != OrderItemStatus.cancelled;
+    final showAdvance = canAct && next != null && _allowedFor(next);
+    final showCancel = canAct && floorAccess.canCancel;
 
     return Padding(
       padding: const EdgeInsets.only(bottom: AppSpacing.sm),
@@ -534,7 +566,7 @@ class _OrderItemCard extends StatelessWidget {
               alignment: WrapAlignment.start,
               children: [
                 OrderItemStatusChip(status: item.status),
-                if (canAct && next != null)
+                if (showAdvance)
                   FilledButton(
                     onPressed: busy || actionsLocked ? null : onAdvance,
                     style: FilledButton.styleFrom(
@@ -598,7 +630,7 @@ class _OrderItemCard extends StatelessWidget {
                     ),
                     child: AppButtonLabel(l10n.orderItemPayNow),
                   ),
-                if (canAct)
+                if (showCancel)
                   Tooltip(
                     message: l10n.cancelOrderItem,
                     child: Material(

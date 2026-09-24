@@ -43,10 +43,7 @@ class AuthShell extends StatelessWidget {
                 // Keep enough room for the badge + title + body on phones;
                 // never steal more than ~38% from the form.
                 height: math
-                    .min(
-                      260.0,
-                      math.max(168.0, constraints.maxHeight * 0.32),
-                    )
+                    .min(260.0, math.max(168.0, constraints.maxHeight * 0.32))
                     .clamp(0.0, constraints.maxHeight * 0.38)
                     .toDouble(),
                 width: double.infinity,
@@ -164,9 +161,7 @@ class _HeroPanel extends StatelessWidget {
                             ),
                           ),
                         ),
-                        SizedBox(
-                          height: tight ? AppSpacing.sm : AppSpacing.lg,
-                        ),
+                        SizedBox(height: tight ? AppSpacing.sm : AppSpacing.lg),
                         Text(
                           l10n.atmosphereTitle,
                           maxLines: tight ? 2 : 3,
@@ -177,9 +172,7 @@ class _HeroPanel extends StatelessWidget {
                                       : text.headlineSmall)
                                   ?.copyWith(color: scheme.onPrimaryContainer),
                         ),
-                        SizedBox(
-                          height: tight ? AppSpacing.xs : AppSpacing.md,
-                        ),
+                        SizedBox(height: tight ? AppSpacing.xs : AppSpacing.md),
                         Text(
                           l10n.atmosphereBody,
                           maxLines: tight ? 2 : 4,

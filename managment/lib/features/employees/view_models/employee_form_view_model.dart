@@ -68,6 +68,7 @@ class EmployeeFormViewModel extends _$EmployeeFormViewModel {
     required String firstName,
     required String lastName,
     required UuidValue buildingId,
+    required UuidValue accessId,
   }) async {
     state = state.copyWith(saving: true, clearError: true);
     try {
@@ -82,6 +83,7 @@ class EmployeeFormViewModel extends _$EmployeeFormViewModel {
               firstName: firstName,
               lastName: lastName,
               buildingId: buildingId,
+              accessId: accessId,
             );
       } else {
         saved = await ref
@@ -91,6 +93,7 @@ class EmployeeFormViewModel extends _$EmployeeFormViewModel {
               phoneNumber: phoneNumber,
               firstName: firstName,
               lastName: lastName,
+              accessId: accessId,
             );
       }
       await ref

@@ -2223,6 +2223,222 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Adding articles to open orders is not allowed for this venue.'**
   String get errorOrderAppendNotAllowed;
+
+  /// No description provided for @errorOrderPermissionDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Your access profile does not allow this action.'**
+  String get errorOrderPermissionDenied;
+
+  /// No description provided for @errorAccessNameTaken.
+  ///
+  /// In en, this message translates to:
+  /// **'That access name is already used here.'**
+  String get errorAccessNameTaken;
+
+  /// No description provided for @errorAccessInUse.
+  ///
+  /// In en, this message translates to:
+  /// **'Reassign staff before deleting this access profile.'**
+  String get errorAccessInUse;
+
+  /// No description provided for @navAccessProfiles.
+  ///
+  /// In en, this message translates to:
+  /// **'Access'**
+  String get navAccessProfiles;
+
+  /// No description provided for @accessProfilesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Named permission sets you assign to employees.'**
+  String get accessProfilesHint;
+
+  /// No description provided for @accessProfilesEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No access profiles yet. Create one before adding staff.'**
+  String get accessProfilesEmpty;
+
+  /// No description provided for @addAccessProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Add access'**
+  String get addAccessProfile;
+
+  /// No description provided for @editAccessProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit access'**
+  String get editAccessProfile;
+
+  /// No description provided for @saveAccessProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Save access'**
+  String get saveAccessProfile;
+
+  /// No description provided for @deleteAccessProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete access'**
+  String get deleteAccessProfile;
+
+  /// No description provided for @deleteAccessProfileConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete “{name}”? Staff using it must be reassigned first.'**
+  String deleteAccessProfileConfirm(String name);
+
+  /// No description provided for @accessProfileName.
+  ///
+  /// In en, this message translates to:
+  /// **'Access name'**
+  String get accessProfileName;
+
+  /// No description provided for @accessProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Access profile'**
+  String get accessProfile;
+
+  /// No description provided for @accessProfileNone.
+  ///
+  /// In en, this message translates to:
+  /// **'None assigned'**
+  String get accessProfileNone;
+
+  /// No description provided for @employeeNeedsAccessProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Create an access profile before adding an employee.'**
+  String get employeeNeedsAccessProfile;
+
+  /// No description provided for @validationAccessName.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a name up to 80 characters.'**
+  String get validationAccessName;
+
+  /// No description provided for @validationAccessRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose an access profile.'**
+  String get validationAccessRequired;
+
+  /// No description provided for @accessOrderCreation.
+  ///
+  /// In en, this message translates to:
+  /// **'Create orders'**
+  String get accessOrderCreation;
+
+  /// No description provided for @accessOrderCreationHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Create orders and add articles.'**
+  String get accessOrderCreationHint;
+
+  /// No description provided for @accessOrderPayment.
+  ///
+  /// In en, this message translates to:
+  /// **'Take payment'**
+  String get accessOrderPayment;
+
+  /// No description provided for @accessOrderPaymentHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark items and orders as paid.'**
+  String get accessOrderPaymentHint;
+
+  /// No description provided for @accessCancelOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel orders'**
+  String get accessCancelOrder;
+
+  /// No description provided for @accessCancelOrderHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel an order or a line.'**
+  String get accessCancelOrderHint;
+
+  /// No description provided for @accessPreparation.
+  ///
+  /// In en, this message translates to:
+  /// **'Preparation'**
+  String get accessPreparation;
+
+  /// No description provided for @accessPreparationHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark items picked or ready.'**
+  String get accessPreparationHint;
+
+  /// No description provided for @accessServing.
+  ///
+  /// In en, this message translates to:
+  /// **'Serving'**
+  String get accessServing;
+
+  /// No description provided for @accessServingHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark items served.'**
+  String get accessServingHint;
+
+  /// No description provided for @accessConsultAllOrders.
+  ///
+  /// In en, this message translates to:
+  /// **'See all orders'**
+  String get accessConsultAllOrders;
+
+  /// No description provided for @accessConsultAllOrdersHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Off: only orders launched by them or lines they added.'**
+  String get accessConsultAllOrdersHint;
+
+  /// No description provided for @accessFlagCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'Create'**
+  String get accessFlagCreate;
+
+  /// No description provided for @accessFlagPay.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay'**
+  String get accessFlagPay;
+
+  /// No description provided for @accessFlagCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get accessFlagCancel;
+
+  /// No description provided for @accessFlagPrep.
+  ///
+  /// In en, this message translates to:
+  /// **'Prep'**
+  String get accessFlagPrep;
+
+  /// No description provided for @accessFlagServe.
+  ///
+  /// In en, this message translates to:
+  /// **'Serve'**
+  String get accessFlagServe;
+
+  /// No description provided for @accessFlagConsultAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All orders'**
+  String get accessFlagConsultAll;
+
+  /// No description provided for @accessNoFlags.
+  ///
+  /// In en, this message translates to:
+  /// **'No permissions'**
+  String get accessNoFlags;
 }
 
 class _AppLocalizationsDelegate

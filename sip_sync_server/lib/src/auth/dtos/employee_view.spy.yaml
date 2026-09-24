@@ -3,6 +3,8 @@ fields:
   id: UuidValue
   buildingId: UuidValue
   ownerId: UuidValue
+  accessId: UuidValue?
+  accessName: String?
   username: String
   phoneNumber: String
   firstName: String

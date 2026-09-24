@@ -25,7 +25,10 @@ enum OrderErrorCode implements _isc.SerializableModel {
   tableOccupied,
 
   /// Building does not allow appending articles to an existing order.
-  appendNotAllowed;
+  appendNotAllowed,
+
+  /// Employee access profile does not allow this action.
+  permissionDenied;
 
   static OrderErrorCode fromJson(String name) {
     switch (name) {
@@ -43,6 +46,8 @@ enum OrderErrorCode implements _isc.SerializableModel {
         return OrderErrorCode.tableOccupied;
       case 'appendNotAllowed':
         return OrderErrorCode.appendNotAllowed;
+      case 'permissionDenied':
+        return OrderErrorCode.permissionDenied;
       default:
         throw ArgumentError(
           'Value "$name" cannot be converted to "OrderErrorCode"',

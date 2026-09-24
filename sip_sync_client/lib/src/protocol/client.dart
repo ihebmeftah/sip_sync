@@ -51,6 +51,12 @@ import 'package:sip_sync_client/src/protocol/buildings/dtos/building_update.dart
     as _iimah2gv;
 import 'package:sip_sync_client/src/protocol/buildings/dtos/building_view.dart'
     as _ik35q5v8;
+import 'package:sip_sync_client/src/protocol/employee_access/dtos/employee_access_create.dart'
+    as _iv0z0sh6;
+import 'package:sip_sync_client/src/protocol/employee_access/dtos/employee_access_update.dart'
+    as _i7zd8pyu;
+import 'package:sip_sync_client/src/protocol/employee_access/dtos/employee_access_view.dart'
+    as _imdxt5mh;
 import 'package:sip_sync_client/src/protocol/menu/dtos/article_composition_create.dart'
     as _itg09r98;
 import 'package:sip_sync_client/src/protocol/menu/dtos/article_composition_update.dart'
@@ -370,6 +376,58 @@ class EndpointBuilding extends _isc.EndpointRef {
   );
 }
 
+/// Owner-only RPC for building-scoped employee access profiles.
+/// {@category Endpoint}
+class EndpointEmployeeAccess extends _isc.EndpointRef {
+  EndpointEmployeeAccess(_isc.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'employeeAccess';
+
+  /// Lists access profiles for [buildingId].
+  _ida.Future<List<_imdxt5mh.EmployeeAccessView>> list(
+    _isc.UuidValue buildingId,
+  ) => caller.callServerEndpoint<List<_imdxt5mh.EmployeeAccessView>>(
+    'employeeAccess',
+    'list',
+    {'buildingId': buildingId},
+  );
+
+  /// Loads one access profile.
+  _ida.Future<_imdxt5mh.EmployeeAccessView> get(_isc.UuidValue id) =>
+      caller.callServerEndpoint<_imdxt5mh.EmployeeAccessView>(
+        'employeeAccess',
+        'get',
+        {'id': id},
+      );
+
+  /// Creates a named profile with permission flags.
+  _ida.Future<_imdxt5mh.EmployeeAccessView> create(
+    _iv0z0sh6.EmployeeAccessCreate request,
+  ) => caller.callServerEndpoint<_imdxt5mh.EmployeeAccessView>(
+    'employeeAccess',
+    'create',
+    {'request': request},
+  );
+
+  /// Updates name and flags.
+  _ida.Future<_imdxt5mh.EmployeeAccessView> update(
+    _i7zd8pyu.EmployeeAccessUpdate request,
+  ) => caller.callServerEndpoint<_imdxt5mh.EmployeeAccessView>(
+    'employeeAccess',
+    'update',
+    {'request': request},
+  );
+
+  /// Deletes a profile that is not assigned to staff.
+  _ida.Future<void> delete(_isc.UuidValue id) =>
+      caller.callServerEndpoint<void>(
+        'employeeAccess',
+        'delete',
+        {'id': id},
+      );
+}
+
 /// Optional article recipe lines (ingredient + quantity).
 /// {@category Endpoint}
 class EndpointArticleComposition extends _isc.EndpointRef {
@@ -666,6 +724,7 @@ class Client extends _isc.ServerpodClientShared {
     ownerAuth = EndpointOwnerAuth(this);
     superAdminAuth = EndpointSuperAdminAuth(this);
     building = EndpointBuilding(this);
+    employeeAccess = EndpointEmployeeAccess(this);
     articleComposition = EndpointArticleComposition(this);
     ingredient = EndpointIngredient(this);
     menuArticle = EndpointMenuArticle(this);
@@ -686,6 +745,8 @@ class Client extends _isc.ServerpodClientShared {
   late final EndpointSuperAdminAuth superAdminAuth;
 
   late final EndpointBuilding building;
+
+  late final EndpointEmployeeAccess employeeAccess;
 
   late final EndpointArticleComposition articleComposition;
 
@@ -709,6 +770,7 @@ class Client extends _isc.ServerpodClientShared {
     'ownerAuth': ownerAuth,
     'superAdminAuth': superAdminAuth,
     'building': building,
+    'employeeAccess': employeeAccess,
     'articleComposition': articleComposition,
     'ingredient': ingredient,
     'menuArticle': menuArticle,

@@ -36,23 +36,7 @@ class EmployeeAuthEndpoint extends Endpoint {
 
   Future<EmployeeSessionView> me(Session session) async {
     final id = AuthGuard.requireEmployee(session);
-    final employee = await Employee.db.findById(session, id);
-    if (employee == null) {
-      throw AccountException(
-        message: 'Employee not found.',
-        code: AccountErrorCode.notFound,
-      );
-    }
-    return EmployeeSessionView(
-      id: employee.id!,
-      buildingId: employee.buildingId,
-      ownerId: employee.ownerId,
-      username: employee.username,
-      phoneNumber: employee.phoneNumber,
-      firstName: employee.firstName,
-      lastName: employee.lastName,
-      isEnabled: employee.isEnabled,
-    );
+    return _sessionView(session, id);
   }
 
   Future<EmployeeSessionView> updateMyProfile(
@@ -80,7 +64,7 @@ class EmployeeAuthEndpoint extends Endpoint {
         code: AccountErrorCode.phoneTaken,
       );
     }
-    final updated = await Employee.db.updateRow(
+    await Employee.db.updateRow(
       session,
       employee.copyWith(
         phoneNumber: phone,
@@ -88,20 +72,54 @@ class EmployeeAuthEndpoint extends Endpoint {
         lastName: request.lastName.trim(),
       ),
     );
-    return EmployeeSessionView(
-      id: updated.id!,
-      buildingId: updated.buildingId,
-      ownerId: updated.ownerId,
-      username: updated.username,
-      phoneNumber: updated.phoneNumber,
-      firstName: updated.firstName,
-      lastName: updated.lastName,
-      isEnabled: updated.isEnabled,
-    );
+    return _sessionView(session, id);
   }
 
   Future<void> logout(Session session) async {
     final ctx = AuthGuard.requireAny(session);
     await SessionService().revoke(session, ctx.sessionId);
+  }
+
+  Future<EmployeeSessionView> _sessionView(
+    Session session,
+    UuidValue id,
+  ) async {
+    final employee = await Employee.db.findById(
+      session,
+      id,
+      include: Employee.include(access: EmployeeAccess.include()),
+    );
+    if (employee == null) {
+      throw AccountException(
+        message: 'Employee not found.',
+        code: AccountErrorCode.notFound,
+      );
+    }
+    final access = employee.access;
+    return EmployeeSessionView(
+      id: employee.id!,
+      buildingId: employee.buildingId,
+      ownerId: employee.ownerId,
+      accessId: employee.accessId,
+      access: access == null
+          ? null
+          : EmployeeAccessView(
+              id: access.id!,
+              buildingId: access.buildingId,
+              name: access.name,
+              orderCreation: access.orderCreation,
+              orderPayment: access.orderPayment,
+              cancelOrder: access.cancelOrder,
+              preparation: access.preparation,
+              serving: access.serving,
+              consultAllOrders: access.consultAllOrders,
+              createdAt: access.createdAt,
+            ),
+      username: employee.username,
+      phoneNumber: employee.phoneNumber,
+      firstName: employee.firstName,
+      lastName: employee.lastName,
+      isEnabled: employee.isEnabled,
+    );
   }
 }

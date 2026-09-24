@@ -1,0 +1,8 @@
+enum: EmployeeAccessErrorCode
+serialized: byName
+values:
+  - invalidInput
+  - notAuthorized
+  - notFound
+  - nameTaken
+  - inUse

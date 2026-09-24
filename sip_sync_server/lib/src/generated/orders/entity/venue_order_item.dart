@@ -30,6 +30,8 @@ abstract class VenueOrderItem
     required this.articleName,
     required this.unitPrice,
     required this.status,
+    this.addedByType,
+    this.addedById,
     this.passedByType,
     this.passedById,
     this.preparedByType,
@@ -58,6 +60,8 @@ abstract class VenueOrderItem
     required String articleName,
     required double unitPrice,
     required _iw3cmuga.OrderItemStatus status,
+    _i6ch5qy5.ActorType? addedByType,
+    _is.UuidValue? addedById,
     _i6ch5qy5.ActorType? passedByType,
     _is.UuidValue? passedById,
     _i6ch5qy5.ActorType? preparedByType,
@@ -102,6 +106,14 @@ abstract class VenueOrderItem
       status: _iw3cmuga.OrderItemStatus.fromJson(
         (jsonSerialization['status'] as String),
       ),
+      addedByType: jsonSerialization['addedByType'] == null
+          ? null
+          : _i6ch5qy5.ActorType.fromJson(
+              (jsonSerialization['addedByType'] as String),
+            ),
+      addedById: jsonSerialization['addedById'] == null
+          ? null
+          : _is.UuidValueJsonExtension.fromJson(jsonSerialization['addedById']),
       passedByType: jsonSerialization['passedByType'] == null
           ? null
           : _i6ch5qy5.ActorType.fromJson(
@@ -194,6 +206,10 @@ abstract class VenueOrderItem
 
   _iw3cmuga.OrderItemStatus status;
 
+  _i6ch5qy5.ActorType? addedByType;
+
+  _is.UuidValue? addedById;
+
   _i6ch5qy5.ActorType? passedByType;
 
   _is.UuidValue? passedById;
@@ -241,6 +257,8 @@ abstract class VenueOrderItem
     String? articleName,
     double? unitPrice,
     _iw3cmuga.OrderItemStatus? status,
+    _i6ch5qy5.ActorType? addedByType,
+    _is.UuidValue? addedById,
     _i6ch5qy5.ActorType? passedByType,
     _is.UuidValue? passedById,
     _i6ch5qy5.ActorType? preparedByType,
@@ -270,6 +288,8 @@ abstract class VenueOrderItem
       'articleName': articleName,
       'unitPrice': unitPrice,
       'status': status.toJson(),
+      if (addedByType != null) 'addedByType': addedByType?.toJson(),
+      if (addedById != null) 'addedById': addedById?.toJson(),
       if (passedByType != null) 'passedByType': passedByType?.toJson(),
       if (passedById != null) 'passedById': passedById?.toJson(),
       if (preparedByType != null) 'preparedByType': preparedByType?.toJson(),
@@ -340,6 +360,8 @@ class _VenueOrderItemImpl extends VenueOrderItem {
     required String articleName,
     required double unitPrice,
     required _iw3cmuga.OrderItemStatus status,
+    _i6ch5qy5.ActorType? addedByType,
+    _is.UuidValue? addedById,
     _i6ch5qy5.ActorType? passedByType,
     _is.UuidValue? passedById,
     _i6ch5qy5.ActorType? preparedByType,
@@ -365,6 +387,8 @@ class _VenueOrderItemImpl extends VenueOrderItem {
          articleName: articleName,
          unitPrice: unitPrice,
          status: status,
+         addedByType: addedByType,
+         addedById: addedById,
          passedByType: passedByType,
          passedById: passedById,
          preparedByType: preparedByType,
@@ -396,6 +420,8 @@ class _VenueOrderItemImpl extends VenueOrderItem {
     String? articleName,
     double? unitPrice,
     _iw3cmuga.OrderItemStatus? status,
+    Object? addedByType = _Undefined,
+    Object? addedById = _Undefined,
     Object? passedByType = _Undefined,
     Object? passedById = _Undefined,
     Object? preparedByType = _Undefined,
@@ -424,6 +450,10 @@ class _VenueOrderItemImpl extends VenueOrderItem {
       articleName: articleName ?? this.articleName,
       unitPrice: unitPrice ?? this.unitPrice,
       status: status ?? this.status,
+      addedByType: addedByType is _i6ch5qy5.ActorType?
+          ? addedByType
+          : this.addedByType,
+      addedById: addedById is _is.UuidValue? ? addedById : this.addedById,
       passedByType: passedByType is _i6ch5qy5.ActorType?
           ? passedByType
           : this.passedByType,
@@ -488,6 +518,20 @@ class VenueOrderItemUpdateTable extends _is.UpdateTable<VenueOrderItemTable> {
     _iw3cmuga.OrderItemStatus value,
   ) => _is.ColumnValue(
     table.status,
+    value,
+  );
+
+  _is.ColumnValue<_i6ch5qy5.ActorType, _i6ch5qy5.ActorType> addedByType(
+    _i6ch5qy5.ActorType? value,
+  ) => _is.ColumnValue(
+    table.addedByType,
+    value,
+  );
+
+  _is.ColumnValue<_is.UuidValue, _is.UuidValue> addedById(
+    _is.UuidValue? value,
+  ) => _is.ColumnValue(
+    table.addedById,
     value,
   );
 
@@ -623,6 +667,15 @@ class VenueOrderItemTable extends _is.Table<_is.UuidValue?> {
       this,
       _is.EnumSerialization.byName,
     );
+    addedByType = _is.ColumnEnum(
+      'addedByType',
+      this,
+      _is.EnumSerialization.byName,
+    );
+    addedById = _is.ColumnUuid(
+      'addedById',
+      this,
+    );
     passedByType = _is.ColumnEnum(
       'passedByType',
       this,
@@ -710,6 +763,10 @@ class VenueOrderItemTable extends _is.Table<_is.UuidValue?> {
 
   late final _is.ColumnEnum<_iw3cmuga.OrderItemStatus> status;
 
+  late final _is.ColumnEnum<_i6ch5qy5.ActorType> addedByType;
+
+  late final _is.ColumnUuid addedById;
+
   late final _is.ColumnEnum<_i6ch5qy5.ActorType> passedByType;
 
   late final _is.ColumnUuid passedById;
@@ -776,6 +833,8 @@ class VenueOrderItemTable extends _is.Table<_is.UuidValue?> {
     articleName,
     unitPrice,
     status,
+    addedByType,
+    addedById,
     passedByType,
     passedById,
     preparedByType,

@@ -94,6 +94,20 @@ void main() {
         expect(building.ownerId, ownerAuth.owner!.id);
         expect(building.employeeIds, isEmpty);
 
+        final access = await endpoints.employeeAccess.create(
+          ownerSession,
+          EmployeeAccessCreate(
+            buildingId: building.id,
+            name: 'Floor',
+            orderCreation: true,
+            orderPayment: true,
+            cancelOrder: true,
+            preparation: true,
+            serving: true,
+            consultAllOrders: true,
+          ),
+        );
+
         final employee = await endpoints.employee.add(
           ownerSession,
           EmployeeCreate(
@@ -102,9 +116,11 @@ void main() {
             firstName: 'Floor',
             lastName: 'Staff',
             buildingId: building.id,
+            accessId: access.id,
           ),
         );
         expect(employee.buildingId, building.id);
+        expect(employee.accessId, access.id);
         expect(employee.username, startsWith('floor.staff'));
 
         final staffLogin = await endpoints.employeeAuth.login(
@@ -160,6 +176,19 @@ void main() {
           strictModeSteps: [],
         ),
       );
+      final access = await endpoints.employeeAccess.create(
+        ownerSession,
+        EmployeeAccessCreate(
+          buildingId: building.id,
+          name: 'Waiter',
+          orderCreation: true,
+          orderPayment: false,
+          cancelOrder: false,
+          preparation: false,
+          serving: true,
+          consultAllOrders: false,
+        ),
+      );
       final employee = await endpoints.employee.add(
         ownerSession,
         EmployeeCreate(
@@ -168,6 +197,7 @@ void main() {
           firstName: 'Wait',
           lastName: 'Er',
           buildingId: building.id,
+          accessId: access.id,
         ),
       );
       await endpoints.employee.setEnabled(ownerSession, employee.id, false);

@@ -144,6 +144,15 @@ class _EmployeeDetailsPageState extends ConsumerState<EmployeeDetailsPage> {
                         ),
                         ListTile(
                           contentPadding: EdgeInsets.zero,
+                          title: Text(l10n.accessProfile),
+                          subtitle: Text(
+                            employee.accessName?.isNotEmpty == true
+                                ? employee.accessName!
+                                : l10n.accessProfileNone,
+                          ),
+                        ),
+                        ListTile(
+                          contentPadding: EdgeInsets.zero,
                           title: Text(l10n.phone),
                           subtitle: Text(employee.phoneNumber),
                         ),

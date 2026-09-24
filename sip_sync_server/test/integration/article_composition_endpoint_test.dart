@@ -7,13 +7,15 @@ import 'test_tools/serverpod_test_tools.dart';
 void main() {
   withServerpod('Given article composition', (sessionBuilder, endpoints) {
     Future<
-        ({
-          dynamic ownerSession,
-          BuildingView building,
-          MenuArticleView article,
-          IngredientView beans,
-          IngredientView milk,
-        })> setupFixture() async {
+      ({
+        dynamic ownerSession,
+        BuildingView building,
+        MenuArticleView article,
+        IngredientView beans,
+        IngredientView milk,
+      })
+    >
+    setupFixture() async {
       final auth = await endpoints.ownerAuth.register(
         sessionBuilder,
         EmailRegisterCreate(

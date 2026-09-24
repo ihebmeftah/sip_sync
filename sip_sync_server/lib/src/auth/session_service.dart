@@ -11,7 +11,14 @@ class SessionService {
   final TokenCrypto _tokens;
   static const _ttl = Duration(days: 30);
 
-  Future<({String token, String refreshToken, DateTime expiresAt, UuidValue sessionId})>
+  Future<
+    ({
+      String token,
+      String refreshToken,
+      DateTime expiresAt,
+      UuidValue sessionId,
+    })
+  >
   create(
     Session session, {
     required ActorType actorType,

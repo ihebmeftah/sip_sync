@@ -1164,4 +1164,117 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get errorOrderAppendNotAllowed =>
       'إضافة أصناف للطلبات المفتوحة غير مسموحة لهذا المكان.';
+
+  @override
+  String get errorOrderPermissionDenied =>
+      'ملف الصلاحيات لا يسمح بهذا الإجراء.';
+
+  @override
+  String get errorAccessNameTaken => 'اسم الصلاحية مستخدم هنا بالفعل.';
+
+  @override
+  String get errorAccessInUse => 'أعد تعيين الموظفين قبل حذف ملف الصلاحيات.';
+
+  @override
+  String get navAccessProfiles => 'الصلاحيات';
+
+  @override
+  String get accessProfilesHint => 'مجموعات صلاحيات مسماة تُعيَّن للموظفين.';
+
+  @override
+  String get accessProfilesEmpty =>
+      'لا توجد صلاحيات بعد. أنشئ واحدة قبل إضافة موظفين.';
+
+  @override
+  String get addAccessProfile => 'إضافة صلاحية';
+
+  @override
+  String get editAccessProfile => 'تعديل الصلاحية';
+
+  @override
+  String get saveAccessProfile => 'حفظ الصلاحية';
+
+  @override
+  String get deleteAccessProfile => 'حذف الصلاحية';
+
+  @override
+  String deleteAccessProfileConfirm(String name) {
+    return 'حذف «$name»؟ يجب إعادة تعيين الموظفين أولاً.';
+  }
+
+  @override
+  String get accessProfileName => 'اسم الصلاحية';
+
+  @override
+  String get accessProfile => 'ملف الصلاحيات';
+
+  @override
+  String get accessProfileNone => 'غير معيَّن';
+
+  @override
+  String get employeeNeedsAccessProfile => 'أنشئ ملف صلاحيات قبل إضافة موظف.';
+
+  @override
+  String get validationAccessName => 'أدخل اسماً حتى 80 حرفاً.';
+
+  @override
+  String get validationAccessRequired => 'اختر ملف صلاحيات.';
+
+  @override
+  String get accessOrderCreation => 'إنشاء الطلبات';
+
+  @override
+  String get accessOrderCreationHint => 'إنشاء طلبات وإضافة أصناف.';
+
+  @override
+  String get accessOrderPayment => 'تحصيل الدفع';
+
+  @override
+  String get accessOrderPaymentHint => 'تعليم الأصناف والطلبات كمدفوعة.';
+
+  @override
+  String get accessCancelOrder => 'إلغاء الطلبات';
+
+  @override
+  String get accessCancelOrderHint => 'إلغاء طلب أو سطر.';
+
+  @override
+  String get accessPreparation => 'التحضير';
+
+  @override
+  String get accessPreparationHint => 'تعليم الأصناف كمأخوذة أو جاهزة.';
+
+  @override
+  String get accessServing => 'التقديم';
+
+  @override
+  String get accessServingHint => 'تعليم الأصناف كمقدَّمة.';
+
+  @override
+  String get accessConsultAllOrders => 'عرض كل الطلبات';
+
+  @override
+  String get accessConsultAllOrdersHint =>
+      'معطّل: فقط الطلبات التي أطلقها أو الأسطر التي أضافها.';
+
+  @override
+  String get accessFlagCreate => 'إنشاء';
+
+  @override
+  String get accessFlagPay => 'دفع';
+
+  @override
+  String get accessFlagCancel => 'إلغاء';
+
+  @override
+  String get accessFlagPrep => 'تحضير';
+
+  @override
+  String get accessFlagServe => 'تقديم';
+
+  @override
+  String get accessFlagConsultAll => 'كل الطلبات';
+
+  @override
+  String get accessNoFlags => 'بدون صلاحيات';
 }

@@ -9,6 +9,8 @@ fields:
   articleName: String
   unitPrice: double
   status: OrderItemStatus
+  addedByType: ActorType?
+  addedById: UuidValue?
   passedByType: ActorType?
   passedById: UuidValue?
   preparedByType: ActorType?

@@ -20,6 +20,7 @@ abstract class EmployeeCreate
     required this.firstName,
     required this.lastName,
     required this.buildingId,
+    required this.accessId,
   });
 
   factory EmployeeCreate({
@@ -28,6 +29,7 @@ abstract class EmployeeCreate
     required String firstName,
     required String lastName,
     required _isc.UuidValue buildingId,
+    required _isc.UuidValue accessId,
   }) = _EmployeeCreateImpl;
 
   factory EmployeeCreate.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -38,6 +40,9 @@ abstract class EmployeeCreate
       lastName: jsonSerialization['lastName'] as String,
       buildingId: _isc.UuidValueJsonExtension.fromJson(
         jsonSerialization['buildingId'],
+      ),
+      accessId: _isc.UuidValueJsonExtension.fromJson(
+        jsonSerialization['accessId'],
       ),
     );
   }
@@ -52,6 +57,8 @@ abstract class EmployeeCreate
 
   _isc.UuidValue buildingId;
 
+  _isc.UuidValue accessId;
+
   /// Returns a shallow copy of this [EmployeeCreate]
   /// with some or all fields replaced by the given arguments.
   @_isc.useResult
@@ -61,6 +68,7 @@ abstract class EmployeeCreate
     String? firstName,
     String? lastName,
     _isc.UuidValue? buildingId,
+    _isc.UuidValue? accessId,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -71,6 +79,7 @@ abstract class EmployeeCreate
       'firstName': firstName,
       'lastName': lastName,
       'buildingId': buildingId.toJson(),
+      'accessId': accessId.toJson(),
     };
   }
 
@@ -83,6 +92,7 @@ abstract class EmployeeCreate
       'firstName': firstName,
       'lastName': lastName,
       'buildingId': buildingId.toJson(),
+      'accessId': accessId.toJson(),
     };
   }
 
@@ -99,12 +109,14 @@ class _EmployeeCreateImpl extends EmployeeCreate {
     required String firstName,
     required String lastName,
     required _isc.UuidValue buildingId,
+    required _isc.UuidValue accessId,
   }) : super._(
          password: password,
          phoneNumber: phoneNumber,
          firstName: firstName,
          lastName: lastName,
          buildingId: buildingId,
+         accessId: accessId,
        );
 
   /// Returns a shallow copy of this [EmployeeCreate]
@@ -117,6 +129,7 @@ class _EmployeeCreateImpl extends EmployeeCreate {
     String? firstName,
     String? lastName,
     _isc.UuidValue? buildingId,
+    _isc.UuidValue? accessId,
   }) {
     return EmployeeCreate(
       password: password ?? this.password,
@@ -124,6 +137,7 @@ class _EmployeeCreateImpl extends EmployeeCreate {
       firstName: firstName ?? this.firstName,
       lastName: lastName ?? this.lastName,
       buildingId: buildingId ?? this.buildingId,
+      accessId: accessId ?? this.accessId,
     );
   }
 }

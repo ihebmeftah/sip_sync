@@ -34,6 +34,12 @@ building:
   - create:
   - update:
   - listEmployees:
+employeeAccess:
+  - list:
+  - get:
+  - create:
+  - update:
+  - delete:
 articleComposition:
   - list:
   - create:

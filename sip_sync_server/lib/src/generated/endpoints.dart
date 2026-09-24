@@ -33,6 +33,10 @@ import 'package:sip_sync_server/src/generated/buildings/dtos/building_create.dar
     as _iwyazuzj;
 import 'package:sip_sync_server/src/generated/buildings/dtos/building_update.dart'
     as _ikeccdvf;
+import 'package:sip_sync_server/src/generated/employee_access/dtos/employee_access_create.dart'
+    as _iidenruw;
+import 'package:sip_sync_server/src/generated/employee_access/dtos/employee_access_update.dart'
+    as _if6umj7e;
 import 'package:sip_sync_server/src/generated/menu/dtos/article_composition_create.dart'
     as _i1npuv27;
 import 'package:sip_sync_server/src/generated/menu/dtos/article_composition_update.dart'
@@ -65,6 +69,7 @@ import '../auth/employee_endpoint.dart' as _i3t5tbp4;
 import '../auth/owner_auth_endpoint.dart' as _is2qyeee;
 import '../auth/super_admin_auth_endpoint.dart' as _itmp66ay;
 import '../buildings/building_endpoint.dart' as _i69ygv7j;
+import '../employee_access/employee_access_endpoint.dart' as _im8yutbr;
 import '../menu/article_composition_endpoint.dart' as _iavtsxat;
 import '../menu/ingredient_endpoint.dart' as _i7cjtizz;
 import '../menu/menu_article_endpoint.dart' as _iefktwfq;
@@ -110,6 +115,12 @@ class Endpoints extends _is.EndpointDispatch {
         ..initialize(
           server,
           'building',
+          null,
+        ),
+      'employeeAccess': _im8yutbr.EmployeeAccessEndpoint()
+        ..initialize(
+          server,
+          'employeeAccess',
           null,
         ),
       'articleComposition': _iavtsxat.ArticleCompositionEndpoint()
@@ -682,6 +693,117 @@ class Endpoints extends _is.EndpointDispatch {
                     session,
                     params['buildingId'],
                   ),
+        ),
+      },
+    );
+    connectors['employeeAccess'] = _is.EndpointConnector(
+      name: 'employeeAccess',
+      endpoint: endpoints['employeeAccess']!,
+      methodConnectors: {
+        'list': _is.MethodConnector(
+          name: 'list',
+          params: {
+            'buildingId': _is.ParameterDescription(
+              name: 'buildingId',
+              type: _is.getType<_is.UuidValue>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['employeeAccess']
+                          as _im8yutbr.EmployeeAccessEndpoint)
+                      .list(
+                        session,
+                        params['buildingId'],
+                      ),
+        ),
+        'get': _is.MethodConnector(
+          name: 'get',
+          params: {
+            'id': _is.ParameterDescription(
+              name: 'id',
+              type: _is.getType<_is.UuidValue>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['employeeAccess']
+                          as _im8yutbr.EmployeeAccessEndpoint)
+                      .get(
+                        session,
+                        params['id'],
+                      ),
+        ),
+        'create': _is.MethodConnector(
+          name: 'create',
+          params: {
+            'request': _is.ParameterDescription(
+              name: 'request',
+              type: _is.getType<_iidenruw.EmployeeAccessCreate>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['employeeAccess']
+                          as _im8yutbr.EmployeeAccessEndpoint)
+                      .create(
+                        session,
+                        params['request'],
+                      ),
+        ),
+        'update': _is.MethodConnector(
+          name: 'update',
+          params: {
+            'request': _is.ParameterDescription(
+              name: 'request',
+              type: _is.getType<_if6umj7e.EmployeeAccessUpdate>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['employeeAccess']
+                          as _im8yutbr.EmployeeAccessEndpoint)
+                      .update(
+                        session,
+                        params['request'],
+                      ),
+        ),
+        'delete': _is.MethodConnector(
+          name: 'delete',
+          params: {
+            'id': _is.ParameterDescription(
+              name: 'id',
+              type: _is.getType<_is.UuidValue>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['employeeAccess']
+                          as _im8yutbr.EmployeeAccessEndpoint)
+                      .delete(
+                        session,
+                        params['id'],
+                      ),
         ),
       },
     );

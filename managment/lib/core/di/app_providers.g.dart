@@ -193,6 +193,54 @@ final class EmployeeRepositoryProvider
 String _$employeeRepositoryHash() =>
     r'ef1b4c01ecac48242df944ddc03227ef80daaa19';
 
+@ProviderFor(employeeAccessRepository)
+const employeeAccessRepositoryProvider = EmployeeAccessRepositoryProvider._();
+
+final class EmployeeAccessRepositoryProvider
+    extends
+        $FunctionalProvider<
+          EmployeeAccessRepository,
+          EmployeeAccessRepository,
+          EmployeeAccessRepository
+        >
+    with $Provider<EmployeeAccessRepository> {
+  const EmployeeAccessRepositoryProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'employeeAccessRepositoryProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$employeeAccessRepositoryHash();
+
+  @$internal
+  @override
+  $ProviderElement<EmployeeAccessRepository> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  EmployeeAccessRepository create(Ref ref) {
+    return employeeAccessRepository(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(EmployeeAccessRepository value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<EmployeeAccessRepository>(value),
+    );
+  }
+}
+
+String _$employeeAccessRepositoryHash() =>
+    r'867b2f16b8d4c47bf02b6d50af82210e30cbd34d';
+
 @ProviderFor(venueTableRepository)
 const venueTableRepositoryProvider = VenueTableRepositoryProvider._();
 

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sip_sync_client/sip_sync_client.dart';
 
+import '../../../core/access/floor_access.dart';
 import '../../../core/di/app_providers.dart';
 import '../../../core/errors/error_mapper.dart';
 import '../../../core/routing/app_routes.dart';
@@ -123,6 +124,9 @@ class _TablesListViewState extends ConsumerState<TablesListView> {
       return;
     }
     if (store.isEmployee) {
+      if (!FloorAccess.fromSession(store).canCreateOrders) {
+        return;
+      }
       _startOrderOnTable(table, fromPick: false);
     }
   }

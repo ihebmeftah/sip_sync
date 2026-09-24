@@ -23,6 +23,7 @@ fields:
   strictModeSteps: List<StrictModeStep>
   createdAt: DateTime, defaultModel=now
   employees: List<Employee>?, relation(name=building_employees)
+  accessProfiles: List<EmployeeAccess>?, relation(name=building_access_profiles)
   tables: List<VenueTable>?, relation(name=building_tables)
   menuCategories: List<MenuCategory>?, relation(name=building_menu_categories)
   menuArticles: List<MenuArticle>?, relation(name=building_menu_articles)

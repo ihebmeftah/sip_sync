@@ -205,6 +205,24 @@ RouteBase get $opsShellRoute => ShellRouteData.$route(
       factory: $EmployeeDetailsRoute._fromState,
     ),
     GoRouteData.$route(
+      path: '/b/:buildingId/access',
+      name: 'accessProfiles',
+      hasOverriddenOnExit: false,
+      factory: $AccessProfilesRoute._fromState,
+    ),
+    GoRouteData.$route(
+      path: '/b/:buildingId/access/new',
+      name: 'accessProfileCreate',
+      hasOverriddenOnExit: false,
+      factory: $AccessProfileCreateRoute._fromState,
+    ),
+    GoRouteData.$route(
+      path: '/b/:buildingId/access/:accessId/edit',
+      name: 'accessProfileEdit',
+      hasOverriddenOnExit: false,
+      factory: $AccessProfileEditRoute._fromState,
+    ),
+    GoRouteData.$route(
       path: '/b/:buildingId/pos',
       name: 'pos',
       hasOverriddenOnExit: false,
@@ -452,6 +470,84 @@ mixin $EmployeeDetailsRoute on GoRouteData {
   @override
   String get location => GoRouteData.$location(
     '/b/${Uri.encodeComponent(_self.buildingId)}/employees/${Uri.encodeComponent(_self.employeeId)}',
+  );
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+mixin $AccessProfilesRoute on GoRouteData {
+  static AccessProfilesRoute _fromState(GoRouterState state) =>
+      AccessProfilesRoute(buildingId: state.pathParameters['buildingId']!);
+
+  AccessProfilesRoute get _self => this as AccessProfilesRoute;
+
+  @override
+  String get location => GoRouteData.$location(
+    '/b/${Uri.encodeComponent(_self.buildingId)}/access',
+  );
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+mixin $AccessProfileCreateRoute on GoRouteData {
+  static AccessProfileCreateRoute _fromState(GoRouterState state) =>
+      AccessProfileCreateRoute(buildingId: state.pathParameters['buildingId']!);
+
+  AccessProfileCreateRoute get _self => this as AccessProfileCreateRoute;
+
+  @override
+  String get location => GoRouteData.$location(
+    '/b/${Uri.encodeComponent(_self.buildingId)}/access/new',
+  );
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+mixin $AccessProfileEditRoute on GoRouteData {
+  static AccessProfileEditRoute _fromState(GoRouterState state) =>
+      AccessProfileEditRoute(
+        buildingId: state.pathParameters['buildingId']!,
+        accessId: state.pathParameters['accessId']!,
+      );
+
+  AccessProfileEditRoute get _self => this as AccessProfileEditRoute;
+
+  @override
+  String get location => GoRouteData.$location(
+    '/b/${Uri.encodeComponent(_self.buildingId)}/access/${Uri.encodeComponent(_self.accessId)}/edit',
   );
 
   @override

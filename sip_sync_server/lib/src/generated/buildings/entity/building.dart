@@ -16,6 +16,7 @@ import 'package:sip_sync_server/src/generated/protocol.dart' as _iaib1p48;
 import '../../auth/entity/employee.dart' as _ie30fksv;
 import '../../auth/entity/owner.dart' as _i2wy11ca;
 import '../../buildings/dtos/strict_mode_step.dart' as _ik04yv2w;
+import '../../employee_access/entity/employee_access.dart' as _i5dpfzds;
 import '../../menu/entity/ingredient.dart' as _ixki5cxr;
 import '../../menu/entity/menu_article.dart' as _is7gdyz6;
 import '../../menu/entity/menu_category.dart' as _illkjvef;
@@ -43,6 +44,7 @@ abstract class Building
     required this.strictModeSteps,
     DateTime? createdAt,
     this.employees,
+    this.accessProfiles,
     this.tables,
     this.menuCategories,
     this.menuArticles,
@@ -71,6 +73,7 @@ abstract class Building
     required List<_ik04yv2w.StrictModeStep> strictModeSteps,
     DateTime? createdAt,
     List<_ie30fksv.Employee>? employees,
+    List<_i5dpfzds.EmployeeAccess>? accessProfiles,
     List<_ilcfc7kr.VenueTable>? tables,
     List<_illkjvef.MenuCategory>? menuCategories,
     List<_is7gdyz6.MenuArticle>? menuArticles,
@@ -124,6 +127,11 @@ abstract class Building
           ? null
           : _iaib1p48.Protocol().deserialize<List<_ie30fksv.Employee>>(
               jsonSerialization['employees'],
+            ),
+      accessProfiles: jsonSerialization['accessProfiles'] == null
+          ? null
+          : _iaib1p48.Protocol().deserialize<List<_i5dpfzds.EmployeeAccess>>(
+              jsonSerialization['accessProfiles'],
             ),
       tables: jsonSerialization['tables'] == null
           ? null
@@ -196,6 +204,8 @@ abstract class Building
 
   List<_ie30fksv.Employee>? employees;
 
+  List<_i5dpfzds.EmployeeAccess>? accessProfiles;
+
   List<_ilcfc7kr.VenueTable>? tables;
 
   List<_illkjvef.MenuCategory>? menuCategories;
@@ -230,6 +240,7 @@ abstract class Building
     List<_ik04yv2w.StrictModeStep>? strictModeSteps,
     DateTime? createdAt,
     List<_ie30fksv.Employee>? employees,
+    List<_i5dpfzds.EmployeeAccess>? accessProfiles,
     List<_ilcfc7kr.VenueTable>? tables,
     List<_illkjvef.MenuCategory>? menuCategories,
     List<_is7gdyz6.MenuArticle>? menuArticles,
@@ -258,6 +269,10 @@ abstract class Building
       'createdAt': createdAt.toJson(),
       if (employees != null)
         'employees': employees?.toJson(valueToJson: (v) => v.toJson()),
+      if (accessProfiles != null)
+        'accessProfiles': accessProfiles?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
       if (tables != null)
         'tables': tables?.toJson(valueToJson: (v) => v.toJson()),
       if (menuCategories != null)
@@ -281,6 +296,7 @@ abstract class Building
   static BuildingInclude include({
     _i2wy11ca.OwnerInclude? owner,
     _ie30fksv.EmployeeIncludeList? employees,
+    _i5dpfzds.EmployeeAccessIncludeList? accessProfiles,
     _ilcfc7kr.VenueTableIncludeList? tables,
     _illkjvef.MenuCategoryIncludeList? menuCategories,
     _is7gdyz6.MenuArticleIncludeList? menuArticles,
@@ -290,6 +306,7 @@ abstract class Building
     return BuildingInclude._(
       owner: owner,
       employees: employees,
+      accessProfiles: accessProfiles,
       tables: tables,
       menuCategories: menuCategories,
       menuArticles: menuArticles,
@@ -343,6 +360,7 @@ class _BuildingImpl extends Building {
     required List<_ik04yv2w.StrictModeStep> strictModeSteps,
     DateTime? createdAt,
     List<_ie30fksv.Employee>? employees,
+    List<_i5dpfzds.EmployeeAccess>? accessProfiles,
     List<_ilcfc7kr.VenueTable>? tables,
     List<_illkjvef.MenuCategory>? menuCategories,
     List<_is7gdyz6.MenuArticle>? menuArticles,
@@ -366,6 +384,7 @@ class _BuildingImpl extends Building {
          strictModeSteps: strictModeSteps,
          createdAt: createdAt,
          employees: employees,
+         accessProfiles: accessProfiles,
          tables: tables,
          menuCategories: menuCategories,
          menuArticles: menuArticles,
@@ -395,6 +414,7 @@ class _BuildingImpl extends Building {
     List<_ik04yv2w.StrictModeStep>? strictModeSteps,
     DateTime? createdAt,
     Object? employees = _Undefined,
+    Object? accessProfiles = _Undefined,
     Object? tables = _Undefined,
     Object? menuCategories = _Undefined,
     Object? menuArticles = _Undefined,
@@ -424,6 +444,9 @@ class _BuildingImpl extends Building {
       employees: employees is List<_ie30fksv.Employee>?
           ? employees
           : this.employees?.map((e0) => e0.copyWith()).toList(),
+      accessProfiles: accessProfiles is List<_i5dpfzds.EmployeeAccess>?
+          ? accessProfiles
+          : this.accessProfiles?.map((e0) => e0.copyWith()).toList(),
       tables: tables is List<_ilcfc7kr.VenueTable>?
           ? tables
           : this.tables?.map((e0) => e0.copyWith()).toList(),
@@ -626,6 +649,10 @@ class BuildingTable extends _is.Table<_is.UuidValue?> {
 
   _is.ManyRelation<_ie30fksv.EmployeeTable>? _employees;
 
+  _i5dpfzds.EmployeeAccessTable? ___accessProfiles;
+
+  _is.ManyRelation<_i5dpfzds.EmployeeAccessTable>? _accessProfiles;
+
   _ilcfc7kr.VenueTableTable? ___tables;
 
   _is.ManyRelation<_ilcfc7kr.VenueTableTable>? _tables;
@@ -670,6 +697,19 @@ class BuildingTable extends _is.Table<_is.UuidValue?> {
           _ie30fksv.EmployeeTable(tableRelation: foreignTableRelation),
     );
     return ___employees!;
+  }
+
+  _i5dpfzds.EmployeeAccessTable get __accessProfiles {
+    if (___accessProfiles != null) return ___accessProfiles!;
+    ___accessProfiles = _is.createRelationTable(
+      relationFieldName: '__accessProfiles',
+      field: Building.t.id,
+      foreignField: _i5dpfzds.EmployeeAccess.t.buildingId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i5dpfzds.EmployeeAccessTable(tableRelation: foreignTableRelation),
+    );
+    return ___accessProfiles!;
   }
 
   _ilcfc7kr.VenueTableTable get __tables {
@@ -754,6 +794,25 @@ class BuildingTable extends _is.Table<_is.UuidValue?> {
       ),
     );
     return _employees!;
+  }
+
+  _is.ManyRelation<_i5dpfzds.EmployeeAccessTable> get accessProfiles {
+    if (_accessProfiles != null) return _accessProfiles!;
+    var relationTable = _is.createRelationTable(
+      relationFieldName: 'accessProfiles',
+      field: Building.t.id,
+      foreignField: _i5dpfzds.EmployeeAccess.t.buildingId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i5dpfzds.EmployeeAccessTable(tableRelation: foreignTableRelation),
+    );
+    _accessProfiles = _is.ManyRelation<_i5dpfzds.EmployeeAccessTable>(
+      tableWithRelations: relationTable,
+      table: _i5dpfzds.EmployeeAccessTable(
+        tableRelation: relationTable.tableRelation!.lastRelation,
+      ),
+    );
+    return _accessProfiles!;
   }
 
   _is.ManyRelation<_ilcfc7kr.VenueTableTable> get tables {
@@ -878,6 +937,9 @@ class BuildingTable extends _is.Table<_is.UuidValue?> {
     if (relationField == 'employees') {
       return __employees;
     }
+    if (relationField == 'accessProfiles') {
+      return __accessProfiles;
+    }
     if (relationField == 'tables') {
       return __tables;
     }
@@ -901,6 +963,7 @@ class BuildingInclude extends _is.IncludeObject {
   BuildingInclude._({
     _i2wy11ca.OwnerInclude? owner,
     _ie30fksv.EmployeeIncludeList? employees,
+    _i5dpfzds.EmployeeAccessIncludeList? accessProfiles,
     _ilcfc7kr.VenueTableIncludeList? tables,
     _illkjvef.MenuCategoryIncludeList? menuCategories,
     _is7gdyz6.MenuArticleIncludeList? menuArticles,
@@ -909,6 +972,7 @@ class BuildingInclude extends _is.IncludeObject {
   }) {
     _owner = owner;
     _employees = employees;
+    _accessProfiles = accessProfiles;
     _tables = tables;
     _menuCategories = menuCategories;
     _menuArticles = menuArticles;
@@ -919,6 +983,8 @@ class BuildingInclude extends _is.IncludeObject {
   _i2wy11ca.OwnerInclude? _owner;
 
   _ie30fksv.EmployeeIncludeList? _employees;
+
+  _i5dpfzds.EmployeeAccessIncludeList? _accessProfiles;
 
   _ilcfc7kr.VenueTableIncludeList? _tables;
 
@@ -934,6 +1000,7 @@ class BuildingInclude extends _is.IncludeObject {
   Map<String, _is.Include?> get includes => {
     'owner': _owner,
     'employees': _employees,
+    'accessProfiles': _accessProfiles,
     'tables': _tables,
     'menuCategories': _menuCategories,
     'menuArticles': _menuArticles,
@@ -1397,6 +1464,31 @@ class BuildingAttachRepository {
     );
   }
 
+  /// Creates a relation between this [Building] and the given [EmployeeAccess]s
+  /// by setting each [EmployeeAccess]'s foreign key `buildingId` to refer to this [Building].
+  Future<void> accessProfiles(
+    _is.DatabaseSession session,
+    Building building,
+    List<_i5dpfzds.EmployeeAccess> employeeAccess, {
+    _is.Transaction? transaction,
+  }) async {
+    if (employeeAccess.any((e) => e.id == null)) {
+      throw ArgumentError.notNull('employeeAccess.id');
+    }
+    if (building.id == null) {
+      throw ArgumentError.notNull('building.id');
+    }
+
+    var $employeeAccess = employeeAccess
+        .map((e) => e.copyWith(buildingId: building.id))
+        .toList();
+    await session.db.update<_i5dpfzds.EmployeeAccess>(
+      $employeeAccess,
+      columns: [_i5dpfzds.EmployeeAccess.t.buildingId],
+      transaction: transaction,
+    );
+  }
+
   /// Creates a relation between this [Building] and the given [VenueTable]s
   /// by setting each [VenueTable]'s foreign key `buildingId` to refer to this [Building].
   Future<void> tables(
@@ -1568,6 +1660,29 @@ class BuildingAttachRowRepository {
     await session.db.updateRow<_ie30fksv.Employee>(
       $employee,
       columns: [_ie30fksv.Employee.t.buildingId],
+      transaction: transaction,
+    );
+  }
+
+  /// Creates a relation between this [Building] and the given [EmployeeAccess]
+  /// by setting the [EmployeeAccess]'s foreign key `buildingId` to refer to this [Building].
+  Future<void> accessProfiles(
+    _is.DatabaseSession session,
+    Building building,
+    _i5dpfzds.EmployeeAccess employeeAccess, {
+    _is.Transaction? transaction,
+  }) async {
+    if (employeeAccess.id == null) {
+      throw ArgumentError.notNull('employeeAccess.id');
+    }
+    if (building.id == null) {
+      throw ArgumentError.notNull('building.id');
+    }
+
+    var $employeeAccess = employeeAccess.copyWith(buildingId: building.id);
+    await session.db.updateRow<_i5dpfzds.EmployeeAccess>(
+      $employeeAccess,
+      columns: [_i5dpfzds.EmployeeAccess.t.buildingId],
       transaction: transaction,
     );
   }

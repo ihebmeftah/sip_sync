@@ -59,7 +59,7 @@ final class EmployeeFormViewModelProvider
 }
 
 String _$employeeFormViewModelHash() =>
-    r'd85901a4d291a0d1e274be30447015eb545257d3';
+    r'090a8d11d87ebe05e3abae25ac00174274b62fb2';
 
 final class EmployeeFormViewModelFamily extends $Family
     with

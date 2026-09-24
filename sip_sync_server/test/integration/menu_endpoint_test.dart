@@ -7,7 +7,7 @@ import 'test_tools/serverpod_test_tools.dart';
 void main() {
   withServerpod('Given menu catalog', (sessionBuilder, endpoints) {
     Future<({dynamic ownerSession, BuildingView building})>
-        ownerWithBuilding() async {
+    ownerWithBuilding() async {
       final auth = await endpoints.ownerAuth.register(
         sessionBuilder,
         EmailRegisterCreate(

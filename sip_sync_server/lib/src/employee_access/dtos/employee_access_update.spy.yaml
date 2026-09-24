@@ -1,0 +1,10 @@
+class: EmployeeAccessUpdate
+fields:
+  id: UuidValue
+  name: String
+  orderCreation: bool
+  orderPayment: bool
+  cancelOrder: bool
+  preparation: bool
+  serving: bool
+  consultAllOrders: bool

@@ -1,0 +1,22 @@
+### Named permission set for staff in one building.
+class: EmployeeAccess
+table: employee_access
+serverOnly: true
+fields:
+  id: UuidValue?, defaultPersist=random_v7
+  building: Building?, relation(name=building_access_profiles, onDelete=Cascade)
+  name: String
+  orderCreation: bool, default=false
+  orderPayment: bool, default=false
+  cancelOrder: bool, default=false
+  preparation: bool, default=false
+  serving: bool, default=false
+  consultAllOrders: bool, default=false
+  createdAt: DateTime, defaultModel=now
+  employees: List<Employee>?, relation(name=access_employees)
+indexes:
+  employee_access_building_name_idx:
+    fields: buildingId, name
+    unique: true
+  employee_access_building_idx:
+    fields: buildingId

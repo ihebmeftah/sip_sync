@@ -1187,4 +1187,120 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get errorOrderAppendNotAllowed =>
       'Adding articles to open orders is not allowed for this venue.';
+
+  @override
+  String get errorOrderPermissionDenied =>
+      'Your access profile does not allow this action.';
+
+  @override
+  String get errorAccessNameTaken => 'That access name is already used here.';
+
+  @override
+  String get errorAccessInUse =>
+      'Reassign staff before deleting this access profile.';
+
+  @override
+  String get navAccessProfiles => 'Access';
+
+  @override
+  String get accessProfilesHint =>
+      'Named permission sets you assign to employees.';
+
+  @override
+  String get accessProfilesEmpty =>
+      'No access profiles yet. Create one before adding staff.';
+
+  @override
+  String get addAccessProfile => 'Add access';
+
+  @override
+  String get editAccessProfile => 'Edit access';
+
+  @override
+  String get saveAccessProfile => 'Save access';
+
+  @override
+  String get deleteAccessProfile => 'Delete access';
+
+  @override
+  String deleteAccessProfileConfirm(String name) {
+    return 'Delete “$name”? Staff using it must be reassigned first.';
+  }
+
+  @override
+  String get accessProfileName => 'Access name';
+
+  @override
+  String get accessProfile => 'Access profile';
+
+  @override
+  String get accessProfileNone => 'None assigned';
+
+  @override
+  String get employeeNeedsAccessProfile =>
+      'Create an access profile before adding an employee.';
+
+  @override
+  String get validationAccessName => 'Enter a name up to 80 characters.';
+
+  @override
+  String get validationAccessRequired => 'Choose an access profile.';
+
+  @override
+  String get accessOrderCreation => 'Create orders';
+
+  @override
+  String get accessOrderCreationHint => 'Create orders and add articles.';
+
+  @override
+  String get accessOrderPayment => 'Take payment';
+
+  @override
+  String get accessOrderPaymentHint => 'Mark items and orders as paid.';
+
+  @override
+  String get accessCancelOrder => 'Cancel orders';
+
+  @override
+  String get accessCancelOrderHint => 'Cancel an order or a line.';
+
+  @override
+  String get accessPreparation => 'Preparation';
+
+  @override
+  String get accessPreparationHint => 'Mark items picked or ready.';
+
+  @override
+  String get accessServing => 'Serving';
+
+  @override
+  String get accessServingHint => 'Mark items served.';
+
+  @override
+  String get accessConsultAllOrders => 'See all orders';
+
+  @override
+  String get accessConsultAllOrdersHint =>
+      'Off: only orders launched by them or lines they added.';
+
+  @override
+  String get accessFlagCreate => 'Create';
+
+  @override
+  String get accessFlagPay => 'Pay';
+
+  @override
+  String get accessFlagCancel => 'Cancel';
+
+  @override
+  String get accessFlagPrep => 'Prep';
+
+  @override
+  String get accessFlagServe => 'Serve';
+
+  @override
+  String get accessFlagConsultAll => 'All orders';
+
+  @override
+  String get accessNoFlags => 'No permissions';
 }

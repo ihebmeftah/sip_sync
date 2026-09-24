@@ -1,0 +1,12 @@
+class: EmployeeAccessView
+fields:
+  id: UuidValue
+  buildingId: UuidValue
+  name: String
+  orderCreation: bool
+  orderPayment: bool
+  cancelOrder: bool
+  preparation: bool
+  serving: bool
+  consultAllOrders: bool
+  createdAt: DateTime

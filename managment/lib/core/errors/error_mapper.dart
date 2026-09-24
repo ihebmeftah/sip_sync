@@ -81,6 +81,16 @@ Failure mapError(Object error) {
       OrderErrorCode.insufficientStock => 'errorOrderInsufficientStock',
       OrderErrorCode.tableOccupied => 'errorOrderTableOccupied',
       OrderErrorCode.appendNotAllowed => 'errorOrderAppendNotAllowed',
+      OrderErrorCode.permissionDenied => 'errorOrderPermissionDenied',
+    });
+  }
+  if (error is EmployeeAccessException) {
+    return Failure(switch (error.code) {
+      EmployeeAccessErrorCode.invalidInput => 'errorInvalidInput',
+      EmployeeAccessErrorCode.notAuthorized => 'errorNotAuthorized',
+      EmployeeAccessErrorCode.notFound => 'errorNotFound',
+      EmployeeAccessErrorCode.nameTaken => 'errorAccessNameTaken',
+      EmployeeAccessErrorCode.inUse => 'errorAccessInUse',
     });
   }
   return const Failure('errorGeneric');
@@ -113,6 +123,9 @@ String lookupError(dynamic l10n, String key) {
     'errorOrderInsufficientStock' => l10n.errorOrderInsufficientStock,
     'errorOrderTableOccupied' => l10n.errorOrderTableOccupied,
     'errorOrderAppendNotAllowed' => l10n.errorOrderAppendNotAllowed,
+    'errorOrderPermissionDenied' => l10n.errorOrderPermissionDenied,
+    'errorAccessNameTaken' => l10n.errorAccessNameTaken,
+    'errorAccessInUse' => l10n.errorAccessInUse,
     'errorCannotReachServer' => l10n.errorCannotReachServer,
     _ => l10n.errorGeneric,
   };

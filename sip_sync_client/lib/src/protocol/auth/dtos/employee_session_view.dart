@@ -11,6 +11,8 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _isc;
+import 'package:sip_sync_client/src/protocol/protocol.dart' as _iozg9o5r;
+import '../../employee_access/dtos/employee_access_view.dart' as _ihjvf6nj;
 
 abstract class EmployeeSessionView
     implements _isc.SerializableModel, _isc.ProtocolSerialization {
@@ -18,6 +20,8 @@ abstract class EmployeeSessionView
     required this.id,
     required this.buildingId,
     required this.ownerId,
+    this.accessId,
+    this.access,
     required this.username,
     required this.phoneNumber,
     required this.firstName,
@@ -29,6 +33,8 @@ abstract class EmployeeSessionView
     required _isc.UuidValue id,
     required _isc.UuidValue buildingId,
     required _isc.UuidValue ownerId,
+    _isc.UuidValue? accessId,
+    _ihjvf6nj.EmployeeAccessView? access,
     required String username,
     required String phoneNumber,
     required String firstName,
@@ -45,6 +51,14 @@ abstract class EmployeeSessionView
       ownerId: _isc.UuidValueJsonExtension.fromJson(
         jsonSerialization['ownerId'],
       ),
+      accessId: jsonSerialization['accessId'] == null
+          ? null
+          : _isc.UuidValueJsonExtension.fromJson(jsonSerialization['accessId']),
+      access: jsonSerialization['access'] == null
+          ? null
+          : _iozg9o5r.Protocol().deserialize<_ihjvf6nj.EmployeeAccessView>(
+              jsonSerialization['access'],
+            ),
       username: jsonSerialization['username'] as String,
       phoneNumber: jsonSerialization['phoneNumber'] as String,
       firstName: jsonSerialization['firstName'] as String,
@@ -60,6 +74,10 @@ abstract class EmployeeSessionView
   _isc.UuidValue buildingId;
 
   _isc.UuidValue ownerId;
+
+  _isc.UuidValue? accessId;
+
+  _ihjvf6nj.EmployeeAccessView? access;
 
   String username;
 
@@ -78,6 +96,8 @@ abstract class EmployeeSessionView
     _isc.UuidValue? id,
     _isc.UuidValue? buildingId,
     _isc.UuidValue? ownerId,
+    _isc.UuidValue? accessId,
+    _ihjvf6nj.EmployeeAccessView? access,
     String? username,
     String? phoneNumber,
     String? firstName,
@@ -91,6 +111,8 @@ abstract class EmployeeSessionView
       'id': id.toJson(),
       'buildingId': buildingId.toJson(),
       'ownerId': ownerId.toJson(),
+      if (accessId != null) 'accessId': accessId?.toJson(),
+      if (access != null) 'access': access?.toJson(),
       'username': username,
       'phoneNumber': phoneNumber,
       'firstName': firstName,
@@ -106,6 +128,8 @@ abstract class EmployeeSessionView
       'id': id.toJson(),
       'buildingId': buildingId.toJson(),
       'ownerId': ownerId.toJson(),
+      if (accessId != null) 'accessId': accessId?.toJson(),
+      if (access != null) 'access': access?.toJsonForProtocol(),
       'username': username,
       'phoneNumber': phoneNumber,
       'firstName': firstName,
@@ -120,11 +144,15 @@ abstract class EmployeeSessionView
   }
 }
 
+class _Undefined {}
+
 class _EmployeeSessionViewImpl extends EmployeeSessionView {
   _EmployeeSessionViewImpl({
     required _isc.UuidValue id,
     required _isc.UuidValue buildingId,
     required _isc.UuidValue ownerId,
+    _isc.UuidValue? accessId,
+    _ihjvf6nj.EmployeeAccessView? access,
     required String username,
     required String phoneNumber,
     required String firstName,
@@ -134,6 +162,8 @@ class _EmployeeSessionViewImpl extends EmployeeSessionView {
          id: id,
          buildingId: buildingId,
          ownerId: ownerId,
+         accessId: accessId,
+         access: access,
          username: username,
          phoneNumber: phoneNumber,
          firstName: firstName,
@@ -149,6 +179,8 @@ class _EmployeeSessionViewImpl extends EmployeeSessionView {
     _isc.UuidValue? id,
     _isc.UuidValue? buildingId,
     _isc.UuidValue? ownerId,
+    Object? accessId = _Undefined,
+    Object? access = _Undefined,
     String? username,
     String? phoneNumber,
     String? firstName,
@@ -159,6 +191,10 @@ class _EmployeeSessionViewImpl extends EmployeeSessionView {
       id: id ?? this.id,
       buildingId: buildingId ?? this.buildingId,
       ownerId: ownerId ?? this.ownerId,
+      accessId: accessId is _isc.UuidValue? ? accessId : this.accessId,
+      access: access is _ihjvf6nj.EmployeeAccessView?
+          ? access
+          : this.access?.copyWith(),
       username: username ?? this.username,
       phoneNumber: phoneNumber ?? this.phoneNumber,
       firstName: firstName ?? this.firstName,

@@ -22,6 +22,8 @@ import 'package:sip_sync_client/src/protocol/auth/dtos/super_admin_view.dart'
     as _ia930tyq;
 import 'package:sip_sync_client/src/protocol/buildings/dtos/building_view.dart'
     as _ik35q5v8;
+import 'package:sip_sync_client/src/protocol/employee_access/dtos/employee_access_view.dart'
+    as _imdxt5mh;
 import 'package:sip_sync_client/src/protocol/menu/dtos/article_composition_view.dart'
     as _ier7rmyd;
 import 'package:sip_sync_client/src/protocol/menu/dtos/ingredient_view.dart'
@@ -57,6 +59,11 @@ import 'buildings/dtos/building_exception.dart' as _ihbyyehn;
 import 'buildings/dtos/building_update.dart' as _irbupqdx;
 import 'buildings/dtos/building_view.dart' as _i9ph7g7s;
 import 'buildings/dtos/strict_mode_step.dart' as _i70klpnb;
+import 'employee_access/dtos/employee_access_create.dart' as _izbvctbv;
+import 'employee_access/dtos/employee_access_error_code.dart' as _ixnbpcjj;
+import 'employee_access/dtos/employee_access_exception.dart' as _ilz0jt85;
+import 'employee_access/dtos/employee_access_update.dart' as _ifygdwz2;
+import 'employee_access/dtos/employee_access_view.dart' as _i8t0l2jw;
 import 'menu/dtos/article_composition_create.dart' as _i6nq3709;
 import 'menu/dtos/article_composition_error_code.dart' as _ibkg9l4z;
 import 'menu/dtos/article_composition_exception.dart' as _if82n88l;
@@ -118,6 +125,11 @@ export 'buildings/dtos/building_exception.dart';
 export 'buildings/dtos/building_update.dart';
 export 'buildings/dtos/building_view.dart';
 export 'buildings/dtos/strict_mode_step.dart';
+export 'employee_access/dtos/employee_access_create.dart';
+export 'employee_access/dtos/employee_access_error_code.dart';
+export 'employee_access/dtos/employee_access_exception.dart';
+export 'employee_access/dtos/employee_access_update.dart';
+export 'employee_access/dtos/employee_access_view.dart';
 export 'menu/dtos/article_composition_create.dart';
 export 'menu/dtos/article_composition_error_code.dart';
 export 'menu/dtos/article_composition_exception.dart';
@@ -260,6 +272,21 @@ class Protocol extends _isc.SerializationManager {
     }
     if (t == _i70klpnb.StrictModeStep) {
       return _i70klpnb.StrictModeStep.fromJson(data) as T;
+    }
+    if (t == _izbvctbv.EmployeeAccessCreate) {
+      return _izbvctbv.EmployeeAccessCreate.fromJson(data) as T;
+    }
+    if (t == _ixnbpcjj.EmployeeAccessErrorCode) {
+      return _ixnbpcjj.EmployeeAccessErrorCode.fromJson(data) as T;
+    }
+    if (t == _ilz0jt85.EmployeeAccessException) {
+      return _ilz0jt85.EmployeeAccessException.fromJson(data) as T;
+    }
+    if (t == _ifygdwz2.EmployeeAccessUpdate) {
+      return _ifygdwz2.EmployeeAccessUpdate.fromJson(data) as T;
+    }
+    if (t == _i8t0l2jw.EmployeeAccessView) {
+      return _i8t0l2jw.EmployeeAccessView.fromJson(data) as T;
     }
     if (t == _i6nq3709.ArticleCompositionCreate) {
       return _i6nq3709.ArticleCompositionCreate.fromJson(data) as T;
@@ -472,6 +499,34 @@ class Protocol extends _isc.SerializationManager {
     }
     if (t == _isc.getType<_i70klpnb.StrictModeStep?>()) {
       return (data != null ? _i70klpnb.StrictModeStep.fromJson(data) : null)
+          as T;
+    }
+    if (t == _isc.getType<_izbvctbv.EmployeeAccessCreate?>()) {
+      return (data != null
+              ? _izbvctbv.EmployeeAccessCreate.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _isc.getType<_ixnbpcjj.EmployeeAccessErrorCode?>()) {
+      return (data != null
+              ? _ixnbpcjj.EmployeeAccessErrorCode.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _isc.getType<_ilz0jt85.EmployeeAccessException?>()) {
+      return (data != null
+              ? _ilz0jt85.EmployeeAccessException.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _isc.getType<_ifygdwz2.EmployeeAccessUpdate?>()) {
+      return (data != null
+              ? _ifygdwz2.EmployeeAccessUpdate.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _isc.getType<_i8t0l2jw.EmployeeAccessView?>()) {
+      return (data != null ? _i8t0l2jw.EmployeeAccessView.fromJson(data) : null)
           as T;
     }
     if (t == _isc.getType<_i6nq3709.ArticleCompositionCreate?>()) {
@@ -692,6 +747,12 @@ class Protocol extends _isc.SerializationManager {
               .toList()
           as T;
     }
+    if (t == List<_imdxt5mh.EmployeeAccessView>) {
+      return (data as List)
+              .map((e) => deserialize<_imdxt5mh.EmployeeAccessView>(e))
+              .toList()
+          as T;
+    }
     if (t == List<_ier7rmyd.ArticleCompositionView>) {
       return (data as List)
               .map((e) => deserialize<_ier7rmyd.ArticleCompositionView>(e))
@@ -762,6 +823,11 @@ class Protocol extends _isc.SerializationManager {
       _irbupqdx.BuildingUpdate => 'BuildingUpdate',
       _i9ph7g7s.BuildingView => 'BuildingView',
       _i70klpnb.StrictModeStep => 'StrictModeStep',
+      _izbvctbv.EmployeeAccessCreate => 'EmployeeAccessCreate',
+      _ixnbpcjj.EmployeeAccessErrorCode => 'EmployeeAccessErrorCode',
+      _ilz0jt85.EmployeeAccessException => 'EmployeeAccessException',
+      _ifygdwz2.EmployeeAccessUpdate => 'EmployeeAccessUpdate',
+      _i8t0l2jw.EmployeeAccessView => 'EmployeeAccessView',
       _i6nq3709.ArticleCompositionCreate => 'ArticleCompositionCreate',
       _ibkg9l4z.ArticleCompositionErrorCode => 'ArticleCompositionErrorCode',
       _if82n88l.ArticleCompositionException => 'ArticleCompositionException',
@@ -860,6 +926,16 @@ class Protocol extends _isc.SerializationManager {
         return 'BuildingView';
       case _i70klpnb.StrictModeStep():
         return 'StrictModeStep';
+      case _izbvctbv.EmployeeAccessCreate():
+        return 'EmployeeAccessCreate';
+      case _ixnbpcjj.EmployeeAccessErrorCode():
+        return 'EmployeeAccessErrorCode';
+      case _ilz0jt85.EmployeeAccessException():
+        return 'EmployeeAccessException';
+      case _ifygdwz2.EmployeeAccessUpdate():
+        return 'EmployeeAccessUpdate';
+      case _i8t0l2jw.EmployeeAccessView():
+        return 'EmployeeAccessView';
       case _i6nq3709.ArticleCompositionCreate():
         return 'ArticleCompositionCreate';
       case _ibkg9l4z.ArticleCompositionErrorCode():
@@ -1026,6 +1102,21 @@ class Protocol extends _isc.SerializationManager {
     }
     if (dataClassName == 'StrictModeStep') {
       return deserialize<_i70klpnb.StrictModeStep>(data['data']);
+    }
+    if (dataClassName == 'EmployeeAccessCreate') {
+      return deserialize<_izbvctbv.EmployeeAccessCreate>(data['data']);
+    }
+    if (dataClassName == 'EmployeeAccessErrorCode') {
+      return deserialize<_ixnbpcjj.EmployeeAccessErrorCode>(data['data']);
+    }
+    if (dataClassName == 'EmployeeAccessException') {
+      return deserialize<_ilz0jt85.EmployeeAccessException>(data['data']);
+    }
+    if (dataClassName == 'EmployeeAccessUpdate') {
+      return deserialize<_ifygdwz2.EmployeeAccessUpdate>(data['data']);
+    }
+    if (dataClassName == 'EmployeeAccessView') {
+      return deserialize<_i8t0l2jw.EmployeeAccessView>(data['data']);
     }
     if (dataClassName == 'ArticleCompositionCreate') {
       return deserialize<_i6nq3709.ArticleCompositionCreate>(data['data']);

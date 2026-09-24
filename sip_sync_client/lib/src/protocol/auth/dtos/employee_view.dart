@@ -18,6 +18,8 @@ abstract class EmployeeView
     required this.id,
     required this.buildingId,
     required this.ownerId,
+    this.accessId,
+    this.accessName,
     required this.username,
     required this.phoneNumber,
     required this.firstName,
@@ -29,6 +31,8 @@ abstract class EmployeeView
     required _isc.UuidValue id,
     required _isc.UuidValue buildingId,
     required _isc.UuidValue ownerId,
+    _isc.UuidValue? accessId,
+    String? accessName,
     required String username,
     required String phoneNumber,
     required String firstName,
@@ -45,6 +49,10 @@ abstract class EmployeeView
       ownerId: _isc.UuidValueJsonExtension.fromJson(
         jsonSerialization['ownerId'],
       ),
+      accessId: jsonSerialization['accessId'] == null
+          ? null
+          : _isc.UuidValueJsonExtension.fromJson(jsonSerialization['accessId']),
+      accessName: jsonSerialization['accessName'] as String?,
       username: jsonSerialization['username'] as String,
       phoneNumber: jsonSerialization['phoneNumber'] as String,
       firstName: jsonSerialization['firstName'] as String,
@@ -60,6 +68,10 @@ abstract class EmployeeView
   _isc.UuidValue buildingId;
 
   _isc.UuidValue ownerId;
+
+  _isc.UuidValue? accessId;
+
+  String? accessName;
 
   String username;
 
@@ -78,6 +90,8 @@ abstract class EmployeeView
     _isc.UuidValue? id,
     _isc.UuidValue? buildingId,
     _isc.UuidValue? ownerId,
+    _isc.UuidValue? accessId,
+    String? accessName,
     String? username,
     String? phoneNumber,
     String? firstName,
@@ -91,6 +105,8 @@ abstract class EmployeeView
       'id': id.toJson(),
       'buildingId': buildingId.toJson(),
       'ownerId': ownerId.toJson(),
+      if (accessId != null) 'accessId': accessId?.toJson(),
+      if (accessName != null) 'accessName': accessName,
       'username': username,
       'phoneNumber': phoneNumber,
       'firstName': firstName,
@@ -106,6 +122,8 @@ abstract class EmployeeView
       'id': id.toJson(),
       'buildingId': buildingId.toJson(),
       'ownerId': ownerId.toJson(),
+      if (accessId != null) 'accessId': accessId?.toJson(),
+      if (accessName != null) 'accessName': accessName,
       'username': username,
       'phoneNumber': phoneNumber,
       'firstName': firstName,
@@ -120,11 +138,15 @@ abstract class EmployeeView
   }
 }
 
+class _Undefined {}
+
 class _EmployeeViewImpl extends EmployeeView {
   _EmployeeViewImpl({
     required _isc.UuidValue id,
     required _isc.UuidValue buildingId,
     required _isc.UuidValue ownerId,
+    _isc.UuidValue? accessId,
+    String? accessName,
     required String username,
     required String phoneNumber,
     required String firstName,
@@ -134,6 +156,8 @@ class _EmployeeViewImpl extends EmployeeView {
          id: id,
          buildingId: buildingId,
          ownerId: ownerId,
+         accessId: accessId,
+         accessName: accessName,
          username: username,
          phoneNumber: phoneNumber,
          firstName: firstName,
@@ -149,6 +173,8 @@ class _EmployeeViewImpl extends EmployeeView {
     _isc.UuidValue? id,
     _isc.UuidValue? buildingId,
     _isc.UuidValue? ownerId,
+    Object? accessId = _Undefined,
+    Object? accessName = _Undefined,
     String? username,
     String? phoneNumber,
     String? firstName,
@@ -159,6 +185,8 @@ class _EmployeeViewImpl extends EmployeeView {
       id: id ?? this.id,
       buildingId: buildingId ?? this.buildingId,
       ownerId: ownerId ?? this.ownerId,
+      accessId: accessId is _isc.UuidValue? ? accessId : this.accessId,
+      accessName: accessName is String? ? accessName : this.accessName,
       username: username ?? this.username,
       phoneNumber: phoneNumber ?? this.phoneNumber,
       firstName: firstName ?? this.firstName,

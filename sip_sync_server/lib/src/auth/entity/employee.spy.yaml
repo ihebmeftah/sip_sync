@@ -6,6 +6,7 @@ fields:
   id: UuidValue?, defaultPersist=random_v7
   owner: Owner?, relation(name=owner_employees, onDelete=Cascade)
   building: Building?, relation(name=building_employees, onDelete=Cascade)
+  access: EmployeeAccess?, relation(name=access_employees, optional, onDelete=Restrict)
   username: String
   phoneNumber: String
   firstName: String
@@ -24,3 +25,5 @@ indexes:
     fields: buildingId
   employee_owner_idx:
     fields: ownerId
+  employee_access_idx:
+    fields: accessId

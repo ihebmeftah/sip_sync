@@ -1,6 +1,6 @@
 # Employee management & access control
 
-Status: in progress
+Status: shipped
 
 ## Apps
 
@@ -8,19 +8,19 @@ Status: in progress
 
 ## Actors and permissions
 
-- Owner: CRUD staff for a selected building (`Employee` endpoint). Create requires `buildingId`.
-- Employee: own profile only; cannot manage staff. Disabled employees cannot log in.
+- Owner: CRUD staff for a selected building (`Employee` endpoint). Create requires `buildingId` and an **access** profile. See [employee-access](employee-access.md).
+- Employee: own profile only; cannot manage staff. Disabled employees cannot log in. Floor actions follow assigned access flags.
 
 ## Flow
 
-1. Owner opens `/b/:buildingId/employees`.
-2. Create: password, phone, names, required `buildingId` — username generated.
-3. Details show username (read-only); enable/disable; edit phone/names.
-4. Staff login: username + password via `EmployeeAuth`.
+1. Owner opens `/b/:buildingId/employees` (and **Access** to manage profiles).
+2. Create: password, phone, names, required `buildingId` + `accessId` — username generated.
+3. Details show username (read-only), access name; enable/disable; edit phone/names/access.
+4. Staff login: username + password via `EmployeeAuth` (session includes access summary).
 
 ## Data
 
-- Table `employee`: `buildingId`, `ownerId`, username, passwordHash, phone, names, `isEnabled`
+- Table `employee`: `buildingId`, `ownerId`, optional `accessId`, username, passwordHash, phone, names, `isEnabled`
 - Create/Update/View DTOs; passwords write-only on create
 
 ## Realtime

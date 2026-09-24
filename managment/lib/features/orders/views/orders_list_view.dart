@@ -132,12 +132,12 @@ class _OrdersListViewState extends ConsumerState<OrdersListView> {
                               child: Row(
                                 children: [
                                   CircleAvatar(
-                                    backgroundColor: Theme.of(context)
-                                        .colorScheme
-                                        .primaryContainer,
-                                    foregroundColor: Theme.of(context)
-                                        .colorScheme
-                                        .onPrimaryContainer,
+                                    backgroundColor: Theme.of(
+                                      context,
+                                    ).colorScheme.primaryContainer,
+                                    foregroundColor: Theme.of(
+                                      context,
+                                    ).colorScheme.onPrimaryContainer,
                                     child: FittedBox(
                                       fit: BoxFit.scaleDown,
                                       child: Padding(

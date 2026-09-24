@@ -75,10 +75,10 @@ class AuthSupport {
   }
 
   String _slug(String value) {
-    final cleaned = value
-        .trim()
-        .toLowerCase()
-        .replaceAll(RegExp(r'[^a-z0-9]+'), '');
+    final cleaned = value.trim().toLowerCase().replaceAll(
+      RegExp(r'[^a-z0-9]+'),
+      '',
+    );
     return cleaned.isEmpty ? 'staff' : cleaned;
   }
 
@@ -103,12 +103,35 @@ class AuthSupport {
     );
   }
 
-  Future<AuthTokenResult> issueEmployee(Session session, Employee employee) async {
+  Future<AuthTokenResult> issueEmployee(
+    Session session,
+    Employee employee,
+  ) async {
     final issued = await sessions.create(
       session,
       actorType: ActorType.employee,
       actorId: employee.id!,
     );
+    EmployeeAccessView? accessView;
+    if (employee.accessId != null) {
+      final access =
+          employee.access ??
+          await EmployeeAccess.db.findById(session, employee.accessId!);
+      if (access != null) {
+        accessView = EmployeeAccessView(
+          id: access.id!,
+          buildingId: access.buildingId,
+          name: access.name,
+          orderCreation: access.orderCreation,
+          orderPayment: access.orderPayment,
+          cancelOrder: access.cancelOrder,
+          preparation: access.preparation,
+          serving: access.serving,
+          consultAllOrders: access.consultAllOrders,
+          createdAt: access.createdAt,
+        );
+      }
+    }
     return AuthTokenResult(
       token: issued.token,
       refreshToken: issued.refreshToken,
@@ -118,6 +141,8 @@ class AuthSupport {
         id: employee.id!,
         buildingId: employee.buildingId,
         ownerId: employee.ownerId,
+        accessId: employee.accessId,
+        access: accessView,
         username: employee.username,
         phoneNumber: employee.phoneNumber,
         firstName: employee.firstName,
@@ -127,7 +152,10 @@ class AuthSupport {
     );
   }
 
-  Future<AuthTokenResult> issueCustomer(Session session, Customer customer) async {
+  Future<AuthTokenResult> issueCustomer(
+    Session session,
+    Customer customer,
+  ) async {
     final issued = await sessions.create(
       session,
       actorType: ActorType.customer,

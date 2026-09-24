@@ -1,6 +1,7 @@
 import 'package:serverpod/serverpod.dart';
 
 import '../auth/auth_guard.dart';
+import '../employee_access/default_employee_access.dart';
 import '../generated/protocol.dart';
 import 'strict_mode.dart';
 
@@ -65,6 +66,7 @@ class BuildingService {
         strictModeSteps: normalizeStrictModeSteps(request.strictModeSteps),
       ),
     );
+    await DefaultEmployeeAccess.seedForBuilding(session, row.id!);
     return _view(session, row);
   }
 
@@ -117,6 +119,7 @@ class BuildingService {
     final records = await Employee.db.find(
       session,
       where: (t) => t.buildingId.equals(buildingId),
+      include: Employee.include(access: EmployeeAccess.include()),
     );
     return records
         .map(
@@ -124,6 +127,8 @@ class BuildingService {
             id: e.id!,
             buildingId: e.buildingId,
             ownerId: e.ownerId,
+            accessId: e.accessId,
+            accessName: e.access?.name,
             username: e.username,
             phoneNumber: e.phoneNumber,
             firstName: e.firstName,

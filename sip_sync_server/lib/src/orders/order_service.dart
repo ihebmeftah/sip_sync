@@ -13,6 +13,8 @@ class OrderService {
     UuidValue buildingId,
   ) async {
     await _requireBuildingAccess(session, buildingId);
+    final ctx = AuthGuard.requireAny(session);
+    final access = await _requireEmployeeAccessIfNeeded(session, ctx);
     final rows = await VenueOrder.db.find(
       session,
       where: (t) => t.buildingId.equals(buildingId),
@@ -24,9 +26,10 @@ class OrderService {
         ),
       ),
     );
-    final names = await _actorNameCache(session, rows);
+    final visible = _filterOrdersForAccess(rows, ctx, access);
+    final names = await _actorNameCache(session, visible);
     return [
-      for (final row in rows) _view(row, names),
+      for (final row in visible) _view(row, names),
     ];
   }
 
@@ -34,6 +37,14 @@ class OrderService {
   Future<OrderView> get(Session session, UuidValue orderId) async {
     final row = await _loadOrder(session, orderId);
     await _requireBuildingAccess(session, row.buildingId);
+    final ctx = AuthGuard.requireAny(session);
+    final access = await _requireEmployeeAccessIfNeeded(session, ctx);
+    if (!_canConsultOrder(row, ctx, access)) {
+      throw OrderException(
+        message: 'Not allowed to view this order.',
+        code: OrderErrorCode.permissionDenied,
+      );
+    }
     final names = await _actorNameCache(session, [row]);
     return _view(row, names);
   }
@@ -43,6 +54,7 @@ class OrderService {
     final ctx = AuthGuard.requireAny(session);
     _requireFloorActor(ctx);
     await _requireBuildingAccess(session, request.buildingId);
+    await _requireFlag(session, ctx, (a) => a.orderCreation);
     final lines = _validateLines(request.items);
     final tableId = await _resolveTableId(
       session,
@@ -81,7 +93,7 @@ class OrderService {
         updatedAt: now,
       ),
     );
-    await _insertResolvedLines(session, order, articles, now);
+    await _insertResolvedLines(session, order, articles, now, ctx);
     return get(session, order.id!);
   }
 
@@ -91,6 +103,7 @@ class OrderService {
     _requireFloorActor(ctx);
     final order = await _loadOrder(session, request.orderId);
     await _requireBuildingAccess(session, order.buildingId);
+    await _requireFlag(session, ctx, (a) => a.orderCreation);
     if (order.status != OrderStatus.progress) {
       throw OrderException(
         message: 'Only open orders can accept new items.',
@@ -127,6 +140,7 @@ class OrderService {
       order,
       articles,
       DateTime.now().toUtc(),
+      ctx,
     );
     await VenueOrder.db.updateRow(
       session,
@@ -151,6 +165,7 @@ class OrderService {
     }
     final order = await _loadOrder(session, item.orderId);
     await _requireBuildingAccess(session, order.buildingId);
+    await _requireStatusFlag(session, ctx, request.status);
     if (order.status == OrderStatus.cancelled) {
       throw OrderException(
         message: 'Order is cancelled.',
@@ -245,6 +260,7 @@ class OrderService {
     _requireFloorActor(ctx);
     final order = await _loadOrder(session, orderId);
     await _requireBuildingAccess(session, order.buildingId);
+    await _requireFlag(session, ctx, (a) => a.cancelOrder);
     if (order.status == OrderStatus.payed) {
       throw OrderException(
         message: 'Paid orders cannot be cancelled.',
@@ -313,6 +329,7 @@ class OrderService {
     VenueOrder order,
     List<MenuArticle> articles,
     DateTime now,
+    AuthContext ctx,
   ) async {
     for (final article in articles) {
       await VenueOrderItem.db.insertRow(
@@ -323,6 +340,8 @@ class OrderService {
           articleName: article.name,
           unitPrice: article.price,
           status: OrderItemStatus.progress,
+          addedByType: ctx.actorType,
+          addedById: ctx.actorId,
           createdAt: now,
           updatedAt: now,
         ),
@@ -532,7 +551,10 @@ class OrderService {
     return row;
   }
 
-  OrderView _view(VenueOrder row, Map<String, ({String first, String last})> names) {
+  OrderView _view(
+    VenueOrder row,
+    Map<String, ({String first, String last})> names,
+  ) {
     final items =
         (row.items ?? const <VenueOrderItem>[])
             .map((item) => _itemView(item, names))
@@ -584,6 +606,11 @@ class OrderService {
     articleName: row.articleName,
     unitPrice: row.unitPrice,
     status: row.status,
+    addedBy: _actorView(
+      type: row.addedByType,
+      id: row.addedById,
+      names: names,
+    ),
     passedBy: _actorView(
       type: row.passedByType,
       id: row.passedById,
@@ -668,6 +695,7 @@ class OrderService {
       collect(row.lastPaidByType, row.lastPaidById);
       collect(row.cancelledByType, row.cancelledById);
       for (final item in row.items ?? const <VenueOrderItem>[]) {
+        collect(item.addedByType, item.addedById);
         collect(item.passedByType, item.passedById);
         collect(item.preparedByType, item.preparedById);
         collect(item.servedByType, item.servedById);
@@ -770,6 +798,102 @@ class OrderService {
         code: OrderErrorCode.notAuthorized,
       );
     }
+  }
+
+  /// Owners need no profile; employees must have an assigned access row.
+  Future<EmployeeAccess?> _requireEmployeeAccessIfNeeded(
+    Session session,
+    AuthContext ctx,
+  ) async {
+    if (ctx.actorType != ActorType.employee) {
+      return null;
+    }
+    final employee = await Employee.db.findById(
+      session,
+      ctx.actorId,
+      include: Employee.include(access: EmployeeAccess.include()),
+    );
+    final access = employee?.access;
+    if (access == null) {
+      throw OrderException(
+        message: 'No access profile assigned.',
+        code: OrderErrorCode.permissionDenied,
+      );
+    }
+    return access;
+  }
+
+  Future<void> _requireFlag(
+    Session session,
+    AuthContext ctx,
+    bool Function(EmployeeAccess access) flag,
+  ) async {
+    final access = await _requireEmployeeAccessIfNeeded(session, ctx);
+    if (access == null) {
+      return;
+    }
+    if (!flag(access)) {
+      throw OrderException(
+        message: 'Access profile does not allow this action.',
+        code: OrderErrorCode.permissionDenied,
+      );
+    }
+  }
+
+  Future<void> _requireStatusFlag(
+    Session session,
+    AuthContext ctx,
+    OrderItemStatus status,
+  ) async {
+    switch (status) {
+      case OrderItemStatus.picked:
+      case OrderItemStatus.ready:
+        await _requireFlag(session, ctx, (a) => a.preparation);
+      case OrderItemStatus.served:
+        await _requireFlag(session, ctx, (a) => a.serving);
+      case OrderItemStatus.payed:
+        await _requireFlag(session, ctx, (a) => a.orderPayment);
+      case OrderItemStatus.cancelled:
+        await _requireFlag(session, ctx, (a) => a.cancelOrder);
+      case OrderItemStatus.progress:
+        break;
+    }
+  }
+
+  List<VenueOrder> _filterOrdersForAccess(
+    List<VenueOrder> rows,
+    AuthContext ctx,
+    EmployeeAccess? access,
+  ) {
+    if (access == null || access.consultAllOrders) {
+      return rows;
+    }
+    return [
+      for (final row in rows)
+        if (_canConsultOrder(row, ctx, access)) row,
+    ];
+  }
+
+  /// Employee without [EmployeeAccess.consultAllOrders] sees orders they launched
+  /// or lines they added.
+  bool _canConsultOrder(
+    VenueOrder row,
+    AuthContext ctx,
+    EmployeeAccess? access,
+  ) {
+    if (access == null || access.consultAllOrders) {
+      return true;
+    }
+    if (row.launchedByType == ctx.actorType &&
+        row.launchedById == ctx.actorId) {
+      return true;
+    }
+    for (final item in row.items ?? const <VenueOrderItem>[]) {
+      if (item.addedByType == ctx.actorType && item.addedById == ctx.actorId) {
+        return true;
+      }
+    }
+    return false;
   }
 
   Future<void> _requireBuildingAccess(

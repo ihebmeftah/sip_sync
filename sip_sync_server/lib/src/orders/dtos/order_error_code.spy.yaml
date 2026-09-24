@@ -11,3 +11,5 @@ values:
   - tableOccupied
   ### Building does not allow appending articles to an existing order.
   - appendNotAllowed
+  ### Employee access profile does not allow this action.
+  - permissionDenied

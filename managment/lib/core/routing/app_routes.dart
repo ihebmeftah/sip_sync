@@ -8,6 +8,9 @@ import '../../features/auth/views/sign_in_view.dart';
 import '../../features/buildings/views/building_form_view.dart';
 import '../../features/buildings/views/buildings_list_view.dart';
 import '../../features/dashboard/views/dashboard_view.dart';
+import '../../features/employee_access/views/access_profile_edit_page.dart';
+import '../../features/employee_access/views/access_profile_form_view.dart';
+import '../../features/employee_access/views/access_profiles_list_view.dart';
 import '../../features/employees/views/employee_details_view.dart';
 import '../../features/employees/views/employee_form_view.dart';
 import '../../features/employees/views/employees_list_view.dart';
@@ -121,6 +124,18 @@ class BuildingEditRoute extends GoRouteData with $BuildingEditRoute {
     TypedGoRoute<EmployeeDetailsRoute>(
       path: '/b/:buildingId/employees/:employeeId',
       name: 'employeeDetails',
+    ),
+    TypedGoRoute<AccessProfilesRoute>(
+      path: '/b/:buildingId/access',
+      name: 'accessProfiles',
+    ),
+    TypedGoRoute<AccessProfileCreateRoute>(
+      path: '/b/:buildingId/access/new',
+      name: 'accessProfileCreate',
+    ),
+    TypedGoRoute<AccessProfileEditRoute>(
+      path: '/b/:buildingId/access/:accessId/edit',
+      name: 'accessProfileEdit',
     ),
     TypedGoRoute<PosRoute>(path: '/b/:buildingId/pos', name: 'pos'),
     TypedGoRoute<OrderCreateArticlesRoute>(
@@ -259,6 +274,44 @@ class EmployeeEditRoute extends GoRouteData with $EmployeeEditRoute {
   @override
   Widget build(BuildContext context, GoRouterState state) {
     return EmployeeFormView(buildingId: buildingId, employeeId: employeeId);
+  }
+}
+
+class AccessProfilesRoute extends GoRouteData with $AccessProfilesRoute {
+  const AccessProfilesRoute({required this.buildingId});
+
+  final String buildingId;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return AccessProfilesListView(buildingId: buildingId);
+  }
+}
+
+class AccessProfileCreateRoute extends GoRouteData
+    with $AccessProfileCreateRoute {
+  const AccessProfileCreateRoute({required this.buildingId});
+
+  final String buildingId;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return AccessProfileFormView(buildingId: buildingId);
+  }
+}
+
+class AccessProfileEditRoute extends GoRouteData with $AccessProfileEditRoute {
+  const AccessProfileEditRoute({
+    required this.buildingId,
+    required this.accessId,
+  });
+
+  final String buildingId;
+  final String accessId;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return AccessProfileEditPage(buildingId: buildingId, accessId: accessId);
   }
 }
 

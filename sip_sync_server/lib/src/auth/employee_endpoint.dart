@@ -16,6 +16,7 @@ class EmployeeEndpoint extends Endpoint {
     final employee = await Employee.db.findFirstRow(
       session,
       where: (t) => t.id.equals(employeeId) & t.ownerId.equals(ownerId),
+      include: Employee.include(access: EmployeeAccess.include()),
     );
     if (employee == null) {
       throw AccountException(
@@ -41,6 +42,12 @@ class EmployeeEndpoint extends Endpoint {
       );
     }
 
+    await _requireAccessInBuilding(
+      session,
+      accessId: request.accessId,
+      buildingId: request.buildingId,
+    );
+
     final phoneHit = await Employee.db.findFirstRow(
       session,
       where: (t) => t.phoneNumber.equals(phone),
@@ -63,6 +70,7 @@ class EmployeeEndpoint extends Endpoint {
       Employee(
         ownerId: ownerId,
         buildingId: request.buildingId,
+        accessId: request.accessId,
         username: username,
         phoneNumber: phone,
         firstName: request.firstName.trim(),
@@ -70,7 +78,7 @@ class EmployeeEndpoint extends Endpoint {
         passwordHash: _auth.passwords.hash(request.password),
       ),
     );
-    return _view(employee);
+    return get(session, employee.id!);
   }
 
   Future<EmployeeView> update(Session session, EmployeeUpdate request) async {
@@ -89,10 +97,16 @@ class EmployeeEndpoint extends Endpoint {
         code: AccountErrorCode.notFound,
       );
     }
+
+    await _requireAccessInBuilding(
+      session,
+      accessId: request.accessId,
+      buildingId: employee.buildingId,
+    );
+
     final phoneHit = await Employee.db.findFirstRow(
       session,
-      where: (t) =>
-          t.phoneNumber.equals(phone) & t.id.notEquals(request.id),
+      where: (t) => t.phoneNumber.equals(phone) & t.id.notEquals(request.id),
     );
     if (phoneHit != null) {
       throw AccountException(
@@ -100,15 +114,16 @@ class EmployeeEndpoint extends Endpoint {
         code: AccountErrorCode.phoneTaken,
       );
     }
-    final updated = await Employee.db.updateRow(
+    await Employee.db.updateRow(
       session,
       employee.copyWith(
         phoneNumber: phone,
         firstName: request.firstName.trim(),
         lastName: request.lastName.trim(),
+        accessId: request.accessId,
       ),
     );
-    return _view(updated);
+    return get(session, request.id);
   }
 
   Future<EmployeeView> setEnabled(
@@ -127,17 +142,33 @@ class EmployeeEndpoint extends Endpoint {
         code: AccountErrorCode.notFound,
       );
     }
-    final updated = await Employee.db.updateRow(
+    await Employee.db.updateRow(
       session,
       employee.copyWith(isEnabled: isEnabled),
     );
-    return _view(updated);
+    return get(session, employeeId);
+  }
+
+  Future<void> _requireAccessInBuilding(
+    Session session, {
+    required UuidValue accessId,
+    required UuidValue buildingId,
+  }) async {
+    final access = await EmployeeAccess.db.findById(session, accessId);
+    if (access == null || access.buildingId != buildingId) {
+      throw AccountException(
+        message: 'Access profile not found for this building.',
+        code: AccountErrorCode.notFound,
+      );
+    }
   }
 
   EmployeeView _view(Employee employee) => EmployeeView(
     id: employee.id!,
     buildingId: employee.buildingId,
     ownerId: employee.ownerId,
+    accessId: employee.accessId,
+    accessName: employee.access?.name,
     username: employee.username,
     phoneNumber: employee.phoneNumber,
     firstName: employee.firstName,

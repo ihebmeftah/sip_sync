@@ -6,6 +6,7 @@ fields:
   articleName: String
   unitPrice: double
   status: OrderItemStatus
+  addedBy: OrderActorView?
   passedBy: OrderActorView?
   preparedBy: OrderActorView?
   servedBy: OrderActorView?

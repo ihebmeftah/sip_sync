@@ -19,6 +19,7 @@ abstract class EmployeeUpdate
     required this.phoneNumber,
     required this.firstName,
     required this.lastName,
+    required this.accessId,
   });
 
   factory EmployeeUpdate({
@@ -26,6 +27,7 @@ abstract class EmployeeUpdate
     required String phoneNumber,
     required String firstName,
     required String lastName,
+    required _isc.UuidValue accessId,
   }) = _EmployeeUpdateImpl;
 
   factory EmployeeUpdate.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -34,6 +36,9 @@ abstract class EmployeeUpdate
       phoneNumber: jsonSerialization['phoneNumber'] as String,
       firstName: jsonSerialization['firstName'] as String,
       lastName: jsonSerialization['lastName'] as String,
+      accessId: _isc.UuidValueJsonExtension.fromJson(
+        jsonSerialization['accessId'],
+      ),
     );
   }
 
@@ -45,6 +50,8 @@ abstract class EmployeeUpdate
 
   String lastName;
 
+  _isc.UuidValue accessId;
+
   /// Returns a shallow copy of this [EmployeeUpdate]
   /// with some or all fields replaced by the given arguments.
   @_isc.useResult
@@ -53,6 +60,7 @@ abstract class EmployeeUpdate
     String? phoneNumber,
     String? firstName,
     String? lastName,
+    _isc.UuidValue? accessId,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -62,6 +70,7 @@ abstract class EmployeeUpdate
       'phoneNumber': phoneNumber,
       'firstName': firstName,
       'lastName': lastName,
+      'accessId': accessId.toJson(),
     };
   }
 
@@ -73,6 +82,7 @@ abstract class EmployeeUpdate
       'phoneNumber': phoneNumber,
       'firstName': firstName,
       'lastName': lastName,
+      'accessId': accessId.toJson(),
     };
   }
 
@@ -88,11 +98,13 @@ class _EmployeeUpdateImpl extends EmployeeUpdate {
     required String phoneNumber,
     required String firstName,
     required String lastName,
+    required _isc.UuidValue accessId,
   }) : super._(
          id: id,
          phoneNumber: phoneNumber,
          firstName: firstName,
          lastName: lastName,
+         accessId: accessId,
        );
 
   /// Returns a shallow copy of this [EmployeeUpdate]
@@ -104,12 +116,14 @@ class _EmployeeUpdateImpl extends EmployeeUpdate {
     String? phoneNumber,
     String? firstName,
     String? lastName,
+    _isc.UuidValue? accessId,
   }) {
     return EmployeeUpdate(
       id: id ?? this.id,
       phoneNumber: phoneNumber ?? this.phoneNumber,
       firstName: firstName ?? this.firstName,
       lastName: lastName ?? this.lastName,
+      accessId: accessId ?? this.accessId,
     );
   }
 }

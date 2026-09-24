@@ -1,0 +1,4 @@
+exception: EmployeeAccessException
+fields:
+  message: String
+  code: EmployeeAccessErrorCode

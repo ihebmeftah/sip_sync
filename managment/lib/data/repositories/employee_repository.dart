@@ -15,6 +15,7 @@ class EmployeeRepository {
     required String firstName,
     required String lastName,
     required UuidValue buildingId,
+    required UuidValue accessId,
   }) {
     return _client.employee.add(
       EmployeeCreate(
@@ -23,6 +24,7 @@ class EmployeeRepository {
         firstName: firstName,
         lastName: lastName,
         buildingId: buildingId,
+        accessId: accessId,
       ),
     );
   }
@@ -32,6 +34,7 @@ class EmployeeRepository {
     required String phoneNumber,
     required String firstName,
     required String lastName,
+    required UuidValue accessId,
   }) {
     return _client.employee.update(
       EmployeeUpdate(
@@ -39,6 +42,7 @@ class EmployeeRepository {
         phoneNumber: phoneNumber,
         firstName: firstName,
         lastName: lastName,
+        accessId: accessId,
       ),
     );
   }

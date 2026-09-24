@@ -8,6 +8,7 @@ import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
 import '../../../l10n/generated/app_localizations.dart';
+import '../../employee_access/view_models/access_profiles_view_model.dart';
 import '../view_models/employee_form_view_model.dart';
 
 class EmployeeFormView extends ConsumerStatefulWidget {
@@ -32,6 +33,7 @@ class _EmployeeFormViewState extends ConsumerState<EmployeeFormView> {
   final _last = TextEditingController();
   final _username = TextEditingController();
   var _filled = false;
+  UuidValue? _accessId;
 
   bool get _isEdit => (widget.employeeId ?? '').isNotEmpty;
 
@@ -56,6 +58,7 @@ class _EmployeeFormViewState extends ConsumerState<EmployeeFormView> {
     _phone.text = existing.phoneNumber;
     _first.text = existing.firstName;
     _last.text = existing.lastName;
+    _accessId = existing.accessId;
     _filled = true;
   }
 
@@ -63,6 +66,9 @@ class _EmployeeFormViewState extends ConsumerState<EmployeeFormView> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final ui = ref.watch(employeeFormViewModelProvider(_employeeKey));
+    final profilesAsync = ref.watch(
+      accessProfilesViewModelProvider(widget.buildingId),
+    );
     _fill(ui);
     final text = Theme.of(context).textTheme;
 
@@ -132,6 +138,62 @@ class _EmployeeFormViewState extends ConsumerState<EmployeeFormView> {
                             validator: (value) =>
                                 FormValidators.password(l10n, value),
                           ),
+                        profilesAsync.when(
+                          loading: () => const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 12),
+                            child: LinearProgressIndicator(),
+                          ),
+                          error: (error, _) => AppErrorBanner(
+                            message: lookupError(l10n, mapError(error).l10nKey),
+                          ),
+                          data: (profiles) {
+                            if (profiles.isEmpty) {
+                              return Padding(
+                                padding: const EdgeInsets.only(
+                                  bottom: AppSpacing.md,
+                                ),
+                                child: Column(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
+                                  children: [
+                                    AppErrorBanner(
+                                      message: l10n.employeeNeedsAccessProfile,
+                                    ),
+                                    TextButton(
+                                      onPressed: () => AccessProfilesRoute(
+                                        buildingId: widget.buildingId,
+                                      ).go(context),
+                                      child: Text(l10n.navAccessProfiles),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }
+                            return DropdownButtonFormField<UuidValue>(
+                              // ignore: deprecated_member_use
+                              value: profiles.any((p) => p.id == _accessId)
+                                  ? _accessId
+                                  : null,
+                              decoration: InputDecoration(
+                                labelText: l10n.accessProfile,
+                                prefixIcon: const Icon(Icons.lock_outline),
+                              ),
+                              items: [
+                                for (final profile in profiles)
+                                  DropdownMenuItem(
+                                    value: profile.id,
+                                    child: Text(profile.name),
+                                  ),
+                              ],
+                              onChanged: (value) =>
+                                  setState(() => _accessId = value),
+                              validator: (value) => value == null
+                                  ? l10n.validationAccessRequired
+                                  : null,
+                            );
+                          },
+                        ),
+                        SizedBox(height: AppSpacing.lg),
                         if (ui.errorKey != null)
                           AppErrorBanner(
                             message: lookupError(l10n, ui.errorKey!),
@@ -141,6 +203,10 @@ class _EmployeeFormViewState extends ConsumerState<EmployeeFormView> {
                           busy: ui.saving,
                           onPressed: () async {
                             if (!(_formKey.currentState?.validate() ?? false)) {
+                              return;
+                            }
+                            final accessId = _accessId;
+                            if (accessId == null) {
                               return;
                             }
                             final saved = await ref
@@ -157,6 +223,7 @@ class _EmployeeFormViewState extends ConsumerState<EmployeeFormView> {
                                   buildingId: UuidValue.fromString(
                                     widget.buildingId,
                                   ),
+                                  accessId: accessId,
                                 );
                             if (!context.mounted || saved == null) {
                               return;

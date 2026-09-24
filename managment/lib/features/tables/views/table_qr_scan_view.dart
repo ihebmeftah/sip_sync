@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:sip_sync_client/sip_sync_client.dart';
 
+import '../../../core/access/floor_access.dart';
 import '../../../core/di/app_providers.dart';
 import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_tokens.dart';
@@ -104,6 +105,12 @@ class _TableQrScanViewState extends ConsumerState<TableQrScanView> {
       return;
     }
 
+    if (!FloorAccess.fromSession(ref.read(appSessionStoreProvider))
+        .canCreateOrders) {
+      await _rejectAndClose(l10n.errorOrderPermissionDenied);
+      return;
+    }
+
     final building = ref.read(buildingSelectionProvider);
     final multiOrder = building?.tableMultiOrder ?? false;
     final allowAppend = building?.allowAppendingItemsToOrder ?? true;
@@ -162,7 +169,10 @@ class _TableQrScanViewState extends ConsumerState<TableQrScanView> {
             .read(ordersViewModelProvider(widget.buildingId).notifier)
             .refresh();
         orders =
-            ref.read(ordersViewModelProvider(widget.buildingId)).asData?.value ??
+            ref
+                .read(ordersViewModelProvider(widget.buildingId))
+                .asData
+                ?.value ??
             const <OrderView>[];
       } catch (_) {
         return null;
@@ -182,9 +192,9 @@ class _TableQrScanViewState extends ConsumerState<TableQrScanView> {
     if (!mounted) {
       return;
     }
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
     TablesRoute(buildingId: widget.buildingId).go(context);
   }
 

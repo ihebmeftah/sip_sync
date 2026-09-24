@@ -36,7 +36,14 @@ class EmployeesListView extends ConsumerWidget {
                   Expanded(
                     child: Text(l10n.navEmployees, style: text.headlineSmall),
                   ),
-                  if (isOwner)
+                  if (isOwner) ...[
+                    TextButton(
+                      onPressed: () => AccessProfilesRoute(
+                        buildingId: buildingId,
+                      ).go(context),
+                      child: Text(l10n.navAccessProfiles),
+                    ),
+                    const SizedBox(width: AppSpacing.sm),
                     FilledButton.icon(
                       style: FilledButton.styleFrom(
                         minimumSize: const Size(0, 44),
@@ -47,6 +54,7 @@ class EmployeesListView extends ConsumerWidget {
                       icon: const Icon(Icons.add),
                       label: AppButtonLabel(l10n.addEmployee),
                     ),
+                  ],
                 ],
               ),
               const SizedBox(height: AppSpacing.lg),
@@ -95,7 +103,12 @@ class EmployeesListView extends ConsumerWidget {
                               title: Text(
                                 '${employee.firstName} ${employee.lastName}',
                               ),
-                              subtitle: Text(employee.username),
+                              subtitle: Text(
+                                employee.accessName == null ||
+                                        employee.accessName!.isEmpty
+                                    ? employee.username
+                                    : '${employee.username} · ${employee.accessName}',
+                              ),
                               trailing: Chip(
                                 label: Text(
                                   employee.isEnabled

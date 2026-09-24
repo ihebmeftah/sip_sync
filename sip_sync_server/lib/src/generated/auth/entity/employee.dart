@@ -15,6 +15,7 @@ import 'package:serverpod/serverpod.dart' as _is;
 import 'package:sip_sync_server/src/generated/protocol.dart' as _iaib1p48;
 import '../../auth/entity/owner.dart' as _i2wy11ca;
 import '../../buildings/entity/building.dart' as _iaohraio;
+import '../../employee_access/entity/employee_access.dart' as _i5dpfzds;
 
 /// Staff account for one building. Username login; password hashed locally.
 abstract class Employee
@@ -25,6 +26,8 @@ abstract class Employee
     this.owner,
     required this.buildingId,
     this.building,
+    this.accessId,
+    this.access,
     required this.username,
     required this.phoneNumber,
     required this.firstName,
@@ -41,6 +44,8 @@ abstract class Employee
     _i2wy11ca.Owner? owner,
     required _is.UuidValue buildingId,
     _iaohraio.Building? building,
+    _is.UuidValue? accessId,
+    _i5dpfzds.EmployeeAccess? access,
     required String username,
     required String phoneNumber,
     required String firstName,
@@ -71,6 +76,14 @@ abstract class Employee
           : _iaib1p48.Protocol().deserialize<_iaohraio.Building>(
               jsonSerialization['building'],
             ),
+      accessId: jsonSerialization['accessId'] == null
+          ? null
+          : _is.UuidValueJsonExtension.fromJson(jsonSerialization['accessId']),
+      access: jsonSerialization['access'] == null
+          ? null
+          : _iaib1p48.Protocol().deserialize<_i5dpfzds.EmployeeAccess>(
+              jsonSerialization['access'],
+            ),
       username: jsonSerialization['username'] as String,
       phoneNumber: jsonSerialization['phoneNumber'] as String,
       firstName: jsonSerialization['firstName'] as String,
@@ -100,6 +113,10 @@ abstract class Employee
 
   _iaohraio.Building? building;
 
+  _is.UuidValue? accessId;
+
+  _i5dpfzds.EmployeeAccess? access;
+
   String username;
 
   String phoneNumber;
@@ -126,6 +143,8 @@ abstract class Employee
     _i2wy11ca.Owner? owner,
     _is.UuidValue? buildingId,
     _iaohraio.Building? building,
+    _is.UuidValue? accessId,
+    _i5dpfzds.EmployeeAccess? access,
     String? username,
     String? phoneNumber,
     String? firstName,
@@ -143,6 +162,8 @@ abstract class Employee
       if (owner != null) 'owner': owner?.toJson(),
       'buildingId': buildingId.toJson(),
       if (building != null) 'building': building?.toJson(),
+      if (accessId != null) 'accessId': accessId?.toJson(),
+      if (access != null) 'access': access?.toJson(),
       'username': username,
       'phoneNumber': phoneNumber,
       'firstName': firstName,
@@ -161,10 +182,12 @@ abstract class Employee
   static EmployeeInclude include({
     _i2wy11ca.OwnerInclude? owner,
     _iaohraio.BuildingInclude? building,
+    _i5dpfzds.EmployeeAccessInclude? access,
   }) {
     return EmployeeInclude._(
       owner: owner,
       building: building,
+      access: access,
     );
   }
 
@@ -201,6 +224,8 @@ class _EmployeeImpl extends Employee {
     _i2wy11ca.Owner? owner,
     required _is.UuidValue buildingId,
     _iaohraio.Building? building,
+    _is.UuidValue? accessId,
+    _i5dpfzds.EmployeeAccess? access,
     required String username,
     required String phoneNumber,
     required String firstName,
@@ -214,6 +239,8 @@ class _EmployeeImpl extends Employee {
          owner: owner,
          buildingId: buildingId,
          building: building,
+         accessId: accessId,
+         access: access,
          username: username,
          phoneNumber: phoneNumber,
          firstName: firstName,
@@ -233,6 +260,8 @@ class _EmployeeImpl extends Employee {
     Object? owner = _Undefined,
     _is.UuidValue? buildingId,
     Object? building = _Undefined,
+    Object? accessId = _Undefined,
+    Object? access = _Undefined,
     String? username,
     String? phoneNumber,
     String? firstName,
@@ -249,6 +278,10 @@ class _EmployeeImpl extends Employee {
       building: building is _iaohraio.Building?
           ? building
           : this.building?.copyWith(),
+      accessId: accessId is _is.UuidValue? ? accessId : this.accessId,
+      access: access is _i5dpfzds.EmployeeAccess?
+          ? access
+          : this.access?.copyWith(),
       username: username ?? this.username,
       phoneNumber: phoneNumber ?? this.phoneNumber,
       firstName: firstName ?? this.firstName,
@@ -273,6 +306,13 @@ class EmployeeUpdateTable extends _is.UpdateTable<EmployeeTable> {
     _is.UuidValue value,
   ) => _is.ColumnValue(
     table.buildingId,
+    value,
+  );
+
+  _is.ColumnValue<_is.UuidValue, _is.UuidValue> accessId(
+    _is.UuidValue? value,
+  ) => _is.ColumnValue(
+    table.accessId,
     value,
   );
 
@@ -324,6 +364,10 @@ class EmployeeTable extends _is.Table<_is.UuidValue?> {
       'buildingId',
       this,
     );
+    accessId = _is.ColumnUuid(
+      'accessId',
+      this,
+    );
     username = _is.ColumnString(
       'username',
       this,
@@ -365,6 +409,10 @@ class EmployeeTable extends _is.Table<_is.UuidValue?> {
 
   _iaohraio.BuildingTable? _building;
 
+  late final _is.ColumnUuid accessId;
+
+  _i5dpfzds.EmployeeAccessTable? _access;
+
   late final _is.ColumnString username;
 
   late final _is.ColumnString phoneNumber;
@@ -405,11 +453,25 @@ class EmployeeTable extends _is.Table<_is.UuidValue?> {
     return _building!;
   }
 
+  _i5dpfzds.EmployeeAccessTable get access {
+    if (_access != null) return _access!;
+    _access = _is.createRelationTable(
+      relationFieldName: 'access',
+      field: Employee.t.accessId,
+      foreignField: _i5dpfzds.EmployeeAccess.t.id,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i5dpfzds.EmployeeAccessTable(tableRelation: foreignTableRelation),
+    );
+    return _access!;
+  }
+
   @override
   List<_is.Column> get columns => [
     id,
     ownerId,
     buildingId,
+    accessId,
     username,
     phoneNumber,
     firstName,
@@ -427,6 +489,9 @@ class EmployeeTable extends _is.Table<_is.UuidValue?> {
     if (relationField == 'building') {
       return building;
     }
+    if (relationField == 'access') {
+      return access;
+    }
     return null;
   }
 }
@@ -435,19 +500,24 @@ class EmployeeInclude extends _is.IncludeObject {
   EmployeeInclude._({
     _i2wy11ca.OwnerInclude? owner,
     _iaohraio.BuildingInclude? building,
+    _i5dpfzds.EmployeeAccessInclude? access,
   }) {
     _owner = owner;
     _building = building;
+    _access = access;
   }
 
   _i2wy11ca.OwnerInclude? _owner;
 
   _iaohraio.BuildingInclude? _building;
 
+  _i5dpfzds.EmployeeAccessInclude? _access;
+
   @override
   Map<String, _is.Include?> get includes => {
     'owner': _owner,
     'building': _building,
+    'access': _access,
   };
 
   @override
@@ -477,6 +547,8 @@ class EmployeeRepository {
   const EmployeeRepository._();
 
   final attachRow = const EmployeeAttachRowRepository._();
+
+  final detachRow = const EmployeeDetachRowRepository._();
 
   /// Returns a list of [Employee]s matching the given query parameters.
   ///
@@ -921,6 +993,55 @@ class EmployeeAttachRowRepository {
     await session.db.updateRow<Employee>(
       $employee,
       columns: [Employee.t.buildingId],
+      transaction: transaction,
+    );
+  }
+
+  /// Creates a relation between the given [Employee] and [EmployeeAccess]
+  /// by setting the [Employee]'s foreign key `accessId` to refer to the [EmployeeAccess].
+  Future<void> access(
+    _is.DatabaseSession session,
+    Employee employee,
+    _i5dpfzds.EmployeeAccess access, {
+    _is.Transaction? transaction,
+  }) async {
+    if (employee.id == null) {
+      throw ArgumentError.notNull('employee.id');
+    }
+    if (access.id == null) {
+      throw ArgumentError.notNull('access.id');
+    }
+
+    var $employee = employee.copyWith(accessId: access.id);
+    await session.db.updateRow<Employee>(
+      $employee,
+      columns: [Employee.t.accessId],
+      transaction: transaction,
+    );
+  }
+}
+
+class EmployeeDetachRowRepository {
+  const EmployeeDetachRowRepository._();
+
+  /// Detaches the relation between this [Employee] and the [EmployeeAccess] set in `access`
+  /// by setting the [Employee]'s foreign key `accessId` to `null`.
+  ///
+  /// This removes the association between the two models without deleting
+  /// the related record.
+  Future<void> access(
+    _is.DatabaseSession session,
+    Employee employee, {
+    _is.Transaction? transaction,
+  }) async {
+    if (employee.id == null) {
+      throw ArgumentError.notNull('employee.id');
+    }
+
+    var $employee = employee.copyWith(accessId: null);
+    await session.db.updateRow<Employee>(
+      $employee,
+      columns: [Employee.t.accessId],
       transaction: transaction,
     );
   }

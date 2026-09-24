@@ -2,6 +2,7 @@ import 'package:serverpod/serverpod.dart';
 
 import '../auth/auth_support.dart';
 import '../buildings/strict_mode.dart';
+import '../employee_access/default_employee_access.dart';
 import '../generated/protocol.dart';
 
 /// Idempotent demo data for local development (two owners + menu + stock).
@@ -214,6 +215,8 @@ class DevSeed {
         strictModeSteps: defaultStrictModeSteps(),
       ),
     );
+
+    await DefaultEmployeeAccess.seedForBuilding(session, building.id!);
 
     for (var n = 1; n <= tableCount; n++) {
       await VenueTable.db.insertRow(

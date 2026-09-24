@@ -4,3 +4,4 @@ fields:
   phoneNumber: String
   firstName: String
   lastName: String
+  accessId: UuidValue

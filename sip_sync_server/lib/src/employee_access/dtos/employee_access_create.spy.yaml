@@ -1,0 +1,10 @@
+class: EmployeeAccessCreate
+fields:
+  buildingId: UuidValue
+  name: String
+  orderCreation: bool
+  orderPayment: bool
+  cancelOrder: bool
+  preparation: bool
+  serving: bool
+  consultAllOrders: bool

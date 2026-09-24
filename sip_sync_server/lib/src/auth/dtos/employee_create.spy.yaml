@@ -5,3 +5,4 @@ fields:
   firstName: String
   lastName: String
   buildingId: UuidValue
+  accessId: UuidValue
