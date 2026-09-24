@@ -24,14 +24,18 @@ class OrderService {
         ),
       ),
     );
-    return rows.map(_view).toList();
+    final names = await _actorNameCache(session, rows);
+    return [
+      for (final row in rows) _view(row, names),
+    ];
   }
 
   /// Loads one order with items.
   Future<OrderView> get(Session session, UuidValue orderId) async {
     final row = await _loadOrder(session, orderId);
     await _requireBuildingAccess(session, row.buildingId);
-    return _view(row);
+    final names = await _actorNameCache(session, [row]);
+    return _view(row, names);
   }
 
   /// Owner or employee creates an order with at least one line.
@@ -63,11 +67,13 @@ class OrderService {
       deduct: true,
     );
     final now = DateTime.now().toUtc();
+    final orderRef = await _nextOrderRef(session, request.buildingId);
     final order = await VenueOrder.db.insertRow(
       session,
       VenueOrder(
         buildingId: request.buildingId,
         venueTableId: tableId,
+        ref: orderRef,
         status: OrderStatus.progress,
         launchedByType: ctx.actorType,
         launchedById: ctx.actorId,
@@ -526,9 +532,11 @@ class OrderService {
     return row;
   }
 
-  OrderView _view(VenueOrder row) {
+  OrderView _view(VenueOrder row, Map<String, ({String first, String last})> names) {
     final items =
-        (row.items ?? const <VenueOrderItem>[]).map(_itemView).toList()
+        (row.items ?? const <VenueOrderItem>[])
+            .map((item) => _itemView(item, names))
+            .toList()
           ..sort(_compareOrderItems);
     final total = items.fold<double>(
       0,
@@ -540,20 +548,194 @@ class OrderService {
       buildingId: row.buildingId,
       venueTableId: row.venueTableId,
       tableNumber: row.venueTable?.number,
+      ref: row.ref,
       status: row.status,
-      launchedByType: row.launchedByType,
-      launchedById: row.launchedById,
-      lastPaidByType: row.lastPaidByType,
-      lastPaidById: row.lastPaidById,
+      launchedBy: _actorView(
+        type: row.launchedByType,
+        id: row.launchedById,
+        names: names,
+      )!,
+      lastPaidBy: _actorView(
+        type: row.lastPaidByType,
+        id: row.lastPaidById,
+        names: names,
+      ),
       lastPaidAt: row.lastPaidAt,
-      cancelledByType: row.cancelledByType,
-      cancelledById: row.cancelledById,
+      cancelledBy: _actorView(
+        type: row.cancelledByType,
+        id: row.cancelledById,
+        names: names,
+      ),
       cancelledAt: row.cancelledAt,
       createdAt: row.createdAt,
       updatedAt: row.updatedAt,
       items: items,
       totalAmount: total,
     );
+  }
+
+  OrderItemView _itemView(
+    VenueOrderItem row,
+    Map<String, ({String first, String last})> names,
+  ) => OrderItemView(
+    id: row.id!,
+    orderId: row.orderId,
+    articleId: row.articleId,
+    articleName: row.articleName,
+    unitPrice: row.unitPrice,
+    status: row.status,
+    passedBy: _actorView(
+      type: row.passedByType,
+      id: row.passedById,
+      names: names,
+    ),
+    preparedBy: _actorView(
+      type: row.preparedByType,
+      id: row.preparedById,
+      names: names,
+    ),
+    servedBy: _actorView(
+      type: row.servedByType,
+      id: row.servedById,
+      names: names,
+    ),
+    paidTo: _actorView(
+      type: row.paidToType,
+      id: row.paidToId,
+      names: names,
+    ),
+    cancelledBy: _actorView(
+      type: row.cancelledByType,
+      id: row.cancelledById,
+      names: names,
+    ),
+    createdAt: row.createdAt,
+    updatedAt: row.updatedAt,
+    preparedAt: row.preparedAt,
+    servedAt: row.servedAt,
+    paidAt: row.paidAt,
+    cancelledAt: row.cancelledAt,
+  );
+
+  OrderActorView? _actorView({
+    required ActorType? type,
+    required UuidValue? id,
+    required Map<String, ({String first, String last})> names,
+  }) {
+    if (type == null || id == null) {
+      return null;
+    }
+    final key = _actorKey(type, id);
+    final name = names[key];
+    return OrderActorView(
+      type: type,
+      id: id,
+      firstName: name?.first ?? '',
+      lastName: name?.last ?? '',
+    );
+  }
+
+  String _actorKey(ActorType type, UuidValue id) => '${type.name}:${id.uuid}';
+
+  /// Batch-loads first/last names for every attribution id on [rows].
+  Future<Map<String, ({String first, String last})>> _actorNameCache(
+    Session session,
+    List<VenueOrder> rows,
+  ) async {
+    final ownerIds = <UuidValue>{};
+    final employeeIds = <UuidValue>{};
+    final customerIds = <UuidValue>{};
+    final adminIds = <UuidValue>{};
+
+    void collect(ActorType? type, UuidValue? id) {
+      if (type == null || id == null) {
+        return;
+      }
+      switch (type) {
+        case ActorType.owner:
+          ownerIds.add(id);
+        case ActorType.employee:
+          employeeIds.add(id);
+        case ActorType.customer:
+          customerIds.add(id);
+        case ActorType.superAdmin:
+          adminIds.add(id);
+      }
+    }
+
+    for (final row in rows) {
+      collect(row.launchedByType, row.launchedById);
+      collect(row.lastPaidByType, row.lastPaidById);
+      collect(row.cancelledByType, row.cancelledById);
+      for (final item in row.items ?? const <VenueOrderItem>[]) {
+        collect(item.passedByType, item.passedById);
+        collect(item.preparedByType, item.preparedById);
+        collect(item.servedByType, item.servedById);
+        collect(item.paidToType, item.paidToId);
+        collect(item.cancelledByType, item.cancelledById);
+      }
+    }
+
+    final out = <String, ({String first, String last})>{};
+    if (ownerIds.isNotEmpty) {
+      final owners = await Owner.db.find(
+        session,
+        where: (t) => t.id.inSet(ownerIds),
+      );
+      for (final owner in owners) {
+        out[_actorKey(ActorType.owner, owner.id!)] = (
+          first: owner.firstName,
+          last: owner.lastName,
+        );
+      }
+    }
+    if (employeeIds.isNotEmpty) {
+      final employees = await Employee.db.find(
+        session,
+        where: (t) => t.id.inSet(employeeIds),
+      );
+      for (final employee in employees) {
+        out[_actorKey(ActorType.employee, employee.id!)] = (
+          first: employee.firstName,
+          last: employee.lastName,
+        );
+      }
+    }
+    if (customerIds.isNotEmpty) {
+      final customers = await Customer.db.find(
+        session,
+        where: (t) => t.id.inSet(customerIds),
+      );
+      for (final customer in customers) {
+        out[_actorKey(ActorType.customer, customer.id!)] = (
+          first: customer.firstName,
+          last: customer.lastName,
+        );
+      }
+    }
+    if (adminIds.isNotEmpty) {
+      final admins = await SuperAdmin.db.find(
+        session,
+        where: (t) => t.id.inSet(adminIds),
+      );
+      for (final admin in admins) {
+        out[_actorKey(ActorType.superAdmin, admin.id!)] = (
+          first: admin.firstName,
+          last: admin.lastName,
+        );
+      }
+    }
+    return out;
+  }
+
+  /// Next display ticket number for [buildingId] (1, 2, 3…).
+  Future<int> _nextOrderRef(Session session, UuidValue buildingId) async {
+    final last = await VenueOrder.db.findFirstRow(
+      session,
+      where: (t) => t.buildingId.equals(buildingId),
+      orderBy: (t) => t.ref.desc(),
+    );
+    return (last?.ref ?? 0) + 1;
   }
 
   /// Active lines stay in [createdAt] order (stable by id); payed sinks to the bottom.
@@ -577,34 +759,8 @@ class OrderService {
     }
     final byCreated = a.createdAt.compareTo(b.createdAt);
     if (byCreated != 0) return byCreated;
-    // Stable tie-break — Dart's sort is not stable for equal keys.
     return a.id.uuid.compareTo(b.id.uuid);
   }
-
-  OrderItemView _itemView(VenueOrderItem row) => OrderItemView(
-    id: row.id!,
-    orderId: row.orderId,
-    articleId: row.articleId,
-    articleName: row.articleName,
-    unitPrice: row.unitPrice,
-    status: row.status,
-    passedByType: row.passedByType,
-    passedById: row.passedById,
-    preparedByType: row.preparedByType,
-    preparedById: row.preparedById,
-    servedByType: row.servedByType,
-    servedById: row.servedById,
-    paidToType: row.paidToType,
-    paidToId: row.paidToId,
-    cancelledByType: row.cancelledByType,
-    cancelledById: row.cancelledById,
-    createdAt: row.createdAt,
-    updatedAt: row.updatedAt,
-    preparedAt: row.preparedAt,
-    servedAt: row.servedAt,
-    paidAt: row.paidAt,
-    cancelledAt: row.cancelledAt,
-  );
 
   void _requireFloorActor(AuthContext ctx) {
     if (ctx.actorType != ActorType.owner &&

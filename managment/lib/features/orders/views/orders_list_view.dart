@@ -131,6 +131,29 @@ class _OrdersListViewState extends ConsumerState<OrdersListView> {
                               ),
                               child: Row(
                                 children: [
+                                  CircleAvatar(
+                                    backgroundColor: Theme.of(context)
+                                        .colorScheme
+                                        .primaryContainer,
+                                    foregroundColor: Theme.of(context)
+                                        .colorScheme
+                                        .onPrimaryContainer,
+                                    child: FittedBox(
+                                      fit: BoxFit.scaleDown,
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 4,
+                                        ),
+                                        child: Text(
+                                          l10n.orderRefLabel(order.ref),
+                                          style: text.labelLarge?.copyWith(
+                                            fontWeight: FontWeight.w800,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: AppSpacing.md),
                                   Expanded(
                                     child: Column(
                                       crossAxisAlignment:

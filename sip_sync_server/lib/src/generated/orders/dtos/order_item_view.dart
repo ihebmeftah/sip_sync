@@ -11,7 +11,8 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _is;
-import '../../auth/dtos/actor_type.dart' as _i6ch5qy5;
+import 'package:sip_sync_server/src/generated/protocol.dart' as _iaib1p48;
+import '../../orders/dtos/order_actor_view.dart' as _i1wfgxvh;
 import '../../orders/dtos/order_item_status.dart' as _iw3cmuga;
 
 abstract class OrderItemView
@@ -23,16 +24,11 @@ abstract class OrderItemView
     required this.articleName,
     required this.unitPrice,
     required this.status,
-    this.passedByType,
-    this.passedById,
-    this.preparedByType,
-    this.preparedById,
-    this.servedByType,
-    this.servedById,
-    this.paidToType,
-    this.paidToId,
-    this.cancelledByType,
-    this.cancelledById,
+    this.passedBy,
+    this.preparedBy,
+    this.servedBy,
+    this.paidTo,
+    this.cancelledBy,
     required this.createdAt,
     required this.updatedAt,
     this.preparedAt,
@@ -48,16 +44,11 @@ abstract class OrderItemView
     required String articleName,
     required double unitPrice,
     required _iw3cmuga.OrderItemStatus status,
-    _i6ch5qy5.ActorType? passedByType,
-    _is.UuidValue? passedById,
-    _i6ch5qy5.ActorType? preparedByType,
-    _is.UuidValue? preparedById,
-    _i6ch5qy5.ActorType? servedByType,
-    _is.UuidValue? servedById,
-    _i6ch5qy5.ActorType? paidToType,
-    _is.UuidValue? paidToId,
-    _i6ch5qy5.ActorType? cancelledByType,
-    _is.UuidValue? cancelledById,
+    _i1wfgxvh.OrderActorView? passedBy,
+    _i1wfgxvh.OrderActorView? preparedBy,
+    _i1wfgxvh.OrderActorView? servedBy,
+    _i1wfgxvh.OrderActorView? paidTo,
+    _i1wfgxvh.OrderActorView? cancelledBy,
     required DateTime createdAt,
     required DateTime updatedAt,
     DateTime? preparedAt,
@@ -80,53 +71,30 @@ abstract class OrderItemView
       status: _iw3cmuga.OrderItemStatus.fromJson(
         (jsonSerialization['status'] as String),
       ),
-      passedByType: jsonSerialization['passedByType'] == null
+      passedBy: jsonSerialization['passedBy'] == null
           ? null
-          : _i6ch5qy5.ActorType.fromJson(
-              (jsonSerialization['passedByType'] as String),
+          : _iaib1p48.Protocol().deserialize<_i1wfgxvh.OrderActorView>(
+              jsonSerialization['passedBy'],
             ),
-      passedById: jsonSerialization['passedById'] == null
+      preparedBy: jsonSerialization['preparedBy'] == null
           ? null
-          : _is.UuidValueJsonExtension.fromJson(
-              jsonSerialization['passedById'],
+          : _iaib1p48.Protocol().deserialize<_i1wfgxvh.OrderActorView>(
+              jsonSerialization['preparedBy'],
             ),
-      preparedByType: jsonSerialization['preparedByType'] == null
+      servedBy: jsonSerialization['servedBy'] == null
           ? null
-          : _i6ch5qy5.ActorType.fromJson(
-              (jsonSerialization['preparedByType'] as String),
+          : _iaib1p48.Protocol().deserialize<_i1wfgxvh.OrderActorView>(
+              jsonSerialization['servedBy'],
             ),
-      preparedById: jsonSerialization['preparedById'] == null
+      paidTo: jsonSerialization['paidTo'] == null
           ? null
-          : _is.UuidValueJsonExtension.fromJson(
-              jsonSerialization['preparedById'],
+          : _iaib1p48.Protocol().deserialize<_i1wfgxvh.OrderActorView>(
+              jsonSerialization['paidTo'],
             ),
-      servedByType: jsonSerialization['servedByType'] == null
+      cancelledBy: jsonSerialization['cancelledBy'] == null
           ? null
-          : _i6ch5qy5.ActorType.fromJson(
-              (jsonSerialization['servedByType'] as String),
-            ),
-      servedById: jsonSerialization['servedById'] == null
-          ? null
-          : _is.UuidValueJsonExtension.fromJson(
-              jsonSerialization['servedById'],
-            ),
-      paidToType: jsonSerialization['paidToType'] == null
-          ? null
-          : _i6ch5qy5.ActorType.fromJson(
-              (jsonSerialization['paidToType'] as String),
-            ),
-      paidToId: jsonSerialization['paidToId'] == null
-          ? null
-          : _is.UuidValueJsonExtension.fromJson(jsonSerialization['paidToId']),
-      cancelledByType: jsonSerialization['cancelledByType'] == null
-          ? null
-          : _i6ch5qy5.ActorType.fromJson(
-              (jsonSerialization['cancelledByType'] as String),
-            ),
-      cancelledById: jsonSerialization['cancelledById'] == null
-          ? null
-          : _is.UuidValueJsonExtension.fromJson(
-              jsonSerialization['cancelledById'],
+          : _iaib1p48.Protocol().deserialize<_i1wfgxvh.OrderActorView>(
+              jsonSerialization['cancelledBy'],
             ),
       createdAt: _is.DateTimeJsonExtension.fromJson(
         jsonSerialization['createdAt'],
@@ -163,25 +131,15 @@ abstract class OrderItemView
 
   _iw3cmuga.OrderItemStatus status;
 
-  _i6ch5qy5.ActorType? passedByType;
+  _i1wfgxvh.OrderActorView? passedBy;
 
-  _is.UuidValue? passedById;
+  _i1wfgxvh.OrderActorView? preparedBy;
 
-  _i6ch5qy5.ActorType? preparedByType;
+  _i1wfgxvh.OrderActorView? servedBy;
 
-  _is.UuidValue? preparedById;
+  _i1wfgxvh.OrderActorView? paidTo;
 
-  _i6ch5qy5.ActorType? servedByType;
-
-  _is.UuidValue? servedById;
-
-  _i6ch5qy5.ActorType? paidToType;
-
-  _is.UuidValue? paidToId;
-
-  _i6ch5qy5.ActorType? cancelledByType;
-
-  _is.UuidValue? cancelledById;
+  _i1wfgxvh.OrderActorView? cancelledBy;
 
   DateTime createdAt;
 
@@ -205,16 +163,11 @@ abstract class OrderItemView
     String? articleName,
     double? unitPrice,
     _iw3cmuga.OrderItemStatus? status,
-    _i6ch5qy5.ActorType? passedByType,
-    _is.UuidValue? passedById,
-    _i6ch5qy5.ActorType? preparedByType,
-    _is.UuidValue? preparedById,
-    _i6ch5qy5.ActorType? servedByType,
-    _is.UuidValue? servedById,
-    _i6ch5qy5.ActorType? paidToType,
-    _is.UuidValue? paidToId,
-    _i6ch5qy5.ActorType? cancelledByType,
-    _is.UuidValue? cancelledById,
+    _i1wfgxvh.OrderActorView? passedBy,
+    _i1wfgxvh.OrderActorView? preparedBy,
+    _i1wfgxvh.OrderActorView? servedBy,
+    _i1wfgxvh.OrderActorView? paidTo,
+    _i1wfgxvh.OrderActorView? cancelledBy,
     DateTime? createdAt,
     DateTime? updatedAt,
     DateTime? preparedAt,
@@ -232,16 +185,11 @@ abstract class OrderItemView
       'articleName': articleName,
       'unitPrice': unitPrice,
       'status': status.toJson(),
-      if (passedByType != null) 'passedByType': passedByType?.toJson(),
-      if (passedById != null) 'passedById': passedById?.toJson(),
-      if (preparedByType != null) 'preparedByType': preparedByType?.toJson(),
-      if (preparedById != null) 'preparedById': preparedById?.toJson(),
-      if (servedByType != null) 'servedByType': servedByType?.toJson(),
-      if (servedById != null) 'servedById': servedById?.toJson(),
-      if (paidToType != null) 'paidToType': paidToType?.toJson(),
-      if (paidToId != null) 'paidToId': paidToId?.toJson(),
-      if (cancelledByType != null) 'cancelledByType': cancelledByType?.toJson(),
-      if (cancelledById != null) 'cancelledById': cancelledById?.toJson(),
+      if (passedBy != null) 'passedBy': passedBy?.toJson(),
+      if (preparedBy != null) 'preparedBy': preparedBy?.toJson(),
+      if (servedBy != null) 'servedBy': servedBy?.toJson(),
+      if (paidTo != null) 'paidTo': paidTo?.toJson(),
+      if (cancelledBy != null) 'cancelledBy': cancelledBy?.toJson(),
       'createdAt': createdAt.toJson(),
       'updatedAt': updatedAt.toJson(),
       if (preparedAt != null) 'preparedAt': preparedAt?.toJson(),
@@ -261,16 +209,11 @@ abstract class OrderItemView
       'articleName': articleName,
       'unitPrice': unitPrice,
       'status': status.toJson(),
-      if (passedByType != null) 'passedByType': passedByType?.toJson(),
-      if (passedById != null) 'passedById': passedById?.toJson(),
-      if (preparedByType != null) 'preparedByType': preparedByType?.toJson(),
-      if (preparedById != null) 'preparedById': preparedById?.toJson(),
-      if (servedByType != null) 'servedByType': servedByType?.toJson(),
-      if (servedById != null) 'servedById': servedById?.toJson(),
-      if (paidToType != null) 'paidToType': paidToType?.toJson(),
-      if (paidToId != null) 'paidToId': paidToId?.toJson(),
-      if (cancelledByType != null) 'cancelledByType': cancelledByType?.toJson(),
-      if (cancelledById != null) 'cancelledById': cancelledById?.toJson(),
+      if (passedBy != null) 'passedBy': passedBy?.toJsonForProtocol(),
+      if (preparedBy != null) 'preparedBy': preparedBy?.toJsonForProtocol(),
+      if (servedBy != null) 'servedBy': servedBy?.toJsonForProtocol(),
+      if (paidTo != null) 'paidTo': paidTo?.toJsonForProtocol(),
+      if (cancelledBy != null) 'cancelledBy': cancelledBy?.toJsonForProtocol(),
       'createdAt': createdAt.toJson(),
       'updatedAt': updatedAt.toJson(),
       if (preparedAt != null) 'preparedAt': preparedAt?.toJson(),
@@ -296,16 +239,11 @@ class _OrderItemViewImpl extends OrderItemView {
     required String articleName,
     required double unitPrice,
     required _iw3cmuga.OrderItemStatus status,
-    _i6ch5qy5.ActorType? passedByType,
-    _is.UuidValue? passedById,
-    _i6ch5qy5.ActorType? preparedByType,
-    _is.UuidValue? preparedById,
-    _i6ch5qy5.ActorType? servedByType,
-    _is.UuidValue? servedById,
-    _i6ch5qy5.ActorType? paidToType,
-    _is.UuidValue? paidToId,
-    _i6ch5qy5.ActorType? cancelledByType,
-    _is.UuidValue? cancelledById,
+    _i1wfgxvh.OrderActorView? passedBy,
+    _i1wfgxvh.OrderActorView? preparedBy,
+    _i1wfgxvh.OrderActorView? servedBy,
+    _i1wfgxvh.OrderActorView? paidTo,
+    _i1wfgxvh.OrderActorView? cancelledBy,
     required DateTime createdAt,
     required DateTime updatedAt,
     DateTime? preparedAt,
@@ -319,16 +257,11 @@ class _OrderItemViewImpl extends OrderItemView {
          articleName: articleName,
          unitPrice: unitPrice,
          status: status,
-         passedByType: passedByType,
-         passedById: passedById,
-         preparedByType: preparedByType,
-         preparedById: preparedById,
-         servedByType: servedByType,
-         servedById: servedById,
-         paidToType: paidToType,
-         paidToId: paidToId,
-         cancelledByType: cancelledByType,
-         cancelledById: cancelledById,
+         passedBy: passedBy,
+         preparedBy: preparedBy,
+         servedBy: servedBy,
+         paidTo: paidTo,
+         cancelledBy: cancelledBy,
          createdAt: createdAt,
          updatedAt: updatedAt,
          preparedAt: preparedAt,
@@ -348,16 +281,11 @@ class _OrderItemViewImpl extends OrderItemView {
     String? articleName,
     double? unitPrice,
     _iw3cmuga.OrderItemStatus? status,
-    Object? passedByType = _Undefined,
-    Object? passedById = _Undefined,
-    Object? preparedByType = _Undefined,
-    Object? preparedById = _Undefined,
-    Object? servedByType = _Undefined,
-    Object? servedById = _Undefined,
-    Object? paidToType = _Undefined,
-    Object? paidToId = _Undefined,
-    Object? cancelledByType = _Undefined,
-    Object? cancelledById = _Undefined,
+    Object? passedBy = _Undefined,
+    Object? preparedBy = _Undefined,
+    Object? servedBy = _Undefined,
+    Object? paidTo = _Undefined,
+    Object? cancelledBy = _Undefined,
     DateTime? createdAt,
     DateTime? updatedAt,
     Object? preparedAt = _Undefined,
@@ -372,30 +300,21 @@ class _OrderItemViewImpl extends OrderItemView {
       articleName: articleName ?? this.articleName,
       unitPrice: unitPrice ?? this.unitPrice,
       status: status ?? this.status,
-      passedByType: passedByType is _i6ch5qy5.ActorType?
-          ? passedByType
-          : this.passedByType,
-      passedById: passedById is _is.UuidValue? ? passedById : this.passedById,
-      preparedByType: preparedByType is _i6ch5qy5.ActorType?
-          ? preparedByType
-          : this.preparedByType,
-      preparedById: preparedById is _is.UuidValue?
-          ? preparedById
-          : this.preparedById,
-      servedByType: servedByType is _i6ch5qy5.ActorType?
-          ? servedByType
-          : this.servedByType,
-      servedById: servedById is _is.UuidValue? ? servedById : this.servedById,
-      paidToType: paidToType is _i6ch5qy5.ActorType?
-          ? paidToType
-          : this.paidToType,
-      paidToId: paidToId is _is.UuidValue? ? paidToId : this.paidToId,
-      cancelledByType: cancelledByType is _i6ch5qy5.ActorType?
-          ? cancelledByType
-          : this.cancelledByType,
-      cancelledById: cancelledById is _is.UuidValue?
-          ? cancelledById
-          : this.cancelledById,
+      passedBy: passedBy is _i1wfgxvh.OrderActorView?
+          ? passedBy
+          : this.passedBy?.copyWith(),
+      preparedBy: preparedBy is _i1wfgxvh.OrderActorView?
+          ? preparedBy
+          : this.preparedBy?.copyWith(),
+      servedBy: servedBy is _i1wfgxvh.OrderActorView?
+          ? servedBy
+          : this.servedBy?.copyWith(),
+      paidTo: paidTo is _i1wfgxvh.OrderActorView?
+          ? paidTo
+          : this.paidTo?.copyWith(),
+      cancelledBy: cancelledBy is _i1wfgxvh.OrderActorView?
+          ? cancelledBy
+          : this.cancelledBy?.copyWith(),
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       preparedAt: preparedAt is DateTime? ? preparedAt : this.preparedAt,

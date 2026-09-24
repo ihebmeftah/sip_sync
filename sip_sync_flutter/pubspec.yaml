@@ -3,7 +3,7 @@ description: A new Flutter project with Serverpod.
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `pub publish`. This is preferred for private packages.
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -18,8 +18,8 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: '^3.12.2'
-  flutter: '^3.44.4'
+  sdk: "^3.12.2"
+  flutter: "^3.44.4"
 
 resolution: workspace
 
@@ -37,8 +37,8 @@ dependencies:
   intl: any
   sip_sync_client:
     path: ../sip_sync_client
-  serverpod_flutter: 4.0.0
-  serverpod_auth_idp_flutter: 4.0.0
+  serverpod_flutter: 4.0.2
+  serverpod_auth_idp_flutter: 4.0.2
   shared_preferences: ^2.5.5
 
 dev_dependencies:
@@ -46,7 +46,7 @@ dev_dependencies:
   flutter_driver:
     sdk: flutter
   build_runner: ^2.4.15
-  flutter_lints: '>=3.0.0 <7.0.0'
+  flutter_lints: ">=3.0.0 <7.0.0"
   flutter_test:
     sdk: flutter
   go_router_builder: ^4.0.1

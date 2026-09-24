@@ -78,6 +78,7 @@ import 'menu/dtos/menu_category_exception.dart' as _idwl0wi8;
 import 'menu/dtos/menu_category_update.dart' as _iu0xgttg;
 import 'menu/dtos/menu_category_view.dart' as _igs74mgr;
 import 'menu/dtos/units_type.dart' as _ipcoxh71;
+import 'orders/dtos/order_actor_view.dart' as _ic5jn53k;
 import 'orders/dtos/order_add_items.dart' as _iqdnv1pi;
 import 'orders/dtos/order_create.dart' as _iwmhqcsn;
 import 'orders/dtos/order_error_code.dart' as _iepprhv5;
@@ -138,6 +139,7 @@ export 'menu/dtos/menu_category_exception.dart';
 export 'menu/dtos/menu_category_update.dart';
 export 'menu/dtos/menu_category_view.dart';
 export 'menu/dtos/units_type.dart';
+export 'orders/dtos/order_actor_view.dart';
 export 'orders/dtos/order_add_items.dart';
 export 'orders/dtos/order_create.dart';
 export 'orders/dtos/order_error_code.dart';
@@ -321,6 +323,9 @@ class Protocol extends _isc.SerializationManager {
     }
     if (t == _ipcoxh71.UnitsType) {
       return _ipcoxh71.UnitsType.fromJson(data) as T;
+    }
+    if (t == _ic5jn53k.OrderActorView) {
+      return _ic5jn53k.OrderActorView.fromJson(data) as T;
     }
     if (t == _iqdnv1pi.OrderAddItems) {
       return _iqdnv1pi.OrderAddItems.fromJson(data) as T;
@@ -574,6 +579,10 @@ class Protocol extends _isc.SerializationManager {
     if (t == _isc.getType<_ipcoxh71.UnitsType?>()) {
       return (data != null ? _ipcoxh71.UnitsType.fromJson(data) : null) as T;
     }
+    if (t == _isc.getType<_ic5jn53k.OrderActorView?>()) {
+      return (data != null ? _ic5jn53k.OrderActorView.fromJson(data) : null)
+          as T;
+    }
     if (t == _isc.getType<_iqdnv1pi.OrderAddItems?>()) {
       return (data != null ? _iqdnv1pi.OrderAddItems.fromJson(data) : null)
           as T;
@@ -774,6 +783,7 @@ class Protocol extends _isc.SerializationManager {
       _iu0xgttg.MenuCategoryUpdate => 'MenuCategoryUpdate',
       _igs74mgr.MenuCategoryView => 'MenuCategoryView',
       _ipcoxh71.UnitsType => 'UnitsType',
+      _ic5jn53k.OrderActorView => 'OrderActorView',
       _iqdnv1pi.OrderAddItems => 'OrderAddItems',
       _iwmhqcsn.OrderCreate => 'OrderCreate',
       _iepprhv5.OrderErrorCode => 'OrderErrorCode',
@@ -892,6 +902,8 @@ class Protocol extends _isc.SerializationManager {
         return 'MenuCategoryView';
       case _ipcoxh71.UnitsType():
         return 'UnitsType';
+      case _ic5jn53k.OrderActorView():
+        return 'OrderActorView';
       case _iqdnv1pi.OrderAddItems():
         return 'OrderAddItems';
       case _iwmhqcsn.OrderCreate():
@@ -1077,6 +1089,9 @@ class Protocol extends _isc.SerializationManager {
     }
     if (dataClassName == 'UnitsType') {
       return deserialize<_ipcoxh71.UnitsType>(data['data']);
+    }
+    if (dataClassName == 'OrderActorView') {
+      return deserialize<_ic5jn53k.OrderActorView>(data['data']);
     }
     if (dataClassName == 'OrderAddItems') {
       return deserialize<_iqdnv1pi.OrderAddItems>(data['data']);

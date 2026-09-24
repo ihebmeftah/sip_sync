@@ -90,30 +90,30 @@ Future<void> showOrderItemInfoDialog(
                   label: l10n.orderFieldCancelledAt,
                   value: formatOrderDateTime(context, item.cancelledAt!),
                 ),
-              if (item.passedByType != null)
+              if (item.passedBy != null)
                 _InfoRow(
                   label: l10n.orderFieldPassedBy,
-                  value: item.passedByType!.name,
+                  value: formatOrderActor(l10n, item.passedBy!),
                 ),
-              if (item.preparedByType != null)
+              if (item.preparedBy != null)
                 _InfoRow(
                   label: l10n.orderFieldPreparedBy,
-                  value: item.preparedByType!.name,
+                  value: formatOrderActor(l10n, item.preparedBy!),
                 ),
-              if (item.servedByType != null)
+              if (item.servedBy != null)
                 _InfoRow(
                   label: l10n.orderFieldServedBy,
-                  value: item.servedByType!.name,
+                  value: formatOrderActor(l10n, item.servedBy!),
                 ),
-              if (item.paidToType != null)
+              if (item.paidTo != null)
                 _InfoRow(
                   label: l10n.orderFieldPaidTo,
-                  value: item.paidToType!.name,
+                  value: formatOrderActor(l10n, item.paidTo!),
                 ),
-              if (item.cancelledByType != null)
+              if (item.cancelledBy != null)
                 _InfoRow(
                   label: l10n.orderFieldCancelledBy,
-                  value: item.cancelledByType!.name,
+                  value: formatOrderActor(l10n, item.cancelledBy!),
                 ),
               const SizedBox(height: AppSpacing.lg),
               Align(
@@ -195,6 +195,20 @@ Future<void> showOrderInfoDialog(
                 _InfoRow(
                   label: l10n.orderFieldPaidAt,
                   value: formatOrderDateTime(context, order.lastPaidAt!),
+                ),
+              _InfoRow(
+                label: l10n.orderFieldLaunchedBy,
+                value: formatOrderActor(l10n, order.launchedBy),
+              ),
+              if (order.lastPaidBy != null)
+                _InfoRow(
+                  label: l10n.orderFieldPaidTo,
+                  value: formatOrderActor(l10n, order.lastPaidBy!),
+                ),
+              if (order.cancelledBy != null)
+                _InfoRow(
+                  label: l10n.orderFieldCancelledBy,
+                  value: formatOrderActor(l10n, order.cancelledBy!),
                 ),
               const SizedBox(height: AppSpacing.lg),
               Align(

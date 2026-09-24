@@ -368,6 +368,10 @@
   "orderItemsHeading": "الأصناف",
   "orderDetailTitle": "طلب · {table}",
   "@orderDetailTitle": { "placeholders": { "table": { "type": "String" } } },
+  "orderRefTitle": "طلب · #{ref}",
+  "@orderRefTitle": { "placeholders": { "ref": { "type": "int" } } },
+  "orderRefLabel": "#{ref}",
+  "@orderRefLabel": { "placeholders": { "ref": { "type": "int" } } },
   "orderLaunchedBy": "أنشأه {actor}",
   "@orderLaunchedBy": { "placeholders": { "actor": { "type": "String" } } },
   "orderLastPaidBy": "آخر دفع بواسطة {actor}",
@@ -390,10 +394,22 @@
   "orderFieldPreparedBy": "أعدّه",
   "orderFieldServedBy": "قدّمه",
   "orderFieldPaidTo": "قبض",
+  "orderFieldLaunchedBy": "أنشأه",
   "orderFieldCancelledBy": "ألغاه",
   "orderFieldCancelledAt": "أُلغي",
   "orderCancelledBy": "ألغاه {actor}",
   "@orderCancelledBy": { "placeholders": { "actor": { "type": "String" } } },
+  "orderActorLabel": "{role} - {name}",
+  "@orderActorLabel": {
+    "placeholders": {
+      "role": { "type": "String" },
+      "name": { "type": "String" }
+    }
+  },
+  "actorRoleOwner": "المالك",
+  "actorRoleEmployee": "موظف",
+  "actorRoleCustomer": "عميل",
+  "actorRoleSuperAdmin": "مسؤول",
   "orderFieldCancelledAtLabel": "أُلغي {when}",
   "@orderFieldCancelledAtLabel": {
     "placeholders": { "when": { "type": "String" } }

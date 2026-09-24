@@ -13,7 +13,7 @@ void main() {
           MenuArticleView article,
           IngredientView beans,
           IngredientView milk,
-        })> _setup() async {
+        })> setupFixture() async {
       final auth = await endpoints.ownerAuth.register(
         sessionBuilder,
         EmailRegisterCreate(
@@ -96,7 +96,7 @@ void main() {
     }
 
     test('owner manages optional composition lines', () async {
-      final setup = await _setup();
+      final setup = await setupFixture();
       final empty = await endpoints.articleComposition.list(
         setup.ownerSession,
         setup.article.id,

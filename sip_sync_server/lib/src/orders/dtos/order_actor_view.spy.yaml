@@ -1,0 +1,7 @@
+### Resolved actor shown on order / item attribution lines.
+class: OrderActorView
+fields:
+  type: ActorType
+  id: UuidValue
+  firstName: String
+  lastName: String

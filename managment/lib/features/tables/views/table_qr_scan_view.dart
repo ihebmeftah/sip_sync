@@ -53,9 +53,9 @@ class _TableQrScanViewState extends ConsumerState<TableQrScanView> {
 
     // Lock immediately so a held QR cannot fire snackbars repeatedly.
     _handling = true;
+    final l10n = AppLocalizations.of(context)!;
     await _controller.stop();
 
-    final l10n = AppLocalizations.of(context)!;
     final payload = TableQrPayload.tryParse(raw);
     if (payload == null) {
       await _rejectAndClose(l10n.tableQrInvalid);

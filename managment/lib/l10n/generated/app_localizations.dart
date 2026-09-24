@@ -1954,6 +1954,18 @@ abstract class AppLocalizations {
   /// **'Order · {table}'**
   String orderDetailTitle(String table);
 
+  /// No description provided for @orderRefTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Order · #{ref}'**
+  String orderRefTitle(int ref);
+
+  /// No description provided for @orderRefLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'#{ref}'**
+  String orderRefLabel(int ref);
+
   /// No description provided for @orderLaunchedBy.
   ///
   /// In en, this message translates to:
@@ -2056,6 +2068,12 @@ abstract class AppLocalizations {
   /// **'Paid to'**
   String get orderFieldPaidTo;
 
+  /// No description provided for @orderFieldLaunchedBy.
+  ///
+  /// In en, this message translates to:
+  /// **'Launched by'**
+  String get orderFieldLaunchedBy;
+
   /// No description provided for @orderFieldCancelledBy.
   ///
   /// In en, this message translates to:
@@ -2073,6 +2091,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Cancelled by {actor}'**
   String orderCancelledBy(String actor);
+
+  /// No description provided for @orderActorLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'{role} - {name}'**
+  String orderActorLabel(String role, String name);
+
+  /// No description provided for @actorRoleOwner.
+  ///
+  /// In en, this message translates to:
+  /// **'Owner'**
+  String get actorRoleOwner;
+
+  /// No description provided for @actorRoleEmployee.
+  ///
+  /// In en, this message translates to:
+  /// **'Employee'**
+  String get actorRoleEmployee;
+
+  /// No description provided for @actorRoleCustomer.
+  ///
+  /// In en, this message translates to:
+  /// **'Customer'**
+  String get actorRoleCustomer;
+
+  /// No description provided for @actorRoleSuperAdmin.
+  ///
+  /// In en, this message translates to:
+  /// **'Admin'**
+  String get actorRoleSuperAdmin;
 
   /// No description provided for @orderFieldCancelledAtLabel.
   ///

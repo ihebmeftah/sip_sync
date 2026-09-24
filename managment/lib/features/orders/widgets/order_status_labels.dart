@@ -11,6 +11,21 @@ String orderStatusLabel(AppLocalizations l10n, OrderStatus status) {
   };
 }
 
+/// Role + full name, e.g. `Employee - Sara Benali`.
+String formatOrderActor(AppLocalizations l10n, OrderActorView actor) {
+  final role = switch (actor.type) {
+    ActorType.owner => l10n.actorRoleOwner,
+    ActorType.employee => l10n.actorRoleEmployee,
+    ActorType.customer => l10n.actorRoleCustomer,
+    ActorType.superAdmin => l10n.actorRoleSuperAdmin,
+  };
+  final name = '${actor.firstName} ${actor.lastName}'.trim();
+  if (name.isEmpty) {
+    return role;
+  }
+  return l10n.orderActorLabel(role, name);
+}
+
 String orderItemStatusLabel(AppLocalizations l10n, OrderItemStatus status) {
   return switch (status) {
     OrderItemStatus.progress => l10n.orderItemStatusProgress,

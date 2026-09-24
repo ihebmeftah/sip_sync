@@ -7,7 +7,7 @@ import 'test_tools/serverpod_test_tools.dart';
 void main() {
   withServerpod('Given ingredients', (sessionBuilder, endpoints) {
     Future<({dynamic ownerSession, BuildingView building})>
-    _ownerWithBuilding() async {
+    ownerWithBuilding() async {
       final auth = await endpoints.ownerAuth.register(
         sessionBuilder,
         EmailRegisterCreate(
@@ -47,7 +47,7 @@ void main() {
     test(
       'owner creates lists and deletes ingredients with unique names',
       () async {
-        final setup = await _ownerWithBuilding();
+        final setup = await ownerWithBuilding();
         final created = await endpoints.ingredient.create(
           setup.ownerSession,
           IngredientCreate(

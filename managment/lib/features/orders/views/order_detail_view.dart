@@ -150,15 +150,24 @@ class _OrderDetailViewState extends ConsumerState<OrderDetailView> {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: Text(l10n.navOrders),
+        title: Text(
+          order == null
+              ? l10n.navOrders
+              : l10n.orderRefTitle(order.ref),
+        ),
         actions: [
           IconButton(
             tooltip: l10n.orderInfo,
             visualDensity: VisualDensity.compact,
             constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
             padding: EdgeInsets.zero,
-            onPressed: () =>
-                showOrderInfoDialog(context, order: order!, currency: currency),
+            onPressed: order == null
+                ? null
+                : () => showOrderInfoDialog(
+                    context,
+                    order: order,
+                    currency: currency,
+                  ),
             icon: const Icon(Icons.info_outline, size: 20),
           ),
         ],
@@ -352,16 +361,18 @@ class _OrderHeaderCard extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  l10n.orderLaunchedBy(order.launchedByType.name),
+                  l10n.orderLaunchedBy(formatOrderActor(l10n, order.launchedBy)),
                   style: text.bodySmall,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
-              if (order.lastPaidByType != null)
+              if (order.lastPaidBy != null)
                 Expanded(
                   child: Text(
-                    l10n.orderLastPaidBy(order.lastPaidByType!.name),
+                    l10n.orderLastPaidBy(
+                      formatOrderActor(l10n, order.lastPaidBy!),
+                    ),
                     style: text.bodySmall,
                     textAlign: TextAlign.end,
                     maxLines: 2,
@@ -370,10 +381,10 @@ class _OrderHeaderCard extends StatelessWidget {
                 ),
             ],
           ),
-          if (order.cancelledByType != null) ...[
+          if (order.cancelledBy != null) ...[
             const SizedBox(height: 4),
             Text(
-              l10n.orderCancelledBy(order.cancelledByType!.name),
+              l10n.orderCancelledBy(formatOrderActor(l10n, order.cancelledBy!)),
               style: text.bodySmall,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,

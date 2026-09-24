@@ -2,10 +2,10 @@ name: sip_sync_client
 description: Starting point for a Serverpod client.
 
 environment:
-  sdk: '^3.12.2'
+  sdk: "^3.12.2"
 
 resolution: workspace
 
 dependencies:
-  serverpod_auth_idp_client: 4.0.0
-  serverpod_client: 4.0.0
+  serverpod_auth_idp_client: 4.0.2
+  serverpod_client: 4.0.2

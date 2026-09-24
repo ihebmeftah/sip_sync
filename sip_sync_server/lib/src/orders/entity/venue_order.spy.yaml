@@ -6,6 +6,8 @@ fields:
   id: UuidValue?, defaultPersist=random_v7
   building: Building?, relation(name=building_orders, onDelete=Cascade)
   venueTable: VenueTable?, relation(name=table_orders, optional, onDelete=SetNull)
+  ## Human-facing ticket number, unique per building (assigned on create).
+  ref: int
   status: OrderStatus
   launchedByType: ActorType
   launchedById: UuidValue
@@ -25,3 +27,6 @@ indexes:
     fields: buildingId, status
   venue_order_table_idx:
     fields: venueTableId
+  venue_order_building_ref_idx:
+    fields: buildingId, ref
+    unique: true

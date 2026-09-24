@@ -1,10 +1,10 @@
 name: backoffice
 description: Sip Sync platform administration.
-publish_to: 'none'
+publish_to: "none"
 version: 1.0.0+1
 
 environment:
-  sdk: '^3.12.2'
+  sdk: "^3.12.2"
 
 resolution: workspace
 
@@ -22,8 +22,8 @@ dependencies:
   intl: any
   sip_sync_client:
     path: ../sip_sync_client
-  serverpod_flutter: 4.0.0
-  serverpod_auth_idp_flutter: 4.0.0
+  serverpod_flutter: 4.0.2
+  serverpod_auth_idp_flutter: 4.0.2
   shared_preferences: ^2.5.5
 
 dev_dependencies:

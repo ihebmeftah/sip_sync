@@ -89,6 +89,7 @@ import 'menu/entity/article_composition.dart' as _i3yk9qsn;
 import 'menu/entity/ingredient.dart' as _idxha5j7;
 import 'menu/entity/menu_article.dart' as _iowcl7dy;
 import 'menu/entity/menu_category.dart' as _iiovp1sp;
+import 'orders/dtos/order_actor_view.dart' as _ic5jn53k;
 import 'orders/dtos/order_add_items.dart' as _iqdnv1pi;
 import 'orders/dtos/order_create.dart' as _iwmhqcsn;
 import 'orders/dtos/order_error_code.dart' as _iepprhv5;
@@ -162,6 +163,7 @@ export 'menu/entity/article_composition.dart';
 export 'menu/entity/ingredient.dart';
 export 'menu/entity/menu_article.dart';
 export 'menu/entity/menu_category.dart';
+export 'orders/dtos/order_actor_view.dart';
 export 'orders/dtos/order_add_items.dart';
 export 'orders/dtos/order_create.dart';
 export 'orders/dtos/order_error_code.dart';
@@ -1250,6 +1252,12 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'UuidValue?',
         ),
         _isp.ColumnDefinition(
+          name: 'ref',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _isp.ColumnDefinition(
           name: 'status',
           columnType: _isp.ColumnType.text,
           isNullable: false,
@@ -1380,6 +1388,23 @@ class Protocol extends _is.DatabaseSerializationManager {
           ],
           type: 'btree',
           isUnique: false,
+          isPrimary: false,
+        ),
+        _isp.IndexDefinition(
+          indexName: 'venue_order_building_ref_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'buildingId',
+            ),
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'ref',
+            ),
+          ],
+          type: 'btree',
+          isUnique: true,
           isPrimary: false,
         ),
       ],
@@ -1875,6 +1900,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == _iiovp1sp.MenuCategory) {
       return _iiovp1sp.MenuCategory.fromJson(data) as T;
     }
+    if (t == _ic5jn53k.OrderActorView) {
+      return _ic5jn53k.OrderActorView.fromJson(data) as T;
+    }
     if (t == _iqdnv1pi.OrderAddItems) {
       return _iqdnv1pi.OrderAddItems.fromJson(data) as T;
     }
@@ -2166,6 +2194,10 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     if (t == _is.getType<_iiovp1sp.MenuCategory?>()) {
       return (data != null ? _iiovp1sp.MenuCategory.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_ic5jn53k.OrderActorView?>()) {
+      return (data != null ? _ic5jn53k.OrderActorView.fromJson(data) : null)
+          as T;
     }
     if (t == _is.getType<_iqdnv1pi.OrderAddItems?>()) {
       return (data != null ? _iqdnv1pi.OrderAddItems.fromJson(data) : null)
@@ -2516,6 +2548,7 @@ class Protocol extends _is.DatabaseSerializationManager {
       _idxha5j7.Ingredient => 'Ingredient',
       _iowcl7dy.MenuArticle => 'MenuArticle',
       _iiovp1sp.MenuCategory => 'MenuCategory',
+      _ic5jn53k.OrderActorView => 'OrderActorView',
       _iqdnv1pi.OrderAddItems => 'OrderAddItems',
       _iwmhqcsn.OrderCreate => 'OrderCreate',
       _iepprhv5.OrderErrorCode => 'OrderErrorCode',
@@ -2657,6 +2690,8 @@ class Protocol extends _is.DatabaseSerializationManager {
         return 'MenuArticle';
       case _iiovp1sp.MenuCategory():
         return 'MenuCategory';
+      case _ic5jn53k.OrderActorView():
+        return 'OrderActorView';
       case _iqdnv1pi.OrderAddItems():
         return 'OrderAddItems';
       case _iwmhqcsn.OrderCreate():
@@ -2882,6 +2917,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     if (dataClassName == 'MenuCategory') {
       return deserialize<_iiovp1sp.MenuCategory>(data['data']);
+    }
+    if (dataClassName == 'OrderActorView') {
+      return deserialize<_ic5jn53k.OrderActorView>(data['data']);
     }
     if (dataClassName == 'OrderAddItems') {
       return deserialize<_iqdnv1pi.OrderAddItems>(data['data']);

@@ -7,7 +7,7 @@ import 'test_tools/serverpod_test_tools.dart';
 void main() {
   withServerpod('Given menu catalog', (sessionBuilder, endpoints) {
     Future<({dynamic ownerSession, BuildingView building})>
-        _ownerWithBuilding() async {
+        ownerWithBuilding() async {
       final auth = await endpoints.ownerAuth.register(
         sessionBuilder,
         EmailRegisterCreate(
@@ -45,7 +45,7 @@ void main() {
     }
 
     test('owner creates and updates categories with unique names', () async {
-      final setup = await _ownerWithBuilding();
+      final setup = await ownerWithBuilding();
       final created = await endpoints.menuCategory.create(
         setup.ownerSession,
         MenuCategoryCreate(
@@ -88,7 +88,7 @@ void main() {
     });
 
     test('owner creates articles under a category with unique names', () async {
-      final setup = await _ownerWithBuilding();
+      final setup = await ownerWithBuilding();
       final category = await endpoints.menuCategory.create(
         setup.ownerSession,
         MenuCategoryCreate(

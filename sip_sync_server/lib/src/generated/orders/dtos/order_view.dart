@@ -12,7 +12,7 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _is;
 import 'package:sip_sync_server/src/generated/protocol.dart' as _iaib1p48;
-import '../../auth/dtos/actor_type.dart' as _i6ch5qy5;
+import '../../orders/dtos/order_actor_view.dart' as _i1wfgxvh;
 import '../../orders/dtos/order_item_view.dart' as _i5ik7hbb;
 import '../../orders/dtos/order_status.dart' as _iij1ihnv;
 
@@ -23,14 +23,12 @@ abstract class OrderView
     required this.buildingId,
     this.venueTableId,
     this.tableNumber,
+    required this.ref,
     required this.status,
-    required this.launchedByType,
-    required this.launchedById,
-    this.lastPaidByType,
-    this.lastPaidById,
+    required this.launchedBy,
+    this.lastPaidBy,
     this.lastPaidAt,
-    this.cancelledByType,
-    this.cancelledById,
+    this.cancelledBy,
     this.cancelledAt,
     required this.createdAt,
     required this.updatedAt,
@@ -43,14 +41,12 @@ abstract class OrderView
     required _is.UuidValue buildingId,
     _is.UuidValue? venueTableId,
     int? tableNumber,
+    required int ref,
     required _iij1ihnv.OrderStatus status,
-    required _i6ch5qy5.ActorType launchedByType,
-    required _is.UuidValue launchedById,
-    _i6ch5qy5.ActorType? lastPaidByType,
-    _is.UuidValue? lastPaidById,
+    required _i1wfgxvh.OrderActorView launchedBy,
+    _i1wfgxvh.OrderActorView? lastPaidBy,
     DateTime? lastPaidAt,
-    _i6ch5qy5.ActorType? cancelledByType,
-    _is.UuidValue? cancelledById,
+    _i1wfgxvh.OrderActorView? cancelledBy,
     DateTime? cancelledAt,
     required DateTime createdAt,
     required DateTime updatedAt,
@@ -70,37 +66,25 @@ abstract class OrderView
               jsonSerialization['venueTableId'],
             ),
       tableNumber: jsonSerialization['tableNumber'] as int?,
+      ref: jsonSerialization['ref'] as int,
       status: _iij1ihnv.OrderStatus.fromJson(
         (jsonSerialization['status'] as String),
       ),
-      launchedByType: _i6ch5qy5.ActorType.fromJson(
-        (jsonSerialization['launchedByType'] as String),
+      launchedBy: _iaib1p48.Protocol().deserialize<_i1wfgxvh.OrderActorView>(
+        jsonSerialization['launchedBy'],
       ),
-      launchedById: _is.UuidValueJsonExtension.fromJson(
-        jsonSerialization['launchedById'],
-      ),
-      lastPaidByType: jsonSerialization['lastPaidByType'] == null
+      lastPaidBy: jsonSerialization['lastPaidBy'] == null
           ? null
-          : _i6ch5qy5.ActorType.fromJson(
-              (jsonSerialization['lastPaidByType'] as String),
-            ),
-      lastPaidById: jsonSerialization['lastPaidById'] == null
-          ? null
-          : _is.UuidValueJsonExtension.fromJson(
-              jsonSerialization['lastPaidById'],
+          : _iaib1p48.Protocol().deserialize<_i1wfgxvh.OrderActorView>(
+              jsonSerialization['lastPaidBy'],
             ),
       lastPaidAt: jsonSerialization['lastPaidAt'] == null
           ? null
           : _is.DateTimeJsonExtension.fromJson(jsonSerialization['lastPaidAt']),
-      cancelledByType: jsonSerialization['cancelledByType'] == null
+      cancelledBy: jsonSerialization['cancelledBy'] == null
           ? null
-          : _i6ch5qy5.ActorType.fromJson(
-              (jsonSerialization['cancelledByType'] as String),
-            ),
-      cancelledById: jsonSerialization['cancelledById'] == null
-          ? null
-          : _is.UuidValueJsonExtension.fromJson(
-              jsonSerialization['cancelledById'],
+          : _iaib1p48.Protocol().deserialize<_i1wfgxvh.OrderActorView>(
+              jsonSerialization['cancelledBy'],
             ),
       cancelledAt: jsonSerialization['cancelledAt'] == null
           ? null
@@ -128,21 +112,17 @@ abstract class OrderView
 
   int? tableNumber;
 
+  int ref;
+
   _iij1ihnv.OrderStatus status;
 
-  _i6ch5qy5.ActorType launchedByType;
+  _i1wfgxvh.OrderActorView launchedBy;
 
-  _is.UuidValue launchedById;
-
-  _i6ch5qy5.ActorType? lastPaidByType;
-
-  _is.UuidValue? lastPaidById;
+  _i1wfgxvh.OrderActorView? lastPaidBy;
 
   DateTime? lastPaidAt;
 
-  _i6ch5qy5.ActorType? cancelledByType;
-
-  _is.UuidValue? cancelledById;
+  _i1wfgxvh.OrderActorView? cancelledBy;
 
   DateTime? cancelledAt;
 
@@ -162,14 +142,12 @@ abstract class OrderView
     _is.UuidValue? buildingId,
     _is.UuidValue? venueTableId,
     int? tableNumber,
+    int? ref,
     _iij1ihnv.OrderStatus? status,
-    _i6ch5qy5.ActorType? launchedByType,
-    _is.UuidValue? launchedById,
-    _i6ch5qy5.ActorType? lastPaidByType,
-    _is.UuidValue? lastPaidById,
+    _i1wfgxvh.OrderActorView? launchedBy,
+    _i1wfgxvh.OrderActorView? lastPaidBy,
     DateTime? lastPaidAt,
-    _i6ch5qy5.ActorType? cancelledByType,
-    _is.UuidValue? cancelledById,
+    _i1wfgxvh.OrderActorView? cancelledBy,
     DateTime? cancelledAt,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -184,14 +162,12 @@ abstract class OrderView
       'buildingId': buildingId.toJson(),
       if (venueTableId != null) 'venueTableId': venueTableId?.toJson(),
       if (tableNumber != null) 'tableNumber': tableNumber,
+      'ref': ref,
       'status': status.toJson(),
-      'launchedByType': launchedByType.toJson(),
-      'launchedById': launchedById.toJson(),
-      if (lastPaidByType != null) 'lastPaidByType': lastPaidByType?.toJson(),
-      if (lastPaidById != null) 'lastPaidById': lastPaidById?.toJson(),
+      'launchedBy': launchedBy.toJson(),
+      if (lastPaidBy != null) 'lastPaidBy': lastPaidBy?.toJson(),
       if (lastPaidAt != null) 'lastPaidAt': lastPaidAt?.toJson(),
-      if (cancelledByType != null) 'cancelledByType': cancelledByType?.toJson(),
-      if (cancelledById != null) 'cancelledById': cancelledById?.toJson(),
+      if (cancelledBy != null) 'cancelledBy': cancelledBy?.toJson(),
       if (cancelledAt != null) 'cancelledAt': cancelledAt?.toJson(),
       'createdAt': createdAt.toJson(),
       'updatedAt': updatedAt.toJson(),
@@ -208,14 +184,12 @@ abstract class OrderView
       'buildingId': buildingId.toJson(),
       if (venueTableId != null) 'venueTableId': venueTableId?.toJson(),
       if (tableNumber != null) 'tableNumber': tableNumber,
+      'ref': ref,
       'status': status.toJson(),
-      'launchedByType': launchedByType.toJson(),
-      'launchedById': launchedById.toJson(),
-      if (lastPaidByType != null) 'lastPaidByType': lastPaidByType?.toJson(),
-      if (lastPaidById != null) 'lastPaidById': lastPaidById?.toJson(),
+      'launchedBy': launchedBy.toJsonForProtocol(),
+      if (lastPaidBy != null) 'lastPaidBy': lastPaidBy?.toJsonForProtocol(),
       if (lastPaidAt != null) 'lastPaidAt': lastPaidAt?.toJson(),
-      if (cancelledByType != null) 'cancelledByType': cancelledByType?.toJson(),
-      if (cancelledById != null) 'cancelledById': cancelledById?.toJson(),
+      if (cancelledBy != null) 'cancelledBy': cancelledBy?.toJsonForProtocol(),
       if (cancelledAt != null) 'cancelledAt': cancelledAt?.toJson(),
       'createdAt': createdAt.toJson(),
       'updatedAt': updatedAt.toJson(),
@@ -238,14 +212,12 @@ class _OrderViewImpl extends OrderView {
     required _is.UuidValue buildingId,
     _is.UuidValue? venueTableId,
     int? tableNumber,
+    required int ref,
     required _iij1ihnv.OrderStatus status,
-    required _i6ch5qy5.ActorType launchedByType,
-    required _is.UuidValue launchedById,
-    _i6ch5qy5.ActorType? lastPaidByType,
-    _is.UuidValue? lastPaidById,
+    required _i1wfgxvh.OrderActorView launchedBy,
+    _i1wfgxvh.OrderActorView? lastPaidBy,
     DateTime? lastPaidAt,
-    _i6ch5qy5.ActorType? cancelledByType,
-    _is.UuidValue? cancelledById,
+    _i1wfgxvh.OrderActorView? cancelledBy,
     DateTime? cancelledAt,
     required DateTime createdAt,
     required DateTime updatedAt,
@@ -256,14 +228,12 @@ class _OrderViewImpl extends OrderView {
          buildingId: buildingId,
          venueTableId: venueTableId,
          tableNumber: tableNumber,
+         ref: ref,
          status: status,
-         launchedByType: launchedByType,
-         launchedById: launchedById,
-         lastPaidByType: lastPaidByType,
-         lastPaidById: lastPaidById,
+         launchedBy: launchedBy,
+         lastPaidBy: lastPaidBy,
          lastPaidAt: lastPaidAt,
-         cancelledByType: cancelledByType,
-         cancelledById: cancelledById,
+         cancelledBy: cancelledBy,
          cancelledAt: cancelledAt,
          createdAt: createdAt,
          updatedAt: updatedAt,
@@ -280,14 +250,12 @@ class _OrderViewImpl extends OrderView {
     _is.UuidValue? buildingId,
     Object? venueTableId = _Undefined,
     Object? tableNumber = _Undefined,
+    int? ref,
     _iij1ihnv.OrderStatus? status,
-    _i6ch5qy5.ActorType? launchedByType,
-    _is.UuidValue? launchedById,
-    Object? lastPaidByType = _Undefined,
-    Object? lastPaidById = _Undefined,
+    _i1wfgxvh.OrderActorView? launchedBy,
+    Object? lastPaidBy = _Undefined,
     Object? lastPaidAt = _Undefined,
-    Object? cancelledByType = _Undefined,
-    Object? cancelledById = _Undefined,
+    Object? cancelledBy = _Undefined,
     Object? cancelledAt = _Undefined,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -301,22 +269,16 @@ class _OrderViewImpl extends OrderView {
           ? venueTableId
           : this.venueTableId,
       tableNumber: tableNumber is int? ? tableNumber : this.tableNumber,
+      ref: ref ?? this.ref,
       status: status ?? this.status,
-      launchedByType: launchedByType ?? this.launchedByType,
-      launchedById: launchedById ?? this.launchedById,
-      lastPaidByType: lastPaidByType is _i6ch5qy5.ActorType?
-          ? lastPaidByType
-          : this.lastPaidByType,
-      lastPaidById: lastPaidById is _is.UuidValue?
-          ? lastPaidById
-          : this.lastPaidById,
+      launchedBy: launchedBy ?? this.launchedBy.copyWith(),
+      lastPaidBy: lastPaidBy is _i1wfgxvh.OrderActorView?
+          ? lastPaidBy
+          : this.lastPaidBy?.copyWith(),
       lastPaidAt: lastPaidAt is DateTime? ? lastPaidAt : this.lastPaidAt,
-      cancelledByType: cancelledByType is _i6ch5qy5.ActorType?
-          ? cancelledByType
-          : this.cancelledByType,
-      cancelledById: cancelledById is _is.UuidValue?
-          ? cancelledById
-          : this.cancelledById,
+      cancelledBy: cancelledBy is _i1wfgxvh.OrderActorView?
+          ? cancelledBy
+          : this.cancelledBy?.copyWith(),
       cancelledAt: cancelledAt is DateTime? ? cancelledAt : this.cancelledAt,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,

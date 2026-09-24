@@ -165,12 +165,16 @@ class _OrderDetailDialogState extends ConsumerState<_OrderDetailDialog> {
                   ),
                   const SizedBox(height: AppSpacing.sm),
                   Text(
-                    l10n.orderLaunchedBy(order.launchedByType.name),
+                    l10n.orderLaunchedBy(
+                      formatOrderActor(l10n, order.launchedBy),
+                    ),
                     style: text.bodySmall,
                   ),
-                  if (order.lastPaidByType != null)
+                  if (order.lastPaidBy != null)
                     Text(
-                      l10n.orderLastPaidBy(order.lastPaidByType!.name),
+                      l10n.orderLastPaidBy(
+                        formatOrderActor(l10n, order.lastPaidBy!),
+                      ),
                       style: text.bodySmall,
                     ),
                   const SizedBox(height: AppSpacing.lg),

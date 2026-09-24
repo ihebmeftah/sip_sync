@@ -7,7 +7,7 @@ import 'test_tools/serverpod_test_tools.dart';
 void main() {
   withServerpod('Given venue tables', (sessionBuilder, endpoints) {
     Future<({dynamic ownerSession, BuildingView building})>
-    _ownerWithBuilding() async {
+    ownerWithBuilding() async {
       final auth = await endpoints.ownerAuth.register(
         sessionBuilder,
         EmailRegisterCreate(
@@ -47,7 +47,7 @@ void main() {
     test(
       'owner creates sequential tables with computed available status',
       () async {
-        final setup = await _ownerWithBuilding();
+        final setup = await ownerWithBuilding();
         final created = await endpoints.venueTable.create(
           setup.ownerSession,
           VenueTableCreate(
@@ -83,7 +83,7 @@ void main() {
     );
 
     test('owner can update seats and active but number stays fixed', () async {
-      final setup = await _ownerWithBuilding();
+      final setup = await ownerWithBuilding();
       final created = await endpoints.venueTable.create(
         setup.ownerSession,
         VenueTableCreate(

@@ -4,14 +4,13 @@ fields:
   buildingId: UuidValue
   venueTableId: UuidValue?
   tableNumber: int?
+  ## Display ticket number (unique per building).
+  ref: int
   status: OrderStatus
-  launchedByType: ActorType
-  launchedById: UuidValue
-  lastPaidByType: ActorType?
-  lastPaidById: UuidValue?
+  launchedBy: OrderActorView
+  lastPaidBy: OrderActorView?
   lastPaidAt: DateTime?
-  cancelledByType: ActorType?
-  cancelledById: UuidValue?
+  cancelledBy: OrderActorView?
   cancelledAt: DateTime?
   createdAt: DateTime
   updatedAt: DateTime

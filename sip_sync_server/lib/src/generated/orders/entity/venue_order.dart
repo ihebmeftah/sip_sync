@@ -28,6 +28,7 @@ abstract class VenueOrder
     this.building,
     this.venueTableId,
     this.venueTable,
+    required this.ref,
     required this.status,
     required this.launchedByType,
     required this.launchedById,
@@ -49,6 +50,7 @@ abstract class VenueOrder
     _iaohraio.Building? building,
     _is.UuidValue? venueTableId,
     _ilcfc7kr.VenueTable? venueTable,
+    required int ref,
     required _iij1ihnv.OrderStatus status,
     required _i6ch5qy5.ActorType launchedByType,
     required _is.UuidValue launchedById,
@@ -86,6 +88,7 @@ abstract class VenueOrder
           : _iaib1p48.Protocol().deserialize<_ilcfc7kr.VenueTable>(
               jsonSerialization['venueTable'],
             ),
+      ref: jsonSerialization['ref'] as int,
       status: _iij1ihnv.OrderStatus.fromJson(
         (jsonSerialization['status'] as String),
       ),
@@ -152,6 +155,8 @@ abstract class VenueOrder
 
   _ilcfc7kr.VenueTable? venueTable;
 
+  int ref;
+
   _iij1ihnv.OrderStatus status;
 
   _i6ch5qy5.ActorType launchedByType;
@@ -188,6 +193,7 @@ abstract class VenueOrder
     _iaohraio.Building? building,
     _is.UuidValue? venueTableId,
     _ilcfc7kr.VenueTable? venueTable,
+    int? ref,
     _iij1ihnv.OrderStatus? status,
     _i6ch5qy5.ActorType? launchedByType,
     _is.UuidValue? launchedById,
@@ -210,6 +216,7 @@ abstract class VenueOrder
       if (building != null) 'building': building?.toJson(),
       if (venueTableId != null) 'venueTableId': venueTableId?.toJson(),
       if (venueTable != null) 'venueTable': venueTable?.toJson(),
+      'ref': ref,
       'status': status.toJson(),
       'launchedByType': launchedByType.toJson(),
       'launchedById': launchedById.toJson(),
@@ -275,6 +282,7 @@ class _VenueOrderImpl extends VenueOrder {
     _iaohraio.Building? building,
     _is.UuidValue? venueTableId,
     _ilcfc7kr.VenueTable? venueTable,
+    required int ref,
     required _iij1ihnv.OrderStatus status,
     required _i6ch5qy5.ActorType launchedByType,
     required _is.UuidValue launchedById,
@@ -293,6 +301,7 @@ class _VenueOrderImpl extends VenueOrder {
          building: building,
          venueTableId: venueTableId,
          venueTable: venueTable,
+         ref: ref,
          status: status,
          launchedByType: launchedByType,
          launchedById: launchedById,
@@ -317,6 +326,7 @@ class _VenueOrderImpl extends VenueOrder {
     Object? building = _Undefined,
     Object? venueTableId = _Undefined,
     Object? venueTable = _Undefined,
+    int? ref,
     _iij1ihnv.OrderStatus? status,
     _i6ch5qy5.ActorType? launchedByType,
     _is.UuidValue? launchedById,
@@ -342,6 +352,7 @@ class _VenueOrderImpl extends VenueOrder {
       venueTable: venueTable is _ilcfc7kr.VenueTable?
           ? venueTable
           : this.venueTable?.copyWith(),
+      ref: ref ?? this.ref,
       status: status ?? this.status,
       launchedByType: launchedByType ?? this.launchedByType,
       launchedById: launchedById ?? this.launchedById,
@@ -382,6 +393,11 @@ class VenueOrderUpdateTable extends _is.UpdateTable<VenueOrderTable> {
     _is.UuidValue? value,
   ) => _is.ColumnValue(
     table.venueTableId,
+    value,
+  );
+
+  _is.ColumnValue<int, int> ref(int value) => _is.ColumnValue(
+    table.ref,
     value,
   );
 
@@ -470,6 +486,10 @@ class VenueOrderTable extends _is.Table<_is.UuidValue?> {
       'venueTableId',
       this,
     );
+    ref = _is.ColumnInt(
+      'ref',
+      this,
+    );
     status = _is.ColumnEnum(
       'status',
       this,
@@ -529,6 +549,8 @@ class VenueOrderTable extends _is.Table<_is.UuidValue?> {
   late final _is.ColumnUuid venueTableId;
 
   _ilcfc7kr.VenueTableTable? _venueTable;
+
+  late final _is.ColumnInt ref;
 
   late final _is.ColumnEnum<_iij1ihnv.OrderStatus> status;
 
@@ -619,6 +641,7 @@ class VenueOrderTable extends _is.Table<_is.UuidValue?> {
     id,
     buildingId,
     venueTableId,
+    ref,
     status,
     launchedByType,
     launchedById,

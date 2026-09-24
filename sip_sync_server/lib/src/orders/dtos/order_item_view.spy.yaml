@@ -6,16 +6,11 @@ fields:
   articleName: String
   unitPrice: double
   status: OrderItemStatus
-  passedByType: ActorType?
-  passedById: UuidValue?
-  preparedByType: ActorType?
-  preparedById: UuidValue?
-  servedByType: ActorType?
-  servedById: UuidValue?
-  paidToType: ActorType?
-  paidToId: UuidValue?
-  cancelledByType: ActorType?
-  cancelledById: UuidValue?
+  passedBy: OrderActorView?
+  preparedBy: OrderActorView?
+  servedBy: OrderActorView?
+  paidTo: OrderActorView?
+  cancelledBy: OrderActorView?
   createdAt: DateTime
   updatedAt: DateTime
   preparedAt: DateTime?

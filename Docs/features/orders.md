@@ -40,22 +40,22 @@ Status: in progress (create wizard / list / detail / item status; customer creat
 | Field | Meaning |
 | --- | --- |
 | `venueTableId` | Floor table (required in management create wizard) |
-| `launchedByType` / `launchedById` | Who created the order |
-| `lastPaidByType` / `lastPaidById` / `lastPaidAt` | Who recorded the most recent payment |
-| `cancelledByType` / `cancelledById` / `cancelledAt` | Who cancelled the order |
+| `launchedBy` | Who created the order (`OrderActorView`: type + id + first/last name) |
+| `lastPaidBy` / `lastPaidAt` | Who recorded the most recent payment |
+| `cancelledBy` / `cancelledAt` | Who cancelled the order |
 
 ### Order item
 
 | Field | Meaning |
 | --- | --- |
-| `passedByType` / `passedById` | Who moved the item to **picked** |
-| `preparedByType` / `preparedById` / `preparedAt` | Who marked **ready** |
-| `servedByType` / `servedById` / `servedAt` | Who marked **served** |
-| `paidToType` / `paidToId` / `paidAt` | Who recorded **payed** for this line |
-| `cancelledByType` / `cancelledById` / `cancelledAt` | Who cancelled the line |
+| `passedBy` | Who moved the item to **picked** |
+| `preparedBy` / `preparedAt` | Who marked **ready** |
+| `servedBy` / `servedAt` | Who marked **served** |
+| `paidTo` / `paidAt` | Who recorded **payed** for this line |
+| `cancelledBy` / `cancelledAt` | Who cancelled the line |
 | `createdAt` / `updatedAt` | Always set |
 
-Attribution actor ids are owner/employee (or later customer) UUIDs with matching `ActorType` — not FK-linked so one column covers all roles.
+Attribution actor ids are owner/employee (or later customer) UUIDs with matching `ActorType` — not FK-linked so one column covers all roles. Views resolve first/last name for display as `{role} - {firstName} {lastName}`.
 
 ## Flow (management)
 
@@ -73,10 +73,10 @@ Draft cart lives in `OrderDraftViewModel` (keepAlive). `pickingTable` drives flo
 
 ## Data
 
-- `venue_order` — building, optional `venue_table`, status, launch/last-pay actors, timestamps
+- `venue_order` — building, optional `venue_table`, **`ref`** (sequential ticket number unique per building, assigned on create), status, launch/last-pay actors, timestamps
 - `venue_order_item` — one row per article **unit** (same article repeats as separate lines), name/price snapshot, status, attribution timestamps
 
-There is no quantity column: ordering three espressos creates three `venue_order_item` rows.
+Management list shows `ref` as the leading badge; order detail AppBar title is `Order · #{ref}`.
 
 Protocol DTOs stay `OrderCreate` / `OrderView` / `OrderItemView` for the client API.
 

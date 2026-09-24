@@ -368,6 +368,10 @@
   "orderItemsHeading": "Articles",
   "orderDetailTitle": "Commande · {table}",
   "@orderDetailTitle": { "placeholders": { "table": { "type": "String" } } },
+  "orderRefTitle": "Commande · #{ref}",
+  "@orderRefTitle": { "placeholders": { "ref": { "type": "int" } } },
+  "orderRefLabel": "#{ref}",
+  "@orderRefLabel": { "placeholders": { "ref": { "type": "int" } } },
   "orderLaunchedBy": "Lancée par {actor}",
   "@orderLaunchedBy": { "placeholders": { "actor": { "type": "String" } } },
   "orderLastPaidBy": "Dernier paiement par {actor}",
@@ -390,10 +394,22 @@
   "orderFieldPreparedBy": "Préparé par",
   "orderFieldServedBy": "Servi par",
   "orderFieldPaidTo": "Encaissé par",
+  "orderFieldLaunchedBy": "Lancée par",
   "orderFieldCancelledBy": "Annulé par",
   "orderFieldCancelledAt": "Annulé",
   "orderCancelledBy": "Annulé par {actor}",
   "@orderCancelledBy": { "placeholders": { "actor": { "type": "String" } } },
+  "orderActorLabel": "{role} - {name}",
+  "@orderActorLabel": {
+    "placeholders": {
+      "role": { "type": "String" },
+      "name": { "type": "String" }
+    }
+  },
+  "actorRoleOwner": "Propriétaire",
+  "actorRoleEmployee": "Employé",
+  "actorRoleCustomer": "Client",
+  "actorRoleSuperAdmin": "Admin",
   "orderFieldCancelledAtLabel": "Annulé {when}",
   "@orderFieldCancelledAtLabel": {
     "placeholders": { "when": { "type": "String" } }

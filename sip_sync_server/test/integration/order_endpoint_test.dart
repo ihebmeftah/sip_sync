@@ -14,7 +14,7 @@ void main() {
         MenuArticleView article,
       })
     >
-    _setup() async {
+    setupFixture() async {
       final auth = await endpoints.ownerAuth.register(
         sessionBuilder,
         EmailRegisterCreate(
@@ -84,7 +84,7 @@ void main() {
     }
 
     test('owner creates order and advances item to payed', () async {
-      final setup = await _setup();
+      final setup = await setupFixture();
       final created = await endpoints.order.create(
         setup.ownerSession,
         OrderCreate(
@@ -97,7 +97,9 @@ void main() {
         ),
       );
       expect(created.status, OrderStatus.progress);
-      expect(created.launchedByType, ActorType.owner);
+      expect(created.launchedBy.type, ActorType.owner);
+      expect(created.launchedBy.firstName, 'Order');
+      expect(created.launchedBy.lastName, 'Owner');
       expect(created.tableNumber, 1);
       expect(created.items, hasLength(2));
       expect(created.items.first.status, OrderItemStatus.progress);
@@ -133,15 +135,15 @@ void main() {
         order.items.every((i) => i.status == OrderItemStatus.payed),
         isTrue,
       );
-      expect(order.items.first.passedById, isNotNull);
-      expect(order.items.first.preparedById, isNotNull);
+      expect(order.items.first.passedBy?.id, isNotNull);
+      expect(order.items.first.preparedBy?.id, isNotNull);
       expect(order.items.first.preparedAt, isNotNull);
-      expect(order.items.first.servedById, isNotNull);
+      expect(order.items.first.servedBy?.id, isNotNull);
       expect(order.items.first.servedAt, isNotNull);
-      expect(order.items.first.paidToId, isNotNull);
+      expect(order.items.first.paidTo?.id, isNotNull);
       expect(order.items.first.paidAt, isNotNull);
       expect(order.status, OrderStatus.payed);
-      expect(order.lastPaidByType, ActorType.owner);
+      expect(order.lastPaidBy?.type, ActorType.owner);
       expect(order.lastPaidAt, isNotNull);
 
       final tablesAfterPay = await endpoints.venueTable.list(
@@ -155,7 +157,7 @@ void main() {
     });
 
     test('create deducts composition stock; cancel restores it', () async {
-      final setup = await _setup();
+      final setup = await setupFixture();
       final beans = await endpoints.ingredient.create(
         setup.ownerSession,
         IngredientCreate(
@@ -209,7 +211,7 @@ void main() {
     });
 
     test('create fails when composition stock is insufficient', () async {
-      final setup = await _setup();
+      final setup = await setupFixture();
       final beans = await endpoints.ingredient.create(
         setup.ownerSession,
         IngredientCreate(
@@ -251,7 +253,7 @@ void main() {
     test(
       'blocks second order on occupied table when multi-order is off',
       () async {
-        final setup = await _setup();
+        final setup = await setupFixture();
         expect(setup.building.tableMultiOrder, isFalse);
 
         await endpoints.order.create(
@@ -315,7 +317,7 @@ void main() {
     test(
       'strict mode skips disabled steps; non-strict allows pay jump',
       () async {
-        final setup = await _setup();
+        final setup = await setupFixture();
         final steps = [
           StrictModeStep(
             rank: 1,
@@ -418,7 +420,7 @@ void main() {
     );
 
     test('rejects addItems when appending is disabled', () async {
-      final setup = await _setup();
+      final setup = await setupFixture();
       await endpoints.building.update(
         setup.ownerSession,
         BuildingUpdate(

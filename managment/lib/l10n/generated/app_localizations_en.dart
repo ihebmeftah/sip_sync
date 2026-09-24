@@ -1032,6 +1032,16 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String orderRefTitle(int ref) {
+    return 'Order · #$ref';
+  }
+
+  @override
+  String orderRefLabel(int ref) {
+    return '#$ref';
+  }
+
+  @override
   String orderLaunchedBy(String actor) {
     return 'Launched by $actor';
   }
@@ -1089,6 +1099,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get orderFieldPaidTo => 'Paid to';
 
   @override
+  String get orderFieldLaunchedBy => 'Launched by';
+
+  @override
   String get orderFieldCancelledBy => 'Cancelled by';
 
   @override
@@ -1098,6 +1111,23 @@ class AppLocalizationsEn extends AppLocalizations {
   String orderCancelledBy(String actor) {
     return 'Cancelled by $actor';
   }
+
+  @override
+  String orderActorLabel(String role, String name) {
+    return '$role - $name';
+  }
+
+  @override
+  String get actorRoleOwner => 'Owner';
+
+  @override
+  String get actorRoleEmployee => 'Employee';
+
+  @override
+  String get actorRoleCustomer => 'Customer';
+
+  @override
+  String get actorRoleSuperAdmin => 'Admin';
 
   @override
   String orderFieldCancelledAtLabel(String when) {
