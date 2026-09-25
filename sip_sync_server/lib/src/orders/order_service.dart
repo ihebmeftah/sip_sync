@@ -8,16 +8,25 @@ import '../generated/protocol.dart';
 /// Create / list / status updates for building orders.
 class OrderService {
   /// Lists orders for a building sorted by [VenueOrder.createdAt] newest first.
+  ///
+  /// Optional [status] filters at the database before access scoping.
   Future<List<OrderView>> listForBuilding(
     Session session,
-    UuidValue buildingId,
-  ) async {
+    UuidValue buildingId, {
+    OrderStatus? status,
+  }) async {
     await _requireBuildingAccess(session, buildingId);
     final ctx = AuthGuard.requireAny(session);
     final access = await _requireEmployeeAccessIfNeeded(session, ctx);
     final rows = await VenueOrder.db.find(
       session,
-      where: (t) => t.buildingId.equals(buildingId),
+      where: (t) {
+        var filter = t.buildingId.equals(buildingId);
+        if (status != null) {
+          filter = filter & t.status.equals(status);
+        }
+        return filter;
+      },
       orderBy: (t) => t.createdAt.desc(),
       include: VenueOrder.include(
         venueTable: VenueTable.include(),

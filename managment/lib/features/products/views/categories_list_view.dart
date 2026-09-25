@@ -5,23 +5,43 @@ import '../../../core/di/app_providers.dart';
 import '../../../core/errors/error_mapper.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
+import '../../../core/widgets/refresh_on_appear.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../view_models/categories_view_model.dart';
 import '../widgets/category_dialog.dart';
 
 /// Per-building category list; owner create/edit uses screen on mobile, dialog on wide.
-class CategoriesListView extends ConsumerWidget {
+class CategoriesListView extends ConsumerStatefulWidget {
   const CategoriesListView({super.key, required this.buildingId});
 
   final String buildingId;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<CategoriesListView> createState() => _CategoriesListViewState();
+}
+
+class _CategoriesListViewState extends ConsumerState<CategoriesListView> {
+  @override
+  void initState() {
+    super.initState();
+    refreshCachedListOnAppear(
+      this,
+      providerAlreadyAlive: ref.exists(
+        categoriesViewModelProvider(widget.buildingId),
+      ),
+      refresh: () => ref
+          .read(categoriesViewModelProvider(widget.buildingId).notifier)
+          .refresh(),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final text = Theme.of(context).textTheme;
     final scheme = Theme.of(context).colorScheme;
     final isOwner = ref.watch(appSessionStoreProvider).isOwner;
-    final async = ref.watch(categoriesViewModelProvider(buildingId));
+    final async = ref.watch(categoriesViewModelProvider(widget.buildingId));
 
     return ColoredBox(
       color: Theme.of(context).scaffoldBackgroundColor,
@@ -50,8 +70,10 @@ class CategoriesListView extends ConsumerWidget {
                       style: FilledButton.styleFrom(
                         minimumSize: const Size(0, 44),
                       ),
-                      onPressed: () =>
-                          openCategoryForm(context, buildingId: buildingId),
+                      onPressed: () => openCategoryForm(
+                        context,
+                        buildingId: widget.buildingId,
+                      ),
                       icon: const Icon(Icons.add),
                       label: AppButtonLabel(l10n.addCategory),
                     ),
@@ -69,7 +91,9 @@ class CategoriesListView extends ConsumerWidget {
                     TextButton(
                       onPressed: () => ref
                           .read(
-                            categoriesViewModelProvider(buildingId).notifier,
+                            categoriesViewModelProvider(
+                              widget.buildingId,
+                            ).notifier,
                           )
                           .refresh(),
                       child: Text(l10n.retry),
@@ -106,7 +130,7 @@ class CategoriesListView extends ConsumerWidget {
                             onTap: isOwner
                                 ? () => openCategoryForm(
                                     context,
-                                    buildingId: buildingId,
+                                    buildingId: widget.buildingId,
                                     existing: category,
                                   )
                                 : null,

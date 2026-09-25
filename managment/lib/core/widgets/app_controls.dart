@@ -320,3 +320,46 @@ class AppActionsWrap extends StatelessWidget {
     );
   }
 }
+
+/// List filter chip with clear selected (primary fill) vs unselected (outline) contrast.
+class AppFilterChip extends StatelessWidget {
+  const AppFilterChip({
+    super.key,
+    required this.label,
+    required this.selected,
+    required this.onSelected,
+  });
+
+  final String label;
+  final bool selected;
+  final ValueChanged<bool> onSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final text = Theme.of(context).textTheme;
+    return FilterChip(
+      selected: selected,
+      showCheckmark: false,
+      label: Text(label),
+      labelStyle: text.labelLarge?.copyWith(
+        fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+        color: selected ? scheme.onPrimary : scheme.onSurfaceVariant,
+      ),
+      selectedColor: scheme.primary,
+      backgroundColor: scheme.surface,
+      side: BorderSide(
+        color: selected
+            ? scheme.primary
+            : scheme.outline.withValues(alpha: 0.65),
+        width: selected ? 0 : 1,
+      ),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppRadii.sm),
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 4),
+      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      onSelected: onSelected,
+    );
+  }
+}

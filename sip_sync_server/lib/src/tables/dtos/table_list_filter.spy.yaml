@@ -1,0 +1,9 @@
+### Floor list chip filter — applied when listing tables for a building.
+enum: TableListFilter
+serialized: byName
+values:
+  - all
+  - available
+  - occupied
+  - reserved
+  - inactive

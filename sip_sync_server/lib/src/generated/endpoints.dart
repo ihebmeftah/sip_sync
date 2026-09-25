@@ -59,6 +59,10 @@ import 'package:sip_sync_server/src/generated/orders/dtos/order_create.dart'
     as _i5j23umo;
 import 'package:sip_sync_server/src/generated/orders/dtos/order_item_status_update.dart'
     as _itxma5c4;
+import 'package:sip_sync_server/src/generated/orders/dtos/order_status.dart'
+    as _i9w9m1jz;
+import 'package:sip_sync_server/src/generated/tables/dtos/table_list_filter.dart'
+    as _i2br6vxf;
 import 'package:sip_sync_server/src/generated/tables/dtos/venue_table_create.dart'
     as _ituaoqeh;
 import 'package:sip_sync_server/src/generated/tables/dtos/venue_table_update.dart'
@@ -1127,6 +1131,11 @@ class Endpoints extends _is.EndpointDispatch {
               type: _is.getType<_is.UuidValue>(),
               nullable: false,
             ),
+            'status': _is.ParameterDescription(
+              name: 'status',
+              type: _is.getType<_i9w9m1jz.OrderStatus?>(),
+              nullable: true,
+            ),
           },
           call:
               (
@@ -1135,6 +1144,7 @@ class Endpoints extends _is.EndpointDispatch {
               ) async => (endpoints['order'] as _iuf1spo6.OrderEndpoint).list(
                 session,
                 params['buildingId'],
+                params['status'],
               ),
         ),
         'get': _is.MethodConnector(
@@ -1243,6 +1253,11 @@ class Endpoints extends _is.EndpointDispatch {
               type: _is.getType<_is.UuidValue>(),
               nullable: false,
             ),
+            'filter': _is.ParameterDescription(
+              name: 'filter',
+              type: _is.getType<_i2br6vxf.TableListFilter>(),
+              nullable: false,
+            ),
           },
           call:
               (
@@ -1253,6 +1268,7 @@ class Endpoints extends _is.EndpointDispatch {
                       .list(
                         session,
                         params['buildingId'],
+                        params['filter'],
                       ),
         ),
         'create': _is.MethodConnector(

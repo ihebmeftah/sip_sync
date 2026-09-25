@@ -6,8 +6,10 @@ class VenueTableRepository {
 
   final Client _client;
 
-  Future<List<VenueTableView>> list(UuidValue buildingId) =>
-      _client.venueTable.list(buildingId);
+  Future<List<VenueTableView>> list(
+    UuidValue buildingId, {
+    TableListFilter filter = TableListFilter.all,
+  }) => _client.venueTable.list(buildingId, filter);
 
   /// Creates [count] tables; the server assigns sequential numbers.
   Future<List<VenueTableView>> create({

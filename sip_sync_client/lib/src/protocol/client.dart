@@ -87,8 +87,12 @@ import 'package:sip_sync_client/src/protocol/orders/dtos/order_create.dart'
     as _i0prt93r;
 import 'package:sip_sync_client/src/protocol/orders/dtos/order_item_status_update.dart'
     as _i6knlbz9;
+import 'package:sip_sync_client/src/protocol/orders/dtos/order_status.dart'
+    as _iqp2kjae;
 import 'package:sip_sync_client/src/protocol/orders/dtos/order_view.dart'
     as _i5f9osh7;
+import 'package:sip_sync_client/src/protocol/tables/dtos/table_list_filter.dart'
+    as _izki6gkh;
 import 'package:sip_sync_client/src/protocol/tables/dtos/venue_table_create.dart'
     as _i5q3abjq;
 import 'package:sip_sync_client/src/protocol/tables/dtos/venue_table_update.dart'
@@ -596,12 +600,19 @@ class EndpointOrder extends _isc.EndpointRef {
   String get name => 'order';
 
   /// Lists orders for [buildingId] (owner or assigned employee).
-  _ida.Future<List<_i5f9osh7.OrderView>> list(_isc.UuidValue buildingId) =>
-      caller.callServerEndpoint<List<_i5f9osh7.OrderView>>(
-        'order',
-        'list',
-        {'buildingId': buildingId},
-      );
+  ///
+  /// When [status] is set, only orders with that status are returned.
+  _ida.Future<List<_i5f9osh7.OrderView>> list(
+    _isc.UuidValue buildingId,
+    _iqp2kjae.OrderStatus? status,
+  ) => caller.callServerEndpoint<List<_i5f9osh7.OrderView>>(
+    'order',
+    'list',
+    {
+      'buildingId': buildingId,
+      'status': status,
+    },
+  );
 
   /// Loads one order with items.
   _ida.Future<_i5f9osh7.OrderView> get(_isc.UuidValue orderId) =>
@@ -654,12 +665,19 @@ class EndpointVenueTable extends _isc.EndpointRef {
   String get name => 'venueTable';
 
   /// Lists tables for [buildingId] (owner or assigned employee).
-  _ida.Future<List<_ihz72ioq.VenueTableView>> list(_isc.UuidValue buildingId) =>
-      caller.callServerEndpoint<List<_ihz72ioq.VenueTableView>>(
-        'venueTable',
-        'list',
-        {'buildingId': buildingId},
-      );
+  ///
+  /// [filter] narrows by computed floor status or inactive flag (`all` = no filter).
+  _ida.Future<List<_ihz72ioq.VenueTableView>> list(
+    _isc.UuidValue buildingId,
+    _izki6gkh.TableListFilter filter,
+  ) => caller.callServerEndpoint<List<_ihz72ioq.VenueTableView>>(
+    'venueTable',
+    'list',
+    {
+      'buildingId': buildingId,
+      'filter': filter,
+    },
+  );
 
   /// Owner creates one or more tables; numbers are assigned in sequence.
   _ida.Future<List<_ihz72ioq.VenueTableView>> create(

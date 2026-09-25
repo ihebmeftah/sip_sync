@@ -10,6 +10,7 @@ import '../../../core/errors/error_mapper.dart';
 import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
+import '../../../core/widgets/refresh_on_appear.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../orders/view_models/order_draft_view_model.dart';
 import '../table_qr_pdf_service.dart';
@@ -32,19 +33,36 @@ class TablesListView extends ConsumerStatefulWidget {
 }
 
 class _TablesListViewState extends ConsumerState<TablesListView> {
-  var _filter = TableFloorFilter.all;
   var _exportingQr = false;
 
-  Future<void> _exportQrPdf(List<VenueTableView> tables) async {
+  @override
+  void initState() {
+    super.initState();
+    refreshCachedListOnAppear(
+      this,
+      providerAlreadyAlive: ref.exists(
+        tablesViewModelProvider(widget.buildingId),
+      ),
+      refresh: () => ref
+          .read(tablesViewModelProvider(widget.buildingId).notifier)
+          .onScreenAppeared(),
+    );
+  }
+
+  Future<void> _exportQrPdf() async {
     final l10n = AppLocalizations.of(context)!;
-    if (tables.isEmpty) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.tableQrExportEmpty)));
-      return;
-    }
     setState(() => _exportingQr = true);
     try {
+      final tables = await ref
+          .read(tablesViewModelProvider(widget.buildingId).notifier)
+          .listAllForExport();
+      if (tables.isEmpty) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(l10n.tableQrExportEmpty)));
+        return;
+      }
       final building = ref.read(buildingSelectionProvider);
       final name = building?.name ?? l10n.navTables;
       await TableQrPdfService().exportStickers(
@@ -142,11 +160,10 @@ class _TablesListViewState extends ConsumerState<TablesListView> {
     final draft = ref.watch(orderDraftViewModelProvider(widget.buildingId));
     final picking = draft.pickingTable;
     final async = ref.watch(tablesViewModelProvider(widget.buildingId));
+    final filter = ref
+        .watch(tablesViewModelProvider(widget.buildingId).notifier)
+        .filter;
     final tables = async.asData?.value ?? const <VenueTableView>[];
-    final nextNumber = tables.isEmpty
-        ? 1
-        : tables.map((t) => t.number).reduce(math.max) + 1;
-    final visible = filterTables(tables, _filter);
     final hint = picking
         ? l10n.orderSelectTablePrompt
         : isEmployee
@@ -209,9 +226,7 @@ class _TablesListViewState extends ConsumerState<TablesListView> {
                             style: OutlinedButton.styleFrom(
                               minimumSize: const Size(0, 44),
                             ),
-                            onPressed: _exportingQr || tables.isEmpty
-                                ? null
-                                : () => _exportQrPdf(tables),
+                            onPressed: _exportingQr ? null : _exportQrPdf,
                             icon: _exportingQr
                                 ? const SizedBox(
                                     width: 18,
@@ -227,8 +242,21 @@ class _TablesListViewState extends ConsumerState<TablesListView> {
                             style: FilledButton.styleFrom(
                               minimumSize: const Size(0, 44),
                             ),
-                            onPressed: () =>
-                                _openForm(suggestedNumber: nextNumber),
+                            onPressed: () async {
+                              final all = await ref
+                                  .read(
+                                    tablesViewModelProvider(
+                                      widget.buildingId,
+                                    ).notifier,
+                                  )
+                                  .listAllForExport();
+                              if (!context.mounted) return;
+                              final nextNumber = all.isEmpty
+                                  ? 1
+                                  : all.map((t) => t.number).reduce(math.max) +
+                                        1;
+                              await _openForm(suggestedNumber: nextNumber);
+                            },
                             icon: const Icon(Icons.add),
                             label: AppButtonLabel(l10n.addTable),
                           ),
@@ -258,17 +286,21 @@ class _TablesListViewState extends ConsumerState<TablesListView> {
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     children: [
-                      for (final filter in TableFloorFilter.values)
+                      for (final chip in TableListFilter.values)
                         Padding(
                           padding: const EdgeInsetsDirectional.only(
                             end: AppSpacing.sm,
                           ),
-                          child: FilterChip(
-                            selected: _filter == filter,
-                            showCheckmark: false,
-                            label: Text(_filterLabel(l10n, filter)),
-                            selectedColor: scheme.secondaryContainer,
-                            onSelected: (_) => setState(() => _filter = filter),
+                          child: AppFilterChip(
+                            selected: filter == chip,
+                            label: _filterLabel(l10n, chip),
+                            onSelected: (_) => ref
+                                .read(
+                                  tablesViewModelProvider(
+                                    widget.buildingId,
+                                  ).notifier,
+                                )
+                                .setFilter(chip),
                           ),
                         ),
                     ],
@@ -302,11 +334,11 @@ class _TablesListViewState extends ConsumerState<TablesListView> {
                 else if (tables.isEmpty)
                   AppSurfaceCard(
                     child: Text(
-                      isOwner ? l10n.tablesEmptyOwner : l10n.tablesEmpty,
+                      filter == TableListFilter.all
+                          ? (isOwner ? l10n.tablesEmptyOwner : l10n.tablesEmpty)
+                          : l10n.tablesFilterEmpty,
                     ),
                   )
-                else if (visible.isEmpty)
-                  AppSurfaceCard(child: Text(l10n.tablesFilterEmpty))
                 else
                   LayoutBuilder(
                     builder: (context, constraints) {
@@ -323,7 +355,7 @@ class _TablesListViewState extends ConsumerState<TablesListView> {
                         spacing: gap,
                         runSpacing: gap,
                         children: [
-                          for (final table in visible)
+                          for (final table in tables)
                             SizedBox(
                               width: tileWidth,
                               child: TableFloorPreview(
@@ -345,13 +377,13 @@ class _TablesListViewState extends ConsumerState<TablesListView> {
     );
   }
 
-  String _filterLabel(AppLocalizations l10n, TableFloorFilter filter) {
+  String _filterLabel(AppLocalizations l10n, TableListFilter filter) {
     return switch (filter) {
-      TableFloorFilter.all => l10n.tableFilterAll,
-      TableFloorFilter.available => l10n.tableStatusAvailable,
-      TableFloorFilter.occupied => l10n.tableStatusOccupied,
-      TableFloorFilter.reserved => l10n.tableStatusReserved,
-      TableFloorFilter.inactive => l10n.tableFilterInactive,
+      TableListFilter.all => l10n.tableFilterAll,
+      TableListFilter.available => l10n.tableStatusAvailable,
+      TableListFilter.occupied => l10n.tableStatusOccupied,
+      TableListFilter.reserved => l10n.tableStatusReserved,
+      TableListFilter.inactive => l10n.tableFilterInactive,
     };
   }
 }

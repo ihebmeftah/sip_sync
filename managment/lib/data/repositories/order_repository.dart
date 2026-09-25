@@ -6,8 +6,9 @@ class OrderRepository {
 
   final Client _client;
 
-  Future<List<OrderView>> list(UuidValue buildingId) =>
-      _client.order.list(buildingId);
+  /// When [status] is null, returns all orders for the building.
+  Future<List<OrderView>> list(UuidValue buildingId, {OrderStatus? status}) =>
+      _client.order.list(buildingId, status);
 
   Future<OrderView> get(UuidValue orderId) => _client.order.get(orderId);
 

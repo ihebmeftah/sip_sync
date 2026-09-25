@@ -97,6 +97,7 @@ import 'orders/dtos/order_item_view.dart' as _in19xqkp;
 import 'orders/dtos/order_status.dart' as _iaqxrbm9;
 import 'orders/dtos/order_view.dart' as _i5x25q0s;
 import 'tables/dtos/table_floor_status.dart' as _i64byz7d;
+import 'tables/dtos/table_list_filter.dart' as _iuz62fg4;
 import 'tables/dtos/venue_table_create.dart' as _iui9xd5q;
 import 'tables/dtos/venue_table_error_code.dart' as _iqjhym86;
 import 'tables/dtos/venue_table_exception.dart' as _iu19bhmp;
@@ -163,6 +164,7 @@ export 'orders/dtos/order_item_view.dart';
 export 'orders/dtos/order_status.dart';
 export 'orders/dtos/order_view.dart';
 export 'tables/dtos/table_floor_status.dart';
+export 'tables/dtos/table_list_filter.dart';
 export 'tables/dtos/venue_table_create.dart';
 export 'tables/dtos/venue_table_error_code.dart';
 export 'tables/dtos/venue_table_exception.dart';
@@ -386,6 +388,9 @@ class Protocol extends _isc.SerializationManager {
     }
     if (t == _i64byz7d.TableFloorStatus) {
       return _i64byz7d.TableFloorStatus.fromJson(data) as T;
+    }
+    if (t == _iuz62fg4.TableListFilter) {
+      return _iuz62fg4.TableListFilter.fromJson(data) as T;
     }
     if (t == _iui9xd5q.VenueTableCreate) {
       return _iui9xd5q.VenueTableCreate.fromJson(data) as T;
@@ -683,6 +688,10 @@ class Protocol extends _isc.SerializationManager {
       return (data != null ? _i64byz7d.TableFloorStatus.fromJson(data) : null)
           as T;
     }
+    if (t == _isc.getType<_iuz62fg4.TableListFilter?>()) {
+      return (data != null ? _iuz62fg4.TableListFilter.fromJson(data) : null)
+          as T;
+    }
     if (t == _isc.getType<_iui9xd5q.VenueTableCreate?>()) {
       return (data != null ? _iui9xd5q.VenueTableCreate.fromJson(data) : null)
           as T;
@@ -861,6 +870,7 @@ class Protocol extends _isc.SerializationManager {
       _iaqxrbm9.OrderStatus => 'OrderStatus',
       _i5x25q0s.OrderView => 'OrderView',
       _i64byz7d.TableFloorStatus => 'TableFloorStatus',
+      _iuz62fg4.TableListFilter => 'TableListFilter',
       _iui9xd5q.VenueTableCreate => 'VenueTableCreate',
       _iqjhym86.VenueTableErrorCode => 'VenueTableErrorCode',
       _iu19bhmp.VenueTableException => 'VenueTableException',
@@ -1002,6 +1012,8 @@ class Protocol extends _isc.SerializationManager {
         return 'OrderView';
       case _i64byz7d.TableFloorStatus():
         return 'TableFloorStatus';
+      case _iuz62fg4.TableListFilter():
+        return 'TableListFilter';
       case _iui9xd5q.VenueTableCreate():
         return 'VenueTableCreate';
       case _iqjhym86.VenueTableErrorCode():
@@ -1216,6 +1228,9 @@ class Protocol extends _isc.SerializationManager {
     }
     if (dataClassName == 'TableFloorStatus') {
       return deserialize<_i64byz7d.TableFloorStatus>(data['data']);
+    }
+    if (dataClassName == 'TableListFilter') {
+      return deserialize<_iuz62fg4.TableListFilter>(data['data']);
     }
     if (dataClassName == 'VenueTableCreate') {
       return deserialize<_iui9xd5q.VenueTableCreate>(data['data']);

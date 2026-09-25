@@ -11,11 +11,14 @@ class VenueTableEndpoint extends Endpoint {
   bool get requireLogin => true;
 
   /// Lists tables for [buildingId] (owner or assigned employee).
+  ///
+  /// [filter] narrows by computed floor status or inactive flag (`all` = no filter).
   Future<List<VenueTableView>> list(
     Session session,
     UuidValue buildingId,
+    TableListFilter filter,
   ) {
-    return _tables.listForBuilding(session, buildingId);
+    return _tables.listForBuilding(session, buildingId, filter: filter);
   }
 
   /// Owner creates one or more tables; numbers are assigned in sequence.

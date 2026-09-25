@@ -11,8 +11,14 @@ class OrderEndpoint extends Endpoint {
   bool get requireLogin => true;
 
   /// Lists orders for [buildingId] (owner or assigned employee).
-  Future<List<OrderView>> list(Session session, UuidValue buildingId) {
-    return _orders.listForBuilding(session, buildingId);
+  ///
+  /// When [status] is set, only orders with that status are returned.
+  Future<List<OrderView>> list(
+    Session session,
+    UuidValue buildingId,
+    OrderStatus? status,
+  ) {
+    return _orders.listForBuilding(session, buildingId, status: status);
   }
 
   /// Loads one order with items.

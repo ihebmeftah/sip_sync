@@ -6,6 +6,7 @@ import '../../../core/di/app_providers.dart';
 import '../../../core/errors/error_mapper.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
+import '../../../core/widgets/refresh_on_appear.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../view_models/ingredients_view_model.dart';
 import '../widgets/ingredient_dialog.dart';
@@ -13,10 +14,30 @@ import '../widgets/ingredient_restock_dialog.dart';
 import '../widgets/unit_labels.dart';
 
 /// Per-building ingredient list with stock bar, restock, and low-stock alerts.
-class IngredientsListView extends ConsumerWidget {
+class IngredientsListView extends ConsumerStatefulWidget {
   const IngredientsListView({super.key, required this.buildingId});
 
   final String buildingId;
+
+  @override
+  ConsumerState<IngredientsListView> createState() =>
+      _IngredientsListViewState();
+}
+
+class _IngredientsListViewState extends ConsumerState<IngredientsListView> {
+  @override
+  void initState() {
+    super.initState();
+    refreshCachedListOnAppear(
+      this,
+      providerAlreadyAlive: ref.exists(
+        ingredientsViewModelProvider(widget.buildingId),
+      ),
+      refresh: () => ref
+          .read(ingredientsViewModelProvider(widget.buildingId).notifier)
+          .refresh(),
+    );
+  }
 
   String _formatQty(double value) {
     if (value == value.roundToDouble()) {
@@ -28,11 +49,7 @@ class IngredientsListView extends ConsumerWidget {
   /// Bar fill from server [IngredientView.stockProgress] (current / initial).
   double _stockProgress(IngredientView ingredient) => ingredient.stockProgress;
 
-  Future<void> _confirmDelete(
-    BuildContext context,
-    WidgetRef ref,
-    IngredientView ingredient,
-  ) async {
+  Future<void> _confirmDelete(IngredientView ingredient) async {
     final l10n = AppLocalizations.of(context)!;
     final ok = await showDialog<bool>(
       context: context,
@@ -51,15 +68,15 @@ class IngredientsListView extends ConsumerWidget {
         ],
       ),
     );
-    if (ok != true || !context.mounted) {
+    if (ok != true || !mounted) {
       return;
     }
     try {
       await ref
-          .read(ingredientsViewModelProvider(buildingId).notifier)
+          .read(ingredientsViewModelProvider(widget.buildingId).notifier)
           .deleteIngredient(ingredient.id);
     } catch (error) {
-      if (!context.mounted) {
+      if (!mounted) {
         return;
       }
       ScaffoldMessenger.of(context).showSnackBar(
@@ -69,12 +86,12 @@ class IngredientsListView extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final text = Theme.of(context).textTheme;
     final scheme = Theme.of(context).colorScheme;
     final isOwner = ref.watch(appSessionStoreProvider).isOwner;
-    final async = ref.watch(ingredientsViewModelProvider(buildingId));
+    final async = ref.watch(ingredientsViewModelProvider(widget.buildingId));
 
     return ColoredBox(
       color: Theme.of(context).scaffoldBackgroundColor,
@@ -114,8 +131,10 @@ class IngredientsListView extends ConsumerWidget {
                       style: FilledButton.styleFrom(
                         minimumSize: const Size(0, 44),
                       ),
-                      onPressed: () =>
-                          openIngredientForm(context, buildingId: buildingId),
+                      onPressed: () => openIngredientForm(
+                        context,
+                        buildingId: widget.buildingId,
+                      ),
                       icon: const Icon(Icons.add),
                       label: AppButtonLabel(l10n.addIngredient),
                     ),
@@ -134,7 +153,9 @@ class IngredientsListView extends ConsumerWidget {
                     TextButton(
                       onPressed: () => ref
                           .read(
-                            ingredientsViewModelProvider(buildingId).notifier,
+                            ingredientsViewModelProvider(
+                              widget.buildingId,
+                            ).notifier,
                           )
                           .refresh(),
                       child: Text(l10n.retry),
@@ -296,7 +317,7 @@ class IngredientsListView extends ConsumerWidget {
                                     onPressed: () =>
                                         showIngredientRestockDialog(
                                           context,
-                                          buildingId: buildingId,
+                                          buildingId: widget.buildingId,
                                           ingredient: ingredient,
                                         ),
                                     icon: const Icon(Icons.add, size: 16),
@@ -307,11 +328,8 @@ class IngredientsListView extends ConsumerWidget {
                                     IconButton(
                                       tooltip: l10n.deleteIngredient,
                                       visualDensity: VisualDensity.compact,
-                                      onPressed: () => _confirmDelete(
-                                        context,
-                                        ref,
-                                        ingredient,
-                                      ),
+                                      onPressed: () =>
+                                          _confirmDelete(ingredient),
                                       icon: Icon(
                                         Icons.delete_outline,
                                         color: scheme.error,

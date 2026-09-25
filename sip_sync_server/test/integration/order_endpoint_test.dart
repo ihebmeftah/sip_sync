@@ -108,6 +108,7 @@ void main() {
       final tablesWhileOpen = await endpoints.venueTable.list(
         setup.ownerSession,
         setup.building.id,
+        TableListFilter.all,
       );
       expect(
         tablesWhileOpen.firstWhere((t) => t.id == setup.table.id).status,
@@ -149,6 +150,7 @@ void main() {
       final tablesAfterPay = await endpoints.venueTable.list(
         setup.ownerSession,
         setup.building.id,
+        TableListFilter.all,
       );
       expect(
         tablesAfterPay.firstWhere((t) => t.id == setup.table.id).status,

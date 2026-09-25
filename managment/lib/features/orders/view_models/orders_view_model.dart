@@ -10,6 +10,10 @@ part 'orders_view_model.g.dart';
 @Riverpod(keepAlive: true)
 class OrdersViewModel extends _$OrdersViewModel {
   late String _buildingId;
+  OrderStatus? _statusFilter;
+
+  /// Current list chip filter (`null` = all).
+  OrderStatus? get statusFilter => _statusFilter;
 
   @override
   Future<List<OrderView>> build(String buildingId) async {
@@ -20,7 +24,20 @@ class OrdersViewModel extends _$OrdersViewModel {
     }
     return ref
         .read(orderRepositoryProvider)
-        .list(UuidValue.fromString(buildingId));
+        .list(UuidValue.fromString(buildingId), status: _statusFilter);
+  }
+
+  /// Changes the status chip and reloads from the server.
+  Future<void> setStatusFilter(OrderStatus? status) async {
+    if (_statusFilter == status) return;
+    _statusFilter = status;
+    await refresh();
+  }
+
+  /// Remount: reset chip to All and refetch (keepAlive otherwise keeps the filter).
+  Future<void> onScreenAppeared() async {
+    _statusFilter = null;
+    await refresh();
   }
 
   Future<void> refresh() async {
@@ -30,7 +47,7 @@ class OrdersViewModel extends _$OrdersViewModel {
       }
       return ref
           .read(orderRepositoryProvider)
-          .list(UuidValue.fromString(_buildingId));
+          .list(UuidValue.fromString(_buildingId), status: _statusFilter);
     });
   }
 
@@ -93,6 +110,14 @@ class OrdersViewModel extends _$OrdersViewModel {
   void _patchOrder(OrderView saved) {
     final current = state.asData?.value;
     if (current == null) {
+      return;
+    }
+    // Drop from list if it no longer matches the active status chip.
+    if (_statusFilter != null && saved.status != _statusFilter) {
+      state = AsyncData([
+        for (final order in current)
+          if (order.id != saved.id) order,
+      ]);
       return;
     }
     state = AsyncData([

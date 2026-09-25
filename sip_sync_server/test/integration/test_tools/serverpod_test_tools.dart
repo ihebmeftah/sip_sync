@@ -85,8 +85,12 @@ import 'package:sip_sync_server/src/generated/orders/dtos/order_create.dart'
     as _i5j23umo;
 import 'package:sip_sync_server/src/generated/orders/dtos/order_item_status_update.dart'
     as _itxma5c4;
+import 'package:sip_sync_server/src/generated/orders/dtos/order_status.dart'
+    as _i9w9m1jz;
 import 'package:sip_sync_server/src/generated/orders/dtos/order_view.dart'
     as _i6r0fe4s;
+import 'package:sip_sync_server/src/generated/tables/dtos/table_list_filter.dart'
+    as _i2br6vxf;
 import 'package:sip_sync_server/src/generated/tables/dtos/venue_table_create.dart'
     as _ituaoqeh;
 import 'package:sip_sync_server/src/generated/tables/dtos/venue_table_update.dart'
@@ -1948,6 +1952,7 @@ class _OrderEndpoint {
   _ida.Future<List<_i6r0fe4s.OrderView>> list(
     _ist.TestSessionBuilder sessionBuilder,
     _is.UuidValue buildingId,
+    _i9w9m1jz.OrderStatus? status,
   ) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -1960,7 +1965,10 @@ class _OrderEndpoint {
           createSessionCallback: (_) => _localUniqueSession,
           endpointPath: 'order',
           methodName: 'list',
-          parameters: _ist.testObjectToJson({'buildingId': buildingId}),
+          parameters: _ist.testObjectToJson({
+            'buildingId': buildingId,
+            'status': status,
+          }),
           serializationManager: _serializationManager,
         );
         var _localReturnValue =
@@ -2145,6 +2153,7 @@ class _VenueTableEndpoint {
   _ida.Future<List<_i8j8iq89.VenueTableView>> list(
     _ist.TestSessionBuilder sessionBuilder,
     _is.UuidValue buildingId,
+    _i2br6vxf.TableListFilter filter,
   ) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -2157,7 +2166,10 @@ class _VenueTableEndpoint {
           createSessionCallback: (_) => _localUniqueSession,
           endpointPath: 'venueTable',
           methodName: 'list',
-          parameters: _ist.testObjectToJson({'buildingId': buildingId}),
+          parameters: _ist.testObjectToJson({
+            'buildingId': buildingId,
+            'filter': filter,
+          }),
           serializationManager: _serializationManager,
         );
         var _localReturnValue =

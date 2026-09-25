@@ -105,8 +105,9 @@ class _TableQrScanViewState extends ConsumerState<TableQrScanView> {
       return;
     }
 
-    if (!FloorAccess.fromSession(ref.read(appSessionStoreProvider))
-        .canCreateOrders) {
+    if (!FloorAccess.fromSession(
+      ref.read(appSessionStoreProvider),
+    ).canCreateOrders) {
       await _rejectAndClose(l10n.errorOrderPermissionDenied);
       return;
     }

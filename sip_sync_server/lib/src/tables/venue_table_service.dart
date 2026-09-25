@@ -6,18 +6,42 @@ import '../generated/protocol.dart';
 /// CRUD for venue floor tables. [TableFloorStatus] is computed, never stored.
 class VenueTableService {
   /// Lists tables for a building the caller can access.
+  ///
+  /// [filter] is applied after computing [TableFloorStatus] (occupied from open orders).
   Future<List<VenueTableView>> listForBuilding(
     Session session,
-    UuidValue buildingId,
-  ) async {
+    UuidValue buildingId, {
+    TableListFilter filter = TableListFilter.all,
+  }) async {
     await _requireBuildingAccess(session, buildingId);
     final rows = await VenueTable.db.find(
       session,
-      where: (t) => t.buildingId.equals(buildingId),
+      where: (t) {
+        var q = t.buildingId.equals(buildingId);
+        if (filter == TableListFilter.inactive) {
+          q = q & t.isActive.equals(false);
+        } else if (filter != TableListFilter.all) {
+          // Status chips only show active tables.
+          q = q & t.isActive.equals(true);
+        }
+        return q;
+      },
       orderBy: (t) => t.number,
     );
     final occupiedIds = await _occupiedTableIds(session, buildingId);
-    return rows.map((row) => _view(row, occupiedIds)).toList();
+    final views = rows.map((row) => _view(row, occupiedIds)).toList();
+    return switch (filter) {
+      TableListFilter.all || TableListFilter.inactive => views,
+      TableListFilter.available => views
+          .where((t) => t.status == TableFloorStatus.available)
+          .toList(),
+      TableListFilter.occupied => views
+          .where((t) => t.status == TableFloorStatus.occupied)
+          .toList(),
+      TableListFilter.reserved => views
+          .where((t) => t.status == TableFloorStatus.reserved)
+          .toList(),
+    };
   }
 
   /// Owner-only: create [request.count] tables with sequential numbers.

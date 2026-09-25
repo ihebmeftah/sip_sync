@@ -66,7 +66,7 @@ Attribution actor ids are owner/employee (or later customer) UUIDs with matching
 5. Detail: compact advance / cancel on each line (only that card shows a spinner). With **strict mode off**, a **Pay now** shortcut jumps to payed. **Add articles** appends more units (and deducts stock again) when the building’s `allowAppendingItemsToOrder` is **true**; otherwise the button is disabled and `addItems` returns `appendNotAllowed`. Info icon opens item attribution. Table chip opens the floor map.
 6. When an order is open on a table, that table’s floor status is **occupied**; after pay/cancel it returns to **available**. If the building’s `tableMultiOrder` is **false**, a second order on that table is blocked (server + floor picker).
 7. Cancel whole order when still in progress; stay on the detail screen (shows cancelled state). Cancelling a line or order **restores** composition stock for non-payed lines.
-8. Orders list can filter by status (All / In progress / Payed / Cancelled). Server returns orders by `createdAt` desc; detail lines stay in stable `createdAt` (+ id) order with **payed** items at the bottom (`paidAt` desc among payed). Intermediate status changes do not reorder lines.
+8. Orders list filter chips call `order.list(buildingId, status)` on the server (`null` = all). Results are sorted by `createdAt` desc; detail lines stay in stable `createdAt` (+ id) order with **payed** items at the bottom (`paidAt` desc among payed). Intermediate status changes do not reorder lines.
 9. Create / append fails with `insufficientStock` when any ingredient would go below zero.
 
 Draft cart lives in `OrderDraftViewModel` (keepAlive). `pickingTable` drives floor-map selection.

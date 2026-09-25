@@ -77,6 +77,7 @@ void main() {
         final list = await endpoints.venueTable.list(
           setup.ownerSession,
           setup.building.id,
+          TableListFilter.all,
         );
         expect(list, hasLength(5));
       },

@@ -16,7 +16,7 @@ Status: shipped
 
 1. Open a venue → **Tables** in the ops rail (`/b/:buildingId/tables`).
 2. Floor grid shows each table as a seat-based dining preview (round for ≤4 seats, oblong for more; chairs match `maxSeats`).
-3. Filter chips: All / Available / Occupied / Reserved / Inactive.
+3. Filter chips call `venueTable.list(buildingId, filter)` (`TableListFilter`: All / Available / Occupied / Reserved / Inactive).
 4. Owner taps **Add table** → on **mobile** a full-screen form; on **wide** a dialog. Asks **how many** tables, max seats, and active. Server assigns sequential numbers continuing after the highest existing number.
 5. Owner taps a table tile to edit **seats** and **active** only (number is locked) — same mobile screen / wide dialog split.
 6. **Employee** taps a table to start a new order (no FAB). Inactive / occupied (when `tableMultiOrder` is off) tables are blocked with a snackbar. Employees can also **scan** a table QR sticker (see [table-qr](table-qr.md)).

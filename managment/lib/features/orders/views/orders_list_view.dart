@@ -7,6 +7,7 @@ import '../../../core/errors/error_mapper.dart';
 import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
+import '../../../core/widgets/refresh_on_appear.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../view_models/orders_view_model.dart';
 import '../widgets/order_item_info_sheet.dart';
@@ -23,15 +24,29 @@ class OrdersListView extends ConsumerStatefulWidget {
 }
 
 class _OrdersListViewState extends ConsumerState<OrdersListView> {
-  OrderStatus? _statusFilter;
+  @override
+  void initState() {
+    super.initState();
+    refreshCachedListOnAppear(
+      this,
+      providerAlreadyAlive: ref.exists(
+        ordersViewModelProvider(widget.buildingId),
+      ),
+      refresh: () => ref
+          .read(ordersViewModelProvider(widget.buildingId).notifier)
+          .onScreenAppeared(),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final text = Theme.of(context).textTheme;
-    final scheme = Theme.of(context).colorScheme;
     final currency = ref.watch(buildingSelectionProvider)?.currencyCode ?? '';
-    final async = ref.watch(ordersViewModelProvider(widget.buildingId));
+    final ordersVm = ref.watch(ordersViewModelProvider(widget.buildingId));
+    final statusFilter = ref
+        .watch(ordersViewModelProvider(widget.buildingId).notifier)
+        .statusFilter;
 
     return ColoredBox(
       color: Theme.of(context).scaffoldBackgroundColor,
@@ -59,12 +74,16 @@ class _OrdersListViewState extends ConsumerState<OrdersListView> {
                       padding: const EdgeInsetsDirectional.only(
                         end: AppSpacing.sm,
                       ),
-                      child: FilterChip(
-                        selected: _statusFilter == null,
-                        showCheckmark: false,
-                        label: Text(l10n.ordersFilterAll),
-                        selectedColor: scheme.secondaryContainer,
-                        onSelected: (_) => setState(() => _statusFilter = null),
+                      child: AppFilterChip(
+                        selected: statusFilter == null,
+                        label: l10n.ordersFilterAll,
+                        onSelected: (_) => ref
+                            .read(
+                              ordersViewModelProvider(
+                                widget.buildingId,
+                              ).notifier,
+                            )
+                            .setStatusFilter(null),
                       ),
                     ),
                     for (final status in OrderStatus.values)
@@ -72,20 +91,23 @@ class _OrdersListViewState extends ConsumerState<OrdersListView> {
                         padding: const EdgeInsetsDirectional.only(
                           end: AppSpacing.sm,
                         ),
-                        child: FilterChip(
-                          selected: _statusFilter == status,
-                          showCheckmark: false,
-                          label: Text(orderStatusLabel(l10n, status)),
-                          selectedColor: scheme.secondaryContainer,
-                          onSelected: (_) =>
-                              setState(() => _statusFilter = status),
+                        child: AppFilterChip(
+                          selected: statusFilter == status,
+                          label: orderStatusLabel(l10n, status),
+                          onSelected: (_) => ref
+                              .read(
+                                ordersViewModelProvider(
+                                  widget.buildingId,
+                                ).notifier,
+                              )
+                              .setStatusFilter(status),
                         ),
                       ),
                   ],
                 ),
               ),
               const SizedBox(height: AppSpacing.lg),
-              async.when(
+              ordersVm.when(
                 loading: () => const LinearProgressIndicator(),
                 error: (error, _) => Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -104,20 +126,18 @@ class _OrdersListViewState extends ConsumerState<OrdersListView> {
                   ],
                 ),
                 data: (orders) {
-                  final visible = _statusFilter == null
-                      ? orders
-                      : orders
-                            .where((o) => o.status == _statusFilter)
-                            .toList(growable: false);
                   if (orders.isEmpty) {
-                    return AppSurfaceCard(child: Text(l10n.ordersEmpty));
-                  }
-                  if (visible.isEmpty) {
-                    return AppSurfaceCard(child: Text(l10n.ordersFilterEmpty));
+                    return AppSurfaceCard(
+                      child: Text(
+                        statusFilter == null
+                            ? l10n.ordersEmpty
+                            : l10n.ordersFilterEmpty,
+                      ),
+                    );
                   }
                   return Column(
                     children: [
-                      for (final order in visible) ...[
+                      for (final order in orders) ...[
                         AppSurfaceCard(
                           child: InkWell(
                             onTap: () => OrderDetailRoute(
