@@ -147,6 +147,45 @@ class AuthViewModel extends _$AuthViewModel {
     }
   }
 
+  /// Owner forgot-password step 1. Returns optional debug OTP (dev/test).
+  Future<String?> requestPasswordReset(String email) async {
+    state = state.copyWith(isLoading: true, clearError: true);
+    try {
+      final result = await _repo.requestPasswordReset(email);
+      state = state.copyWith(isLoading: false);
+      return result.debugCode;
+    } catch (error) {
+      state = state.copyWith(
+        isLoading: false,
+        errorKey: mapError(error).l10nKey,
+      );
+      return null;
+    }
+  }
+
+  Future<bool> confirmPasswordReset({
+    required String email,
+    required String code,
+    required String newPassword,
+  }) async {
+    state = state.copyWith(isLoading: true, clearError: true);
+    try {
+      await _repo.confirmPasswordReset(
+        email: email,
+        code: code,
+        newPassword: newPassword,
+      );
+      state = state.copyWith(isLoading: false);
+      return true;
+    } catch (error) {
+      state = state.copyWith(
+        isLoading: false,
+        errorKey: mapError(error).l10nKey,
+      );
+      return false;
+    }
+  }
+
   Future<void> signOut() async {
     await _repo.signOut();
     getIt<BuildingSession>().clear();

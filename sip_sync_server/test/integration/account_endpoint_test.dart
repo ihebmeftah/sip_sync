@@ -262,5 +262,90 @@ void main() {
         ),
       );
     });
+
+    test('owner can change password then login with new one', () async {
+      final registered = await endpoints.ownerAuth.register(
+        sessionBuilder,
+        EmailRegisterCreate(
+          email: 'changepw@example.com',
+          password: 'password1',
+          phoneNumber: '+21620000009',
+          firstName: 'Change',
+          lastName: 'Pw',
+        ),
+      );
+      final authed = sessionBuilder.copyWith(
+        authentication: AuthenticationOverride.authenticationInfo(
+          registered.owner!.id.uuid,
+          {Scope('sip.owner')},
+          authId: '11111111-1111-1111-1111-111111111111',
+        ),
+      );
+      await endpoints.ownerAuth.changePassword(
+        authed,
+        ChangePasswordRequest(
+          currentPassword: 'password1',
+          newPassword: 'password2x',
+        ),
+      );
+      await expectLater(
+        endpoints.ownerAuth.login(
+          sessionBuilder,
+          EmailLoginRequest(
+            email: 'changepw@example.com',
+            password: 'password1',
+          ),
+        ),
+        throwsA(
+          isA<AccountException>().having(
+            (e) => e.code,
+            'code',
+            AccountErrorCode.invalidCredentials,
+          ),
+        ),
+      );
+      final login = await endpoints.ownerAuth.login(
+        sessionBuilder,
+        EmailLoginRequest(
+          email: 'changepw@example.com',
+          password: 'password2x',
+        ),
+      );
+      expect(login.owner?.id, registered.owner?.id);
+    });
+
+    test('owner password reset with debug OTP', () async {
+      await endpoints.ownerAuth.register(
+        sessionBuilder,
+        EmailRegisterCreate(
+          email: 'resetme@example.com',
+          password: 'password1',
+          phoneNumber: '+21620000010',
+          firstName: 'Reset',
+          lastName: 'Me',
+        ),
+      );
+      final requested = await endpoints.ownerAuth.requestPasswordReset(
+        sessionBuilder,
+        PasswordResetRequest(email: 'resetme@example.com'),
+      );
+      expect(requested.debugCode, isNotNull);
+      await endpoints.ownerAuth.confirmPasswordReset(
+        sessionBuilder,
+        PasswordResetConfirm(
+          email: 'resetme@example.com',
+          code: requested.debugCode!,
+          newPassword: 'password9x',
+        ),
+      );
+      final login = await endpoints.ownerAuth.login(
+        sessionBuilder,
+        EmailLoginRequest(
+          email: 'resetme@example.com',
+          password: 'password9x',
+        ),
+      );
+      expect(login.owner?.email, 'resetme@example.com');
+    });
   });
 }

@@ -84,6 +84,31 @@ class _SignInViewState extends ConsumerState<SignInView> {
               textInputAction: TextInputAction.done,
               validator: (value) => FormValidators.password(l10n, value),
             ),
+            Align(
+              alignment: AlignmentDirectional.centerEnd,
+              child: TextButton(
+                onPressed: () {
+                  if (_mode == _LoginMode.employee) {
+                    showDialog<void>(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: Text(l10n.forgotPassword),
+                        content: Text(l10n.forgotPasswordEmployeeHint),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.of(context).pop(),
+                            child: Text(l10n.close),
+                          ),
+                        ],
+                      ),
+                    );
+                    return;
+                  }
+                  const ForgotPasswordRoute().go(context);
+                },
+                child: Text(l10n.forgotPassword),
+              ),
+            ),
             if (auth.errorKey != null)
               AppErrorBanner(message: lookupError(l10n, auth.errorKey!)),
             AppFilledButton(

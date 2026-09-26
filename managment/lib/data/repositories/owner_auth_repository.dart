@@ -99,4 +99,41 @@ class OwnerAuthRepository {
     }
     await _store.clear();
   }
+
+  Future<void> changePassword({
+    required String currentPassword,
+    required String newPassword,
+  }) async {
+    final request = ChangePasswordRequest(
+      currentPassword: currentPassword,
+      newPassword: newPassword,
+    );
+    if (_store.isOwner) {
+      await _client.ownerAuth.changePassword(request);
+    } else if (_store.isEmployee) {
+      await _client.employeeAuth.changePassword(request);
+    } else {
+      throw AccountException(
+        message: 'Sign in required.',
+        code: AccountErrorCode.notAuthorized,
+      );
+    }
+  }
+
+  /// Owner-only. Returns [PasswordResetRequestResult.debugCode] in dev/test.
+  Future<PasswordResetRequestResult> requestPasswordReset(String email) {
+    return _client.ownerAuth.requestPasswordReset(
+      PasswordResetRequest(email: email),
+    );
+  }
+
+  Future<void> confirmPasswordReset({
+    required String email,
+    required String code,
+    required String newPassword,
+  }) {
+    return _client.ownerAuth.confirmPasswordReset(
+      PasswordResetConfirm(email: email, code: code, newPassword: newPassword),
+    );
+  }
 }

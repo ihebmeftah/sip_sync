@@ -26,7 +26,8 @@ GoRouter appRouter(Ref ref) {
       final location = state.matchedLocation;
       final onAuth =
           location == const SignInRoute().location ||
-          location == const RegisterRoute().location;
+          location == const RegisterRoute().location ||
+          location == const ForgotPasswordRoute().location;
       final onBuildings = location.startsWith('/buildings');
       final onOps = location.startsWith('/b/');
       final employeeHome = _employeeHome();

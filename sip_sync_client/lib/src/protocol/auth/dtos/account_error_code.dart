@@ -24,7 +24,9 @@ enum AccountErrorCode implements _isc.SerializableModel {
   cannotDeleteDefaultAdmin,
   passwordTooWeak,
   profileIncomplete,
-  accountDisabled;
+  accountDisabled,
+  invalidResetCode,
+  resetCodeExpired;
 
   static AccountErrorCode fromJson(int index) {
     switch (index) {
@@ -52,6 +54,10 @@ enum AccountErrorCode implements _isc.SerializableModel {
         return AccountErrorCode.profileIncomplete;
       case 11:
         return AccountErrorCode.accountDisabled;
+      case 12:
+        return AccountErrorCode.invalidResetCode;
+      case 13:
+        return AccountErrorCode.resetCodeExpired;
       default:
         throw ArgumentError(
           'Value "$index" cannot be converted to "AccountErrorCode"',

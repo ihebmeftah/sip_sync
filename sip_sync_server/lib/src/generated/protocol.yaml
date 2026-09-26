@@ -8,6 +8,7 @@ employeeAuth:
   - login:
   - me:
   - updateMyProfile:
+  - changePassword:
   - logout:
 employee:
   - get:
@@ -19,6 +20,9 @@ ownerAuth:
   - login:
   - me:
   - updateMyProfile:
+  - changePassword:
+  - requestPasswordReset:
+  - confirmPasswordReset:
   - logout:
 superAdminAuth:
   - login:

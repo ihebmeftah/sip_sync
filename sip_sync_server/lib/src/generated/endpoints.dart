@@ -15,6 +15,8 @@ import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
     as _iacs;
 import 'package:serverpod_auth_idp_server/serverpod_auth_idp_server.dart'
     as _iais;
+import 'package:sip_sync_server/src/generated/auth/dtos/change_password_request.dart'
+    as _ig12em2g;
 import 'package:sip_sync_server/src/generated/auth/dtos/email_login_request.dart'
     as _ibnmpi7x;
 import 'package:sip_sync_server/src/generated/auth/dtos/email_register_create.dart'
@@ -23,6 +25,10 @@ import 'package:sip_sync_server/src/generated/auth/dtos/employee_create.dart'
     as _iohyx14n;
 import 'package:sip_sync_server/src/generated/auth/dtos/employee_update.dart'
     as _il4f6nhz;
+import 'package:sip_sync_server/src/generated/auth/dtos/password_reset_confirm.dart'
+    as _ifl92t6h;
+import 'package:sip_sync_server/src/generated/auth/dtos/password_reset_request.dart'
+    as _i533dha7;
 import 'package:sip_sync_server/src/generated/auth/dtos/profile_update.dart'
     as _itbs72nt;
 import 'package:sip_sync_server/src/generated/auth/dtos/super_admin_create.dart'
@@ -307,6 +313,26 @@ class Endpoints extends _is.EndpointDispatch {
                         params['request'],
                       ),
         ),
+        'changePassword': _is.MethodConnector(
+          name: 'changePassword',
+          params: {
+            'request': _is.ParameterDescription(
+              name: 'request',
+              type: _is.getType<_ig12em2g.ChangePasswordRequest>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['employeeAuth'] as _i6neyhet.EmployeeAuthEndpoint)
+                      .changePassword(
+                        session,
+                        params['request'],
+                      ),
+        ),
         'logout': _is.MethodConnector(
           name: 'logout',
           params: {},
@@ -475,6 +501,63 @@ class Endpoints extends _is.EndpointDispatch {
                 Map<String, dynamic> params,
               ) async => (endpoints['ownerAuth'] as _is2qyeee.OwnerAuthEndpoint)
                   .updateMyProfile(
+                    session,
+                    params['request'],
+                  ),
+        ),
+        'changePassword': _is.MethodConnector(
+          name: 'changePassword',
+          params: {
+            'request': _is.ParameterDescription(
+              name: 'request',
+              type: _is.getType<_ig12em2g.ChangePasswordRequest>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['ownerAuth'] as _is2qyeee.OwnerAuthEndpoint)
+                  .changePassword(
+                    session,
+                    params['request'],
+                  ),
+        ),
+        'requestPasswordReset': _is.MethodConnector(
+          name: 'requestPasswordReset',
+          params: {
+            'request': _is.ParameterDescription(
+              name: 'request',
+              type: _is.getType<_i533dha7.PasswordResetRequest>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['ownerAuth'] as _is2qyeee.OwnerAuthEndpoint)
+                  .requestPasswordReset(
+                    session,
+                    params['request'],
+                  ),
+        ),
+        'confirmPasswordReset': _is.MethodConnector(
+          name: 'confirmPasswordReset',
+          params: {
+            'request': _is.ParameterDescription(
+              name: 'request',
+              type: _is.getType<_ifl92t6h.PasswordResetConfirm>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['ownerAuth'] as _is2qyeee.OwnerAuthEndpoint)
+                  .confirmPasswordReset(
                     session,
                     params['request'],
                   ),

@@ -173,6 +173,77 @@ class AppLocalizationsAr extends AppLocalizations {
   String get errorAccountDisabled => 'حساب الموظف معطّل.';
 
   @override
+  String get errorInvalidResetCode => 'رمز إعادة التعيين غير صالح.';
+
+  @override
+  String get errorResetCodeExpired =>
+      'انتهت صلاحية رمز إعادة التعيين. اطلب رمزاً جديداً.';
+
+  @override
+  String get forgotPassword => 'نسيت كلمة المرور؟';
+
+  @override
+  String get forgotPasswordTitle => 'إعادة تعيين كلمة المرور';
+
+  @override
+  String get forgotPasswordHint => 'أدخل بريد المالك. سنرسل رمز إعادة التعيين.';
+
+  @override
+  String get forgotPasswordCodeHint => 'أدخل الرمز واختر كلمة مرور جديدة.';
+
+  @override
+  String get forgotPasswordEmployeeHint =>
+      'اطلب من مديرك إعادة تعيين كلمة مرور الموظف.';
+
+  @override
+  String forgotPasswordDevCode(String code) {
+    return 'رمز التطوير: $code';
+  }
+
+  @override
+  String get sendResetCode => 'إرسال رمز إعادة التعيين';
+
+  @override
+  String get resetCode => 'رمز إعادة التعيين';
+
+  @override
+  String get resetPassword => 'إعادة تعيين كلمة المرور';
+
+  @override
+  String get passwordResetDone =>
+      'تم تحديث كلمة المرور. سجّل الدخول بكلمة المرور الجديدة.';
+
+  @override
+  String get backToSignIn => 'العودة لتسجيل الدخول';
+
+  @override
+  String get changePassword => 'تغيير كلمة المرور';
+
+  @override
+  String get changePasswordHint => 'سيتم تسجيل الخروج من الأجهزة الأخرى.';
+
+  @override
+  String get currentPassword => 'كلمة المرور الحالية';
+
+  @override
+  String get newPassword => 'كلمة المرور الجديدة';
+
+  @override
+  String get confirmPassword => 'تأكيد كلمة المرور';
+
+  @override
+  String get updatePassword => 'تحديث كلمة المرور';
+
+  @override
+  String get passwordChanged => 'تم تحديث كلمة المرور.';
+
+  @override
+  String get validationPasswordMatch => 'كلمتا المرور غير متطابقتين.';
+
+  @override
+  String get validationResetCode => 'أدخل رمز إعادة التعيين.';
+
+  @override
   String get navEmployees => 'الموظفون';
 
   @override

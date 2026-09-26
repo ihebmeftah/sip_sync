@@ -412,6 +412,138 @@ abstract class AppLocalizations {
   /// **'This staff account is disabled.'**
   String get errorAccountDisabled;
 
+  /// No description provided for @errorInvalidResetCode.
+  ///
+  /// In en, this message translates to:
+  /// **'That reset code is invalid.'**
+  String get errorInvalidResetCode;
+
+  /// No description provided for @errorResetCodeExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'That reset code has expired. Request a new one.'**
+  String get errorResetCodeExpired;
+
+  /// No description provided for @forgotPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Forgot password?'**
+  String get forgotPassword;
+
+  /// No description provided for @forgotPasswordTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset password'**
+  String get forgotPasswordTitle;
+
+  /// No description provided for @forgotPasswordHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your owner email. We will send a reset code.'**
+  String get forgotPasswordHint;
+
+  /// No description provided for @forgotPasswordCodeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the code and choose a new password.'**
+  String get forgotPasswordCodeHint;
+
+  /// No description provided for @forgotPasswordEmployeeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask your manager to reset your staff password.'**
+  String get forgotPasswordEmployeeHint;
+
+  /// No description provided for @forgotPasswordDevCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Dev code: {code}'**
+  String forgotPasswordDevCode(String code);
+
+  /// No description provided for @sendResetCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Send reset code'**
+  String get sendResetCode;
+
+  /// No description provided for @resetCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset code'**
+  String get resetCode;
+
+  /// No description provided for @resetPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset password'**
+  String get resetPassword;
+
+  /// No description provided for @passwordResetDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Password updated. Sign in with your new password.'**
+  String get passwordResetDone;
+
+  /// No description provided for @backToSignIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to sign in'**
+  String get backToSignIn;
+
+  /// No description provided for @changePassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Change password'**
+  String get changePassword;
+
+  /// No description provided for @changePasswordHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Other devices will be signed out.'**
+  String get changePasswordHint;
+
+  /// No description provided for @currentPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Current password'**
+  String get currentPassword;
+
+  /// No description provided for @newPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'New password'**
+  String get newPassword;
+
+  /// No description provided for @confirmPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm password'**
+  String get confirmPassword;
+
+  /// No description provided for @updatePassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Update password'**
+  String get updatePassword;
+
+  /// No description provided for @passwordChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Password updated.'**
+  String get passwordChanged;
+
+  /// No description provided for @validationPasswordMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Passwords do not match.'**
+  String get validationPasswordMatch;
+
+  /// No description provided for @validationResetCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the reset code.'**
+  String get validationResetCode;
+
   /// No description provided for @navEmployees.
   ///
   /// In en, this message translates to:

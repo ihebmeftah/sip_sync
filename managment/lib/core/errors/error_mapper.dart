@@ -21,6 +21,8 @@ Failure mapError(Object error) {
       AccountErrorCode.passwordTooWeak => 'errorPasswordTooWeak',
       AccountErrorCode.profileIncomplete => 'errorProfileIncomplete',
       AccountErrorCode.accountDisabled => 'errorAccountDisabled',
+      AccountErrorCode.invalidResetCode => 'errorInvalidResetCode',
+      AccountErrorCode.resetCodeExpired => 'errorResetCodeExpired',
     });
   }
   if (error is BuildingException) {
@@ -110,6 +112,8 @@ String lookupError(dynamic l10n, String key) {
     'errorPasswordTooWeak' => l10n.errorPasswordTooWeak,
     'errorProfileIncomplete' => l10n.errorProfileIncomplete,
     'errorAccountDisabled' => l10n.errorAccountDisabled,
+    'errorInvalidResetCode' => l10n.errorInvalidResetCode,
+    'errorResetCodeExpired' => l10n.errorResetCodeExpired,
     'errorLocationDenied' => l10n.errorLocationDenied,
     'errorLocationDisabled' => l10n.errorLocationDisabled,
     'errorLocationFailed' => l10n.errorLocationFailed,

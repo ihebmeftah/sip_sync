@@ -19,6 +19,8 @@ import 'package:serverpod_auth_idp_client/serverpod_auth_idp_client.dart'
 import 'package:serverpod_client/serverpod_client.dart' as _isc;
 import 'package:sip_sync_client/src/protocol/auth/dtos/auth_token_result.dart'
     as _itdxfou6;
+import 'package:sip_sync_client/src/protocol/auth/dtos/change_password_request.dart'
+    as _ilzajllb;
 import 'package:sip_sync_client/src/protocol/auth/dtos/customer_session_view.dart'
     as _ii1pag0e;
 import 'package:sip_sync_client/src/protocol/auth/dtos/email_login_request.dart'
@@ -35,6 +37,12 @@ import 'package:sip_sync_client/src/protocol/auth/dtos/employee_view.dart'
     as _iz70mzqw;
 import 'package:sip_sync_client/src/protocol/auth/dtos/owner_session_view.dart'
     as _ibxh18gx;
+import 'package:sip_sync_client/src/protocol/auth/dtos/password_reset_confirm.dart'
+    as _ihx8fgpk;
+import 'package:sip_sync_client/src/protocol/auth/dtos/password_reset_request.dart'
+    as _ifcla4ri;
+import 'package:sip_sync_client/src/protocol/auth/dtos/password_reset_request_result.dart'
+    as _iv84wffs;
 import 'package:sip_sync_client/src/protocol/auth/dtos/profile_update.dart'
     as _i9d1xwh7;
 import 'package:sip_sync_client/src/protocol/auth/dtos/super_admin_create.dart'
@@ -178,6 +186,14 @@ class EndpointEmployeeAuth extends _isc.EndpointRef {
     {'request': request},
   );
 
+  /// Updates the signed-in employee's password and drops other sessions.
+  _ida.Future<void> changePassword(_ilzajllb.ChangePasswordRequest request) =>
+      caller.callServerEndpoint<void>(
+        'employeeAuth',
+        'changePassword',
+        {'request': request},
+      );
+
   _ida.Future<void> logout() => caller.callServerEndpoint<void>(
     'employeeAuth',
     'logout',
@@ -228,7 +244,7 @@ class EndpointEmployee extends _isc.EndpointRef {
   );
 }
 
-/// Owner self-register, login, and profile.
+/// Owner self-register, login, profile, and password reset.
 /// {@category Endpoint}
 class EndpointOwnerAuth extends _isc.EndpointRef {
   EndpointOwnerAuth(_isc.EndpointCaller caller) : super(caller);
@@ -264,6 +280,35 @@ class EndpointOwnerAuth extends _isc.EndpointRef {
   ) => caller.callServerEndpoint<_ibxh18gx.OwnerSessionView>(
     'ownerAuth',
     'updateMyProfile',
+    {'request': request},
+  );
+
+  /// Updates the signed-in owner's password and drops other sessions.
+  _ida.Future<void> changePassword(_ilzajllb.ChangePasswordRequest request) =>
+      caller.callServerEndpoint<void>(
+        'ownerAuth',
+        'changePassword',
+        {'request': request},
+      );
+
+  /// Starts a password reset for an owner email (no enumeration).
+  ///
+  /// Until email delivery exists, the OTP is logged and returned as
+  /// [PasswordResetRequestResult.debugCode] in development/test only.
+  _ida.Future<_iv84wffs.PasswordResetRequestResult> requestPasswordReset(
+    _ifcla4ri.PasswordResetRequest request,
+  ) => caller.callServerEndpoint<_iv84wffs.PasswordResetRequestResult>(
+    'ownerAuth',
+    'requestPasswordReset',
+    {'request': request},
+  );
+
+  /// Completes owner password reset with OTP + new password.
+  _ida.Future<void> confirmPasswordReset(
+    _ihx8fgpk.PasswordResetConfirm request,
+  ) => caller.callServerEndpoint<void>(
+    'ownerAuth',
+    'confirmPasswordReset',
     {'request': request},
   );
 

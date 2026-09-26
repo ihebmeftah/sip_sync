@@ -18,11 +18,15 @@ class ProfileViewPage extends ConsumerStatefulWidget {
 
 class _ProfileViewPageState extends ConsumerState<ProfileViewPage> {
   final _formKey = GlobalKey<FormState>();
+  final _passwordFormKey = GlobalKey<FormState>();
   final _email = TextEditingController();
   final _username = TextEditingController();
   final _phone = TextEditingController();
   final _first = TextEditingController();
   final _last = TextEditingController();
+  final _currentPassword = TextEditingController();
+  final _newPassword = TextEditingController();
+  final _confirmPassword = TextEditingController();
   var _filled = false;
 
   @override
@@ -32,6 +36,9 @@ class _ProfileViewPageState extends ConsumerState<ProfileViewPage> {
     _phone.dispose();
     _first.dispose();
     _last.dispose();
+    _currentPassword.dispose();
+    _newPassword.dispose();
+    _confirmPassword.dispose();
     super.dispose();
   }
 
@@ -55,6 +62,24 @@ class _ProfileViewPageState extends ConsumerState<ProfileViewPage> {
       _last.text = e.lastName;
       _filled = true;
     }
+  }
+
+  Future<void> _submitPassword() async {
+    if (!(_passwordFormKey.currentState?.validate() ?? false)) {
+      return;
+    }
+    final ok = await ref
+        .read(profileViewModelProvider.notifier)
+        .changePassword(
+          currentPassword: _currentPassword.text,
+          newPassword: _newPassword.text,
+        );
+    if (!mounted || !ok) {
+      return;
+    }
+    _currentPassword.clear();
+    _newPassword.clear();
+    _confirmPassword.clear();
   }
 
   @override
@@ -146,6 +171,60 @@ class _ProfileViewPageState extends ConsumerState<ProfileViewPage> {
                                 lastName: _last.text,
                               );
                         },
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: AppSpacing.lg),
+              AppSurfaceCard(
+                child: Form(
+                  key: _passwordFormKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Text(l10n.changePassword, style: text.titleLarge),
+                      const SizedBox(height: AppSpacing.sm),
+                      Text(l10n.changePasswordHint, style: text.bodyMedium),
+                      const SizedBox(height: AppSpacing.lg),
+                      AppTextField(
+                        controller: _currentPassword,
+                        label: l10n.currentPassword,
+                        obscure: true,
+                        prefixIcon: Icons.lock_outline,
+                        validator: (value) =>
+                            FormValidators.password(l10n, value),
+                      ),
+                      AppTextField(
+                        controller: _newPassword,
+                        label: l10n.newPassword,
+                        obscure: true,
+                        prefixIcon: Icons.lock_outline,
+                        validator: (value) =>
+                            FormValidators.password(l10n, value),
+                      ),
+                      AppTextField(
+                        controller: _confirmPassword,
+                        label: l10n.confirmPassword,
+                        obscure: true,
+                        prefixIcon: Icons.lock_outline,
+                        validator: (value) {
+                          if (value != _newPassword.text) {
+                            return l10n.validationPasswordMatch;
+                          }
+                          return FormValidators.password(l10n, value);
+                        },
+                      ),
+                      if (ui.passwordErrorKey != null)
+                        AppErrorBanner(
+                          message: lookupError(l10n, ui.passwordErrorKey!),
+                        ),
+                      if (ui.passwordChanged)
+                        AppSuccessBanner(message: l10n.passwordChanged),
+                      AppFilledButton(
+                        label: l10n.updatePassword,
+                        busy: ui.changingPassword,
+                        onPressed: _submitPassword,
                       ),
                     ],
                   ),

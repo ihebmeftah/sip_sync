@@ -17,6 +17,8 @@ import 'package:serverpod/serverpod.dart' as _is;
 import 'package:serverpod_test/serverpod_test.dart' as _ist;
 import 'package:sip_sync_server/src/generated/auth/dtos/auth_token_result.dart'
     as _ifpnmg9t;
+import 'package:sip_sync_server/src/generated/auth/dtos/change_password_request.dart'
+    as _ig12em2g;
 import 'package:sip_sync_server/src/generated/auth/dtos/customer_session_view.dart'
     as _i5lhhh2h;
 import 'package:sip_sync_server/src/generated/auth/dtos/email_login_request.dart'
@@ -33,6 +35,12 @@ import 'package:sip_sync_server/src/generated/auth/dtos/employee_view.dart'
     as _im8o31wm;
 import 'package:sip_sync_server/src/generated/auth/dtos/owner_session_view.dart'
     as _ir1cwv55;
+import 'package:sip_sync_server/src/generated/auth/dtos/password_reset_confirm.dart'
+    as _ifl92t6h;
+import 'package:sip_sync_server/src/generated/auth/dtos/password_reset_request.dart'
+    as _i533dha7;
+import 'package:sip_sync_server/src/generated/auth/dtos/password_reset_request_result.dart'
+    as _ilnozemj;
 import 'package:sip_sync_server/src/generated/auth/dtos/profile_update.dart'
     as _itbs72nt;
 import 'package:sip_sync_server/src/generated/auth/dtos/super_admin_create.dart'
@@ -578,6 +586,37 @@ class _EmployeeAuthEndpoint {
     });
   }
 
+  _ida.Future<void> changePassword(
+    _ist.TestSessionBuilder sessionBuilder,
+    _ig12em2g.ChangePasswordRequest request,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'employeeAuth',
+            method: 'changePassword',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'employeeAuth',
+          methodName: 'changePassword',
+          parameters: _ist.testObjectToJson({'request': request}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<void>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
   _ida.Future<void> logout(_ist.TestSessionBuilder sessionBuilder) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -872,6 +911,99 @@ class _OwnerAuthEndpoint {
                   _localCallContext.arguments,
                 )
                 as _ida.Future<_ir1cwv55.OwnerSessionView>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<void> changePassword(
+    _ist.TestSessionBuilder sessionBuilder,
+    _ig12em2g.ChangePasswordRequest request,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'ownerAuth',
+            method: 'changePassword',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'ownerAuth',
+          methodName: 'changePassword',
+          parameters: _ist.testObjectToJson({'request': request}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<void>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<_ilnozemj.PasswordResetRequestResult> requestPasswordReset(
+    _ist.TestSessionBuilder sessionBuilder,
+    _i533dha7.PasswordResetRequest request,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'ownerAuth',
+            method: 'requestPasswordReset',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'ownerAuth',
+          methodName: 'requestPasswordReset',
+          parameters: _ist.testObjectToJson({'request': request}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_ilnozemj.PasswordResetRequestResult>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<void> confirmPasswordReset(
+    _ist.TestSessionBuilder sessionBuilder,
+    _ifl92t6h.PasswordResetConfirm request,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'ownerAuth',
+            method: 'confirmPasswordReset',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'ownerAuth',
+          methodName: 'confirmPasswordReset',
+          parameters: _ist.testObjectToJson({'request': request}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<void>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();

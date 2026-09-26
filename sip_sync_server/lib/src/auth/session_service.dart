@@ -82,6 +82,22 @@ class SessionService {
       where: (t) => t.actorType.equals(actorType) & t.actorId.equals(actorId),
     );
   }
+
+  /// Drops every session for the actor except [keepSessionId] (current device).
+  Future<void> revokeOtherSessionsForActor(
+    Session session, {
+    required ActorType actorType,
+    required UuidValue actorId,
+    required UuidValue keepSessionId,
+  }) async {
+    await AuthSession.db.deleteWhere(
+      session,
+      where: (t) =>
+          t.actorType.equals(actorType) &
+          t.actorId.equals(actorId) &
+          t.id.notEquals(keepSessionId),
+    );
+  }
 }
 
 /// Wired into [Serverpod] as `authenticationHandler`.

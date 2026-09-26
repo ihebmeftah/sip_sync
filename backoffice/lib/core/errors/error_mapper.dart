@@ -18,6 +18,8 @@ Failure mapError(Object error) {
       AccountErrorCode.passwordTooWeak => 'errorPasswordTooWeak',
       AccountErrorCode.profileIncomplete => 'errorProfileIncomplete',
       AccountErrorCode.accountDisabled => 'errorAccountDisabled',
+      AccountErrorCode.invalidResetCode => 'errorGeneric',
+      AccountErrorCode.resetCodeExpired => 'errorGeneric',
     });
   }
   if (error is BuildingException) {

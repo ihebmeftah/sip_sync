@@ -41,6 +41,7 @@ import 'auth/dtos/account_error_code.dart' as _ipvvun4w;
 import 'auth/dtos/account_exception.dart' as _ivr1zpxc;
 import 'auth/dtos/actor_type.dart' as _ik5d360v;
 import 'auth/dtos/auth_token_result.dart' as _ihcr17cc;
+import 'auth/dtos/change_password_request.dart' as _iavw4tqb;
 import 'auth/dtos/customer_session_view.dart' as _ith71up9;
 import 'auth/dtos/email_login_request.dart' as _ibcfczkm;
 import 'auth/dtos/email_register_create.dart' as _iokpa1pa;
@@ -49,6 +50,9 @@ import 'auth/dtos/employee_session_view.dart' as _i5opmp1h;
 import 'auth/dtos/employee_update.dart' as _i08axu9z;
 import 'auth/dtos/employee_view.dart' as _inacnd8t;
 import 'auth/dtos/owner_session_view.dart' as _isqlfqk2;
+import 'auth/dtos/password_reset_confirm.dart' as _i9u54egm;
+import 'auth/dtos/password_reset_request.dart' as _in4l34z2;
+import 'auth/dtos/password_reset_request_result.dart' as _ixrmg4rs;
 import 'auth/dtos/profile_update.dart' as _iul4y12k;
 import 'auth/dtos/super_admin_create.dart' as _ieisqlnm;
 import 'auth/dtos/super_admin_session_view.dart' as _i4itilxd;
@@ -58,6 +62,7 @@ import 'auth/entity/auth_session.dart' as _i30hpih1;
 import 'auth/entity/customer.dart' as _iosx2li4;
 import 'auth/entity/employee.dart' as _iwpz2vh7;
 import 'auth/entity/owner.dart' as _i00rpu3b;
+import 'auth/entity/password_reset.dart' as _i5m9ixa9;
 import 'auth/entity/super_admin.dart' as _ii4fooib;
 import 'buildings/dtos/building_create.dart' as _i8mj84pm;
 import 'buildings/dtos/building_error_code.dart' as _ip56joo9;
@@ -122,6 +127,7 @@ export 'auth/dtos/account_error_code.dart';
 export 'auth/dtos/account_exception.dart';
 export 'auth/dtos/actor_type.dart';
 export 'auth/dtos/auth_token_result.dart';
+export 'auth/dtos/change_password_request.dart';
 export 'auth/dtos/customer_session_view.dart';
 export 'auth/dtos/email_login_request.dart';
 export 'auth/dtos/email_register_create.dart';
@@ -130,6 +136,9 @@ export 'auth/dtos/employee_session_view.dart';
 export 'auth/dtos/employee_update.dart';
 export 'auth/dtos/employee_view.dart';
 export 'auth/dtos/owner_session_view.dart';
+export 'auth/dtos/password_reset_confirm.dart';
+export 'auth/dtos/password_reset_request.dart';
+export 'auth/dtos/password_reset_request_result.dart';
 export 'auth/dtos/profile_update.dart';
 export 'auth/dtos/super_admin_create.dart';
 export 'auth/dtos/super_admin_session_view.dart';
@@ -139,6 +148,7 @@ export 'auth/entity/auth_session.dart';
 export 'auth/entity/customer.dart';
 export 'auth/entity/employee.dart';
 export 'auth/entity/owner.dart';
+export 'auth/entity/password_reset.dart';
 export 'auth/entity/super_admin.dart';
 export 'buildings/dtos/building_create.dart';
 export 'buildings/dtos/building_error_code.dart';
@@ -1304,6 +1314,68 @@ class Protocol extends _is.DatabaseSerializationManager {
       managed: true,
     ),
     _isp.TableDefinition(
+      name: 'password_reset',
+      dartName: 'PasswordReset',
+      schema: 'public',
+      module: 'sip_sync',
+      columns: [
+        _isp.ColumnDefinition(
+          name: 'id',
+          columnType: _isp.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue?',
+          columnDefault: 'random_v7',
+        ),
+        _isp.ColumnDefinition(
+          name: 'email',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _isp.ColumnDefinition(
+          name: 'codeHash',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _isp.ColumnDefinition(
+          name: 'expiresAt',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+        ),
+        _isp.ColumnDefinition(
+          name: 'consumedAt',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: true,
+          dartType: 'DateTime?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'createdAt',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+        ),
+      ],
+      foreignKeys: [],
+      indexes: [
+        _isp.IndexDefinition(
+          indexName: 'password_reset_email_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'email',
+            ),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
+    _isp.TableDefinition(
       name: 'super_admin',
       dartName: 'SuperAdmin',
       schema: 'public',
@@ -1927,6 +1999,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == _ihcr17cc.AuthTokenResult) {
       return _ihcr17cc.AuthTokenResult.fromJson(data) as T;
     }
+    if (t == _iavw4tqb.ChangePasswordRequest) {
+      return _iavw4tqb.ChangePasswordRequest.fromJson(data) as T;
+    }
     if (t == _ith71up9.CustomerSessionView) {
       return _ith71up9.CustomerSessionView.fromJson(data) as T;
     }
@@ -1950,6 +2025,15 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     if (t == _isqlfqk2.OwnerSessionView) {
       return _isqlfqk2.OwnerSessionView.fromJson(data) as T;
+    }
+    if (t == _i9u54egm.PasswordResetConfirm) {
+      return _i9u54egm.PasswordResetConfirm.fromJson(data) as T;
+    }
+    if (t == _in4l34z2.PasswordResetRequest) {
+      return _in4l34z2.PasswordResetRequest.fromJson(data) as T;
+    }
+    if (t == _ixrmg4rs.PasswordResetRequestResult) {
+      return _ixrmg4rs.PasswordResetRequestResult.fromJson(data) as T;
     }
     if (t == _iul4y12k.ProfileUpdate) {
       return _iul4y12k.ProfileUpdate.fromJson(data) as T;
@@ -1977,6 +2061,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     if (t == _i00rpu3b.Owner) {
       return _i00rpu3b.Owner.fromJson(data) as T;
+    }
+    if (t == _i5m9ixa9.PasswordReset) {
+      return _i5m9ixa9.PasswordReset.fromJson(data) as T;
     }
     if (t == _ii4fooib.SuperAdmin) {
       return _ii4fooib.SuperAdmin.fromJson(data) as T;
@@ -2173,6 +2260,12 @@ class Protocol extends _is.DatabaseSerializationManager {
       return (data != null ? _ihcr17cc.AuthTokenResult.fromJson(data) : null)
           as T;
     }
+    if (t == _is.getType<_iavw4tqb.ChangePasswordRequest?>()) {
+      return (data != null
+              ? _iavw4tqb.ChangePasswordRequest.fromJson(data)
+              : null)
+          as T;
+    }
     if (t == _is.getType<_ith71up9.CustomerSessionView?>()) {
       return (data != null
               ? _ith71up9.CustomerSessionView.fromJson(data)
@@ -2210,6 +2303,24 @@ class Protocol extends _is.DatabaseSerializationManager {
       return (data != null ? _isqlfqk2.OwnerSessionView.fromJson(data) : null)
           as T;
     }
+    if (t == _is.getType<_i9u54egm.PasswordResetConfirm?>()) {
+      return (data != null
+              ? _i9u54egm.PasswordResetConfirm.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_in4l34z2.PasswordResetRequest?>()) {
+      return (data != null
+              ? _in4l34z2.PasswordResetRequest.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_ixrmg4rs.PasswordResetRequestResult?>()) {
+      return (data != null
+              ? _ixrmg4rs.PasswordResetRequestResult.fromJson(data)
+              : null)
+          as T;
+    }
     if (t == _is.getType<_iul4y12k.ProfileUpdate?>()) {
       return (data != null ? _iul4y12k.ProfileUpdate.fromJson(data) : null)
           as T;
@@ -2245,6 +2356,10 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     if (t == _is.getType<_i00rpu3b.Owner?>()) {
       return (data != null ? _i00rpu3b.Owner.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_i5m9ixa9.PasswordReset?>()) {
+      return (data != null ? _i5m9ixa9.PasswordReset.fromJson(data) : null)
+          as T;
     }
     if (t == _is.getType<_ii4fooib.SuperAdmin?>()) {
       return (data != null ? _ii4fooib.SuperAdmin.fromJson(data) : null) as T;
@@ -2752,6 +2867,7 @@ class Protocol extends _is.DatabaseSerializationManager {
       _ivr1zpxc.AccountException => 'AccountException',
       _ik5d360v.ActorType => 'ActorType',
       _ihcr17cc.AuthTokenResult => 'AuthTokenResult',
+      _iavw4tqb.ChangePasswordRequest => 'ChangePasswordRequest',
       _ith71up9.CustomerSessionView => 'CustomerSessionView',
       _ibcfczkm.EmailLoginRequest => 'EmailLoginRequest',
       _iokpa1pa.EmailRegisterCreate => 'EmailRegisterCreate',
@@ -2760,6 +2876,9 @@ class Protocol extends _is.DatabaseSerializationManager {
       _i08axu9z.EmployeeUpdate => 'EmployeeUpdate',
       _inacnd8t.EmployeeView => 'EmployeeView',
       _isqlfqk2.OwnerSessionView => 'OwnerSessionView',
+      _i9u54egm.PasswordResetConfirm => 'PasswordResetConfirm',
+      _in4l34z2.PasswordResetRequest => 'PasswordResetRequest',
+      _ixrmg4rs.PasswordResetRequestResult => 'PasswordResetRequestResult',
       _iul4y12k.ProfileUpdate => 'ProfileUpdate',
       _ieisqlnm.SuperAdminCreate => 'SuperAdminCreate',
       _i4itilxd.SuperAdminSessionView => 'SuperAdminSessionView',
@@ -2769,6 +2888,7 @@ class Protocol extends _is.DatabaseSerializationManager {
       _iosx2li4.Customer => 'Customer',
       _iwpz2vh7.Employee => 'Employee',
       _i00rpu3b.Owner => 'Owner',
+      _i5m9ixa9.PasswordReset => 'PasswordReset',
       _ii4fooib.SuperAdmin => 'SuperAdmin',
       _i8mj84pm.BuildingCreate => 'BuildingCreate',
       _ip56joo9.BuildingErrorCode => 'BuildingErrorCode',
@@ -2851,6 +2971,8 @@ class Protocol extends _is.DatabaseSerializationManager {
         return 'ActorType';
       case _ihcr17cc.AuthTokenResult():
         return 'AuthTokenResult';
+      case _iavw4tqb.ChangePasswordRequest():
+        return 'ChangePasswordRequest';
       case _ith71up9.CustomerSessionView():
         return 'CustomerSessionView';
       case _ibcfczkm.EmailLoginRequest():
@@ -2867,6 +2989,12 @@ class Protocol extends _is.DatabaseSerializationManager {
         return 'EmployeeView';
       case _isqlfqk2.OwnerSessionView():
         return 'OwnerSessionView';
+      case _i9u54egm.PasswordResetConfirm():
+        return 'PasswordResetConfirm';
+      case _in4l34z2.PasswordResetRequest():
+        return 'PasswordResetRequest';
+      case _ixrmg4rs.PasswordResetRequestResult():
+        return 'PasswordResetRequestResult';
       case _iul4y12k.ProfileUpdate():
         return 'ProfileUpdate';
       case _ieisqlnm.SuperAdminCreate():
@@ -2885,6 +3013,8 @@ class Protocol extends _is.DatabaseSerializationManager {
         return 'Employee';
       case _i00rpu3b.Owner():
         return 'Owner';
+      case _i5m9ixa9.PasswordReset():
+        return 'PasswordReset';
       case _ii4fooib.SuperAdmin():
         return 'SuperAdmin';
       case _i8mj84pm.BuildingCreate():
@@ -3043,6 +3173,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (dataClassName == 'AuthTokenResult') {
       return deserialize<_ihcr17cc.AuthTokenResult>(data['data']);
     }
+    if (dataClassName == 'ChangePasswordRequest') {
+      return deserialize<_iavw4tqb.ChangePasswordRequest>(data['data']);
+    }
     if (dataClassName == 'CustomerSessionView') {
       return deserialize<_ith71up9.CustomerSessionView>(data['data']);
     }
@@ -3066,6 +3199,15 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     if (dataClassName == 'OwnerSessionView') {
       return deserialize<_isqlfqk2.OwnerSessionView>(data['data']);
+    }
+    if (dataClassName == 'PasswordResetConfirm') {
+      return deserialize<_i9u54egm.PasswordResetConfirm>(data['data']);
+    }
+    if (dataClassName == 'PasswordResetRequest') {
+      return deserialize<_in4l34z2.PasswordResetRequest>(data['data']);
+    }
+    if (dataClassName == 'PasswordResetRequestResult') {
+      return deserialize<_ixrmg4rs.PasswordResetRequestResult>(data['data']);
     }
     if (dataClassName == 'ProfileUpdate') {
       return deserialize<_iul4y12k.ProfileUpdate>(data['data']);
@@ -3093,6 +3235,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     if (dataClassName == 'Owner') {
       return deserialize<_i00rpu3b.Owner>(data['data']);
+    }
+    if (dataClassName == 'PasswordReset') {
+      return deserialize<_i5m9ixa9.PasswordReset>(data['data']);
     }
     if (dataClassName == 'SuperAdmin') {
       return deserialize<_ii4fooib.SuperAdmin>(data['data']);
@@ -3323,6 +3468,8 @@ class Protocol extends _is.DatabaseSerializationManager {
         return _iwpz2vh7.Employee.t;
       case _i00rpu3b.Owner:
         return _i00rpu3b.Owner.t;
+      case _i5m9ixa9.PasswordReset:
+        return _i5m9ixa9.PasswordReset.t;
       case _ii4fooib.SuperAdmin:
         return _ii4fooib.SuperAdmin.t;
       case _iit041ql.Building:

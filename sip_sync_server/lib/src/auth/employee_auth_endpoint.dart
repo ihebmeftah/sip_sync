@@ -75,6 +75,49 @@ class EmployeeAuthEndpoint extends Endpoint {
     return _sessionView(session, id);
   }
 
+  /// Updates the signed-in employee's password and drops other sessions.
+  Future<void> changePassword(
+    Session session,
+    ChangePasswordRequest request,
+  ) async {
+    final ctx = AuthGuard.requireAny(session);
+    if (ctx.actorType != ActorType.employee) {
+      throw AccountException(
+        message: 'Only employees can perform this action.',
+        code: AccountErrorCode.notAuthorized,
+      );
+    }
+    _auth.validatePassword(request.newPassword);
+    final employee = await Employee.db.findById(session, ctx.actorId);
+    if (employee == null) {
+      throw AccountException(
+        message: 'Employee not found.',
+        code: AccountErrorCode.notFound,
+      );
+    }
+    if (!_auth.passwords.verify(
+      request.currentPassword,
+      employee.passwordHash,
+    )) {
+      throw AccountException(
+        message: 'Current password is incorrect.',
+        code: AccountErrorCode.invalidCredentials,
+      );
+    }
+    await Employee.db.updateRow(
+      session,
+      employee.copyWith(
+        passwordHash: _auth.passwords.hash(request.newPassword),
+      ),
+    );
+    await SessionService().revokeOtherSessionsForActor(
+      session,
+      actorType: ActorType.employee,
+      actorId: ctx.actorId,
+      keepSessionId: ctx.sessionId,
+    );
+  }
+
   Future<void> logout(Session session) async {
     final ctx = AuthGuard.requireAny(session);
     await SessionService().revoke(session, ctx.sessionId);

@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/widgets/buildings_gate_shell.dart';
 import '../../core/widgets/ops_shell.dart';
+import '../../features/auth/views/forgot_password_view.dart';
 import '../../features/auth/views/register_view.dart';
 import '../../features/auth/views/sign_in_view.dart';
 import '../../features/buildings/views/building_form_view.dart';
@@ -47,6 +48,18 @@ class RegisterRoute extends GoRouteData with $RegisterRoute {
   @override
   Widget build(BuildContext context, GoRouterState state) =>
       const RegisterView();
+}
+
+@TypedGoRoute<ForgotPasswordRoute>(
+  path: '/forgot-password',
+  name: 'forgotPassword',
+)
+class ForgotPasswordRoute extends GoRouteData with $ForgotPasswordRoute {
+  const ForgotPasswordRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) =>
+      const ForgotPasswordView();
 }
 
 @TypedShellRoute<BuildingsGateShellRoute>(

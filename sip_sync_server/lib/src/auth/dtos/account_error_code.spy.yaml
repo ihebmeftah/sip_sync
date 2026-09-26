@@ -13,3 +13,5 @@ values:
   - passwordTooWeak
   - profileIncomplete
   - accountDisabled
+  - invalidResetCode
+  - resetCodeExpired

@@ -179,6 +179,81 @@ class AppLocalizationsFr extends AppLocalizations {
   String get errorAccountDisabled => 'Ce compte employé est désactivé.';
 
   @override
+  String get errorInvalidResetCode =>
+      'Ce code de réinitialisation est invalide.';
+
+  @override
+  String get errorResetCodeExpired =>
+      'Ce code a expiré. Demandez-en un nouveau.';
+
+  @override
+  String get forgotPassword => 'Mot de passe oublié ?';
+
+  @override
+  String get forgotPasswordTitle => 'Réinitialiser le mot de passe';
+
+  @override
+  String get forgotPasswordHint =>
+      'Entrez l’e-mail du propriétaire. Nous enverrons un code.';
+
+  @override
+  String get forgotPasswordCodeHint =>
+      'Entrez le code et choisissez un nouveau mot de passe.';
+
+  @override
+  String get forgotPasswordEmployeeHint =>
+      'Demandez à votre responsable de réinitialiser votre mot de passe.';
+
+  @override
+  String forgotPasswordDevCode(String code) {
+    return 'Code dév : $code';
+  }
+
+  @override
+  String get sendResetCode => 'Envoyer le code';
+
+  @override
+  String get resetCode => 'Code de réinitialisation';
+
+  @override
+  String get resetPassword => 'Réinitialiser';
+
+  @override
+  String get passwordResetDone =>
+      'Mot de passe mis à jour. Connectez-vous avec le nouveau.';
+
+  @override
+  String get backToSignIn => 'Retour à la connexion';
+
+  @override
+  String get changePassword => 'Changer le mot de passe';
+
+  @override
+  String get changePasswordHint => 'Les autres appareils seront déconnectés.';
+
+  @override
+  String get currentPassword => 'Mot de passe actuel';
+
+  @override
+  String get newPassword => 'Nouveau mot de passe';
+
+  @override
+  String get confirmPassword => 'Confirmer le mot de passe';
+
+  @override
+  String get updatePassword => 'Mettre à jour';
+
+  @override
+  String get passwordChanged => 'Mot de passe mis à jour.';
+
+  @override
+  String get validationPasswordMatch =>
+      'Les mots de passe ne correspondent pas.';
+
+  @override
+  String get validationResetCode => 'Entrez le code de réinitialisation.';
+
+  @override
   String get navEmployees => 'Employés';
 
   @override

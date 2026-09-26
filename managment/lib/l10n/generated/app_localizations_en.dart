@@ -177,6 +177,79 @@ class AppLocalizationsEn extends AppLocalizations {
   String get errorAccountDisabled => 'This staff account is disabled.';
 
   @override
+  String get errorInvalidResetCode => 'That reset code is invalid.';
+
+  @override
+  String get errorResetCodeExpired =>
+      'That reset code has expired. Request a new one.';
+
+  @override
+  String get forgotPassword => 'Forgot password?';
+
+  @override
+  String get forgotPasswordTitle => 'Reset password';
+
+  @override
+  String get forgotPasswordHint =>
+      'Enter your owner email. We will send a reset code.';
+
+  @override
+  String get forgotPasswordCodeHint =>
+      'Enter the code and choose a new password.';
+
+  @override
+  String get forgotPasswordEmployeeHint =>
+      'Ask your manager to reset your staff password.';
+
+  @override
+  String forgotPasswordDevCode(String code) {
+    return 'Dev code: $code';
+  }
+
+  @override
+  String get sendResetCode => 'Send reset code';
+
+  @override
+  String get resetCode => 'Reset code';
+
+  @override
+  String get resetPassword => 'Reset password';
+
+  @override
+  String get passwordResetDone =>
+      'Password updated. Sign in with your new password.';
+
+  @override
+  String get backToSignIn => 'Back to sign in';
+
+  @override
+  String get changePassword => 'Change password';
+
+  @override
+  String get changePasswordHint => 'Other devices will be signed out.';
+
+  @override
+  String get currentPassword => 'Current password';
+
+  @override
+  String get newPassword => 'New password';
+
+  @override
+  String get confirmPassword => 'Confirm password';
+
+  @override
+  String get updatePassword => 'Update password';
+
+  @override
+  String get passwordChanged => 'Password updated.';
+
+  @override
+  String get validationPasswordMatch => 'Passwords do not match.';
+
+  @override
+  String get validationResetCode => 'Enter the reset code.';
+
+  @override
   String get navEmployees => 'Employees';
 
   @override

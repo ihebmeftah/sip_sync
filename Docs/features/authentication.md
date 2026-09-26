@@ -23,7 +23,7 @@ All three clients plus `sip_sync_server`.
 | Employee | `employee` | username + password | no — owner creates |
 | Super admin | `super_admin` | email + password | no — admin invites / seed |
 
-Passwords are hashed (Argon2id) on the actor row (`passwordHash`). Sessions are opaque bearer tokens stored hashed in `auth_session` (`tokenHash`, optional `refreshTokenHash`, `actorType`, `actorId`, expiry).
+Passwords are hashed (**bcrypt**) on the actor row (`passwordHash`). Sessions are opaque bearer tokens stored hashed in `auth_session` (`tokenHash`, optional `refreshTokenHash`, `actorType`, `actorId`, expiry).
 
 ## Domain links
 
@@ -68,16 +68,29 @@ Wipe `.serverpod/development/pgdata` then `serverpod start` to reset and re-seed
 - Employee: username + password on `EmployeeAuth.login`.
 - Disabled employee → `accountDisabled`.
 
+### Change password (authenticated)
+
+- Owner: `OwnerAuth.changePassword` — verify current, set new, revoke other sessions for that actor.
+- Employee: `EmployeeAuth.changePassword` — same.
+- Management **Profile** screen exposes current / new / confirm fields.
+
+### Forgot password (owner)
+
+1. Sign-in → **Forgot password?** (owners only). Employees see “ask your manager”.
+2. `OwnerAuth.requestPasswordReset(email)` — always succeeds (no enumeration). If an owner exists, stores a hashed 6-digit OTP for 15 minutes (`password_reset` table).
+3. Until SMTP exists, the OTP is **logged** on the server and returned as `debugCode` in **development/test** only (shown in the UI for local demos).
+4. `OwnerAuth.confirmPasswordReset(email, code, newPassword)` — verifies OTP, updates hash, revokes **all** owner sessions.
+
 ### Authenticated calls
 
 Client sends `Authorization: Bearer <token>`. Endpoints resolve the session via `AuthGuard` (not Serverpod `session.authenticated`).
 
 ## Data
 
-- Tables: `owner`, `customer`, `super_admin`, `employee`, `auth_session`, `building`
+- Tables: `owner`, `customer`, `super_admin`, `employee`, `auth_session`, `password_reset`, `building`
 - Endpoints: `OwnerAuth`, `EmployeeAuth`, `CustomerAuth`, `SuperAdminAuth`, `Employee`, `Building`
-- Results: `AuthTokenResult` + actor-specific session views
-- Exceptions: `AccountException` / `AccountErrorCode`
+- Results: `AuthTokenResult` + actor-specific session views; `PasswordResetRequestResult`
+- Exceptions: `AccountException` / `AccountErrorCode` (includes `invalidResetCode`, `resetCodeExpired`)
 
 ## Realtime
 
