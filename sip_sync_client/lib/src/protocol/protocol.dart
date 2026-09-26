@@ -760,6 +760,9 @@ class Protocol extends _isc.SerializationManager {
       return (data != null ? _ifz0lfor.VenueTableView.fromJson(data) : null)
           as T;
     }
+    if (t == List<String>) {
+      return (data as List).map((e) => deserialize<String>(e)).toList() as T;
+    }
     if (t == List<_i70klpnb.StrictModeStep>) {
       return (data as List)
               .map((e) => deserialize<_i70klpnb.StrictModeStep>(e))

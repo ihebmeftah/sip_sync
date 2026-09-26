@@ -10,6 +10,12 @@ fields:
   openingMinutes: int
   closingMinutes: int
   currencyCode: String
+  phoneNumber: String
+  countryCode: String
+  whatsapp: String?
+  instagram: String?
+  facebook: String?
+  otherLinks: List<String>
   tableMultiOrder: bool
   allowAppendingItemsToOrder: bool
   strictMode: bool

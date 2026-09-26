@@ -1,6 +1,7 @@
 import 'package:serverpod/serverpod.dart';
 
 import '../auth/auth_guard.dart';
+import '../core/phone_numbers.dart';
 import '../employee_access/default_employee_access.dart';
 import '../generated/protocol.dart';
 import 'strict_mode.dart';
@@ -47,6 +48,7 @@ class BuildingService {
     BuildingCreate request,
   ) async {
     final ownerId = AuthGuard.requireOwner(session);
+    final contact = _validateContact(request);
     _validate(request);
     final row = await Building.db.insertRow(
       session,
@@ -60,6 +62,12 @@ class BuildingService {
         openingMinutes: request.openingMinutes,
         closingMinutes: request.closingMinutes,
         currencyCode: request.currencyCode.trim().toUpperCase(),
+        phoneNumber: contact.phoneNumber,
+        countryCode: contact.countryCode,
+        whatsapp: contact.whatsapp,
+        instagram: contact.instagram,
+        facebook: contact.facebook,
+        otherLinks: contact.otherLinks,
         tableMultiOrder: request.tableMultiOrder,
         allowAppendingItemsToOrder: request.allowAppendingItemsToOrder,
         strictMode: request.strictMode,
@@ -75,6 +83,7 @@ class BuildingService {
     BuildingUpdate request,
   ) async {
     final ownerId = AuthGuard.requireOwner(session);
+    final contact = _validateContact(request);
     _validate(request);
     final row = await Building.db.findById(session, request.id);
     if (row == null || row.ownerId != ownerId) {
@@ -94,6 +103,12 @@ class BuildingService {
         openingMinutes: request.openingMinutes,
         closingMinutes: request.closingMinutes,
         currencyCode: request.currencyCode.trim().toUpperCase(),
+        phoneNumber: contact.phoneNumber,
+        countryCode: contact.countryCode,
+        whatsapp: contact.whatsapp,
+        instagram: contact.instagram,
+        facebook: contact.facebook,
+        otherLinks: contact.otherLinks,
         tableMultiOrder: request.tableMultiOrder,
         allowAppendingItemsToOrder: request.allowAppendingItemsToOrder,
         strictMode: request.strictMode,
@@ -182,12 +197,115 @@ class BuildingService {
       openingMinutes: row.openingMinutes,
       closingMinutes: row.closingMinutes,
       currencyCode: row.currencyCode,
+      phoneNumber: row.phoneNumber,
+      countryCode: row.countryCode,
+      whatsapp: row.whatsapp,
+      instagram: row.instagram,
+      facebook: row.facebook,
+      otherLinks: row.otherLinks,
       tableMultiOrder: row.tableMultiOrder,
       allowAppendingItemsToOrder: row.allowAppendingItemsToOrder,
       strictMode: row.strictMode,
       strictModeSteps: normalizeStrictModeSteps(row.strictModeSteps),
       employeeIds: staff.map((s) => s.id!).toList(),
     );
+  }
+
+  ({
+    String phoneNumber,
+    String countryCode,
+    String? whatsapp,
+    String? instagram,
+    String? facebook,
+    List<String> otherLinks,
+  })
+  _validateContact(dynamic request) {
+    final phone = PhoneNumbers.normalize(request.phoneNumber as String);
+    if (!PhoneNumbers.isValid(phone)) {
+      throw BuildingException(
+        message: 'Enter a phone with country code, e.g. +216…',
+        code: BuildingErrorCode.invalidInput,
+      );
+    }
+    final country = PhoneNumbers.countryCodeFromPhone(phone);
+    if (country == null) {
+      throw BuildingException(
+        message: 'Unsupported phone country code.',
+        code: BuildingErrorCode.invalidInput,
+      );
+    }
+
+    String? whatsapp;
+    final rawWhatsapp = (request.whatsapp as String?)?.trim();
+    if (rawWhatsapp != null && rawWhatsapp.isNotEmpty) {
+      whatsapp = PhoneNumbers.normalize(rawWhatsapp);
+      if (!PhoneNumbers.isValid(whatsapp)) {
+        throw BuildingException(
+          message: 'WhatsApp must be a phone with country code.',
+          code: BuildingErrorCode.invalidInput,
+        );
+      }
+    }
+
+    final instagram = _optionalHandleOrUrl(
+      request.instagram as String?,
+      max: 120,
+    );
+    final facebook = _optionalHandleOrUrl(
+      request.facebook as String?,
+      max: 200,
+    );
+    final otherLinks = _normalizeLinks(
+      (request.otherLinks as List<String>?) ?? const [],
+    );
+
+    return (
+      phoneNumber: phone,
+      countryCode: country,
+      whatsapp: whatsapp,
+      instagram: instagram,
+      facebook: facebook,
+      otherLinks: otherLinks,
+    );
+  }
+
+  String? _optionalHandleOrUrl(String? raw, {required int max}) {
+    final value = raw?.trim() ?? '';
+    if (value.isEmpty) {
+      return null;
+    }
+    if (value.length > max) {
+      throw BuildingException(
+        message: 'Social link is too long.',
+        code: BuildingErrorCode.invalidInput,
+      );
+    }
+    return value;
+  }
+
+  List<String> _normalizeLinks(List<String> raw) {
+    final out = <String>[];
+    for (final item in raw) {
+      final value = item.trim();
+      if (value.isEmpty) {
+        continue;
+      }
+      if (value.length > 300 ||
+          !RegExp(r'^https?://', caseSensitive: false).hasMatch(value)) {
+        throw BuildingException(
+          message: 'Other links must be http(s) URLs.',
+          code: BuildingErrorCode.invalidInput,
+        );
+      }
+      out.add(value);
+      if (out.length > 10) {
+        throw BuildingException(
+          message: 'Too many other links.',
+          code: BuildingErrorCode.invalidInput,
+        );
+      }
+    }
+    return out;
   }
 
   void _validate(dynamic request) {
@@ -232,9 +350,9 @@ class BuildingService {
       );
     }
     final currency = currencyCode.trim().toUpperCase();
-    if (!RegExp(r'^[A-Z]{3}$').hasMatch(currency)) {
+    if (!Currencies.isValidCode(currency)) {
       throw BuildingException(
-        message: 'Use a three-letter currency code.',
+        message: 'Use a valid three-letter currency code.',
         code: BuildingErrorCode.invalidInput,
       );
     }

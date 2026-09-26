@@ -36,6 +36,8 @@ void main() {
           longitude: 10.1,
           openingMinutes: 480,
           closingMinutes: 1380,
+          phoneNumber: '+21671100001',
+          otherLinks: const [],
           currencyCode: 'TND',
           strictModeSteps: [],
         ),

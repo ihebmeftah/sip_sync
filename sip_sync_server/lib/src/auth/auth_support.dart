@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:serverpod/serverpod.dart';
 
+import '../core/phone_numbers.dart';
 import '../generated/protocol.dart';
 import 'password_hasher.dart';
 import 'session_service.dart';
@@ -22,7 +23,7 @@ class AuthSupport {
 
   String normalizeEmail(String email) => email.trim().toLowerCase();
 
-  String normalizePhone(String phone) => phone.trim();
+  String normalizePhone(String phone) => PhoneNumbers.normalize(phone);
 
   void validateEmail(String email) {
     if (!RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(email)) {
@@ -34,9 +35,15 @@ class AuthSupport {
   }
 
   void validatePhone(String phone) {
-    if (phone.length < 6 || phone.length > 32) {
+    if (!PhoneNumbers.isValid(phone)) {
       throw AccountException(
-        message: 'Enter a valid phone number.',
+        message: 'Enter a phone with country code, e.g. +216…',
+        code: AccountErrorCode.invalidInput,
+      );
+    }
+    if (PhoneNumbers.countryCodeFromPhone(phone) == null) {
+      throw AccountException(
+        message: 'Unsupported phone country code.',
         code: AccountErrorCode.invalidInput,
       );
     }

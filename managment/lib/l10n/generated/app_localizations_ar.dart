@@ -501,7 +501,50 @@ class AppLocalizationsAr extends AppLocalizations {
       'استخدم 8 أحرف على الأقل دون مسافات في البداية أو النهاية.';
 
   @override
-  String get validationPhone => 'أدخل رقم هاتف صالحاً.';
+  String get validationPhone => 'أدخل رقم هاتف مع رمز الدولة، مثل +216…';
+
+  @override
+  String get validationPhoneCountry =>
+      'رمز الدولة غير مدعوم. اختر رمزاً مدعوماً.';
+
+  @override
+  String get validationSocialLink => 'أدخل معرّفاً أو رابطاً أقصر.';
+
+  @override
+  String get validationOtherLink =>
+      'يجب أن تكون الروابط الأخرى عناوين http(s).';
+
+  @override
+  String get phoneCountryCode => 'الرمز';
+
+  @override
+  String phoneCountryHint(String code) {
+    return 'الدولة: $code';
+  }
+
+  @override
+  String get buildingPhone => 'هاتف المكان';
+
+  @override
+  String get buildingWhatsapp => 'واتساب';
+
+  @override
+  String get buildingInstagram => 'إنستغرام';
+
+  @override
+  String get buildingFacebook => 'فيسبوك';
+
+  @override
+  String get buildingOtherLinks => 'روابط أخرى';
+
+  @override
+  String get buildingOtherLinksHint => 'رابط http(s) في كل سطر.';
+
+  @override
+  String get buildingSocialHint => 'معرّف أو رابط كامل.';
+
+  @override
+  String get buildingCountry => 'الدولة';
 
   @override
   String get validationVenueName => 'يجب أن يكون الاسم من 1 إلى 80 حرفاً.';

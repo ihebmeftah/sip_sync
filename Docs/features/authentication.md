@@ -25,6 +25,8 @@ All three clients plus `sip_sync_server`.
 
 Passwords are hashed (**bcrypt**) on the actor row (`passwordHash`). Sessions are opaque bearer tokens stored hashed in `auth_session` (`tokenHash`, optional `refreshTokenHash`, `actorType`, `actorId`, expiry).
 
+Phone numbers for owners, employees, customers, and venues are stored in **E.164** (`+216…`). Server validation requires a known country dial code.
+
 ## Domain links
 
 - Owner **has many** buildings (`building.ownerId`).

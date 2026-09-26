@@ -13,6 +13,18 @@ fields:
   openingMinutes: int
   closingMinutes: int
   currencyCode: String
+  ### Venue contact phone in E.164 (`+216…`).
+  phoneNumber: String
+  ### ISO 3166-1 alpha-2 derived from [phoneNumber] dial code.
+  countryCode: String
+  ### Optional WhatsApp number (E.164) or empty.
+  whatsapp: String?
+  ### Instagram handle or profile URL.
+  instagram: String?
+  ### Facebook page URL or handle.
+  facebook: String?
+  ### Extra website / social URLs.
+  otherLinks: List<String>
   ### When false, a table with an open (progress) order cannot receive another order.
   tableMultiOrder: bool, defaultModel=false
   ### When false, staff cannot append articles to an existing open order.

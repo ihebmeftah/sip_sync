@@ -38,6 +38,12 @@ abstract class Building
     required this.openingMinutes,
     required this.closingMinutes,
     required this.currencyCode,
+    required this.phoneNumber,
+    required this.countryCode,
+    this.whatsapp,
+    this.instagram,
+    this.facebook,
+    required this.otherLinks,
     bool? tableMultiOrder,
     bool? allowAppendingItemsToOrder,
     bool? strictMode,
@@ -67,6 +73,12 @@ abstract class Building
     required int openingMinutes,
     required int closingMinutes,
     required String currencyCode,
+    required String phoneNumber,
+    required String countryCode,
+    String? whatsapp,
+    String? instagram,
+    String? facebook,
+    required List<String> otherLinks,
     bool? tableMultiOrder,
     bool? allowAppendingItemsToOrder,
     bool? strictMode,
@@ -102,6 +114,14 @@ abstract class Building
       openingMinutes: jsonSerialization['openingMinutes'] as int,
       closingMinutes: jsonSerialization['closingMinutes'] as int,
       currencyCode: jsonSerialization['currencyCode'] as String,
+      phoneNumber: jsonSerialization['phoneNumber'] as String,
+      countryCode: jsonSerialization['countryCode'] as String,
+      whatsapp: jsonSerialization['whatsapp'] as String?,
+      instagram: jsonSerialization['instagram'] as String?,
+      facebook: jsonSerialization['facebook'] as String?,
+      otherLinks: _iaib1p48.Protocol().deserialize<List<String>>(
+        jsonSerialization['otherLinks'],
+      ),
       tableMultiOrder: jsonSerialization['tableMultiOrder'] == null
           ? null
           : _is.BoolJsonExtension.fromJson(
@@ -188,6 +208,24 @@ abstract class Building
 
   String currencyCode;
 
+  /// Venue contact phone in E.164 (`+216…`).
+  String phoneNumber;
+
+  /// ISO 3166-1 alpha-2 derived from [phoneNumber] dial code.
+  String countryCode;
+
+  /// Optional WhatsApp number (E.164) or empty.
+  String? whatsapp;
+
+  /// Instagram handle or profile URL.
+  String? instagram;
+
+  /// Facebook page URL or handle.
+  String? facebook;
+
+  /// Extra website / social URLs.
+  List<String> otherLinks;
+
   /// When false, a table with an open (progress) order cannot receive another order.
   bool tableMultiOrder;
 
@@ -234,6 +272,12 @@ abstract class Building
     int? openingMinutes,
     int? closingMinutes,
     String? currencyCode,
+    String? phoneNumber,
+    String? countryCode,
+    String? whatsapp,
+    String? instagram,
+    String? facebook,
+    List<String>? otherLinks,
     bool? tableMultiOrder,
     bool? allowAppendingItemsToOrder,
     bool? strictMode,
@@ -262,6 +306,12 @@ abstract class Building
       'openingMinutes': openingMinutes,
       'closingMinutes': closingMinutes,
       'currencyCode': currencyCode,
+      'phoneNumber': phoneNumber,
+      'countryCode': countryCode,
+      if (whatsapp != null) 'whatsapp': whatsapp,
+      if (instagram != null) 'instagram': instagram,
+      if (facebook != null) 'facebook': facebook,
+      'otherLinks': otherLinks.toJson(),
       'tableMultiOrder': tableMultiOrder,
       'allowAppendingItemsToOrder': allowAppendingItemsToOrder,
       'strictMode': strictMode,
@@ -354,6 +404,12 @@ class _BuildingImpl extends Building {
     required int openingMinutes,
     required int closingMinutes,
     required String currencyCode,
+    required String phoneNumber,
+    required String countryCode,
+    String? whatsapp,
+    String? instagram,
+    String? facebook,
+    required List<String> otherLinks,
     bool? tableMultiOrder,
     bool? allowAppendingItemsToOrder,
     bool? strictMode,
@@ -378,6 +434,12 @@ class _BuildingImpl extends Building {
          openingMinutes: openingMinutes,
          closingMinutes: closingMinutes,
          currencyCode: currencyCode,
+         phoneNumber: phoneNumber,
+         countryCode: countryCode,
+         whatsapp: whatsapp,
+         instagram: instagram,
+         facebook: facebook,
+         otherLinks: otherLinks,
          tableMultiOrder: tableMultiOrder,
          allowAppendingItemsToOrder: allowAppendingItemsToOrder,
          strictMode: strictMode,
@@ -408,6 +470,12 @@ class _BuildingImpl extends Building {
     int? openingMinutes,
     int? closingMinutes,
     String? currencyCode,
+    String? phoneNumber,
+    String? countryCode,
+    Object? whatsapp = _Undefined,
+    Object? instagram = _Undefined,
+    Object? facebook = _Undefined,
+    List<String>? otherLinks,
     bool? tableMultiOrder,
     bool? allowAppendingItemsToOrder,
     bool? strictMode,
@@ -433,6 +501,12 @@ class _BuildingImpl extends Building {
       openingMinutes: openingMinutes ?? this.openingMinutes,
       closingMinutes: closingMinutes ?? this.closingMinutes,
       currencyCode: currencyCode ?? this.currencyCode,
+      phoneNumber: phoneNumber ?? this.phoneNumber,
+      countryCode: countryCode ?? this.countryCode,
+      whatsapp: whatsapp is String? ? whatsapp : this.whatsapp,
+      instagram: instagram is String? ? instagram : this.instagram,
+      facebook: facebook is String? ? facebook : this.facebook,
+      otherLinks: otherLinks ?? this.otherLinks.map((e0) => e0).toList(),
       tableMultiOrder: tableMultiOrder ?? this.tableMultiOrder,
       allowAppendingItemsToOrder:
           allowAppendingItemsToOrder ?? this.allowAppendingItemsToOrder,
@@ -515,6 +589,37 @@ class BuildingUpdateTable extends _is.UpdateTable<BuildingTable> {
     value,
   );
 
+  _is.ColumnValue<String, String> phoneNumber(String value) => _is.ColumnValue(
+    table.phoneNumber,
+    value,
+  );
+
+  _is.ColumnValue<String, String> countryCode(String value) => _is.ColumnValue(
+    table.countryCode,
+    value,
+  );
+
+  _is.ColumnValue<String, String> whatsapp(String? value) => _is.ColumnValue(
+    table.whatsapp,
+    value,
+  );
+
+  _is.ColumnValue<String, String> instagram(String? value) => _is.ColumnValue(
+    table.instagram,
+    value,
+  );
+
+  _is.ColumnValue<String, String> facebook(String? value) => _is.ColumnValue(
+    table.facebook,
+    value,
+  );
+
+  _is.ColumnValue<List<String>, List<String>> otherLinks(List<String> value) =>
+      _is.ColumnValue(
+        table.otherLinks,
+        value,
+      );
+
   _is.ColumnValue<bool, bool> tableMultiOrder(bool value) => _is.ColumnValue(
     table.tableMultiOrder,
     value,
@@ -586,6 +691,30 @@ class BuildingTable extends _is.Table<_is.UuidValue?> {
       'currencyCode',
       this,
     );
+    phoneNumber = _is.ColumnString(
+      'phoneNumber',
+      this,
+    );
+    countryCode = _is.ColumnString(
+      'countryCode',
+      this,
+    );
+    whatsapp = _is.ColumnString(
+      'whatsapp',
+      this,
+    );
+    instagram = _is.ColumnString(
+      'instagram',
+      this,
+    );
+    facebook = _is.ColumnString(
+      'facebook',
+      this,
+    );
+    otherLinks = _is.ColumnSerializable<List<String>>(
+      'otherLinks',
+      this,
+    );
     tableMultiOrder = _is.ColumnBool(
       'tableMultiOrder',
       this,
@@ -629,6 +758,24 @@ class BuildingTable extends _is.Table<_is.UuidValue?> {
   late final _is.ColumnInt closingMinutes;
 
   late final _is.ColumnString currencyCode;
+
+  /// Venue contact phone in E.164 (`+216…`).
+  late final _is.ColumnString phoneNumber;
+
+  /// ISO 3166-1 alpha-2 derived from [phoneNumber] dial code.
+  late final _is.ColumnString countryCode;
+
+  /// Optional WhatsApp number (E.164) or empty.
+  late final _is.ColumnString whatsapp;
+
+  /// Instagram handle or profile URL.
+  late final _is.ColumnString instagram;
+
+  /// Facebook page URL or handle.
+  late final _is.ColumnString facebook;
+
+  /// Extra website / social URLs.
+  late final _is.ColumnSerializable<List<String>> otherLinks;
 
   /// When false, a table with an open (progress) order cannot receive another order.
   late final _is.ColumnBool tableMultiOrder;
@@ -922,6 +1069,12 @@ class BuildingTable extends _is.Table<_is.UuidValue?> {
     openingMinutes,
     closingMinutes,
     currencyCode,
+    phoneNumber,
+    countryCode,
+    whatsapp,
+    instagram,
+    facebook,
+    otherLinks,
     tableMultiOrder,
     allowAppendingItemsToOrder,
     strictMode,

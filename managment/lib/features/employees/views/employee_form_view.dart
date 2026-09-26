@@ -7,6 +7,7 @@ import '../../../core/errors/form_validators.dart';
 import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
+import '../../../core/widgets/app_phone_field.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../employee_access/view_models/access_profiles_view_model.dart';
 import '../view_models/employee_form_view_model.dart';
@@ -28,10 +29,10 @@ class EmployeeFormView extends ConsumerStatefulWidget {
 class _EmployeeFormViewState extends ConsumerState<EmployeeFormView> {
   final _formKey = GlobalKey<FormState>();
   final _password = TextEditingController();
-  final _phone = TextEditingController();
   final _first = TextEditingController();
   final _last = TextEditingController();
   final _username = TextEditingController();
+  var _phone = '';
   var _filled = false;
   UuidValue? _accessId;
 
@@ -42,7 +43,6 @@ class _EmployeeFormViewState extends ConsumerState<EmployeeFormView> {
   @override
   void dispose() {
     _password.dispose();
-    _phone.dispose();
     _first.dispose();
     _last.dispose();
     _username.dispose();
@@ -55,7 +55,7 @@ class _EmployeeFormViewState extends ConsumerState<EmployeeFormView> {
       return;
     }
     _username.text = existing.username;
-    _phone.text = existing.phoneNumber;
+    _phone = existing.phoneNumber;
     _first.text = existing.firstName;
     _last.text = existing.lastName;
     _accessId = existing.accessId;
@@ -122,12 +122,10 @@ class _EmployeeFormViewState extends ConsumerState<EmployeeFormView> {
                             style: text.bodySmall,
                           ),
                         if (!_isEdit) const SizedBox(height: AppSpacing.lg),
-                        AppTextField(
-                          controller: _phone,
+                        AppPhoneField(
                           label: l10n.phone,
-                          prefixIcon: Icons.phone_outlined,
-                          validator: (value) =>
-                              FormValidators.phone(l10n, value),
+                          value: _phone,
+                          onChanged: (value) => setState(() => _phone = value),
                         ),
                         if (!_isEdit)
                           AppTextField(
@@ -217,7 +215,7 @@ class _EmployeeFormViewState extends ConsumerState<EmployeeFormView> {
                                 )
                                 .save(
                                   password: _password.text,
-                                  phoneNumber: _phone.text,
+                                  phoneNumber: _phone,
                                   firstName: _first.text,
                                   lastName: _last.text,
                                   buildingId: UuidValue.fromString(

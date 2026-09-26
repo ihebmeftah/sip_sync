@@ -9,6 +9,8 @@ import '../../../core/errors/form_validators.dart';
 import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
+import '../../../core/widgets/app_phone_field.dart';
+import '../../../core/phone/phone_numbers.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../orders/widgets/order_item_workflow.dart';
 import '../../orders/widgets/order_status_labels.dart';
@@ -16,7 +18,6 @@ import '../venue_location.dart';
 import '../view_models/buildings_view_model.dart';
 
 const _predefinedTypes = ['restaurant', 'lounge', 'bar', 'cafe'];
-const _currencies = ['TND', 'EUR', 'USD', 'GBP', 'MAD', 'DZD'];
 
 class BuildingFormView extends ConsumerStatefulWidget {
   const BuildingFormView({super.key, this.buildingId});
@@ -36,10 +37,15 @@ class _BuildingFormViewState extends ConsumerState<BuildingFormView> {
   final _longitude = TextEditingController();
   final _opensText = TextEditingController();
   final _closesText = TextEditingController();
+  final _instagram = TextEditingController();
+  final _facebook = TextEditingController();
+  final _otherLinks = TextEditingController();
   TimeOfDay _opens = const TimeOfDay(hour: 8, minute: 0);
   TimeOfDay _closes = const TimeOfDay(hour: 23, minute: 0);
   String _type = 'cafe';
   String _currency = 'TND';
+  String _phoneNumber = '';
+  String _whatsapp = '';
   var _otherType = false;
   var _filled = false;
   var _saving = false;
@@ -69,6 +75,9 @@ class _BuildingFormViewState extends ConsumerState<BuildingFormView> {
     _longitude.dispose();
     _opensText.dispose();
     _closesText.dispose();
+    _instagram.dispose();
+    _facebook.dispose();
+    _otherLinks.dispose();
     super.dispose();
   }
 
@@ -80,9 +89,14 @@ class _BuildingFormViewState extends ConsumerState<BuildingFormView> {
     _address.text = building.address;
     _latitude.text = building.latitude.toString();
     _longitude.text = building.longitude.toString();
-    _currency = _currencies.contains(building.currencyCode)
-        ? building.currencyCode
+    _currency = Currencies.isValidCode(building.currencyCode)
+        ? building.currencyCode.toUpperCase()
         : 'TND';
+    _phoneNumber = building.phoneNumber;
+    _whatsapp = building.whatsapp ?? '';
+    _instagram.text = building.instagram ?? '';
+    _facebook.text = building.facebook ?? '';
+    _otherLinks.text = building.otherLinks.join('\n');
     _opens = TimeOfDay(
       hour: building.openingMinutes ~/ 60,
       minute: building.openingMinutes % 60,
@@ -105,6 +119,13 @@ class _BuildingFormViewState extends ConsumerState<BuildingFormView> {
       _customType.text = building.type;
     }
     _filled = true;
+  }
+
+  List<String> _parsedOtherLinks() {
+    return [
+      for (final line in _otherLinks.text.split(RegExp(r'[\n,]')))
+        if (line.trim().isNotEmpty) line.trim(),
+    ];
   }
 
   String _resolvedType() => _otherType ? _customType.text : _type;
@@ -341,13 +362,63 @@ class _BuildingFormViewState extends ConsumerState<BuildingFormView> {
                         value: _currency,
                         prefixIcon: Icons.payments_outlined,
                         items: [
-                          for (final code in _currencies)
-                            DropdownMenuItem(value: code, child: Text(code)),
+                          for (final currency in Currencies.list)
+                            DropdownMenuItem(
+                              value: currency.code,
+                              child: Text(
+                                '${currency.code} — ${currency.name}',
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
                         ],
                         onChanged: (value) {
                           if (value != null) {
                             setState(() => _currency = value);
                           }
+                        },
+                      ),
+                      AppPhoneField(
+                        label: l10n.buildingPhone,
+                        value: _phoneNumber,
+                        onChanged: (value) =>
+                            setState(() => _phoneNumber = value),
+                      ),
+                      AppPhoneField(
+                        label: l10n.buildingWhatsapp,
+                        value: _whatsapp,
+                        optional: true,
+                        prefixIcon: Icons.chat_outlined,
+                        onChanged: (value) => setState(() => _whatsapp = value),
+                      ),
+                      AppTextField(
+                        controller: _instagram,
+                        label: l10n.buildingInstagram,
+                        prefixIcon: Icons.camera_alt_outlined,
+                        helperText: l10n.buildingSocialHint,
+                        validator: (value) =>
+                            FormValidators.optionalSocial(l10n, value),
+                      ),
+                      AppTextField(
+                        controller: _facebook,
+                        label: l10n.buildingFacebook,
+                        prefixIcon: Icons.public_outlined,
+                        helperText: l10n.buildingSocialHint,
+                        validator: (value) =>
+                            FormValidators.optionalSocial(l10n, value),
+                      ),
+                      AppTextField(
+                        controller: _otherLinks,
+                        label: l10n.buildingOtherLinks,
+                        prefixIcon: Icons.link_outlined,
+                        helperText: l10n.buildingOtherLinksHint,
+                        validator: (value) {
+                          for (final link in _parsedOtherLinks()) {
+                            final err = FormValidators.otherLinkUrl(l10n, link);
+                            if (err != null) {
+                              return err;
+                            }
+                          }
+                          return null;
                         },
                       ),
                       SwitchListTile(
@@ -438,6 +509,15 @@ class _BuildingFormViewState extends ConsumerState<BuildingFormView> {
                                 openingMinutes: minutesFromTimeOfDay(_opens),
                                 closingMinutes: minutesFromTimeOfDay(_closes),
                                 currencyCode: _currency,
+                                phoneNumber: _phoneNumber,
+                                whatsapp: _whatsapp.isEmpty ? null : _whatsapp,
+                                instagram: _instagram.text.trim().isEmpty
+                                    ? null
+                                    : _instagram.text.trim(),
+                                facebook: _facebook.text.trim().isEmpty
+                                    ? null
+                                    : _facebook.text.trim(),
+                                otherLinks: _parsedOtherLinks(),
                                 tableMultiOrder: _tableMultiOrder,
                                 allowAppendingItemsToOrder:
                                     _allowAppendingItemsToOrder,

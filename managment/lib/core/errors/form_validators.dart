@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../l10n/generated/app_localizations.dart';
+import '../phone/phone_numbers.dart';
 
 /// Client-side checks that match account and building rules on the server.
 abstract final class FormValidators {
@@ -39,9 +40,43 @@ abstract final class FormValidators {
   }
 
   static String? phone(AppLocalizations l10n, String? value) {
-    final digits = (value ?? '').replaceAll(RegExp(r'\D'), '');
-    if (digits.length < 8) {
+    final text = (value ?? '').trim();
+    if (!PhoneNumbers.isValid(text)) {
       return l10n.validationPhone;
+    }
+    if (PhoneNumbers.countryCodeFromPhone(text) == null) {
+      return l10n.validationPhoneCountry;
+    }
+    return null;
+  }
+
+  static String? optionalPhone(AppLocalizations l10n, String? value) {
+    final text = (value ?? '').trim();
+    if (text.isEmpty) {
+      return null;
+    }
+    return phone(l10n, text);
+  }
+
+  static String? optionalSocial(AppLocalizations l10n, String? value) {
+    final text = (value ?? '').trim();
+    if (text.isEmpty) {
+      return null;
+    }
+    if (text.length > 200) {
+      return l10n.validationSocialLink;
+    }
+    return null;
+  }
+
+  static String? otherLinkUrl(AppLocalizations l10n, String? value) {
+    final text = (value ?? '').trim();
+    if (text.isEmpty) {
+      return null;
+    }
+    if (text.length > 300 ||
+        !RegExp(r'^https?://', caseSensitive: false).hasMatch(text)) {
+      return l10n.validationOtherLink;
     }
     return null;
   }
@@ -90,7 +125,7 @@ abstract final class FormValidators {
 
   static String? currency(AppLocalizations l10n, String? value) {
     final text = (value ?? '').trim().toUpperCase();
-    if (!RegExp(r'^[A-Z]{3}$').hasMatch(text)) {
+    if (!Currencies.isValidCode(text)) {
       return l10n.validationCurrency;
     }
     return null;

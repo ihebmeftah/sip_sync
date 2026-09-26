@@ -517,7 +517,52 @@ class AppLocalizationsFr extends AppLocalizations {
       'Au moins 8 caractères, sans espaces en tête ou en fin.';
 
   @override
-  String get validationPhone => 'Saisissez un numéro de téléphone valide.';
+  String get validationPhone =>
+      'Saisissez un téléphone avec indicatif, ex. +216…';
+
+  @override
+  String get validationPhoneCountry =>
+      'Indicatif non pris en charge. Choisissez un code supporté.';
+
+  @override
+  String get validationSocialLink =>
+      'Saisissez un identifiant ou une URL plus courte.';
+
+  @override
+  String get validationOtherLink =>
+      'Les autres liens doivent être des URL http(s).';
+
+  @override
+  String get phoneCountryCode => 'Indicatif';
+
+  @override
+  String phoneCountryHint(String code) {
+    return 'Pays : $code';
+  }
+
+  @override
+  String get buildingPhone => 'Téléphone du lieu';
+
+  @override
+  String get buildingWhatsapp => 'WhatsApp';
+
+  @override
+  String get buildingInstagram => 'Instagram';
+
+  @override
+  String get buildingFacebook => 'Facebook';
+
+  @override
+  String get buildingOtherLinks => 'Autres liens';
+
+  @override
+  String get buildingOtherLinksHint => 'Une URL http(s) par ligne.';
+
+  @override
+  String get buildingSocialHint => 'Identifiant ou URL complète.';
+
+  @override
+  String get buildingCountry => 'Pays';
 
   @override
   String get validationVenueName => 'Le nom doit faire 1 à 80 caractères.';

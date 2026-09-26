@@ -1015,8 +1015,86 @@ abstract class AppLocalizations {
   /// No description provided for @validationPhone.
   ///
   /// In en, this message translates to:
-  /// **'Enter a valid phone number.'**
+  /// **'Enter a phone with country code, e.g. +216…'**
   String get validationPhone;
+
+  /// No description provided for @validationPhoneCountry.
+  ///
+  /// In en, this message translates to:
+  /// **'Unsupported country code. Choose a supported dial code.'**
+  String get validationPhoneCountry;
+
+  /// No description provided for @validationSocialLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a shorter handle or URL.'**
+  String get validationSocialLink;
+
+  /// No description provided for @validationOtherLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Other links must be http(s) URLs.'**
+  String get validationOtherLink;
+
+  /// No description provided for @phoneCountryCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Code'**
+  String get phoneCountryCode;
+
+  /// No description provided for @phoneCountryHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Country: {code}'**
+  String phoneCountryHint(String code);
+
+  /// No description provided for @buildingPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Venue phone'**
+  String get buildingPhone;
+
+  /// No description provided for @buildingWhatsapp.
+  ///
+  /// In en, this message translates to:
+  /// **'WhatsApp'**
+  String get buildingWhatsapp;
+
+  /// No description provided for @buildingInstagram.
+  ///
+  /// In en, this message translates to:
+  /// **'Instagram'**
+  String get buildingInstagram;
+
+  /// No description provided for @buildingFacebook.
+  ///
+  /// In en, this message translates to:
+  /// **'Facebook'**
+  String get buildingFacebook;
+
+  /// No description provided for @buildingOtherLinks.
+  ///
+  /// In en, this message translates to:
+  /// **'Other links'**
+  String get buildingOtherLinks;
+
+  /// No description provided for @buildingOtherLinksHint.
+  ///
+  /// In en, this message translates to:
+  /// **'One http(s) URL per line.'**
+  String get buildingOtherLinksHint;
+
+  /// No description provided for @buildingSocialHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Handle or full URL.'**
+  String get buildingSocialHint;
+
+  /// No description provided for @buildingCountry.
+  ///
+  /// In en, this message translates to:
+  /// **'Country'**
+  String get buildingCountry;
 
   /// No description provided for @validationVenueName.
   ///

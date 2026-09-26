@@ -11,6 +11,7 @@ resolution: workspace
 dependencies:
   bcrypt: ^1.2.0
   crypto: ^3.0.7
+  sealed_countries: ^3.4.0
   serverpod: 4.0.2
   serverpod_auth_idp_server: 4.0.2
   serverpod_cloud_storage: 4.0.2

@@ -6,6 +6,7 @@ import '../../../core/errors/form_validators.dart';
 import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
+import '../../../core/widgets/app_phone_field.dart';
 import '../../../core/widgets/auth_shell.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../view_models/auth_view_model.dart';
@@ -21,15 +22,14 @@ class _RegisterViewState extends ConsumerState<RegisterView> {
   final _formKey = GlobalKey<FormState>();
   final _email = TextEditingController();
   final _password = TextEditingController();
-  final _phone = TextEditingController();
   final _first = TextEditingController();
   final _last = TextEditingController();
+  var _phone = '';
 
   @override
   void dispose() {
     _email.dispose();
     _password.dispose();
-    _phone.dispose();
     _first.dispose();
     _last.dispose();
     super.dispose();
@@ -72,13 +72,10 @@ class _RegisterViewState extends ConsumerState<RegisterView> {
               textInputAction: TextInputAction.next,
               validator: (value) => FormValidators.email(l10n, value),
             ),
-            AppTextField(
-              controller: _phone,
+            AppPhoneField(
               label: l10n.phone,
-              keyboardType: TextInputType.phone,
-              prefixIcon: Icons.phone_outlined,
-              textInputAction: TextInputAction.next,
-              validator: (value) => FormValidators.phone(l10n, value),
+              value: _phone,
+              onChanged: (value) => setState(() => _phone = value),
             ),
             AppTextField(
               controller: _password,
@@ -102,7 +99,7 @@ class _RegisterViewState extends ConsumerState<RegisterView> {
                     .registerOwner(
                       email: _email.text,
                       password: _password.text,
-                      phoneNumber: _phone.text,
+                      phoneNumber: _phone,
                       firstName: _first.text,
                       lastName: _last.text,
                     );

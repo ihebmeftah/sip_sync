@@ -6,6 +6,7 @@ import '../../../core/errors/error_mapper.dart';
 import '../../../core/errors/form_validators.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
+import '../../../core/widgets/app_phone_field.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../view_models/profile_view_model.dart';
 
@@ -21,19 +22,18 @@ class _ProfileViewPageState extends ConsumerState<ProfileViewPage> {
   final _passwordFormKey = GlobalKey<FormState>();
   final _email = TextEditingController();
   final _username = TextEditingController();
-  final _phone = TextEditingController();
   final _first = TextEditingController();
   final _last = TextEditingController();
   final _currentPassword = TextEditingController();
   final _newPassword = TextEditingController();
   final _confirmPassword = TextEditingController();
+  var _phone = '';
   var _filled = false;
 
   @override
   void dispose() {
     _email.dispose();
     _username.dispose();
-    _phone.dispose();
     _first.dispose();
     _last.dispose();
     _currentPassword.dispose();
@@ -50,14 +50,14 @@ class _ProfileViewPageState extends ConsumerState<ProfileViewPage> {
     if (store.isOwner && store.owner != null) {
       final o = store.owner!;
       _email.text = o.email;
-      _phone.text = o.phoneNumber;
+      _phone = o.phoneNumber;
       _first.text = o.firstName;
       _last.text = o.lastName;
       _filled = true;
     } else if (store.isEmployee && store.employee != null) {
       final e = store.employee!;
       _username.text = e.username;
-      _phone.text = e.phoneNumber;
+      _phone = e.phoneNumber;
       _first.text = e.firstName;
       _last.text = e.lastName;
       _filled = true;
@@ -144,11 +144,10 @@ class _ProfileViewPageState extends ConsumerState<ProfileViewPage> {
                           helperText: l10n.emailLocked,
                           prefixIcon: Icons.mail_outline,
                         ),
-                      AppTextField(
-                        controller: _phone,
+                      AppPhoneField(
                         label: l10n.phone,
-                        prefixIcon: Icons.phone_outlined,
-                        validator: (value) => FormValidators.phone(l10n, value),
+                        value: _phone,
+                        onChanged: (value) => setState(() => _phone = value),
                       ),
                       if (ui.errorKey != null)
                         AppErrorBanner(
@@ -166,7 +165,7 @@ class _ProfileViewPageState extends ConsumerState<ProfileViewPage> {
                           ref
                               .read(profileViewModelProvider.notifier)
                               .save(
-                                phoneNumber: _phone.text,
+                                phoneNumber: _phone,
                                 firstName: _first.text,
                                 lastName: _last.text,
                               );

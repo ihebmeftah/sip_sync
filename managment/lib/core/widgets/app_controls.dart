@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../di/locale_controller.dart';
@@ -52,6 +53,8 @@ class AppTextField extends StatefulWidget {
     this.helperText,
     this.validator,
     this.onTap,
+    this.onChanged,
+    this.inputFormatters,
     this.suffixIcon,
     this.compact = false,
   });
@@ -66,6 +69,8 @@ class AppTextField extends StatefulWidget {
   final String? helperText;
   final String? Function(String?)? validator;
   final VoidCallback? onTap;
+  final ValueChanged<String>? onChanged;
+  final List<TextInputFormatter>? inputFormatters;
   final Widget? suffixIcon;
   final bool compact;
 
@@ -88,6 +93,8 @@ class _AppTextFieldState extends State<AppTextField> {
         textInputAction: widget.textInputAction,
         readOnly: widget.readOnly,
         onTap: widget.onTap,
+        onChanged: widget.onChanged,
+        inputFormatters: widget.inputFormatters,
         validator: widget.validator,
         autovalidateMode: AutovalidateMode.onUserInteraction,
         decoration: InputDecoration(
@@ -122,6 +129,7 @@ class AppDropdownField<T> extends StatelessWidget {
     required this.onChanged,
     this.prefixIcon,
     this.validator,
+    this.compact = false,
   });
 
   final String label;
@@ -130,11 +138,12 @@ class AppDropdownField<T> extends StatelessWidget {
   final ValueChanged<T?> onChanged;
   final IconData? prefixIcon;
   final String? Function(T?)? validator;
+  final bool compact;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: AppSpacing.lg),
+      padding: EdgeInsets.only(bottom: compact ? 0 : AppSpacing.lg),
       child: DropdownButtonFormField<T>(
         key: ValueKey(value),
         initialValue: value,

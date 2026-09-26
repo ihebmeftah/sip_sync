@@ -26,6 +26,11 @@ abstract class BuildingUpdate
     required this.openingMinutes,
     required this.closingMinutes,
     required this.currencyCode,
+    required this.phoneNumber,
+    this.whatsapp,
+    this.instagram,
+    this.facebook,
+    required this.otherLinks,
     required this.tableMultiOrder,
     required this.allowAppendingItemsToOrder,
     required this.strictMode,
@@ -42,6 +47,11 @@ abstract class BuildingUpdate
     required int openingMinutes,
     required int closingMinutes,
     required String currencyCode,
+    required String phoneNumber,
+    String? whatsapp,
+    String? instagram,
+    String? facebook,
+    required List<String> otherLinks,
     required bool tableMultiOrder,
     required bool allowAppendingItemsToOrder,
     required bool strictMode,
@@ -59,6 +69,13 @@ abstract class BuildingUpdate
       openingMinutes: jsonSerialization['openingMinutes'] as int,
       closingMinutes: jsonSerialization['closingMinutes'] as int,
       currencyCode: jsonSerialization['currencyCode'] as String,
+      phoneNumber: jsonSerialization['phoneNumber'] as String,
+      whatsapp: jsonSerialization['whatsapp'] as String?,
+      instagram: jsonSerialization['instagram'] as String?,
+      facebook: jsonSerialization['facebook'] as String?,
+      otherLinks: _iozg9o5r.Protocol().deserialize<List<String>>(
+        jsonSerialization['otherLinks'],
+      ),
       tableMultiOrder: _isc.BoolJsonExtension.fromJson(
         jsonSerialization['tableMultiOrder'],
       ),
@@ -93,6 +110,16 @@ abstract class BuildingUpdate
 
   String currencyCode;
 
+  String phoneNumber;
+
+  String? whatsapp;
+
+  String? instagram;
+
+  String? facebook;
+
+  List<String> otherLinks;
+
   bool tableMultiOrder;
 
   bool allowAppendingItemsToOrder;
@@ -114,6 +141,11 @@ abstract class BuildingUpdate
     int? openingMinutes,
     int? closingMinutes,
     String? currencyCode,
+    String? phoneNumber,
+    String? whatsapp,
+    String? instagram,
+    String? facebook,
+    List<String>? otherLinks,
     bool? tableMultiOrder,
     bool? allowAppendingItemsToOrder,
     bool? strictMode,
@@ -132,6 +164,11 @@ abstract class BuildingUpdate
       'openingMinutes': openingMinutes,
       'closingMinutes': closingMinutes,
       'currencyCode': currencyCode,
+      'phoneNumber': phoneNumber,
+      if (whatsapp != null) 'whatsapp': whatsapp,
+      if (instagram != null) 'instagram': instagram,
+      if (facebook != null) 'facebook': facebook,
+      'otherLinks': otherLinks.toJson(),
       'tableMultiOrder': tableMultiOrder,
       'allowAppendingItemsToOrder': allowAppendingItemsToOrder,
       'strictMode': strictMode,
@@ -152,6 +189,11 @@ abstract class BuildingUpdate
       'openingMinutes': openingMinutes,
       'closingMinutes': closingMinutes,
       'currencyCode': currencyCode,
+      'phoneNumber': phoneNumber,
+      if (whatsapp != null) 'whatsapp': whatsapp,
+      if (instagram != null) 'instagram': instagram,
+      if (facebook != null) 'facebook': facebook,
+      'otherLinks': otherLinks.toJson(),
       'tableMultiOrder': tableMultiOrder,
       'allowAppendingItemsToOrder': allowAppendingItemsToOrder,
       'strictMode': strictMode,
@@ -167,6 +209,8 @@ abstract class BuildingUpdate
   }
 }
 
+class _Undefined {}
+
 class _BuildingUpdateImpl extends BuildingUpdate {
   _BuildingUpdateImpl({
     required _isc.UuidValue id,
@@ -178,6 +222,11 @@ class _BuildingUpdateImpl extends BuildingUpdate {
     required int openingMinutes,
     required int closingMinutes,
     required String currencyCode,
+    required String phoneNumber,
+    String? whatsapp,
+    String? instagram,
+    String? facebook,
+    required List<String> otherLinks,
     required bool tableMultiOrder,
     required bool allowAppendingItemsToOrder,
     required bool strictMode,
@@ -192,6 +241,11 @@ class _BuildingUpdateImpl extends BuildingUpdate {
          openingMinutes: openingMinutes,
          closingMinutes: closingMinutes,
          currencyCode: currencyCode,
+         phoneNumber: phoneNumber,
+         whatsapp: whatsapp,
+         instagram: instagram,
+         facebook: facebook,
+         otherLinks: otherLinks,
          tableMultiOrder: tableMultiOrder,
          allowAppendingItemsToOrder: allowAppendingItemsToOrder,
          strictMode: strictMode,
@@ -212,6 +266,11 @@ class _BuildingUpdateImpl extends BuildingUpdate {
     int? openingMinutes,
     int? closingMinutes,
     String? currencyCode,
+    String? phoneNumber,
+    Object? whatsapp = _Undefined,
+    Object? instagram = _Undefined,
+    Object? facebook = _Undefined,
+    List<String>? otherLinks,
     bool? tableMultiOrder,
     bool? allowAppendingItemsToOrder,
     bool? strictMode,
@@ -227,6 +286,11 @@ class _BuildingUpdateImpl extends BuildingUpdate {
       openingMinutes: openingMinutes ?? this.openingMinutes,
       closingMinutes: closingMinutes ?? this.closingMinutes,
       currencyCode: currencyCode ?? this.currencyCode,
+      phoneNumber: phoneNumber ?? this.phoneNumber,
+      whatsapp: whatsapp is String? ? whatsapp : this.whatsapp,
+      instagram: instagram is String? ? instagram : this.instagram,
+      facebook: facebook is String? ? facebook : this.facebook,
+      otherLinks: otherLinks ?? this.otherLinks.map((e0) => e0).toList(),
       tableMultiOrder: tableMultiOrder ?? this.tableMultiOrder,
       allowAppendingItemsToOrder:
           allowAppendingItemsToOrder ?? this.allowAppendingItemsToOrder,
