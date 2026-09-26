@@ -973,14 +973,32 @@ abstract class AppLocalizations {
   /// No description provided for @tablesHint.
   ///
   /// In en, this message translates to:
-  /// **'Floor plan by seats. Status comes from orders and reservations later.'**
+  /// **'Tap a table for actions: edit, open orders, or create an order.'**
   String get tablesHint;
 
   /// No description provided for @tablesEmployeeOrderHint.
   ///
   /// In en, this message translates to:
-  /// **'Tap a table to start a new order.'**
+  /// **'Tap a table to see open orders or start a new one.'**
   String get tablesEmployeeOrderHint;
+
+  /// No description provided for @tableOpenOrderHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'Current order'**
+  String get tableOpenOrderHeading;
+
+  /// No description provided for @tableOpenOrdersHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'Current orders'**
+  String get tableOpenOrdersHeading;
+
+  /// No description provided for @tableNoOpenOrders.
+  ///
+  /// In en, this message translates to:
+  /// **'No open order on this table.'**
+  String get tableNoOpenOrders;
 
   /// No description provided for @tablesEmptyOwner.
   ///

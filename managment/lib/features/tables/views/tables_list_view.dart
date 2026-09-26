@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sip_sync_client/sip_sync_client.dart';
 
-import '../../../core/access/floor_access.dart';
 import '../../../core/di/app_providers.dart';
 import '../../../core/errors/error_mapper.dart';
 import '../../../core/routing/app_routes.dart';
@@ -15,14 +14,15 @@ import '../../../l10n/generated/app_localizations.dart';
 import '../../orders/view_models/order_draft_view_model.dart';
 import '../table_qr_pdf_service.dart';
 import '../view_models/tables_view_model.dart';
+import '../widgets/table_actions_sheet.dart';
 import '../widgets/table_floor_preview.dart';
 import '../widgets/venue_table_dialog.dart';
 
 /// Floor map for a building: seat-based previews, status filters, add/edit form.
 ///
 /// Owner create/edit uses a full screen on mobile and a dialog on wide layouts.
-/// Owner FAB pick mode and employee taps both select a table and continue to
-/// article selection. Owners edit tables when not picking.
+/// Non-pick taps open a sheet/dialog (edit, open orders, create). Pick mode
+/// still selects the table and continues to article selection.
 class TablesListView extends ConsumerStatefulWidget {
   const TablesListView({super.key, required this.buildingId});
 
@@ -135,18 +135,7 @@ class _TablesListViewState extends ConsumerState<TablesListView> {
       _startOrderOnTable(table, fromPick: true);
       return;
     }
-
-    final store = ref.read(appSessionStoreProvider);
-    if (store.isOwner) {
-      _openForm(existing: table);
-      return;
-    }
-    if (store.isEmployee) {
-      if (!FloorAccess.fromSession(store).canCreateOrders) {
-        return;
-      }
-      _startOrderOnTable(table, fromPick: false);
-    }
+    showTableActionsSheet(context, buildingId: widget.buildingId, table: table);
   }
 
   @override

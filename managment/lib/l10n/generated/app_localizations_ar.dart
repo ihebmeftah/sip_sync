@@ -477,10 +477,20 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get tablesHint =>
-      'مخطط القاعة حسب المقاعد. الحالة تأتي لاحقاً من الطلبات والحجوزات.';
+      'اضغط على طاولة للإجراءات: تعديل، الطلبات المفتوحة، أو إنشاء طلب.';
 
   @override
-  String get tablesEmployeeOrderHint => 'اضغط على طاولة لبدء طلب جديد.';
+  String get tablesEmployeeOrderHint =>
+      'اضغط على طاولة لعرض الطلبات المفتوحة أو بدء طلب جديد.';
+
+  @override
+  String get tableOpenOrderHeading => 'الطلب الحالي';
+
+  @override
+  String get tableOpenOrdersHeading => 'الطلبات الحالية';
+
+  @override
+  String get tableNoOpenOrders => 'لا يوجد طلب مفتوح على هذه الطاولة.';
 
   @override
   String get tablesEmptyOwner => 'أضف أول طاولة لرسم المخطط.';

@@ -107,6 +107,20 @@ class OrdersViewModel extends _$OrdersViewModel {
     await ref.read(tablesViewModelProvider(_buildingId).notifier).refresh();
   }
 
+  /// Open ([OrderStatus.progress]) orders seated on [tableId] (does not change list filter).
+  Future<List<OrderView>> openOrdersForTable(UuidValue tableId) async {
+    if (_buildingId.isEmpty) {
+      return const [];
+    }
+    final list = await ref
+        .read(orderRepositoryProvider)
+        .list(UuidValue.fromString(_buildingId), status: OrderStatus.progress);
+    return [
+      for (final order in list)
+        if (order.venueTableId == tableId) order,
+    ];
+  }
+
   void _patchOrder(OrderView saved) {
     final current = state.asData?.value;
     if (current == null) {

@@ -490,11 +490,20 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get tablesHint =>
-      'Plan de salle selon les places. Le statut viendra des commandes et réservations.';
+      'Touchez une table pour modifier, voir les commandes ou en créer une.';
 
   @override
   String get tablesEmployeeOrderHint =>
-      'Touchez une table pour démarrer une commande.';
+      'Touchez une table pour voir les commandes ouvertes ou en démarrer une.';
+
+  @override
+  String get tableOpenOrderHeading => 'Commande en cours';
+
+  @override
+  String get tableOpenOrdersHeading => 'Commandes en cours';
+
+  @override
+  String get tableNoOpenOrders => 'Aucune commande ouverte sur cette table.';
 
   @override
   String get tablesEmptyOwner =>

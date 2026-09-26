@@ -485,10 +485,20 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tablesHint =>
-      'Floor plan by seats. Status comes from orders and reservations later.';
+      'Tap a table for actions: edit, open orders, or create an order.';
 
   @override
-  String get tablesEmployeeOrderHint => 'Tap a table to start a new order.';
+  String get tablesEmployeeOrderHint =>
+      'Tap a table to see open orders or start a new one.';
+
+  @override
+  String get tableOpenOrderHeading => 'Current order';
+
+  @override
+  String get tableOpenOrdersHeading => 'Current orders';
+
+  @override
+  String get tableNoOpenOrders => 'No open order on this table.';
 
   @override
   String get tablesEmptyOwner => 'Add your first table to sketch the floor.';
