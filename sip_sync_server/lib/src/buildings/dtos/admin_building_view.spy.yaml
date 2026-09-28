@@ -1,0 +1,20 @@
+### Platform-wide venue row for the backoffice. Includes the owner, not staff.
+class: AdminBuildingView
+fields:
+  id: UuidValue
+  name: String
+  type: String
+  address: String
+  latitude: double
+  longitude: double
+  currencyCode: String
+  phoneNumber: String
+  countryCode: String
+  whatsapp: String?
+  instagram: String?
+  facebook: String?
+  ownerId: UuidValue
+  ownerFirstName: String
+  ownerLastName: String
+  ownerEmail: String
+  ownerPhoneNumber: String

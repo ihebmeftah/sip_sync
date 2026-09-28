@@ -145,4 +145,104 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get errorProfileIncomplete => 'أكمل التسجيل باسم المستخدم والهاتف.';
+
+  @override
+  String get errorAccountDisabled => 'هذا الحساب معطّل.';
+
+  @override
+  String get errorCannotDisableDefaultAdmin =>
+      'لا يمكن تعطيل حساب المسؤول الافتراضي.';
+
+  @override
+  String get errorCannotDisableSelf => 'لا يمكنك تعطيل حسابك.';
+
+  @override
+  String get navUsers => 'المستخدمون';
+
+  @override
+  String get navBuildings => 'المباني';
+
+  @override
+  String get usersTitle => 'المستخدمون';
+
+  @override
+  String get usersSubtitle =>
+      'حسابات المكتب التي يمكنها الدخول إلى هذه اللوحة.';
+
+  @override
+  String get buildingsTitle => 'المباني';
+
+  @override
+  String get buildingsSubtitle =>
+      'كل الأماكن على المنصة مع المالك وبيانات التواصل.';
+
+  @override
+  String get createUser => 'إنشاء مستخدم';
+
+  @override
+  String get editUser => 'تحديث المستخدم';
+
+  @override
+  String get save => 'حفظ';
+
+  @override
+  String get cancel => 'إلغاء';
+
+  @override
+  String get close => 'إغلاق';
+
+  @override
+  String get enabled => 'مفعّل';
+
+  @override
+  String get disabled => 'معطّل';
+
+  @override
+  String get status => 'الحالة';
+
+  @override
+  String get owner => 'المالك';
+
+  @override
+  String get contact => 'التواصل';
+
+  @override
+  String get buildingType => 'النوع';
+
+  @override
+  String get address => 'العنوان';
+
+  @override
+  String get location => 'الموقع';
+
+  @override
+  String get currency => 'العملة';
+
+  @override
+  String get country => 'البلد';
+
+  @override
+  String coordinates(String lat, String lng) {
+    return '$lat، $lng';
+  }
+
+  @override
+  String get passwordOptional => 'كلمة مرور جديدة (اختياري)';
+
+  @override
+  String get deleteUser => 'حذف المستخدم';
+
+  @override
+  String deleteUserConfirm(String name) {
+    return 'حذف $name؟ سيفقد الوصول إلى اللوحة.';
+  }
+
+  @override
+  String get viewDetails => 'التفاصيل';
+
+  @override
+  String get enabledLockedDefault => 'يبقى المسؤول الافتراضي مفعّلاً.';
+
+  @override
+  String get enabledLockedSelf => 'لا يمكنك تعطيل الحساب الذي تستخدمه.';
 }

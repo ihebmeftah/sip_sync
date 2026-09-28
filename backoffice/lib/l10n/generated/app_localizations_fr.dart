@@ -148,4 +148,106 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get errorProfileIncomplete =>
       'Terminez l\'inscription avec un identifiant et un téléphone.';
+
+  @override
+  String get errorAccountDisabled => 'Ce compte est désactivé.';
+
+  @override
+  String get errorCannotDisableDefaultAdmin =>
+      'L\'admin par défaut ne peut pas être désactivé.';
+
+  @override
+  String get errorCannotDisableSelf =>
+      'Vous ne pouvez pas désactiver votre propre compte.';
+
+  @override
+  String get navUsers => 'Utilisateurs';
+
+  @override
+  String get navBuildings => 'Établissements';
+
+  @override
+  String get usersTitle => 'Utilisateurs';
+
+  @override
+  String get usersSubtitle =>
+      'Comptes backoffice autorisés à ouvrir cette console.';
+
+  @override
+  String get buildingsTitle => 'Établissements';
+
+  @override
+  String get buildingsSubtitle =>
+      'Tous les lieux de la plateforme, avec le propriétaire et le contact.';
+
+  @override
+  String get createUser => 'Créer un utilisateur';
+
+  @override
+  String get editUser => 'Mettre à jour';
+
+  @override
+  String get save => 'Enregistrer';
+
+  @override
+  String get cancel => 'Annuler';
+
+  @override
+  String get close => 'Fermer';
+
+  @override
+  String get enabled => 'Activé';
+
+  @override
+  String get disabled => 'Désactivé';
+
+  @override
+  String get status => 'Statut';
+
+  @override
+  String get owner => 'Propriétaire';
+
+  @override
+  String get contact => 'Contact';
+
+  @override
+  String get buildingType => 'Type';
+
+  @override
+  String get address => 'Adresse';
+
+  @override
+  String get location => 'Emplacement';
+
+  @override
+  String get currency => 'Devise';
+
+  @override
+  String get country => 'Pays';
+
+  @override
+  String coordinates(String lat, String lng) {
+    return '$lat, $lng';
+  }
+
+  @override
+  String get passwordOptional => 'Nouveau mot de passe (facultatif)';
+
+  @override
+  String get deleteUser => 'Supprimer l\'utilisateur';
+
+  @override
+  String deleteUserConfirm(String name) {
+    return 'Supprimer $name ? L\'accès à la console sera retiré.';
+  }
+
+  @override
+  String get viewDetails => 'Détails';
+
+  @override
+  String get enabledLockedDefault => 'L\'admin par défaut reste activé.';
+
+  @override
+  String get enabledLockedSelf =>
+      'Vous ne pouvez pas désactiver le compte en cours.';
 }

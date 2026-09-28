@@ -97,6 +97,54 @@ final class SuperAdminAuthRepositoryProvider
 String _$superAdminAuthRepositoryHash() =>
     r'6a6c34fa9c369e87109c0c64cc0bad037701f1e3';
 
+@ProviderFor(adminBuildingRepository)
+const adminBuildingRepositoryProvider = AdminBuildingRepositoryProvider._();
+
+final class AdminBuildingRepositoryProvider
+    extends
+        $FunctionalProvider<
+          AdminBuildingRepository,
+          AdminBuildingRepository,
+          AdminBuildingRepository
+        >
+    with $Provider<AdminBuildingRepository> {
+  const AdminBuildingRepositoryProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'adminBuildingRepositoryProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$adminBuildingRepositoryHash();
+
+  @$internal
+  @override
+  $ProviderElement<AdminBuildingRepository> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  AdminBuildingRepository create(Ref ref) {
+    return adminBuildingRepository(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(AdminBuildingRepository value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<AdminBuildingRepository>(value),
+    );
+  }
+}
+
+String _$adminBuildingRepositoryHash() =>
+    r'13875e9c445c18029e13d8e023a2b7618296d820';
+
 @ProviderFor(appSessionStore)
 const appSessionStoreProvider = AppSessionStoreProvider._();
 

@@ -21,8 +21,8 @@ GoRouter appRouter(Ref ref) {
       if (!signedIn && !onAuth) {
         return const SignInRoute().location;
       }
-      if (signedIn && onAuth) {
-        return const HomeRoute().location;
+      if (signedIn && (onAuth || state.matchedLocation == '/')) {
+        return const UsersRoute().location;
       }
       return null;
     },

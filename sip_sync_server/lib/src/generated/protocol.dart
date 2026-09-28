@@ -21,6 +21,8 @@ import 'package:sip_sync_server/src/generated/auth/dtos/employee_view.dart'
     as _im8o31wm;
 import 'package:sip_sync_server/src/generated/auth/dtos/super_admin_view.dart'
     as _iubtczqk;
+import 'package:sip_sync_server/src/generated/buildings/dtos/admin_building_view.dart'
+    as _idzabrxr;
 import 'package:sip_sync_server/src/generated/buildings/dtos/building_view.dart'
     as _ihha274w;
 import 'package:sip_sync_server/src/generated/employee_access/dtos/employee_access_view.dart'
@@ -56,6 +58,7 @@ import 'auth/dtos/password_reset_request_result.dart' as _ixrmg4rs;
 import 'auth/dtos/profile_update.dart' as _iul4y12k;
 import 'auth/dtos/super_admin_create.dart' as _ieisqlnm;
 import 'auth/dtos/super_admin_session_view.dart' as _i4itilxd;
+import 'auth/dtos/super_admin_update.dart' as _iccfx1hz;
 import 'auth/dtos/super_admin_view.dart' as _ima36n4q;
 import 'auth/dtos/username_login_request.dart' as _i4npd3dl;
 import 'auth/entity/auth_session.dart' as _i30hpih1;
@@ -64,6 +67,7 @@ import 'auth/entity/employee.dart' as _iwpz2vh7;
 import 'auth/entity/owner.dart' as _i00rpu3b;
 import 'auth/entity/password_reset.dart' as _i5m9ixa9;
 import 'auth/entity/super_admin.dart' as _ii4fooib;
+import 'buildings/dtos/admin_building_view.dart' as _ig4j3dzf;
 import 'buildings/dtos/building_create.dart' as _i8mj84pm;
 import 'buildings/dtos/building_error_code.dart' as _ip56joo9;
 import 'buildings/dtos/building_exception.dart' as _ihbyyehn;
@@ -142,6 +146,7 @@ export 'auth/dtos/password_reset_request_result.dart';
 export 'auth/dtos/profile_update.dart';
 export 'auth/dtos/super_admin_create.dart';
 export 'auth/dtos/super_admin_session_view.dart';
+export 'auth/dtos/super_admin_update.dart';
 export 'auth/dtos/super_admin_view.dart';
 export 'auth/dtos/username_login_request.dart';
 export 'auth/entity/auth_session.dart';
@@ -150,6 +155,7 @@ export 'auth/entity/employee.dart';
 export 'auth/entity/owner.dart';
 export 'auth/entity/password_reset.dart';
 export 'auth/entity/super_admin.dart';
+export 'buildings/dtos/admin_building_view.dart';
 export 'buildings/dtos/building_create.dart';
 export 'buildings/dtos/building_error_code.dart';
 export 'buildings/dtos/building_exception.dart';
@@ -1462,6 +1468,13 @@ class Protocol extends _is.DatabaseSerializationManager {
           columnDefault: 'false',
         ),
         _isp.ColumnDefinition(
+          name: 'isEnabled',
+          columnType: _isp.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'true',
+        ),
+        _isp.ColumnDefinition(
           name: 'createdAt',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: false,
@@ -2080,6 +2093,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == _i4itilxd.SuperAdminSessionView) {
       return _i4itilxd.SuperAdminSessionView.fromJson(data) as T;
     }
+    if (t == _iccfx1hz.SuperAdminUpdate) {
+      return _iccfx1hz.SuperAdminUpdate.fromJson(data) as T;
+    }
     if (t == _ima36n4q.SuperAdminView) {
       return _ima36n4q.SuperAdminView.fromJson(data) as T;
     }
@@ -2103,6 +2119,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     if (t == _ii4fooib.SuperAdmin) {
       return _ii4fooib.SuperAdmin.fromJson(data) as T;
+    }
+    if (t == _ig4j3dzf.AdminBuildingView) {
+      return _ig4j3dzf.AdminBuildingView.fromJson(data) as T;
     }
     if (t == _i8mj84pm.BuildingCreate) {
       return _i8mj84pm.BuildingCreate.fromJson(data) as T;
@@ -2371,6 +2390,10 @@ class Protocol extends _is.DatabaseSerializationManager {
               : null)
           as T;
     }
+    if (t == _is.getType<_iccfx1hz.SuperAdminUpdate?>()) {
+      return (data != null ? _iccfx1hz.SuperAdminUpdate.fromJson(data) : null)
+          as T;
+    }
     if (t == _is.getType<_ima36n4q.SuperAdminView?>()) {
       return (data != null ? _ima36n4q.SuperAdminView.fromJson(data) : null)
           as T;
@@ -2399,6 +2422,10 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     if (t == _is.getType<_ii4fooib.SuperAdmin?>()) {
       return (data != null ? _ii4fooib.SuperAdmin.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_ig4j3dzf.AdminBuildingView?>()) {
+      return (data != null ? _ig4j3dzf.AdminBuildingView.fromJson(data) : null)
+          as T;
     }
     if (t == _is.getType<_i8mj84pm.BuildingCreate?>()) {
       return (data != null ? _i8mj84pm.BuildingCreate.fromJson(data) : null)
@@ -2840,6 +2867,12 @@ class Protocol extends _is.DatabaseSerializationManager {
               .toList()
           as T;
     }
+    if (t == List<_idzabrxr.AdminBuildingView>) {
+      return (data as List)
+              .map((e) => deserialize<_idzabrxr.AdminBuildingView>(e))
+              .toList()
+          as T;
+    }
     if (t == List<_im8o31wm.EmployeeView>) {
       return (data as List)
               .map((e) => deserialize<_im8o31wm.EmployeeView>(e))
@@ -2921,6 +2954,7 @@ class Protocol extends _is.DatabaseSerializationManager {
       _iul4y12k.ProfileUpdate => 'ProfileUpdate',
       _ieisqlnm.SuperAdminCreate => 'SuperAdminCreate',
       _i4itilxd.SuperAdminSessionView => 'SuperAdminSessionView',
+      _iccfx1hz.SuperAdminUpdate => 'SuperAdminUpdate',
       _ima36n4q.SuperAdminView => 'SuperAdminView',
       _i4npd3dl.UsernameLoginRequest => 'UsernameLoginRequest',
       _i30hpih1.AuthSession => 'AuthSession',
@@ -2929,6 +2963,7 @@ class Protocol extends _is.DatabaseSerializationManager {
       _i00rpu3b.Owner => 'Owner',
       _i5m9ixa9.PasswordReset => 'PasswordReset',
       _ii4fooib.SuperAdmin => 'SuperAdmin',
+      _ig4j3dzf.AdminBuildingView => 'AdminBuildingView',
       _i8mj84pm.BuildingCreate => 'BuildingCreate',
       _ip56joo9.BuildingErrorCode => 'BuildingErrorCode',
       _ihbyyehn.BuildingException => 'BuildingException',
@@ -3040,6 +3075,8 @@ class Protocol extends _is.DatabaseSerializationManager {
         return 'SuperAdminCreate';
       case _i4itilxd.SuperAdminSessionView():
         return 'SuperAdminSessionView';
+      case _iccfx1hz.SuperAdminUpdate():
+        return 'SuperAdminUpdate';
       case _ima36n4q.SuperAdminView():
         return 'SuperAdminView';
       case _i4npd3dl.UsernameLoginRequest():
@@ -3056,6 +3093,8 @@ class Protocol extends _is.DatabaseSerializationManager {
         return 'PasswordReset';
       case _ii4fooib.SuperAdmin():
         return 'SuperAdmin';
+      case _ig4j3dzf.AdminBuildingView():
+        return 'AdminBuildingView';
       case _i8mj84pm.BuildingCreate():
         return 'BuildingCreate';
       case _ip56joo9.BuildingErrorCode():
@@ -3257,6 +3296,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (dataClassName == 'SuperAdminSessionView') {
       return deserialize<_i4itilxd.SuperAdminSessionView>(data['data']);
     }
+    if (dataClassName == 'SuperAdminUpdate') {
+      return deserialize<_iccfx1hz.SuperAdminUpdate>(data['data']);
+    }
     if (dataClassName == 'SuperAdminView') {
       return deserialize<_ima36n4q.SuperAdminView>(data['data']);
     }
@@ -3280,6 +3322,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     if (dataClassName == 'SuperAdmin') {
       return deserialize<_ii4fooib.SuperAdmin>(data['data']);
+    }
+    if (dataClassName == 'AdminBuildingView') {
+      return deserialize<_ig4j3dzf.AdminBuildingView>(data['data']);
     }
     if (dataClassName == 'BuildingCreate') {
       return deserialize<_i8mj84pm.BuildingCreate>(data['data']);

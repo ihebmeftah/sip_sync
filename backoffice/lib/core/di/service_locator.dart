@@ -1,6 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:sip_sync_client/sip_sync_client.dart';
 
+import '../../data/repositories/admin_building_repository.dart';
 import '../../data/repositories/super_admin_auth_repository.dart';
 import '../../data/services/api_client.dart';
 import 'app_session_store.dart';
@@ -17,5 +18,8 @@ Future<void> setupServiceLocator() async {
   getIt.registerSingleton<Client>(client);
   getIt.registerLazySingleton<SuperAdminAuthRepository>(
     () => SuperAdminAuthRepository(client, getIt<AppSessionStore>()),
+  );
+  getIt.registerLazySingleton<AdminBuildingRepository>(
+    () => AdminBuildingRepository(client),
   );
 }

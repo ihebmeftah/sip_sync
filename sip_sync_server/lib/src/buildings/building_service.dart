@@ -35,6 +35,17 @@ class BuildingService {
     );
   }
 
+  /// Platform list for super admins. Owners and staff are rejected.
+  Future<List<AdminBuildingView>> listAll(Session session) async {
+    AuthGuard.requireSuperAdmin(session);
+    final rows = await Building.db.find(
+      session,
+      include: Building.include(owner: Owner.include()),
+      orderBy: (t) => t.name,
+    );
+    return rows.map(_adminView).toList();
+  }
+
   Future<BuildingView> get(
     Session session, {
     required UuidValue buildingId,
@@ -208,6 +219,35 @@ class BuildingService {
       strictMode: row.strictMode,
       strictModeSteps: normalizeStrictModeSteps(row.strictModeSteps),
       employeeIds: staff.map((s) => s.id!).toList(),
+    );
+  }
+
+  AdminBuildingView _adminView(Building row) {
+    final owner = row.owner;
+    if (owner == null || row.id == null || owner.id == null) {
+      throw BuildingException(
+        message: 'Building owner is missing.',
+        code: BuildingErrorCode.notFound,
+      );
+    }
+    return AdminBuildingView(
+      id: row.id!,
+      name: row.name,
+      type: row.type,
+      address: row.address,
+      latitude: row.latitude,
+      longitude: row.longitude,
+      currencyCode: row.currencyCode,
+      phoneNumber: row.phoneNumber,
+      countryCode: row.countryCode,
+      whatsapp: row.whatsapp,
+      instagram: row.instagram,
+      facebook: row.facebook,
+      ownerId: owner.id!,
+      ownerFirstName: owner.firstName,
+      ownerLastName: owner.lastName,
+      ownerEmail: owner.email,
+      ownerPhoneNumber: owner.phoneNumber,
     );
   }
 

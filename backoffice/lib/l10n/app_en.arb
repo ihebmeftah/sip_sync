@@ -45,5 +45,46 @@
   "errorNotFound": "Not found.",
   "errorCannotDeleteDefaultAdmin": "The default admin cannot be deleted.",
   "errorPasswordTooWeak": "Use at least 8 characters, no leading or trailing spaces.",
-  "errorProfileIncomplete": "Finish registration with username and phone."
+  "errorProfileIncomplete": "Finish registration with username and phone.",
+  "errorAccountDisabled": "This account is disabled.",
+  "errorCannotDisableDefaultAdmin": "The default admin cannot be disabled.",
+  "errorCannotDisableSelf": "You cannot disable your own account.",
+  "navUsers": "Users",
+  "navBuildings": "Buildings",
+  "usersTitle": "Users",
+  "usersSubtitle": "Backoffice accounts that can sign in to this console.",
+  "buildingsTitle": "Buildings",
+  "buildingsSubtitle": "Every venue on the platform, with its owner and contact.",
+  "createUser": "Create user",
+  "editUser": "Update user",
+  "save": "Save",
+  "cancel": "Cancel",
+  "close": "Close",
+  "enabled": "Enabled",
+  "disabled": "Disabled",
+  "status": "Status",
+  "owner": "Owner",
+  "contact": "Contact",
+  "buildingType": "Type",
+  "address": "Address",
+  "location": "Location",
+  "currency": "Currency",
+  "country": "Country",
+  "coordinates": "{lat}, {lng}",
+  "@coordinates": {
+    "description": "Latitude and longitude pair",
+    "placeholders": {
+      "lat": { "type": "String" },
+      "lng": { "type": "String" }
+    }
+  },
+  "passwordOptional": "New password (optional)",
+  "deleteUser": "Delete user",
+  "deleteUserConfirm": "Delete {name}? They will lose console access.",
+  "@deleteUserConfirm": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "viewDetails": "Details",
+  "enabledLockedDefault": "The default admin stays enabled.",
+  "enabledLockedSelf": "You cannot disable the account you are using."
 }

@@ -47,10 +47,14 @@ import 'package:sip_sync_server/src/generated/auth/dtos/super_admin_create.dart'
     as _in2dfwpu;
 import 'package:sip_sync_server/src/generated/auth/dtos/super_admin_session_view.dart'
     as _ih5b3z5q;
+import 'package:sip_sync_server/src/generated/auth/dtos/super_admin_update.dart'
+    as _ir293hu7;
 import 'package:sip_sync_server/src/generated/auth/dtos/super_admin_view.dart'
     as _iubtczqk;
 import 'package:sip_sync_server/src/generated/auth/dtos/username_login_request.dart'
     as _imoptt9g;
+import 'package:sip_sync_server/src/generated/buildings/dtos/admin_building_view.dart'
+    as _idzabrxr;
 import 'package:sip_sync_server/src/generated/buildings/dtos/building_create.dart'
     as _iwyazuzj;
 import 'package:sip_sync_server/src/generated/buildings/dtos/building_update.dart'
@@ -1170,6 +1174,72 @@ class _SuperAdminAuthEndpoint {
     });
   }
 
+  _ida.Future<_iubtczqk.SuperAdminView> update(
+    _ist.TestSessionBuilder sessionBuilder,
+    _ir293hu7.SuperAdminUpdate request,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'superAdminAuth',
+            method: 'update',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'superAdminAuth',
+          methodName: 'update',
+          parameters: _ist.testObjectToJson({'request': request}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_iubtczqk.SuperAdminView>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<_iubtczqk.SuperAdminView> setEnabled(
+    _ist.TestSessionBuilder sessionBuilder,
+    _is.UuidValue targetId,
+    bool isEnabled,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'superAdminAuth',
+            method: 'setEnabled',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'superAdminAuth',
+          methodName: 'setEnabled',
+          parameters: _ist.testObjectToJson({
+            'targetId': targetId,
+            'isEnabled': isEnabled,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_iubtczqk.SuperAdminView>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
   _ida.Future<List<_iubtczqk.SuperAdminView>> list(
     _ist.TestSessionBuilder sessionBuilder,
   ) async {
@@ -1295,6 +1365,36 @@ class _BuildingEndpoint {
                   _localCallContext.arguments,
                 )
                 as _ida.Future<List<_ihha274w.BuildingView>>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<List<_idzabrxr.AdminBuildingView>> listAll(
+    _ist.TestSessionBuilder sessionBuilder,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'building',
+            method: 'listAll',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'building',
+          methodName: 'listAll',
+          parameters: _ist.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<List<_idzabrxr.AdminBuildingView>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();

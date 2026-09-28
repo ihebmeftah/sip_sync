@@ -15,3 +15,5 @@ values:
   - accountDisabled
   - invalidResetCode
   - resetCodeExpired
+  - cannotDisableDefaultAdmin
+  - cannotDisableSelf

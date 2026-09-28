@@ -10,6 +10,8 @@ fields:
   lastName: String
   passwordHash: String
   isSystemDefault: bool, default=false
+  ### When false, login is rejected and existing sessions are revoked.
+  isEnabled: bool, default=true
   createdAt: DateTime, defaultModel=now
 indexes:
   super_admin_email_idx:

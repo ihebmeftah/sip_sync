@@ -23,6 +23,8 @@ Failure mapError(Object error) {
       AccountErrorCode.accountDisabled => 'errorAccountDisabled',
       AccountErrorCode.invalidResetCode => 'errorInvalidResetCode',
       AccountErrorCode.resetCodeExpired => 'errorResetCodeExpired',
+      AccountErrorCode.cannotDisableDefaultAdmin => 'errorGeneric',
+      AccountErrorCode.cannotDisableSelf => 'errorGeneric',
     });
   }
   if (error is BuildingException) {

@@ -29,11 +29,14 @@ superAdminAuth:
   - me:
   - logout:
   - add:
+  - update:
+  - setEnabled:
   - list:
   - delete:
   - ensureDefaultAdmin:
 building:
   - listMine:
+  - listAll:
   - get:
   - create:
   - update:

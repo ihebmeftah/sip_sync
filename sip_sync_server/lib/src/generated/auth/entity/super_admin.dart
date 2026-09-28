@@ -23,8 +23,10 @@ abstract class SuperAdmin
     required this.lastName,
     required this.passwordHash,
     bool? isSystemDefault,
+    bool? isEnabled,
     DateTime? createdAt,
   }) : isSystemDefault = isSystemDefault ?? false,
+       isEnabled = isEnabled ?? true,
        createdAt = createdAt ?? DateTime.now();
 
   factory SuperAdmin({
@@ -35,6 +37,7 @@ abstract class SuperAdmin
     required String lastName,
     required String passwordHash,
     bool? isSystemDefault,
+    bool? isEnabled,
     DateTime? createdAt,
   }) = _SuperAdminImpl;
 
@@ -53,6 +56,9 @@ abstract class SuperAdmin
           : _is.BoolJsonExtension.fromJson(
               jsonSerialization['isSystemDefault'],
             ),
+      isEnabled: jsonSerialization['isEnabled'] == null
+          ? null
+          : _is.BoolJsonExtension.fromJson(jsonSerialization['isEnabled']),
       createdAt: jsonSerialization['createdAt'] == null
           ? null
           : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
@@ -78,6 +84,9 @@ abstract class SuperAdmin
 
   bool isSystemDefault;
 
+  /// When false, login is rejected and existing sessions are revoked.
+  bool isEnabled;
+
   DateTime createdAt;
 
   @override
@@ -94,6 +103,7 @@ abstract class SuperAdmin
     String? lastName,
     String? passwordHash,
     bool? isSystemDefault,
+    bool? isEnabled,
     DateTime? createdAt,
   });
   @override
@@ -107,6 +117,7 @@ abstract class SuperAdmin
       'lastName': lastName,
       'passwordHash': passwordHash,
       'isSystemDefault': isSystemDefault,
+      'isEnabled': isEnabled,
       'createdAt': createdAt.toJson(),
     };
   }
@@ -155,6 +166,7 @@ class _SuperAdminImpl extends SuperAdmin {
     required String lastName,
     required String passwordHash,
     bool? isSystemDefault,
+    bool? isEnabled,
     DateTime? createdAt,
   }) : super._(
          id: id,
@@ -164,6 +176,7 @@ class _SuperAdminImpl extends SuperAdmin {
          lastName: lastName,
          passwordHash: passwordHash,
          isSystemDefault: isSystemDefault,
+         isEnabled: isEnabled,
          createdAt: createdAt,
        );
 
@@ -179,6 +192,7 @@ class _SuperAdminImpl extends SuperAdmin {
     String? lastName,
     String? passwordHash,
     bool? isSystemDefault,
+    bool? isEnabled,
     DateTime? createdAt,
   }) {
     return SuperAdmin(
@@ -189,6 +203,7 @@ class _SuperAdminImpl extends SuperAdmin {
       lastName: lastName ?? this.lastName,
       passwordHash: passwordHash ?? this.passwordHash,
       isSystemDefault: isSystemDefault ?? this.isSystemDefault,
+      isEnabled: isEnabled ?? this.isEnabled,
       createdAt: createdAt ?? this.createdAt,
     );
   }
@@ -227,6 +242,11 @@ class SuperAdminUpdateTable extends _is.UpdateTable<SuperAdminTable> {
     value,
   );
 
+  _is.ColumnValue<bool, bool> isEnabled(bool value) => _is.ColumnValue(
+    table.isEnabled,
+    value,
+  );
+
   _is.ColumnValue<DateTime, DateTime> createdAt(DateTime value) =>
       _is.ColumnValue(
         table.createdAt,
@@ -262,6 +282,11 @@ class SuperAdminTable extends _is.Table<_is.UuidValue?> {
       this,
       hasDefault: true,
     );
+    isEnabled = _is.ColumnBool(
+      'isEnabled',
+      this,
+      hasDefault: true,
+    );
     createdAt = _is.ColumnDateTime(
       'createdAt',
       this,
@@ -282,6 +307,9 @@ class SuperAdminTable extends _is.Table<_is.UuidValue?> {
 
   late final _is.ColumnBool isSystemDefault;
 
+  /// When false, login is rejected and existing sessions are revoked.
+  late final _is.ColumnBool isEnabled;
+
   late final _is.ColumnDateTime createdAt;
 
   @override
@@ -293,6 +321,7 @@ class SuperAdminTable extends _is.Table<_is.UuidValue?> {
     lastName,
     passwordHash,
     isSystemDefault,
+    isEnabled,
     createdAt,
   ];
 }

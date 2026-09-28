@@ -12,6 +12,7 @@ Product and feature documentation for Sip Sync. Update these pages when behavior
 | Feature | Status | Doc |
 | --- | --- | --- |
 | Authentication & identities | in progress | [authentication](features/authentication.md) |
+| Backoffice console | in progress | [backoffice-console](features/backoffice-console.md) |
 | Operations shell (management) | in progress | [ops-shell](features/ops-shell.md) |
 | Building & multi-location | in progress | [buildings](features/buildings.md) |
 | Employee management & access | in progress | [employees](features/employees.md) |

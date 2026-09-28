@@ -1,0 +1,10 @@
+### Profile edit for a backoffice user. Blank [password] keeps the current hash.
+class: SuperAdminUpdate
+fields:
+  id: UuidValue
+  email: String
+  password: String?
+  phoneNumber: String
+  firstName: String
+  lastName: String
+  isEnabled: bool

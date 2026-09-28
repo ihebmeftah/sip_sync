@@ -38,7 +38,7 @@ Phone numbers for owners, employees, customers, and venues are stored in **E.164
 - **Customer** — self-register / login on `sip_sync_flutter`.
 - **Owner** — self-register / login on `managment`; manages buildings and staff.
 - **Employee** — created by an owner for a building; logs in on `managment` with username; session includes `buildingId` → app opens dashboard directly.
-- **Super admin** — seeded default + staff added by an admin; logs in on `backoffice`. Default admin cannot be deleted.
+- **Super admin** — seeded default + staff added by an admin; logs in on `backoffice`. Default admin cannot be deleted or disabled. A disabled admin cannot sign in (`accountDisabled`); disabling revokes their sessions. An admin cannot disable their own account. See [backoffice console](backoffice-console.md).
 
 ## Local demo seed
 
@@ -69,6 +69,7 @@ Wipe `.serverpod/development/pgdata` then `serverpod start` to reset and re-seed
 - Owner / customer / super admin: email + password on their endpoint.
 - Employee: username + password on `EmployeeAuth.login`.
 - Disabled employee → `accountDisabled`.
+- Disabled super admin → `accountDisabled`.
 
 ### Change password (authenticated)
 

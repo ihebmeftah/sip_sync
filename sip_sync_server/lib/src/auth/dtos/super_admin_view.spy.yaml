@@ -6,3 +6,4 @@ fields:
   firstName: String
   lastName: String
   isSystemDefault: bool
+  isEnabled: bool

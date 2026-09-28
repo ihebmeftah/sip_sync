@@ -33,6 +33,8 @@ import 'package:sip_sync_server/src/generated/auth/dtos/profile_update.dart'
     as _itbs72nt;
 import 'package:sip_sync_server/src/generated/auth/dtos/super_admin_create.dart'
     as _in2dfwpu;
+import 'package:sip_sync_server/src/generated/auth/dtos/super_admin_update.dart'
+    as _ir293hu7;
 import 'package:sip_sync_server/src/generated/auth/dtos/username_login_request.dart'
     as _imoptt9g;
 import 'package:sip_sync_server/src/generated/buildings/dtos/building_create.dart'
@@ -644,6 +646,54 @@ class Endpoints extends _is.EndpointDispatch {
                         params['request'],
                       ),
         ),
+        'update': _is.MethodConnector(
+          name: 'update',
+          params: {
+            'request': _is.ParameterDescription(
+              name: 'request',
+              type: _is.getType<_ir293hu7.SuperAdminUpdate>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['superAdminAuth']
+                          as _itmp66ay.SuperAdminAuthEndpoint)
+                      .update(
+                        session,
+                        params['request'],
+                      ),
+        ),
+        'setEnabled': _is.MethodConnector(
+          name: 'setEnabled',
+          params: {
+            'targetId': _is.ParameterDescription(
+              name: 'targetId',
+              type: _is.getType<_is.UuidValue>(),
+              nullable: false,
+            ),
+            'isEnabled': _is.ParameterDescription(
+              name: 'isEnabled',
+              type: _is.getType<bool>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['superAdminAuth']
+                          as _itmp66ay.SuperAdminAuthEndpoint)
+                      .setEnabled(
+                        session,
+                        params['targetId'],
+                        params['isEnabled'],
+                      ),
+        ),
         'list': _is.MethodConnector(
           name: 'list',
           params: {},
@@ -704,6 +754,16 @@ class Endpoints extends _is.EndpointDispatch {
                 Map<String, dynamic> params,
               ) async => (endpoints['building'] as _i69ygv7j.BuildingEndpoint)
                   .listMine(session),
+        ),
+        'listAll': _is.MethodConnector(
+          name: 'listAll',
+          params: {},
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['building'] as _i69ygv7j.BuildingEndpoint)
+                  .listAll(session),
         ),
         'get': _is.MethodConnector(
           name: 'get',

@@ -363,6 +363,192 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Finish registration with username and phone.'**
   String get errorProfileIncomplete;
+
+  /// No description provided for @errorAccountDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'This account is disabled.'**
+  String get errorAccountDisabled;
+
+  /// No description provided for @errorCannotDisableDefaultAdmin.
+  ///
+  /// In en, this message translates to:
+  /// **'The default admin cannot be disabled.'**
+  String get errorCannotDisableDefaultAdmin;
+
+  /// No description provided for @errorCannotDisableSelf.
+  ///
+  /// In en, this message translates to:
+  /// **'You cannot disable your own account.'**
+  String get errorCannotDisableSelf;
+
+  /// No description provided for @navUsers.
+  ///
+  /// In en, this message translates to:
+  /// **'Users'**
+  String get navUsers;
+
+  /// No description provided for @navBuildings.
+  ///
+  /// In en, this message translates to:
+  /// **'Buildings'**
+  String get navBuildings;
+
+  /// No description provided for @usersTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Users'**
+  String get usersTitle;
+
+  /// No description provided for @usersSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Backoffice accounts that can sign in to this console.'**
+  String get usersSubtitle;
+
+  /// No description provided for @buildingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Buildings'**
+  String get buildingsTitle;
+
+  /// No description provided for @buildingsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Every venue on the platform, with its owner and contact.'**
+  String get buildingsSubtitle;
+
+  /// No description provided for @createUser.
+  ///
+  /// In en, this message translates to:
+  /// **'Create user'**
+  String get createUser;
+
+  /// No description provided for @editUser.
+  ///
+  /// In en, this message translates to:
+  /// **'Update user'**
+  String get editUser;
+
+  /// No description provided for @save.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get save;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
+  /// No description provided for @close.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get close;
+
+  /// No description provided for @enabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Enabled'**
+  String get enabled;
+
+  /// No description provided for @disabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Disabled'**
+  String get disabled;
+
+  /// No description provided for @status.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get status;
+
+  /// No description provided for @owner.
+  ///
+  /// In en, this message translates to:
+  /// **'Owner'**
+  String get owner;
+
+  /// No description provided for @contact.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact'**
+  String get contact;
+
+  /// No description provided for @buildingType.
+  ///
+  /// In en, this message translates to:
+  /// **'Type'**
+  String get buildingType;
+
+  /// No description provided for @address.
+  ///
+  /// In en, this message translates to:
+  /// **'Address'**
+  String get address;
+
+  /// No description provided for @location.
+  ///
+  /// In en, this message translates to:
+  /// **'Location'**
+  String get location;
+
+  /// No description provided for @currency.
+  ///
+  /// In en, this message translates to:
+  /// **'Currency'**
+  String get currency;
+
+  /// No description provided for @country.
+  ///
+  /// In en, this message translates to:
+  /// **'Country'**
+  String get country;
+
+  /// Latitude and longitude pair
+  ///
+  /// In en, this message translates to:
+  /// **'{lat}, {lng}'**
+  String coordinates(String lat, String lng);
+
+  /// No description provided for @passwordOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'New password (optional)'**
+  String get passwordOptional;
+
+  /// No description provided for @deleteUser.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete user'**
+  String get deleteUser;
+
+  /// No description provided for @deleteUserConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete {name}? They will lose console access.'**
+  String deleteUserConfirm(String name);
+
+  /// No description provided for @viewDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Details'**
+  String get viewDetails;
+
+  /// No description provided for @enabledLockedDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'The default admin stays enabled.'**
+  String get enabledLockedDefault;
+
+  /// No description provided for @enabledLockedSelf.
+  ///
+  /// In en, this message translates to:
+  /// **'You cannot disable the account you are using.'**
+  String get enabledLockedSelf;
 }
 
 class _AppLocalizationsDelegate

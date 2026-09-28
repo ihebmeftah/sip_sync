@@ -4,13 +4,14 @@ Status: in progress
 
 ## Apps
 
-`sip_sync_server`, `managment`.
+`sip_sync_server`, `managment`, `backoffice` (read-only platform list).
 
 ## Actors and permissions
 
 - **Owner** — create/update buildings they own (`building.ownerId`). After login → `/buildings` until they open a venue.
 - **Employee** — one building on their row; after login → `/b/:buildingId/dashboard`. No venue create/edit.
 - Enforcement on `BuildingEndpoint` via custom `AuthGuard`.
+- **Super admin** — `building.listAll` returns every venue with owner name, email, and phone plus contact fields. No create or update from backoffice.
 
 ## Flow
 

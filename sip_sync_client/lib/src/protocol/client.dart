@@ -49,10 +49,14 @@ import 'package:sip_sync_client/src/protocol/auth/dtos/super_admin_create.dart'
     as _itncnxe5;
 import 'package:sip_sync_client/src/protocol/auth/dtos/super_admin_session_view.dart'
     as _i6jd5pnx;
+import 'package:sip_sync_client/src/protocol/auth/dtos/super_admin_update.dart'
+    as _i1ju3f9f;
 import 'package:sip_sync_client/src/protocol/auth/dtos/super_admin_view.dart'
     as _ia930tyq;
 import 'package:sip_sync_client/src/protocol/auth/dtos/username_login_request.dart'
     as _ijt6q2rq;
+import 'package:sip_sync_client/src/protocol/buildings/dtos/admin_building_view.dart'
+    as _icgw8yx3;
 import 'package:sip_sync_client/src/protocol/buildings/dtos/building_create.dart'
     as _iu09iw1h;
 import 'package:sip_sync_client/src/protocol/buildings/dtos/building_update.dart'
@@ -356,6 +360,33 @@ class EndpointSuperAdminAuth extends _isc.EndpointRef {
     {'request': request},
   );
 
+  /// Updates profile fields. A non-empty [SuperAdminUpdate.password] replaces the hash.
+  ///
+  /// Enabling or disabling follows the same rules as [setEnabled].
+  _ida.Future<_ia930tyq.SuperAdminView> update(
+    _i1ju3f9f.SuperAdminUpdate request,
+  ) => caller.callServerEndpoint<_ia930tyq.SuperAdminView>(
+    'superAdminAuth',
+    'update',
+    {'request': request},
+  );
+
+  /// Enables or disables a backoffice user.
+  ///
+  /// The default admin and the caller’s own account cannot be disabled.
+  /// Disabling revokes that admin’s sessions.
+  _ida.Future<_ia930tyq.SuperAdminView> setEnabled(
+    _isc.UuidValue targetId,
+    bool isEnabled,
+  ) => caller.callServerEndpoint<_ia930tyq.SuperAdminView>(
+    'superAdminAuth',
+    'setEnabled',
+    {
+      'targetId': targetId,
+      'isEnabled': isEnabled,
+    },
+  );
+
   _ida.Future<List<_ia930tyq.SuperAdminView>> list() =>
       caller.callServerEndpoint<List<_ia930tyq.SuperAdminView>>(
         'superAdminAuth',
@@ -390,6 +421,14 @@ class EndpointBuilding extends _isc.EndpointRef {
       caller.callServerEndpoint<List<_ik35q5v8.BuildingView>>(
         'building',
         'listMine',
+        {},
+      );
+
+  /// Every venue for the backoffice, including owner contact. Super admin only.
+  _ida.Future<List<_icgw8yx3.AdminBuildingView>> listAll() =>
+      caller.callServerEndpoint<List<_icgw8yx3.AdminBuildingView>>(
+        'building',
+        'listAll',
         {},
       );
 

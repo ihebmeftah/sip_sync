@@ -21,6 +21,7 @@ abstract class SuperAdminView
     required this.firstName,
     required this.lastName,
     required this.isSystemDefault,
+    required this.isEnabled,
   });
 
   factory SuperAdminView({
@@ -30,6 +31,7 @@ abstract class SuperAdminView
     required String firstName,
     required String lastName,
     required bool isSystemDefault,
+    required bool isEnabled,
   }) = _SuperAdminViewImpl;
 
   factory SuperAdminView.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -41,6 +43,9 @@ abstract class SuperAdminView
       lastName: jsonSerialization['lastName'] as String,
       isSystemDefault: _isc.BoolJsonExtension.fromJson(
         jsonSerialization['isSystemDefault'],
+      ),
+      isEnabled: _isc.BoolJsonExtension.fromJson(
+        jsonSerialization['isEnabled'],
       ),
     );
   }
@@ -57,6 +62,8 @@ abstract class SuperAdminView
 
   bool isSystemDefault;
 
+  bool isEnabled;
+
   /// Returns a shallow copy of this [SuperAdminView]
   /// with some or all fields replaced by the given arguments.
   @_isc.useResult
@@ -67,6 +74,7 @@ abstract class SuperAdminView
     String? firstName,
     String? lastName,
     bool? isSystemDefault,
+    bool? isEnabled,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -78,6 +86,7 @@ abstract class SuperAdminView
       'firstName': firstName,
       'lastName': lastName,
       'isSystemDefault': isSystemDefault,
+      'isEnabled': isEnabled,
     };
   }
 
@@ -91,6 +100,7 @@ abstract class SuperAdminView
       'firstName': firstName,
       'lastName': lastName,
       'isSystemDefault': isSystemDefault,
+      'isEnabled': isEnabled,
     };
   }
 
@@ -108,6 +118,7 @@ class _SuperAdminViewImpl extends SuperAdminView {
     required String firstName,
     required String lastName,
     required bool isSystemDefault,
+    required bool isEnabled,
   }) : super._(
          id: id,
          email: email,
@@ -115,6 +126,7 @@ class _SuperAdminViewImpl extends SuperAdminView {
          firstName: firstName,
          lastName: lastName,
          isSystemDefault: isSystemDefault,
+         isEnabled: isEnabled,
        );
 
   /// Returns a shallow copy of this [SuperAdminView]
@@ -128,6 +140,7 @@ class _SuperAdminViewImpl extends SuperAdminView {
     String? firstName,
     String? lastName,
     bool? isSystemDefault,
+    bool? isEnabled,
   }) {
     return SuperAdminView(
       id: id ?? this.id,
@@ -136,6 +149,7 @@ class _SuperAdminViewImpl extends SuperAdminView {
       firstName: firstName ?? this.firstName,
       lastName: lastName ?? this.lastName,
       isSystemDefault: isSystemDefault ?? this.isSystemDefault,
+      isEnabled: isEnabled ?? this.isEnabled,
     );
   }
 }

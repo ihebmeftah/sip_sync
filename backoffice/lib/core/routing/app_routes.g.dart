@@ -6,7 +6,11 @@ part of 'app_routes.dart';
 // GoRouterGenerator
 // **************************************************************************
 
-List<RouteBase> get $appRoutes => [$signInRoute, $registerRoute, $homeRoute];
+List<RouteBase> get $appRoutes => [
+  $signInRoute,
+  $registerRoute,
+  $consoleShellRoute,
+];
 
 RouteBase get $signInRoute => GoRouteData.$route(
   path: '/sign-in',
@@ -62,18 +66,55 @@ mixin $RegisterRoute on GoRouteData {
   void replace(BuildContext context) => context.replace(location);
 }
 
-RouteBase get $homeRoute => GoRouteData.$route(
-  path: '/',
-  name: 'home',
-  hasOverriddenOnExit: false,
-  factory: $HomeRoute._fromState,
+RouteBase get $consoleShellRoute => ShellRouteData.$route(
+  factory: $ConsoleShellRouteExtension._fromState,
+  routes: [
+    GoRouteData.$route(
+      path: '/users',
+      name: 'users',
+      hasOverriddenOnExit: false,
+      factory: $UsersRoute._fromState,
+    ),
+    GoRouteData.$route(
+      path: '/buildings',
+      name: 'buildings',
+      hasOverriddenOnExit: false,
+      factory: $BuildingsRoute._fromState,
+    ),
+  ],
 );
 
-mixin $HomeRoute on GoRouteData {
-  static HomeRoute _fromState(GoRouterState state) => const HomeRoute();
+extension $ConsoleShellRouteExtension on ConsoleShellRoute {
+  static ConsoleShellRoute _fromState(GoRouterState state) =>
+      const ConsoleShellRoute();
+}
+
+mixin $UsersRoute on GoRouteData {
+  static UsersRoute _fromState(GoRouterState state) => const UsersRoute();
 
   @override
-  String get location => GoRouteData.$location('/');
+  String get location => GoRouteData.$location('/users');
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+mixin $BuildingsRoute on GoRouteData {
+  static BuildingsRoute _fromState(GoRouterState state) =>
+      const BuildingsRoute();
+
+  @override
+  String get location => GoRouteData.$location('/buildings');
 
   @override
   void go(BuildContext context) => context.go(location);

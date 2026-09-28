@@ -147,4 +147,105 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get errorProfileIncomplete =>
       'Finish registration with username and phone.';
+
+  @override
+  String get errorAccountDisabled => 'This account is disabled.';
+
+  @override
+  String get errorCannotDisableDefaultAdmin =>
+      'The default admin cannot be disabled.';
+
+  @override
+  String get errorCannotDisableSelf => 'You cannot disable your own account.';
+
+  @override
+  String get navUsers => 'Users';
+
+  @override
+  String get navBuildings => 'Buildings';
+
+  @override
+  String get usersTitle => 'Users';
+
+  @override
+  String get usersSubtitle =>
+      'Backoffice accounts that can sign in to this console.';
+
+  @override
+  String get buildingsTitle => 'Buildings';
+
+  @override
+  String get buildingsSubtitle =>
+      'Every venue on the platform, with its owner and contact.';
+
+  @override
+  String get createUser => 'Create user';
+
+  @override
+  String get editUser => 'Update user';
+
+  @override
+  String get save => 'Save';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get close => 'Close';
+
+  @override
+  String get enabled => 'Enabled';
+
+  @override
+  String get disabled => 'Disabled';
+
+  @override
+  String get status => 'Status';
+
+  @override
+  String get owner => 'Owner';
+
+  @override
+  String get contact => 'Contact';
+
+  @override
+  String get buildingType => 'Type';
+
+  @override
+  String get address => 'Address';
+
+  @override
+  String get location => 'Location';
+
+  @override
+  String get currency => 'Currency';
+
+  @override
+  String get country => 'Country';
+
+  @override
+  String coordinates(String lat, String lng) {
+    return '$lat, $lng';
+  }
+
+  @override
+  String get passwordOptional => 'New password (optional)';
+
+  @override
+  String get deleteUser => 'Delete user';
+
+  @override
+  String deleteUserConfirm(String name) {
+    return 'Delete $name? They will lose console access.';
+  }
+
+  @override
+  String get viewDetails => 'Details';
+
+  @override
+  String get enabledLockedDefault => 'The default admin stays enabled.';
+
+  @override
+  String get enabledLockedSelf =>
+      'You cannot disable the account you are using.';
 }

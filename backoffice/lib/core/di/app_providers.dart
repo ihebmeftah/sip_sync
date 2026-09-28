@@ -1,6 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sip_sync_client/sip_sync_client.dart';
 
+import '../../data/repositories/admin_building_repository.dart';
 import '../../data/repositories/super_admin_auth_repository.dart';
 import 'app_session_store.dart';
 import 'service_locator.dart';
@@ -13,6 +14,10 @@ Client client(Ref ref) => getIt<Client>();
 @Riverpod(keepAlive: true)
 SuperAdminAuthRepository superAdminAuthRepository(Ref ref) =>
     getIt<SuperAdminAuthRepository>();
+
+@Riverpod(keepAlive: true)
+AdminBuildingRepository adminBuildingRepository(Ref ref) =>
+    getIt<AdminBuildingRepository>();
 
 @Riverpod(keepAlive: true)
 AppSessionStore appSessionStore(Ref ref) {

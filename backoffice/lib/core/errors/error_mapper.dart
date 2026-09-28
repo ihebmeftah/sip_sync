@@ -20,6 +20,9 @@ Failure mapError(Object error) {
       AccountErrorCode.accountDisabled => 'errorAccountDisabled',
       AccountErrorCode.invalidResetCode => 'errorGeneric',
       AccountErrorCode.resetCodeExpired => 'errorGeneric',
+      AccountErrorCode.cannotDisableDefaultAdmin =>
+        'errorCannotDisableDefaultAdmin',
+      AccountErrorCode.cannotDisableSelf => 'errorCannotDisableSelf',
     });
   }
   if (error is BuildingException) {
@@ -45,7 +48,9 @@ String lookupError(dynamic l10n, String key) {
     'errorCannotDeleteDefaultAdmin' => l10n.errorCannotDeleteDefaultAdmin,
     'errorPasswordTooWeak' => l10n.errorPasswordTooWeak,
     'errorProfileIncomplete' => l10n.errorProfileIncomplete,
-    'errorAccountDisabled' => l10n.errorGeneric,
+    'errorAccountDisabled' => l10n.errorAccountDisabled,
+    'errorCannotDisableDefaultAdmin' => l10n.errorCannotDisableDefaultAdmin,
+    'errorCannotDisableSelf' => l10n.errorCannotDisableSelf,
     _ => l10n.errorGeneric,
   };
 }

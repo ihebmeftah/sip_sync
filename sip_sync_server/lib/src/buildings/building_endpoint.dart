@@ -14,6 +14,11 @@ class BuildingEndpoint extends Endpoint {
     return _buildings.listMine(session);
   }
 
+  /// Every venue for the backoffice, including owner contact. Super admin only.
+  Future<List<AdminBuildingView>> listAll(Session session) {
+    return _buildings.listAll(session);
+  }
+
   Future<BuildingView> get(Session session, UuidValue buildingId) {
     return _buildings.get(session, buildingId: buildingId);
   }

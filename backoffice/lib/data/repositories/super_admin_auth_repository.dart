@@ -42,6 +42,33 @@ class SuperAdminAuthRepository {
     );
   }
 
+  /// Replaces profile fields. Pass [password] only when it should change.
+  Future<SuperAdminView> update({
+    required UuidValue id,
+    required String email,
+    required String phoneNumber,
+    required String firstName,
+    required String lastName,
+    required bool isEnabled,
+    String? password,
+  }) {
+    return _client.superAdminAuth.update(
+      SuperAdminUpdate(
+        id: id,
+        email: email,
+        password: password,
+        phoneNumber: phoneNumber,
+        firstName: firstName,
+        lastName: lastName,
+        isEnabled: isEnabled,
+      ),
+    );
+  }
+
+  /// Enables or disables a backoffice user. The server rejects self and default.
+  Future<SuperAdminView> setEnabled(UuidValue targetId, bool isEnabled) =>
+      _client.superAdminAuth.setEnabled(targetId, isEnabled);
+
   Future<void> delete(UuidValue targetId) =>
       _client.superAdminAuth.delete(targetId);
 
