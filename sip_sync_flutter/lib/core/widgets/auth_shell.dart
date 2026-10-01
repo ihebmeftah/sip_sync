@@ -16,19 +16,38 @@ class AuthShell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    return Scaffold(
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          final wide = constraints.maxWidth >= AppBreakpoints.expanded;
-          if (wide) {
-            return Row(
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+      child: Scaffold(
+        body: LayoutBuilder(
+          builder: (context, constraints) {
+            final wide = constraints.maxWidth >= AppBreakpoints.expanded;
+            if (wide) {
+              return Row(
+                children: [
+                  Expanded(
+                    flex: 5,
+                    child: _HeroPanel(l10n: l10n, expanded: true),
+                  ),
+                  Expanded(
+                    flex: 4,
+                    child: ColoredBox(
+                      color: Theme.of(context).colorScheme.surface,
+                      child: _FormPane(form: form),
+                    ),
+                  ),
+                ],
+              );
+            }
+            return Column(
               children: [
-                Expanded(
-                  flex: 5,
-                  child: _HeroPanel(l10n: l10n, expanded: true),
+                SizedBox(
+                  height: math.min(280, constraints.maxHeight * 0.34),
+                  width: double.infinity,
+                  child: _HeroPanel(l10n: l10n, expanded: false),
                 ),
                 Expanded(
-                  flex: 4,
                   child: ColoredBox(
                     color: Theme.of(context).colorScheme.surface,
                     child: _FormPane(form: form),
@@ -36,23 +55,8 @@ class AuthShell extends StatelessWidget {
                 ),
               ],
             );
-          }
-          return Column(
-            children: [
-              SizedBox(
-                height: math.min(280, constraints.maxHeight * 0.34),
-                width: double.infinity,
-                child: _HeroPanel(l10n: l10n, expanded: false),
-              ),
-              Expanded(
-                child: ColoredBox(
-                  color: Theme.of(context).colorScheme.surface,
-                  child: _FormPane(form: form),
-                ),
-              ),
-            ],
-          );
-        },
+          },
+        ),
       ),
     );
   }
@@ -71,6 +75,7 @@ class _FormPane extends StatelessWidget {
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: AppBreakpoints.formMax),
           child: ListView(
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
             padding: const EdgeInsets.fromLTRB(
               AppSpacing.xl,
               AppSpacing.lg,

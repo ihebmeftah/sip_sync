@@ -97,6 +97,55 @@ final class CustomerAuthRepositoryProvider
 String _$customerAuthRepositoryHash() =>
     r'28f22042f622830942a79977cf8255720bc99b76';
 
+@ProviderFor(customerDiscoveryRepository)
+const customerDiscoveryRepositoryProvider =
+    CustomerDiscoveryRepositoryProvider._();
+
+final class CustomerDiscoveryRepositoryProvider
+    extends
+        $FunctionalProvider<
+          CustomerDiscoveryRepository,
+          CustomerDiscoveryRepository,
+          CustomerDiscoveryRepository
+        >
+    with $Provider<CustomerDiscoveryRepository> {
+  const CustomerDiscoveryRepositoryProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'customerDiscoveryRepositoryProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$customerDiscoveryRepositoryHash();
+
+  @$internal
+  @override
+  $ProviderElement<CustomerDiscoveryRepository> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  CustomerDiscoveryRepository create(Ref ref) {
+    return customerDiscoveryRepository(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(CustomerDiscoveryRepository value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<CustomerDiscoveryRepository>(value),
+    );
+  }
+}
+
+String _$customerDiscoveryRepositoryHash() =>
+    r'd33505eb68e8b7f683fe665d35771d71e598f460';
+
 @ProviderFor(appSessionStore)
 const appSessionStoreProvider = AppSessionStoreProvider._();
 

@@ -81,6 +81,8 @@ import '../auth/employee_endpoint.dart' as _i3t5tbp4;
 import '../auth/owner_auth_endpoint.dart' as _is2qyeee;
 import '../auth/super_admin_auth_endpoint.dart' as _itmp66ay;
 import '../buildings/building_endpoint.dart' as _i69ygv7j;
+import '../discovery/customer_place_endpoint.dart' as _i6jzpqpk;
+import '../discovery/customer_venue_endpoint.dart' as _i4o7mcri;
 import '../employee_access/employee_access_endpoint.dart' as _im8yutbr;
 import '../menu/article_composition_endpoint.dart' as _iavtsxat;
 import '../menu/ingredient_endpoint.dart' as _i7cjtizz;
@@ -127,6 +129,18 @@ class Endpoints extends _is.EndpointDispatch {
         ..initialize(
           server,
           'building',
+          null,
+        ),
+      'customerPlace': _i6jzpqpk.CustomerPlaceEndpoint()
+        ..initialize(
+          server,
+          'customerPlace',
+          null,
+        ),
+      'customerVenue': _i4o7mcri.CustomerVenueEndpoint()
+        ..initialize(
+          server,
+          'customerVenue',
           null,
         ),
       'employeeAccess': _im8yutbr.EmployeeAccessEndpoint()
@@ -840,6 +854,78 @@ class Endpoints extends _is.EndpointDispatch {
                     session,
                     params['buildingId'],
                   ),
+        ),
+      },
+    );
+    connectors['customerPlace'] = _is.EndpointConnector(
+      name: 'customerPlace',
+      endpoint: endpoints['customerPlace']!,
+      methodConnectors: {
+        'search': _is.MethodConnector(
+          name: 'search',
+          params: {
+            'query': _is.ParameterDescription(
+              name: 'query',
+              type: _is.getType<String>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['customerPlace']
+                          as _i6jzpqpk.CustomerPlaceEndpoint)
+                      .search(
+                        session,
+                        params['query'],
+                      ),
+        ),
+        'reverse': _is.MethodConnector(
+          name: 'reverse',
+          params: {
+            'latitude': _is.ParameterDescription(
+              name: 'latitude',
+              type: _is.getType<double>(),
+              nullable: false,
+            ),
+            'longitude': _is.ParameterDescription(
+              name: 'longitude',
+              type: _is.getType<double>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['customerPlace']
+                          as _i6jzpqpk.CustomerPlaceEndpoint)
+                      .reverse(
+                        session,
+                        params['latitude'],
+                        params['longitude'],
+                      ),
+        ),
+      },
+    );
+    connectors['customerVenue'] = _is.EndpointConnector(
+      name: 'customerVenue',
+      endpoint: endpoints['customerVenue']!,
+      methodConnectors: {
+        'list': _is.MethodConnector(
+          name: 'list',
+          params: {},
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['customerVenue']
+                          as _i4o7mcri.CustomerVenueEndpoint)
+                      .list(session),
         ),
       },
     );

@@ -39,5 +39,56 @@
   "errorNotFound": "Not found.",
   "errorCannotDeleteDefaultAdmin": "The default admin cannot be deleted.",
   "errorPasswordTooWeak": "Use at least 8 characters, no leading or trailing spaces.",
-  "errorProfileIncomplete": "Finish registration with username and phone."
+  "errorProfileIncomplete": "Finish registration with username and phone.",
+  "onboardingSkip": "Skip",
+  "onboardingNext": "Next",
+  "onboardingStart": "Get started",
+  "onboardingFindTitle": "Find a place nearby",
+  "onboardingFindBody": "Cafés, restaurants, and lounges around you, with how far each one is.",
+  "onboardingPlaceTitle": "Set where you are",
+  "onboardingPlaceBody": "Type an address or use your current position. We only use it to rank venues.",
+  "onboardingWalkTitle": "See the walk",
+  "onboardingWalkBody": "Distance in kilometres and an approximate walk time, or open the map.",
+  "discoverLead": "Places near you",
+  "placeHint": "Address or neighbourhood",
+  "useMyLocation": "Use my location",
+  "currentPosition": "Current position",
+  "listMode": "List",
+  "mapMode": "Map",
+  "nearbyFilter": "Nearby · 15 km",
+  "allVenues": "All venues",
+  "nearbyEmpty": "Nothing within 15 km. Show every venue instead.",
+  "showAllVenues": "Show all venues",
+  "setPlacePrompt": "Add your address or use your location to see distance and walk time.",
+  "walkAway": "~{minutes} min walk",
+  "@walkAway": {
+    "placeholders": { "minutes": { "type": "int" } }
+  },
+  "distanceKm": "{distance} km",
+  "@distanceKm": {
+    "placeholders": { "distance": { "type": "String" } }
+  },
+  "hoursRange": "{open}–{close}",
+  "@hoursRange": {
+    "placeholders": {
+      "open": { "type": "String" },
+      "close": { "type": "String" }
+    }
+  },
+  "errorPlaceLookup": "Could not look up that address.",
+  "errorLocationDenied": "Location permission is off. Type an address instead.",
+  "errorLocationDisabled": "Location services are turned off.",
+  "errorLocationFailed": "Could not read your location.",
+  "osmAttribution": "© OpenStreetMap contributors",
+  "noVenues": "No venues yet.",
+  "validationRequired": "This field is required.",
+  "validationEmail": "Enter a valid email.",
+  "validationPassword": "Use at least 8 characters, no leading or trailing spaces.",
+  "validationPhone": "Enter a phone with country code, e.g. +216…",
+  "validationPhoneCountry": "Unsupported country code. Choose a supported dial code.",
+  "phoneCountryCode": "Code",
+  "phoneCountryHint": "Country: {code}",
+  "@phoneCountryHint": {
+    "placeholders": { "code": { "type": "String" } }
+  }
 }

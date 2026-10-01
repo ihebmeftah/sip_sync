@@ -41,6 +41,11 @@ building:
   - create:
   - update:
   - listEmployees:
+customerPlace:
+  - search:
+  - reverse:
+customerVenue:
+  - list:
 employeeAccess:
   - list:
   - get:

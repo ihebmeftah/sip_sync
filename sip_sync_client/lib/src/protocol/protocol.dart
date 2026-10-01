@@ -24,6 +24,10 @@ import 'package:sip_sync_client/src/protocol/buildings/dtos/admin_building_view.
     as _icgw8yx3;
 import 'package:sip_sync_client/src/protocol/buildings/dtos/building_view.dart'
     as _ik35q5v8;
+import 'package:sip_sync_client/src/protocol/discovery/dtos/customer_venue_card.dart'
+    as _i2waekzp;
+import 'package:sip_sync_client/src/protocol/discovery/dtos/place_hit.dart'
+    as _ijgfn5qw;
 import 'package:sip_sync_client/src/protocol/employee_access/dtos/employee_access_view.dart'
     as _imdxt5mh;
 import 'package:sip_sync_client/src/protocol/menu/dtos/article_composition_view.dart'
@@ -67,6 +71,10 @@ import 'buildings/dtos/building_exception.dart' as _ihbyyehn;
 import 'buildings/dtos/building_update.dart' as _irbupqdx;
 import 'buildings/dtos/building_view.dart' as _i9ph7g7s;
 import 'buildings/dtos/strict_mode_step.dart' as _i70klpnb;
+import 'discovery/dtos/customer_venue_card.dart' as _irx49b3p;
+import 'discovery/dtos/place_error_code.dart' as _id14pl4h;
+import 'discovery/dtos/place_exception.dart' as _i3rwc79w;
+import 'discovery/dtos/place_hit.dart' as _irmybich;
 import 'employee_access/dtos/employee_access_create.dart' as _izbvctbv;
 import 'employee_access/dtos/employee_access_error_code.dart' as _ixnbpcjj;
 import 'employee_access/dtos/employee_access_exception.dart' as _ilz0jt85;
@@ -140,6 +148,10 @@ export 'buildings/dtos/building_exception.dart';
 export 'buildings/dtos/building_update.dart';
 export 'buildings/dtos/building_view.dart';
 export 'buildings/dtos/strict_mode_step.dart';
+export 'discovery/dtos/customer_venue_card.dart';
+export 'discovery/dtos/place_error_code.dart';
+export 'discovery/dtos/place_exception.dart';
+export 'discovery/dtos/place_hit.dart';
 export 'employee_access/dtos/employee_access_create.dart';
 export 'employee_access/dtos/employee_access_error_code.dart';
 export 'employee_access/dtos/employee_access_exception.dart';
@@ -306,6 +318,18 @@ class Protocol extends _isc.SerializationManager {
     }
     if (t == _i70klpnb.StrictModeStep) {
       return _i70klpnb.StrictModeStep.fromJson(data) as T;
+    }
+    if (t == _irx49b3p.CustomerVenueCard) {
+      return _irx49b3p.CustomerVenueCard.fromJson(data) as T;
+    }
+    if (t == _id14pl4h.PlaceErrorCode) {
+      return _id14pl4h.PlaceErrorCode.fromJson(data) as T;
+    }
+    if (t == _i3rwc79w.PlaceException) {
+      return _i3rwc79w.PlaceException.fromJson(data) as T;
+    }
+    if (t == _irmybich.PlaceHit) {
+      return _irmybich.PlaceHit.fromJson(data) as T;
     }
     if (t == _izbvctbv.EmployeeAccessCreate) {
       return _izbvctbv.EmployeeAccessCreate.fromJson(data) as T;
@@ -570,6 +594,21 @@ class Protocol extends _isc.SerializationManager {
       return (data != null ? _i70klpnb.StrictModeStep.fromJson(data) : null)
           as T;
     }
+    if (t == _isc.getType<_irx49b3p.CustomerVenueCard?>()) {
+      return (data != null ? _irx49b3p.CustomerVenueCard.fromJson(data) : null)
+          as T;
+    }
+    if (t == _isc.getType<_id14pl4h.PlaceErrorCode?>()) {
+      return (data != null ? _id14pl4h.PlaceErrorCode.fromJson(data) : null)
+          as T;
+    }
+    if (t == _isc.getType<_i3rwc79w.PlaceException?>()) {
+      return (data != null ? _i3rwc79w.PlaceException.fromJson(data) : null)
+          as T;
+    }
+    if (t == _isc.getType<_irmybich.PlaceHit?>()) {
+      return (data != null ? _irmybich.PlaceHit.fromJson(data) : null) as T;
+    }
     if (t == _isc.getType<_izbvctbv.EmployeeAccessCreate?>()) {
       return (data != null
               ? _izbvctbv.EmployeeAccessCreate.fromJson(data)
@@ -829,6 +868,18 @@ class Protocol extends _isc.SerializationManager {
               .toList()
           as T;
     }
+    if (t == List<_ijgfn5qw.PlaceHit>) {
+      return (data as List)
+              .map((e) => deserialize<_ijgfn5qw.PlaceHit>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_i2waekzp.CustomerVenueCard>) {
+      return (data as List)
+              .map((e) => deserialize<_i2waekzp.CustomerVenueCard>(e))
+              .toList()
+          as T;
+    }
     if (t == List<_imdxt5mh.EmployeeAccessView>) {
       return (data as List)
               .map((e) => deserialize<_imdxt5mh.EmployeeAccessView>(e))
@@ -911,6 +962,10 @@ class Protocol extends _isc.SerializationManager {
       _irbupqdx.BuildingUpdate => 'BuildingUpdate',
       _i9ph7g7s.BuildingView => 'BuildingView',
       _i70klpnb.StrictModeStep => 'StrictModeStep',
+      _irx49b3p.CustomerVenueCard => 'CustomerVenueCard',
+      _id14pl4h.PlaceErrorCode => 'PlaceErrorCode',
+      _i3rwc79w.PlaceException => 'PlaceException',
+      _irmybich.PlaceHit => 'PlaceHit',
       _izbvctbv.EmployeeAccessCreate => 'EmployeeAccessCreate',
       _ixnbpcjj.EmployeeAccessErrorCode => 'EmployeeAccessErrorCode',
       _ilz0jt85.EmployeeAccessException => 'EmployeeAccessException',
@@ -1027,6 +1082,14 @@ class Protocol extends _isc.SerializationManager {
         return 'BuildingView';
       case _i70klpnb.StrictModeStep():
         return 'StrictModeStep';
+      case _irx49b3p.CustomerVenueCard():
+        return 'CustomerVenueCard';
+      case _id14pl4h.PlaceErrorCode():
+        return 'PlaceErrorCode';
+      case _i3rwc79w.PlaceException():
+        return 'PlaceException';
+      case _irmybich.PlaceHit():
+        return 'PlaceHit';
       case _izbvctbv.EmployeeAccessCreate():
         return 'EmployeeAccessCreate';
       case _ixnbpcjj.EmployeeAccessErrorCode():
@@ -1223,6 +1286,18 @@ class Protocol extends _isc.SerializationManager {
     }
     if (dataClassName == 'StrictModeStep') {
       return deserialize<_i70klpnb.StrictModeStep>(data['data']);
+    }
+    if (dataClassName == 'CustomerVenueCard') {
+      return deserialize<_irx49b3p.CustomerVenueCard>(data['data']);
+    }
+    if (dataClassName == 'PlaceErrorCode') {
+      return deserialize<_id14pl4h.PlaceErrorCode>(data['data']);
+    }
+    if (dataClassName == 'PlaceException') {
+      return deserialize<_i3rwc79w.PlaceException>(data['data']);
+    }
+    if (dataClassName == 'PlaceHit') {
+      return deserialize<_irmybich.PlaceHit>(data['data']);
     }
     if (dataClassName == 'EmployeeAccessCreate') {
       return deserialize<_izbvctbv.EmployeeAccessCreate>(data['data']);

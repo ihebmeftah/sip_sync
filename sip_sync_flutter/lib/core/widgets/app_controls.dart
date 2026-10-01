@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../di/locale_controller.dart';
@@ -48,6 +49,11 @@ class AppTextField extends StatefulWidget {
     this.keyboardType,
     this.prefixIcon,
     this.textInputAction,
+    this.helperText,
+    this.validator,
+    this.onChanged,
+    this.inputFormatters,
+    this.compact = false,
   });
 
   final TextEditingController controller;
@@ -56,6 +62,11 @@ class AppTextField extends StatefulWidget {
   final TextInputType? keyboardType;
   final IconData? prefixIcon;
   final TextInputAction? textInputAction;
+  final String? helperText;
+  final String? Function(String?)? validator;
+  final ValueChanged<String>? onChanged;
+  final List<TextInputFormatter>? inputFormatters;
+  final bool compact;
 
   @override
   State<AppTextField> createState() => _AppTextFieldState();
@@ -68,14 +79,20 @@ class _AppTextFieldState extends State<AppTextField> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return Padding(
-      padding: const EdgeInsets.only(bottom: AppSpacing.lg),
-      child: TextField(
+      padding: EdgeInsets.only(bottom: widget.compact ? 0 : AppSpacing.lg),
+      child: TextFormField(
         controller: widget.controller,
         obscureText: _hidden,
         keyboardType: widget.keyboardType,
         textInputAction: widget.textInputAction,
+        onChanged: widget.onChanged,
+        inputFormatters: widget.inputFormatters,
+        validator: widget.validator,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
+        onTapOutside: (_) => FocusManager.instance.primaryFocus?.unfocus(),
         decoration: InputDecoration(
           labelText: widget.label,
+          helperText: widget.helperText,
           prefixIcon: widget.prefixIcon == null
               ? null
               : Icon(widget.prefixIcon),
@@ -91,6 +108,38 @@ class _AppTextFieldState extends State<AppTextField> {
                 )
               : null,
         ),
+      ),
+    );
+  }
+}
+
+class AppDropdownField<T> extends StatelessWidget {
+  const AppDropdownField({
+    super.key,
+    required this.label,
+    required this.value,
+    required this.items,
+    required this.onChanged,
+    this.compact = false,
+  });
+
+  final String label;
+  final T value;
+  final List<DropdownMenuItem<T>> items;
+  final ValueChanged<T?> onChanged;
+  final bool compact;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: compact ? 0 : AppSpacing.lg),
+      child: DropdownButtonFormField<T>(
+        key: ValueKey(value),
+        initialValue: value,
+        isExpanded: true,
+        items: items,
+        onChanged: onChanged,
+        decoration: InputDecoration(labelText: label),
       ),
     );
   }

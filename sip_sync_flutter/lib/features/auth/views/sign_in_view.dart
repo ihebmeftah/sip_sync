@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/errors/error_mapper.dart';
+import '../../../core/errors/form_validators.dart';
 import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
@@ -17,6 +18,7 @@ class SignInView extends ConsumerStatefulWidget {
 }
 
 class _SignInViewState extends ConsumerState<SignInView> {
+  final _formKey = GlobalKey<FormState>();
   final _email = TextEditingController();
   final _password = TextEditingController();
 
@@ -33,44 +35,52 @@ class _SignInViewState extends ConsumerState<SignInView> {
     final auth = ref.watch(authViewModelProvider);
     final text = Theme.of(context).textTheme;
     return AuthShell(
-      form: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text(l10n.authLead, style: text.headlineMedium),
-          const SizedBox(height: AppSpacing.sm),
-          Text(l10n.tagline, style: text.bodyLarge),
-          const SizedBox(height: AppSpacing.xl),
-          AppTextField(
-            controller: _email,
-            label: l10n.email,
-            keyboardType: TextInputType.emailAddress,
-            prefixIcon: Icons.mail_outline,
-            textInputAction: TextInputAction.next,
-          ),
-          AppTextField(
-            controller: _password,
-            label: l10n.password,
-            obscure: true,
-            prefixIcon: Icons.lock_outline,
-            textInputAction: TextInputAction.done,
-          ),
-          if (auth.errorKey != null)
-            AppErrorBanner(message: lookupError(l10n, auth.errorKey!)),
-          AppFilledButton(
-            label: l10n.signIn,
-            busy: auth.isLoading,
-            onPressed: () async {
-              await ref
-                  .read(authViewModelProvider.notifier)
-                  .login(_email.text, _password.text);
-            },
-          ),
-          const SizedBox(height: AppSpacing.sm),
-          TextButton(
-            onPressed: () => const RegisterRoute().go(context),
-            child: Text(l10n.noAccount),
-          ),
-        ],
+      form: Form(
+        key: _formKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(l10n.authLead, style: text.headlineMedium),
+            const SizedBox(height: AppSpacing.sm),
+            Text(l10n.tagline, style: text.bodyLarge),
+            const SizedBox(height: AppSpacing.xl),
+            AppTextField(
+              controller: _email,
+              label: l10n.email,
+              keyboardType: TextInputType.emailAddress,
+              prefixIcon: Icons.mail_outline,
+              textInputAction: TextInputAction.next,
+              validator: (value) => FormValidators.email(l10n, value),
+            ),
+            AppTextField(
+              controller: _password,
+              label: l10n.password,
+              obscure: true,
+              prefixIcon: Icons.lock_outline,
+              textInputAction: TextInputAction.done,
+              validator: (value) => FormValidators.password(l10n, value),
+            ),
+            if (auth.errorKey != null)
+              AppErrorBanner(message: lookupError(l10n, auth.errorKey!)),
+            AppFilledButton(
+              label: l10n.signIn,
+              busy: auth.isLoading,
+              onPressed: () async {
+                if (!(_formKey.currentState?.validate() ?? false)) {
+                  return;
+                }
+                await ref
+                    .read(authViewModelProvider.notifier)
+                    .login(_email.text.trim(), _password.text);
+              },
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            TextButton(
+              onPressed: () => const RegisterRoute().go(context),
+              child: Text(l10n.noAccount),
+            ),
+          ],
+        ),
       ),
     );
   }

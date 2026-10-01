@@ -15,6 +15,7 @@ Product and feature documentation for Sip Sync. Update these pages when behavior
 | Backoffice console | in progress | [backoffice-console](features/backoffice-console.md) |
 | Operations shell (management) | in progress | [ops-shell](features/ops-shell.md) |
 | Building & multi-location | in progress | [buildings](features/buildings.md) |
+| Customer discovery | in progress | [customer-discovery](features/customer-discovery.md) |
 | Employee management & access | in progress | [employees](features/employees.md) |
 | Floor tables | shipped | [tables](features/tables.md) |
 | Table QR stickers & scan | in progress | [table-qr](features/table-qr.md) |

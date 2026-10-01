@@ -327,6 +327,222 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Finish registration with username and phone.'**
   String get errorProfileIncomplete;
+
+  /// No description provided for @onboardingSkip.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get onboardingSkip;
+
+  /// No description provided for @onboardingNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get onboardingNext;
+
+  /// No description provided for @onboardingStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Get started'**
+  String get onboardingStart;
+
+  /// No description provided for @onboardingFindTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Find a place nearby'**
+  String get onboardingFindTitle;
+
+  /// No description provided for @onboardingFindBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Cafés, restaurants, and lounges around you, with how far each one is.'**
+  String get onboardingFindBody;
+
+  /// No description provided for @onboardingPlaceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Set where you are'**
+  String get onboardingPlaceTitle;
+
+  /// No description provided for @onboardingPlaceBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Type an address or use your current position. We only use it to rank venues.'**
+  String get onboardingPlaceBody;
+
+  /// No description provided for @onboardingWalkTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'See the walk'**
+  String get onboardingWalkTitle;
+
+  /// No description provided for @onboardingWalkBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Distance in kilometres and an approximate walk time, or open the map.'**
+  String get onboardingWalkBody;
+
+  /// No description provided for @discoverLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Places near you'**
+  String get discoverLead;
+
+  /// No description provided for @placeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Address or neighbourhood'**
+  String get placeHint;
+
+  /// No description provided for @useMyLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Use my location'**
+  String get useMyLocation;
+
+  /// No description provided for @currentPosition.
+  ///
+  /// In en, this message translates to:
+  /// **'Current position'**
+  String get currentPosition;
+
+  /// No description provided for @listMode.
+  ///
+  /// In en, this message translates to:
+  /// **'List'**
+  String get listMode;
+
+  /// No description provided for @mapMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Map'**
+  String get mapMode;
+
+  /// No description provided for @nearbyFilter.
+  ///
+  /// In en, this message translates to:
+  /// **'Nearby · 15 km'**
+  String get nearbyFilter;
+
+  /// No description provided for @allVenues.
+  ///
+  /// In en, this message translates to:
+  /// **'All venues'**
+  String get allVenues;
+
+  /// No description provided for @nearbyEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing within 15 km. Show every venue instead.'**
+  String get nearbyEmpty;
+
+  /// No description provided for @showAllVenues.
+  ///
+  /// In en, this message translates to:
+  /// **'Show all venues'**
+  String get showAllVenues;
+
+  /// No description provided for @setPlacePrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Add your address or use your location to see distance and walk time.'**
+  String get setPlacePrompt;
+
+  /// No description provided for @walkAway.
+  ///
+  /// In en, this message translates to:
+  /// **'~{minutes} min walk'**
+  String walkAway(int minutes);
+
+  /// No description provided for @distanceKm.
+  ///
+  /// In en, this message translates to:
+  /// **'{distance} km'**
+  String distanceKm(String distance);
+
+  /// No description provided for @hoursRange.
+  ///
+  /// In en, this message translates to:
+  /// **'{open}–{close}'**
+  String hoursRange(String open, String close);
+
+  /// No description provided for @errorPlaceLookup.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not look up that address.'**
+  String get errorPlaceLookup;
+
+  /// No description provided for @errorLocationDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Location permission is off. Type an address instead.'**
+  String get errorLocationDenied;
+
+  /// No description provided for @errorLocationDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Location services are turned off.'**
+  String get errorLocationDisabled;
+
+  /// No description provided for @errorLocationFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not read your location.'**
+  String get errorLocationFailed;
+
+  /// No description provided for @osmAttribution.
+  ///
+  /// In en, this message translates to:
+  /// **'© OpenStreetMap contributors'**
+  String get osmAttribution;
+
+  /// No description provided for @noVenues.
+  ///
+  /// In en, this message translates to:
+  /// **'No venues yet.'**
+  String get noVenues;
+
+  /// No description provided for @validationRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'This field is required.'**
+  String get validationRequired;
+
+  /// No description provided for @validationEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid email.'**
+  String get validationEmail;
+
+  /// No description provided for @validationPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Use at least 8 characters, no leading or trailing spaces.'**
+  String get validationPassword;
+
+  /// No description provided for @validationPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a phone with country code, e.g. +216…'**
+  String get validationPhone;
+
+  /// No description provided for @validationPhoneCountry.
+  ///
+  /// In en, this message translates to:
+  /// **'Unsupported country code. Choose a supported dial code.'**
+  String get validationPhoneCountry;
+
+  /// No description provided for @phoneCountryCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Code'**
+  String get phoneCountryCode;
+
+  /// No description provided for @phoneCountryHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Country: {code}'**
+  String phoneCountryHint(String code);
 }
 
 class _AppLocalizationsDelegate

@@ -1,0 +1,6 @@
+### A geocoded place label and coordinates.
+class: PlaceHit
+fields:
+  label: String
+  latitude: double
+  longitude: double

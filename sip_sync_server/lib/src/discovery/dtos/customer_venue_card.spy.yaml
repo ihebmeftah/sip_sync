@@ -1,0 +1,12 @@
+### Public venue fields a signed-in customer may see. No owner or ops data.
+class: CustomerVenueCard
+fields:
+  id: UuidValue
+  name: String
+  type: String
+  address: String
+  latitude: double
+  longitude: double
+  openingMinutes: int
+  closingMinutes: int
+  phoneNumber: String

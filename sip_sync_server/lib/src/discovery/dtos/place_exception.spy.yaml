@@ -1,0 +1,4 @@
+exception: PlaceException
+fields:
+  message: String
+  code: PlaceErrorCode

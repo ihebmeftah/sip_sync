@@ -19,6 +19,7 @@ class SipSyncApp extends ConsumerWidget {
     return MaterialApp.router(
       title: 'Sip Sync',
       theme: AppTheme.light(),
+      debugShowCheckedModeBanner: false,
       darkTheme: AppTheme.dark(),
       routerConfig: router,
       locale: ref.watch(localeControllerProvider),

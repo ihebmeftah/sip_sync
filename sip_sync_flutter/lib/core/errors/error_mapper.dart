@@ -31,6 +31,13 @@ Failure mapError(Object error) {
       BuildingErrorCode.notFound => 'errorNotFound',
     });
   }
+  if (error is PlaceException) {
+    return Failure(switch (error.code) {
+      PlaceErrorCode.invalidInput => 'errorInvalidInput',
+      PlaceErrorCode.lookupFailed => 'errorPlaceLookup',
+      PlaceErrorCode.notFound => 'errorNotFound',
+    });
+  }
   return const Failure('errorGeneric');
 }
 
@@ -48,6 +55,10 @@ String lookupError(dynamic l10n, String key) {
     'errorPasswordTooWeak' => l10n.errorPasswordTooWeak,
     'errorProfileIncomplete' => l10n.errorProfileIncomplete,
     'errorAccountDisabled' => l10n.errorGeneric,
+    'errorPlaceLookup' => l10n.errorPlaceLookup,
+    'errorLocationDenied' => l10n.errorLocationDenied,
+    'errorLocationDisabled' => l10n.errorLocationDisabled,
+    'errorLocationFailed' => l10n.errorLocationFailed,
     _ => l10n.errorGeneric,
   };
 }

@@ -129,4 +129,127 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get errorProfileIncomplete =>
       'Finish registration with username and phone.';
+
+  @override
+  String get onboardingSkip => 'Skip';
+
+  @override
+  String get onboardingNext => 'Next';
+
+  @override
+  String get onboardingStart => 'Get started';
+
+  @override
+  String get onboardingFindTitle => 'Find a place nearby';
+
+  @override
+  String get onboardingFindBody =>
+      'Cafés, restaurants, and lounges around you, with how far each one is.';
+
+  @override
+  String get onboardingPlaceTitle => 'Set where you are';
+
+  @override
+  String get onboardingPlaceBody =>
+      'Type an address or use your current position. We only use it to rank venues.';
+
+  @override
+  String get onboardingWalkTitle => 'See the walk';
+
+  @override
+  String get onboardingWalkBody =>
+      'Distance in kilometres and an approximate walk time, or open the map.';
+
+  @override
+  String get discoverLead => 'Places near you';
+
+  @override
+  String get placeHint => 'Address or neighbourhood';
+
+  @override
+  String get useMyLocation => 'Use my location';
+
+  @override
+  String get currentPosition => 'Current position';
+
+  @override
+  String get listMode => 'List';
+
+  @override
+  String get mapMode => 'Map';
+
+  @override
+  String get nearbyFilter => 'Nearby · 15 km';
+
+  @override
+  String get allVenues => 'All venues';
+
+  @override
+  String get nearbyEmpty => 'Nothing within 15 km. Show every venue instead.';
+
+  @override
+  String get showAllVenues => 'Show all venues';
+
+  @override
+  String get setPlacePrompt =>
+      'Add your address or use your location to see distance and walk time.';
+
+  @override
+  String walkAway(int minutes) {
+    return '~$minutes min walk';
+  }
+
+  @override
+  String distanceKm(String distance) {
+    return '$distance km';
+  }
+
+  @override
+  String hoursRange(String open, String close) {
+    return '$open–$close';
+  }
+
+  @override
+  String get errorPlaceLookup => 'Could not look up that address.';
+
+  @override
+  String get errorLocationDenied =>
+      'Location permission is off. Type an address instead.';
+
+  @override
+  String get errorLocationDisabled => 'Location services are turned off.';
+
+  @override
+  String get errorLocationFailed => 'Could not read your location.';
+
+  @override
+  String get osmAttribution => '© OpenStreetMap contributors';
+
+  @override
+  String get noVenues => 'No venues yet.';
+
+  @override
+  String get validationRequired => 'This field is required.';
+
+  @override
+  String get validationEmail => 'Enter a valid email.';
+
+  @override
+  String get validationPassword =>
+      'Use at least 8 characters, no leading or trailing spaces.';
+
+  @override
+  String get validationPhone => 'Enter a phone with country code, e.g. +216…';
+
+  @override
+  String get validationPhoneCountry =>
+      'Unsupported country code. Choose a supported dial code.';
+
+  @override
+  String get phoneCountryCode => 'Code';
+
+  @override
+  String phoneCountryHint(String code) {
+    return 'Country: $code';
+  }
 }

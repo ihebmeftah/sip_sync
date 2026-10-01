@@ -63,6 +63,10 @@ import 'package:sip_sync_client/src/protocol/buildings/dtos/building_update.dart
     as _iimah2gv;
 import 'package:sip_sync_client/src/protocol/buildings/dtos/building_view.dart'
     as _ik35q5v8;
+import 'package:sip_sync_client/src/protocol/discovery/dtos/customer_venue_card.dart'
+    as _i2waekzp;
+import 'package:sip_sync_client/src/protocol/discovery/dtos/place_hit.dart'
+    as _ijgfn5qw;
 import 'package:sip_sync_client/src/protocol/employee_access/dtos/employee_access_create.dart'
     as _iv0z0sh6;
 import 'package:sip_sync_client/src/protocol/employee_access/dtos/employee_access_update.dart'
@@ -464,6 +468,58 @@ class EndpointBuilding extends _isc.EndpointRef {
   );
 }
 
+/// Address search and reverse geocoding for signed-in customers.
+///
+/// Proxies Nominatim so the Flutter web app is not blocked by CORS.
+/// {@category Endpoint}
+class EndpointCustomerPlace extends _isc.EndpointRef {
+  EndpointCustomerPlace(_isc.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'customerPlace';
+
+  /// Up to five address suggestions. Query must be 3–200 characters.
+  _ida.Future<List<_ijgfn5qw.PlaceHit>> search(String query) =>
+      caller.callServerEndpoint<List<_ijgfn5qw.PlaceHit>>(
+        'customerPlace',
+        'search',
+        {'query': query},
+      );
+
+  /// Label for a coordinate the customer picked on the device.
+  _ida.Future<_ijgfn5qw.PlaceHit> reverse(
+    double latitude,
+    double longitude,
+  ) => caller.callServerEndpoint<_ijgfn5qw.PlaceHit>(
+    'customerPlace',
+    'reverse',
+    {
+      'latitude': latitude,
+      'longitude': longitude,
+    },
+  );
+}
+
+/// Public venue cards for signed-in customers.
+/// {@category Endpoint}
+class EndpointCustomerVenue extends _isc.EndpointRef {
+  EndpointCustomerVenue(_isc.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'customerVenue';
+
+  /// Every venue as a [CustomerVenueCard]. Customers only.
+  ///
+  /// Omits owner identity, staff, and order-pipeline flags. Distance is
+  /// computed on the client from the customer's chosen place.
+  _ida.Future<List<_i2waekzp.CustomerVenueCard>> list() =>
+      caller.callServerEndpoint<List<_i2waekzp.CustomerVenueCard>>(
+        'customerVenue',
+        'list',
+        {},
+      );
+}
+
 /// Owner-only RPC for building-scoped employee access profiles.
 /// {@category Endpoint}
 class EndpointEmployeeAccess extends _isc.EndpointRef {
@@ -826,6 +882,8 @@ class Client extends _isc.ServerpodClientShared {
     ownerAuth = EndpointOwnerAuth(this);
     superAdminAuth = EndpointSuperAdminAuth(this);
     building = EndpointBuilding(this);
+    customerPlace = EndpointCustomerPlace(this);
+    customerVenue = EndpointCustomerVenue(this);
     employeeAccess = EndpointEmployeeAccess(this);
     articleComposition = EndpointArticleComposition(this);
     ingredient = EndpointIngredient(this);
@@ -847,6 +905,10 @@ class Client extends _isc.ServerpodClientShared {
   late final EndpointSuperAdminAuth superAdminAuth;
 
   late final EndpointBuilding building;
+
+  late final EndpointCustomerPlace customerPlace;
+
+  late final EndpointCustomerVenue customerVenue;
 
   late final EndpointEmployeeAccess employeeAccess;
 
@@ -872,6 +934,8 @@ class Client extends _isc.ServerpodClientShared {
     'ownerAuth': ownerAuth,
     'superAdminAuth': superAdminAuth,
     'building': building,
+    'customerPlace': customerPlace,
+    'customerVenue': customerVenue,
     'employeeAccess': employeeAccess,
     'articleComposition': articleComposition,
     'ingredient': ingredient,

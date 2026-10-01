@@ -63,7 +63,7 @@ serverpod:
     sip_sync:
       path: ../sip_sync_flutter
       displayName: "Customer app"
-      auto_launch: false
+      auto_launch: true
       target: lib/driver.dart
       web-port: 8090
     managment:
@@ -75,6 +75,6 @@ serverpod:
     backoffice:
       path: ../backoffice
       displayName: "Backoffice app"
-      auto_launch: false
+      auto_launch: true
       target: lib/driver.dart
       web-port: 8092

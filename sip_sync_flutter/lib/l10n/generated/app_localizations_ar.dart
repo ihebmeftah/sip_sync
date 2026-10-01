@@ -126,4 +126,126 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get errorProfileIncomplete => 'أكمل التسجيل باسم المستخدم والهاتف.';
+
+  @override
+  String get onboardingSkip => 'تخطّي';
+
+  @override
+  String get onboardingNext => 'التالي';
+
+  @override
+  String get onboardingStart => 'ابدأ';
+
+  @override
+  String get onboardingFindTitle => 'اعثر على مكان قريب';
+
+  @override
+  String get onboardingFindBody =>
+      'مقاهٍ ومطاعم وصالات حولك، مع المسافة إلى كل واحد.';
+
+  @override
+  String get onboardingPlaceTitle => 'حدّد مكانك';
+
+  @override
+  String get onboardingPlaceBody =>
+      'اكتب عنواناً أو استخدم موقعك الحالي. نستخدمه فقط لترتيب الأماكن.';
+
+  @override
+  String get onboardingWalkTitle => 'شاهد المسافة سيراً';
+
+  @override
+  String get onboardingWalkBody =>
+      'المسافة بالكيلومتر ووقت سير تقريبي، أو افتح الخريطة.';
+
+  @override
+  String get discoverLead => 'أماكن بالقرب منك';
+
+  @override
+  String get placeHint => 'العنوان أو الحي';
+
+  @override
+  String get useMyLocation => 'استخدم موقعي';
+
+  @override
+  String get currentPosition => 'موقعي الحالي';
+
+  @override
+  String get listMode => 'قائمة';
+
+  @override
+  String get mapMode => 'خريطة';
+
+  @override
+  String get nearbyFilter => 'بالقرب · 15 كم';
+
+  @override
+  String get allVenues => 'كل الأماكن';
+
+  @override
+  String get nearbyEmpty => 'لا شيء ضمن 15 كم. اعرض كل الأماكن.';
+
+  @override
+  String get showAllVenues => 'عرض الكل';
+
+  @override
+  String get setPlacePrompt => 'أضف عنوانك أو موقعك لترى المسافة ووقت السير.';
+
+  @override
+  String walkAway(int minutes) {
+    return 'حوالي $minutes د سيراً';
+  }
+
+  @override
+  String distanceKm(String distance) {
+    return '$distance كم';
+  }
+
+  @override
+  String hoursRange(String open, String close) {
+    return '$open–$close';
+  }
+
+  @override
+  String get errorPlaceLookup => 'تعذّر العثور على هذا العنوان.';
+
+  @override
+  String get errorLocationDenied =>
+      'إذن الموقع مغلق. اكتب عنواناً بدلاً من ذلك.';
+
+  @override
+  String get errorLocationDisabled => 'خدمات الموقع متوقفة.';
+
+  @override
+  String get errorLocationFailed => 'تعذّر قراءة موقعك.';
+
+  @override
+  String get osmAttribution => '© مساهمو OpenStreetMap';
+
+  @override
+  String get noVenues => 'لا أماكن بعد.';
+
+  @override
+  String get validationRequired => 'هذا الحقل مطلوب.';
+
+  @override
+  String get validationEmail => 'أدخل بريداً صالحاً.';
+
+  @override
+  String get validationPassword =>
+      'استخدم 8 أحرف على الأقل دون مسافات في البداية أو النهاية.';
+
+  @override
+  String get validationPhone => 'أدخل رقم هاتف مع رمز الدولة، مثل +216…';
+
+  @override
+  String get validationPhoneCountry =>
+      'رمز الدولة غير مدعوم. اختر رمزاً مدعوماً.';
+
+  @override
+  String get phoneCountryCode => 'الرمز';
+
+  @override
+  String phoneCountryHint(String code) {
+    return 'الدولة: $code';
+  }
 }

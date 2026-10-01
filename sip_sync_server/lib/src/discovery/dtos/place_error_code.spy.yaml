@@ -1,0 +1,6 @@
+enum: PlaceErrorCode
+serialized: byIndex
+values:
+  - invalidInput
+  - lookupFailed
+  - notFound

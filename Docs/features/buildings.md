@@ -4,7 +4,7 @@ Status: in progress
 
 ## Apps
 
-`sip_sync_server`, `managment`, `backoffice` (read-only platform list).
+`sip_sync_server`, `managment`, `backoffice` (read-only platform list), `sip_sync_flutter` (public card only — see [customer discovery](customer-discovery.md)).
 
 ## Actors and permissions
 
@@ -12,6 +12,7 @@ Status: in progress
 - **Employee** — one building on their row; after login → `/b/:buildingId/dashboard`. No venue create/edit.
 - Enforcement on `BuildingEndpoint` via custom `AuthGuard`.
 - **Super admin** — `building.listAll` returns every venue with owner name, email, and phone plus contact fields. No create or update from backoffice.
+- **Customer** — `CustomerVenue.list` returns a `CustomerVenueCard` (name, type, address, coordinates, hours, phone). Ops flags and owner identity stay off that card.
 
 ## Flow
 

@@ -61,6 +61,10 @@ import 'package:sip_sync_server/src/generated/buildings/dtos/building_update.dar
     as _ikeccdvf;
 import 'package:sip_sync_server/src/generated/buildings/dtos/building_view.dart'
     as _ihha274w;
+import 'package:sip_sync_server/src/generated/discovery/dtos/customer_venue_card.dart'
+    as _ik4e6xte;
+import 'package:sip_sync_server/src/generated/discovery/dtos/place_hit.dart'
+    as _ibuzraci;
 import 'package:sip_sync_server/src/generated/employee_access/dtos/employee_access_create.dart'
     as _iidenruw;
 import 'package:sip_sync_server/src/generated/employee_access/dtos/employee_access_update.dart'
@@ -132,6 +136,9 @@ export 'package:serverpod_test/serverpod_test_public_exports.dart';
 ///
 /// [enableSessionLogging] Whether session logging should be enabled. Defaults to `false`
 ///
+/// [ephemeralDatabase] Whether this group gets its own empty database, created when the group starts and dropped when it finishes. Defaults to `true`.
+/// Set this to `false` to use the database configured for [runMode], including a previously seeded database. [configOverride] can still replace that database. The configured database is not created or dropped, so groups that share it cannot run in parallel. [rollbackDatabase] still controls whether writes inside the group are rolled back.
+///
 /// [rollbackDatabase] Options for when to rollback the database during the test lifecycle.
 /// By default `withServerpod` does all database operations inside a transaction that is rolled back after each `test` case.
 /// Just like the following enum describes, the behavior of the automatic rollbacks can be configured:
@@ -201,6 +208,7 @@ void withServerpod(
   _is.ServerpodConfig Function(_is.ServerpodConfig)? configOverride,
   _is.DatabaseInterceptor? databaseInterceptor,
   bool? enableSessionLogging,
+  bool? ephemeralDatabase,
   _is.ExperimentalFeatures? experimentalFeatures,
   _ist.RollbackDatabase? rollbackDatabase,
   String? runMode,
@@ -219,6 +227,7 @@ void withServerpod(
       serializationManager: Protocol(),
       runMode: runMode,
       applyMigrations: applyMigrations,
+      ephemeralDatabase: ephemeralDatabase,
       isDatabaseEnabled: true,
       serverpodLoggingMode: serverpodLoggingMode,
       testServerOutputMode: testServerOutputMode,
@@ -248,6 +257,10 @@ class TestEndpoints {
   late final _SuperAdminAuthEndpoint superAdminAuth;
 
   late final _BuildingEndpoint building;
+
+  late final _CustomerPlaceEndpoint customerPlace;
+
+  late final _CustomerVenueEndpoint customerVenue;
 
   late final _EmployeeAccessEndpoint employeeAccess;
 
@@ -292,6 +305,14 @@ class _InternalTestEndpoints extends TestEndpoints
       serializationManager,
     );
     building = _BuildingEndpoint(
+      endpoints,
+      serializationManager,
+    );
+    customerPlace = _CustomerPlaceEndpoint(
+      endpoints,
+      serializationManager,
+    );
+    customerVenue = _CustomerVenueEndpoint(
       endpoints,
       serializationManager,
     );
@@ -1519,6 +1540,124 @@ class _BuildingEndpoint {
                   _localCallContext.arguments,
                 )
                 as _ida.Future<List<_im8o31wm.EmployeeView>>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+}
+
+class _CustomerPlaceEndpoint {
+  _CustomerPlaceEndpoint(
+    this._endpointDispatch,
+    this._serializationManager,
+  );
+
+  final _is.EndpointDispatch _endpointDispatch;
+
+  final _is.SerializationManager _serializationManager;
+
+  _ida.Future<List<_ibuzraci.PlaceHit>> search(
+    _ist.TestSessionBuilder sessionBuilder,
+    String query,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'customerPlace',
+            method: 'search',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'customerPlace',
+          methodName: 'search',
+          parameters: _ist.testObjectToJson({'query': query}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<List<_ibuzraci.PlaceHit>>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<_ibuzraci.PlaceHit> reverse(
+    _ist.TestSessionBuilder sessionBuilder,
+    double latitude,
+    double longitude,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'customerPlace',
+            method: 'reverse',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'customerPlace',
+          methodName: 'reverse',
+          parameters: _ist.testObjectToJson({
+            'latitude': latitude,
+            'longitude': longitude,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_ibuzraci.PlaceHit>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+}
+
+class _CustomerVenueEndpoint {
+  _CustomerVenueEndpoint(
+    this._endpointDispatch,
+    this._serializationManager,
+  );
+
+  final _is.EndpointDispatch _endpointDispatch;
+
+  final _is.SerializationManager _serializationManager;
+
+  _ida.Future<List<_ik4e6xte.CustomerVenueCard>> list(
+    _ist.TestSessionBuilder sessionBuilder,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'customerVenue',
+            method: 'list',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'customerVenue',
+          methodName: 'list',
+          parameters: _ist.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<List<_ik4e6xte.CustomerVenueCard>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();

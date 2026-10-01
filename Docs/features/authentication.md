@@ -42,12 +42,17 @@ Phone numbers for owners, employees, customers, and venues are stored in **E.164
 
 ## Local demo seed
 
-On development server boot, if `owner1@sipsync.dev` is missing, [DevSeed](../../sip_sync_server/lib/src/seed/dev_seed.dart) creates two owners (idempotent):
+On development server boot, if `owner1@sipsync.dev` is missing, [DevSeed](../../sip_sync_server/lib/src/seed/dev_seed.dart) creates five owners (idempotent). Every password is `password1`. Venues sit around Greater Tunis so the customer map can rank them.
 
-| Email | Password | Building |
-| --- | --- | --- |
-| `owner1@sipsync.dev` | `password1` | Olive Café — Coffee + Pastries, ingredients, compositions, 6 tables |
-| `owner2@sipsync.dev` | `password1` | Harbor Lounge — Cocktails + Snacks, ingredients, compositions, 8 tables |
+| Email | Building |
+| --- | --- |
+| `owner1@sipsync.dev` | Olive Café (Tunis) and Olive Café Carthage — coffee, pastries, breakfast |
+| `owner2@sipsync.dev` | Harbor Lounge, La Marsa — cocktails and snacks |
+| `owner3@sipsync.dev` | Dar El Medina — grills, salads, desserts |
+| `owner4@sipsync.dev` | Lac Social, Berges du Lac — drinks and bar bites |
+| `owner5@sipsync.dev` | Café des Nattes, Sidi Bou Said — tea and sweets |
+
+Each venue has categories, articles, ingredient stock, recipes, and tables.
 
 Wipe `.serverpod/development/pgdata` then `serverpod start` to reset and re-seed.
 
@@ -55,7 +60,7 @@ Wipe `.serverpod/development/pgdata` then `serverpod start` to reset and re-seed
 
 ### Owner or customer register
 
-1. Email, password, phone, names.
+1. Email, password, phone, names. The customer app collects a country dial code (default Tunisia, `+216`) and a national number, then sends E.164. Sign-in and register validate before the request. A physical phone must be launched with `--dart-define=SERVER_URL=http://<lan-ip>:8080` so the app does not call `localhost`.
 2. Server hashes password, inserts actor row, creates `auth_session`, returns token + session view.
 
 ### Employee create (owner)
