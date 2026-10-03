@@ -3,10 +3,13 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 
+import '../../../core/routing/app_routes.dart';
+import '../../../core/theme/app_icons.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../discover/venue_distance.dart';
 import '../../discover/view_models/discover_view_model.dart';
+import 'venue_card.dart';
 
 /// OpenStreetMap of the customer's place and the ranked venues.
 class VenueMap extends ConsumerStatefulWidget {
@@ -89,6 +92,7 @@ class _VenueMapState extends ConsumerState<VenueMap> {
     return ClipRRect(
       borderRadius: BorderRadius.circular(AppRadii.lg),
       child: Stack(
+        fit: StackFit.expand,
         children: [
           FlutterMap(
             mapController: _controller,
@@ -134,11 +138,11 @@ class _VenueMapState extends ConsumerState<VenueMap> {
                             .read(discoverViewModelProvider.notifier)
                             .selectVenue(row.venue.id),
                         child: Icon(
-                          Icons.location_on,
-                          size: 40,
+                          AppIcons.pin,
+                          size: 36,
                           color: row.venue.id.uuid == widget.selectedId
                               ? scheme.primary
-                              : AppColors.espresso,
+                              : scheme.onSurface,
                         ),
                       ),
                     ),
@@ -146,75 +150,41 @@ class _VenueMapState extends ConsumerState<VenueMap> {
               ),
             ],
           ),
-          Align(
-            alignment: AlignmentDirectional.topStart,
-            child: Padding(
-              padding: const EdgeInsets.all(AppSpacing.sm),
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  color: scheme.surface.withValues(alpha: 0.88),
-                  borderRadius: BorderRadius.circular(AppRadii.sm),
+          PositionedDirectional(
+            top: AppSpacing.sm,
+            start: AppSpacing.sm,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: scheme.surface.withValues(alpha: 0.88),
+                borderRadius: BorderRadius.circular(AppRadii.sm),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.sm,
+                  vertical: AppSpacing.xs,
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.sm,
-                    vertical: AppSpacing.xs,
-                  ),
-                  child: Text(l10n.osmAttribution, style: text.labelSmall),
-                ),
+                child: Text(l10n.osmAttribution, style: text.labelSmall),
               ),
             ),
           ),
           if (selected != null)
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(
-                  AppSpacing.md,
-                  0,
-                  AppSpacing.md,
-                  36,
-                ),
-                child: Material(
-                  color: scheme.surfaceContainerLowest,
-                  elevation: 2,
-                  borderRadius: BorderRadius.circular(AppRadii.md),
-                  child: Padding(
-                    padding: const EdgeInsets.all(AppSpacing.lg),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                selected.venue.name,
-                                style: text.titleMedium,
-                              ),
-                              Text(
-                                selected.venue.address,
-                                style: text.bodyMedium,
-                              ),
-                              if (selected.distanceKm != null)
-                                Text(
-                                  '${l10n.distanceKm(formatDistanceValue(selected.distanceKm!))} · ${l10n.walkAway(selected.walkMinutes!)}',
-                                  style: text.labelLarge?.copyWith(
-                                    color: scheme.primary,
-                                  ),
-                                ),
-                            ],
-                          ),
-                        ),
-                        IconButton(
-                          onPressed: () => ref
-                              .read(discoverViewModelProvider.notifier)
-                              .selectVenue(null),
-                          icon: const Icon(Icons.close),
-                        ),
-                      ],
-                    ),
-                  ),
+            PositionedDirectional(
+              start: AppSpacing.md,
+              end: AppSpacing.md,
+              bottom: AppSpacing.md,
+              child: VenueCard(
+                row: selected,
+                selected: true,
+                overlay: true,
+                onTap: () =>
+                    VenueRoute(id: selected!.venue.id.uuid).go(context),
+                trailing: IconButton(
+                  tooltip: l10n.close,
+                  visualDensity: VisualDensity.compact,
+                  onPressed: () => ref
+                      .read(discoverViewModelProvider.notifier)
+                      .selectVenue(null),
+                  icon: const Icon(AppIcons.close),
                 ),
               ),
             ),

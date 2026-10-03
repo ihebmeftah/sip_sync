@@ -1,0 +1,11 @@
+### A sellable article a customer may see. Price is the current menu price.
+class: CustomerArticlePreview
+fields:
+  id: UuidValue
+  categoryId: UuidValue
+  categoryName: String
+  name: String
+  description: String?
+  price: double
+  ### Ingredient names in recipe order. No quantities or stock.
+  ingredientNames: List<String>

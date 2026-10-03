@@ -38,6 +38,8 @@ import 'package:sip_sync_client/src/protocol/menu/dtos/menu_article_view.dart'
     as _i8rrzffs;
 import 'package:sip_sync_client/src/protocol/menu/dtos/menu_category_view.dart'
     as _i6z5knea;
+import 'package:sip_sync_client/src/protocol/orders/dtos/customer_order_summary.dart'
+    as _ia5a8dtx;
 import 'package:sip_sync_client/src/protocol/orders/dtos/order_view.dart'
     as _i5f9osh7;
 import 'package:sip_sync_client/src/protocol/tables/dtos/venue_table_view.dart'
@@ -71,7 +73,14 @@ import 'buildings/dtos/building_exception.dart' as _ihbyyehn;
 import 'buildings/dtos/building_update.dart' as _irbupqdx;
 import 'buildings/dtos/building_view.dart' as _i9ph7g7s;
 import 'buildings/dtos/strict_mode_step.dart' as _i70klpnb;
+import 'discovery/dtos/customer_article_preview.dart' as _ipvj66ag;
+import 'discovery/dtos/customer_category_preview.dart' as _ia0qwq20;
+import 'discovery/dtos/customer_menu.dart' as _i6g8xgrj;
+import 'discovery/dtos/customer_menu_section.dart' as _i15x0mxo;
+import 'discovery/dtos/customer_seated_table.dart' as _i6iqxieg;
+import 'discovery/dtos/customer_table_preview.dart' as _iga4xgem;
 import 'discovery/dtos/customer_venue_card.dart' as _irx49b3p;
+import 'discovery/dtos/customer_venue_detail.dart' as _i7jvptbt;
 import 'discovery/dtos/place_error_code.dart' as _id14pl4h;
 import 'discovery/dtos/place_exception.dart' as _i3rwc79w;
 import 'discovery/dtos/place_hit.dart' as _irmybich;
@@ -101,6 +110,12 @@ import 'menu/dtos/menu_category_exception.dart' as _idwl0wi8;
 import 'menu/dtos/menu_category_update.dart' as _iu0xgttg;
 import 'menu/dtos/menu_category_view.dart' as _igs74mgr;
 import 'menu/dtos/units_type.dart' as _ipcoxh71;
+import 'orders/dtos/customer_order_append.dart' as _iq3ckjf2;
+import 'orders/dtos/customer_order_item.dart' as _i8sd1sxe;
+import 'orders/dtos/customer_order_line.dart' as _ibdj4rsl;
+import 'orders/dtos/customer_order_place.dart' as _ilng8y1i;
+import 'orders/dtos/customer_order_summary.dart' as _ipj20c5x;
+import 'orders/dtos/customer_order_view.dart' as _iw1gx7eb;
 import 'orders/dtos/order_actor_view.dart' as _ic5jn53k;
 import 'orders/dtos/order_add_items.dart' as _iqdnv1pi;
 import 'orders/dtos/order_create.dart' as _iwmhqcsn;
@@ -148,7 +163,14 @@ export 'buildings/dtos/building_exception.dart';
 export 'buildings/dtos/building_update.dart';
 export 'buildings/dtos/building_view.dart';
 export 'buildings/dtos/strict_mode_step.dart';
+export 'discovery/dtos/customer_article_preview.dart';
+export 'discovery/dtos/customer_category_preview.dart';
+export 'discovery/dtos/customer_menu.dart';
+export 'discovery/dtos/customer_menu_section.dart';
+export 'discovery/dtos/customer_seated_table.dart';
+export 'discovery/dtos/customer_table_preview.dart';
 export 'discovery/dtos/customer_venue_card.dart';
+export 'discovery/dtos/customer_venue_detail.dart';
 export 'discovery/dtos/place_error_code.dart';
 export 'discovery/dtos/place_exception.dart';
 export 'discovery/dtos/place_hit.dart';
@@ -178,6 +200,12 @@ export 'menu/dtos/menu_category_exception.dart';
 export 'menu/dtos/menu_category_update.dart';
 export 'menu/dtos/menu_category_view.dart';
 export 'menu/dtos/units_type.dart';
+export 'orders/dtos/customer_order_append.dart';
+export 'orders/dtos/customer_order_item.dart';
+export 'orders/dtos/customer_order_line.dart';
+export 'orders/dtos/customer_order_place.dart';
+export 'orders/dtos/customer_order_summary.dart';
+export 'orders/dtos/customer_order_view.dart';
 export 'orders/dtos/order_actor_view.dart';
 export 'orders/dtos/order_add_items.dart';
 export 'orders/dtos/order_create.dart';
@@ -319,8 +347,29 @@ class Protocol extends _isc.SerializationManager {
     if (t == _i70klpnb.StrictModeStep) {
       return _i70klpnb.StrictModeStep.fromJson(data) as T;
     }
+    if (t == _ipvj66ag.CustomerArticlePreview) {
+      return _ipvj66ag.CustomerArticlePreview.fromJson(data) as T;
+    }
+    if (t == _ia0qwq20.CustomerCategoryPreview) {
+      return _ia0qwq20.CustomerCategoryPreview.fromJson(data) as T;
+    }
+    if (t == _i6g8xgrj.CustomerMenu) {
+      return _i6g8xgrj.CustomerMenu.fromJson(data) as T;
+    }
+    if (t == _i15x0mxo.CustomerMenuSection) {
+      return _i15x0mxo.CustomerMenuSection.fromJson(data) as T;
+    }
+    if (t == _i6iqxieg.CustomerSeatedTable) {
+      return _i6iqxieg.CustomerSeatedTable.fromJson(data) as T;
+    }
+    if (t == _iga4xgem.CustomerTablePreview) {
+      return _iga4xgem.CustomerTablePreview.fromJson(data) as T;
+    }
     if (t == _irx49b3p.CustomerVenueCard) {
       return _irx49b3p.CustomerVenueCard.fromJson(data) as T;
+    }
+    if (t == _i7jvptbt.CustomerVenueDetail) {
+      return _i7jvptbt.CustomerVenueDetail.fromJson(data) as T;
     }
     if (t == _id14pl4h.PlaceErrorCode) {
       return _id14pl4h.PlaceErrorCode.fromJson(data) as T;
@@ -408,6 +457,24 @@ class Protocol extends _isc.SerializationManager {
     }
     if (t == _ipcoxh71.UnitsType) {
       return _ipcoxh71.UnitsType.fromJson(data) as T;
+    }
+    if (t == _iq3ckjf2.CustomerOrderAppend) {
+      return _iq3ckjf2.CustomerOrderAppend.fromJson(data) as T;
+    }
+    if (t == _i8sd1sxe.CustomerOrderItem) {
+      return _i8sd1sxe.CustomerOrderItem.fromJson(data) as T;
+    }
+    if (t == _ibdj4rsl.CustomerOrderLine) {
+      return _ibdj4rsl.CustomerOrderLine.fromJson(data) as T;
+    }
+    if (t == _ilng8y1i.CustomerOrderPlace) {
+      return _ilng8y1i.CustomerOrderPlace.fromJson(data) as T;
+    }
+    if (t == _ipj20c5x.CustomerOrderSummary) {
+      return _ipj20c5x.CustomerOrderSummary.fromJson(data) as T;
+    }
+    if (t == _iw1gx7eb.CustomerOrderView) {
+      return _iw1gx7eb.CustomerOrderView.fromJson(data) as T;
     }
     if (t == _ic5jn53k.OrderActorView) {
       return _ic5jn53k.OrderActorView.fromJson(data) as T;
@@ -594,8 +661,47 @@ class Protocol extends _isc.SerializationManager {
       return (data != null ? _i70klpnb.StrictModeStep.fromJson(data) : null)
           as T;
     }
+    if (t == _isc.getType<_ipvj66ag.CustomerArticlePreview?>()) {
+      return (data != null
+              ? _ipvj66ag.CustomerArticlePreview.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _isc.getType<_ia0qwq20.CustomerCategoryPreview?>()) {
+      return (data != null
+              ? _ia0qwq20.CustomerCategoryPreview.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _isc.getType<_i6g8xgrj.CustomerMenu?>()) {
+      return (data != null ? _i6g8xgrj.CustomerMenu.fromJson(data) : null) as T;
+    }
+    if (t == _isc.getType<_i15x0mxo.CustomerMenuSection?>()) {
+      return (data != null
+              ? _i15x0mxo.CustomerMenuSection.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _isc.getType<_i6iqxieg.CustomerSeatedTable?>()) {
+      return (data != null
+              ? _i6iqxieg.CustomerSeatedTable.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _isc.getType<_iga4xgem.CustomerTablePreview?>()) {
+      return (data != null
+              ? _iga4xgem.CustomerTablePreview.fromJson(data)
+              : null)
+          as T;
+    }
     if (t == _isc.getType<_irx49b3p.CustomerVenueCard?>()) {
       return (data != null ? _irx49b3p.CustomerVenueCard.fromJson(data) : null)
+          as T;
+    }
+    if (t == _isc.getType<_i7jvptbt.CustomerVenueDetail?>()) {
+      return (data != null
+              ? _i7jvptbt.CustomerVenueDetail.fromJson(data)
+              : null)
           as T;
     }
     if (t == _isc.getType<_id14pl4h.PlaceErrorCode?>()) {
@@ -742,6 +848,34 @@ class Protocol extends _isc.SerializationManager {
     if (t == _isc.getType<_ipcoxh71.UnitsType?>()) {
       return (data != null ? _ipcoxh71.UnitsType.fromJson(data) : null) as T;
     }
+    if (t == _isc.getType<_iq3ckjf2.CustomerOrderAppend?>()) {
+      return (data != null
+              ? _iq3ckjf2.CustomerOrderAppend.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _isc.getType<_i8sd1sxe.CustomerOrderItem?>()) {
+      return (data != null ? _i8sd1sxe.CustomerOrderItem.fromJson(data) : null)
+          as T;
+    }
+    if (t == _isc.getType<_ibdj4rsl.CustomerOrderLine?>()) {
+      return (data != null ? _ibdj4rsl.CustomerOrderLine.fromJson(data) : null)
+          as T;
+    }
+    if (t == _isc.getType<_ilng8y1i.CustomerOrderPlace?>()) {
+      return (data != null ? _ilng8y1i.CustomerOrderPlace.fromJson(data) : null)
+          as T;
+    }
+    if (t == _isc.getType<_ipj20c5x.CustomerOrderSummary?>()) {
+      return (data != null
+              ? _ipj20c5x.CustomerOrderSummary.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _isc.getType<_iw1gx7eb.CustomerOrderView?>()) {
+      return (data != null ? _iw1gx7eb.CustomerOrderView.fromJson(data) : null)
+          as T;
+    }
     if (t == _isc.getType<_ic5jn53k.OrderActorView?>()) {
       return (data != null ? _ic5jn53k.OrderActorView.fromJson(data) : null)
           as T;
@@ -832,6 +966,42 @@ class Protocol extends _isc.SerializationManager {
       return (data as List).map((e) => deserialize<_isc.UuidValue>(e)).toList()
           as T;
     }
+    if (t == List<_i15x0mxo.CustomerMenuSection>) {
+      return (data as List)
+              .map((e) => deserialize<_i15x0mxo.CustomerMenuSection>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_ipvj66ag.CustomerArticlePreview>) {
+      return (data as List)
+              .map((e) => deserialize<_ipvj66ag.CustomerArticlePreview>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_iga4xgem.CustomerTablePreview>) {
+      return (data as List)
+              .map((e) => deserialize<_iga4xgem.CustomerTablePreview>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_ia0qwq20.CustomerCategoryPreview>) {
+      return (data as List)
+              .map((e) => deserialize<_ia0qwq20.CustomerCategoryPreview>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_i8sd1sxe.CustomerOrderItem>) {
+      return (data as List)
+              .map((e) => deserialize<_i8sd1sxe.CustomerOrderItem>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_ibdj4rsl.CustomerOrderLine>) {
+      return (data as List)
+              .map((e) => deserialize<_ibdj4rsl.CustomerOrderLine>(e))
+              .toList()
+          as T;
+    }
     if (t == List<_ihzk2s8h.OrderItemCreateLine>) {
       return (data as List)
               .map((e) => deserialize<_ihzk2s8h.OrderItemCreateLine>(e))
@@ -910,6 +1080,12 @@ class Protocol extends _isc.SerializationManager {
               .toList()
           as T;
     }
+    if (t == List<_ia5a8dtx.CustomerOrderSummary>) {
+      return (data as List)
+              .map((e) => deserialize<_ia5a8dtx.CustomerOrderSummary>(e))
+              .toList()
+          as T;
+    }
     if (t == List<_i5f9osh7.OrderView>) {
       return (data as List)
               .map((e) => deserialize<_i5f9osh7.OrderView>(e))
@@ -962,7 +1138,14 @@ class Protocol extends _isc.SerializationManager {
       _irbupqdx.BuildingUpdate => 'BuildingUpdate',
       _i9ph7g7s.BuildingView => 'BuildingView',
       _i70klpnb.StrictModeStep => 'StrictModeStep',
+      _ipvj66ag.CustomerArticlePreview => 'CustomerArticlePreview',
+      _ia0qwq20.CustomerCategoryPreview => 'CustomerCategoryPreview',
+      _i6g8xgrj.CustomerMenu => 'CustomerMenu',
+      _i15x0mxo.CustomerMenuSection => 'CustomerMenuSection',
+      _i6iqxieg.CustomerSeatedTable => 'CustomerSeatedTable',
+      _iga4xgem.CustomerTablePreview => 'CustomerTablePreview',
       _irx49b3p.CustomerVenueCard => 'CustomerVenueCard',
+      _i7jvptbt.CustomerVenueDetail => 'CustomerVenueDetail',
       _id14pl4h.PlaceErrorCode => 'PlaceErrorCode',
       _i3rwc79w.PlaceException => 'PlaceException',
       _irmybich.PlaceHit => 'PlaceHit',
@@ -992,6 +1175,12 @@ class Protocol extends _isc.SerializationManager {
       _iu0xgttg.MenuCategoryUpdate => 'MenuCategoryUpdate',
       _igs74mgr.MenuCategoryView => 'MenuCategoryView',
       _ipcoxh71.UnitsType => 'UnitsType',
+      _iq3ckjf2.CustomerOrderAppend => 'CustomerOrderAppend',
+      _i8sd1sxe.CustomerOrderItem => 'CustomerOrderItem',
+      _ibdj4rsl.CustomerOrderLine => 'CustomerOrderLine',
+      _ilng8y1i.CustomerOrderPlace => 'CustomerOrderPlace',
+      _ipj20c5x.CustomerOrderSummary => 'CustomerOrderSummary',
+      _iw1gx7eb.CustomerOrderView => 'CustomerOrderView',
       _ic5jn53k.OrderActorView => 'OrderActorView',
       _iqdnv1pi.OrderAddItems => 'OrderAddItems',
       _iwmhqcsn.OrderCreate => 'OrderCreate',
@@ -1082,8 +1271,22 @@ class Protocol extends _isc.SerializationManager {
         return 'BuildingView';
       case _i70klpnb.StrictModeStep():
         return 'StrictModeStep';
+      case _ipvj66ag.CustomerArticlePreview():
+        return 'CustomerArticlePreview';
+      case _ia0qwq20.CustomerCategoryPreview():
+        return 'CustomerCategoryPreview';
+      case _i6g8xgrj.CustomerMenu():
+        return 'CustomerMenu';
+      case _i15x0mxo.CustomerMenuSection():
+        return 'CustomerMenuSection';
+      case _i6iqxieg.CustomerSeatedTable():
+        return 'CustomerSeatedTable';
+      case _iga4xgem.CustomerTablePreview():
+        return 'CustomerTablePreview';
       case _irx49b3p.CustomerVenueCard():
         return 'CustomerVenueCard';
+      case _i7jvptbt.CustomerVenueDetail():
+        return 'CustomerVenueDetail';
       case _id14pl4h.PlaceErrorCode():
         return 'PlaceErrorCode';
       case _i3rwc79w.PlaceException():
@@ -1142,6 +1345,18 @@ class Protocol extends _isc.SerializationManager {
         return 'MenuCategoryView';
       case _ipcoxh71.UnitsType():
         return 'UnitsType';
+      case _iq3ckjf2.CustomerOrderAppend():
+        return 'CustomerOrderAppend';
+      case _i8sd1sxe.CustomerOrderItem():
+        return 'CustomerOrderItem';
+      case _ibdj4rsl.CustomerOrderLine():
+        return 'CustomerOrderLine';
+      case _ilng8y1i.CustomerOrderPlace():
+        return 'CustomerOrderPlace';
+      case _ipj20c5x.CustomerOrderSummary():
+        return 'CustomerOrderSummary';
+      case _iw1gx7eb.CustomerOrderView():
+        return 'CustomerOrderView';
       case _ic5jn53k.OrderActorView():
         return 'OrderActorView';
       case _iqdnv1pi.OrderAddItems():
@@ -1287,8 +1502,29 @@ class Protocol extends _isc.SerializationManager {
     if (dataClassName == 'StrictModeStep') {
       return deserialize<_i70klpnb.StrictModeStep>(data['data']);
     }
+    if (dataClassName == 'CustomerArticlePreview') {
+      return deserialize<_ipvj66ag.CustomerArticlePreview>(data['data']);
+    }
+    if (dataClassName == 'CustomerCategoryPreview') {
+      return deserialize<_ia0qwq20.CustomerCategoryPreview>(data['data']);
+    }
+    if (dataClassName == 'CustomerMenu') {
+      return deserialize<_i6g8xgrj.CustomerMenu>(data['data']);
+    }
+    if (dataClassName == 'CustomerMenuSection') {
+      return deserialize<_i15x0mxo.CustomerMenuSection>(data['data']);
+    }
+    if (dataClassName == 'CustomerSeatedTable') {
+      return deserialize<_i6iqxieg.CustomerSeatedTable>(data['data']);
+    }
+    if (dataClassName == 'CustomerTablePreview') {
+      return deserialize<_iga4xgem.CustomerTablePreview>(data['data']);
+    }
     if (dataClassName == 'CustomerVenueCard') {
       return deserialize<_irx49b3p.CustomerVenueCard>(data['data']);
+    }
+    if (dataClassName == 'CustomerVenueDetail') {
+      return deserialize<_i7jvptbt.CustomerVenueDetail>(data['data']);
     }
     if (dataClassName == 'PlaceErrorCode') {
       return deserialize<_id14pl4h.PlaceErrorCode>(data['data']);
@@ -1376,6 +1612,24 @@ class Protocol extends _isc.SerializationManager {
     }
     if (dataClassName == 'UnitsType') {
       return deserialize<_ipcoxh71.UnitsType>(data['data']);
+    }
+    if (dataClassName == 'CustomerOrderAppend') {
+      return deserialize<_iq3ckjf2.CustomerOrderAppend>(data['data']);
+    }
+    if (dataClassName == 'CustomerOrderItem') {
+      return deserialize<_i8sd1sxe.CustomerOrderItem>(data['data']);
+    }
+    if (dataClassName == 'CustomerOrderLine') {
+      return deserialize<_ibdj4rsl.CustomerOrderLine>(data['data']);
+    }
+    if (dataClassName == 'CustomerOrderPlace') {
+      return deserialize<_ilng8y1i.CustomerOrderPlace>(data['data']);
+    }
+    if (dataClassName == 'CustomerOrderSummary') {
+      return deserialize<_ipj20c5x.CustomerOrderSummary>(data['data']);
+    }
+    if (dataClassName == 'CustomerOrderView') {
+      return deserialize<_iw1gx7eb.CustomerOrderView>(data['data']);
     }
     if (dataClassName == 'OrderActorView') {
       return deserialize<_ic5jn53k.OrderActorView>(data['data']);

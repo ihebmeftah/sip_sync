@@ -1,0 +1,13 @@
+### One of the signed-in customer's orders, without the dish lines.
+class: CustomerOrderSummary
+fields:
+  id: UuidValue
+  buildingId: UuidValue
+  venueName: String
+  ref: int
+  tableNumber: int
+  currencyCode: String
+  status: OrderStatus
+  itemCount: int
+  totalAmount: double
+  createdAt: DateTime

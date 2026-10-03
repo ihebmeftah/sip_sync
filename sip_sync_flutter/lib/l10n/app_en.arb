@@ -90,5 +90,99 @@
   "phoneCountryHint": "Country: {code}",
   "@phoneCountryHint": {
     "placeholders": { "code": { "type": "String" } }
-  }
+  },
+  "close": "Close",
+  "back": "Back",
+  "menu": "Menu",
+  "availableTables": "{count, plural, =0{No tables free} =1{1 table free} other{{count} tables free}}",
+  "@availableTables": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "previewCategories": "Top categories",
+  "previewArticles": "Top dishes",
+  "articleCount": "{count, plural, =0{No dishes} =1{1 dish} other{{count} dishes}}",
+  "@articleCount": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "emptyMenuPreview": "Nothing on the menu yet.",
+  "emptyMenu": "This house has not published a menu yet.",
+  "emptyMenuSection": "Nothing in this section yet.",
+  "seeAll": "See all",
+  "tableNumber": "Table {number}",
+  "@tableNumber": {
+    "placeholders": { "number": { "type": "int" } }
+  },
+  "discoveryTab": "Discovery",
+  "ordersTab": "Orders",
+  "filterToday": "Today",
+  "filterLastWeek": "Last week",
+  "filterLastMonth": "Last month",
+  "emptyOrders": "No orders in this period.",
+  "orderItemCount": "{count, plural, =1{1 dish} other{{count} dishes}}",
+  "@orderItemCount": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "orderStatusProgress": "In progress",
+  "orderStatusPayed": "Paid",
+  "orderStatusCancelled": "Cancelled",
+  "openOrderNote": "Order in progress",
+  "itemStatusPicked": "In the kitchen",
+  "itemStatusReady": "Ready",
+  "itemStatusServed": "Served",
+  "scanTable": "Scan table",
+  "changeTable": "Change table",
+  "scanTableHint": "Point the camera at the QR code on your table.",
+  "tableScanInvalid": "This is not a Sip Sync table code.",
+  "tableScanUnknown": "This code is not an active table.",
+  "tableScanCamera": "Camera is unavailable. Allow camera access and try again.",
+  "yourTable": "Your table",
+  "seatedAt": "You're at table {number}",
+  "@seatedAt": {
+    "placeholders": { "number": { "type": "int" } }
+  },
+  "tableChanged": "Table changed. You're now at table {number}.",
+  "@tableChanged": {
+    "placeholders": { "number": { "type": "int" } }
+  },
+  "addArticle": "Add",
+  "removeArticle": "Remove",
+  "passOrder": "Pass order",
+  "yourOrder": "Your order",
+  "orderEmpty": "Add a dish before sending the order.",
+  "scanTableToOrder": "Scan the QR code on your table to send this order.",
+  "cartSummary": "{count, plural, =1{1 dish} other{{count} dishes}} · {total}",
+  "@cartSummary": {
+    "placeholders": {
+      "count": { "type": "int" },
+      "total": { "type": "String" }
+    }
+  },
+  "total": "Total",
+  "orderSent": "Sent to the kitchen",
+  "orderRef": "Order #{ref}",
+  "@orderRef": {
+    "placeholders": { "ref": { "type": "int" } }
+  },
+  "lineQuantity": "{count} × {name}",
+  "@lineQuantity": {
+    "placeholders": {
+      "count": { "type": "int" },
+      "name": { "type": "String" }
+    }
+  },
+  "errorTableOccupied": "This table already has an open order.",
+  "errorInsufficientStock": "Something on this order is no longer available.",
+  "errorAppendNotAllowed": "This house does not allow adding dishes to an open order.",
+  "currentOrder": "Current order",
+  "orderHistory": "Order history",
+  "addToOrder": "Add to order",
+  "scanDisabled": "Scan is unavailable while your order is open.",
+  "seatCount": "{count, plural, =1{1 seat} other{{count} seats}}",
+  "@seatCount": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "venueTypeCafe": "Café",
+  "venueTypeRestaurant": "Restaurant",
+  "venueTypeLounge": "Lounge",
+  "venueTypeBar": "Bar"
 }

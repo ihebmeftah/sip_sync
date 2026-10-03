@@ -73,5 +73,87 @@
   "validationPhone": "أدخل رقم هاتف مع رمز الدولة، مثل +216…",
   "validationPhoneCountry": "رمز الدولة غير مدعوم. اختر رمزاً مدعوماً.",
   "phoneCountryCode": "الرمز",
-  "phoneCountryHint": "الدولة: {code}"
+  "phoneCountryHint": "الدولة: {code}",
+  "close": "إغلاق",
+  "back": "رجوع",
+  "menu": "القائمة",
+  "availableTables": "{count, plural, =0{لا توجد طاولات متاحة} =1{طاولة واحدة متاحة} =2{طاولتان متاحتان} few{{count} طاولات متاحة} many{{count} طاولة متاحة} other{{count} طاولة متاحة}}",
+  "previewCategories": "أبرز الفئات",
+  "previewArticles": "أبرز الأطباق",
+  "articleCount": "{count, plural, =0{لا أطباق} =1{طبق واحد} =2{طبقان} few{{count} أطباق} many{{count} طبقاً} other{{count} طبق}}",
+  "emptyMenuPreview": "لا شيء في القائمة بعد.",
+  "emptyMenu": "لم تنشر هذه الدار قائمة بعد.",
+  "emptyMenuSection": "لا شيء في هذا القسم بعد.",
+  "seeAll": "عرض الكل",
+  "tableNumber": "طاولة {number}",
+  "discoveryTab": "استكشاف",
+  "ordersTab": "الطلبات",
+  "filterToday": "اليوم",
+  "filterLastWeek": "الأسبوع الماضي",
+  "filterLastMonth": "الشهر الماضي",
+  "emptyOrders": "لا طلبات في هذه الفترة.",
+  "orderItemCount": "{count, plural, =0{لا أطباق} =1{طبق واحد} =2{طبقان} few{{count} أطباق} many{{count} طبقاً} other{{count} طبق}}",
+  "@orderItemCount": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "orderStatusProgress": "قيد التنفيذ",
+  "orderStatusPayed": "مدفوع",
+  "orderStatusCancelled": "ملغى",
+  "openOrderNote": "طلب قيد التنفيذ",
+  "itemStatusPicked": "في المطبخ",
+  "itemStatusReady": "جاهز",
+  "itemStatusServed": "تم التقديم",
+  "scanTable": "مسح الطاولة",
+  "changeTable": "تغيير الطاولة",
+  "scanTableHint": "وجّه الكاميرا إلى رمز QR على طاولتك.",
+  "tableScanInvalid": "هذا الرمز ليس رمز طاولة في Sip Sync.",
+  "tableScanUnknown": "هذا الرمز لا يطابق طاولة نشطة.",
+  "tableScanCamera": "الكاميرا غير متاحة. اسمح بالوصول ثم أعد المحاولة.",
+  "yourTable": "طاولتك",
+  "seatedAt": "أنت على الطاولة {number}",
+  "@seatedAt": {
+    "placeholders": { "number": { "type": "int" } }
+  },
+  "tableChanged": "تم تغيير الطاولة. أنت الآن على الطاولة {number}.",
+  "@tableChanged": {
+    "placeholders": { "number": { "type": "int" } }
+  },
+  "addArticle": "إضافة",
+  "removeArticle": "إزالة",
+  "passOrder": "إرسال الطلب",
+  "yourOrder": "طلبك",
+  "orderEmpty": "أضف طبقاً قبل إرسال الطلب.",
+  "scanTableToOrder": "امسح رمز QR على طاولتك لإرسال الطلب.",
+  "cartSummary": "{count, plural, =1{طبق واحد} =2{طبقان} few{{count} أطباق} many{{count} طبقاً} other{{count} طبق}} · {total}",
+  "@cartSummary": {
+    "placeholders": {
+      "count": { "type": "int" },
+      "total": { "type": "String" }
+    }
+  },
+  "total": "المجموع",
+  "orderSent": "أُرسل إلى المطبخ",
+  "orderRef": "طلب #{ref}",
+  "@orderRef": {
+    "placeholders": { "ref": { "type": "int" } }
+  },
+  "lineQuantity": "{count} × {name}",
+  "@lineQuantity": {
+    "placeholders": {
+      "count": { "type": "int" },
+      "name": { "type": "String" }
+    }
+  },
+  "errorTableOccupied": "هذه الطاولة لديها طلب مفتوح.",
+  "errorInsufficientStock": "أحد أصناف هذا الطلب لم يعد متاحاً.",
+  "errorAppendNotAllowed": "هذا المكان لا يسمح بإضافة أطباق إلى طلب مفتوح.",
+  "currentOrder": "الطلب الحالي",
+  "orderHistory": "سجل الطلبات",
+  "addToOrder": "إضافة إلى الطلب",
+  "scanDisabled": "المسح غير متاح أثناء وجود طلب قيد التنفيذ.",
+  "seatCount": "{count, plural, =0{لا مقاعد} =1{مقعد واحد} =2{مقعدان} few{{count} مقاعد} many{{count} مقعداً} other{{count} مقعد}}",
+  "venueTypeCafe": "مقهى",
+  "venueTypeRestaurant": "مطعم",
+  "venueTypeLounge": "لاونج",
+  "venueTypeBar": "بار"
 }

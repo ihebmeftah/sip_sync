@@ -1,0 +1,12 @@
+### Receipt a customer may see for an order they placed.
+class: CustomerOrderView
+fields:
+  id: UuidValue
+  buildingId: UuidValue
+  ## Ticket number unique to the venue.
+  ref: int
+  tableNumber: int
+  currencyCode: String
+  status: OrderStatus
+  lines: List<CustomerOrderLine>
+  totalAmount: double

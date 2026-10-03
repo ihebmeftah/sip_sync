@@ -1,0 +1,7 @@
+### A menu category a customer may see on a venue page. No stock or recipes.
+class: CustomerCategoryPreview
+fields:
+  id: UuidValue
+  name: String
+  description: String?
+  articleCount: int

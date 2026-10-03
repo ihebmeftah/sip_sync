@@ -7,7 +7,7 @@ import '../../l10n/generated/app_localizations.dart';
 import '../theme/app_tokens.dart';
 import 'app_controls.dart';
 
-/// Split atmosphere + form on wide windows; stacked hero + form on compact.
+/// Split daylight panel + form on wide windows; stacked hero + form on compact.
 class AuthShell extends StatelessWidget {
   const AuthShell({super.key, required this.form});
 
@@ -15,7 +15,6 @@ class AuthShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
@@ -23,6 +22,7 @@ class AuthShell extends StatelessWidget {
         body: LayoutBuilder(
           builder: (context, constraints) {
             final wide = constraints.maxWidth >= AppBreakpoints.expanded;
+            final l10n = AppLocalizations.of(context)!;
             if (wide) {
               return Row(
                 children: [
@@ -33,7 +33,9 @@ class AuthShell extends StatelessWidget {
                   Expanded(
                     flex: 4,
                     child: ColoredBox(
-                      color: Theme.of(context).colorScheme.surface,
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.surfaceContainerLowest,
                       child: _FormPane(form: form),
                     ),
                   ),
@@ -43,13 +45,15 @@ class AuthShell extends StatelessWidget {
             return Column(
               children: [
                 SizedBox(
-                  height: math.min(280, constraints.maxHeight * 0.34),
+                  height: math.min(220, constraints.maxHeight * 0.28),
                   width: double.infinity,
                   child: _HeroPanel(l10n: l10n, expanded: false),
                 ),
                 Expanded(
                   child: ColoredBox(
-                    color: Theme.of(context).colorScheme.surface,
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.surfaceContainerLowest,
                     child: _FormPane(form: form),
                   ),
                 ),
@@ -110,61 +114,64 @@ class _HeroPanel extends StatelessWidget {
     return Stack(
       fit: StackFit.expand,
       children: [
-        const CustomPaint(painter: _LoungePainter()),
-        Padding(
-          padding: EdgeInsets.all(expanded ? AppSpacing.xxl : AppSpacing.xl),
-          child: Align(
-            alignment: expanded
-                ? AlignmentDirectional.bottomStart
-                : AlignmentDirectional.bottomStart,
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 460),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(999),
-                    child: BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-                      child: DecoratedBox(
-                        decoration: BoxDecoration(
-                          color: scheme.onInverseSurface.withValues(
-                            alpha: 0.12,
+        const CustomPaint(painter: _DaylightPainter()),
+        SafeArea(
+          child: Padding(
+            padding: EdgeInsets.all(expanded ? AppSpacing.xxl : AppSpacing.xl),
+            child: Align(
+              alignment: AlignmentDirectional.bottomStart,
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 460),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(999),
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            color: scheme.surfaceContainerLowest.withValues(
+                              alpha: 0.82,
+                            ),
+                            borderRadius: BorderRadius.circular(999),
+                            border: Border.all(color: scheme.outlineVariant),
                           ),
-                          borderRadius: BorderRadius.circular(999),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: AppSpacing.lg,
-                            vertical: AppSpacing.sm,
-                          ),
-                          child: Text(
-                            l10n.appTitle,
-                            style: text.labelLarge?.copyWith(
-                              color: scheme.onInverseSurface,
-                              letterSpacing: 1.4,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: AppSpacing.lg,
+                              vertical: AppSpacing.sm,
+                            ),
+                            child: Text(
+                              l10n.appTitle,
+                              style: text.labelLarge?.copyWith(
+                                color: scheme.primary,
+                                letterSpacing: 1.2,
+                                fontWeight: FontWeight.w700,
+                              ),
                             ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: AppSpacing.lg),
-                  Text(
-                    l10n.atmosphereTitle,
-                    style: (expanded ? text.displayMedium : text.headlineSmall)
-                        ?.copyWith(color: scheme.onInverseSurface),
-                  ),
-                  const SizedBox(height: AppSpacing.md),
-                  Text(
-                    l10n.atmosphereBody,
-                    style: text.bodyLarge?.copyWith(
-                      color: scheme.onInverseSurface.withValues(alpha: 0.82),
-                      height: 1.45,
+                    const SizedBox(height: AppSpacing.lg),
+                    Text(
+                      l10n.atmosphereTitle,
+                      style: expanded ? text.displaySmall : text.headlineSmall,
                     ),
-                  ),
-                ],
+                    if (expanded) ...[
+                      const SizedBox(height: AppSpacing.md),
+                      Text(
+                        l10n.atmosphereBody,
+                        style: text.bodyLarge?.copyWith(
+                          color: scheme.onSurfaceVariant,
+                          height: 1.45,
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
               ),
             ),
           ),
@@ -174,39 +181,27 @@ class _HeroPanel extends StatelessWidget {
   }
 }
 
-class _LoungePainter extends CustomPainter {
-  const _LoungePainter();
+class _DaylightPainter extends CustomPainter {
+  const _DaylightPainter();
 
   @override
   void paint(Canvas canvas, Size size) {
     final rect = Offset.zero & size;
-    canvas.drawRect(
-      rect,
-      Paint()
-        ..shader = const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            AppColors.espresso,
-            Color(0xFF3B1C12),
-            AppColors.terracotta,
-          ],
-        ).createShader(rect),
-    );
+    canvas.drawRect(rect, Paint()..color = AppColors.paper);
     canvas.drawCircle(
-      Offset(size.width * 0.88, size.height * -0.05),
-      size.shortestSide * 0.55,
-      Paint()..color = AppColors.champagne.withValues(alpha: 0.16),
-    );
-    canvas.drawCircle(
-      Offset(size.width * 0.08, size.height * 0.92),
+      Offset(size.width * 0.12, size.height * 0.08),
       size.shortestSide * 0.42,
-      Paint()..color = AppColors.pistachio.withValues(alpha: 0.22),
+      Paint()..color = AppColors.clay.withValues(alpha: 0.95),
     );
     canvas.drawCircle(
-      Offset(size.width * 0.55, size.height * 0.35),
-      size.shortestSide * 0.18,
-      Paint()..color = AppColors.wine.withValues(alpha: 0.18),
+      Offset(size.width * 0.92, size.height * 0.92),
+      size.shortestSide * 0.38,
+      Paint()..color = AppColors.mist.withValues(alpha: 0.95),
+    );
+    canvas.drawCircle(
+      Offset(size.width * 0.72, size.height * 0.28),
+      size.shortestSide * 0.16,
+      Paint()..color = AppColors.apricot.withValues(alpha: 0.16),
     );
   }
 

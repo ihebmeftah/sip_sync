@@ -1,0 +1,8 @@
+### An active table confirmed from a customer QR scan. No order state.
+class: CustomerSeatedTable
+fields:
+  buildingId: UuidValue
+  tableId: UuidValue
+  number: int
+  maxSeats: int
+  venueName: String

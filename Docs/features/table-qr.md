@@ -4,7 +4,7 @@ Status: in progress
 
 ## Apps
 
-`managment` only (client-side PDF + camera scan). No new server endpoints.
+`managment` prints and scans stickers for orders. `sip_sync_flutter` scans the same sticker so a customer opens the venue already seated. `CustomerVenue.resolveTable` confirms the table is active.
 
 ## Actors and permissions
 
@@ -22,6 +22,7 @@ Status: in progress
      - `allowAppendingItemsToOrder` off → snackbar (`orderAppendArticlesDisabled`) and **close** the scanner (return to Tables) so the same QR cannot re-fire.
      - `allowAppendingItemsToOrder` on → success snackbar → **append** article picker for the open progress order on that table.
 4. Invalid / wrong building / unknown / inactive → one snackbar and close the scanner.
+5. A signed-in customer uses **Scan table** on the venue list, or **Change table** on a venue page. The same payload is sent to `CustomerVenue.resolveTable`. A match opens that venue and marks the table (occupied tables still match). Changing an existing seat shows a success snackbar. Inactive or unknown codes stay on the camera.
 
 ## Data
 

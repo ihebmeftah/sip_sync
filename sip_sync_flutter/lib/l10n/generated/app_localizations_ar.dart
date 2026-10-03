@@ -248,4 +248,249 @@ class AppLocalizationsAr extends AppLocalizations {
   String phoneCountryHint(String code) {
     return 'الدولة: $code';
   }
+
+  @override
+  String get close => 'إغلاق';
+
+  @override
+  String get back => 'رجوع';
+
+  @override
+  String get menu => 'القائمة';
+
+  @override
+  String availableTables(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count طاولة متاحة',
+      many: '$count طاولة متاحة',
+      few: '$count طاولات متاحة',
+      two: 'طاولتان متاحتان',
+      one: 'طاولة واحدة متاحة',
+      zero: 'لا توجد طاولات متاحة',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get previewCategories => 'أبرز الفئات';
+
+  @override
+  String get previewArticles => 'أبرز الأطباق';
+
+  @override
+  String articleCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count طبق',
+      many: '$count طبقاً',
+      few: '$count أطباق',
+      two: 'طبقان',
+      one: 'طبق واحد',
+      zero: 'لا أطباق',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get emptyMenuPreview => 'لا شيء في القائمة بعد.';
+
+  @override
+  String get emptyMenu => 'لم تنشر هذه الدار قائمة بعد.';
+
+  @override
+  String get emptyMenuSection => 'لا شيء في هذا القسم بعد.';
+
+  @override
+  String get seeAll => 'عرض الكل';
+
+  @override
+  String tableNumber(int number) {
+    return 'طاولة $number';
+  }
+
+  @override
+  String get discoveryTab => 'استكشاف';
+
+  @override
+  String get ordersTab => 'الطلبات';
+
+  @override
+  String get filterToday => 'اليوم';
+
+  @override
+  String get filterLastWeek => 'الأسبوع الماضي';
+
+  @override
+  String get filterLastMonth => 'الشهر الماضي';
+
+  @override
+  String get emptyOrders => 'لا طلبات في هذه الفترة.';
+
+  @override
+  String orderItemCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count طبق',
+      many: '$count طبقاً',
+      few: '$count أطباق',
+      two: 'طبقان',
+      one: 'طبق واحد',
+      zero: 'لا أطباق',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get orderStatusProgress => 'قيد التنفيذ';
+
+  @override
+  String get orderStatusPayed => 'مدفوع';
+
+  @override
+  String get orderStatusCancelled => 'ملغى';
+
+  @override
+  String get openOrderNote => 'طلب قيد التنفيذ';
+
+  @override
+  String get itemStatusPicked => 'في المطبخ';
+
+  @override
+  String get itemStatusReady => 'جاهز';
+
+  @override
+  String get itemStatusServed => 'تم التقديم';
+
+  @override
+  String get scanTable => 'مسح الطاولة';
+
+  @override
+  String get changeTable => 'تغيير الطاولة';
+
+  @override
+  String get scanTableHint => 'وجّه الكاميرا إلى رمز QR على طاولتك.';
+
+  @override
+  String get tableScanInvalid => 'هذا الرمز ليس رمز طاولة في Sip Sync.';
+
+  @override
+  String get tableScanUnknown => 'هذا الرمز لا يطابق طاولة نشطة.';
+
+  @override
+  String get tableScanCamera =>
+      'الكاميرا غير متاحة. اسمح بالوصول ثم أعد المحاولة.';
+
+  @override
+  String get yourTable => 'طاولتك';
+
+  @override
+  String seatedAt(int number) {
+    return 'أنت على الطاولة $number';
+  }
+
+  @override
+  String tableChanged(int number) {
+    return 'تم تغيير الطاولة. أنت الآن على الطاولة $number.';
+  }
+
+  @override
+  String get addArticle => 'إضافة';
+
+  @override
+  String get removeArticle => 'إزالة';
+
+  @override
+  String get passOrder => 'إرسال الطلب';
+
+  @override
+  String get yourOrder => 'طلبك';
+
+  @override
+  String get orderEmpty => 'أضف طبقاً قبل إرسال الطلب.';
+
+  @override
+  String get scanTableToOrder => 'امسح رمز QR على طاولتك لإرسال الطلب.';
+
+  @override
+  String cartSummary(int count, String total) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count طبق',
+      many: '$count طبقاً',
+      few: '$count أطباق',
+      two: 'طبقان',
+      one: 'طبق واحد',
+    );
+    return '$_temp0 · $total';
+  }
+
+  @override
+  String get total => 'المجموع';
+
+  @override
+  String get orderSent => 'أُرسل إلى المطبخ';
+
+  @override
+  String orderRef(int ref) {
+    return 'طلب #$ref';
+  }
+
+  @override
+  String lineQuantity(int count, String name) {
+    return '$count × $name';
+  }
+
+  @override
+  String get errorTableOccupied => 'هذه الطاولة لديها طلب مفتوح.';
+
+  @override
+  String get errorInsufficientStock => 'أحد أصناف هذا الطلب لم يعد متاحاً.';
+
+  @override
+  String get errorAppendNotAllowed =>
+      'هذا المكان لا يسمح بإضافة أطباق إلى طلب مفتوح.';
+
+  @override
+  String get currentOrder => 'الطلب الحالي';
+
+  @override
+  String get orderHistory => 'سجل الطلبات';
+
+  @override
+  String get addToOrder => 'إضافة إلى الطلب';
+
+  @override
+  String get scanDisabled => 'المسح غير متاح أثناء وجود طلب قيد التنفيذ.';
+
+  @override
+  String seatCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count مقعد',
+      many: '$count مقعداً',
+      few: '$count مقاعد',
+      two: 'مقعدان',
+      one: 'مقعد واحد',
+      zero: 'لا مقاعد',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get venueTypeCafe => 'مقهى';
+
+  @override
+  String get venueTypeRestaurant => 'مطعم';
+
+  @override
+  String get venueTypeLounge => 'لاونج';
+
+  @override
+  String get venueTypeBar => 'بار';
 }

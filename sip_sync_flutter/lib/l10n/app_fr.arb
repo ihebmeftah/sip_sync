@@ -73,5 +73,87 @@
   "validationPhone": "Saisissez un téléphone avec indicatif, ex. +216…",
   "validationPhoneCountry": "Indicatif non pris en charge. Choisissez un code supporté.",
   "phoneCountryCode": "Indicatif",
-  "phoneCountryHint": "Pays : {code}"
+  "phoneCountryHint": "Pays : {code}",
+  "close": "Fermer",
+  "back": "Retour",
+  "menu": "Menu",
+  "availableTables": "{count, plural, =0{Aucune table libre} =1{1 table libre} other{{count} tables libres}}",
+  "previewCategories": "Catégories phares",
+  "previewArticles": "Plats phares",
+  "articleCount": "{count, plural, =0{Aucun plat} =1{1 plat} other{{count} plats}}",
+  "emptyMenuPreview": "Rien au menu pour le moment.",
+  "emptyMenu": "Cette maison n'a pas encore publié de carte.",
+  "emptyMenuSection": "Rien dans cette section pour le moment.",
+  "seeAll": "Tout voir",
+  "tableNumber": "Table {number}",
+  "discoveryTab": "Découverte",
+  "ordersTab": "Commandes",
+  "filterToday": "Aujourd'hui",
+  "filterLastWeek": "Semaine dernière",
+  "filterLastMonth": "Mois dernier",
+  "emptyOrders": "Aucune commande sur cette période.",
+  "orderItemCount": "{count, plural, =1{1 plat} other{{count} plats}}",
+  "@orderItemCount": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "orderStatusProgress": "En cours",
+  "orderStatusPayed": "Payée",
+  "orderStatusCancelled": "Annulée",
+  "openOrderNote": "Commande en cours",
+  "itemStatusPicked": "En cuisine",
+  "itemStatusReady": "Prêt",
+  "itemStatusServed": "Servi",
+  "scanTable": "Scanner la table",
+  "changeTable": "Changer de table",
+  "scanTableHint": "Pointez la caméra vers le QR de votre table.",
+  "tableScanInvalid": "Ce code n'est pas un QR de table Sip Sync.",
+  "tableScanUnknown": "Ce code ne correspond pas à une table active.",
+  "tableScanCamera": "Caméra indisponible. Autorisez l'accès et réessayez.",
+  "yourTable": "Votre table",
+  "seatedAt": "Vous êtes à la table {number}",
+  "@seatedAt": {
+    "placeholders": { "number": { "type": "int" } }
+  },
+  "tableChanged": "Table changée. Vous êtes maintenant à la table {number}.",
+  "@tableChanged": {
+    "placeholders": { "number": { "type": "int" } }
+  },
+  "addArticle": "Ajouter",
+  "removeArticle": "Retirer",
+  "passOrder": "Passer la commande",
+  "yourOrder": "Votre commande",
+  "orderEmpty": "Ajoutez un plat avant d'envoyer la commande.",
+  "scanTableToOrder": "Scannez le QR de votre table pour envoyer la commande.",
+  "cartSummary": "{count, plural, =1{1 plat} other{{count} plats}} · {total}",
+  "@cartSummary": {
+    "placeholders": {
+      "count": { "type": "int" },
+      "total": { "type": "String" }
+    }
+  },
+  "total": "Total",
+  "orderSent": "Envoyée en cuisine",
+  "orderRef": "Commande n° {ref}",
+  "@orderRef": {
+    "placeholders": { "ref": { "type": "int" } }
+  },
+  "lineQuantity": "{count} × {name}",
+  "@lineQuantity": {
+    "placeholders": {
+      "count": { "type": "int" },
+      "name": { "type": "String" }
+    }
+  },
+  "errorTableOccupied": "Cette table a déjà une commande ouverte.",
+  "errorInsufficientStock": "Un article de cette commande n'est plus disponible.",
+  "errorAppendNotAllowed": "Cette maison n'autorise pas l'ajout de plats à une commande ouverte.",
+  "currentOrder": "Commande en cours",
+  "orderHistory": "Historique",
+  "addToOrder": "Ajouter à la commande",
+  "scanDisabled": "Le scan est indisponible tant qu'une commande est en cours.",
+  "seatCount": "{count, plural, =1{1 place} other{{count} places}}",
+  "venueTypeCafe": "Café",
+  "venueTypeRestaurant": "Restaurant",
+  "venueTypeLounge": "Lounge",
+  "venueTypeBar": "Bar"
 }

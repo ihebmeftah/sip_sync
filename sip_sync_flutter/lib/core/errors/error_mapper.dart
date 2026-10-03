@@ -31,6 +31,18 @@ Failure mapError(Object error) {
       BuildingErrorCode.notFound => 'errorNotFound',
     });
   }
+  if (error is OrderException) {
+    return Failure(switch (error.code) {
+      OrderErrorCode.invalidInput => 'errorInvalidInput',
+      OrderErrorCode.notAuthorized => 'errorNotAuthorized',
+      OrderErrorCode.notFound => 'errorNotFound',
+      OrderErrorCode.insufficientStock => 'errorInsufficientStock',
+      OrderErrorCode.tableOccupied => 'errorTableOccupied',
+      OrderErrorCode.invalidStatus => 'errorGeneric',
+      OrderErrorCode.appendNotAllowed => 'errorAppendNotAllowed',
+      OrderErrorCode.permissionDenied => 'errorNotAuthorized',
+    });
+  }
   if (error is PlaceException) {
     return Failure(switch (error.code) {
       PlaceErrorCode.invalidInput => 'errorInvalidInput',
@@ -56,6 +68,9 @@ String lookupError(dynamic l10n, String key) {
     'errorProfileIncomplete' => l10n.errorProfileIncomplete,
     'errorAccountDisabled' => l10n.errorGeneric,
     'errorPlaceLookup' => l10n.errorPlaceLookup,
+    'errorTableOccupied' => l10n.errorTableOccupied,
+    'errorInsufficientStock' => l10n.errorInsufficientStock,
+    'errorAppendNotAllowed' => l10n.errorAppendNotAllowed,
     'errorLocationDenied' => l10n.errorLocationDenied,
     'errorLocationDisabled' => l10n.errorLocationDisabled,
     'errorLocationFailed' => l10n.errorLocationFailed,

@@ -122,6 +122,14 @@ class DiscoverViewModel extends _$DiscoverViewModel {
     }
   }
 
+  /// Drops a place or venue failure the customer has dismissed.
+  void clearError() {
+    if (state.errorKey == null) {
+      return;
+    }
+    state = state.copyWith(clearError: true);
+  }
+
   void setMode(DiscoverViewMode mode) {
     state = state.copyWith(mode: mode);
   }

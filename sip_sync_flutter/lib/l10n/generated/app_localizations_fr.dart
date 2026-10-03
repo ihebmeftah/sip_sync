@@ -257,4 +257,236 @@ class AppLocalizationsFr extends AppLocalizations {
   String phoneCountryHint(String code) {
     return 'Pays : $code';
   }
+
+  @override
+  String get close => 'Fermer';
+
+  @override
+  String get back => 'Retour';
+
+  @override
+  String get menu => 'Menu';
+
+  @override
+  String availableTables(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count tables libres',
+      one: '1 table libre',
+      zero: 'Aucune table libre',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get previewCategories => 'Catégories phares';
+
+  @override
+  String get previewArticles => 'Plats phares';
+
+  @override
+  String articleCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count plats',
+      one: '1 plat',
+      zero: 'Aucun plat',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get emptyMenuPreview => 'Rien au menu pour le moment.';
+
+  @override
+  String get emptyMenu => 'Cette maison n\'a pas encore publié de carte.';
+
+  @override
+  String get emptyMenuSection => 'Rien dans cette section pour le moment.';
+
+  @override
+  String get seeAll => 'Tout voir';
+
+  @override
+  String tableNumber(int number) {
+    return 'Table $number';
+  }
+
+  @override
+  String get discoveryTab => 'Découverte';
+
+  @override
+  String get ordersTab => 'Commandes';
+
+  @override
+  String get filterToday => 'Aujourd\'hui';
+
+  @override
+  String get filterLastWeek => 'Semaine dernière';
+
+  @override
+  String get filterLastMonth => 'Mois dernier';
+
+  @override
+  String get emptyOrders => 'Aucune commande sur cette période.';
+
+  @override
+  String orderItemCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count plats',
+      one: '1 plat',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get orderStatusProgress => 'En cours';
+
+  @override
+  String get orderStatusPayed => 'Payée';
+
+  @override
+  String get orderStatusCancelled => 'Annulée';
+
+  @override
+  String get openOrderNote => 'Commande en cours';
+
+  @override
+  String get itemStatusPicked => 'En cuisine';
+
+  @override
+  String get itemStatusReady => 'Prêt';
+
+  @override
+  String get itemStatusServed => 'Servi';
+
+  @override
+  String get scanTable => 'Scanner la table';
+
+  @override
+  String get changeTable => 'Changer de table';
+
+  @override
+  String get scanTableHint => 'Pointez la caméra vers le QR de votre table.';
+
+  @override
+  String get tableScanInvalid => 'Ce code n\'est pas un QR de table Sip Sync.';
+
+  @override
+  String get tableScanUnknown =>
+      'Ce code ne correspond pas à une table active.';
+
+  @override
+  String get tableScanCamera =>
+      'Caméra indisponible. Autorisez l\'accès et réessayez.';
+
+  @override
+  String get yourTable => 'Votre table';
+
+  @override
+  String seatedAt(int number) {
+    return 'Vous êtes à la table $number';
+  }
+
+  @override
+  String tableChanged(int number) {
+    return 'Table changée. Vous êtes maintenant à la table $number.';
+  }
+
+  @override
+  String get addArticle => 'Ajouter';
+
+  @override
+  String get removeArticle => 'Retirer';
+
+  @override
+  String get passOrder => 'Passer la commande';
+
+  @override
+  String get yourOrder => 'Votre commande';
+
+  @override
+  String get orderEmpty => 'Ajoutez un plat avant d\'envoyer la commande.';
+
+  @override
+  String get scanTableToOrder =>
+      'Scannez le QR de votre table pour envoyer la commande.';
+
+  @override
+  String cartSummary(int count, String total) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count plats',
+      one: '1 plat',
+    );
+    return '$_temp0 · $total';
+  }
+
+  @override
+  String get total => 'Total';
+
+  @override
+  String get orderSent => 'Envoyée en cuisine';
+
+  @override
+  String orderRef(int ref) {
+    return 'Commande n° $ref';
+  }
+
+  @override
+  String lineQuantity(int count, String name) {
+    return '$count × $name';
+  }
+
+  @override
+  String get errorTableOccupied => 'Cette table a déjà une commande ouverte.';
+
+  @override
+  String get errorInsufficientStock =>
+      'Un article de cette commande n\'est plus disponible.';
+
+  @override
+  String get errorAppendNotAllowed =>
+      'Cette maison n\'autorise pas l\'ajout de plats à une commande ouverte.';
+
+  @override
+  String get currentOrder => 'Commande en cours';
+
+  @override
+  String get orderHistory => 'Historique';
+
+  @override
+  String get addToOrder => 'Ajouter à la commande';
+
+  @override
+  String get scanDisabled =>
+      'Le scan est indisponible tant qu\'une commande est en cours.';
+
+  @override
+  String seatCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count places',
+      one: '1 place',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get venueTypeCafe => 'Café';
+
+  @override
+  String get venueTypeRestaurant => 'Restaurant';
+
+  @override
+  String get venueTypeLounge => 'Lounge';
+
+  @override
+  String get venueTypeBar => 'Bar';
 }

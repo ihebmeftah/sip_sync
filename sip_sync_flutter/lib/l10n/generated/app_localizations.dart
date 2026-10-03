@@ -543,6 +543,354 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Country: {code}'**
   String phoneCountryHint(String code);
+
+  /// No description provided for @close.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get close;
+
+  /// No description provided for @back.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get back;
+
+  /// No description provided for @menu.
+  ///
+  /// In en, this message translates to:
+  /// **'Menu'**
+  String get menu;
+
+  /// No description provided for @availableTables.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No tables free} =1{1 table free} other{{count} tables free}}'**
+  String availableTables(int count);
+
+  /// No description provided for @previewCategories.
+  ///
+  /// In en, this message translates to:
+  /// **'Top categories'**
+  String get previewCategories;
+
+  /// No description provided for @previewArticles.
+  ///
+  /// In en, this message translates to:
+  /// **'Top dishes'**
+  String get previewArticles;
+
+  /// No description provided for @articleCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No dishes} =1{1 dish} other{{count} dishes}}'**
+  String articleCount(int count);
+
+  /// No description provided for @emptyMenuPreview.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing on the menu yet.'**
+  String get emptyMenuPreview;
+
+  /// No description provided for @emptyMenu.
+  ///
+  /// In en, this message translates to:
+  /// **'This house has not published a menu yet.'**
+  String get emptyMenu;
+
+  /// No description provided for @emptyMenuSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing in this section yet.'**
+  String get emptyMenuSection;
+
+  /// No description provided for @seeAll.
+  ///
+  /// In en, this message translates to:
+  /// **'See all'**
+  String get seeAll;
+
+  /// No description provided for @tableNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Table {number}'**
+  String tableNumber(int number);
+
+  /// No description provided for @discoveryTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Discovery'**
+  String get discoveryTab;
+
+  /// No description provided for @ordersTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Orders'**
+  String get ordersTab;
+
+  /// No description provided for @filterToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get filterToday;
+
+  /// No description provided for @filterLastWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'Last week'**
+  String get filterLastWeek;
+
+  /// No description provided for @filterLastMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Last month'**
+  String get filterLastMonth;
+
+  /// No description provided for @emptyOrders.
+  ///
+  /// In en, this message translates to:
+  /// **'No orders in this period.'**
+  String get emptyOrders;
+
+  /// No description provided for @orderItemCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 dish} other{{count} dishes}}'**
+  String orderItemCount(int count);
+
+  /// No description provided for @orderStatusProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'In progress'**
+  String get orderStatusProgress;
+
+  /// No description provided for @orderStatusPayed.
+  ///
+  /// In en, this message translates to:
+  /// **'Paid'**
+  String get orderStatusPayed;
+
+  /// No description provided for @orderStatusCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled'**
+  String get orderStatusCancelled;
+
+  /// No description provided for @openOrderNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Order in progress'**
+  String get openOrderNote;
+
+  /// No description provided for @itemStatusPicked.
+  ///
+  /// In en, this message translates to:
+  /// **'In the kitchen'**
+  String get itemStatusPicked;
+
+  /// No description provided for @itemStatusReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready'**
+  String get itemStatusReady;
+
+  /// No description provided for @itemStatusServed.
+  ///
+  /// In en, this message translates to:
+  /// **'Served'**
+  String get itemStatusServed;
+
+  /// No description provided for @scanTable.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan table'**
+  String get scanTable;
+
+  /// No description provided for @changeTable.
+  ///
+  /// In en, this message translates to:
+  /// **'Change table'**
+  String get changeTable;
+
+  /// No description provided for @scanTableHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Point the camera at the QR code on your table.'**
+  String get scanTableHint;
+
+  /// No description provided for @tableScanInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'This is not a Sip Sync table code.'**
+  String get tableScanInvalid;
+
+  /// No description provided for @tableScanUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'This code is not an active table.'**
+  String get tableScanUnknown;
+
+  /// No description provided for @tableScanCamera.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera is unavailable. Allow camera access and try again.'**
+  String get tableScanCamera;
+
+  /// No description provided for @yourTable.
+  ///
+  /// In en, this message translates to:
+  /// **'Your table'**
+  String get yourTable;
+
+  /// No description provided for @seatedAt.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re at table {number}'**
+  String seatedAt(int number);
+
+  /// No description provided for @tableChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Table changed. You\'re now at table {number}.'**
+  String tableChanged(int number);
+
+  /// No description provided for @addArticle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get addArticle;
+
+  /// No description provided for @removeArticle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get removeArticle;
+
+  /// No description provided for @passOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Pass order'**
+  String get passOrder;
+
+  /// No description provided for @yourOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Your order'**
+  String get yourOrder;
+
+  /// No description provided for @orderEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a dish before sending the order.'**
+  String get orderEmpty;
+
+  /// No description provided for @scanTableToOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan the QR code on your table to send this order.'**
+  String get scanTableToOrder;
+
+  /// No description provided for @cartSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 dish} other{{count} dishes}} · {total}'**
+  String cartSummary(int count, String total);
+
+  /// No description provided for @total.
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get total;
+
+  /// No description provided for @orderSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Sent to the kitchen'**
+  String get orderSent;
+
+  /// No description provided for @orderRef.
+  ///
+  /// In en, this message translates to:
+  /// **'Order #{ref}'**
+  String orderRef(int ref);
+
+  /// No description provided for @lineQuantity.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} × {name}'**
+  String lineQuantity(int count, String name);
+
+  /// No description provided for @errorTableOccupied.
+  ///
+  /// In en, this message translates to:
+  /// **'This table already has an open order.'**
+  String get errorTableOccupied;
+
+  /// No description provided for @errorInsufficientStock.
+  ///
+  /// In en, this message translates to:
+  /// **'Something on this order is no longer available.'**
+  String get errorInsufficientStock;
+
+  /// No description provided for @errorAppendNotAllowed.
+  ///
+  /// In en, this message translates to:
+  /// **'This house does not allow adding dishes to an open order.'**
+  String get errorAppendNotAllowed;
+
+  /// No description provided for @currentOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Current order'**
+  String get currentOrder;
+
+  /// No description provided for @orderHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Order history'**
+  String get orderHistory;
+
+  /// No description provided for @addToOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to order'**
+  String get addToOrder;
+
+  /// No description provided for @scanDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan is unavailable while your order is open.'**
+  String get scanDisabled;
+
+  /// No description provided for @seatCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 seat} other{{count} seats}}'**
+  String seatCount(int count);
+
+  /// No description provided for @venueTypeCafe.
+  ///
+  /// In en, this message translates to:
+  /// **'Café'**
+  String get venueTypeCafe;
+
+  /// No description provided for @venueTypeRestaurant.
+  ///
+  /// In en, this message translates to:
+  /// **'Restaurant'**
+  String get venueTypeRestaurant;
+
+  /// No description provided for @venueTypeLounge.
+  ///
+  /// In en, this message translates to:
+  /// **'Lounge'**
+  String get venueTypeLounge;
+
+  /// No description provided for @venueTypeBar.
+  ///
+  /// In en, this message translates to:
+  /// **'Bar'**
+  String get venueTypeBar;
 }
 
 class _AppLocalizationsDelegate

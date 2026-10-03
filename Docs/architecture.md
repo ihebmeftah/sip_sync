@@ -27,11 +27,11 @@ Each Flutter app extends its own tokens in `lib/core/theme/` (`AppColors`, `AppS
 
 | App | Audience | Palette | Type |
 | --- | --- | --- | --- |
-| `sip_sync_flutter` | customers | cream foam, espresso, terracotta, pistachio | Fraunces + Figtree |
+| `sip_sync_flutter` | customers | daylight paper, apricot, clay, moss; light until a theme switch | Fraunces + Figtree, Google Material Symbols (rounded) |
 | `managment` | owners / staff | olive, sage, sand, parchment (same family in light/dark) | Syne + IBM Plex Sans |
 | `backoffice` | super admin | ice paper, graphite, cyan | Sora + IBM Plex Sans |
 
-Auth uses `AuthShell` (wide split / compact stack). Signed-in `managment` uses `OpsShell` (olive rail / compact drawer). Signed-in `backoffice` uses `ConsoleShell` (graphite rail: Users and Buildings). After login the user must pick a **building**; dashboard, employees, products, POS, and tables stay locked until then. Forms use `TextFormField` validators (`FormValidators`) plus server errors. Primary actions and fields come from `AppFilledButton` / `AppTextField`. Arabic is RTL via `MaterialApp` locales. Light and dark `ThemeData` are selected with `ThemeController`.
+Auth uses `AuthShell` (wide split / compact stack). Signed-in `managment` uses `OpsShell` (olive rail / compact drawer). Signed-in `backoffice` uses `ConsoleShell` (graphite rail: Users and Buildings). After login the user must pick a **building**; dashboard, employees, products, POS, and tables stay locked until then. Forms use `TextFormField` validators (`FormValidators`) plus server errors. On the customer app, a failure that belongs to one field (email taken, phone taken, weak password) is drawn on that field and scrolled into view; other failures use `AppFormMessage`. Primary actions are `AppFilledButton` (full width, spinner while busy) and secondary actions are `AppTonalButton`. Arabic is RTL via `MaterialApp` locales. Management and backoffice select light or dark with `ThemeController`. The customer app stays on the light scheme until a theme switch is added; `AppTheme.dark` is already defined.
 
 ## Local development on a physical phone
 

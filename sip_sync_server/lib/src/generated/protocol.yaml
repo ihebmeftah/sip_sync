@@ -46,6 +46,9 @@ customerPlace:
   - reverse:
 customerVenue:
   - list:
+  - detail:
+  - menu:
+  - resolveTable:
 employeeAccess:
   - list:
   - get:
@@ -70,6 +73,12 @@ menuCategory:
   - list:
   - create:
   - update:
+customerOrder:
+  - place:
+  - list:
+  - get:
+  - current:
+  - append:
 order:
   - list:
   - get:

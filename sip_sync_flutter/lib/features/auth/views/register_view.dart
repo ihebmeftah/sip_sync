@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/errors/error_mapper.dart';
+import '../../../core/errors/form_server_error.dart';
 import '../../../core/errors/form_validators.dart';
 import '../../../core/routing/app_routes.dart';
+import '../../../core/theme/app_icons.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
 import '../../../core/widgets/app_phone_field.dart';
@@ -20,6 +22,10 @@ class RegisterView extends ConsumerStatefulWidget {
 
 class _RegisterViewState extends ConsumerState<RegisterView> {
   final _formKey = GlobalKey<FormState>();
+  final _emailKey = GlobalKey();
+  final _phoneKey = GlobalKey();
+  final _passwordKey = GlobalKey();
+  final _bannerKey = GlobalKey();
   final _email = TextEditingController();
   final _password = TextEditingController();
   final _first = TextEditingController();
@@ -35,11 +41,48 @@ class _RegisterViewState extends ConsumerState<RegisterView> {
     super.dispose();
   }
 
+  void _clearServerError() {
+    if (ref.read(authViewModelProvider).errorKey == null) {
+      return;
+    }
+    ref.read(authViewModelProvider.notifier).clearError();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        _formKey.currentState?.validate();
+      }
+    });
+  }
+
+  void _reveal(String? errorKey) {
+    _formKey.currentState?.validate();
+    final target = FormServerError.email.contains(errorKey)
+        ? _emailKey
+        : FormServerError.phone.contains(errorKey)
+        ? _phoneKey
+        : FormServerError.password.contains(errorKey)
+        ? _passwordKey
+        : _bannerKey;
+    final context = target.currentContext;
+    if (context == null) {
+      return;
+    }
+    Scrollable.ensureVisible(
+      context,
+      alignment: 0.2,
+      duration: const Duration(milliseconds: 280),
+      curve: Curves.easeOutCubic,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final auth = ref.watch(authViewModelProvider);
     final text = Theme.of(context).textTheme;
+    final errorKey = auth.errorKey;
+    final banner = errorKey != null && !FormServerError.isFieldScoped(errorKey)
+        ? lookupError(l10n, errorKey)
+        : null;
     return AuthShell(
       form: Form(
         key: _formKey,
@@ -53,48 +96,90 @@ class _RegisterViewState extends ConsumerState<RegisterView> {
             AppTextField(
               controller: _first,
               label: l10n.firstName,
-              prefixIcon: Icons.person_outline,
+              prefixIcon: AppIcons.person,
               textInputAction: TextInputAction.next,
+              onChanged: (_) => _clearServerError(),
               validator: (value) => FormValidators.requiredName(l10n, value),
             ),
             AppTextField(
               controller: _last,
               label: l10n.lastName,
-              prefixIcon: Icons.badge_outlined,
+              prefixIcon: AppIcons.badge,
               textInputAction: TextInputAction.next,
+              onChanged: (_) => _clearServerError(),
               validator: (value) => FormValidators.requiredName(l10n, value),
             ),
             AppTextField(
+              key: _emailKey,
               controller: _email,
               label: l10n.email,
               keyboardType: TextInputType.emailAddress,
-              prefixIcon: Icons.mail_outline,
+              prefixIcon: AppIcons.mail,
               textInputAction: TextInputAction.next,
-              validator: (value) => FormValidators.email(l10n, value),
+              onChanged: (_) => _clearServerError(),
+              validator: (value) {
+                final local = FormValidators.email(l10n, value);
+                if (local != null) {
+                  return local;
+                }
+                return FormServerError.message(
+                  l10n,
+                  ref.read(authViewModelProvider).errorKey,
+                  FormServerError.email,
+                );
+              },
             ),
             AppPhoneField(
+              key: _phoneKey,
               label: l10n.phone,
               value: _phone,
-              onChanged: (value) => setState(() => _phone = value),
+              serverError: FormServerError.message(
+                l10n,
+                errorKey,
+                FormServerError.phone,
+              ),
+              onChanged: (value) {
+                setState(() => _phone = value);
+                _clearServerError();
+              },
             ),
             AppTextField(
+              key: _passwordKey,
               controller: _password,
               label: l10n.password,
               obscure: true,
-              prefixIcon: Icons.lock_outline,
+              prefixIcon: AppIcons.lock,
               textInputAction: TextInputAction.done,
-              validator: (value) => FormValidators.password(l10n, value),
+              onChanged: (_) => _clearServerError(),
+              validator: (value) {
+                final local = FormValidators.password(l10n, value);
+                if (local != null) {
+                  return local;
+                }
+                return FormServerError.message(
+                  l10n,
+                  ref.read(authViewModelProvider).errorKey,
+                  FormServerError.password,
+                );
+              },
             ),
-            if (auth.errorKey != null)
-              AppErrorBanner(message: lookupError(l10n, auth.errorKey!)),
+            KeyedSubtree(
+              key: _bannerKey,
+              child: AppFormMessage(
+                message: banner,
+                onDismiss: () =>
+                    ref.read(authViewModelProvider.notifier).clearError(),
+              ),
+            ),
             AppFilledButton(
               label: l10n.register,
               busy: auth.isLoading,
               onPressed: () async {
+                FocusManager.instance.primaryFocus?.unfocus();
                 if (!(_formKey.currentState?.validate() ?? false)) {
                   return;
                 }
-                await ref
+                final ok = await ref
                     .read(authViewModelProvider.notifier)
                     .register(
                       email: _email.text.trim(),
@@ -103,6 +188,15 @@ class _RegisterViewState extends ConsumerState<RegisterView> {
                       firstName: _first.text.trim(),
                       lastName: _last.text.trim(),
                     );
+                if (!mounted || ok) {
+                  return;
+                }
+                final failure = ref.read(authViewModelProvider).errorKey;
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  if (mounted) {
+                    _reveal(failure);
+                  }
+                });
               },
             ),
             const SizedBox(height: AppSpacing.sm),

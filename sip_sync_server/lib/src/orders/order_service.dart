@@ -106,6 +106,209 @@ class OrderService {
     return get(session, order.id!);
   }
 
+  /// Customer places an order at an active table they scanned.
+  ///
+  /// Reuses stock, ticket numbers, and the one-open-order table rule.
+  /// The receipt hides staff attribution.
+  Future<CustomerOrderView> placeForCustomer(
+    Session session,
+    CustomerOrderPlace request,
+  ) async {
+    final ctx = _requireCustomer(session);
+    final lines = _customerLines(request.items);
+    final table = await _requireActiveTable(
+      session,
+      request.buildingId,
+      request.tableId,
+    );
+    await _assertTableAcceptsNewOrder(
+      session,
+      buildingId: request.buildingId,
+      tableId: table.id,
+    );
+    final articles = await _resolveArticles(
+      session,
+      request.buildingId,
+      lines,
+    );
+    await _syncIngredientStock(
+      session,
+      buildingId: request.buildingId,
+      articleIds: articles.map((article) => article.id!).toList(),
+      deduct: true,
+    );
+    final now = DateTime.now().toUtc();
+    final orderRef = await _nextOrderRef(session, request.buildingId);
+    final order = await VenueOrder.db.insertRow(
+      session,
+      VenueOrder(
+        buildingId: request.buildingId,
+        venueTableId: table.id,
+        ref: orderRef,
+        status: OrderStatus.progress,
+        launchedByType: ctx.actorType,
+        launchedById: ctx.actorId,
+        createdAt: now,
+        updatedAt: now,
+      ),
+    );
+    await _insertResolvedLines(session, order, articles, now, ctx);
+    return getForCustomer(session, order.id!);
+  }
+
+  /// This customer's orders in `[from, to)`, newest first, across venues.
+  ///
+  /// The window is capped at 62 days so the history tabs stay day, week,
+  /// and month.
+  Future<List<CustomerOrderSummary>> listForCustomer(
+    Session session,
+    DateTime from,
+    DateTime to,
+  ) async {
+    final ctx = _requireCustomer(session);
+    if (!to.isAfter(from) || to.difference(from) > const Duration(days: 62)) {
+      throw OrderException(
+        message: 'Order history window is not valid.',
+        code: OrderErrorCode.invalidInput,
+      );
+    }
+    final rows = await VenueOrder.db.find(
+      session,
+      where: (t) =>
+          t.launchedByType.equals(ActorType.customer) &
+          t.launchedById.equals(ctx.actorId) &
+          (t.createdAt >= from) &
+          (t.createdAt < to),
+      orderBy: (t) => t.createdAt.desc(),
+      include: VenueOrder.include(
+        building: Building.include(),
+        venueTable: VenueTable.include(),
+        items: VenueOrderItem.includeList(),
+      ),
+    );
+    return [
+      for (final row in rows)
+        if (row.id != null)
+          CustomerOrderSummary(
+            id: row.id!,
+            buildingId: row.buildingId,
+            venueName: row.building?.name ?? '',
+            ref: row.ref,
+            tableNumber: row.venueTable?.number ?? 0,
+            currencyCode: row.building?.currencyCode ?? '',
+            status: row.status,
+            itemCount: row.items?.length ?? 0,
+            totalAmount: (row.items ?? const <VenueOrderItem>[]).fold<double>(
+              0,
+              (sum, item) => sum + item.unitPrice,
+            ),
+            createdAt: row.createdAt,
+          ),
+    ];
+  }
+
+  /// One order this customer launched. Other orders look missing.
+  Future<CustomerOrderView> getForCustomer(
+    Session session,
+    UuidValue orderId,
+  ) async {
+    final ctx = _requireCustomer(session);
+    final order = await _loadOrder(session, orderId);
+    final owns =
+        order.launchedByType == ActorType.customer &&
+        order.launchedById == ctx.actorId;
+    if (!owns) {
+      throw OrderException(
+        message: 'Order not found.',
+        code: OrderErrorCode.notFound,
+      );
+    }
+    final building = await Building.db.findById(session, order.buildingId);
+    if (building == null) {
+      throw OrderException(
+        message: 'Building not found.',
+        code: OrderErrorCode.notFound,
+      );
+    }
+    return _customerView(order, building.currencyCode);
+  }
+
+  /// Newest in-progress order for this customer, across venues.
+  Future<CustomerOrderView?> currentForCustomer(Session session) async {
+    final ctx = _requireCustomer(session);
+    final row = await VenueOrder.db.findFirstRow(
+      session,
+      where: (t) =>
+          t.launchedByType.equals(ActorType.customer) &
+          t.launchedById.equals(ctx.actorId) &
+          t.status.equals(OrderStatus.progress),
+      orderBy: (t) => t.createdAt.desc(),
+      include: VenueOrder.include(
+        building: Building.include(),
+        venueTable: VenueTable.include(),
+        items: VenueOrderItem.includeList(
+          orderBy: (t) => t.createdAt,
+        ),
+      ),
+    );
+    if (row == null || row.id == null) {
+      return null;
+    }
+    return _customerView(row, row.building?.currencyCode ?? '');
+  }
+
+  /// Adds units to an order this customer still has open.
+  Future<CustomerOrderView> appendForCustomer(
+    Session session,
+    CustomerOrderAppend request,
+  ) async {
+    final ctx = _requireCustomer(session);
+    final order = await _loadOrder(session, request.orderId);
+    final owns =
+        order.launchedByType == ActorType.customer &&
+        order.launchedById == ctx.actorId;
+    if (!owns) {
+      throw OrderException(
+        message: 'Order not found.',
+        code: OrderErrorCode.notFound,
+      );
+    }
+    if (order.status != OrderStatus.progress) {
+      throw OrderException(
+        message: 'Only an open order can take more dishes.',
+        code: OrderErrorCode.invalidStatus,
+      );
+    }
+    final building = await Building.db.findById(session, order.buildingId);
+    if (building == null) {
+      throw OrderException(
+        message: 'Building not found.',
+        code: OrderErrorCode.notFound,
+      );
+    }
+    if (!building.allowAppendingItemsToOrder) {
+      throw OrderException(
+        message: 'Appending articles to this order is not allowed.',
+        code: OrderErrorCode.appendNotAllowed,
+      );
+    }
+    final lines = _customerLines(request.items);
+    final articles = await _resolveArticles(session, order.buildingId, lines);
+    await _syncIngredientStock(
+      session,
+      buildingId: order.buildingId,
+      articleIds: articles.map((article) => article.id!).toList(),
+      deduct: true,
+    );
+    final now = DateTime.now().toUtc();
+    await _insertResolvedLines(session, order, articles, now, ctx);
+    await VenueOrder.db.updateRow(
+      session,
+      order.copyWith(updatedAt: now),
+    );
+    return getForCustomer(session, order.id!);
+  }
+
   /// Adds lines to an open order.
   Future<OrderView> addItems(Session session, OrderAddItems request) async {
     final ctx = AuthGuard.requireAny(session);
@@ -407,6 +610,66 @@ class OrderService {
         ingredient.copyWith(currentStock: next),
       );
     }
+  }
+
+  AuthContext _requireCustomer(Session session) {
+    final ctx = AuthGuard.requireAny(session);
+    if (ctx.actorType != ActorType.customer) {
+      throw AccountException(
+        message: 'Only customers can perform this action.',
+        code: AccountErrorCode.notAuthorized,
+      );
+    }
+    return ctx;
+  }
+
+  /// Each request item is already one unit, same as [OrderItemCreateLine].
+  List<OrderItemCreateLine> _customerLines(List<CustomerOrderItem> items) {
+    return _validateLines([
+      for (final item in items) OrderItemCreateLine(articleId: item.articleId),
+    ]);
+  }
+
+  Future<VenueTable> _requireActiveTable(
+    Session session,
+    UuidValue buildingId,
+    UuidValue tableId,
+  ) async {
+    final table = await VenueTable.db.findById(session, tableId);
+    if (table == null ||
+        table.id == null ||
+        table.buildingId != buildingId ||
+        !table.isActive) {
+      throw OrderException(
+        message: 'Table not found in this building.',
+        code: OrderErrorCode.notFound,
+      );
+    }
+    return table;
+  }
+
+  CustomerOrderView _customerView(VenueOrder order, String currencyCode) {
+    final lines = [
+      for (final item in order.items ?? const <VenueOrderItem>[])
+        CustomerOrderLine(
+          id: item.id!,
+          articleId: item.articleId,
+          name: item.articleName,
+          unitPrice: item.unitPrice,
+          status: item.status,
+        ),
+    ];
+    final total = lines.fold<double>(0, (sum, line) => sum + line.unitPrice);
+    return CustomerOrderView(
+      id: order.id!,
+      buildingId: order.buildingId,
+      ref: order.ref,
+      tableNumber: order.venueTable?.number ?? 0,
+      currencyCode: currencyCode,
+      status: order.status,
+      lines: lines,
+      totalAmount: total,
+    );
   }
 
   List<OrderItemCreateLine> _validateLines(List<OrderItemCreateLine> items) {

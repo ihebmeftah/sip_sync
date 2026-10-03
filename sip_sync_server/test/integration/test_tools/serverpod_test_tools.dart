@@ -61,8 +61,14 @@ import 'package:sip_sync_server/src/generated/buildings/dtos/building_update.dar
     as _ikeccdvf;
 import 'package:sip_sync_server/src/generated/buildings/dtos/building_view.dart'
     as _ihha274w;
+import 'package:sip_sync_server/src/generated/discovery/dtos/customer_menu.dart'
+    as _inirmmjl;
+import 'package:sip_sync_server/src/generated/discovery/dtos/customer_seated_table.dart'
+    as _if8zdks2;
 import 'package:sip_sync_server/src/generated/discovery/dtos/customer_venue_card.dart'
     as _ik4e6xte;
+import 'package:sip_sync_server/src/generated/discovery/dtos/customer_venue_detail.dart'
+    as _i50xcjlc;
 import 'package:sip_sync_server/src/generated/discovery/dtos/place_hit.dart'
     as _ibuzraci;
 import 'package:sip_sync_server/src/generated/employee_access/dtos/employee_access_create.dart'
@@ -95,6 +101,14 @@ import 'package:sip_sync_server/src/generated/menu/dtos/menu_category_update.dar
     as _i8wyftia;
 import 'package:sip_sync_server/src/generated/menu/dtos/menu_category_view.dart'
     as _i87rh1jz;
+import 'package:sip_sync_server/src/generated/orders/dtos/customer_order_append.dart'
+    as _ixtfjwlp;
+import 'package:sip_sync_server/src/generated/orders/dtos/customer_order_place.dart'
+    as _iyljqgq2;
+import 'package:sip_sync_server/src/generated/orders/dtos/customer_order_summary.dart'
+    as _ivmn58qf;
+import 'package:sip_sync_server/src/generated/orders/dtos/customer_order_view.dart'
+    as _i43y7jrp;
 import 'package:sip_sync_server/src/generated/orders/dtos/order_add_items.dart'
     as _im5ws0jm;
 import 'package:sip_sync_server/src/generated/orders/dtos/order_create.dart'
@@ -272,6 +286,8 @@ class TestEndpoints {
 
   late final _MenuCategoryEndpoint menuCategory;
 
+  late final _CustomerOrderEndpoint customerOrder;
+
   late final _OrderEndpoint order;
 
   late final _VenueTableEndpoint venueTable;
@@ -333,6 +349,10 @@ class _InternalTestEndpoints extends TestEndpoints
       serializationManager,
     );
     menuCategory = _MenuCategoryEndpoint(
+      endpoints,
+      serializationManager,
+    );
+    customerOrder = _CustomerOrderEndpoint(
       endpoints,
       serializationManager,
     );
@@ -1664,6 +1684,105 @@ class _CustomerVenueEndpoint {
       }
     });
   }
+
+  _ida.Future<_i50xcjlc.CustomerVenueDetail> detail(
+    _ist.TestSessionBuilder sessionBuilder,
+    _is.UuidValue buildingId,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'customerVenue',
+            method: 'detail',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'customerVenue',
+          methodName: 'detail',
+          parameters: _ist.testObjectToJson({'buildingId': buildingId}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_i50xcjlc.CustomerVenueDetail>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<_inirmmjl.CustomerMenu> menu(
+    _ist.TestSessionBuilder sessionBuilder,
+    _is.UuidValue buildingId,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'customerVenue',
+            method: 'menu',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'customerVenue',
+          methodName: 'menu',
+          parameters: _ist.testObjectToJson({'buildingId': buildingId}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_inirmmjl.CustomerMenu>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<_if8zdks2.CustomerSeatedTable> resolveTable(
+    _ist.TestSessionBuilder sessionBuilder,
+    _is.UuidValue buildingId,
+    _is.UuidValue tableId,
+    int number,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'customerVenue',
+            method: 'resolveTable',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'customerVenue',
+          methodName: 'resolveTable',
+          parameters: _ist.testObjectToJson({
+            'buildingId': buildingId,
+            'tableId': tableId,
+            'number': number,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_if8zdks2.CustomerSeatedTable>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
 }
 
 class _EmployeeAccessEndpoint {
@@ -2302,6 +2421,175 @@ class _MenuCategoryEndpoint {
                   _localCallContext.arguments,
                 )
                 as _ida.Future<_i87rh1jz.MenuCategoryView>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+}
+
+class _CustomerOrderEndpoint {
+  _CustomerOrderEndpoint(
+    this._endpointDispatch,
+    this._serializationManager,
+  );
+
+  final _is.EndpointDispatch _endpointDispatch;
+
+  final _is.SerializationManager _serializationManager;
+
+  _ida.Future<_i43y7jrp.CustomerOrderView> place(
+    _ist.TestSessionBuilder sessionBuilder,
+    _iyljqgq2.CustomerOrderPlace request,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'customerOrder',
+            method: 'place',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'customerOrder',
+          methodName: 'place',
+          parameters: _ist.testObjectToJson({'request': request}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_i43y7jrp.CustomerOrderView>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<List<_ivmn58qf.CustomerOrderSummary>> list(
+    _ist.TestSessionBuilder sessionBuilder,
+    DateTime from,
+    DateTime to,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'customerOrder',
+            method: 'list',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'customerOrder',
+          methodName: 'list',
+          parameters: _ist.testObjectToJson({
+            'from': from,
+            'to': to,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<List<_ivmn58qf.CustomerOrderSummary>>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<_i43y7jrp.CustomerOrderView> get(
+    _ist.TestSessionBuilder sessionBuilder,
+    _is.UuidValue orderId,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'customerOrder',
+            method: 'get',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'customerOrder',
+          methodName: 'get',
+          parameters: _ist.testObjectToJson({'orderId': orderId}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_i43y7jrp.CustomerOrderView>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<_i43y7jrp.CustomerOrderView?> current(
+    _ist.TestSessionBuilder sessionBuilder,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'customerOrder',
+            method: 'current',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'customerOrder',
+          methodName: 'current',
+          parameters: _ist.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_i43y7jrp.CustomerOrderView?>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<_i43y7jrp.CustomerOrderView> append(
+    _ist.TestSessionBuilder sessionBuilder,
+    _ixtfjwlp.CustomerOrderAppend request,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'customerOrder',
+            method: 'append',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'customerOrder',
+          methodName: 'append',
+          parameters: _ist.testObjectToJson({'request': request}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_i43y7jrp.CustomerOrderView>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();

@@ -5,6 +5,7 @@ import 'package:sealed_countries/sealed_countries.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../errors/form_validators.dart';
 import '../phone/phone_numbers.dart';
+import '../theme/app_icons.dart';
 import '../theme/app_tokens.dart';
 import 'app_controls.dart';
 
@@ -15,11 +16,15 @@ class AppPhoneField extends StatefulWidget {
     required this.label,
     required this.value,
     required this.onChanged,
+    this.serverError,
   });
 
   final String label;
   final String value;
   final ValueChanged<String> onChanged;
+
+  /// Already localized. Shown after the local phone checks pass.
+  final String? serverError;
 
   @override
   State<AppPhoneField> createState() => _AppPhoneFieldState();
@@ -82,7 +87,7 @@ class _AppPhoneFieldState extends State<AppPhoneField> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
-            width: 132,
+            width: 118,
             child: AppDropdownField<String>(
               label: l10n.phoneCountryCode,
               value: _country.codeShort,
@@ -116,16 +121,22 @@ class _AppPhoneFieldState extends State<AppPhoneField> {
               helperText: l10n.phoneCountryHint(
                 '${_country.emoji} ${_country.name.common} (+$dial)',
               ),
-              prefixIcon: Icons.phone_outlined,
+              prefixIcon: AppIcons.phone,
               compact: true,
               keyboardType: TextInputType.phone,
               textInputAction: TextInputAction.next,
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               onChanged: (_) => _emit(),
-              validator: (value) => FormValidators.phone(
-                l10n,
-                PhoneNumbers.compose(_country, value ?? ''),
-              ),
+              validator: (value) {
+                final local = FormValidators.phone(
+                  l10n,
+                  PhoneNumbers.compose(_country, value ?? ''),
+                );
+                if (local != null) {
+                  return local;
+                }
+                return widget.serverError;
+              },
             ),
           ),
         ],

@@ -16,19 +16,27 @@ Status: in progress
 
 1. First launch while signed out shows onboarding once (`shared_preferences`). Skip and Get started both mark it done and open sign-in. A customer who already has a session skips onboarding.
 2. Sign-in or register success opens home.
-3. Home asks for a place: type an address (suggestions) or use the device position. The chosen label stays in the place bar.
-4. Venues sort nearest first. Default filter is 15 km, with a control to show every venue. Each row shows name, type, address, distance in km, and an approximate walk time (straight line at 4.8 km/h, not a road route).
-5. The same screen switches to an OpenStreetMap view (public OSM tiles plus attribution). The user’s place and each venue are marked. Selecting a card or marker shows that venue. No menu or order in this flow.
+3. Home asks for a place: type an address (suggestions) or tap the location icon at the end of that field. The chosen label stays in the place bar.
+4. Venues sort nearest first. Default filter is 15 km, with a control to show every venue. Each card shows a type icon, name, localized type, address, hours, distance in km, and an approximate walk time (straight line at 4.8 km/h, not a road route). The list fills the space under the place bar. On a short window the page scrolls and the list keeps a fixed height so the header never overflows.
+5. On a narrow window the same screen switches to an OpenStreetMap view (public OSM tiles plus attribution). From 840 dp wide, the list and the map sit side by side. The user’s place and each venue are marked. A marker shows that venue in a card along the bottom edge, so the map stays visible. Tapping a list card, or that map card, opens the venue page.
+6. The venue page shows the public card fields, how many tables are free, and those tables by number and seats. The free-table band is green. Up to five categories and five articles follow, in a short row. Ranking uses non-cancelled lines on non-cancelled orders. A house with no orders yet shows the first five in catalog order. Each row ends with See all, and a Menu button does the same: the full menu, with a category rail whose labels are centered. Articles list ingredient names as `Mint . Lemon` when the recipe has lines, and a photo slot is reserved until images exist. Empty sections stay so the catalog shape stays visible.
+7. On the menu, **+** and **−** build a selection. A bar at the bottom shows the count and preview total. **Pass order** opens the review: dishes, prices, and the scanned table. With no table for this venue, the review asks for a QR scan and returns here. **Pass order** then sends the cart. The receipt shows the ticket number, table, and server prices. See [orders](orders.md).
+8. **Scan table** sits at the bottom of the buildings screen. A valid sticker (`sipsync:table:v1:…`) is checked on the server, then the venue page opens with that table marked as the seat, including when the table is already occupied. An inactive, unknown, or mismatched code stays on the camera with an error. The venue page can scan again to change the seat; a successful change shows a snackbar. The seat lasts for the app session and is the table used when the customer passes an order. While that customer has an order in progress, scan is disabled. The buildings list and map stay on screen. Past orders stay on **Order history**. See [orders](orders.md).
 
 Address search and reverse geocoding go through the server, which calls Nominatim. The browser cannot call Nominatim directly (CORS). The client waits about half a second between searches.
 
 ## Data
 
-- No new tables. Reads `building`.
+- No new tables. Reads `building`, active `venue_table` rows, `menu_category`, `menu_article`, `article_composition`, `ingredient` names, and non-cancelled `venue_order` / `venue_order_item` rows.
+- A table is free when it is active and no order in progress is seated there. Inactive tables are not free. The list is number and seats only.
+- Ingredient names are recipe order. Quantities, units, and stock stay off this API.
 - `CustomerVenueCard`: id, name, type, address, latitude, longitude, opening and closing minutes, phone.
+- `CustomerVenueDetail`: that card, currency, free-table count and list, up to five categories (with article count), up to five articles (with price and ingredient names).
+- `CustomerMenu`: currency and every category in creation order, each with its articles. Empty categories stay.
 - `PlaceHit`: label, latitude, longitude.
-- Endpoints: `CustomerVenue.list`, `CustomerPlace.search`, `CustomerPlace.reverse`.
-- Exceptions: `PlaceException` (`invalidInput`, `lookupFailed`, `notFound`). Auth failures use `AccountException`.
+- `CustomerSeatedTable`: building id, table id, number, seats, venue name. Returned only after the sticker matches an active table.
+- Endpoints: `CustomerVenue.list`, `CustomerVenue.detail`, `CustomerVenue.menu`, `CustomerVenue.resolveTable`, `CustomerPlace.search`, `CustomerPlace.reverse`.
+- A missing building is `BuildingException` / `notFound`. Auth failures use `AccountException`. Place failures use `PlaceException` (`invalidInput`, `lookupFailed`, `notFound`).
 
 ## Realtime
 

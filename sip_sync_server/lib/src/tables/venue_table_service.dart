@@ -32,15 +32,12 @@ class VenueTableService {
     final views = rows.map((row) => _view(row, occupiedIds)).toList();
     return switch (filter) {
       TableListFilter.all || TableListFilter.inactive => views,
-      TableListFilter.available => views
-          .where((t) => t.status == TableFloorStatus.available)
-          .toList(),
-      TableListFilter.occupied => views
-          .where((t) => t.status == TableFloorStatus.occupied)
-          .toList(),
-      TableListFilter.reserved => views
-          .where((t) => t.status == TableFloorStatus.reserved)
-          .toList(),
+      TableListFilter.available =>
+        views.where((t) => t.status == TableFloorStatus.available).toList(),
+      TableListFilter.occupied =>
+        views.where((t) => t.status == TableFloorStatus.occupied).toList(),
+      TableListFilter.reserved =>
+        views.where((t) => t.status == TableFloorStatus.reserved).toList(),
     };
   }
 

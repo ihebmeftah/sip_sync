@@ -4,40 +4,119 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../di/locale_controller.dart';
 import '../../l10n/generated/app_localizations.dart';
+import '../theme/app_icons.dart';
 import '../theme/app_tokens.dart';
 
+/// Primary action. Stays full width unless [expand] is false.
+///
+/// While [busy] is true the control keeps its enabled color and ignores taps,
+/// so a server round-trip does not flash a disabled grey button.
 class AppFilledButton extends StatelessWidget {
   const AppFilledButton({
     super.key,
     required this.label,
     required this.onPressed,
     this.busy = false,
+    this.icon,
+    this.expand = true,
   });
 
   final String label;
   final VoidCallback? onPressed;
   final bool busy;
+  final IconData? icon;
+  final bool expand;
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    return SizedBox(
-      width: double.infinity,
-      child: FilledButton(
-        onPressed: busy ? null : onPressed,
-        child: busy
-            ? SizedBox(
-                height: 22,
-                width: 22,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2.4,
-                  color: scheme.onPrimary,
-                ),
-              )
-            : Text(label),
-      ),
+    final button = _actionButton(
+      context,
+      tonal: false,
+      onPressed: busy ? () {} : onPressed,
+      busy: busy,
+      icon: icon,
+      label: label,
     );
+    if (!expand) {
+      return button;
+    }
+    return SizedBox(width: double.infinity, child: button);
   }
+}
+
+/// Quieter action for secondary steps such as using the device location.
+class AppTonalButton extends StatelessWidget {
+  const AppTonalButton({
+    super.key,
+    required this.label,
+    required this.onPressed,
+    this.busy = false,
+    this.icon,
+    this.expand = true,
+  });
+
+  final String label;
+  final VoidCallback? onPressed;
+  final bool busy;
+  final IconData? icon;
+  final bool expand;
+
+  @override
+  Widget build(BuildContext context) {
+    final button = _actionButton(
+      context,
+      tonal: true,
+      onPressed: busy ? () {} : onPressed,
+      busy: busy,
+      icon: icon,
+      label: label,
+    );
+    if (!expand) {
+      return button;
+    }
+    return SizedBox(width: double.infinity, child: button);
+  }
+}
+
+Widget _actionButton(
+  BuildContext context, {
+  required bool tonal,
+  required VoidCallback? onPressed,
+  required bool busy,
+  required IconData? icon,
+  required String label,
+}) {
+  final scheme = Theme.of(context).colorScheme;
+  final spinner = SizedBox(
+    height: 20,
+    width: 20,
+    child: CircularProgressIndicator(
+      strokeWidth: 2.4,
+      color: tonal ? scheme.onSecondaryContainer : scheme.onPrimary,
+    ),
+  );
+  final text = Text(
+    label,
+    maxLines: 1,
+    overflow: TextOverflow.ellipsis,
+  );
+  if (busy || icon == null) {
+    final child = busy ? spinner : text;
+    return tonal
+        ? FilledButton.tonal(onPressed: onPressed, child: child)
+        : FilledButton(onPressed: onPressed, child: child);
+  }
+  return tonal
+      ? FilledButton.tonalIcon(
+          onPressed: onPressed,
+          icon: Icon(icon, size: 20),
+          label: text,
+        )
+      : FilledButton.icon(
+          onPressed: onPressed,
+          icon: Icon(icon, size: 20),
+          label: text,
+        );
 }
 
 class AppTextField extends StatefulWidget {
@@ -93,6 +172,8 @@ class _AppTextFieldState extends State<AppTextField> {
         decoration: InputDecoration(
           labelText: widget.label,
           helperText: widget.helperText,
+          errorMaxLines: 3,
+          helperMaxLines: 2,
           prefixIcon: widget.prefixIcon == null
               ? null
               : Icon(widget.prefixIcon),
@@ -101,9 +182,7 @@ class _AppTextFieldState extends State<AppTextField> {
                   tooltip: _hidden ? l10n.showPassword : l10n.hidePassword,
                   onPressed: () => setState(() => _hidden = !_hidden),
                   icon: Icon(
-                    _hidden
-                        ? Icons.visibility_outlined
-                        : Icons.visibility_off_outlined,
+                    _hidden ? AppIcons.visibility : AppIcons.visibilityOff,
                   ),
                 )
               : null,
@@ -145,32 +224,82 @@ class AppDropdownField<T> extends StatelessWidget {
   }
 }
 
+/// Inline failure from the server or a blocked action.
 class AppErrorBanner extends StatelessWidget {
-  const AppErrorBanner({super.key, required this.message});
+  const AppErrorBanner({super.key, required this.message, this.onDismiss});
 
   final String message;
+  final VoidCallback? onDismiss;
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+    final text = Theme.of(context).textTheme;
     return Padding(
       padding: const EdgeInsets.only(bottom: AppSpacing.lg),
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: scheme.error.withValues(alpha: 0.08),
-          borderRadius: BorderRadius.circular(AppRadii.sm),
-          border: Border.all(color: scheme.error.withValues(alpha: 0.35)),
+          borderRadius: BorderRadius.circular(AppRadii.md),
+          border: Border.all(color: scheme.error.withValues(alpha: 0.28)),
         ),
         child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.md),
-          child: Text(
-            message,
-            style: Theme.of(
-              context,
-            ).textTheme.bodyMedium?.copyWith(color: scheme.error),
+          padding: const EdgeInsetsDirectional.fromSTEB(
+            AppSpacing.md,
+            AppSpacing.sm,
+            AppSpacing.xs,
+            AppSpacing.sm,
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 2),
+                child: Icon(AppIcons.error, size: 20, color: scheme.error),
+              ),
+              const SizedBox(width: AppSpacing.sm),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 2),
+                  child: Text(
+                    message,
+                    style: text.bodyMedium?.copyWith(
+                      color: scheme.error,
+                      height: 1.35,
+                    ),
+                  ),
+                ),
+              ),
+              if (onDismiss != null)
+                IconButton(
+                  visualDensity: VisualDensity.compact,
+                  onPressed: onDismiss,
+                  icon: Icon(AppIcons.close, size: 18, color: scheme.error),
+                ),
+            ],
           ),
         ),
       ),
+    );
+  }
+}
+
+/// Grows and shrinks when a server message appears or clears.
+class AppFormMessage extends StatelessWidget {
+  const AppFormMessage({super.key, required this.message, this.onDismiss});
+
+  final String? message;
+  final VoidCallback? onDismiss;
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedSize(
+      duration: const Duration(milliseconds: 220),
+      curve: Curves.easeOutCubic,
+      alignment: Alignment.topCenter,
+      child: message == null
+          ? const SizedBox(width: double.infinity)
+          : AppErrorBanner(message: message!, onDismiss: onDismiss),
     );
   }
 }
@@ -225,7 +354,7 @@ class LocaleMenuButton extends ConsumerWidget {
     final l10n = AppLocalizations.of(context)!;
     return PopupMenuButton<Locale>(
       tooltip: l10n.language,
-      icon: const Icon(Icons.language),
+      icon: const Icon(AppIcons.language),
       onSelected: (locale) =>
           ref.read(localeControllerProvider.notifier).setLocale(locale),
       itemBuilder: (context) => const [

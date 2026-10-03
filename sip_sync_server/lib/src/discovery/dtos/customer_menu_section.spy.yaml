@@ -1,0 +1,7 @@
+### One category and its articles, in menu order.
+class: CustomerMenuSection
+fields:
+  id: UuidValue
+  name: String
+  description: String?
+  articles: List<CustomerArticlePreview>

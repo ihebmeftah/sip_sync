@@ -1,0 +1,13 @@
+### Venue page for a signed-in customer: card, free tables, and a short menu preview.
+class: CustomerVenueDetail
+fields:
+  venue: CustomerVenueCard
+  currencyCode: String
+  ### Active tables with no open order.
+  availableTableCount: int
+  ### Those free tables, lowest number first.
+  availableTables: List<CustomerTablePreview>
+  ### Up to five categories, busiest first. Creation order when nothing was ordered.
+  categories: List<CustomerCategoryPreview>
+  ### Up to five articles, busiest first. Creation order when nothing was ordered.
+  articles: List<CustomerArticlePreview>

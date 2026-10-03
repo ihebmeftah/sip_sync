@@ -63,8 +63,14 @@ import 'package:sip_sync_client/src/protocol/buildings/dtos/building_update.dart
     as _iimah2gv;
 import 'package:sip_sync_client/src/protocol/buildings/dtos/building_view.dart'
     as _ik35q5v8;
+import 'package:sip_sync_client/src/protocol/discovery/dtos/customer_menu.dart'
+    as _i1mbazw4;
+import 'package:sip_sync_client/src/protocol/discovery/dtos/customer_seated_table.dart'
+    as _iggqoelg;
 import 'package:sip_sync_client/src/protocol/discovery/dtos/customer_venue_card.dart'
     as _i2waekzp;
+import 'package:sip_sync_client/src/protocol/discovery/dtos/customer_venue_detail.dart'
+    as _i3ttx85w;
 import 'package:sip_sync_client/src/protocol/discovery/dtos/place_hit.dart'
     as _ijgfn5qw;
 import 'package:sip_sync_client/src/protocol/employee_access/dtos/employee_access_create.dart'
@@ -97,6 +103,14 @@ import 'package:sip_sync_client/src/protocol/menu/dtos/menu_category_update.dart
     as _ifcginy4;
 import 'package:sip_sync_client/src/protocol/menu/dtos/menu_category_view.dart'
     as _i6z5knea;
+import 'package:sip_sync_client/src/protocol/orders/dtos/customer_order_append.dart'
+    as _izdy5w2j;
+import 'package:sip_sync_client/src/protocol/orders/dtos/customer_order_place.dart'
+    as _i5gpmr9n;
+import 'package:sip_sync_client/src/protocol/orders/dtos/customer_order_summary.dart'
+    as _ia5a8dtx;
+import 'package:sip_sync_client/src/protocol/orders/dtos/customer_order_view.dart'
+    as _iiy8950w;
 import 'package:sip_sync_client/src/protocol/orders/dtos/order_add_items.dart'
     as _ie4jvepd;
 import 'package:sip_sync_client/src/protocol/orders/dtos/order_create.dart'
@@ -518,6 +532,44 @@ class EndpointCustomerVenue extends _isc.EndpointRef {
         'list',
         {},
       );
+
+  /// Venue page: free tables and the top categories and articles.
+  ///
+  /// Customers only. Missing venues throw [BuildingException.notFound].
+  _ida.Future<_i3ttx85w.CustomerVenueDetail> detail(
+    _isc.UuidValue buildingId,
+  ) => caller.callServerEndpoint<_i3ttx85w.CustomerVenueDetail>(
+    'customerVenue',
+    'detail',
+    {'buildingId': buildingId},
+  );
+
+  /// Full menu in catalog order. Customers only.
+  _ida.Future<_i1mbazw4.CustomerMenu> menu(_isc.UuidValue buildingId) =>
+      caller.callServerEndpoint<_i1mbazw4.CustomerMenu>(
+        'customerVenue',
+        'menu',
+        {'buildingId': buildingId},
+      );
+
+  /// Confirms a scanned table sticker belongs to an active table.
+  ///
+  /// Customers only. A missing, inactive, or mismatched sticker throws
+  /// [BuildingException]. Occupied tables still resolve: the customer is
+  /// sitting there, and the venue page marks that seat.
+  _ida.Future<_iggqoelg.CustomerSeatedTable> resolveTable(
+    _isc.UuidValue buildingId,
+    _isc.UuidValue tableId,
+    int number,
+  ) => caller.callServerEndpoint<_iggqoelg.CustomerSeatedTable>(
+    'customerVenue',
+    'resolveTable',
+    {
+      'buildingId': buildingId,
+      'tableId': tableId,
+      'number': number,
+    },
+  );
 }
 
 /// Owner-only RPC for building-scoped employee access profiles.
@@ -731,6 +783,79 @@ class EndpointMenuCategory extends _isc.EndpointRef {
   );
 }
 
+/// Customer orders. Staff status changes stay on [OrderEndpoint].
+/// {@category Endpoint}
+class EndpointCustomerOrder extends _isc.EndpointRef {
+  EndpointCustomerOrder(_isc.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'customerOrder';
+
+  /// Places an order for the signed-in customer at a scanned table.
+  ///
+  /// Prices and stock come from the venue menu. The caller must be a
+  /// customer. A missing table, unknown dish, occupied table, or short
+  /// stock throws [OrderException].
+  _ida.Future<_iiy8950w.CustomerOrderView> place(
+    _i5gpmr9n.CustomerOrderPlace request,
+  ) => caller.callServerEndpoint<_iiy8950w.CustomerOrderView>(
+    'customerOrder',
+    'place',
+    {'request': request},
+  );
+
+  /// Orders this customer placed between [from] and [to], newest first.
+  ///
+  /// Every venue is included. [from] is inclusive and [to] is exclusive.
+  /// Another customer's orders are never returned. A reversed or oversized
+  /// window throws [OrderException] / [OrderErrorCode.invalidInput].
+  _ida.Future<List<_ia5a8dtx.CustomerOrderSummary>> list(
+    DateTime from,
+    DateTime to,
+  ) => caller.callServerEndpoint<List<_ia5a8dtx.CustomerOrderSummary>>(
+    'customerOrder',
+    'list',
+    {
+      'from': from,
+      'to': to,
+    },
+  );
+
+  /// Loads one order the signed-in customer placed.
+  ///
+  /// Another customer's order is [OrderErrorCode.notFound].
+  _ida.Future<_iiy8950w.CustomerOrderView> get(_isc.UuidValue orderId) =>
+      caller.callServerEndpoint<_iiy8950w.CustomerOrderView>(
+        'customerOrder',
+        'get',
+        {'orderId': orderId},
+      );
+
+  /// The newest order this customer still has in progress, or null.
+  ///
+  /// Paid and cancelled orders are ignored. Another customer's order is
+  /// never returned.
+  _ida.Future<_iiy8950w.CustomerOrderView?> current() =>
+      caller.callServerEndpoint<_iiy8950w.CustomerOrderView?>(
+        'customerOrder',
+        'current',
+        {},
+      );
+
+  /// Adds dishes to this customer's open order.
+  ///
+  /// The order must still be in progress, and the venue must allow
+  /// appending. Stock is deducted the same way as a new order. A missing
+  /// or foreign order is [OrderErrorCode.notFound].
+  _ida.Future<_iiy8950w.CustomerOrderView> append(
+    _izdy5w2j.CustomerOrderAppend request,
+  ) => caller.callServerEndpoint<_iiy8950w.CustomerOrderView>(
+    'customerOrder',
+    'append',
+    {'request': request},
+  );
+}
+
 /// Floor / POS order RPC for a building.
 /// {@category Endpoint}
 class EndpointOrder extends _isc.EndpointRef {
@@ -889,6 +1014,7 @@ class Client extends _isc.ServerpodClientShared {
     ingredient = EndpointIngredient(this);
     menuArticle = EndpointMenuArticle(this);
     menuCategory = EndpointMenuCategory(this);
+    customerOrder = EndpointCustomerOrder(this);
     order = EndpointOrder(this);
     venueTable = EndpointVenueTable(this);
     modules = Modules(this);
@@ -920,6 +1046,8 @@ class Client extends _isc.ServerpodClientShared {
 
   late final EndpointMenuCategory menuCategory;
 
+  late final EndpointCustomerOrder customerOrder;
+
   late final EndpointOrder order;
 
   late final EndpointVenueTable venueTable;
@@ -941,6 +1069,7 @@ class Client extends _isc.ServerpodClientShared {
     'ingredient': ingredient,
     'menuArticle': menuArticle,
     'menuCategory': menuCategory,
+    'customerOrder': customerOrder,
     'order': order,
     'venueTable': venueTable,
   };

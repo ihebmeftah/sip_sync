@@ -1,0 +1,4 @@
+### One unit of an article. Repeat the same article for another unit.
+class: CustomerOrderItem
+fields:
+  articleId: UuidValue

@@ -61,6 +61,10 @@ import 'package:sip_sync_server/src/generated/menu/dtos/menu_category_create.dar
     as _i2o0r9sg;
 import 'package:sip_sync_server/src/generated/menu/dtos/menu_category_update.dart'
     as _i8wyftia;
+import 'package:sip_sync_server/src/generated/orders/dtos/customer_order_append.dart'
+    as _ixtfjwlp;
+import 'package:sip_sync_server/src/generated/orders/dtos/customer_order_place.dart'
+    as _iyljqgq2;
 import 'package:sip_sync_server/src/generated/orders/dtos/order_add_items.dart'
     as _im5ws0jm;
 import 'package:sip_sync_server/src/generated/orders/dtos/order_create.dart'
@@ -88,6 +92,7 @@ import '../menu/article_composition_endpoint.dart' as _iavtsxat;
 import '../menu/ingredient_endpoint.dart' as _i7cjtizz;
 import '../menu/menu_article_endpoint.dart' as _iefktwfq;
 import '../menu/menu_category_endpoint.dart' as _i1h28rjj;
+import '../orders/customer_order_endpoint.dart' as _i3ulyznx;
 import '../orders/order_endpoint.dart' as _iuf1spo6;
 import '../tables/venue_table_endpoint.dart' as _ira8yrq4;
 
@@ -171,6 +176,12 @@ class Endpoints extends _is.EndpointDispatch {
         ..initialize(
           server,
           'menuCategory',
+          null,
+        ),
+      'customerOrder': _i3ulyznx.CustomerOrderEndpoint()
+        ..initialize(
+          server,
+          'customerOrder',
           null,
         ),
       'order': _iuf1spo6.OrderEndpoint()
@@ -927,6 +938,81 @@ class Endpoints extends _is.EndpointDispatch {
                           as _i4o7mcri.CustomerVenueEndpoint)
                       .list(session),
         ),
+        'detail': _is.MethodConnector(
+          name: 'detail',
+          params: {
+            'buildingId': _is.ParameterDescription(
+              name: 'buildingId',
+              type: _is.getType<_is.UuidValue>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['customerVenue']
+                          as _i4o7mcri.CustomerVenueEndpoint)
+                      .detail(
+                        session,
+                        params['buildingId'],
+                      ),
+        ),
+        'menu': _is.MethodConnector(
+          name: 'menu',
+          params: {
+            'buildingId': _is.ParameterDescription(
+              name: 'buildingId',
+              type: _is.getType<_is.UuidValue>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['customerVenue']
+                          as _i4o7mcri.CustomerVenueEndpoint)
+                      .menu(
+                        session,
+                        params['buildingId'],
+                      ),
+        ),
+        'resolveTable': _is.MethodConnector(
+          name: 'resolveTable',
+          params: {
+            'buildingId': _is.ParameterDescription(
+              name: 'buildingId',
+              type: _is.getType<_is.UuidValue>(),
+              nullable: false,
+            ),
+            'tableId': _is.ParameterDescription(
+              name: 'tableId',
+              type: _is.getType<_is.UuidValue>(),
+              nullable: false,
+            ),
+            'number': _is.ParameterDescription(
+              name: 'number',
+              type: _is.getType<int>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['customerVenue']
+                          as _i4o7mcri.CustomerVenueEndpoint)
+                      .resolveTable(
+                        session,
+                        params['buildingId'],
+                        params['tableId'],
+                        params['number'],
+                      ),
+        ),
       },
     );
     connectors['employeeAccess'] = _is.EndpointConnector(
@@ -1342,6 +1428,114 @@ class Endpoints extends _is.EndpointDispatch {
               ) async =>
                   (endpoints['menuCategory'] as _i1h28rjj.MenuCategoryEndpoint)
                       .update(
+                        session,
+                        params['request'],
+                      ),
+        ),
+      },
+    );
+    connectors['customerOrder'] = _is.EndpointConnector(
+      name: 'customerOrder',
+      endpoint: endpoints['customerOrder']!,
+      methodConnectors: {
+        'place': _is.MethodConnector(
+          name: 'place',
+          params: {
+            'request': _is.ParameterDescription(
+              name: 'request',
+              type: _is.getType<_iyljqgq2.CustomerOrderPlace>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['customerOrder']
+                          as _i3ulyznx.CustomerOrderEndpoint)
+                      .place(
+                        session,
+                        params['request'],
+                      ),
+        ),
+        'list': _is.MethodConnector(
+          name: 'list',
+          params: {
+            'from': _is.ParameterDescription(
+              name: 'from',
+              type: _is.getType<DateTime>(),
+              nullable: false,
+            ),
+            'to': _is.ParameterDescription(
+              name: 'to',
+              type: _is.getType<DateTime>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['customerOrder']
+                          as _i3ulyznx.CustomerOrderEndpoint)
+                      .list(
+                        session,
+                        params['from'],
+                        params['to'],
+                      ),
+        ),
+        'get': _is.MethodConnector(
+          name: 'get',
+          params: {
+            'orderId': _is.ParameterDescription(
+              name: 'orderId',
+              type: _is.getType<_is.UuidValue>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['customerOrder']
+                          as _i3ulyznx.CustomerOrderEndpoint)
+                      .get(
+                        session,
+                        params['orderId'],
+                      ),
+        ),
+        'current': _is.MethodConnector(
+          name: 'current',
+          params: {},
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['customerOrder']
+                          as _i3ulyznx.CustomerOrderEndpoint)
+                      .current(session),
+        ),
+        'append': _is.MethodConnector(
+          name: 'append',
+          params: {
+            'request': _is.ParameterDescription(
+              name: 'request',
+              type: _is.getType<_ixtfjwlp.CustomerOrderAppend>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['customerOrder']
+                          as _i3ulyznx.CustomerOrderEndpoint)
+                      .append(
                         session,
                         params['request'],
                       ),

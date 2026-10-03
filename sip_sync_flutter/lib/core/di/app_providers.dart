@@ -3,6 +3,7 @@ import 'package:sip_sync_client/sip_sync_client.dart';
 
 import '../../data/repositories/customer_auth_repository.dart';
 import '../../data/repositories/customer_discovery_repository.dart';
+import '../../data/repositories/customer_order_repository.dart';
 import 'app_session_store.dart';
 import 'service_locator.dart';
 
@@ -18,6 +19,10 @@ CustomerAuthRepository customerAuthRepository(Ref ref) =>
 @Riverpod(keepAlive: true)
 CustomerDiscoveryRepository customerDiscoveryRepository(Ref ref) =>
     getIt<CustomerDiscoveryRepository>();
+
+@Riverpod(keepAlive: true)
+CustomerOrderRepository customerOrderRepository(Ref ref) =>
+    getIt<CustomerOrderRepository>();
 
 @Riverpod(keepAlive: true)
 AppSessionStore appSessionStore(Ref ref) {

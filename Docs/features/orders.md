@@ -1,16 +1,16 @@
 # Order management
 
-Status: in progress (create wizard / list / detail / item status; customer create later)
+Status: in progress (management wizard; customer pass-order on the menu)
 
 ## Apps
 
-`sip_sync_server`, `managment` (Orders). Customer app create later.
+`sip_sync_server`, `managment` (Orders), `sip_sync_flutter` (menu pass-order).
 
 ## Actors and permissions
 
 - **Owner / employee** — create orders for a building they own or are assigned to; list; advance / cancel item and order status.
-- **Customer** — not yet (schema already uses `ActorType` so customer launch can plug in later).
-- Enforced on `OrderEndpoint` via `AuthGuard` + building access.
+- **Customer** — places an order from the menu for a table they scanned (`CustomerOrder.place`). They can read only orders they launched (`CustomerOrder.get`). They cannot change kitchen status.
+- Enforced on `OrderEndpoint` via `AuthGuard` + building access. Customer place uses the same stock, ticket number, and one-open-order table rules.
 
 ## Statuses
 
@@ -71,6 +71,16 @@ Attribution actor ids are owner/employee (or later customer) UUIDs with matching
 
 Draft cart lives in `OrderDraftViewModel` (keepAlive). `pickingTable` drives floor-map selection.
 
+## Flow (customer)
+
+1. On the menu, **+** / **−** keep a session cart for that venue. A bottom bar shows the unit count and preview total.
+2. **Pass order** opens the review (dishes, line prices, total, table).
+3. If this venue has no scanned table, the review sends the customer to scan the sticker, then returns.
+4. **Pass order** calls `CustomerOrder.place`. Prices are copied from the menu. Stock is deducted. A second open order on that table fails when `tableMultiOrder` is off.
+5. The receipt shows ticket `ref`, table number, one line per unit, and the server total.
+6. While an order is **in progress**, the buildings list and map stay available. Opening that venue shows a short note with the total, and **Current order** and **Order history** sit on one row. The receipt lists each unit with its status. **Scan table** is disabled until the order is paid or cancelled. The menu still adds dishes; **Add to order** calls `CustomerOrder.append` on that open ticket (stock is deducted again; the venue flag `allowAppendingItemsToOrder` still applies).
+7. **Order history** (home receipt icon, or the button on the open order) lists every venue for this customer, newest first, defaulting to the past month. **Today**, **Last week**, and **Last month** are the only windows (`CustomerOrder.list`, from inclusive, to exclusive, at most 62 days). `CustomerOrder.current` is the newest in-progress order, or empty.
+
 ## Data
 
 - `venue_order` — building, optional `venue_table`, **`ref`** (sequential ticket number unique per building, assigned on create), status, launch/last-pay actors, timestamps
@@ -78,7 +88,7 @@ Draft cart lives in `OrderDraftViewModel` (keepAlive). `pickingTable` drives flo
 
 Management list shows `ref` as the leading badge; order detail AppBar title is `Order · #{ref}`.
 
-Protocol DTOs stay `OrderCreate` / `OrderView` / `OrderItemView` for the client API.
+Protocol DTOs stay `OrderCreate` / `OrderView` / `OrderItemView` for the staff API. Customers use `CustomerOrderPlace` / `CustomerOrderAppend` / `CustomerOrderView`. Each `CustomerOrderItem` is one unit (`articleId` only), and each `CustomerOrderLine` is one stored unit (name, unit price, and item status, no quantity). On the venue page an open order is only a short note with the total; the receipt lists each unit’s status.
 
 ## Realtime
 

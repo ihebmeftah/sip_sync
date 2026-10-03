@@ -3,6 +3,7 @@ import 'package:sip_sync_client/sip_sync_client.dart';
 
 import '../../data/repositories/customer_auth_repository.dart';
 import '../../data/repositories/customer_discovery_repository.dart';
+import '../../data/repositories/customer_order_repository.dart';
 import '../../data/services/api_client.dart';
 import 'app_session_store.dart';
 import 'onboarding_store.dart';
@@ -25,5 +26,8 @@ Future<void> setupServiceLocator() async {
   );
   getIt.registerLazySingleton<CustomerDiscoveryRepository>(
     () => CustomerDiscoveryRepository(client),
+  );
+  getIt.registerLazySingleton<CustomerOrderRepository>(
+    () => CustomerOrderRepository(client),
   );
 }

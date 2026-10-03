@@ -118,6 +118,14 @@ class AuthViewModel extends _$AuthViewModel {
     }
   }
 
+  /// Drops a server message once the customer edits the form.
+  void clearError() {
+    if (state.errorKey == null) {
+      return;
+    }
+    state = state.copyWith(clearError: true);
+  }
+
   Future<void> signOut() async {
     await _repository.signOut();
     state = const AuthState();

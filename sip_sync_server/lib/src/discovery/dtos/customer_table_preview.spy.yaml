@@ -1,0 +1,6 @@
+### A free table a customer may sit at. Number and seats only.
+class: CustomerTablePreview
+fields:
+  id: UuidValue
+  number: int
+  maxSeats: int

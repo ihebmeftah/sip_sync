@@ -1,0 +1,6 @@
+### Extra dishes for an order this customer already has open.
+class: CustomerOrderAppend
+fields:
+  orderId: UuidValue
+  ## One entry per unit, same as a new order.
+  items: List<CustomerOrderItem>

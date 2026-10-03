@@ -36,42 +36,44 @@ class DefaultEmployeeAccess {
     }
   }
 
-  static const _defaults = <
-      ({
-        String name,
-        bool orderCreation,
-        bool orderPayment,
-        bool cancelOrder,
-        bool preparation,
-        bool serving,
-        bool consultAllOrders,
-      })>[
-    (
-      name: 'Waiter',
-      orderCreation: true,
-      orderPayment: true,
-      cancelOrder: true,
-      preparation: false,
-      serving: true,
-      consultAllOrders: false,
-    ),
-    (
-      name: 'Gerant',
-      orderCreation: true,
-      orderPayment: true,
-      cancelOrder: true,
-      preparation: true,
-      serving: true,
-      consultAllOrders: true,
-    ),
-    (
-      name: 'Barista',
-      orderCreation: true,
-      orderPayment: false,
-      cancelOrder: false,
-      preparation: true,
-      serving: false,
-      consultAllOrders: false,
-    ),
-  ];
+  static const _defaults =
+      <
+        ({
+          String name,
+          bool orderCreation,
+          bool orderPayment,
+          bool cancelOrder,
+          bool preparation,
+          bool serving,
+          bool consultAllOrders,
+        })
+      >[
+        (
+          name: 'Waiter',
+          orderCreation: true,
+          orderPayment: true,
+          cancelOrder: true,
+          preparation: false,
+          serving: true,
+          consultAllOrders: false,
+        ),
+        (
+          name: 'Gerant',
+          orderCreation: true,
+          orderPayment: true,
+          cancelOrder: true,
+          preparation: true,
+          serving: true,
+          consultAllOrders: true,
+        ),
+        (
+          name: 'Barista',
+          orderCreation: true,
+          orderPayment: false,
+          cancelOrder: false,
+          preparation: true,
+          serving: false,
+          consultAllOrders: false,
+        ),
+      ];
 }

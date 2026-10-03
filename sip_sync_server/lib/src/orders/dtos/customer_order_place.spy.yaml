@@ -1,0 +1,6 @@
+### A customer order for one scanned table. Prices are taken from the menu.
+class: CustomerOrderPlace
+fields:
+  buildingId: UuidValue
+  tableId: UuidValue
+  items: List<CustomerOrderItem>

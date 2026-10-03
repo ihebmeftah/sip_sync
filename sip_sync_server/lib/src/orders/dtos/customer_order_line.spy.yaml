@@ -1,0 +1,9 @@
+### One unit on a customer receipt. The same article can appear more than once.
+class: CustomerOrderLine
+fields:
+  id: UuidValue
+  articleId: UuidValue
+  name: String
+  unitPrice: double
+  ## Kitchen and payment state of this unit.
+  status: OrderItemStatus

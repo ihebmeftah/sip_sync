@@ -1,0 +1,5 @@
+### Full customer menu for one venue. No ingredients or composition.
+class: CustomerMenu
+fields:
+  currencyCode: String
+  sections: List<CustomerMenuSection>
