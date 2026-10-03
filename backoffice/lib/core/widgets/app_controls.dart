@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shadcn_ui/shadcn_ui.dart';
 
-import '../di/locale_controller.dart';
 import '../../l10n/generated/app_localizations.dart';
+import '../di/locale_controller.dart';
 import '../theme/app_tokens.dart';
 
 class AppFilledButton extends StatelessWidget {
@@ -19,26 +20,25 @@ class AppFilledButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    return SizedBox(
+    final foreground = ShadTheme.of(context).colorScheme.primaryForeground;
+    return ShadButton(
       width: double.infinity,
-      child: FilledButton(
-        onPressed: busy ? null : onPressed,
-        child: busy
-            ? SizedBox(
-                height: 22,
-                width: 22,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2.4,
-                  color: scheme.onPrimary,
-                ),
-              )
-            : Text(label),
-      ),
+      onPressed: busy ? null : onPressed,
+      child: busy
+          ? SizedBox(
+              height: 16,
+              width: 16,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                color: foreground,
+              ),
+            )
+          : Text(label),
     );
   }
 }
 
+/// Label above a shadcn input. Forms stay readable when the field has a value.
 class AppTextField extends StatefulWidget {
   const AppTextField({
     super.key,
@@ -67,30 +67,36 @@ class _AppTextFieldState extends State<AppTextField> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final theme = ShadTheme.of(context);
     return Padding(
       padding: const EdgeInsets.only(bottom: AppSpacing.lg),
-      child: TextField(
-        controller: widget.controller,
-        obscureText: _hidden,
-        keyboardType: widget.keyboardType,
-        textInputAction: widget.textInputAction,
-        decoration: InputDecoration(
-          labelText: widget.label,
-          prefixIcon: widget.prefixIcon == null
-              ? null
-              : Icon(widget.prefixIcon),
-          suffixIcon: widget.obscure
-              ? IconButton(
-                  tooltip: _hidden ? l10n.showPassword : l10n.hidePassword,
-                  onPressed: () => setState(() => _hidden = !_hidden),
-                  icon: Icon(
-                    _hidden
-                        ? Icons.visibility_outlined
-                        : Icons.visibility_off_outlined,
-                  ),
-                )
-              : null,
-        ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(widget.label, style: theme.textTheme.small),
+          const SizedBox(height: AppSpacing.sm),
+          ShadInput(
+            controller: widget.controller,
+            obscureText: _hidden,
+            keyboardType: widget.keyboardType,
+            textInputAction: widget.textInputAction,
+            leading: widget.prefixIcon == null
+                ? null
+                : Icon(widget.prefixIcon, size: 16),
+            trailing: widget.obscure
+                ? Tooltip(
+                    message: _hidden ? l10n.showPassword : l10n.hidePassword,
+                    child: ShadIconButton.ghost(
+                      icon: Icon(
+                        _hidden ? LucideIcons.eye : LucideIcons.eyeOff,
+                        size: 16,
+                      ),
+                      onPressed: () => setState(() => _hidden = !_hidden),
+                    ),
+                  )
+                : null,
+          ),
+        ],
       ),
     );
   }
@@ -103,22 +109,24 @@ class AppErrorBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
+    final theme = ShadTheme.of(context);
     return Padding(
       padding: const EdgeInsets.only(bottom: AppSpacing.lg),
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: scheme.error.withValues(alpha: 0.08),
-          borderRadius: BorderRadius.circular(AppRadii.sm),
-          border: Border.all(color: scheme.error.withValues(alpha: 0.35)),
+          color: theme.colorScheme.destructive.withValues(alpha: 0.08),
+          borderRadius: theme.radius,
+          border: Border.all(
+            color: theme.colorScheme.destructive.withValues(alpha: 0.35),
+          ),
         ),
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.md),
           child: Text(
             message,
-            style: Theme.of(
-              context,
-            ).textTheme.bodyMedium?.copyWith(color: scheme.error),
+            style: theme.textTheme.small.copyWith(
+              color: theme.colorScheme.destructive,
+            ),
           ),
         ),
       ),
@@ -133,7 +141,13 @@ class AppSurfaceCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    final theme = ShadTheme.of(context);
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: theme.colorScheme.card,
+        borderRadius: theme.radius,
+        border: Border.all(color: theme.colorScheme.border),
+      ),
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.xl),
         child: child,
@@ -153,11 +167,14 @@ class LocaleSwitcher extends ConsumerWidget {
       spacing: AppSpacing.sm,
       children: [
         for (final locale in locales)
-          ChoiceChip(
-            label: Text(locale.languageCode.toUpperCase()),
-            selected: current.languageCode == locale.languageCode,
-            onSelected: (_) =>
+          ShadButton.raw(
+            variant: current.languageCode == locale.languageCode
+                ? ShadButtonVariant.secondary
+                : ShadButtonVariant.ghost,
+            size: ShadButtonSize.sm,
+            onPressed: () =>
                 ref.read(localeControllerProvider.notifier).setLocale(locale),
+            child: Text(locale.languageCode.toUpperCase()),
           ),
       ],
     );
@@ -172,7 +189,7 @@ class LocaleMenuButton extends ConsumerWidget {
     final l10n = AppLocalizations.of(context)!;
     return PopupMenuButton<Locale>(
       tooltip: l10n.language,
-      icon: const Icon(Icons.language),
+      icon: const Icon(LucideIcons.languages, size: 18),
       onSelected: (locale) =>
           ref.read(localeControllerProvider.notifier).setLocale(locale),
       itemBuilder: (context) => const [

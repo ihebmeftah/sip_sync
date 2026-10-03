@@ -41,6 +41,8 @@ import 'package:sip_sync_server/src/generated/auth/dtos/password_reset_request.d
     as _i533dha7;
 import 'package:sip_sync_server/src/generated/auth/dtos/password_reset_request_result.dart'
     as _ilnozemj;
+import 'package:sip_sync_server/src/generated/auth/dtos/platform_person_view.dart'
+    as _ibjv9650;
 import 'package:sip_sync_server/src/generated/auth/dtos/profile_update.dart'
     as _itbs72nt;
 import 'package:sip_sync_server/src/generated/auth/dtos/super_admin_create.dart'
@@ -268,6 +270,8 @@ class TestEndpoints {
 
   late final _OwnerAuthEndpoint ownerAuth;
 
+  late final _PlatformDirectoryEndpoint platformDirectory;
+
   late final _SuperAdminAuthEndpoint superAdminAuth;
 
   late final _BuildingEndpoint building;
@@ -313,6 +317,10 @@ class _InternalTestEndpoints extends TestEndpoints
       serializationManager,
     );
     ownerAuth = _OwnerAuthEndpoint(
+      endpoints,
+      serializationManager,
+    );
+    platformDirectory = _PlatformDirectoryEndpoint(
       endpoints,
       serializationManager,
     );
@@ -1077,6 +1085,77 @@ class _OwnerAuthEndpoint {
                   _localCallContext.arguments,
                 )
                 as _ida.Future<void>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+}
+
+class _PlatformDirectoryEndpoint {
+  _PlatformDirectoryEndpoint(
+    this._endpointDispatch,
+    this._serializationManager,
+  );
+
+  final _is.EndpointDispatch _endpointDispatch;
+
+  final _is.SerializationManager _serializationManager;
+
+  _ida.Future<List<_ibjv9650.PlatformPersonView>> listOwners(
+    _ist.TestSessionBuilder sessionBuilder,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'platformDirectory',
+            method: 'listOwners',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'platformDirectory',
+          methodName: 'listOwners',
+          parameters: _ist.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<List<_ibjv9650.PlatformPersonView>>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<List<_ibjv9650.PlatformPersonView>> listCustomers(
+    _ist.TestSessionBuilder sessionBuilder,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'platformDirectory',
+            method: 'listCustomers',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'platformDirectory',
+          methodName: 'listCustomers',
+          parameters: _ist.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<List<_ibjv9650.PlatformPersonView>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();

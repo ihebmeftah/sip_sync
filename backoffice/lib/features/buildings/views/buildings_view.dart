@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:sip_sync_client/sip_sync_client.dart';
 
 import '../../../core/errors/error_mapper.dart';
@@ -18,6 +19,7 @@ class BuildingsView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final buildings = ref.watch(buildingsViewModelProvider);
+    final theme = ShadTheme.of(context);
     return ConsolePage(
       title: l10n.buildingsTitle,
       subtitle: l10n.buildingsSubtitle,
@@ -27,7 +29,7 @@ class BuildingsView extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             AppErrorBanner(message: lookupError(l10n, mapError(error).l10nKey)),
-            TextButton(
+            ShadButton.outline(
               onPressed: () =>
                   ref.read(buildingsViewModelProvider.notifier).refresh(),
               child: Text(l10n.retry),
@@ -36,10 +38,7 @@ class BuildingsView extends ConsumerWidget {
         ),
         data: (rows) {
           if (rows.isEmpty) {
-            return Text(
-              l10n.empty,
-              style: Theme.of(context).textTheme.bodyMedium,
-            );
+            return Text(l10n.empty, style: theme.textTheme.muted);
           }
           return Column(
             children: [
@@ -63,52 +62,41 @@ class _BuildingCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final text = Theme.of(context).textTheme;
-    final scheme = Theme.of(context).colorScheme;
+    final theme = ShadTheme.of(context);
     final owner = '${building.ownerFirstName} ${building.ownerLastName}'.trim();
-    return AppSurfaceCard(
-      child: InkWell(
-        onTap: () => showDialog<void>(
-          context: context,
-          builder: (_) => BuildingDetailDialog(building: building),
-        ),
+    return ShadCard(
+      width: double.infinity,
+      rowMainAxisSize: MainAxisSize.max,
+      columnCrossAxisAlignment: CrossAxisAlignment.stretch,
+      title: Text(building.name),
+      description: Text(
+        '$owner · ${building.ownerEmail} · ${building.ownerPhoneNumber}',
+      ),
+      trailing: ShadButton.outline(
+        size: ShadButtonSize.sm,
+        onPressed: () => _open(context),
+        child: Text(l10n.viewDetails),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.only(top: AppSpacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                Expanded(child: Text(building.name, style: text.titleLarge)),
-                Chip(
-                  label: Text(building.type),
-                  visualDensity: VisualDensity.compact,
-                ),
-                IconButton(
-                  tooltip: l10n.viewDetails,
-                  onPressed: () => showDialog<void>(
-                    context: context,
-                    builder: (_) => BuildingDetailDialog(building: building),
-                  ),
-                  icon: const Icon(Icons.info_outline),
-                ),
-              ],
-            ),
-            const SizedBox(height: AppSpacing.sm),
-            Text(l10n.owner, style: text.labelMedium),
-            Text(
-              '$owner · ${building.ownerEmail} · ${building.ownerPhoneNumber}',
-              style: text.bodyMedium,
-            ),
+            ShadBadge.outline(child: Text(building.type)),
             const SizedBox(height: AppSpacing.md),
-            Text(l10n.contact, style: text.labelMedium),
-            Text(_contact(building), style: text.bodyMedium),
-            const SizedBox(height: AppSpacing.sm),
-            Text(
-              l10n.viewDetails,
-              style: text.labelLarge?.copyWith(color: scheme.secondary),
-            ),
+            Text(l10n.contact, style: theme.textTheme.muted),
+            const SizedBox(height: AppSpacing.xs),
+            Text(_contact(building), style: theme.textTheme.small),
           ],
         ),
       ),
+    );
+  }
+
+  void _open(BuildContext context) {
+    showShadDialog<void>(
+      context: context,
+      builder: (_) => BuildingDetailDialog(building: building),
     );
   }
 

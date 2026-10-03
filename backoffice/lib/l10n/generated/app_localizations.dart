@@ -382,17 +382,95 @@ abstract class AppLocalizations {
   /// **'You cannot disable your own account.'**
   String get errorCannotDisableSelf;
 
+  /// No description provided for @navStats.
+  ///
+  /// In en, this message translates to:
+  /// **'Stats'**
+  String get navStats;
+
   /// No description provided for @navUsers.
   ///
   /// In en, this message translates to:
   /// **'Users'**
   String get navUsers;
 
+  /// No description provided for @navCustomers.
+  ///
+  /// In en, this message translates to:
+  /// **'Customers'**
+  String get navCustomers;
+
   /// No description provided for @navBuildings.
   ///
   /// In en, this message translates to:
   /// **'Buildings'**
   String get navBuildings;
+
+  /// No description provided for @navPacks.
+  ///
+  /// In en, this message translates to:
+  /// **'Packs'**
+  String get navPacks;
+
+  /// No description provided for @navSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Platform'**
+  String get navSection;
+
+  /// No description provided for @statsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Stats'**
+  String get statsTitle;
+
+  /// No description provided for @customersTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Customers'**
+  String get customersTitle;
+
+  /// No description provided for @customersSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Owners and customers on the platform.'**
+  String get customersSubtitle;
+
+  /// No description provided for @tabOwners.
+  ///
+  /// In en, this message translates to:
+  /// **'Owners'**
+  String get tabOwners;
+
+  /// No description provided for @tabCustomers.
+  ///
+  /// In en, this message translates to:
+  /// **'Customers'**
+  String get tabCustomers;
+
+  /// No description provided for @createdAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Created'**
+  String get createdAt;
+
+  /// No description provided for @accountCreated.
+  ///
+  /// In en, this message translates to:
+  /// **'Created {when}'**
+  String accountCreated(String when);
+
+  /// No description provided for @packsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Packs'**
+  String get packsTitle;
+
+  /// No description provided for @screenWorking.
+  ///
+  /// In en, this message translates to:
+  /// **'This screen is working.'**
+  String get screenWorking;
 
   /// No description provided for @usersTitle.
   ///

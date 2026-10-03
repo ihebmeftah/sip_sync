@@ -70,10 +70,22 @@ RouteBase get $consoleShellRoute => ShellRouteData.$route(
   factory: $ConsoleShellRouteExtension._fromState,
   routes: [
     GoRouteData.$route(
+      path: '/stats',
+      name: 'stats',
+      hasOverriddenOnExit: false,
+      factory: $StatsRoute._fromState,
+    ),
+    GoRouteData.$route(
       path: '/users',
       name: 'users',
       hasOverriddenOnExit: false,
       factory: $UsersRoute._fromState,
+    ),
+    GoRouteData.$route(
+      path: '/customers',
+      name: 'customers',
+      hasOverriddenOnExit: false,
+      factory: $CustomersRoute._fromState,
     ),
     GoRouteData.$route(
       path: '/buildings',
@@ -81,12 +93,38 @@ RouteBase get $consoleShellRoute => ShellRouteData.$route(
       hasOverriddenOnExit: false,
       factory: $BuildingsRoute._fromState,
     ),
+    GoRouteData.$route(
+      path: '/packs',
+      name: 'packs',
+      hasOverriddenOnExit: false,
+      factory: $PacksRoute._fromState,
+    ),
   ],
 );
 
 extension $ConsoleShellRouteExtension on ConsoleShellRoute {
   static ConsoleShellRoute _fromState(GoRouterState state) =>
       const ConsoleShellRoute();
+}
+
+mixin $StatsRoute on GoRouteData {
+  static StatsRoute _fromState(GoRouterState state) => const StatsRoute();
+
+  @override
+  String get location => GoRouteData.$location('/stats');
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
 }
 
 mixin $UsersRoute on GoRouteData {
@@ -109,12 +147,53 @@ mixin $UsersRoute on GoRouteData {
   void replace(BuildContext context) => context.replace(location);
 }
 
+mixin $CustomersRoute on GoRouteData {
+  static CustomersRoute _fromState(GoRouterState state) =>
+      const CustomersRoute();
+
+  @override
+  String get location => GoRouteData.$location('/customers');
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
 mixin $BuildingsRoute on GoRouteData {
   static BuildingsRoute _fromState(GoRouterState state) =>
       const BuildingsRoute();
 
   @override
   String get location => GoRouteData.$location('/buildings');
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+mixin $PacksRoute on GoRouteData {
+  static PacksRoute _fromState(GoRouterState state) => const PacksRoute();
+
+  @override
+  String get location => GoRouteData.$location('/packs');
 
   @override
   void go(BuildContext context) => context.go(location);

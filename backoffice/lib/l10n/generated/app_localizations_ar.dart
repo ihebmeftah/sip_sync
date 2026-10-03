@@ -157,10 +157,51 @@ class AppLocalizationsAr extends AppLocalizations {
   String get errorCannotDisableSelf => 'لا يمكنك تعطيل حسابك.';
 
   @override
+  String get navStats => 'الإحصاءات';
+
+  @override
   String get navUsers => 'المستخدمون';
 
   @override
+  String get navCustomers => 'العملاء';
+
+  @override
   String get navBuildings => 'المباني';
+
+  @override
+  String get navPacks => 'الباقات';
+
+  @override
+  String get navSection => 'المنصة';
+
+  @override
+  String get statsTitle => 'الإحصاءات';
+
+  @override
+  String get customersTitle => 'العملاء';
+
+  @override
+  String get customersSubtitle => 'المالكون والعملاء على المنصة.';
+
+  @override
+  String get tabOwners => 'المالكون';
+
+  @override
+  String get tabCustomers => 'العملاء';
+
+  @override
+  String get createdAt => 'تاريخ الإنشاء';
+
+  @override
+  String accountCreated(String when) {
+    return 'أُنشئ في $when';
+  }
+
+  @override
+  String get packsTitle => 'الباقات';
+
+  @override
+  String get screenWorking => 'هذه الشاشة تعمل.';
 
   @override
   String get usersTitle => 'المستخدمون';

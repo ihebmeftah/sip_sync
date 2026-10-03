@@ -83,6 +83,7 @@ import '../auth/customer_auth_endpoint.dart' as _i4yxnu3z;
 import '../auth/employee_auth_endpoint.dart' as _i6neyhet;
 import '../auth/employee_endpoint.dart' as _i3t5tbp4;
 import '../auth/owner_auth_endpoint.dart' as _is2qyeee;
+import '../auth/platform_directory_endpoint.dart' as _i2rird0e;
 import '../auth/super_admin_auth_endpoint.dart' as _itmp66ay;
 import '../buildings/building_endpoint.dart' as _i69ygv7j;
 import '../discovery/customer_place_endpoint.dart' as _i6jzpqpk;
@@ -122,6 +123,12 @@ class Endpoints extends _is.EndpointDispatch {
         ..initialize(
           server,
           'ownerAuth',
+          null,
+        ),
+      'platformDirectory': _i2rird0e.PlatformDirectoryEndpoint()
+        ..initialize(
+          server,
+          'platformDirectory',
           null,
         ),
       'superAdminAuth': _itmp66ay.SuperAdminAuthEndpoint()
@@ -598,6 +605,36 @@ class Endpoints extends _is.EndpointDispatch {
                 Map<String, dynamic> params,
               ) async => (endpoints['ownerAuth'] as _is2qyeee.OwnerAuthEndpoint)
                   .logout(session),
+        ),
+      },
+    );
+    connectors['platformDirectory'] = _is.EndpointConnector(
+      name: 'platformDirectory',
+      endpoint: endpoints['platformDirectory']!,
+      methodConnectors: {
+        'listOwners': _is.MethodConnector(
+          name: 'listOwners',
+          params: {},
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['platformDirectory']
+                          as _i2rird0e.PlatformDirectoryEndpoint)
+                      .listOwners(session),
+        ),
+        'listCustomers': _is.MethodConnector(
+          name: 'listCustomers',
+          params: {},
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['platformDirectory']
+                          as _i2rird0e.PlatformDirectoryEndpoint)
+                      .listCustomers(session),
         ),
       },
     );

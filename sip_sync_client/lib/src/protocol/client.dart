@@ -43,6 +43,8 @@ import 'package:sip_sync_client/src/protocol/auth/dtos/password_reset_request.da
     as _ifcla4ri;
 import 'package:sip_sync_client/src/protocol/auth/dtos/password_reset_request_result.dart'
     as _iv84wffs;
+import 'package:sip_sync_client/src/protocol/auth/dtos/platform_person_view.dart'
+    as _iypg1oaf;
 import 'package:sip_sync_client/src/protocol/auth/dtos/profile_update.dart'
     as _i9d1xwh7;
 import 'package:sip_sync_client/src/protocol/auth/dtos/super_admin_create.dart'
@@ -339,6 +341,31 @@ class EndpointOwnerAuth extends _isc.EndpointRef {
     'logout',
     {},
   );
+}
+
+/// Super-admin directory of owners and customers. No writes.
+/// {@category Endpoint}
+class EndpointPlatformDirectory extends _isc.EndpointRef {
+  EndpointPlatformDirectory(_isc.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'platformDirectory';
+
+  /// Owners on the platform, newest first. Super admin only.
+  _ida.Future<List<_iypg1oaf.PlatformPersonView>> listOwners() =>
+      caller.callServerEndpoint<List<_iypg1oaf.PlatformPersonView>>(
+        'platformDirectory',
+        'listOwners',
+        {},
+      );
+
+  /// Customers on the platform, newest first. Super admin only.
+  _ida.Future<List<_iypg1oaf.PlatformPersonView>> listCustomers() =>
+      caller.callServerEndpoint<List<_iypg1oaf.PlatformPersonView>>(
+        'platformDirectory',
+        'listCustomers',
+        {},
+      );
 }
 
 /// Super admin login, profile, and staff management for backoffice.
@@ -1005,6 +1032,7 @@ class Client extends _isc.ServerpodClientShared {
     employeeAuth = EndpointEmployeeAuth(this);
     employee = EndpointEmployee(this);
     ownerAuth = EndpointOwnerAuth(this);
+    platformDirectory = EndpointPlatformDirectory(this);
     superAdminAuth = EndpointSuperAdminAuth(this);
     building = EndpointBuilding(this);
     customerPlace = EndpointCustomerPlace(this);
@@ -1027,6 +1055,8 @@ class Client extends _isc.ServerpodClientShared {
   late final EndpointEmployee employee;
 
   late final EndpointOwnerAuth ownerAuth;
+
+  late final EndpointPlatformDirectory platformDirectory;
 
   late final EndpointSuperAdminAuth superAdminAuth;
 
@@ -1060,6 +1090,7 @@ class Client extends _isc.ServerpodClientShared {
     'employeeAuth': employeeAuth,
     'employee': employee,
     'ownerAuth': ownerAuth,
+    'platformDirectory': platformDirectory,
     'superAdminAuth': superAdminAuth,
     'building': building,
     'customerPlace': customerPlace,

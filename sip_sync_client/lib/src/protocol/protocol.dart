@@ -18,6 +18,8 @@ import 'package:serverpod_auth_idp_client/serverpod_auth_idp_client.dart'
 import 'package:serverpod_client/serverpod_client.dart' as _isc;
 import 'package:sip_sync_client/src/protocol/auth/dtos/employee_view.dart'
     as _iz70mzqw;
+import 'package:sip_sync_client/src/protocol/auth/dtos/platform_person_view.dart'
+    as _iypg1oaf;
 import 'package:sip_sync_client/src/protocol/auth/dtos/super_admin_view.dart'
     as _ia930tyq;
 import 'package:sip_sync_client/src/protocol/buildings/dtos/admin_building_view.dart'
@@ -60,6 +62,7 @@ import 'auth/dtos/owner_session_view.dart' as _isqlfqk2;
 import 'auth/dtos/password_reset_confirm.dart' as _i9u54egm;
 import 'auth/dtos/password_reset_request.dart' as _in4l34z2;
 import 'auth/dtos/password_reset_request_result.dart' as _ixrmg4rs;
+import 'auth/dtos/platform_person_view.dart' as _im0nv2xr;
 import 'auth/dtos/profile_update.dart' as _iul4y12k;
 import 'auth/dtos/super_admin_create.dart' as _ieisqlnm;
 import 'auth/dtos/super_admin_session_view.dart' as _i4itilxd;
@@ -150,6 +153,7 @@ export 'auth/dtos/owner_session_view.dart';
 export 'auth/dtos/password_reset_confirm.dart';
 export 'auth/dtos/password_reset_request.dart';
 export 'auth/dtos/password_reset_request_result.dart';
+export 'auth/dtos/platform_person_view.dart';
 export 'auth/dtos/profile_update.dart';
 export 'auth/dtos/super_admin_create.dart';
 export 'auth/dtos/super_admin_session_view.dart';
@@ -307,6 +311,9 @@ class Protocol extends _isc.SerializationManager {
     }
     if (t == _ixrmg4rs.PasswordResetRequestResult) {
       return _ixrmg4rs.PasswordResetRequestResult.fromJson(data) as T;
+    }
+    if (t == _im0nv2xr.PlatformPersonView) {
+      return _im0nv2xr.PlatformPersonView.fromJson(data) as T;
     }
     if (t == _iul4y12k.ProfileUpdate) {
       return _iul4y12k.ProfileUpdate.fromJson(data) as T;
@@ -604,6 +611,10 @@ class Protocol extends _isc.SerializationManager {
       return (data != null
               ? _ixrmg4rs.PasswordResetRequestResult.fromJson(data)
               : null)
+          as T;
+    }
+    if (t == _isc.getType<_im0nv2xr.PlatformPersonView?>()) {
+      return (data != null ? _im0nv2xr.PlatformPersonView.fromJson(data) : null)
           as T;
     }
     if (t == _isc.getType<_iul4y12k.ProfileUpdate?>()) {
@@ -1014,6 +1025,12 @@ class Protocol extends _isc.SerializationManager {
               .toList()
           as T;
     }
+    if (t == List<_iypg1oaf.PlatformPersonView>) {
+      return (data as List)
+              .map((e) => deserialize<_iypg1oaf.PlatformPersonView>(e))
+              .toList()
+          as T;
+    }
     if (t == List<_ia930tyq.SuperAdminView>) {
       return (data as List)
               .map((e) => deserialize<_ia930tyq.SuperAdminView>(e))
@@ -1125,6 +1142,7 @@ class Protocol extends _isc.SerializationManager {
       _i9u54egm.PasswordResetConfirm => 'PasswordResetConfirm',
       _in4l34z2.PasswordResetRequest => 'PasswordResetRequest',
       _ixrmg4rs.PasswordResetRequestResult => 'PasswordResetRequestResult',
+      _im0nv2xr.PlatformPersonView => 'PlatformPersonView',
       _iul4y12k.ProfileUpdate => 'ProfileUpdate',
       _ieisqlnm.SuperAdminCreate => 'SuperAdminCreate',
       _i4itilxd.SuperAdminSessionView => 'SuperAdminSessionView',
@@ -1245,6 +1263,8 @@ class Protocol extends _isc.SerializationManager {
         return 'PasswordResetRequest';
       case _ixrmg4rs.PasswordResetRequestResult():
         return 'PasswordResetRequestResult';
+      case _im0nv2xr.PlatformPersonView():
+        return 'PlatformPersonView';
       case _iul4y12k.ProfileUpdate():
         return 'ProfileUpdate';
       case _ieisqlnm.SuperAdminCreate():
@@ -1462,6 +1482,9 @@ class Protocol extends _isc.SerializationManager {
     }
     if (dataClassName == 'PasswordResetRequestResult') {
       return deserialize<_ixrmg4rs.PasswordResetRequestResult>(data['data']);
+    }
+    if (dataClassName == 'PlatformPersonView') {
+      return deserialize<_im0nv2xr.PlatformPersonView>(data['data']);
     }
     if (dataClassName == 'ProfileUpdate') {
       return deserialize<_iul4y12k.ProfileUpdate>(data['data']);

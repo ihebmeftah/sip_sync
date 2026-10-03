@@ -1,0 +1,9 @@
+### Owner or customer row for the backoffice directory. No password hash.
+class: PlatformPersonView
+fields:
+  id: UuidValue
+  email: String
+  phoneNumber: String
+  firstName: String
+  lastName: String
+  createdAt: DateTime

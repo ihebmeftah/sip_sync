@@ -36,7 +36,7 @@ final class UsersViewModelProvider
   UsersViewModel create() => UsersViewModel();
 }
 
-String _$usersViewModelHash() => r'0650b76f86b1ef323d10ccd4280615494dc17f44';
+String _$usersViewModelHash() => r'1b9726adcc26c5b6da92f8845469713a3dabb84f';
 
 /// Backoffice user list plus create, update, enable, and delete.
 

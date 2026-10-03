@@ -23,15 +23,15 @@ Reusable widgets, theme, and routing helpers live under that app's `lib/core/`. 
 
 ## Visual language
 
-Each Flutter app extends its own tokens in `lib/core/theme/` (`AppColors`, `AppSpacing`, `AppRadii`, `AppBreakpoints`) and a full `ThemeData` (type, fields, buttons, chips, cards). Layouts switch at `840` dp: split hero + form (auth) or two-column dashboards (home). Forms cap at `440` dp so they do not stretch on web.
+Each Flutter app extends its own tokens in `lib/core/theme/` (`AppColors`, `AppSpacing`, `AppRadii`, `AppBreakpoints`) and a full `ThemeData` (type, fields, buttons, chips, cards). Layouts switch at `840` dp: split hero + form (auth) or two-column dashboards (home). The backoffice console switches to its sidebar at `960` dp. Forms cap at `440` dp so they do not stretch on web.
 
 | App | Audience | Palette | Type |
 | --- | --- | --- | --- |
 | `sip_sync_flutter` | customers | daylight paper, apricot, clay, moss; light until a theme switch | Fraunces + Figtree, Google Material Symbols (rounded) |
 | `managment` | owners / staff | olive, sage, sand, parchment (same family in light/dark) | Syne + IBM Plex Sans |
-| `backoffice` | super admin | ice paper, graphite, cyan | Sora + IBM Plex Sans |
+| `backoffice` | super admin | light zinc canvas, white cards, ink primary (shadcn/ui). Dark scheme is defined and not switched on yet | Geist (bundled with shadcn_ui) |
 
-Auth uses `AuthShell` (wide split / compact stack). Signed-in `managment` uses `OpsShell` (olive rail / compact drawer). Signed-in `backoffice` uses `ConsoleShell` (graphite rail: Users and Buildings). After login the user must pick a **building**; dashboard, employees, products, POS, and tables stay locked until then. Forms use `TextFormField` validators (`FormValidators`) plus server errors. On the customer app, a failure that belongs to one field (email taken, phone taken, weak password) is drawn on that field and scrolled into view; other failures use `AppFormMessage`. Primary actions are `AppFilledButton` (full width, spinner while busy) and secondary actions are `AppTonalButton`. Arabic is RTL via `MaterialApp` locales. Management and backoffice select light or dark with `ThemeController`. The customer app stays on the light scheme until a theme switch is added; `AppTheme.dark` is already defined.
+Auth uses `AuthShell` (wide split / compact stack). Signed-in `managment` uses `OpsShell` (olive rail / compact drawer). Signed-in `backoffice` uses `ConsoleShell`: a light shadcn sidebar (Stats, Users, Customers, Buildings, Packs) and a zinc canvas. Stats, Customers, and Packs are placeholders until those features exist. After login the user must pick a **building**; dashboard, employees, products, POS, and tables stay locked until then. Forms use `TextFormField` validators (`FormValidators`) plus server errors. On the customer app, a failure that belongs to one field (email taken, phone taken, weak password) is drawn on that field and scrolled into view; other failures use `AppFormMessage`. Primary actions are `AppFilledButton` (full width, spinner while busy) and secondary actions are `AppTonalButton`. Arabic is RTL via `MaterialApp` locales. Management selects light or dark with `ThemeController`. Backoffice stays on the light shadcn scheme until a theme switch is added; `AppTheme.shadDark` is already defined. The customer app stays on the light scheme until a theme switch is added; `AppTheme.dark` is already defined.
 
 ## Local development on a physical phone
 

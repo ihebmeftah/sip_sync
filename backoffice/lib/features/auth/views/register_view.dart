@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shadcn_ui/shadcn_ui.dart';
 
 import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_tokens.dart';
@@ -14,14 +15,14 @@ class RegisterView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
-    final text = Theme.of(context).textTheme;
+    final theme = ShadTheme.of(context);
     return AuthShell(
       form: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(l10n.registerLead, style: text.headlineMedium),
+          Text(l10n.registerLead, style: theme.textTheme.h3),
           const SizedBox(height: AppSpacing.sm),
-          Text(l10n.tagline, style: text.bodyLarge),
+          Text(l10n.tagline, style: theme.textTheme.muted),
           const SizedBox(height: AppSpacing.xl),
           AppErrorBanner(message: l10n.errorAppAccessDenied),
           AppFilledButton(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:sip_sync_client/sip_sync_client.dart';
 
 import '../../../core/theme/app_tokens.dart';
@@ -13,40 +14,38 @@ class BuildingDetailDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final text = Theme.of(context).textTheme;
-    return AlertDialog(
+    final theme = ShadTheme.of(context);
+    return ShadDialog(
       title: Text(building.name),
-      content: SizedBox(
-        width: AppBreakpoints.formMax,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            _DetailLine(label: l10n.address, value: building.address),
-            _DetailLine(
-              label: l10n.location,
-              value: l10n.coordinates(
-                building.latitude.toStringAsFixed(5),
-                building.longitude.toStringAsFixed(5),
-              ),
-            ),
-            _DetailLine(label: l10n.currency, value: building.currencyCode),
-            _DetailLine(label: l10n.phone, value: building.phoneNumber),
-            _DetailLine(label: l10n.country, value: building.countryCode),
-            const SizedBox(height: AppSpacing.sm),
-            Text(
-              '${building.ownerFirstName} ${building.ownerLastName}',
-              style: text.bodyMedium,
-            ),
-          ],
-        ),
-      ),
+      constraints: const BoxConstraints(maxWidth: AppBreakpoints.formMax),
       actions: [
-        TextButton(
+        ShadButton.outline(
           onPressed: () => Navigator.of(context).pop(),
           child: Text(l10n.close),
         ),
       ],
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _DetailLine(label: l10n.address, value: building.address),
+          _DetailLine(
+            label: l10n.location,
+            value: l10n.coordinates(
+              building.latitude.toStringAsFixed(5),
+              building.longitude.toStringAsFixed(5),
+            ),
+          ),
+          _DetailLine(label: l10n.currency, value: building.currencyCode),
+          _DetailLine(label: l10n.phone, value: building.phoneNumber),
+          _DetailLine(label: l10n.country, value: building.countryCode),
+          const SizedBox(height: AppSpacing.sm),
+          Text(
+            '${building.ownerFirstName} ${building.ownerLastName}',
+            style: theme.textTheme.small,
+          ),
+        ],
+      ),
     );
   }
 }
@@ -59,19 +58,15 @@ class _DetailLine extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final text = Theme.of(context).textTheme;
-    final scheme = Theme.of(context).colorScheme;
+    final theme = ShadTheme.of(context);
     return Padding(
       padding: const EdgeInsets.only(bottom: AppSpacing.md),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            label,
-            style: text.labelMedium?.copyWith(color: scheme.onSurfaceVariant),
-          ),
+          Text(label, style: theme.textTheme.muted),
           const SizedBox(height: AppSpacing.xs),
-          Text(value, style: text.titleMedium),
+          Text(value, style: theme.textTheme.small),
         ],
       ),
     );

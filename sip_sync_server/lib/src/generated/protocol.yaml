@@ -24,6 +24,9 @@ ownerAuth:
   - requestPasswordReset:
   - confirmPasswordReset:
   - logout:
+platformDirectory:
+  - listOwners:
+  - listCustomers:
 superAdminAuth:
   - login:
   - me:

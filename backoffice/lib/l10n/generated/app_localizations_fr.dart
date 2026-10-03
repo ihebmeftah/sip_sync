@@ -161,10 +161,51 @@ class AppLocalizationsFr extends AppLocalizations {
       'Vous ne pouvez pas désactiver votre propre compte.';
 
   @override
+  String get navStats => 'Statistiques';
+
+  @override
   String get navUsers => 'Utilisateurs';
 
   @override
+  String get navCustomers => 'Clients';
+
+  @override
   String get navBuildings => 'Établissements';
+
+  @override
+  String get navPacks => 'Packs';
+
+  @override
+  String get navSection => 'Plateforme';
+
+  @override
+  String get statsTitle => 'Statistiques';
+
+  @override
+  String get customersTitle => 'Clients';
+
+  @override
+  String get customersSubtitle => 'Propriétaires et clients de la plateforme.';
+
+  @override
+  String get tabOwners => 'Propriétaires';
+
+  @override
+  String get tabCustomers => 'Clients';
+
+  @override
+  String get createdAt => 'Créé';
+
+  @override
+  String accountCreated(String when) {
+    return 'Créé le $when';
+  }
+
+  @override
+  String get packsTitle => 'Packs';
+
+  @override
+  String get screenWorking => 'Cet écran fonctionne.';
 
   @override
   String get usersTitle => 'Utilisateurs';

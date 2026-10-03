@@ -145,6 +145,55 @@ final class AdminBuildingRepositoryProvider
 String _$adminBuildingRepositoryHash() =>
     r'13875e9c445c18029e13d8e023a2b7618296d820';
 
+@ProviderFor(platformDirectoryRepository)
+const platformDirectoryRepositoryProvider =
+    PlatformDirectoryRepositoryProvider._();
+
+final class PlatformDirectoryRepositoryProvider
+    extends
+        $FunctionalProvider<
+          PlatformDirectoryRepository,
+          PlatformDirectoryRepository,
+          PlatformDirectoryRepository
+        >
+    with $Provider<PlatformDirectoryRepository> {
+  const PlatformDirectoryRepositoryProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'platformDirectoryRepositoryProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$platformDirectoryRepositoryHash();
+
+  @$internal
+  @override
+  $ProviderElement<PlatformDirectoryRepository> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  PlatformDirectoryRepository create(Ref ref) {
+    return platformDirectoryRepository(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(PlatformDirectoryRepository value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<PlatformDirectoryRepository>(value),
+    );
+  }
+}
+
+String _$platformDirectoryRepositoryHash() =>
+    r'a1ca71ac1820ddcc8362858615657eb2052cb7a7';
+
 @ProviderFor(appSessionStore)
 const appSessionStoreProvider = AppSessionStoreProvider._();
 

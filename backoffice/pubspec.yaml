@@ -25,6 +25,7 @@ dependencies:
   serverpod_flutter: 4.0.3
   serverpod_auth_idp_flutter: 4.0.3
   shared_preferences: ^2.5.5
+  shadcn_ui: ^0.57.1
 
 dev_dependencies:
   build_runner: ^2.4.15

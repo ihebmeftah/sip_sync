@@ -159,10 +159,51 @@ class AppLocalizationsEn extends AppLocalizations {
   String get errorCannotDisableSelf => 'You cannot disable your own account.';
 
   @override
+  String get navStats => 'Stats';
+
+  @override
   String get navUsers => 'Users';
 
   @override
+  String get navCustomers => 'Customers';
+
+  @override
   String get navBuildings => 'Buildings';
+
+  @override
+  String get navPacks => 'Packs';
+
+  @override
+  String get navSection => 'Platform';
+
+  @override
+  String get statsTitle => 'Stats';
+
+  @override
+  String get customersTitle => 'Customers';
+
+  @override
+  String get customersSubtitle => 'Owners and customers on the platform.';
+
+  @override
+  String get tabOwners => 'Owners';
+
+  @override
+  String get tabCustomers => 'Customers';
+
+  @override
+  String get createdAt => 'Created';
+
+  @override
+  String accountCreated(String when) {
+    return 'Created $when';
+  }
+
+  @override
+  String get packsTitle => 'Packs';
+
+  @override
+  String get screenWorking => 'This screen is working.';
 
   @override
   String get usersTitle => 'Users';

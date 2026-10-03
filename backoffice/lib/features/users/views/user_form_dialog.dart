@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:sip_sync_client/sip_sync_client.dart';
 
 import '../../../core/errors/error_mapper.dart';
@@ -62,89 +63,81 @@ class _UserFormDialogState extends ConsumerState<UserFormDialog> {
     final lockSelf = user != null && user.id == selfId;
     final lockEnabled = lockDefault || lockSelf;
 
-    return AlertDialog(
+    final theme = ShadTheme.of(context);
+    return ShadDialog(
       title: Text(_editing ? l10n.editUser : l10n.createUser),
-      content: SizedBox(
-        width: AppBreakpoints.formMax,
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              if (_errorKey != null)
-                AppErrorBanner(message: lookupError(l10n, _errorKey!)),
-              AppTextField(
-                controller: _first,
-                label: l10n.firstName,
-                prefixIcon: Icons.person_outline,
-                textInputAction: TextInputAction.next,
-              ),
-              AppTextField(
-                controller: _last,
-                label: l10n.lastName,
-                prefixIcon: Icons.badge_outlined,
-                textInputAction: TextInputAction.next,
-              ),
-              AppTextField(
-                controller: _email,
-                label: l10n.email,
-                prefixIcon: Icons.mail_outline,
-                keyboardType: TextInputType.emailAddress,
-                textInputAction: TextInputAction.next,
-              ),
-              AppTextField(
-                controller: _phone,
-                label: l10n.phone,
-                prefixIcon: Icons.phone_outlined,
-                keyboardType: TextInputType.phone,
-                textInputAction: TextInputAction.next,
-              ),
-              AppTextField(
-                controller: _password,
-                label: _editing ? l10n.passwordOptional : l10n.password,
-                obscure: true,
-                prefixIcon: Icons.lock_outline,
-              ),
-              if (_editing) ...[
-                SwitchListTile(
-                  contentPadding: EdgeInsets.zero,
-                  title: Text(_enabled ? l10n.enabled : l10n.disabled),
+      constraints: const BoxConstraints(maxWidth: AppBreakpoints.formMax),
+      scrollable: true,
+      actions: [
+        ShadButton.outline(
+          onPressed: _saving ? null : () => Navigator.of(context).pop(),
+          child: Text(l10n.cancel),
+        ),
+        ShadButton(onPressed: _saving ? null : _submit, child: Text(l10n.save)),
+      ],
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          if (_errorKey != null)
+            AppErrorBanner(message: lookupError(l10n, _errorKey!)),
+          AppTextField(
+            controller: _first,
+            label: l10n.firstName,
+            prefixIcon: LucideIcons.user,
+            textInputAction: TextInputAction.next,
+          ),
+          AppTextField(
+            controller: _last,
+            label: l10n.lastName,
+            prefixIcon: LucideIcons.userRound,
+            textInputAction: TextInputAction.next,
+          ),
+          AppTextField(
+            controller: _email,
+            label: l10n.email,
+            prefixIcon: LucideIcons.mail,
+            keyboardType: TextInputType.emailAddress,
+            textInputAction: TextInputAction.next,
+          ),
+          AppTextField(
+            controller: _phone,
+            label: l10n.phone,
+            prefixIcon: LucideIcons.phone,
+            keyboardType: TextInputType.phone,
+            textInputAction: TextInputAction.next,
+          ),
+          AppTextField(
+            controller: _password,
+            label: _editing ? l10n.passwordOptional : l10n.password,
+            obscure: true,
+            prefixIcon: LucideIcons.lock,
+          ),
+          if (_editing) ...[
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    _enabled ? l10n.enabled : l10n.disabled,
+                    style: theme.textTheme.small,
+                  ),
+                ),
+                ShadSwitch(
                   value: _enabled,
+                  enabled: !lockEnabled,
                   onChanged: lockEnabled
                       ? null
                       : (value) => setState(() => _enabled = value),
                 ),
-                if (lockDefault)
-                  Text(
-                    l10n.enabledLockedDefault,
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                if (lockSelf && !lockDefault)
-                  Text(
-                    l10n.enabledLockedSelf,
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
               ],
-            ],
-          ),
-        ),
+            ),
+            if (lockDefault)
+              Text(l10n.enabledLockedDefault, style: theme.textTheme.muted),
+            if (lockSelf && !lockDefault)
+              Text(l10n.enabledLockedSelf, style: theme.textTheme.muted),
+          ],
+        ],
       ),
-      actions: [
-        TextButton(
-          onPressed: _saving ? null : () => Navigator.of(context).pop(),
-          child: Text(l10n.cancel),
-        ),
-        FilledButton(
-          onPressed: _saving ? null : _submit,
-          child: _saving
-              ? const SizedBox(
-                  width: 18,
-                  height: 18,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                )
-              : Text(l10n.save),
-        ),
-      ],
     );
   }
 

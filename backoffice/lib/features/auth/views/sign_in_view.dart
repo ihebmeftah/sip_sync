@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shadcn_ui/shadcn_ui.dart';
 
 import '../../../core/errors/error_mapper.dart';
 import '../../../core/theme/app_tokens.dart';
@@ -30,27 +31,27 @@ class _SignInViewState extends ConsumerState<SignInView> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final auth = ref.watch(authViewModelProvider);
-    final text = Theme.of(context).textTheme;
+    final theme = ShadTheme.of(context);
     return AuthShell(
       form: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(l10n.authLead, style: text.headlineMedium),
+          Text(l10n.authLead, style: theme.textTheme.h3),
           const SizedBox(height: AppSpacing.sm),
-          Text(l10n.tagline, style: text.bodyLarge),
+          Text(l10n.tagline, style: theme.textTheme.muted),
           const SizedBox(height: AppSpacing.xl),
           AppTextField(
             controller: _email,
             label: l10n.email,
             keyboardType: TextInputType.emailAddress,
-            prefixIcon: Icons.mail_outline,
+            prefixIcon: LucideIcons.mail,
             textInputAction: TextInputAction.next,
           ),
           AppTextField(
             controller: _password,
             label: l10n.password,
             obscure: true,
-            prefixIcon: Icons.lock_outline,
+            prefixIcon: LucideIcons.lock,
             textInputAction: TextInputAction.done,
           ),
           if (auth.errorKey != null)

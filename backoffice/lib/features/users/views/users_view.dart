@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:sip_sync_client/sip_sync_client.dart';
 
 import '../../../core/errors/error_mapper.dart';
@@ -27,17 +28,18 @@ class _UsersViewState extends ConsumerState<UsersView> {
     final l10n = AppLocalizations.of(context)!;
     final users = ref.watch(usersViewModelProvider);
     final selfId = ref.watch(authViewModelProvider).session?.id;
+    final theme = ShadTheme.of(context);
 
     return ConsolePage(
       title: l10n.usersTitle,
       subtitle: l10n.usersSubtitle,
-      action: FilledButton.icon(
-        onPressed: () => showDialog<void>(
+      action: ShadButton(
+        leading: const Icon(LucideIcons.plus, size: 16),
+        onPressed: () => showShadDialog<void>(
           context: context,
           builder: (_) => const UserFormDialog(),
         ),
-        icon: const Icon(Icons.person_add_alt_1),
-        label: Text(l10n.createUser),
+        child: Text(l10n.createUser),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -52,7 +54,7 @@ class _UsersViewState extends ConsumerState<UsersView> {
                 AppErrorBanner(
                   message: lookupError(l10n, mapError(error).l10nKey),
                 ),
-                TextButton(
+                ShadButton.outline(
                   onPressed: () => ref.invalidate(usersViewModelProvider),
                   child: Text(l10n.retry),
                 ),
@@ -60,33 +62,37 @@ class _UsersViewState extends ConsumerState<UsersView> {
             ),
             data: (rows) {
               if (rows.isEmpty) {
-                return Text(
-                  l10n.empty,
-                  style: Theme.of(context).textTheme.bodyMedium,
-                );
+                return Text(l10n.empty, style: theme.textTheme.muted);
               }
-              return AppSurfaceCard(
+              return DecoratedBox(
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.card,
+                  borderRadius: theme.radius,
+                  border: Border.all(color: theme.colorScheme.border),
+                ),
                 child: Column(
                   children: [
-                    for (final user in rows)
+                    for (var i = 0; i < rows.length; i++) ...[
+                      if (i > 0) const ShadSeparator.horizontal(),
                       _UserRow(
-                        user: user,
-                        locked: user.isSystemDefault || user.id == selfId,
-                        onEdit: () => showDialog<void>(
+                        user: rows[i],
+                        locked: rows[i].isSystemDefault || rows[i].id == selfId,
+                        onEdit: () => showShadDialog<void>(
                           context: context,
-                          builder: (_) => UserFormDialog(user: user),
+                          builder: (_) => UserFormDialog(user: rows[i]),
                         ),
                         onToggle: (enabled) async {
                           final error = await ref
                               .read(usersViewModelProvider.notifier)
-                              .setEnabled(user.id, enabled);
+                              .setEnabled(rows[i].id, enabled);
                           if (!mounted) return;
                           setState(() => _bannerKey = error);
                         },
-                        onDelete: user.isSystemDefault
+                        onDelete: rows[i].isSystemDefault
                             ? null
-                            : () => _confirmDelete(user),
+                            : () => _confirmDelete(rows[i]),
                       ),
+                    ],
                   ],
                 ),
               );
@@ -100,17 +106,17 @@ class _UsersViewState extends ConsumerState<UsersView> {
   Future<void> _confirmDelete(SuperAdminView user) async {
     final l10n = AppLocalizations.of(context)!;
     final name = '${user.firstName} ${user.lastName}'.trim();
-    final confirmed = await showDialog<bool>(
+    final confirmed = await showShadDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (context) => ShadDialog.alert(
         title: Text(l10n.deleteUser),
-        content: Text(l10n.deleteUserConfirm(name)),
+        description: Text(l10n.deleteUserConfirm(name)),
         actions: [
-          TextButton(
+          ShadButton.outline(
             onPressed: () => Navigator.of(context).pop(false),
             child: Text(l10n.cancel),
           ),
-          FilledButton(
+          ShadButton.destructive(
             onPressed: () => Navigator.of(context).pop(true),
             child: Text(l10n.deleteUser),
           ),
@@ -144,39 +150,73 @@ class _UserRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final scheme = Theme.of(context).colorScheme;
+    final theme = ShadTheme.of(context);
     final initial = user.firstName.isEmpty ? '?' : user.firstName[0];
-    return ListTile(
-      contentPadding: EdgeInsets.zero,
-      leading: CircleAvatar(
-        backgroundColor: scheme.secondaryContainer,
-        foregroundColor: scheme.onSecondaryContainer,
-        child: Text(initial),
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.lg,
+        vertical: AppSpacing.md,
       ),
-      title: Text('${user.firstName} ${user.lastName}'),
-      subtitle: Text(
-        [
-          user.email,
-          user.phoneNumber,
-          if (user.isSystemDefault) l10n.defaultAdminFlag,
-          user.isEnabled ? l10n.enabled : l10n.disabled,
-        ].join(' · '),
-      ),
-      trailing: Wrap(
-        crossAxisAlignment: WrapCrossAlignment.center,
-        spacing: AppSpacing.xs,
+      child: Row(
         children: [
-          Switch(value: user.isEnabled, onChanged: locked ? null : onToggle),
-          IconButton(
-            tooltip: l10n.editUser,
+          DecoratedBox(
+            decoration: BoxDecoration(
+              color: theme.colorScheme.secondary,
+              shape: BoxShape.circle,
+            ),
+            child: SizedBox(
+              width: 36,
+              height: 36,
+              child: Center(child: Text(initial, style: theme.textTheme.small)),
+            ),
+          ),
+          const SizedBox(width: AppSpacing.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '${user.firstName} ${user.lastName}',
+                  style: theme.textTheme.small,
+                ),
+                const SizedBox(height: AppSpacing.xs),
+                Text(
+                  '${user.email} · ${user.phoneNumber}',
+                  style: theme.textTheme.muted,
+                ),
+                const SizedBox(height: AppSpacing.sm),
+                Wrap(
+                  spacing: AppSpacing.sm,
+                  runSpacing: AppSpacing.xs,
+                  children: [
+                    if (user.isSystemDefault)
+                      ShadBadge.outline(child: Text(l10n.defaultAdminFlag)),
+                    user.isEnabled
+                        ? ShadBadge.secondary(child: Text(l10n.enabled))
+                        : ShadBadge.outline(child: Text(l10n.disabled)),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          ShadSwitch(
+            value: user.isEnabled,
+            enabled: !locked,
+            onChanged: locked ? null : onToggle,
+          ),
+          ShadIconButton.ghost(
+            icon: const Icon(LucideIcons.pencil, size: 16),
             onPressed: onEdit,
-            icon: const Icon(Icons.edit_outlined),
           ),
           if (onDelete != null)
-            IconButton(
-              tooltip: l10n.deleteUser,
+            ShadIconButton.ghost(
+              foregroundColor: theme.colorScheme.destructive,
+              icon: Icon(
+                LucideIcons.trash2,
+                size: 16,
+                color: theme.colorScheme.destructive,
+              ),
               onPressed: onDelete,
-              icon: Icon(Icons.delete_outline, color: scheme.error),
             ),
         ],
       ),
