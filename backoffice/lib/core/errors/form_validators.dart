@@ -1,3 +1,6 @@
+import 'package:sip_sync_client/sip_sync_client.dart';
+
+import '../../features/buildings/pack_term_preview.dart';
 import '../../l10n/generated/app_localizations.dart';
 
 /// Client checks that match backoffice account and pack rules on the server.
@@ -53,10 +56,33 @@ abstract final class FormValidators {
     return null;
   }
 
-  /// A paid pack term must end after the current instant.
-  static String? packExpiry(AppLocalizations l10n, DateTime? value) {
+  /// A paid term must end after now, and on or after the period minimum.
+  ///
+  /// Monthly is at least one month out and yearly at least one year. A later
+  /// date is allowed. Daily is at most 20 days; a longer daily date is not
+  /// valid here because the dialog turns it into a monthly term first.
+  static String? packExpiry(
+    AppLocalizations l10n,
+    DateTime? value,
+    PackBillingPeriod period,
+  ) {
     if (value == null || !value.isAfter(DateTime.now())) {
       return l10n.validationPackExpiry;
+    }
+    if (period == PackBillingPeriod.daily) {
+      final latest = DateTime.now().toUtc().add(
+        const Duration(days: packDailyMaxDays),
+      );
+      if (packUtcDate(value).isAfter(packUtcDate(latest))) {
+        return l10n.packDailyStartsMonthly;
+      }
+      return null;
+    }
+    final minimum = previewPackExpiry(period);
+    if (packUtcDate(value).isBefore(packUtcDate(minimum))) {
+      return period == PackBillingPeriod.monthly
+          ? l10n.validationPackMonthlyMin
+          : l10n.validationPackYearlyMin;
     }
     return null;
   }

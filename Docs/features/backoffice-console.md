@@ -21,7 +21,7 @@ The seeded default admin cannot be deleted or disabled. A signed-in admin cannot
 4. **Users** lists backoffice accounts (name, email, phone, enabled), 20 per page, oldest first. Create opens a dialog. Edit updates name, email, phone, optional new password, and the enabled switch.
 5. Disabled login returns `accountDisabled`.
 6. **Buildings** lists every venue, 20 per page by name. The type sits on the same row as the name. The card opens `/buildings/:id`.
-7. The detail screen has four tabs. **Details** is contact and location. **Pack** shows the current plan, its history, and, for a paid plan, whether it is monthly or yearly and the date it returns to free. Assign and private-pack create stay available only while the venue is on the free pack. **Gain** is the monthly price plus the customer-app fee on customer orders. **Stats** is category, article, table, and order counts.
+7. The detail screen has four tabs. **Details** is contact and location. **Pack** shows the current plan, its history, and, for a paid plan, whether it is daily, monthly, or yearly and the date it returns to free. Assign and private-pack create stay available only while the venue is on the free pack. **Gain** is the monthly price plus the customer-app fee on customer orders. **Stats** is category, article, table, and order counts.
 
 ## Data
 

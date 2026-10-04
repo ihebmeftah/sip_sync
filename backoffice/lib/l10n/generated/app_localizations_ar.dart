@@ -558,6 +558,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get assignPack => 'تعيين باقة';
 
   @override
+  String get packBillingDaily => 'يومي';
+
+  @override
   String get packBillingMonthly => 'شهري';
 
   @override
@@ -573,7 +576,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get packTermHint =>
-      'المدة الشهرية تنتهي بعد شهر. المدة السنوية تنتهي بعد سنة. يمكنك تغيير التاريخ.';
+      'المدة اليومية لا تتجاوز 20 يوماً. المدة الشهرية تنتهي بعد شهر على الأقل. المدة السنوية تنتهي بعد سنة على الأقل. يمكنك تأخير التاريخ.';
 
   @override
   String get packChangeDate => 'تغيير التاريخ';
@@ -582,7 +585,18 @@ class AppLocalizationsAr extends AppLocalizations {
   String get packAssignConfirm => 'تعيين';
 
   @override
+  String get packDailyStartsMonthly => 'أكثر من 20 يوماً يبدأ مدة شهرية.';
+
+  @override
   String get validationPackExpiry => 'اختر تاريخاً بعد اليوم.';
+
+  @override
+  String get validationPackMonthlyMin =>
+      'المدة الشهرية تنتهي بعد شهر على الأقل من اليوم.';
+
+  @override
+  String get validationPackYearlyMin =>
+      'المدة السنوية تنتهي بعد سنة على الأقل من اليوم.';
 
   @override
   String get quickCreatePack => 'إنشاء باقة خاصة';

@@ -235,9 +235,7 @@ class _PackTab extends StatelessWidget {
         const SizedBox(height: AppSpacing.sm),
         if (detail.packBillingPeriod != null)
           Text(
-            detail.packBillingPeriod == PackBillingPeriod.monthly
-                ? l10n.packBillingMonthly
-                : l10n.packBillingYearly,
+            _billingPeriodLabel(l10n, detail.packBillingPeriod!),
             style: theme.textTheme.p,
           ),
         Text(
@@ -367,6 +365,7 @@ class _AssignPackDialogState extends ConsumerState<_AssignPackDialog> {
   PackBillingPeriod _period = PackBillingPeriod.monthly;
   late DateTime _expires = previewPackExpiry(_period);
   String? _dateError;
+  String? _dateNote;
   late final Future<List<PackView>> _catalog;
 
   @override
@@ -443,6 +442,7 @@ class _AssignPackDialogState extends ConsumerState<_AssignPackDialog> {
       _period = PackBillingPeriod.monthly;
       _expires = previewPackExpiry(PackBillingPeriod.monthly);
       _dateError = null;
+      _dateNote = null;
     });
   }
 
@@ -460,6 +460,10 @@ class _AssignPackDialogState extends ConsumerState<_AssignPackDialog> {
           spacing: AppSpacing.sm,
           children: [
             _periodButton(
+              label: l10n.packBillingDaily,
+              period: PackBillingPeriod.daily,
+            ),
+            _periodButton(
               label: l10n.packBillingMonthly,
               period: PackBillingPeriod.monthly,
             ),
@@ -474,6 +478,10 @@ class _AssignPackDialogState extends ConsumerState<_AssignPackDialog> {
           l10n.packExpiresOn(_formatExpiry(context, _expires)),
           style: theme.textTheme.p,
         ),
+        if (_dateNote != null) ...[
+          const SizedBox(height: AppSpacing.xs),
+          Text(_dateNote!, style: theme.textTheme.small),
+        ],
         if (_dateError != null) ...[
           const SizedBox(height: AppSpacing.xs),
           Text(
@@ -493,6 +501,7 @@ class _AssignPackDialogState extends ConsumerState<_AssignPackDialog> {
                 onPressed: () => setState(() {
                   _selected = null;
                   _dateError = null;
+                  _dateNote = null;
                 }),
                 child: Text(l10n.packsTitle),
               ),
@@ -518,6 +527,7 @@ class _AssignPackDialogState extends ConsumerState<_AssignPackDialog> {
       _period = period;
       _expires = previewPackExpiry(period);
       _dateError = null;
+      _dateNote = null;
     });
     if (_period == period) {
       return ShadButton(onPressed: select, child: Text(label));
@@ -527,25 +537,62 @@ class _AssignPackDialogState extends ConsumerState<_AssignPackDialog> {
 
   Future<void> _changeDate() async {
     final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final tomorrow = today.add(const Duration(days: 1));
+    final horizon = today.add(const Duration(days: 365 * 5));
+    final first = switch (_period) {
+      PackBillingPeriod.daily => tomorrow,
+      PackBillingPeriod.monthly => packLocalDate(
+        previewPackExpiry(PackBillingPeriod.monthly),
+      ),
+      PackBillingPeriod.yearly => packLocalDate(
+        previewPackExpiry(PackBillingPeriod.yearly),
+      ),
+    };
+    var initial = packLocalDate(_expires);
+    if (initial.isBefore(first)) {
+      initial = first;
+    }
+    if (initial.isAfter(horizon)) {
+      initial = horizon;
+    }
     final picked = await showDatePicker(
       context: context,
-      initialDate: _expires.toLocal().isAfter(now)
-          ? _expires.toLocal()
-          : now.add(const Duration(days: 1)),
-      firstDate: now.add(const Duration(days: 1)),
-      lastDate: now.add(const Duration(days: 365 * 5)),
+      initialDate: initial,
+      firstDate: first,
+      lastDate: horizon,
     );
-    if (picked == null) {
+    if (!mounted || picked == null) {
+      return;
+    }
+    final l10n = AppLocalizations.of(context)!;
+    final chosen = endOfLocalDay(picked);
+    if (_period == PackBillingPeriod.daily) {
+      final normalized = normalizePackTerm(period: _period, expiresAt: chosen);
+      setState(() {
+        _period = normalized.period;
+        _expires = normalized.expiresAt;
+        _dateError = null;
+        _dateNote = normalized.startedMonthly
+            ? l10n.packDailyStartsMonthly
+            : null;
+      });
       return;
     }
     setState(() {
-      _expires = endOfLocalDay(picked);
-      _dateError = null;
+      _expires = chosen;
+      _dateNote = null;
+      _dateError = FormValidators.packExpiry(l10n, chosen, _period);
     });
   }
 
   void _confirm(AppLocalizations l10n, PackView pack) {
-    final error = FormValidators.packExpiry(l10n, _expires);
+    final normalized = normalizePackTerm(period: _period, expiresAt: _expires);
+    final error = FormValidators.packExpiry(
+      l10n,
+      normalized.expiresAt,
+      normalized.period,
+    );
     if (error != null) {
       setState(() => _dateError = error);
       return;
@@ -553,8 +600,8 @@ class _AssignPackDialogState extends ConsumerState<_AssignPackDialog> {
     Navigator.of(context).pop(
       PackAssignment(
         packId: pack.id,
-        billingPeriod: _period,
-        expiresAt: _expires.toUtc(),
+        billingPeriod: normalized.period,
+        expiresAt: normalized.expiresAt.toUtc(),
       ),
     );
   }
@@ -577,6 +624,7 @@ class _HistoryLine extends StatelessWidget {
             null => l10n.packHistoryCurrent,
           };
     final period = switch (row.billingPeriod) {
+      PackBillingPeriod.daily => l10n.packBillingDaily,
       PackBillingPeriod.monthly => l10n.packBillingMonthly,
       PackBillingPeriod.yearly => l10n.packBillingYearly,
       null => null,
@@ -600,6 +648,14 @@ class _HistoryLine extends StatelessWidget {
       ),
     );
   }
+}
+
+String _billingPeriodLabel(AppLocalizations l10n, PackBillingPeriod period) {
+  return switch (period) {
+    PackBillingPeriod.daily => l10n.packBillingDaily,
+    PackBillingPeriod.monthly => l10n.packBillingMonthly,
+    PackBillingPeriod.yearly => l10n.packBillingYearly,
+  };
 }
 
 class _Line extends StatelessWidget {

@@ -103,7 +103,7 @@ void main() {
       final counter = before.publicPacks.firstWhere(
         (pack) => pack.code == 'counter',
       );
-      final expires = DateTime.now().toUtc().add(const Duration(days: 30));
+      final expires = DateTime.now().toUtc().add(const Duration(days: 40));
       await endpoints.building.assignPack(
         seeded.adminSession,
         seeded.building.id,

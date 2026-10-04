@@ -1,6 +1,7 @@
 import 'package:serverpod/serverpod.dart';
 import 'package:sip_sync_server/src/auth/password_hasher.dart';
 import 'package:sip_sync_server/src/generated/protocol.dart';
+import 'package:sip_sync_server/src/packs/pack_term.dart';
 import 'package:test/test.dart';
 
 import 'test_tools/serverpod_test_tools.dart';
@@ -211,7 +212,7 @@ void main() {
         ),
       );
       expect(created.isPublic, isFalse);
-      final expires = DateTime.now().toUtc().add(const Duration(days: 40));
+      final expires = DateTime.now().toUtc().add(const Duration(days: 400));
       final detail = await endpoints.building.assignPack(
         seeded.adminSession,
         seeded.building.id,
@@ -273,6 +274,105 @@ void main() {
       );
     });
 
+    test('a monthly date before one month is rejected', () async {
+      final seeded = await seed();
+      final packs = (await endpoints.pack.list(seeded.adminSession)).items;
+      final floor = packs.firstWhere((pack) => pack.code == 'floor');
+      await expectLater(
+        endpoints.building.assignPack(
+          seeded.adminSession,
+          seeded.building.id,
+          floor.id,
+          billingPeriod: PackBillingPeriod.monthly,
+          expiresAt: DateTime.now().toUtc().add(const Duration(days: 20)),
+        ),
+        throwsA(
+          isA<PackException>().having(
+            (error) => error.code,
+            'code',
+            PackErrorCode.invalidInput,
+          ),
+        ),
+      );
+    });
+
+    test('a yearly date before one year is rejected', () async {
+      final seeded = await seed();
+      final packs = (await endpoints.pack.list(seeded.adminSession)).items;
+      final floor = packs.firstWhere((pack) => pack.code == 'floor');
+      await expectLater(
+        endpoints.building.assignPack(
+          seeded.adminSession,
+          seeded.building.id,
+          floor.id,
+          billingPeriod: PackBillingPeriod.yearly,
+          expiresAt: DateTime.now().toUtc().add(const Duration(days: 40)),
+        ),
+        throwsA(
+          isA<PackException>().having(
+            (error) => error.code,
+            'code',
+            PackErrorCode.invalidInput,
+          ),
+        ),
+      );
+    });
+
+    test('a daily term within 20 days stays daily', () async {
+      final seeded = await seed();
+      final packs = (await endpoints.pack.list(seeded.adminSession)).items;
+      final floor = packs.firstWhere((pack) => pack.code == 'floor');
+      final expires = DateTime.now().toUtc().add(const Duration(days: 10));
+      final detail = await endpoints.building.assignPack(
+        seeded.adminSession,
+        seeded.building.id,
+        floor.id,
+        billingPeriod: PackBillingPeriod.daily,
+        expiresAt: expires,
+      );
+      expect(detail.packBillingPeriod, PackBillingPeriod.daily);
+      expect(detail.packExpiresAt, expires);
+    });
+
+    test('a daily date past 20 days starts a monthly term', () async {
+      final seeded = await seed();
+      final packs = (await endpoints.pack.list(seeded.adminSession)).items;
+      final floor = packs.firstWhere((pack) => pack.code == 'floor');
+      final before = DateTime.now().toUtc();
+      final detail = await endpoints.building.assignPack(
+        seeded.adminSession,
+        seeded.building.id,
+        floor.id,
+        billingPeriod: PackBillingPeriod.daily,
+        expiresAt: before.add(const Duration(days: 25)),
+      );
+      final minimum = packTermEnd(PackBillingPeriod.monthly, from: before);
+      expect(detail.packBillingPeriod, PackBillingPeriod.monthly);
+      expect(
+        detail.packExpiresAt!.toUtc().difference(minimum).inSeconds.abs(),
+        lessThan(30),
+      );
+    });
+
+    test(
+      'a daily date past one month stays on that later monthly date',
+      () async {
+        final seeded = await seed();
+        final packs = (await endpoints.pack.list(seeded.adminSession)).items;
+        final floor = packs.firstWhere((pack) => pack.code == 'floor');
+        final expires = DateTime.now().toUtc().add(const Duration(days: 45));
+        final detail = await endpoints.building.assignPack(
+          seeded.adminSession,
+          seeded.building.id,
+          floor.id,
+          billingPeriod: PackBillingPeriod.daily,
+          expiresAt: expires,
+        );
+        expect(detail.packBillingPeriod, PackBillingPeriod.monthly);
+        expect(detail.packExpiresAt, expires);
+      },
+    );
+
     test('a paid plan blocks another assignment', () async {
       final seeded = await seed();
       final packs = (await endpoints.pack.list(seeded.adminSession)).items;
@@ -283,7 +383,7 @@ void main() {
         seeded.building.id,
         floor.id,
         billingPeriod: PackBillingPeriod.monthly,
-        expiresAt: DateTime.now().toUtc().add(const Duration(days: 20)),
+        expiresAt: DateTime.now().toUtc().add(const Duration(days: 40)),
       );
       await expectLater(
         endpoints.building.assignPack(
@@ -310,7 +410,7 @@ void main() {
         seeded.building.id,
         floor.id,
         billingPeriod: PackBillingPeriod.monthly,
-        expiresAt: DateTime.now().toUtc().add(const Duration(days: 20)),
+        expiresAt: DateTime.now().toUtc().add(const Duration(days: 40)),
       );
       final session = sessionBuilder.build();
       final row = await Building.db.findById(session, seeded.building.id);

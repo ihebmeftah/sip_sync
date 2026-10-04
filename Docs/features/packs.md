@@ -22,7 +22,7 @@ Status: in progress
 5. Creating a venue sets `building.packId` to the free pack. The owner does not choose.
 6. `free` is a system pack (0 TND, private). It cannot be deleted. Any other pack can be deleted only when no venue is still on it.
 7. A disabled pack is hidden from `listPublic`. Venues already on it stay there.
-8. Assigning any pack other than `free` requires a term: **monthly** or **yearly**. The console previews the end date (one month or one year from now) and the admin can move it. The free pack has no end date. A venue that is already on a paid plan cannot be moved to another pack. Cancellation will be a later action. The term ending still returns the venue to free.
+8. Assigning any pack other than `free` requires a term: **daily**, **monthly**, or **yearly**. The console previews the end (one day, one month, or one year) and the admin can move it later. A monthly date cannot be earlier than one month from today. A yearly date cannot be earlier than one year. A daily date can be any day through 20 days; a later daily date is stored as a monthly term, and if that date is still before one month the end becomes the one-month mark. The free pack has no end date. A venue that is already on a paid plan cannot be moved to another pack. Cancellation will be a later action. The term ending still returns the venue to free.
 9. When `building.packExpiresAt` is reached, the venue returns to the free pack and the term is cleared. The previous assignment stays in history with reason `expired`. The server checks on boot, every 15 minutes, and the next time that venue is read.
 10. The pack tab lists every assignment, newest first, so a change of plan stays visible.
 
@@ -47,13 +47,13 @@ Capability keys match features that exist today. An empty limit means no cap. Ca
 - `pack` — code (unique), prices in millimes, fee in basis points, `isPublic`, `isEnabled`, `isSystem`, sort order, limit columns (null = unlimited), capability booleans.
 - `building.packId` — the venue’s current plan. Restrict delete while a venue still points at the pack.
 - `building_pack_assignment` — one row per plan the venue has been on. The open row (`endedAt` null) matches `building.packId`. Closed rows keep `replaced` or `expired`.
-- `building.packBillingPeriod` — `monthly` or `yearly` while a paid pack is assigned. Null on the free pack.
+- `building.packBillingPeriod` — `daily`, `monthly`, or `yearly` while a paid pack is assigned. Null on the free pack.
 - `building.packExpiresAt` — when that term ends. Null on the free pack.
 - `PackCreate` / `PackUpdate` / `PackView` — admin shape. No owner grant list.
 - `PackPublicView` — id, code, name, prices, fee, sort, capabilities.
 - `PackException` / `PackErrorCode` — `invalidInput`, `notFound`, `codeTaken`, `cannotDeleteSystemPack`, `packInUse`, `limitReached`, `featureOff`, `paidPlanActive`. `limitReached` and `featureOff` also name the `PackFeature`. A caller who is signed in as the wrong role gets `AccountException` / `notAuthorized`.
 - Endpoint: `Pack.list`, `Pack.listPublic`, `Pack.create`, `Pack.update`, `Pack.delete`.
-- `Building.adminDetail` and `Building.assignPack` — super admin. Detail includes the pack, the billing period, `packExpiresAt`, the assignment history, category / article / table / order counts, and platform gain (monthly price plus the customer-app fee on non-cancelled customer orders). `assignPack` takes an optional period and end date. The free pack ignores them. A paid pack rejects a missing or past date. A venue already on a paid plan rejects any new assignment (`paidPlanActive`). Expiry still returns the venue to free and keeps both rows.
+- `Building.adminDetail` and `Building.assignPack` — super admin. Detail includes the pack, the billing period, `packExpiresAt`, the assignment history, category / article / table / order counts, and platform gain (monthly price plus the customer-app fee on non-cancelled customer orders). `assignPack` takes an optional period and end date. The free pack ignores them. A paid pack rejects a missing or past date, a monthly date before one month, and a yearly date before one year. A daily date past 20 days is saved as monthly. A venue already on a paid plan rejects any new assignment (`paidPlanActive`). Expiry still returns the venue to free and keeps both rows.
 - `BuildingView.pack` — the plan the owner app shows in the top banner.
 
 ## Enforcement

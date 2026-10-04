@@ -1114,6 +1114,12 @@ abstract class AppLocalizations {
   /// **'Assign pack'**
   String get assignPack;
 
+  /// No description provided for @packBillingDaily.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily'**
+  String get packBillingDaily;
+
   /// No description provided for @packBillingMonthly.
   ///
   /// In en, this message translates to:
@@ -1141,7 +1147,7 @@ abstract class AppLocalizations {
   /// No description provided for @packTermHint.
   ///
   /// In en, this message translates to:
-  /// **'A monthly term ends in one month. A yearly term ends in one year. You can move the date.'**
+  /// **'A daily term lasts at most 20 days. A monthly term ends on or after one month. A yearly term ends on or after one year. You can move the date later.'**
   String get packTermHint;
 
   /// No description provided for @packChangeDate.
@@ -1156,11 +1162,29 @@ abstract class AppLocalizations {
   /// **'Assign'**
   String get packAssignConfirm;
 
+  /// No description provided for @packDailyStartsMonthly.
+  ///
+  /// In en, this message translates to:
+  /// **'More than 20 days starts a monthly term.'**
+  String get packDailyStartsMonthly;
+
   /// No description provided for @validationPackExpiry.
   ///
   /// In en, this message translates to:
   /// **'Choose a date after today.'**
   String get validationPackExpiry;
+
+  /// No description provided for @validationPackMonthlyMin.
+  ///
+  /// In en, this message translates to:
+  /// **'A monthly term ends on or after one month from today.'**
+  String get validationPackMonthlyMin;
+
+  /// No description provided for @validationPackYearlyMin.
+  ///
+  /// In en, this message translates to:
+  /// **'A yearly term ends on or after one year from today.'**
+  String get validationPackYearlyMin;
 
   /// No description provided for @quickCreatePack.
   ///

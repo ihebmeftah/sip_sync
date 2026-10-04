@@ -15,7 +15,8 @@ import 'package:serverpod_client/serverpod_client.dart' as _isc;
 /// How long a paid pack assignment runs before the venue returns to free.
 enum PackBillingPeriod implements _isc.SerializableModel {
   monthly,
-  yearly;
+  yearly,
+  daily;
 
   static PackBillingPeriod fromJson(String name) {
     switch (name) {
@@ -23,6 +24,8 @@ enum PackBillingPeriod implements _isc.SerializableModel {
         return PackBillingPeriod.monthly;
       case 'yearly':
         return PackBillingPeriod.yearly;
+      case 'daily':
+        return PackBillingPeriod.daily;
       default:
         throw ArgumentError(
           'Value "$name" cannot be converted to "PackBillingPeriod"',

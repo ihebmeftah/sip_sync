@@ -118,7 +118,7 @@ class DevSeed {
       expiresAt: packCode == PackCatalog.freeCode
           ? null
           : now.add(
-              Duration(days: yearly ? 220 + (index % 120) : 16 + (index % 24)),
+              Duration(days: yearly ? 370 + (index % 120) : 32 + (index % 40)),
             ),
     );
   }

@@ -41,8 +41,10 @@ class BuildingEndpoint extends Endpoint {
   /// Moves a free-plan venue onto an enabled pack. Super admin only.
   ///
   /// A venue already on a paid plan is rejected. The free pack takes no term.
-  /// Any other pack needs [billingPeriod] and [expiresAt]. The venue returns
-  /// to the free pack when that date arrives. Each step is kept as history.
+  /// Any other pack needs [billingPeriod] and [expiresAt]. Monthly and yearly
+  /// dates must be at least that period out and may be later. A daily date
+  /// past 20 days is stored as monthly. The venue returns to the free pack
+  /// when that date arrives. Each step is kept as history.
   Future<AdminBuildingDetail> assignPack(
     Session session,
     UuidValue buildingId,

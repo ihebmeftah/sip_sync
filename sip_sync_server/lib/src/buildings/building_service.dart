@@ -10,6 +10,7 @@ import '../packs/pack_expiry.dart';
 import '../packs/pack_gate.dart';
 import '../packs/pack_history.dart';
 import '../packs/pack_service.dart';
+import '../packs/pack_term.dart';
 import 'strict_mode.dart';
 
 /// Owner venues; employees can read their assigned building.
@@ -364,8 +365,10 @@ class BuildingService {
   ///
   /// A venue already on a paid plan is rejected until cancellation exists.
   /// The free pack clears any term. Every other enabled pack needs
-  /// [billingPeriod] and an [expiresAt] in the future. When that instant
-  /// passes, the venue returns to the free pack and both steps are kept
+  /// [billingPeriod] and an [expiresAt] in the future. A monthly date is at
+  /// least one month out, a yearly date at least one year, and either may be
+  /// later. A daily date past 20 days is stored as a monthly term. When the
+  /// end passes, the venue returns to the free pack and both steps are kept
   /// in the assignment history.
   Future<AdminBuildingDetail> assignPack(
     Session session,
@@ -438,20 +441,11 @@ class BuildingService {
     }
     if (billingPeriod == null || expiresAt == null) {
       throw PackException(
-        message: 'Choose monthly or yearly, and an end date.',
+        message: 'Choose daily, monthly, or yearly, and an end date.',
         code: PackErrorCode.invalidInput,
       );
     }
-    final end = expiresAt.toUtc();
-    final now = DateTime.now().toUtc();
-    if (!end.isAfter(now) ||
-        end.isAfter(now.add(const Duration(days: 366 * 6)))) {
-      throw PackException(
-        message: 'Choose an end date in the future.',
-        code: PackErrorCode.invalidInput,
-      );
-    }
-    return (period: billingPeriod, expiresAt: end);
+    return resolvePackTerm(period: billingPeriod, expiresAt: expiresAt);
   }
 
   Future<Building> _adminRow(Session session, UuidValue buildingId) async {

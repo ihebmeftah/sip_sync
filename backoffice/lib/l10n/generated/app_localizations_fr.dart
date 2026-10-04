@@ -574,6 +574,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get assignPack => 'Affecter un pack';
 
   @override
+  String get packBillingDaily => 'Quotidien';
+
+  @override
   String get packBillingMonthly => 'Mensuel';
 
   @override
@@ -589,7 +592,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get packTermHint =>
-      'Un terme mensuel se termine dans un mois. Un terme annuel se termine dans un an. Vous pouvez déplacer la date.';
+      'Un terme quotidien dure au plus 20 jours. Un terme mensuel se termine au plus tôt dans un mois. Un terme annuel se termine au plus tôt dans un an. Vous pouvez repousser la date.';
 
   @override
   String get packChangeDate => 'Changer la date';
@@ -598,7 +601,19 @@ class AppLocalizationsFr extends AppLocalizations {
   String get packAssignConfirm => 'Affecter';
 
   @override
+  String get packDailyStartsMonthly =>
+      'Plus de 20 jours démarre un terme mensuel.';
+
+  @override
   String get validationPackExpiry => 'Choisissez une date après aujourd\'hui.';
+
+  @override
+  String get validationPackMonthlyMin =>
+      'Un terme mensuel se termine au plus tôt un mois après aujourd\'hui.';
+
+  @override
+  String get validationPackYearlyMin =>
+      'Un terme annuel se termine au plus tôt un an après aujourd\'hui.';
 
   @override
   String get quickCreatePack => 'Créer un pack privé';

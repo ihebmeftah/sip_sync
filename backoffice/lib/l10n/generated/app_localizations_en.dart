@@ -569,6 +569,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get assignPack => 'Assign pack';
 
   @override
+  String get packBillingDaily => 'Daily';
+
+  @override
   String get packBillingMonthly => 'Monthly';
 
   @override
@@ -584,7 +587,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get packTermHint =>
-      'A monthly term ends in one month. A yearly term ends in one year. You can move the date.';
+      'A daily term lasts at most 20 days. A monthly term ends on or after one month. A yearly term ends on or after one year. You can move the date later.';
 
   @override
   String get packChangeDate => 'Change date';
@@ -593,7 +596,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get packAssignConfirm => 'Assign';
 
   @override
+  String get packDailyStartsMonthly =>
+      'More than 20 days starts a monthly term.';
+
+  @override
   String get validationPackExpiry => 'Choose a date after today.';
+
+  @override
+  String get validationPackMonthlyMin =>
+      'A monthly term ends on or after one month from today.';
+
+  @override
+  String get validationPackYearlyMin =>
+      'A yearly term ends on or after one year from today.';
 
   @override
   String get quickCreatePack => 'Create private pack';
