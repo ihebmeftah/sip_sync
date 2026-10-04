@@ -1558,6 +1558,8 @@ class _BuildingEndpoint {
     _ist.TestSessionBuilder sessionBuilder, {
     int? limit,
     int? offset,
+    String? query,
+    _is.UuidValue? packId,
   }) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -1573,6 +1575,8 @@ class _BuildingEndpoint {
           parameters: _ist.testObjectToJson({
             'limit': limit,
             'offset': offset,
+            'query': query,
+            'packId': packId,
           }),
           serializationManager: _serializationManager,
         );

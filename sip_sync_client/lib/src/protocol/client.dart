@@ -528,15 +528,22 @@ class EndpointBuilding extends _isc.EndpointRef {
   );
 
   /// Venues for the backoffice, including owner contact. Super admin only.
+  ///
+  /// [query] matches the venue name, address, or the owner's first or last
+  /// name. [packId] keeps venues on that pack. Both can be combined.
   _ida.Future<_ihfql4vm.AdminBuildingPage> listAll({
     int? limit,
     int? offset,
+    String? query,
+    _isc.UuidValue? packId,
   }) => caller.callServerEndpoint<_ihfql4vm.AdminBuildingPage>(
     'building',
     'listAll',
     {
       'limit': limit,
       'offset': offset,
+      'query': query,
+      'packId': packId,
     },
   );
 

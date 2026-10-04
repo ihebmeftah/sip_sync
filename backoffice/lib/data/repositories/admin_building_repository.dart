@@ -6,9 +6,20 @@ class AdminBuildingRepository {
 
   final Client _client;
 
-  /// One page of venues, with owner and contact fields. Super admin only.
-  Future<AdminBuildingPage> listAll({int? limit, int? offset}) =>
-      _client.building.listAll(limit: limit, offset: offset);
+  /// One page of venues, with owner, pack, and contact fields. Super admin only.
+  ///
+  /// [query] matches name, address, or owner name. [packId] keeps one pack.
+  Future<AdminBuildingPage> listAll({
+    int? limit,
+    int? offset,
+    String? query,
+    UuidValue? packId,
+  }) => _client.building.listAll(
+    limit: limit,
+    offset: offset,
+    query: query,
+    packId: packId,
+  );
 
   /// Pack, counts, and platform gain for one venue. Super admin only.
   Future<AdminBuildingDetail> detail(UuidValue buildingId) {

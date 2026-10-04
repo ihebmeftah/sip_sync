@@ -11,7 +11,7 @@ Status: in progress
 - **Owner** — create/update buildings they own (`building.ownerId`). After login → `/buildings` until they open a venue.
 - **Employee** — one building on their row; after login → `/b/:buildingId/dashboard`. No venue create/edit.
 - Enforcement on `BuildingEndpoint` via custom `AuthGuard`.
-- **Super admin** — `building.listAll` returns every venue with owner name, email, and phone plus contact fields. Opening a card calls `building.adminDetail`. `building.assignPack` moves a free-plan venue onto an enabled pack and keeps the previous row in history. A paid plan cannot be replaced until cancellation exists. No venue create or update from backoffice.
+- **Super admin** — `building.listAll` returns every venue with owner name, email, and phone, the current pack, and contact fields. Optional `query` matches venue name, address, or owner first and last name. Optional `packId` keeps one pack. Opening a card calls `building.adminDetail`. `building.assignPack` moves a free-plan venue onto an enabled pack and keeps the previous row in history. A paid plan cannot be replaced until cancellation exists. No venue create or update from backoffice.
 - **Customer** — `CustomerVenue.list` returns a `CustomerVenueCard` (name, type, address, coordinates, hours, phone). Ops flags and owner identity stay off that card.
 
 ## Flow

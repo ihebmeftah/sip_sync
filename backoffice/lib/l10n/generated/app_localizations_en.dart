@@ -217,7 +217,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get buildingsSubtitle =>
-      'Every venue on the platform, with its owner and contact.';
+      'Every venue on the platform. Search by name, owner, or address, and filter by pack.';
+
+  @override
+  String get buildingSearchLabel => 'Search';
+
+  @override
+  String get buildingSearchHint => 'Venue name, owner name, or address';
+
+  @override
+  String get buildingSearchAction => 'Search';
+
+  @override
+  String get buildingPackFilter => 'Pack';
+
+  @override
+  String get buildingPackAll => 'All packs';
+
+  @override
+  String get buildingsFilterEmpty => 'No venues match this search.';
 
   @override
   String get createUser => 'Create user';

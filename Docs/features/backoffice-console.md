@@ -20,7 +20,7 @@ The seeded default admin cannot be deleted or disabled. A signed-in admin cannot
 3. **Customers** has two tabs, Owners and Customers. Each card shows name, email, phone, and created time. Details opens the same fields. Each tab loads 20 people at a time, newest first, with previous and next.
 4. **Users** lists backoffice accounts (name, email, phone, enabled), 20 per page, oldest first. Create opens a dialog. Edit updates name, email, phone, optional new password, and the enabled switch.
 5. Disabled login returns `accountDisabled`.
-6. **Buildings** lists every venue, 20 per page by name. The type sits on the same row as the name. The card opens `/buildings/:id`.
+6. **Buildings** lists every venue, 20 per page by name. A search box matches the venue name, the address, or the owner's first or last name, including "first last". A pack menu keeps one plan. Both run on the server and reset to the first page. The type and pack sit on the card. The card opens `/buildings/:id`.
 7. The detail screen has four tabs. **Details** is contact and location. **Pack** shows the current plan, its history, and, for a paid plan, whether it is daily, monthly, or yearly and the date it returns to free. Assign and private-pack create stay available only while the venue is on the free pack. **Gain** is the monthly price plus the customer-app fee on customer orders. **Stats** is category, article, table, and order counts.
 
 ## Data
@@ -28,9 +28,9 @@ The seeded default admin cannot be deleted or disabled. A signed-in admin cannot
 - `super_admin.isEnabled` (default true)
 - `SuperAdminUpdate` — id plus profile fields, optional password, `isEnabled`
 - `SuperAdminView` includes `isEnabled`
-- `AdminBuildingView` — venue contact and location plus owner display fields (no employee ids, no order config)
+- `AdminBuildingView` — venue contact and location, owner display fields, and the current pack id and name (no employee ids, no order config)
 - `PlatformPersonView` — owner or customer name, email, phone, and `createdAt` (no password hash)
-- List methods take optional `limit` and `offset` (default 20, max 100) and return a page (`items`, `total`, `limit`, `offset`): `SuperAdminPage`, `PlatformPersonPage`, `AdminBuildingPage`.
+- List methods take optional `limit` and `offset` (default 20, max 100) and return a page (`items`, `total`, `limit`, `offset`): `SuperAdminPage`, `PlatformPersonPage`, `AdminBuildingPage`. `Building.listAll` also takes optional `query` and `packId`.
 - Endpoints: `SuperAdminAuth.list` / `update` / `setEnabled`, `Building.listAll`, `PlatformDirectory.listOwners`, `PlatformDirectory.listCustomers`, `Pack.list` / `create` / `update` / `delete`, `PlatformStats.summary`
 
 ## Realtime

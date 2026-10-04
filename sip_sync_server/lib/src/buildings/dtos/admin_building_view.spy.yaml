@@ -18,3 +18,5 @@ fields:
   ownerLastName: String
   ownerEmail: String
   ownerPhoneNumber: String
+  packId: UuidValue
+  packName: String

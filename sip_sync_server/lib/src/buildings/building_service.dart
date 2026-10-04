@@ -69,17 +69,29 @@ class BuildingService {
   }
 
   /// Platform list for super admins, name order. Owners and staff are rejected.
+  ///
+  /// [query] matches the venue name, address, or owner first or last name,
+  /// including a "first last" pair. [packId] limits the page to one pack.
+  /// A blank query and a null pack return every venue. The count uses the
+  /// same filter, so paging stays inside the match.
   Future<AdminBuildingPage> listAll(
     Session session, {
     int? limit,
     int? offset,
+    String? query,
+    UuidValue? packId,
   }) async {
     AuthGuard.requireSuperAdmin(session);
     final window = PageWindow.from(limit: limit, offset: offset);
-    final total = await Building.db.count(session);
+    final where = _listWhere(query: query, packId: packId);
+    final total = await Building.db.count(session, where: where);
     final rows = await Building.db.find(
       session,
-      include: Building.include(owner: Owner.include()),
+      where: where,
+      include: Building.include(
+        owner: Owner.include(),
+        pack: Pack.include(),
+      ),
       orderBy: (t) => t.name,
       limit: window.limit,
       offset: window.offset,
@@ -90,6 +102,28 @@ class BuildingService {
       limit: window.limit,
       offset: window.offset,
     );
+  }
+
+  /// Blank search and no pack leave the list unfiltered.
+  WhereExpressionBuilder<BuildingTable>? _listWhere({
+    required String? query,
+    required UuidValue? packId,
+  }) {
+    final text = _clipQuery(query);
+    if (text == null && packId == null) {
+      return null;
+    }
+    return (table) {
+      Expression? clause;
+      if (packId != null) {
+        clause = table.packId.equals(packId);
+      }
+      if (text != null) {
+        final match = _textMatch(table, text);
+        clause = clause == null ? match : (clause & match);
+      }
+      return clause!;
+    };
   }
 
   BuildingPage _emptyBuildings(PageWindow window) {
@@ -524,7 +558,12 @@ class BuildingService {
 
   AdminBuildingView _adminView(Building row) {
     final owner = row.owner;
-    if (owner == null || row.id == null || owner.id == null) {
+    final pack = row.pack;
+    if (owner == null ||
+        pack == null ||
+        row.id == null ||
+        owner.id == null ||
+        pack.id == null) {
       throw BuildingException(
         message: 'Building owner is missing.',
         code: BuildingErrorCode.notFound,
@@ -548,7 +587,53 @@ class BuildingService {
       ownerLastName: owner.lastName,
       ownerEmail: owner.email,
       ownerPhoneNumber: owner.phoneNumber,
+      packId: pack.id!,
+      packName: pack.name,
     );
+  }
+
+  /// Trims and caps a list search. Empty becomes null.
+  String? _clipQuery(String? query) {
+    final text = query?.trim() ?? '';
+    if (text.isEmpty) {
+      return null;
+    }
+    return text.length > 80 ? text.substring(0, 80) : text;
+  }
+
+  /// Case-insensitive match on name, address, and owner name.
+  ///
+  /// `%` and `_` in the typed text stay literal. Two or more words also
+  /// match owner first and last name in either order.
+  Expression _textMatch(BuildingTable table, String raw) {
+    final pattern = '%${_escapeLike(raw)}%';
+    var match =
+        table.name.ilike(pattern) |
+        table.address.ilike(pattern) |
+        table.owner.firstName.ilike(pattern) |
+        table.owner.lastName.ilike(pattern);
+    final parts = raw
+        .split(RegExp(r'\s+'))
+        .where((part) => part.isNotEmpty)
+        .toList();
+    if (parts.length >= 2) {
+      final first = '%${_escapeLike(parts.first)}%';
+      final rest = '%${_escapeLike(parts.sublist(1).join(' '))}%';
+      match =
+          match |
+          (table.owner.firstName.ilike(first) &
+              table.owner.lastName.ilike(rest)) |
+          (table.owner.lastName.ilike(first) &
+              table.owner.firstName.ilike(rest));
+    }
+    return match;
+  }
+
+  String _escapeLike(String value) {
+    return value
+        .replaceAll(r'\', r'\\')
+        .replaceAll('%', r'\%')
+        .replaceAll('_', r'\_');
   }
 
   ({

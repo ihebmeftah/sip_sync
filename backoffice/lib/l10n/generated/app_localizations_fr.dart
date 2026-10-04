@@ -219,7 +219,26 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get buildingsSubtitle =>
-      'Tous les lieux de la plateforme, avec le propriétaire et le contact.';
+      'Tous les lieux de la plateforme. Recherchez par nom, propriétaire ou adresse, et filtrez par pack.';
+
+  @override
+  String get buildingSearchLabel => 'Recherche';
+
+  @override
+  String get buildingSearchHint => 'Nom du lieu, du propriétaire ou adresse';
+
+  @override
+  String get buildingSearchAction => 'Rechercher';
+
+  @override
+  String get buildingPackFilter => 'Pack';
+
+  @override
+  String get buildingPackAll => 'Tous les packs';
+
+  @override
+  String get buildingsFilterEmpty =>
+      'Aucun lieu ne correspond à cette recherche.';
 
   @override
   String get createUser => 'Créer un utilisateur';

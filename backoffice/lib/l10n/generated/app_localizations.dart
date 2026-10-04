@@ -493,8 +493,44 @@ abstract class AppLocalizations {
   /// No description provided for @buildingsSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Every venue on the platform, with its owner and contact.'**
+  /// **'Every venue on the platform. Search by name, owner, or address, and filter by pack.'**
   String get buildingsSubtitle;
+
+  /// No description provided for @buildingSearchLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get buildingSearchLabel;
+
+  /// No description provided for @buildingSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Venue name, owner name, or address'**
+  String get buildingSearchHint;
+
+  /// No description provided for @buildingSearchAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get buildingSearchAction;
+
+  /// No description provided for @buildingPackFilter.
+  ///
+  /// In en, this message translates to:
+  /// **'Pack'**
+  String get buildingPackFilter;
+
+  /// No description provided for @buildingPackAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All packs'**
+  String get buildingPackAll;
+
+  /// No description provided for @buildingsFilterEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No venues match this search.'**
+  String get buildingsFilterEmpty;
 
   /// No description provided for @createUser.
   ///

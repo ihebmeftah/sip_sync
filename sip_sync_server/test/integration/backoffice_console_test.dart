@@ -217,7 +217,96 @@ void main() {
         expect(rows.single.ownerFirstName, 'Venue');
         expect(rows.single.ownerEmail, 'venue-admin@example.com');
         expect(rows.single.ownerPhoneNumber, '+21621000005');
+        expect(rows.single.packName, 'Free');
       },
     );
+
+    test('search and pack filter stay on the server', () async {
+      final ownerAuth = await endpoints.ownerAuth.register(
+        sessionBuilder,
+        EmailRegisterCreate(
+          email: 'filter-venues@example.com',
+          password: 'password1',
+          phoneNumber: '+21621000016',
+          firstName: 'Venue',
+          lastName: 'Owner',
+        ),
+      );
+      final ownerSession = sessionBuilder.copyWith(
+        authentication: AuthenticationOverride.authenticationInfo(
+          ownerAuth.owner!.id.uuid,
+          {Scope('sip.owner')},
+          authId: '01900000-0000-7000-8000-0000000000bc',
+        ),
+      );
+      Future<BuildingView> venue(String name, String address) {
+        return endpoints.building.create(
+          ownerSession,
+          BuildingCreate(
+            name: name,
+            type: 'cafe',
+            address: address,
+            latitude: 36.8,
+            longitude: 10.18,
+            openingMinutes: 480,
+            closingMinutes: 1380,
+            phoneNumber: '+21671100022',
+            otherLinks: const [],
+            currencyCode: 'TND',
+            strictModeSteps: [],
+          ),
+        );
+      }
+
+      final olive = await venue('Olive Café', '12 Rue Habib');
+      final cedar = await venue('Cedar Bar', '99 Avenue de Paris');
+      final session = sessionBuilder.build();
+      final actor = await seedAdmin(
+        session,
+        email: 'filter-lister@sipsync.dev',
+        phone: '+21621000017',
+        isSystemDefault: false,
+      );
+      final admin = asAdmin(actor.id!);
+      final packs = (await endpoints.pack.list(admin)).items;
+      final free = packs.firstWhere((pack) => pack.code == 'free');
+      final floor = packs.firstWhere((pack) => pack.code == 'floor');
+      await endpoints.building.assignPack(
+        admin,
+        cedar.id,
+        floor.id,
+        billingPeriod: PackBillingPeriod.monthly,
+        expiresAt: DateTime.now().toUtc().add(const Duration(days: 40)),
+      );
+
+      final byName = await endpoints.building.listAll(admin, query: 'olive');
+      expect(byName.items.map((row) => row.name), ['Olive Café']);
+      final byOwner = await endpoints.building.listAll(
+        admin,
+        query: 'Venue Owner',
+      );
+      expect(byOwner.total, 2);
+      final byAddress = await endpoints.building.listAll(
+        admin,
+        query: 'paris',
+      );
+      expect(byAddress.items.single.name, 'Cedar Bar');
+      final none = await endpoints.building.listAll(admin, query: '%');
+      expect(none.total, 0);
+      final onFloor = await endpoints.building.listAll(
+        admin,
+        packId: floor.id,
+      );
+      expect(onFloor.items.single.id, cedar.id);
+      expect(onFloor.items.single.packName, floor.name);
+      final onFree = await endpoints.building.listAll(admin, packId: free.id);
+      expect(onFree.items.single.id, olive.id);
+      final both = await endpoints.building.listAll(
+        admin,
+        query: 'olive',
+        packId: floor.id,
+      );
+      expect(both.total, 0);
+    });
   });
 }

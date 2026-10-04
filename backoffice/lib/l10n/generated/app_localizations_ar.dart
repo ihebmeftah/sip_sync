@@ -215,7 +215,25 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get buildingsSubtitle =>
-      'كل الأماكن على المنصة مع المالك وبيانات التواصل.';
+      'كل الأماكن على المنصة. ابحث بالاسم أو المالك أو العنوان، وصفِّ حسب الباقة.';
+
+  @override
+  String get buildingSearchLabel => 'بحث';
+
+  @override
+  String get buildingSearchHint => 'اسم المكان أو المالك أو العنوان';
+
+  @override
+  String get buildingSearchAction => 'بحث';
+
+  @override
+  String get buildingPackFilter => 'الباقة';
+
+  @override
+  String get buildingPackAll => 'كل الباقات';
+
+  @override
+  String get buildingsFilterEmpty => 'لا توجد أماكن مطابقة لهذا البحث.';
 
   @override
   String get createUser => 'إنشاء مستخدم';

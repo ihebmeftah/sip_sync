@@ -22,12 +22,23 @@ class BuildingEndpoint extends Endpoint {
   }
 
   /// Venues for the backoffice, including owner contact. Super admin only.
+  ///
+  /// [query] matches the venue name, address, or the owner's first or last
+  /// name. [packId] keeps venues on that pack. Both can be combined.
   Future<AdminBuildingPage> listAll(
     Session session, {
     int? limit,
     int? offset,
+    String? query,
+    UuidValue? packId,
   }) {
-    return _buildings.listAll(session, limit: limit, offset: offset);
+    return _buildings.listAll(
+      session,
+      limit: limit,
+      offset: offset,
+      query: query,
+      packId: packId,
+    );
   }
 
   /// Venue, pack, counts, and platform gain. Super admin only.

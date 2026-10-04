@@ -910,6 +910,16 @@ class Endpoints extends _is.EndpointDispatch {
               type: _is.getType<int?>(),
               nullable: true,
             ),
+            'query': _is.ParameterDescription(
+              name: 'query',
+              type: _is.getType<String?>(),
+              nullable: true,
+            ),
+            'packId': _is.ParameterDescription(
+              name: 'packId',
+              type: _is.getType<_is.UuidValue?>(),
+              nullable: true,
+            ),
           },
           call:
               (
@@ -920,6 +930,8 @@ class Endpoints extends _is.EndpointDispatch {
                     session,
                     limit: params['limit'],
                     offset: params['offset'],
+                    query: params['query'],
+                    packId: params['packId'],
                   ),
         ),
         'adminDetail': _is.MethodConnector(

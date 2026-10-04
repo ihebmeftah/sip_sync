@@ -33,6 +33,8 @@ abstract class AdminBuildingView
     required this.ownerLastName,
     required this.ownerEmail,
     required this.ownerPhoneNumber,
+    required this.packId,
+    required this.packName,
   });
 
   factory AdminBuildingView({
@@ -53,6 +55,8 @@ abstract class AdminBuildingView
     required String ownerLastName,
     required String ownerEmail,
     required String ownerPhoneNumber,
+    required _isc.UuidValue packId,
+    required String packName,
   }) = _AdminBuildingViewImpl;
 
   factory AdminBuildingView.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -76,6 +80,8 @@ abstract class AdminBuildingView
       ownerLastName: jsonSerialization['ownerLastName'] as String,
       ownerEmail: jsonSerialization['ownerEmail'] as String,
       ownerPhoneNumber: jsonSerialization['ownerPhoneNumber'] as String,
+      packId: _isc.UuidValueJsonExtension.fromJson(jsonSerialization['packId']),
+      packName: jsonSerialization['packName'] as String,
     );
   }
 
@@ -113,6 +119,10 @@ abstract class AdminBuildingView
 
   String ownerPhoneNumber;
 
+  _isc.UuidValue packId;
+
+  String packName;
+
   /// Returns a shallow copy of this [AdminBuildingView]
   /// with some or all fields replaced by the given arguments.
   @_isc.useResult
@@ -134,6 +144,8 @@ abstract class AdminBuildingView
     String? ownerLastName,
     String? ownerEmail,
     String? ownerPhoneNumber,
+    _isc.UuidValue? packId,
+    String? packName,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -156,6 +168,8 @@ abstract class AdminBuildingView
       'ownerLastName': ownerLastName,
       'ownerEmail': ownerEmail,
       'ownerPhoneNumber': ownerPhoneNumber,
+      'packId': packId.toJson(),
+      'packName': packName,
     };
   }
 
@@ -180,6 +194,8 @@ abstract class AdminBuildingView
       'ownerLastName': ownerLastName,
       'ownerEmail': ownerEmail,
       'ownerPhoneNumber': ownerPhoneNumber,
+      'packId': packId.toJson(),
+      'packName': packName,
     };
   }
 
@@ -210,6 +226,8 @@ class _AdminBuildingViewImpl extends AdminBuildingView {
     required String ownerLastName,
     required String ownerEmail,
     required String ownerPhoneNumber,
+    required _isc.UuidValue packId,
+    required String packName,
   }) : super._(
          id: id,
          name: name,
@@ -228,6 +246,8 @@ class _AdminBuildingViewImpl extends AdminBuildingView {
          ownerLastName: ownerLastName,
          ownerEmail: ownerEmail,
          ownerPhoneNumber: ownerPhoneNumber,
+         packId: packId,
+         packName: packName,
        );
 
   /// Returns a shallow copy of this [AdminBuildingView]
@@ -252,6 +272,8 @@ class _AdminBuildingViewImpl extends AdminBuildingView {
     String? ownerLastName,
     String? ownerEmail,
     String? ownerPhoneNumber,
+    _isc.UuidValue? packId,
+    String? packName,
   }) {
     return AdminBuildingView(
       id: id ?? this.id,
@@ -271,6 +293,8 @@ class _AdminBuildingViewImpl extends AdminBuildingView {
       ownerLastName: ownerLastName ?? this.ownerLastName,
       ownerEmail: ownerEmail ?? this.ownerEmail,
       ownerPhoneNumber: ownerPhoneNumber ?? this.ownerPhoneNumber,
+      packId: packId ?? this.packId,
+      packName: packName ?? this.packName,
     );
   }
 }
