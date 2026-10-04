@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
 import '../../../core/errors/error_mapper.dart';
+import '../../../core/errors/form_validators.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
 import '../../../core/widgets/auth_shell.dart';
@@ -19,6 +20,8 @@ class SignInView extends ConsumerStatefulWidget {
 class _SignInViewState extends ConsumerState<SignInView> {
   final _email = TextEditingController();
   final _password = TextEditingController();
+  String? _emailError;
+  String? _passwordError;
 
   @override
   void dispose() {
@@ -46,6 +49,12 @@ class _SignInViewState extends ConsumerState<SignInView> {
             keyboardType: TextInputType.emailAddress,
             prefixIcon: LucideIcons.mail,
             textInputAction: TextInputAction.next,
+            error: _emailError,
+            onChanged: (_) {
+              if (_emailError != null) {
+                setState(() => _emailError = null);
+              }
+            },
           ),
           AppTextField(
             controller: _password,
@@ -53,6 +62,12 @@ class _SignInViewState extends ConsumerState<SignInView> {
             obscure: true,
             prefixIcon: LucideIcons.lock,
             textInputAction: TextInputAction.done,
+            error: _passwordError,
+            onChanged: (_) {
+              if (_passwordError != null) {
+                setState(() => _passwordError = null);
+              }
+            },
           ),
           if (auth.errorKey != null)
             AppErrorBanner(message: lookupError(l10n, auth.errorKey!)),
@@ -60,9 +75,21 @@ class _SignInViewState extends ConsumerState<SignInView> {
             label: l10n.signIn,
             busy: auth.isLoading,
             onPressed: () async {
+              final emailError = FormValidators.email(l10n, _email.text);
+              final passwordError = FormValidators.password(
+                l10n,
+                _password.text,
+              );
+              setState(() {
+                _emailError = emailError;
+                _passwordError = passwordError;
+              });
+              if (emailError != null || passwordError != null) {
+                return;
+              }
               await ref
                   .read(authViewModelProvider.notifier)
-                  .login(_email.text, _password.text);
+                  .login(_email.text.trim(), _password.text);
             },
           ),
         ],

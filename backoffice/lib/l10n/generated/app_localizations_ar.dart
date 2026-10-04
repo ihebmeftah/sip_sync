@@ -568,4 +568,32 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get publicPacksSubtitle =>
       'الأماكن والمالكون الموجودون حالياً على كل باقة عامة.';
+
+  @override
+  String get validationRequired => 'هذا الحقل مطلوب.';
+
+  @override
+  String get validationEmail => 'أدخل بريداً إلكترونياً صالحاً.';
+
+  @override
+  String get validationPassword =>
+      '8 أحرف على الأقل، بدون مسافة في البداية أو النهاية.';
+
+  @override
+  String get validationPhone => 'أدخل رقماً مع رمز البلد، مثل ‎+216…';
+
+  @override
+  String get validationPackCode => 'ابدأ بحرف، ثم أحرف أو أرقام أو _.';
+
+  @override
+  String get validationPackMoney => 'أدخل سعراً بالدينار، حتى 3 أرقام عشرية.';
+
+  @override
+  String get validationPackFee => 'أدخل نسبة بين 0 و 100.';
+
+  @override
+  String get validationPackSort => 'أدخل عدداً صحيحاً.';
+
+  @override
+  String get validationPackLimit => 'أدخل رقماً، أو اتركه فارغاً بلا حد.';
 }

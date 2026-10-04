@@ -1,0 +1,27 @@
+---
+description: Validate Flutter forms in the UI before any server request
+globs: "{managment,sip_sync_flutter,backoffice}/**/*.dart"
+alwaysApply: false
+---
+
+# Form validation before the request
+
+Check every user-entered field in the view **before** the ViewModel or repository calls the server. The server still rejects bad input. The UI must not use that rejection as the first check.
+
+## How
+
+- Put checks in `lib/core/errors/form_validators.dart` for that app. Match the server rule (required, length, email, phone, money).
+- Show the message on the field (`validator` or `AppTextField.error`), in en/ar/fr. Do not use one generic banner for a known field.
+- `FormState.validate()` or the field-error map runs in the submit handler. Return before `ref.read(...).save()` / repository call when any field fails.
+- A server error after a valid submit stays a banner, or on the field when the code names that field.
+
+```dart
+onPressed: () async {
+  final emailError = FormValidators.email(l10n, email.text);
+  setState(() => _emailError = emailError);
+  if (emailError != null) return;
+  await ref.read(authViewModelProvider.notifier).login(email.text.trim(), password.text);
+}
+```
+
+Search and taps that are not data entry do not need a form. Do not add a client check the server does not have.

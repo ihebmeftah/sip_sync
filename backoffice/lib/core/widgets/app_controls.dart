@@ -49,6 +49,8 @@ class AppTextField extends StatefulWidget {
     this.prefixIcon,
     this.textInputAction,
     this.hint,
+    this.error,
+    this.onChanged,
   });
 
   final TextEditingController controller;
@@ -58,6 +60,10 @@ class AppTextField extends StatefulWidget {
   final IconData? prefixIcon;
   final TextInputAction? textInputAction;
   final String? hint;
+
+  /// Shown under the field when the view rejected the value before a request.
+  final String? error;
+  final ValueChanged<String>? onChanged;
 
   @override
   State<AppTextField> createState() => _AppTextFieldState();
@@ -86,6 +92,7 @@ class _AppTextFieldState extends State<AppTextField> {
             obscureText: _hidden,
             keyboardType: widget.keyboardType,
             textInputAction: widget.textInputAction,
+            onChanged: widget.onChanged,
             leading: widget.prefixIcon == null
                 ? null
                 : Icon(widget.prefixIcon, size: 16),
@@ -102,6 +109,15 @@ class _AppTextFieldState extends State<AppTextField> {
                   )
                 : null,
           ),
+          if (widget.error != null) ...[
+            const SizedBox(height: AppSpacing.xs),
+            Text(
+              widget.error!,
+              style: theme.textTheme.small.copyWith(
+                color: theme.colorScheme.destructive,
+              ),
+            ),
+          ],
         ],
       ),
     );

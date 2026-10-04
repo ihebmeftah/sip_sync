@@ -1137,6 +1137,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Venues and owners currently on each public pack.'**
   String get publicPacksSubtitle;
+
+  /// No description provided for @validationRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'This field is required.'**
+  String get validationRequired;
+
+  /// No description provided for @validationEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid email.'**
+  String get validationEmail;
+
+  /// No description provided for @validationPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Use at least 8 characters, no leading or trailing spaces.'**
+  String get validationPassword;
+
+  /// No description provided for @validationPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a phone with country code, e.g. +216…'**
+  String get validationPhone;
+
+  /// No description provided for @validationPackCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Start with a letter, then letters, digits, or _.'**
+  String get validationPackCode;
+
+  /// No description provided for @validationPackMoney.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a price in dinars, up to 3 decimals.'**
+  String get validationPackMoney;
+
+  /// No description provided for @validationPackFee.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a percent from 0 to 100.'**
+  String get validationPackFee;
+
+  /// No description provided for @validationPackSort.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a whole number.'**
+  String get validationPackSort;
+
+  /// No description provided for @validationPackLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a number, or leave empty for no limit.'**
+  String get validationPackLimit;
 }
 
 class _AppLocalizationsDelegate

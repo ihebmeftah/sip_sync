@@ -4,6 +4,7 @@ import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:sip_sync_client/sip_sync_client.dart';
 
 import '../../../core/errors/error_mapper.dart';
+import '../../../core/errors/form_validators.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
 import '../../../l10n/generated/app_localizations.dart';
@@ -43,6 +44,7 @@ class _PackFormDialogState extends ConsumerState<PackFormDialog> {
   late bool _strict;
   late bool _customAccess;
   String? _errorKey;
+  final _fieldErrors = <String, String>{};
   bool _saving = false;
 
   bool get _editing => widget.pack != null;
@@ -134,12 +136,16 @@ class _PackFormDialogState extends ConsumerState<PackFormDialog> {
               label: l10n.packCode,
               prefixIcon: LucideIcons.hash,
               textInputAction: TextInputAction.next,
+              error: _fieldErrors['code'],
+              onChanged: (_) => _clearField('code'),
             ),
           AppTextField(
             controller: _name,
             label: l10n.packName,
             prefixIcon: LucideIcons.package,
             textInputAction: TextInputAction.next,
+            error: _fieldErrors['name'],
+            onChanged: (_) => _clearField('name'),
           ),
           AppTextField(
             controller: _monthly,
@@ -147,6 +153,8 @@ class _PackFormDialogState extends ConsumerState<PackFormDialog> {
             prefixIcon: LucideIcons.coins,
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
             textInputAction: TextInputAction.next,
+            error: _fieldErrors['monthly'],
+            onChanged: (_) => _clearField('monthly'),
           ),
           AppTextField(
             controller: _annual,
@@ -154,6 +162,8 @@ class _PackFormDialogState extends ConsumerState<PackFormDialog> {
             prefixIcon: LucideIcons.calendar,
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
             textInputAction: TextInputAction.next,
+            error: _fieldErrors['annual'],
+            onChanged: (_) => _clearField('annual'),
           ),
           Text(l10n.packAnnualHint, style: theme.textTheme.muted),
           const SizedBox(height: AppSpacing.lg),
@@ -163,6 +173,8 @@ class _PackFormDialogState extends ConsumerState<PackFormDialog> {
             prefixIcon: LucideIcons.percent,
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
             textInputAction: TextInputAction.next,
+            error: _fieldErrors['fee'],
+            onChanged: (_) => _clearField('fee'),
           ),
           Text(l10n.packFeeHint, style: theme.textTheme.muted),
           const SizedBox(height: AppSpacing.lg),
@@ -172,6 +184,8 @@ class _PackFormDialogState extends ConsumerState<PackFormDialog> {
             prefixIcon: LucideIcons.arrowDownWideNarrow,
             keyboardType: TextInputType.number,
             textInputAction: TextInputAction.next,
+            error: _fieldErrors['sort'],
+            onChanged: (_) => _clearField('sort'),
           ),
           _Flag(
             label: l10n.packPublic,
@@ -196,6 +210,8 @@ class _PackFormDialogState extends ConsumerState<PackFormDialog> {
             hint: l10n.capMaxEmployeesHint,
             keyboardType: TextInputType.number,
             textInputAction: TextInputAction.next,
+            error: _fieldErrors['employees'],
+            onChanged: (_) => _clearField('employees'),
           ),
           AppTextField(
             controller: _tables,
@@ -203,6 +219,8 @@ class _PackFormDialogState extends ConsumerState<PackFormDialog> {
             hint: l10n.capMaxTablesHint,
             keyboardType: TextInputType.number,
             textInputAction: TextInputAction.next,
+            error: _fieldErrors['tables'],
+            onChanged: (_) => _clearField('tables'),
           ),
           AppTextField(
             controller: _categories,
@@ -210,6 +228,8 @@ class _PackFormDialogState extends ConsumerState<PackFormDialog> {
             hint: l10n.capMaxCategoriesHint,
             keyboardType: TextInputType.number,
             textInputAction: TextInputAction.next,
+            error: _fieldErrors['categories'],
+            onChanged: (_) => _clearField('categories'),
           ),
           AppTextField(
             controller: _articles,
@@ -217,6 +237,8 @@ class _PackFormDialogState extends ConsumerState<PackFormDialog> {
             hint: l10n.capMaxArticlesHint,
             keyboardType: TextInputType.number,
             textInputAction: TextInputAction.next,
+            error: _fieldErrors['articles'],
+            onChanged: (_) => _clearField('articles'),
           ),
           AppTextField(
             controller: _ingredients,
@@ -224,6 +246,8 @@ class _PackFormDialogState extends ConsumerState<PackFormDialog> {
             hint: l10n.capMaxIngredientsHint,
             keyboardType: TextInputType.number,
             textInputAction: TextInputAction.next,
+            error: _fieldErrors['ingredients'],
+            onChanged: (_) => _clearField('ingredients'),
           ),
           Text(l10n.packCapabilities, style: theme.textTheme.small),
           const SizedBox(height: AppSpacing.sm),
@@ -280,7 +304,14 @@ class _PackFormDialogState extends ConsumerState<PackFormDialog> {
     );
   }
 
+  void _clearField(String key) {
+    if (_fieldErrors.remove(key) != null) {
+      setState(() {});
+    }
+  }
+
   Future<void> _submit() async {
+    final l10n = AppLocalizations.of(context)!;
     final name = _name.text.trim();
     final code = _code.text.trim().toLowerCase();
     final monthly = tryParseMillimes(_monthly.text);
@@ -293,21 +324,55 @@ class _PackFormDialogState extends ConsumerState<PackFormDialog> {
     final categories = tryParseLimit(_categories.text);
     final articles = tryParseLimit(_articles.text);
     final ingredients = tryParseLimit(_ingredients.text);
-    final codeOk = RegExp(r'^[a-z][a-z0-9_]{0,31}$').hasMatch(code);
-    if (name.isEmpty ||
-        (!_editing && !codeOk) ||
-        monthly == null ||
-        (annualText.isNotEmpty && annual == null) ||
-        fee == null ||
-        sort == null ||
-        employees.invalid ||
-        tables.invalid ||
-        categories.invalid ||
-        articles.invalid ||
-        ingredients.invalid) {
-      setState(() => _errorKey = 'errorInvalidInput');
+    final errors = <String, String>{};
+    if (!_editing) {
+      final codeError = FormValidators.packCode(l10n, code);
+      if (codeError != null) {
+        errors['code'] = codeError;
+      }
+    }
+    final nameError = FormValidators.packName(l10n, name);
+    if (nameError != null) {
+      errors['name'] = nameError;
+    }
+    if (monthly == null) {
+      errors['monthly'] = l10n.validationPackMoney;
+    }
+    if (annualText.isNotEmpty && annual == null) {
+      errors['annual'] = l10n.validationPackMoney;
+    }
+    if (fee == null) {
+      errors['fee'] = l10n.validationPackFee;
+    }
+    if (sort == null) {
+      errors['sort'] = l10n.validationPackSort;
+    }
+    if (employees.invalid) {
+      errors['employees'] = l10n.validationPackLimit;
+    }
+    if (tables.invalid) {
+      errors['tables'] = l10n.validationPackLimit;
+    }
+    if (categories.invalid) {
+      errors['categories'] = l10n.validationPackLimit;
+    }
+    if (articles.invalid) {
+      errors['articles'] = l10n.validationPackLimit;
+    }
+    if (ingredients.invalid) {
+      errors['ingredients'] = l10n.validationPackLimit;
+    }
+    if (errors.isNotEmpty) {
+      setState(() {
+        _fieldErrors
+          ..clear()
+          ..addAll(errors);
+      });
       return;
     }
+    final monthlyMillimes = monthly!;
+    final feeBps = fee!;
+    final sortOrder = sort!;
 
     final capabilities = PackCapabilities(
       maxEmployees: employees.value,
@@ -328,6 +393,7 @@ class _PackFormDialogState extends ConsumerState<PackFormDialog> {
     setState(() {
       _saving = true;
       _errorKey = null;
+      _fieldErrors.clear();
     });
     final notifier = ref.read(packsViewModelProvider.notifier);
     String? errorKey;
@@ -337,12 +403,12 @@ class _PackFormDialogState extends ConsumerState<PackFormDialog> {
         PackUpdate(
           id: widget.pack!.id,
           name: name,
-          monthlyMillimes: monthly,
+          monthlyMillimes: monthlyMillimes,
           annualMillimes: annual,
-          customerOrderFeeBps: fee,
+          customerOrderFeeBps: feeBps,
           isPublic: _public,
           isEnabled: _enabled,
-          sortOrder: sort,
+          sortOrder: sortOrder,
           capabilities: capabilities,
         ),
       );
@@ -351,12 +417,12 @@ class _PackFormDialogState extends ConsumerState<PackFormDialog> {
         PackCreate(
           code: code,
           name: name,
-          monthlyMillimes: monthly,
+          monthlyMillimes: monthlyMillimes,
           annualMillimes: annual,
-          customerOrderFeeBps: fee,
+          customerOrderFeeBps: feeBps,
           isPublic: _public,
           isEnabled: _enabled,
-          sortOrder: sort,
+          sortOrder: sortOrder,
           capabilities: capabilities,
         ),
       );

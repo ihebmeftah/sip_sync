@@ -199,5 +199,14 @@
   "statEmployees": "Employees",
   "statSubscription": "Monthly plans",
   "publicPacksTitle": "Public packs",
-  "publicPacksSubtitle": "Venues and owners currently on each public pack."
+  "publicPacksSubtitle": "Venues and owners currently on each public pack.",
+  "validationRequired": "This field is required.",
+  "validationEmail": "Enter a valid email.",
+  "validationPassword": "Use at least 8 characters, no leading or trailing spaces.",
+  "validationPhone": "Enter a phone with country code, e.g. +216…",
+  "validationPackCode": "Start with a letter, then letters, digits, or _.",
+  "validationPackMoney": "Enter a price in dinars, up to 3 decimals.",
+  "validationPackFee": "Enter a percent from 0 to 100.",
+  "validationPackSort": "Enter a whole number.",
+  "validationPackLimit": "Enter a number, or leave empty for no limit."
 }

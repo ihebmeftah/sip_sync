@@ -573,4 +573,35 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get publicPacksSubtitle =>
       'Venues and owners currently on each public pack.';
+
+  @override
+  String get validationRequired => 'This field is required.';
+
+  @override
+  String get validationEmail => 'Enter a valid email.';
+
+  @override
+  String get validationPassword =>
+      'Use at least 8 characters, no leading or trailing spaces.';
+
+  @override
+  String get validationPhone => 'Enter a phone with country code, e.g. +216…';
+
+  @override
+  String get validationPackCode =>
+      'Start with a letter, then letters, digits, or _.';
+
+  @override
+  String get validationPackMoney =>
+      'Enter a price in dinars, up to 3 decimals.';
+
+  @override
+  String get validationPackFee => 'Enter a percent from 0 to 100.';
+
+  @override
+  String get validationPackSort => 'Enter a whole number.';
+
+  @override
+  String get validationPackLimit =>
+      'Enter a number, or leave empty for no limit.';
 }

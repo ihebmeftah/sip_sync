@@ -17,6 +17,7 @@ Copy and track:
 - [ ] Server tests (`dart test` in sip_sync_server)
 - [ ] Flutter: GetIt singleton if needed → `@riverpod` repository/ViewModel → view
 - [ ] Typed `@TypedGoRoute` + `$appRoutes`, then `dart run build_runner build --delete-conflicting-outputs`
+- [ ] Form fields validate in the view before the repository call (`.cursor/rules/form-validation.mdc`)
 - [ ] go_router guards + ARB strings (en/ar/fr)
 - [ ] dartdoc on public APIs
 - [ ] analyze, format, MCP migrate/hot_restart as in AGENTS.md

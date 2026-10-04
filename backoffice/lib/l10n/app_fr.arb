@@ -184,5 +184,14 @@
   "statEmployees": "Employés",
   "statSubscription": "Abonnements mensuels",
   "publicPacksTitle": "Packs publics",
-  "publicPacksSubtitle": "Lieux et propriétaires actuellement sur chaque pack public."
+  "publicPacksSubtitle": "Lieux et propriétaires actuellement sur chaque pack public.",
+  "validationRequired": "Ce champ est obligatoire.",
+  "validationEmail": "Saisissez un e-mail valide.",
+  "validationPassword": "Au moins 8 caractères, sans espace au début ou à la fin.",
+  "validationPhone": "Saisissez un numéro avec l'indicatif, p. ex. +216…",
+  "validationPackCode": "Commencez par une lettre, puis des lettres, chiffres ou _.",
+  "validationPackMoney": "Saisissez un prix en dinars, jusqu'à 3 décimales.",
+  "validationPackFee": "Saisissez un pourcentage entre 0 et 100.",
+  "validationPackSort": "Saisissez un nombre entier.",
+  "validationPackLimit": "Saisissez un nombre, ou laissez vide pour illimité."
 }

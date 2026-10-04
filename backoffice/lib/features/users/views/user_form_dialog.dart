@@ -4,6 +4,7 @@ import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:sip_sync_client/sip_sync_client.dart';
 
 import '../../../core/errors/error_mapper.dart';
+import '../../../core/errors/form_validators.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
 import '../../../l10n/generated/app_localizations.dart';
@@ -28,6 +29,11 @@ class _UserFormDialogState extends ConsumerState<UserFormDialog> {
   late final TextEditingController _password;
   late bool _enabled;
   String? _errorKey;
+  String? _firstError;
+  String? _lastError;
+  String? _emailError;
+  String? _phoneError;
+  String? _passwordError;
   bool _saving = false;
 
   bool get _editing => widget.user != null;
@@ -86,12 +92,16 @@ class _UserFormDialogState extends ConsumerState<UserFormDialog> {
             label: l10n.firstName,
             prefixIcon: LucideIcons.user,
             textInputAction: TextInputAction.next,
+            error: _firstError,
+            onChanged: (_) => _clearField(() => _firstError = null),
           ),
           AppTextField(
             controller: _last,
             label: l10n.lastName,
             prefixIcon: LucideIcons.userRound,
             textInputAction: TextInputAction.next,
+            error: _lastError,
+            onChanged: (_) => _clearField(() => _lastError = null),
           ),
           AppTextField(
             controller: _email,
@@ -99,6 +109,8 @@ class _UserFormDialogState extends ConsumerState<UserFormDialog> {
             prefixIcon: LucideIcons.mail,
             keyboardType: TextInputType.emailAddress,
             textInputAction: TextInputAction.next,
+            error: _emailError,
+            onChanged: (_) => _clearField(() => _emailError = null),
           ),
           AppTextField(
             controller: _phone,
@@ -106,12 +118,16 @@ class _UserFormDialogState extends ConsumerState<UserFormDialog> {
             prefixIcon: LucideIcons.phone,
             keyboardType: TextInputType.phone,
             textInputAction: TextInputAction.next,
+            error: _phoneError,
+            onChanged: (_) => _clearField(() => _phoneError = null),
           ),
           AppTextField(
             controller: _password,
             label: _editing ? l10n.passwordOptional : l10n.password,
             obscure: true,
             prefixIcon: LucideIcons.lock,
+            error: _passwordError,
+            onChanged: (_) => _clearField(() => _passwordError = null),
           ),
           if (_editing) ...[
             Row(
@@ -141,22 +157,36 @@ class _UserFormDialogState extends ConsumerState<UserFormDialog> {
     );
   }
 
+  void _clearField(VoidCallback clear) {
+    setState(clear);
+  }
+
   Future<void> _submit() async {
+    final l10n = AppLocalizations.of(context)!;
     final first = _first.text.trim();
     final last = _last.text.trim();
     final email = _email.text.trim();
     final phone = _phone.text.trim();
     final password = _password.text;
-    if (first.isEmpty || last.isEmpty || email.isEmpty || phone.isEmpty) {
-      setState(() => _errorKey = 'errorInvalidInput');
-      return;
-    }
-    if (!_editing && password.trim().length < 8) {
-      setState(() => _errorKey = 'errorPasswordTooWeak');
-      return;
-    }
-    if (_editing && password.isNotEmpty && password.trim().length < 8) {
-      setState(() => _errorKey = 'errorPasswordTooWeak');
+    final firstError = FormValidators.requiredText(l10n, first);
+    final lastError = FormValidators.requiredText(l10n, last);
+    final emailError = FormValidators.email(l10n, email);
+    final phoneError = FormValidators.phone(l10n, phone);
+    final passwordError = _editing
+        ? FormValidators.optionalPassword(l10n, password)
+        : FormValidators.password(l10n, password);
+    setState(() {
+      _firstError = firstError;
+      _lastError = lastError;
+      _emailError = emailError;
+      _phoneError = phoneError;
+      _passwordError = passwordError;
+    });
+    if (firstError != null ||
+        lastError != null ||
+        emailError != null ||
+        phoneError != null ||
+        passwordError != null) {
       return;
     }
 

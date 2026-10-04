@@ -184,5 +184,14 @@
   "statEmployees": "الموظفون",
   "statSubscription": "الاشتراكات الشهرية",
   "publicPacksTitle": "الباقات العامة",
-  "publicPacksSubtitle": "الأماكن والمالكون الموجودون حالياً على كل باقة عامة."
+  "publicPacksSubtitle": "الأماكن والمالكون الموجودون حالياً على كل باقة عامة.",
+  "validationRequired": "هذا الحقل مطلوب.",
+  "validationEmail": "أدخل بريداً إلكترونياً صالحاً.",
+  "validationPassword": "8 أحرف على الأقل، بدون مسافة في البداية أو النهاية.",
+  "validationPhone": "أدخل رقماً مع رمز البلد، مثل ‎+216…",
+  "validationPackCode": "ابدأ بحرف، ثم أحرف أو أرقام أو _.",
+  "validationPackMoney": "أدخل سعراً بالدينار، حتى 3 أرقام عشرية.",
+  "validationPackFee": "أدخل نسبة بين 0 و 100.",
+  "validationPackSort": "أدخل عدداً صحيحاً.",
+  "validationPackLimit": "أدخل رقماً، أو اتركه فارغاً بلا حد."
 }

@@ -42,6 +42,8 @@ Prefer Serverpod `Exception` types for expected failures (`NotFound`, `NotAuthor
 
 Map exceptions → `Failure` → ARB key. Show `core/widgets` error views. Log details; do not `toString()` exceptions into the UI.
 
+Validate the form in the view before that call. A server error is for input that already passed the client check. See `.cursor/rules/form-validation.mdc`.
+
 ## go_router
 
 Redirect unauthenticated users. Hide routes the role cannot use. If the user pastes a URL, the **endpoint** still rejects.

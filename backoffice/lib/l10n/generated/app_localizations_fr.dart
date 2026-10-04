@@ -578,4 +578,36 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get publicPacksSubtitle =>
       'Lieux et propriétaires actuellement sur chaque pack public.';
+
+  @override
+  String get validationRequired => 'Ce champ est obligatoire.';
+
+  @override
+  String get validationEmail => 'Saisissez un e-mail valide.';
+
+  @override
+  String get validationPassword =>
+      'Au moins 8 caractères, sans espace au début ou à la fin.';
+
+  @override
+  String get validationPhone =>
+      'Saisissez un numéro avec l\'indicatif, p. ex. +216…';
+
+  @override
+  String get validationPackCode =>
+      'Commencez par une lettre, puis des lettres, chiffres ou _.';
+
+  @override
+  String get validationPackMoney =>
+      'Saisissez un prix en dinars, jusqu\'à 3 décimales.';
+
+  @override
+  String get validationPackFee => 'Saisissez un pourcentage entre 0 et 100.';
+
+  @override
+  String get validationPackSort => 'Saisissez un nombre entier.';
+
+  @override
+  String get validationPackLimit =>
+      'Saisissez un nombre, ou laissez vide pour illimité.';
 }
