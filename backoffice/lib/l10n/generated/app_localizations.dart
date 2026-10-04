@@ -627,6 +627,468 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'You cannot disable the account you are using.'**
   String get enabledLockedSelf;
+
+  /// No description provided for @packsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Public packs show in the apps so an owner can upgrade. Private packs are granted to specific owners.'**
+  String get packsSubtitle;
+
+  /// No description provided for @createPack.
+  ///
+  /// In en, this message translates to:
+  /// **'Create pack'**
+  String get createPack;
+
+  /// No description provided for @editPack.
+  ///
+  /// In en, this message translates to:
+  /// **'Update pack'**
+  String get editPack;
+
+  /// No description provided for @packCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Code'**
+  String get packCode;
+
+  /// No description provided for @packName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get packName;
+
+  /// No description provided for @packMonthly.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly price (TND)'**
+  String get packMonthly;
+
+  /// No description provided for @packAnnual.
+  ///
+  /// In en, this message translates to:
+  /// **'Annual price (TND)'**
+  String get packAnnual;
+
+  /// No description provided for @packAnnualHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave the annual price empty to offer monthly only.'**
+  String get packAnnualHint;
+
+  /// No description provided for @packFee.
+  ///
+  /// In en, this message translates to:
+  /// **'Customer-app fee (%)'**
+  String get packFee;
+
+  /// No description provided for @packFeeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Charged on customer-app orders. Staff tickets stay at 0%.'**
+  String get packFeeHint;
+
+  /// No description provided for @packPublic.
+  ///
+  /// In en, this message translates to:
+  /// **'Public'**
+  String get packPublic;
+
+  /// No description provided for @packPrivate.
+  ///
+  /// In en, this message translates to:
+  /// **'Private'**
+  String get packPrivate;
+
+  /// No description provided for @packPublicHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Owners can see this pack in the apps and upgrade to it.'**
+  String get packPublicHint;
+
+  /// No description provided for @packPrivateHint.
+  ///
+  /// In en, this message translates to:
+  /// **'This pack stays off the apps.'**
+  String get packPrivateHint;
+
+  /// No description provided for @packEnabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Enabled'**
+  String get packEnabled;
+
+  /// No description provided for @packEnabledHint.
+  ///
+  /// In en, this message translates to:
+  /// **'A disabled pack stays off the public list. Venues already on it keep it.'**
+  String get packEnabledHint;
+
+  /// No description provided for @packSortOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort order'**
+  String get packSortOrder;
+
+  /// No description provided for @packLimits.
+  ///
+  /// In en, this message translates to:
+  /// **'Limits'**
+  String get packLimits;
+
+  /// No description provided for @packUnlimitedHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave a limit empty for no cap.'**
+  String get packUnlimitedHint;
+
+  /// No description provided for @packCapabilities.
+  ///
+  /// In en, this message translates to:
+  /// **'Capabilities'**
+  String get packCapabilities;
+
+  /// No description provided for @capMaxEmployees.
+  ///
+  /// In en, this message translates to:
+  /// **'Employees'**
+  String get capMaxEmployees;
+
+  /// No description provided for @capMaxEmployeesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'How many staff accounts this venue may have.'**
+  String get capMaxEmployeesHint;
+
+  /// No description provided for @capMaxTables.
+  ///
+  /// In en, this message translates to:
+  /// **'Tables'**
+  String get capMaxTables;
+
+  /// No description provided for @capMaxTablesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'How many floor tables this venue may add.'**
+  String get capMaxTablesHint;
+
+  /// No description provided for @capMaxCategories.
+  ///
+  /// In en, this message translates to:
+  /// **'Categories'**
+  String get capMaxCategories;
+
+  /// No description provided for @capMaxCategoriesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'How many menu categories this venue may add.'**
+  String get capMaxCategoriesHint;
+
+  /// No description provided for @capMaxArticles.
+  ///
+  /// In en, this message translates to:
+  /// **'Articles'**
+  String get capMaxArticles;
+
+  /// No description provided for @capMaxArticlesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'How many sellable articles this venue may add.'**
+  String get capMaxArticlesHint;
+
+  /// No description provided for @capMaxIngredients.
+  ///
+  /// In en, this message translates to:
+  /// **'Ingredients'**
+  String get capMaxIngredients;
+
+  /// No description provided for @capMaxIngredientsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'How many stock ingredients this venue may add.'**
+  String get capMaxIngredientsHint;
+
+  /// No description provided for @capCustomerDiscovery.
+  ///
+  /// In en, this message translates to:
+  /// **'Customer map'**
+  String get capCustomerDiscovery;
+
+  /// No description provided for @capCustomerDiscoveryHint.
+  ///
+  /// In en, this message translates to:
+  /// **'The venue appears on the customer map.'**
+  String get capCustomerDiscoveryHint;
+
+  /// No description provided for @capTableQr.
+  ///
+  /// In en, this message translates to:
+  /// **'Table QR'**
+  String get capTableQr;
+
+  /// No description provided for @capTableQrHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Staff can print and scan table QR stickers.'**
+  String get capTableQrHint;
+
+  /// No description provided for @capCustomerOrdering.
+  ///
+  /// In en, this message translates to:
+  /// **'Customer ordering'**
+  String get capCustomerOrdering;
+
+  /// No description provided for @capCustomerOrderingHint.
+  ///
+  /// In en, this message translates to:
+  /// **'A customer can pass an order from the menu after scanning a table.'**
+  String get capCustomerOrderingHint;
+
+  /// No description provided for @capInventory.
+  ///
+  /// In en, this message translates to:
+  /// **'Inventory and recipes'**
+  String get capInventory;
+
+  /// No description provided for @capInventoryHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Recipes, stock levels, restock, and deduction when an order is placed.'**
+  String get capInventoryHint;
+
+  /// No description provided for @capAllowAppending.
+  ///
+  /// In en, this message translates to:
+  /// **'Append items to an order'**
+  String get capAllowAppending;
+
+  /// No description provided for @capAllowAppendingHint.
+  ///
+  /// In en, this message translates to:
+  /// **'The venue may allow adding articles to an open order.'**
+  String get capAllowAppendingHint;
+
+  /// No description provided for @capTableMultiOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Several orders per table'**
+  String get capTableMultiOrder;
+
+  /// No description provided for @capTableMultiOrderHint.
+  ///
+  /// In en, this message translates to:
+  /// **'The venue may allow more than one open order on the same table.'**
+  String get capTableMultiOrderHint;
+
+  /// No description provided for @capStrictMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Strict kitchen steps'**
+  String get capStrictMode;
+
+  /// No description provided for @capStrictModeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'The venue may require kitchen steps in order: picked, ready, served, then paid.'**
+  String get capStrictModeHint;
+
+  /// No description provided for @capCustomAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom access profiles'**
+  String get capCustomAccess;
+
+  /// No description provided for @capCustomAccessHint.
+  ///
+  /// In en, this message translates to:
+  /// **'The owner may add access profiles beyond Waiter, Gerant, and Barista.'**
+  String get capCustomAccessHint;
+
+  /// No description provided for @packPriceMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'{price} TND / month'**
+  String packPriceMonth(String price);
+
+  /// No description provided for @packPriceYear.
+  ///
+  /// In en, this message translates to:
+  /// **'{price} TND / year'**
+  String packPriceYear(String price);
+
+  /// No description provided for @packSystem.
+  ///
+  /// In en, this message translates to:
+  /// **'system'**
+  String get packSystem;
+
+  /// No description provided for @deletePack.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete pack'**
+  String get deletePack;
+
+  /// No description provided for @deletePackConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete {name}?'**
+  String deletePackConfirm(String name);
+
+  /// No description provided for @errorPackCodeTaken.
+  ///
+  /// In en, this message translates to:
+  /// **'That code is already used.'**
+  String get errorPackCodeTaken;
+
+  /// No description provided for @errorCannotDeleteSystemPack.
+  ///
+  /// In en, this message translates to:
+  /// **'The free pack cannot be deleted.'**
+  String get errorCannotDeleteSystemPack;
+
+  /// No description provided for @errorPackInUse.
+  ///
+  /// In en, this message translates to:
+  /// **'A venue is still on this pack.'**
+  String get errorPackInUse;
+
+  /// No description provided for @errorPackLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'This plan has reached its limit.'**
+  String get errorPackLimit;
+
+  /// No description provided for @errorPackFeature.
+  ///
+  /// In en, this message translates to:
+  /// **'This plan does not include that.'**
+  String get errorPackFeature;
+
+  /// No description provided for @buildingDetailTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Building'**
+  String get buildingDetailTitle;
+
+  /// No description provided for @buildingDetailSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact, pack, gain, and counts for this venue.'**
+  String get buildingDetailSubtitle;
+
+  /// No description provided for @buildingTabDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Details'**
+  String get buildingTabDetails;
+
+  /// No description provided for @buildingTabPack.
+  ///
+  /// In en, this message translates to:
+  /// **'Pack'**
+  String get buildingTabPack;
+
+  /// No description provided for @buildingTabGain.
+  ///
+  /// In en, this message translates to:
+  /// **'Gain'**
+  String get buildingTabGain;
+
+  /// No description provided for @buildingTabStats.
+  ///
+  /// In en, this message translates to:
+  /// **'Stats'**
+  String get buildingTabStats;
+
+  /// No description provided for @assignPack.
+  ///
+  /// In en, this message translates to:
+  /// **'Assign pack'**
+  String get assignPack;
+
+  /// No description provided for @quickCreatePack.
+  ///
+  /// In en, this message translates to:
+  /// **'Create private pack'**
+  String get quickCreatePack;
+
+  /// No description provided for @quickCreatePackHint.
+  ///
+  /// In en, this message translates to:
+  /// **'A new pack starts private. It stays off the public list.'**
+  String get quickCreatePackHint;
+
+  /// No description provided for @packFeeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'{fee}% on customer-app orders'**
+  String packFeeLabel(String fee);
+
+  /// No description provided for @packNoLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'No limit'**
+  String get packNoLimit;
+
+  /// No description provided for @gainHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly plan price, plus the customer-app fee on customer orders. Staff tickets are not included.'**
+  String get gainHint;
+
+  /// No description provided for @gainMonthly.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly plan'**
+  String get gainMonthly;
+
+  /// No description provided for @gainFeeRate.
+  ///
+  /// In en, this message translates to:
+  /// **'Customer-app fee'**
+  String get gainFeeRate;
+
+  /// No description provided for @gainCustomerOrders.
+  ///
+  /// In en, this message translates to:
+  /// **'Customer orders'**
+  String get gainCustomerOrders;
+
+  /// No description provided for @gainCustomerSales.
+  ///
+  /// In en, this message translates to:
+  /// **'Customer-app sales'**
+  String get gainCustomerSales;
+
+  /// No description provided for @gainFeeEarned.
+  ///
+  /// In en, this message translates to:
+  /// **'Fee earned'**
+  String get gainFeeEarned;
+
+  /// No description provided for @statCategories.
+  ///
+  /// In en, this message translates to:
+  /// **'Categories'**
+  String get statCategories;
+
+  /// No description provided for @statArticles.
+  ///
+  /// In en, this message translates to:
+  /// **'Articles'**
+  String get statArticles;
+
+  /// No description provided for @statTables.
+  ///
+  /// In en, this message translates to:
+  /// **'Tables'**
+  String get statTables;
+
+  /// No description provided for @statOrders.
+  ///
+  /// In en, this message translates to:
+  /// **'Orders'**
+  String get statOrders;
 }
 
 class _AppLocalizationsDelegate

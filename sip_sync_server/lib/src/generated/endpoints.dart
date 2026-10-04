@@ -73,6 +73,10 @@ import 'package:sip_sync_server/src/generated/orders/dtos/order_item_status_upda
     as _itxma5c4;
 import 'package:sip_sync_server/src/generated/orders/dtos/order_status.dart'
     as _i9w9m1jz;
+import 'package:sip_sync_server/src/generated/packs/dtos/pack_create.dart'
+    as _iijils8v;
+import 'package:sip_sync_server/src/generated/packs/dtos/pack_update.dart'
+    as _imymid9b;
 import 'package:sip_sync_server/src/generated/tables/dtos/table_list_filter.dart'
     as _i2br6vxf;
 import 'package:sip_sync_server/src/generated/tables/dtos/venue_table_create.dart'
@@ -95,6 +99,7 @@ import '../menu/menu_article_endpoint.dart' as _iefktwfq;
 import '../menu/menu_category_endpoint.dart' as _i1h28rjj;
 import '../orders/customer_order_endpoint.dart' as _i3ulyznx;
 import '../orders/order_endpoint.dart' as _iuf1spo6;
+import '../packs/pack_endpoint.dart' as _i9krzab0;
 import '../tables/venue_table_endpoint.dart' as _ira8yrq4;
 
 class Endpoints extends _is.EndpointDispatch {
@@ -195,6 +200,12 @@ class Endpoints extends _is.EndpointDispatch {
         ..initialize(
           server,
           'order',
+          null,
+        ),
+      'pack': _i9krzab0.PackEndpoint()
+        ..initialize(
+          server,
+          'pack',
           null,
         ),
       'venueTable': _ira8yrq4.VenueTableEndpoint()
@@ -826,6 +837,50 @@ class Endpoints extends _is.EndpointDispatch {
                 Map<String, dynamic> params,
               ) async => (endpoints['building'] as _i69ygv7j.BuildingEndpoint)
                   .listAll(session),
+        ),
+        'adminDetail': _is.MethodConnector(
+          name: 'adminDetail',
+          params: {
+            'buildingId': _is.ParameterDescription(
+              name: 'buildingId',
+              type: _is.getType<_is.UuidValue>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['building'] as _i69ygv7j.BuildingEndpoint)
+                  .adminDetail(
+                    session,
+                    params['buildingId'],
+                  ),
+        ),
+        'assignPack': _is.MethodConnector(
+          name: 'assignPack',
+          params: {
+            'buildingId': _is.ParameterDescription(
+              name: 'buildingId',
+              type: _is.getType<_is.UuidValue>(),
+              nullable: false,
+            ),
+            'packId': _is.ParameterDescription(
+              name: 'packId',
+              type: _is.getType<_is.UuidValue>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['building'] as _i69ygv7j.BuildingEndpoint)
+                  .assignPack(
+                    session,
+                    params['buildingId'],
+                    params['packId'],
+                  ),
         ),
         'get': _is.MethodConnector(
           name: 'get',
@@ -1697,6 +1752,86 @@ class Endpoints extends _is.EndpointDispatch {
               ) async => (endpoints['order'] as _iuf1spo6.OrderEndpoint).cancel(
                 session,
                 params['orderId'],
+              ),
+        ),
+      },
+    );
+    connectors['pack'] = _is.EndpointConnector(
+      name: 'pack',
+      endpoint: endpoints['pack']!,
+      methodConnectors: {
+        'list': _is.MethodConnector(
+          name: 'list',
+          params: {},
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['pack'] as _i9krzab0.PackEndpoint).list(session),
+        ),
+        'listPublic': _is.MethodConnector(
+          name: 'listPublic',
+          params: {},
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['pack'] as _i9krzab0.PackEndpoint)
+                  .listPublic(session),
+        ),
+        'create': _is.MethodConnector(
+          name: 'create',
+          params: {
+            'request': _is.ParameterDescription(
+              name: 'request',
+              type: _is.getType<_iijils8v.PackCreate>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['pack'] as _i9krzab0.PackEndpoint).create(
+                session,
+                params['request'],
+              ),
+        ),
+        'update': _is.MethodConnector(
+          name: 'update',
+          params: {
+            'request': _is.ParameterDescription(
+              name: 'request',
+              type: _is.getType<_imymid9b.PackUpdate>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['pack'] as _i9krzab0.PackEndpoint).update(
+                session,
+                params['request'],
+              ),
+        ),
+        'delete': _is.MethodConnector(
+          name: 'delete',
+          params: {
+            'id': _is.ParameterDescription(
+              name: 'id',
+              type: _is.getType<_is.UuidValue>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['pack'] as _i9krzab0.PackEndpoint).delete(
+                session,
+                params['id'],
               ),
         ),
       },

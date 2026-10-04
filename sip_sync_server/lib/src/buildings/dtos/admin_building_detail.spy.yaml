@@ -1,0 +1,14 @@
+### One venue for the backoffice detail screen: contact, pack, counts, and platform gain.
+class: AdminBuildingDetail
+fields:
+  building: AdminBuildingView
+  pack: PackView
+  categoryCount: int
+  articleCount: int
+  tableCount: int
+  orderCount: int
+  customerOrderCount: int
+  ### Sum of non-cancelled customer-order lines, in the venue currency.
+  customerSales: double
+  ### [customerSales] times the pack fee. Staff tickets are not included.
+  feeEarned: double

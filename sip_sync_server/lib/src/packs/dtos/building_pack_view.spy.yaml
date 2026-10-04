@@ -1,0 +1,20 @@
+### Pack the owner sees for the open venue. Enough to explain the plan and block an action in the app.
+class: BuildingPackView
+fields:
+  code: String
+  name: String
+  monthlyMillimes: int
+  customerOrderFeeBps: int
+  maxEmployees: int?
+  maxTables: int?
+  maxCategories: int?
+  maxArticles: int?
+  maxIngredients: int?
+  customerDiscovery: bool
+  tableQr: bool
+  customerOrdering: bool
+  inventory: bool
+  allowAppendingItems: bool
+  tableMultiOrder: bool
+  strictMode: bool
+  customAccessProfiles: bool

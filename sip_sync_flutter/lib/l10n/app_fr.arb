@@ -155,5 +155,7 @@
   "venueTypeCafe": "Café",
   "venueTypeRestaurant": "Restaurant",
   "venueTypeLounge": "Lounge",
-  "venueTypeBar": "Bar"
+  "venueTypeBar": "Bar",
+  "errorPackLimit": "Ce pack a atteint sa limite.",
+  "errorPackFeature": "Ce pack n'inclut pas cela."
 }

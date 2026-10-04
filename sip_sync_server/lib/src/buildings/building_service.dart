@@ -4,6 +4,9 @@ import '../auth/auth_guard.dart';
 import '../core/phone_numbers.dart';
 import '../employee_access/default_employee_access.dart';
 import '../generated/protocol.dart';
+import '../packs/pack_catalog.dart';
+import '../packs/pack_gate.dart';
+import '../packs/pack_service.dart';
 import 'strict_mode.dart';
 
 /// Owner venues; employees can read their assigned building.
@@ -61,10 +64,18 @@ class BuildingService {
     final ownerId = AuthGuard.requireOwner(session);
     final contact = _validateContact(request);
     _validate(request);
+    final free = await PackCatalog.requireFree(session);
+    PackGate.requireIfRequested(request.tableMultiOrder, free.tableMultiOrder);
+    PackGate.requireIfRequested(request.strictMode, free.strictMode);
+    PackGate.requireIfRequested(
+      request.allowAppendingItemsToOrder,
+      free.allowAppendingItems,
+    );
     final row = await Building.db.insertRow(
       session,
       Building(
         ownerId: ownerId,
+        packId: free.id!,
         name: request.name.trim(),
         type: _normalizeType(request.type),
         address: request.address.trim(),
@@ -97,12 +108,25 @@ class BuildingService {
     final contact = _validateContact(request);
     _validate(request);
     final row = await Building.db.findById(session, request.id);
-    if (row == null || row.ownerId != ownerId) {
+    if (row == null || row.ownerId != ownerId || row.id == null) {
       throw BuildingException(
         message: 'Building not found.',
         code: BuildingErrorCode.notFound,
       );
     }
+    final pack = await PackGate.ofBuilding(session, row.id!);
+    PackGate.requireIfRequested(
+      request.tableMultiOrder && !row.tableMultiOrder,
+      pack.tableMultiOrder,
+    );
+    PackGate.requireIfRequested(
+      request.strictMode && !row.strictMode,
+      pack.strictMode,
+    );
+    PackGate.requireIfRequested(
+      request.allowAppendingItemsToOrder && !row.allowAppendingItemsToOrder,
+      pack.allowAppendingItems,
+    );
     final updated = await Building.db.updateRow(
       session,
       row.copyWith(
@@ -197,6 +221,13 @@ class BuildingService {
       session,
       where: (t) => t.buildingId.equals(row.id!),
     );
+    final pack = row.pack ?? await Pack.db.findById(session, row.packId);
+    if (pack == null) {
+      throw PackException(
+        message: 'This venue has no pack.',
+        code: PackErrorCode.notFound,
+      );
+    }
     return BuildingView(
       id: row.id!,
       ownerId: row.ownerId,
@@ -219,6 +250,112 @@ class BuildingService {
       strictMode: row.strictMode,
       strictModeSteps: normalizeStrictModeSteps(row.strictModeSteps),
       employeeIds: staff.map((s) => s.id!).toList(),
+      pack: PackGate.summary(pack),
+    );
+  }
+
+  /// Venue, pack, counts, and platform gain. Super admin only.
+  Future<AdminBuildingDetail> adminDetail(
+    Session session,
+    UuidValue buildingId,
+  ) async {
+    AuthGuard.requireSuperAdmin(session);
+    final row = await _adminRow(session, buildingId);
+    return _detail(session, row);
+  }
+
+  /// Puts the venue on [packId]. A missing or disabled pack is rejected.
+  Future<AdminBuildingDetail> assignPack(
+    Session session,
+    UuidValue buildingId,
+    UuidValue packId,
+  ) async {
+    AuthGuard.requireSuperAdmin(session);
+    final pack = await Pack.db.findById(session, packId);
+    if (pack == null || pack.id == null || !pack.isEnabled) {
+      throw PackException(
+        message: 'Pack not found.',
+        code: PackErrorCode.notFound,
+      );
+    }
+    final row = await Building.db.findById(session, buildingId);
+    if (row == null) {
+      throw BuildingException(
+        message: 'Building not found.',
+        code: BuildingErrorCode.notFound,
+      );
+    }
+    await Building.db.updateRow(session, row.copyWith(packId: pack.id));
+    return adminDetail(session, buildingId);
+  }
+
+  Future<Building> _adminRow(Session session, UuidValue buildingId) async {
+    final row = await Building.db.findById(
+      session,
+      buildingId,
+      include: Building.include(
+        owner: Owner.include(),
+        pack: Pack.include(),
+      ),
+    );
+    if (row == null || row.pack == null || row.owner == null) {
+      throw BuildingException(
+        message: 'Building not found.',
+        code: BuildingErrorCode.notFound,
+      );
+    }
+    return row;
+  }
+
+  Future<AdminBuildingDetail> _detail(Session session, Building row) async {
+    final id = row.id!;
+    final pack = row.pack!;
+    final categoryCount = await MenuCategory.db.count(
+      session,
+      where: (t) => t.buildingId.equals(id),
+    );
+    final articleCount = await MenuArticle.db.count(
+      session,
+      where: (t) => t.buildingId.equals(id),
+    );
+    final tableCount = await VenueTable.db.count(
+      session,
+      where: (t) => t.buildingId.equals(id),
+    );
+    final orderCount = await VenueOrder.db.count(
+      session,
+      where: (t) => t.buildingId.equals(id),
+    );
+    final customerOrders = await VenueOrder.db.find(
+      session,
+      where: (t) =>
+          t.buildingId.equals(id) &
+          t.launchedByType.equals(ActorType.customer) &
+          t.status.notEquals(OrderStatus.cancelled),
+      include: VenueOrder.include(
+        items: VenueOrderItem.includeList(),
+      ),
+    );
+    var customerSales = 0.0;
+    for (final order in customerOrders) {
+      for (final item in order.items ?? const <VenueOrderItem>[]) {
+        if (item.status == OrderItemStatus.cancelled) {
+          continue;
+        }
+        customerSales += item.unitPrice;
+      }
+    }
+    final feeEarned = customerSales * pack.customerOrderFeeBps / 10000;
+    return AdminBuildingDetail(
+      building: _adminView(row),
+      pack: PackService().present(pack),
+      categoryCount: categoryCount,
+      articleCount: articleCount,
+      tableCount: tableCount,
+      orderCount: orderCount,
+      customerOrderCount: customerOrders.length,
+      customerSales: customerSales,
+      feeEarned: feeEarned,
     );
   }
 

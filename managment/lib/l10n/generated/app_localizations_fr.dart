@@ -1453,4 +1453,19 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get accessNoFlags => 'Aucune permission';
+
+  @override
+  String packBannerTitle(String name) {
+    return 'Pack : $name';
+  }
+
+  @override
+  String get packBannerHint =>
+      'Pour changer de pack, contactez l\'équipe support.';
+
+  @override
+  String get errorPackLimit => 'Ce pack a atteint sa limite.';
+
+  @override
+  String get errorPackFeature => 'Ce pack n\'inclut pas cela.';
 }

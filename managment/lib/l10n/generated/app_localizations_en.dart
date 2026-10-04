@@ -1428,4 +1428,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get accessNoFlags => 'No permissions';
+
+  @override
+  String packBannerTitle(String name) {
+    return 'Plan: $name';
+  }
+
+  @override
+  String get packBannerHint => 'To change this plan, contact the support team.';
+
+  @override
+  String get errorPackLimit => 'This plan has reached its limit.';
+
+  @override
+  String get errorPackFeature => 'This plan does not include that.';
 }

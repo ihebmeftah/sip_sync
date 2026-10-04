@@ -1,0 +1,219 @@
+import 'package:serverpod/serverpod.dart';
+import 'package:sip_sync_server/src/auth/password_hasher.dart';
+import 'package:sip_sync_server/src/generated/protocol.dart';
+import 'package:test/test.dart';
+
+import 'test_tools/serverpod_test_tools.dart';
+
+void main() {
+  withServerpod('Given a venue on the free pack', (sessionBuilder, endpoints) {
+    const sessionId = '01900000-0000-7000-8000-0000000000e1';
+
+    Future<
+      ({
+        SuperAdmin admin,
+        dynamic adminSession,
+        dynamic ownerSession,
+        BuildingView building,
+      })
+    >
+    seed() async {
+      final session = sessionBuilder.build();
+      final admin = await SuperAdmin.db.insertRow(
+        session,
+        SuperAdmin(
+          email: 'building-pack@sipsync.dev',
+          phoneNumber: '+21623000011',
+          firstName: 'Pack',
+          lastName: 'Admin',
+          passwordHash: PasswordHasher().hash('password1'),
+        ),
+      );
+      final adminSession = sessionBuilder.copyWith(
+        authentication: AuthenticationOverride.authenticationInfo(
+          admin.id!.uuid,
+          {Scope('sip.superAdmin')},
+          authId: sessionId,
+        ),
+      );
+      final registered = await endpoints.ownerAuth.register(
+        sessionBuilder,
+        EmailRegisterCreate(
+          email: 'building-pack-owner@sipsync.dev',
+          password: 'password1',
+          phoneNumber: '+21623000012',
+          firstName: 'Nour',
+          lastName: 'Owner',
+        ),
+      );
+      final ownerSession = sessionBuilder.copyWith(
+        authentication: AuthenticationOverride.authenticationInfo(
+          registered.owner!.id.uuid,
+          {Scope('sip.owner')},
+          authId: '01900000-0000-7000-8000-0000000000e2',
+        ),
+      );
+      final building = await endpoints.building.create(
+        ownerSession,
+        BuildingCreate(
+          name: 'Pack Café',
+          type: 'cafe',
+          address: '2 Rue de la Kasbah',
+          latitude: 36.8,
+          longitude: 10.18,
+          openingMinutes: 480,
+          closingMinutes: 1380,
+          phoneNumber: '+21671113344',
+          otherLinks: const [],
+          currencyCode: 'TND',
+          strictModeSteps: const [],
+        ),
+      );
+      return (
+        admin: admin,
+        adminSession: adminSession,
+        ownerSession: ownerSession,
+        building: building,
+      );
+    }
+
+    BuildingUpdate _update(
+      BuildingView building, {
+      required bool tableMultiOrder,
+    }) {
+      return BuildingUpdate(
+        id: building.id,
+        name: building.name,
+        type: building.type,
+        address: building.address,
+        latitude: building.latitude,
+        longitude: building.longitude,
+        openingMinutes: building.openingMinutes,
+        closingMinutes: building.closingMinutes,
+        currencyCode: building.currencyCode,
+        phoneNumber: building.phoneNumber,
+        whatsapp: building.whatsapp,
+        instagram: building.instagram,
+        facebook: building.facebook,
+        otherLinks: building.otherLinks,
+        tableMultiOrder: tableMultiOrder,
+        allowAppendingItemsToOrder: building.allowAppendingItemsToOrder,
+        strictMode: building.strictMode,
+        strictModeSteps: building.strictModeSteps,
+      );
+    }
+
+    test('admin detail shows the free pack and empty counts', () async {
+      final seeded = await seed();
+      final detail = await endpoints.building.adminDetail(
+        seeded.adminSession,
+        seeded.building.id,
+      );
+      expect(detail.pack.code, 'free');
+      expect(detail.pack.isPublic, isFalse);
+      expect(detail.categoryCount, 0);
+      expect(detail.articleCount, 0);
+      expect(detail.tableCount, 0);
+      expect(detail.orderCount, 0);
+      expect(detail.customerSales, 0);
+      expect(detail.feeEarned, 0);
+      expect(seeded.building.pack.code, 'free');
+    });
+
+    test('turning on multi-order is rejected on the free pack', () async {
+      final seeded = await seed();
+      await expectLater(
+        endpoints.building.update(
+          seeded.ownerSession,
+          _update(seeded.building, tableMultiOrder: true),
+        ),
+        throwsA(
+          isA<PackException>().having(
+            (error) => error.code,
+            'code',
+            PackErrorCode.featureOff,
+          ),
+        ),
+      );
+    });
+
+    test('a third employee is rejected on the free pack', () async {
+      final seeded = await seed();
+      final session = sessionBuilder.build();
+      final access = await EmployeeAccess.db.findFirstRow(
+        session,
+        where: (t) => t.buildingId.equals(seeded.building.id),
+      );
+      expect(access, isNotNull);
+      for (var i = 0; i < 2; i++) {
+        await endpoints.employee.add(
+          seeded.ownerSession,
+          EmployeeCreate(
+            password: 'password1',
+            phoneNumber: '+2162400001$i',
+            firstName: 'Staff',
+            lastName: '$i',
+            buildingId: seeded.building.id,
+            accessId: access!.id!,
+          ),
+        );
+      }
+      await expectLater(
+        endpoints.employee.add(
+          seeded.ownerSession,
+          EmployeeCreate(
+            password: 'password1',
+            phoneNumber: '+21624000013',
+            firstName: 'Staff',
+            lastName: 'Extra',
+            buildingId: seeded.building.id,
+            accessId: access!.id!,
+          ),
+        ),
+        throwsA(
+          isA<PackException>().having(
+            (error) => error.code,
+            'code',
+            PackErrorCode.limitReached,
+          ),
+        ),
+      );
+    });
+
+    test('assigning a private custom pack shows it on the detail', () async {
+      final seeded = await seed();
+      final created = await endpoints.pack.create(
+        seeded.adminSession,
+        PackCreate(
+          code: 'popup',
+          name: 'Pop-up',
+          monthlyMillimes: 10000,
+          customerOrderFeeBps: 200,
+          isPublic: false,
+          isEnabled: true,
+          sortOrder: 50,
+          capabilities: PackCapabilities(
+            maxEmployees: 1,
+            customerDiscovery: true,
+            tableQr: false,
+            customerOrdering: false,
+            inventory: true,
+            allowAppendingItems: true,
+            tableMultiOrder: false,
+            strictMode: false,
+            customAccessProfiles: false,
+          ),
+        ),
+      );
+      expect(created.isPublic, isFalse);
+      final detail = await endpoints.building.assignPack(
+        seeded.adminSession,
+        seeded.building.id,
+        created.id,
+      );
+      expect(detail.pack.code, 'popup');
+      expect(detail.pack.isPublic, isFalse);
+      expect(detail.building.id, seeded.building.id);
+    });
+  });
+}

@@ -291,4 +291,265 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get enabledLockedSelf =>
       'Vous ne pouvez pas désactiver le compte en cours.';
+
+  @override
+  String get packsSubtitle =>
+      'Les packs publics apparaissent dans les apps pour qu\'un propriétaire puisse changer d\'offre. Les packs privés sont accordés à des propriétaires précis.';
+
+  @override
+  String get createPack => 'Créer un pack';
+
+  @override
+  String get editPack => 'Mettre à jour le pack';
+
+  @override
+  String get packCode => 'Code';
+
+  @override
+  String get packName => 'Nom';
+
+  @override
+  String get packMonthly => 'Prix mensuel (TND)';
+
+  @override
+  String get packAnnual => 'Prix annuel (TND)';
+
+  @override
+  String get packAnnualHint =>
+      'Laissez le prix annuel vide pour ne proposer que le mensuel.';
+
+  @override
+  String get packFee => 'Frais app client (%)';
+
+  @override
+  String get packFeeHint =>
+      'Appliqué aux commandes de l\'app client. Les tickets du personnel restent à 0 %.';
+
+  @override
+  String get packPublic => 'Public';
+
+  @override
+  String get packPrivate => 'Privé';
+
+  @override
+  String get packPublicHint =>
+      'Les propriétaires voient ce pack dans les apps et peuvent y passer.';
+
+  @override
+  String get packPrivateHint => 'Ce pack n\'apparaît pas dans les apps.';
+
+  @override
+  String get packEnabled => 'Activé';
+
+  @override
+  String get packEnabledHint =>
+      'Un pack désactivé reste hors de la liste publique. Les lieux déjà dessus le gardent.';
+
+  @override
+  String get packSortOrder => 'Ordre';
+
+  @override
+  String get packLimits => 'Limites';
+
+  @override
+  String get packUnlimitedHint =>
+      'Laissez une limite vide pour ne pas plafonner.';
+
+  @override
+  String get packCapabilities => 'Capacités';
+
+  @override
+  String get capMaxEmployees => 'Employés';
+
+  @override
+  String get capMaxEmployeesHint =>
+      'Nombre de comptes employés que ce lieu peut avoir.';
+
+  @override
+  String get capMaxTables => 'Tables';
+
+  @override
+  String get capMaxTablesHint => 'Nombre de tables que ce lieu peut ajouter.';
+
+  @override
+  String get capMaxCategories => 'Catégories';
+
+  @override
+  String get capMaxCategoriesHint =>
+      'Nombre de catégories de carte que ce lieu peut ajouter.';
+
+  @override
+  String get capMaxArticles => 'Articles';
+
+  @override
+  String get capMaxArticlesHint =>
+      'Nombre d\'articles vendables que ce lieu peut ajouter.';
+
+  @override
+  String get capMaxIngredients => 'Ingrédients';
+
+  @override
+  String get capMaxIngredientsHint =>
+      'Nombre d\'ingrédients de stock que ce lieu peut ajouter.';
+
+  @override
+  String get capCustomerDiscovery => 'Carte client';
+
+  @override
+  String get capCustomerDiscoveryHint =>
+      'Le lieu apparaît sur la carte des clients.';
+
+  @override
+  String get capTableQr => 'QR des tables';
+
+  @override
+  String get capTableQrHint =>
+      'L\'équipe peut imprimer et scanner les QR des tables.';
+
+  @override
+  String get capCustomerOrdering => 'Commande client';
+
+  @override
+  String get capCustomerOrderingHint =>
+      'Un client peut passer une commande depuis le menu après avoir scanné une table.';
+
+  @override
+  String get capInventory => 'Stock et recettes';
+
+  @override
+  String get capInventoryHint =>
+      'Recettes, niveaux de stock, réassort, et déduction à la commande.';
+
+  @override
+  String get capAllowAppending => 'Ajouter des articles à une commande';
+
+  @override
+  String get capAllowAppendingHint =>
+      'Le lieu peut autoriser d\'ajouter des articles à une commande ouverte.';
+
+  @override
+  String get capTableMultiOrder => 'Plusieurs commandes par table';
+
+  @override
+  String get capTableMultiOrderHint =>
+      'Le lieu peut autoriser plus d\'une commande ouverte sur la même table.';
+
+  @override
+  String get capStrictMode => 'Étapes cuisine strictes';
+
+  @override
+  String get capStrictModeHint =>
+      'Le lieu peut imposer les étapes dans l\'ordre : pris, prêt, servi, puis payé.';
+
+  @override
+  String get capCustomAccess => 'Profils d\'accès personnalisés';
+
+  @override
+  String get capCustomAccessHint =>
+      'Le propriétaire peut ajouter des profils au-delà de Serveur, Gérant et Barista.';
+
+  @override
+  String packPriceMonth(String price) {
+    return '$price TND / mois';
+  }
+
+  @override
+  String packPriceYear(String price) {
+    return '$price TND / an';
+  }
+
+  @override
+  String get packSystem => 'système';
+
+  @override
+  String get deletePack => 'Supprimer le pack';
+
+  @override
+  String deletePackConfirm(String name) {
+    return 'Supprimer $name ?';
+  }
+
+  @override
+  String get errorPackCodeTaken => 'Ce code est déjà utilisé.';
+
+  @override
+  String get errorCannotDeleteSystemPack =>
+      'Le pack gratuit ne peut pas être supprimé.';
+
+  @override
+  String get errorPackInUse => 'Un lieu est encore sur ce pack.';
+
+  @override
+  String get errorPackLimit => 'Ce pack a atteint sa limite.';
+
+  @override
+  String get errorPackFeature => 'Ce pack n\'inclut pas cela.';
+
+  @override
+  String get buildingDetailTitle => 'Lieu';
+
+  @override
+  String get buildingDetailSubtitle =>
+      'Contact, pack, gain et compteurs de ce lieu.';
+
+  @override
+  String get buildingTabDetails => 'Détails';
+
+  @override
+  String get buildingTabPack => 'Pack';
+
+  @override
+  String get buildingTabGain => 'Gain';
+
+  @override
+  String get buildingTabStats => 'Stats';
+
+  @override
+  String get assignPack => 'Affecter un pack';
+
+  @override
+  String get quickCreatePack => 'Créer un pack privé';
+
+  @override
+  String get quickCreatePackHint =>
+      'Un nouveau pack est privé. Il reste hors de la liste publique.';
+
+  @override
+  String packFeeLabel(String fee) {
+    return '$fee % sur les commandes de l\'appli client';
+  }
+
+  @override
+  String get packNoLimit => 'Sans limite';
+
+  @override
+  String get gainHint =>
+      'Prix mensuel du pack, plus la commission sur les commandes client. Les tickets du personnel ne sont pas inclus.';
+
+  @override
+  String get gainMonthly => 'Abonnement mensuel';
+
+  @override
+  String get gainFeeRate => 'Frais appli client';
+
+  @override
+  String get gainCustomerOrders => 'Commandes client';
+
+  @override
+  String get gainCustomerSales => 'Ventes appli client';
+
+  @override
+  String get gainFeeEarned => 'Commission gagnée';
+
+  @override
+  String get statCategories => 'Catégories';
+
+  @override
+  String get statArticles => 'Articles';
+
+  @override
+  String get statTables => 'Tables';
+
+  @override
+  String get statOrders => 'Commandes';
 }

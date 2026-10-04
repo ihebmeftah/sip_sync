@@ -1,5 +1,6 @@
 import 'package:serverpod/serverpod.dart';
 import 'package:sip_sync_server/src/generated/protocol.dart';
+import 'package:sip_sync_server/src/packs/pack_catalog.dart';
 import 'package:test/test.dart';
 
 import 'test_tools/serverpod_test_tools.dart';
@@ -49,6 +50,11 @@ void main() {
           currencyCode: 'TND',
           strictModeSteps: [],
         ),
+      );
+      await PackCatalog.assignCode(
+        sessionBuilder.build(),
+        building.id,
+        'floor',
       );
       final tables = await endpoints.venueTable.create(
         ownerSession,

@@ -48,6 +48,7 @@ class AppTextField extends StatefulWidget {
     this.keyboardType,
     this.prefixIcon,
     this.textInputAction,
+    this.hint,
   });
 
   final TextEditingController controller;
@@ -56,6 +57,7 @@ class AppTextField extends StatefulWidget {
   final TextInputType? keyboardType;
   final IconData? prefixIcon;
   final TextInputAction? textInputAction;
+  final String? hint;
 
   @override
   State<AppTextField> createState() => _AppTextFieldState();
@@ -74,6 +76,10 @@ class _AppTextFieldState extends State<AppTextField> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(widget.label, style: theme.textTheme.small),
+          if (widget.hint != null) ...[
+            const SizedBox(height: AppSpacing.xs),
+            Text(widget.hint!, style: theme.textTheme.muted),
+          ],
           const SizedBox(height: AppSpacing.sm),
           ShadInput(
             controller: widget.controller,

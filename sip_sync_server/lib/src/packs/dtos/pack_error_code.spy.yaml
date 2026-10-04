@@ -1,0 +1,10 @@
+enum: PackErrorCode
+serialized: byIndex
+values:
+  - invalidInput
+  - notFound
+  - codeTaken
+  - cannotDeleteSystemPack
+  - packInUse
+  - limitReached
+  - featureOff

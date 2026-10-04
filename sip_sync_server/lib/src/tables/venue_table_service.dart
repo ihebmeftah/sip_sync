@@ -2,6 +2,7 @@ import 'package:serverpod/serverpod.dart';
 
 import '../auth/auth_guard.dart';
 import '../generated/protocol.dart';
+import '../packs/pack_gate.dart';
 
 /// CRUD for venue floor tables. [TableFloorStatus] is computed, never stored.
 class VenueTableService {
@@ -50,6 +51,16 @@ class VenueTableService {
     await _requireOwnedBuilding(session, ownerId, request.buildingId);
     _validateCount(request.count);
     _validateSeats(request.maxSeats);
+    final pack = await PackGate.ofBuilding(session, request.buildingId);
+    final current = await VenueTable.db.count(
+      session,
+      where: (t) => t.buildingId.equals(request.buildingId),
+    );
+    PackGate.requireRoom(
+      max: pack.maxTables,
+      current: current,
+      adding: request.count,
+    );
 
     final existing = await VenueTable.db.find(
       session,

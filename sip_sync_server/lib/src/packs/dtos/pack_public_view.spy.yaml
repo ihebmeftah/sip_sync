@@ -1,0 +1,11 @@
+### Enabled public pack for the apps. Grants stay off this shape.
+class: PackPublicView
+fields:
+  id: UuidValue
+  code: String
+  name: String
+  monthlyMillimes: int
+  annualMillimes: int?
+  customerOrderFeeBps: int
+  sortOrder: int
+  capabilities: PackCapabilities

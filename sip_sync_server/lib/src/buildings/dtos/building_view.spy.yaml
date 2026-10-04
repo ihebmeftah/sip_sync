@@ -21,3 +21,4 @@ fields:
   strictMode: bool
   strictModeSteps: List<StrictModeStep>
   employeeIds: List<UuidValue>
+  pack: BuildingPackView

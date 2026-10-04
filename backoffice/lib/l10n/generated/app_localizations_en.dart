@@ -289,4 +289,262 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get enabledLockedSelf =>
       'You cannot disable the account you are using.';
+
+  @override
+  String get packsSubtitle =>
+      'Public packs show in the apps so an owner can upgrade. Private packs are granted to specific owners.';
+
+  @override
+  String get createPack => 'Create pack';
+
+  @override
+  String get editPack => 'Update pack';
+
+  @override
+  String get packCode => 'Code';
+
+  @override
+  String get packName => 'Name';
+
+  @override
+  String get packMonthly => 'Monthly price (TND)';
+
+  @override
+  String get packAnnual => 'Annual price (TND)';
+
+  @override
+  String get packAnnualHint =>
+      'Leave the annual price empty to offer monthly only.';
+
+  @override
+  String get packFee => 'Customer-app fee (%)';
+
+  @override
+  String get packFeeHint =>
+      'Charged on customer-app orders. Staff tickets stay at 0%.';
+
+  @override
+  String get packPublic => 'Public';
+
+  @override
+  String get packPrivate => 'Private';
+
+  @override
+  String get packPublicHint =>
+      'Owners can see this pack in the apps and upgrade to it.';
+
+  @override
+  String get packPrivateHint => 'This pack stays off the apps.';
+
+  @override
+  String get packEnabled => 'Enabled';
+
+  @override
+  String get packEnabledHint =>
+      'A disabled pack stays off the public list. Venues already on it keep it.';
+
+  @override
+  String get packSortOrder => 'Sort order';
+
+  @override
+  String get packLimits => 'Limits';
+
+  @override
+  String get packUnlimitedHint => 'Leave a limit empty for no cap.';
+
+  @override
+  String get packCapabilities => 'Capabilities';
+
+  @override
+  String get capMaxEmployees => 'Employees';
+
+  @override
+  String get capMaxEmployeesHint =>
+      'How many staff accounts this venue may have.';
+
+  @override
+  String get capMaxTables => 'Tables';
+
+  @override
+  String get capMaxTablesHint => 'How many floor tables this venue may add.';
+
+  @override
+  String get capMaxCategories => 'Categories';
+
+  @override
+  String get capMaxCategoriesHint =>
+      'How many menu categories this venue may add.';
+
+  @override
+  String get capMaxArticles => 'Articles';
+
+  @override
+  String get capMaxArticlesHint =>
+      'How many sellable articles this venue may add.';
+
+  @override
+  String get capMaxIngredients => 'Ingredients';
+
+  @override
+  String get capMaxIngredientsHint =>
+      'How many stock ingredients this venue may add.';
+
+  @override
+  String get capCustomerDiscovery => 'Customer map';
+
+  @override
+  String get capCustomerDiscoveryHint =>
+      'The venue appears on the customer map.';
+
+  @override
+  String get capTableQr => 'Table QR';
+
+  @override
+  String get capTableQrHint => 'Staff can print and scan table QR stickers.';
+
+  @override
+  String get capCustomerOrdering => 'Customer ordering';
+
+  @override
+  String get capCustomerOrderingHint =>
+      'A customer can pass an order from the menu after scanning a table.';
+
+  @override
+  String get capInventory => 'Inventory and recipes';
+
+  @override
+  String get capInventoryHint =>
+      'Recipes, stock levels, restock, and deduction when an order is placed.';
+
+  @override
+  String get capAllowAppending => 'Append items to an order';
+
+  @override
+  String get capAllowAppendingHint =>
+      'The venue may allow adding articles to an open order.';
+
+  @override
+  String get capTableMultiOrder => 'Several orders per table';
+
+  @override
+  String get capTableMultiOrderHint =>
+      'The venue may allow more than one open order on the same table.';
+
+  @override
+  String get capStrictMode => 'Strict kitchen steps';
+
+  @override
+  String get capStrictModeHint =>
+      'The venue may require kitchen steps in order: picked, ready, served, then paid.';
+
+  @override
+  String get capCustomAccess => 'Custom access profiles';
+
+  @override
+  String get capCustomAccessHint =>
+      'The owner may add access profiles beyond Waiter, Gerant, and Barista.';
+
+  @override
+  String packPriceMonth(String price) {
+    return '$price TND / month';
+  }
+
+  @override
+  String packPriceYear(String price) {
+    return '$price TND / year';
+  }
+
+  @override
+  String get packSystem => 'system';
+
+  @override
+  String get deletePack => 'Delete pack';
+
+  @override
+  String deletePackConfirm(String name) {
+    return 'Delete $name?';
+  }
+
+  @override
+  String get errorPackCodeTaken => 'That code is already used.';
+
+  @override
+  String get errorCannotDeleteSystemPack => 'The free pack cannot be deleted.';
+
+  @override
+  String get errorPackInUse => 'A venue is still on this pack.';
+
+  @override
+  String get errorPackLimit => 'This plan has reached its limit.';
+
+  @override
+  String get errorPackFeature => 'This plan does not include that.';
+
+  @override
+  String get buildingDetailTitle => 'Building';
+
+  @override
+  String get buildingDetailSubtitle =>
+      'Contact, pack, gain, and counts for this venue.';
+
+  @override
+  String get buildingTabDetails => 'Details';
+
+  @override
+  String get buildingTabPack => 'Pack';
+
+  @override
+  String get buildingTabGain => 'Gain';
+
+  @override
+  String get buildingTabStats => 'Stats';
+
+  @override
+  String get assignPack => 'Assign pack';
+
+  @override
+  String get quickCreatePack => 'Create private pack';
+
+  @override
+  String get quickCreatePackHint =>
+      'A new pack starts private. It stays off the public list.';
+
+  @override
+  String packFeeLabel(String fee) {
+    return '$fee% on customer-app orders';
+  }
+
+  @override
+  String get packNoLimit => 'No limit';
+
+  @override
+  String get gainHint =>
+      'Monthly plan price, plus the customer-app fee on customer orders. Staff tickets are not included.';
+
+  @override
+  String get gainMonthly => 'Monthly plan';
+
+  @override
+  String get gainFeeRate => 'Customer-app fee';
+
+  @override
+  String get gainCustomerOrders => 'Customer orders';
+
+  @override
+  String get gainCustomerSales => 'Customer-app sales';
+
+  @override
+  String get gainFeeEarned => 'Fee earned';
+
+  @override
+  String get statCategories => 'Categories';
+
+  @override
+  String get statArticles => 'Articles';
+
+  @override
+  String get statTables => 'Tables';
+
+  @override
+  String get statOrders => 'Orders';
 }

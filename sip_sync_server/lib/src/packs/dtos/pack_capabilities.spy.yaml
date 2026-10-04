@@ -1,0 +1,16 @@
+### Limits and switches a pack turns on. Null limits mean unlimited.
+class: PackCapabilities
+fields:
+  maxEmployees: int?
+  maxTables: int?
+  maxCategories: int?
+  maxArticles: int?
+  maxIngredients: int?
+  customerDiscovery: bool
+  tableQr: bool
+  customerOrdering: bool
+  inventory: bool
+  allowAppendingItems: bool
+  tableMultiOrder: bool
+  strictMode: bool
+  customAccessProfiles: bool

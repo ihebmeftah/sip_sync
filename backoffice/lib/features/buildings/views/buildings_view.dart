@@ -4,14 +4,14 @@ import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:sip_sync_client/sip_sync_client.dart';
 
 import '../../../core/errors/error_mapper.dart';
+import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../console/views/console_shell.dart';
 import '../view_models/buildings_view_model.dart';
-import 'building_detail_dialog.dart';
 
-/// Platform building list. A row opens the location and contact dialog.
+/// Platform building list. A card opens the venue detail screen.
 class BuildingsView extends ConsumerWidget {
   const BuildingsView({super.key});
 
@@ -64,39 +64,38 @@ class _BuildingCard extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final theme = ShadTheme.of(context);
     final owner = '${building.ownerFirstName} ${building.ownerLastName}'.trim();
-    return ShadCard(
-      width: double.infinity,
-      rowMainAxisSize: MainAxisSize.max,
-      columnCrossAxisAlignment: CrossAxisAlignment.stretch,
-      title: Text(building.name),
-      description: Text(
-        '$owner · ${building.ownerEmail} · ${building.ownerPhoneNumber}',
-      ),
-      trailing: ShadButton.outline(
-        size: ShadButtonSize.sm,
-        onPressed: () => _open(context),
-        child: Text(l10n.viewDetails),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.only(top: AppSpacing.lg),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ShadBadge.outline(child: Text(building.type)),
-            const SizedBox(height: AppSpacing.md),
-            Text(l10n.contact, style: theme.textTheme.muted),
-            const SizedBox(height: AppSpacing.xs),
-            Text(_contact(building), style: theme.textTheme.small),
-          ],
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(
+        onTap: () =>
+            BuildingDetailRoute(buildingId: building.id.uuid).go(context),
+        child: ShadCard(
+          width: double.infinity,
+          rowMainAxisSize: MainAxisSize.max,
+          columnCrossAxisAlignment: CrossAxisAlignment.stretch,
+          title: Row(
+            children: [
+              Expanded(child: Text(building.name)),
+              const SizedBox(width: AppSpacing.sm),
+              ShadBadge.outline(child: Text(building.type)),
+            ],
+          ),
+          description: Text(
+            '$owner · ${building.ownerEmail} · ${building.ownerPhoneNumber}',
+          ),
+          child: Padding(
+            padding: const EdgeInsets.only(top: AppSpacing.lg),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(l10n.contact, style: theme.textTheme.muted),
+                const SizedBox(height: AppSpacing.xs),
+                Text(_contact(building), style: theme.textTheme.small),
+              ],
+            ),
+          ),
         ),
       ),
-    );
-  }
-
-  void _open(BuildContext context) {
-    showShadDialog<void>(
-      context: context,
-      builder: (_) => BuildingDetailDialog(building: building),
     );
   }
 

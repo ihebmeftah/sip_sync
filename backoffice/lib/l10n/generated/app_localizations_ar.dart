@@ -286,4 +286,260 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get enabledLockedSelf => 'لا يمكنك تعطيل الحساب الذي تستخدمه.';
+
+  @override
+  String get packsSubtitle =>
+      'الباقات العامة تظهر في التطبيقات ليتمكن المالك من الترقية. الباقات الخاصة تُمنح لمالكين محددين.';
+
+  @override
+  String get createPack => 'إنشاء باقة';
+
+  @override
+  String get editPack => 'تحديث الباقة';
+
+  @override
+  String get packCode => 'الرمز';
+
+  @override
+  String get packName => 'الاسم';
+
+  @override
+  String get packMonthly => 'السعر الشهري (د.ت)';
+
+  @override
+  String get packAnnual => 'السعر السنوي (د.ت)';
+
+  @override
+  String get packAnnualHint => 'اترك السعر السنوي فارغًا لعرض الشهري فقط.';
+
+  @override
+  String get packFee => 'رسوم تطبيق الزبون (%)';
+
+  @override
+  String get packFeeHint =>
+      'تُحسب على طلبات تطبيق الزبون. تذاكر الموظفين تبقى 0٪.';
+
+  @override
+  String get packPublic => 'عامة';
+
+  @override
+  String get packPrivate => 'خاصة';
+
+  @override
+  String get packPublicHint =>
+      'يرى المالكون هذه الباقة في التطبيقات ويمكنهم الترقية إليها.';
+
+  @override
+  String get packPrivateHint => 'هذه الباقة لا تظهر في التطبيقات.';
+
+  @override
+  String get packEnabled => 'مفعّلة';
+
+  @override
+  String get packEnabledHint =>
+      'الباقة المعطّلة تبقى خارج القائمة العامة. الأماكن التي تستخدمها تُبقيها.';
+
+  @override
+  String get packSortOrder => 'الترتيب';
+
+  @override
+  String get packLimits => 'الحدود';
+
+  @override
+  String get packUnlimitedHint => 'اترك الحد فارغًا بلا سقف.';
+
+  @override
+  String get packCapabilities => 'الإمكانات';
+
+  @override
+  String get capMaxEmployees => 'الموظفون';
+
+  @override
+  String get capMaxEmployeesHint =>
+      'عدد حسابات الموظفين التي يمكن لهذا المكان أن يملكها.';
+
+  @override
+  String get capMaxTables => 'الطاولات';
+
+  @override
+  String get capMaxTablesHint => 'عدد الطاولات التي يمكن لهذا المكان إضافتها.';
+
+  @override
+  String get capMaxCategories => 'التصنيفات';
+
+  @override
+  String get capMaxCategoriesHint =>
+      'عدد تصنيفات القائمة التي يمكن لهذا المكان إضافتها.';
+
+  @override
+  String get capMaxArticles => 'الأصناف';
+
+  @override
+  String get capMaxArticlesHint =>
+      'عدد الأصناف المعروضة للبيع التي يمكن لهذا المكان إضافتها.';
+
+  @override
+  String get capMaxIngredients => 'المكونات';
+
+  @override
+  String get capMaxIngredientsHint =>
+      'عدد مكونات المخزون التي يمكن لهذا المكان إضافتها.';
+
+  @override
+  String get capCustomerDiscovery => 'خريطة الزبائن';
+
+  @override
+  String get capCustomerDiscoveryHint => 'يظهر المكان على خريطة الزبائن.';
+
+  @override
+  String get capTableQr => 'رمز الطاولة';
+
+  @override
+  String get capTableQrHint => 'يمكن للفريق طباعة رموز الطاولات ومسحها.';
+
+  @override
+  String get capCustomerOrdering => 'طلب الزبون';
+
+  @override
+  String get capCustomerOrderingHint =>
+      'يمكن للزبون تمرير طلب من القائمة بعد مسح رمز الطاولة.';
+
+  @override
+  String get capInventory => 'المخزون والوصفات';
+
+  @override
+  String get capInventoryHint =>
+      'الوصفات ومستوى المخزون وإعادة التزويد والخصم عند الطلب.';
+
+  @override
+  String get capAllowAppending => 'إضافة أصناف إلى طلب';
+
+  @override
+  String get capAllowAppendingHint =>
+      'يمكن للمكان السماح بإضافة أصناف إلى طلب مفتوح.';
+
+  @override
+  String get capTableMultiOrder => 'عدة طلبات على الطاولة';
+
+  @override
+  String get capTableMultiOrderHint =>
+      'يمكن للمكان السماح بأكثر من طلب مفتوح على الطاولة نفسها.';
+
+  @override
+  String get capStrictMode => 'خطوات المطبخ الصارمة';
+
+  @override
+  String get capStrictModeHint =>
+      'يمكن للمكان فرض الخطوات بالترتيب: مأخوذ، جاهز، مُقدَّم، ثم مدفوع.';
+
+  @override
+  String get capCustomAccess => 'ملفات صلاحيات مخصصة';
+
+  @override
+  String get capCustomAccessHint =>
+      'يمكن للمالك إضافة ملفات صلاحيات غير النادل والمدير والباريستا.';
+
+  @override
+  String packPriceMonth(String price) {
+    return '$price د.ت / شهر';
+  }
+
+  @override
+  String packPriceYear(String price) {
+    return '$price د.ت / سنة';
+  }
+
+  @override
+  String get packSystem => 'نظام';
+
+  @override
+  String get deletePack => 'حذف الباقة';
+
+  @override
+  String deletePackConfirm(String name) {
+    return 'حذف $name؟';
+  }
+
+  @override
+  String get errorPackCodeTaken => 'هذا الرمز مستخدم بالفعل.';
+
+  @override
+  String get errorCannotDeleteSystemPack => 'لا يمكن حذف الباقة المجانية.';
+
+  @override
+  String get errorPackInUse => 'ما زال مكان يستخدم هذه الباقة.';
+
+  @override
+  String get errorPackLimit => 'بلغت هذه الباقة حدها.';
+
+  @override
+  String get errorPackFeature => 'هذه الباقة لا تشمل ذلك.';
+
+  @override
+  String get buildingDetailTitle => 'المكان';
+
+  @override
+  String get buildingDetailSubtitle =>
+      'التواصل والباقة والعائد والعدادات لهذا المكان.';
+
+  @override
+  String get buildingTabDetails => 'التفاصيل';
+
+  @override
+  String get buildingTabPack => 'الباقة';
+
+  @override
+  String get buildingTabGain => 'العائد';
+
+  @override
+  String get buildingTabStats => 'الإحصاءات';
+
+  @override
+  String get assignPack => 'تعيين باقة';
+
+  @override
+  String get quickCreatePack => 'إنشاء باقة خاصة';
+
+  @override
+  String get quickCreatePackHint =>
+      'الباقة الجديدة تكون خاصة ولا تظهر في القائمة العامة.';
+
+  @override
+  String packFeeLabel(String fee) {
+    return '$fee% على طلبات تطبيق الزبون';
+  }
+
+  @override
+  String get packNoLimit => 'بدون حد';
+
+  @override
+  String get gainHint =>
+      'سعر الباقة الشهري، إضافة إلى عمولة طلبات الزبائن. تذاكر الموظفين غير محسوبة.';
+
+  @override
+  String get gainMonthly => 'الاشتراك الشهري';
+
+  @override
+  String get gainFeeRate => 'عمولة تطبيق الزبون';
+
+  @override
+  String get gainCustomerOrders => 'طلبات الزبائن';
+
+  @override
+  String get gainCustomerSales => 'مبيعات تطبيق الزبون';
+
+  @override
+  String get gainFeeEarned => 'العمولة المحصّلة';
+
+  @override
+  String get statCategories => 'التصنيفات';
+
+  @override
+  String get statArticles => 'المواد';
+
+  @override
+  String get statTables => 'الطاولات';
+
+  @override
+  String get statOrders => 'الطلبات';
 }

@@ -25,3 +25,4 @@ Product and feature documentation for Sip Sync. Update these pages when behavior
 | Cash register | planned | [cash-register](features/cash-register.md) |
 | Statistics & analytics | planned | [statistics](features/statistics.md) |
 | Real-time notifications | planned | [notifications](features/notifications.md) |
+| Packs | in progress | [packs](features/packs.md) |

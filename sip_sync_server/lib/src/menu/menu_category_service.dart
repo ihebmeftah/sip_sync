@@ -2,6 +2,7 @@ import 'package:serverpod/serverpod.dart';
 
 import '../auth/auth_guard.dart';
 import '../generated/protocol.dart';
+import '../packs/pack_gate.dart';
 
 /// Building-scoped menu category CRUD.
 class MenuCategoryService {
@@ -29,6 +30,16 @@ class MenuCategoryService {
     final name = _validateName(request.name);
     final description = _normalizeDescription(request.description);
     await _assertNameAvailable(session, request.buildingId, name);
+    final pack = await PackGate.ofBuilding(session, request.buildingId);
+    final current = await MenuCategory.db.count(
+      session,
+      where: (t) => t.buildingId.equals(request.buildingId),
+    );
+    PackGate.requireRoom(
+      max: pack.maxCategories,
+      current: current,
+      adding: 1,
+    );
 
     final row = await MenuCategory.db.insertRow(
       session,

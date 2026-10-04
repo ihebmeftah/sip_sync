@@ -482,4 +482,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get venueTypeBar => 'Bar';
+
+  @override
+  String get errorPackLimit => 'This plan has reached its limit.';
+
+  @override
+  String get errorPackFeature => 'This plan does not include that.';
 }

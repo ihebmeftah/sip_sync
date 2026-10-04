@@ -32,6 +32,17 @@ Failure mapError(Object error) {
       BuildingErrorCode.notFound => 'errorNotFound',
     });
   }
+  if (error is PackException) {
+    return Failure(switch (error.code) {
+      PackErrorCode.invalidInput => 'errorInvalidInput',
+      PackErrorCode.notFound => 'errorNotFound',
+      PackErrorCode.codeTaken => 'errorPackCodeTaken',
+      PackErrorCode.cannotDeleteSystemPack => 'errorCannotDeleteSystemPack',
+      PackErrorCode.packInUse => 'errorPackInUse',
+      PackErrorCode.limitReached => 'errorPackLimit',
+      PackErrorCode.featureOff => 'errorPackFeature',
+    });
+  }
   return const Failure('errorGeneric');
 }
 
@@ -51,6 +62,11 @@ String lookupError(dynamic l10n, String key) {
     'errorAccountDisabled' => l10n.errorAccountDisabled,
     'errorCannotDisableDefaultAdmin' => l10n.errorCannotDisableDefaultAdmin,
     'errorCannotDisableSelf' => l10n.errorCannotDisableSelf,
+    'errorPackCodeTaken' => l10n.errorPackCodeTaken,
+    'errorCannotDeleteSystemPack' => l10n.errorCannotDeleteSystemPack,
+    'errorPackInUse' => l10n.errorPackInUse,
+    'errorPackLimit' => l10n.errorPackLimit,
+    'errorPackFeature' => l10n.errorPackFeature,
     _ => l10n.errorGeneric,
   };
 }

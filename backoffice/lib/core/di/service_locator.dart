@@ -2,6 +2,7 @@ import 'package:get_it/get_it.dart';
 import 'package:sip_sync_client/sip_sync_client.dart';
 
 import '../../data/repositories/admin_building_repository.dart';
+import '../../data/repositories/pack_repository.dart';
 import '../../data/repositories/platform_directory_repository.dart';
 import '../../data/repositories/super_admin_auth_repository.dart';
 import '../../data/services/api_client.dart';
@@ -32,5 +33,8 @@ Future<void> setupServiceLocator() async {
     getIt.registerLazySingleton<PlatformDirectoryRepository>(
       () => PlatformDirectoryRepository(client),
     );
+  }
+  if (!getIt.isRegistered<PackRepository>()) {
+    getIt.registerLazySingleton<PackRepository>(() => PackRepository(client));
   }
 }

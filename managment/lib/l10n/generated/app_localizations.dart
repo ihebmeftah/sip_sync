@@ -2667,6 +2667,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No permissions'**
   String get accessNoFlags;
+
+  /// No description provided for @packBannerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan: {name}'**
+  String packBannerTitle(String name);
+
+  /// No description provided for @packBannerHint.
+  ///
+  /// In en, this message translates to:
+  /// **'To change this plan, contact the support team.'**
+  String get packBannerHint;
+
+  /// No description provided for @errorPackLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'This plan has reached its limit.'**
+  String get errorPackLimit;
+
+  /// No description provided for @errorPackFeature.
+  ///
+  /// In en, this message translates to:
+  /// **'This plan does not include that.'**
+  String get errorPackFeature;
 }
 
 class _AppLocalizationsDelegate

@@ -92,6 +92,14 @@ RouteBase get $consoleShellRoute => ShellRouteData.$route(
       name: 'buildings',
       hasOverriddenOnExit: false,
       factory: $BuildingsRoute._fromState,
+      routes: [
+        GoRouteData.$route(
+          path: ':buildingId',
+          name: 'buildingDetail',
+          hasOverriddenOnExit: false,
+          factory: $BuildingDetailRoute._fromState,
+        ),
+      ],
     ),
     GoRouteData.$route(
       path: '/packs',
@@ -174,6 +182,31 @@ mixin $BuildingsRoute on GoRouteData {
 
   @override
   String get location => GoRouteData.$location('/buildings');
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+mixin $BuildingDetailRoute on GoRouteData {
+  static BuildingDetailRoute _fromState(GoRouterState state) =>
+      BuildingDetailRoute(buildingId: state.pathParameters['buildingId']!);
+
+  BuildingDetailRoute get _self => this as BuildingDetailRoute;
+
+  @override
+  String get location => GoRouteData.$location(
+    '/buildings/${Uri.encodeComponent(_self.buildingId)}',
+  );
 
   @override
   void go(BuildContext context) => context.go(location);

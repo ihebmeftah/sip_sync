@@ -20,10 +20,11 @@ class CustomerVenueEndpoint extends Endpoint {
     final rows = await Building.db.find(
       session,
       orderBy: (t) => t.name,
+      include: Building.include(pack: Pack.include()),
     );
     return [
       for (final row in rows)
-        if (row.id != null)
+        if (row.id != null && row.pack?.customerDiscovery == true)
           CustomerVenueCard(
             id: row.id!,
             name: row.name,

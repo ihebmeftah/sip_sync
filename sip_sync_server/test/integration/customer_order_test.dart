@@ -1,5 +1,6 @@
 import 'package:serverpod/serverpod.dart';
 import 'package:sip_sync_server/src/generated/protocol.dart';
+import 'package:sip_sync_server/src/packs/pack_catalog.dart';
 import 'package:test/test.dart';
 
 import 'test_tools/serverpod_test_tools.dart';
@@ -18,6 +19,11 @@ void main() {
         final building = await endpoints.building.create(
           ownerSession,
           _building('Order House', '+21671112001'),
+        );
+        await PackCatalog.assignCode(
+          sessionBuilder.build(),
+          building.id,
+          'floor',
         );
         final category = await endpoints.menuCategory.create(
           ownerSession,
@@ -209,6 +215,11 @@ void main() {
           ownerSession,
           _building('Append House', '+21671112004'),
         );
+        await PackCatalog.assignCode(
+          sessionBuilder.build(),
+          building.id,
+          'floor',
+        );
         final category = await endpoints.menuCategory.create(
           ownerSession,
           MenuCategoryCreate(buildingId: building.id, name: 'Tea'),
@@ -325,6 +336,11 @@ void main() {
         ownerSession,
         _building('Stock House', '+21671112002'),
       );
+      await PackCatalog.assignCode(
+        sessionBuilder.build(),
+        building.id,
+        'floor',
+      );
       final category = await endpoints.menuCategory.create(
         ownerSession,
         MenuCategoryCreate(buildingId: building.id, name: 'Drinks'),
@@ -405,6 +421,11 @@ void main() {
       final building = await endpoints.building.create(
         ownerSession,
         _building('Private House', '+21671112003'),
+      );
+      await PackCatalog.assignCode(
+        sessionBuilder.build(),
+        building.id,
+        'floor',
       );
       final category = await endpoints.menuCategory.create(
         ownerSession,

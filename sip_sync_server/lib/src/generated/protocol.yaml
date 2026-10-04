@@ -40,6 +40,8 @@ superAdminAuth:
 building:
   - listMine:
   - listAll:
+  - adminDetail:
+  - assignPack:
   - get:
   - create:
   - update:
@@ -89,6 +91,12 @@ order:
   - addItems:
   - updateItemStatus:
   - cancel:
+pack:
+  - list:
+  - listPublic:
+  - create:
+  - update:
+  - delete:
 venueTable:
   - list:
   - create:

@@ -1,0 +1,39 @@
+### Commercial plan. Prices are millimes (89 TND = 89000). Null limits mean no cap.
+class: Pack
+table: pack
+serverOnly: true
+fields:
+  id: UuidValue?, defaultPersist=random_v7
+  ### Stable id (`free`, `counter`). Set on create.
+  code: String
+  name: String
+  monthlyMillimes: int
+  annualMillimes: int?
+  ### Customer-app order fee in basis points. 150 = 1.5%. Staff tickets are not charged.
+  customerOrderFeeBps: int, default=0
+  ### When true, apps may list this pack so an owner can upgrade.
+  isPublic: bool, default=false
+  ### When false, hidden from the public list.
+  isEnabled: bool, default=true
+  ### The free pack. Cannot be deleted.
+  isSystem: bool, default=false
+  sortOrder: int, default=0
+  maxEmployees: int?
+  maxTables: int?
+  maxCategories: int?
+  maxArticles: int?
+  maxIngredients: int?
+  customerDiscovery: bool, default=true
+  tableQr: bool, default=true
+  customerOrdering: bool, default=false
+  inventory: bool, default=true
+  allowAppendingItems: bool, default=true
+  tableMultiOrder: bool, default=false
+  strictMode: bool, default=false
+  customAccessProfiles: bool, default=false
+  createdAt: DateTime, defaultModel=now
+  buildings: List<Building>?, relation(name=building_pack)
+indexes:
+  pack_code_idx:
+    fields: code
+    unique: true

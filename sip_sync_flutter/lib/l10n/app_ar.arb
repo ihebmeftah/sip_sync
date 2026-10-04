@@ -155,5 +155,7 @@
   "venueTypeCafe": "مقهى",
   "venueTypeRestaurant": "مطعم",
   "venueTypeLounge": "لاونج",
-  "venueTypeBar": "بار"
+  "venueTypeBar": "بار",
+  "errorPackLimit": "بلغت هذه الباقة حدها.",
+  "errorPackFeature": "هذه الباقة لا تشمل ذلك."
 }

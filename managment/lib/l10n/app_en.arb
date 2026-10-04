@@ -521,5 +521,12 @@
   "accessFlagPrep": "Prep",
   "accessFlagServe": "Serve",
   "accessFlagConsultAll": "All orders",
-  "accessNoFlags": "No permissions"
+  "accessNoFlags": "No permissions",
+  "packBannerTitle": "Plan: {name}",
+  "@packBannerTitle": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "packBannerHint": "To change this plan, contact the support team.",
+  "errorPackLimit": "This plan has reached its limit.",
+  "errorPackFeature": "This plan does not include that."
 }

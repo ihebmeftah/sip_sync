@@ -44,6 +44,10 @@ import 'package:sip_sync_client/src/protocol/orders/dtos/customer_order_summary.
     as _ia5a8dtx;
 import 'package:sip_sync_client/src/protocol/orders/dtos/order_view.dart'
     as _i5f9osh7;
+import 'package:sip_sync_client/src/protocol/packs/dtos/pack_public_view.dart'
+    as _ir1kads3;
+import 'package:sip_sync_client/src/protocol/packs/dtos/pack_view.dart'
+    as _ihy1alcs;
 import 'package:sip_sync_client/src/protocol/tables/dtos/venue_table_view.dart'
     as _ihz72ioq;
 import 'auth/dtos/account_error_code.dart' as _ipvvun4w;
@@ -69,6 +73,7 @@ import 'auth/dtos/super_admin_session_view.dart' as _i4itilxd;
 import 'auth/dtos/super_admin_update.dart' as _iccfx1hz;
 import 'auth/dtos/super_admin_view.dart' as _ima36n4q;
 import 'auth/dtos/username_login_request.dart' as _i4npd3dl;
+import 'buildings/dtos/admin_building_detail.dart' as _imz5zx1p;
 import 'buildings/dtos/admin_building_view.dart' as _ig4j3dzf;
 import 'buildings/dtos/building_create.dart' as _i8mj84pm;
 import 'buildings/dtos/building_error_code.dart' as _ip56joo9;
@@ -130,6 +135,14 @@ import 'orders/dtos/order_item_status_update.dart' as _i8vmkag3;
 import 'orders/dtos/order_item_view.dart' as _in19xqkp;
 import 'orders/dtos/order_status.dart' as _iaqxrbm9;
 import 'orders/dtos/order_view.dart' as _i5x25q0s;
+import 'packs/dtos/building_pack_view.dart' as _inombaek;
+import 'packs/dtos/pack_capabilities.dart' as _it41yevh;
+import 'packs/dtos/pack_create.dart' as _i8zaxiah;
+import 'packs/dtos/pack_error_code.dart' as _iop7u0ua;
+import 'packs/dtos/pack_exception.dart' as _i2wkabnn;
+import 'packs/dtos/pack_public_view.dart' as _iprelrqf;
+import 'packs/dtos/pack_update.dart' as _icf9vjmf;
+import 'packs/dtos/pack_view.dart' as _ix8hsdo0;
 import 'tables/dtos/table_floor_status.dart' as _i64byz7d;
 import 'tables/dtos/table_list_filter.dart' as _iuz62fg4;
 import 'tables/dtos/venue_table_create.dart' as _iui9xd5q;
@@ -160,6 +173,7 @@ export 'auth/dtos/super_admin_session_view.dart';
 export 'auth/dtos/super_admin_update.dart';
 export 'auth/dtos/super_admin_view.dart';
 export 'auth/dtos/username_login_request.dart';
+export 'buildings/dtos/admin_building_detail.dart';
 export 'buildings/dtos/admin_building_view.dart';
 export 'buildings/dtos/building_create.dart';
 export 'buildings/dtos/building_error_code.dart';
@@ -221,6 +235,14 @@ export 'orders/dtos/order_item_status_update.dart';
 export 'orders/dtos/order_item_view.dart';
 export 'orders/dtos/order_status.dart';
 export 'orders/dtos/order_view.dart';
+export 'packs/dtos/building_pack_view.dart';
+export 'packs/dtos/pack_capabilities.dart';
+export 'packs/dtos/pack_create.dart';
+export 'packs/dtos/pack_error_code.dart';
+export 'packs/dtos/pack_exception.dart';
+export 'packs/dtos/pack_public_view.dart';
+export 'packs/dtos/pack_update.dart';
+export 'packs/dtos/pack_view.dart';
 export 'tables/dtos/table_floor_status.dart';
 export 'tables/dtos/table_list_filter.dart';
 export 'tables/dtos/venue_table_create.dart';
@@ -332,6 +354,9 @@ class Protocol extends _isc.SerializationManager {
     }
     if (t == _i4npd3dl.UsernameLoginRequest) {
       return _i4npd3dl.UsernameLoginRequest.fromJson(data) as T;
+    }
+    if (t == _imz5zx1p.AdminBuildingDetail) {
+      return _imz5zx1p.AdminBuildingDetail.fromJson(data) as T;
     }
     if (t == _ig4j3dzf.AdminBuildingView) {
       return _ig4j3dzf.AdminBuildingView.fromJson(data) as T;
@@ -516,6 +541,30 @@ class Protocol extends _isc.SerializationManager {
     if (t == _i5x25q0s.OrderView) {
       return _i5x25q0s.OrderView.fromJson(data) as T;
     }
+    if (t == _inombaek.BuildingPackView) {
+      return _inombaek.BuildingPackView.fromJson(data) as T;
+    }
+    if (t == _it41yevh.PackCapabilities) {
+      return _it41yevh.PackCapabilities.fromJson(data) as T;
+    }
+    if (t == _i8zaxiah.PackCreate) {
+      return _i8zaxiah.PackCreate.fromJson(data) as T;
+    }
+    if (t == _iop7u0ua.PackErrorCode) {
+      return _iop7u0ua.PackErrorCode.fromJson(data) as T;
+    }
+    if (t == _i2wkabnn.PackException) {
+      return _i2wkabnn.PackException.fromJson(data) as T;
+    }
+    if (t == _iprelrqf.PackPublicView) {
+      return _iprelrqf.PackPublicView.fromJson(data) as T;
+    }
+    if (t == _icf9vjmf.PackUpdate) {
+      return _icf9vjmf.PackUpdate.fromJson(data) as T;
+    }
+    if (t == _ix8hsdo0.PackView) {
+      return _ix8hsdo0.PackView.fromJson(data) as T;
+    }
     if (t == _i64byz7d.TableFloorStatus) {
       return _i64byz7d.TableFloorStatus.fromJson(data) as T;
     }
@@ -642,6 +691,12 @@ class Protocol extends _isc.SerializationManager {
     if (t == _isc.getType<_i4npd3dl.UsernameLoginRequest?>()) {
       return (data != null
               ? _i4npd3dl.UsernameLoginRequest.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _isc.getType<_imz5zx1p.AdminBuildingDetail?>()) {
+      return (data != null
+              ? _imz5zx1p.AdminBuildingDetail.fromJson(data)
               : null)
           as T;
     }
@@ -932,6 +987,35 @@ class Protocol extends _isc.SerializationManager {
     if (t == _isc.getType<_i5x25q0s.OrderView?>()) {
       return (data != null ? _i5x25q0s.OrderView.fromJson(data) : null) as T;
     }
+    if (t == _isc.getType<_inombaek.BuildingPackView?>()) {
+      return (data != null ? _inombaek.BuildingPackView.fromJson(data) : null)
+          as T;
+    }
+    if (t == _isc.getType<_it41yevh.PackCapabilities?>()) {
+      return (data != null ? _it41yevh.PackCapabilities.fromJson(data) : null)
+          as T;
+    }
+    if (t == _isc.getType<_i8zaxiah.PackCreate?>()) {
+      return (data != null ? _i8zaxiah.PackCreate.fromJson(data) : null) as T;
+    }
+    if (t == _isc.getType<_iop7u0ua.PackErrorCode?>()) {
+      return (data != null ? _iop7u0ua.PackErrorCode.fromJson(data) : null)
+          as T;
+    }
+    if (t == _isc.getType<_i2wkabnn.PackException?>()) {
+      return (data != null ? _i2wkabnn.PackException.fromJson(data) : null)
+          as T;
+    }
+    if (t == _isc.getType<_iprelrqf.PackPublicView?>()) {
+      return (data != null ? _iprelrqf.PackPublicView.fromJson(data) : null)
+          as T;
+    }
+    if (t == _isc.getType<_icf9vjmf.PackUpdate?>()) {
+      return (data != null ? _icf9vjmf.PackUpdate.fromJson(data) : null) as T;
+    }
+    if (t == _isc.getType<_ix8hsdo0.PackView?>()) {
+      return (data != null ? _ix8hsdo0.PackView.fromJson(data) : null) as T;
+    }
     if (t == _isc.getType<_i64byz7d.TableFloorStatus?>()) {
       return (data != null ? _i64byz7d.TableFloorStatus.fromJson(data) : null)
           as T;
@@ -1109,6 +1193,18 @@ class Protocol extends _isc.SerializationManager {
               .toList()
           as T;
     }
+    if (t == List<_ihy1alcs.PackView>) {
+      return (data as List)
+              .map((e) => deserialize<_ihy1alcs.PackView>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_ir1kads3.PackPublicView>) {
+      return (data as List)
+              .map((e) => deserialize<_ir1kads3.PackPublicView>(e))
+              .toList()
+          as T;
+    }
     if (t == List<_ihz72ioq.VenueTableView>) {
       return (data as List)
               .map((e) => deserialize<_ihz72ioq.VenueTableView>(e))
@@ -1149,6 +1245,7 @@ class Protocol extends _isc.SerializationManager {
       _iccfx1hz.SuperAdminUpdate => 'SuperAdminUpdate',
       _ima36n4q.SuperAdminView => 'SuperAdminView',
       _i4npd3dl.UsernameLoginRequest => 'UsernameLoginRequest',
+      _imz5zx1p.AdminBuildingDetail => 'AdminBuildingDetail',
       _ig4j3dzf.AdminBuildingView => 'AdminBuildingView',
       _i8mj84pm.BuildingCreate => 'BuildingCreate',
       _ip56joo9.BuildingErrorCode => 'BuildingErrorCode',
@@ -1210,6 +1307,14 @@ class Protocol extends _isc.SerializationManager {
       _in19xqkp.OrderItemView => 'OrderItemView',
       _iaqxrbm9.OrderStatus => 'OrderStatus',
       _i5x25q0s.OrderView => 'OrderView',
+      _inombaek.BuildingPackView => 'BuildingPackView',
+      _it41yevh.PackCapabilities => 'PackCapabilities',
+      _i8zaxiah.PackCreate => 'PackCreate',
+      _iop7u0ua.PackErrorCode => 'PackErrorCode',
+      _i2wkabnn.PackException => 'PackException',
+      _iprelrqf.PackPublicView => 'PackPublicView',
+      _icf9vjmf.PackUpdate => 'PackUpdate',
+      _ix8hsdo0.PackView => 'PackView',
       _i64byz7d.TableFloorStatus => 'TableFloorStatus',
       _iuz62fg4.TableListFilter => 'TableListFilter',
       _iui9xd5q.VenueTableCreate => 'VenueTableCreate',
@@ -1277,6 +1382,8 @@ class Protocol extends _isc.SerializationManager {
         return 'SuperAdminView';
       case _i4npd3dl.UsernameLoginRequest():
         return 'UsernameLoginRequest';
+      case _imz5zx1p.AdminBuildingDetail():
+        return 'AdminBuildingDetail';
       case _ig4j3dzf.AdminBuildingView():
         return 'AdminBuildingView';
       case _i8mj84pm.BuildingCreate():
@@ -1399,6 +1506,22 @@ class Protocol extends _isc.SerializationManager {
         return 'OrderStatus';
       case _i5x25q0s.OrderView():
         return 'OrderView';
+      case _inombaek.BuildingPackView():
+        return 'BuildingPackView';
+      case _it41yevh.PackCapabilities():
+        return 'PackCapabilities';
+      case _i8zaxiah.PackCreate():
+        return 'PackCreate';
+      case _iop7u0ua.PackErrorCode():
+        return 'PackErrorCode';
+      case _i2wkabnn.PackException():
+        return 'PackException';
+      case _iprelrqf.PackPublicView():
+        return 'PackPublicView';
+      case _icf9vjmf.PackUpdate():
+        return 'PackUpdate';
+      case _ix8hsdo0.PackView():
+        return 'PackView';
       case _i64byz7d.TableFloorStatus():
         return 'TableFloorStatus';
       case _iuz62fg4.TableListFilter():
@@ -1503,6 +1626,9 @@ class Protocol extends _isc.SerializationManager {
     }
     if (dataClassName == 'UsernameLoginRequest') {
       return deserialize<_i4npd3dl.UsernameLoginRequest>(data['data']);
+    }
+    if (dataClassName == 'AdminBuildingDetail') {
+      return deserialize<_imz5zx1p.AdminBuildingDetail>(data['data']);
     }
     if (dataClassName == 'AdminBuildingView') {
       return deserialize<_ig4j3dzf.AdminBuildingView>(data['data']);
@@ -1686,6 +1812,30 @@ class Protocol extends _isc.SerializationManager {
     }
     if (dataClassName == 'OrderView') {
       return deserialize<_i5x25q0s.OrderView>(data['data']);
+    }
+    if (dataClassName == 'BuildingPackView') {
+      return deserialize<_inombaek.BuildingPackView>(data['data']);
+    }
+    if (dataClassName == 'PackCapabilities') {
+      return deserialize<_it41yevh.PackCapabilities>(data['data']);
+    }
+    if (dataClassName == 'PackCreate') {
+      return deserialize<_i8zaxiah.PackCreate>(data['data']);
+    }
+    if (dataClassName == 'PackErrorCode') {
+      return deserialize<_iop7u0ua.PackErrorCode>(data['data']);
+    }
+    if (dataClassName == 'PackException') {
+      return deserialize<_i2wkabnn.PackException>(data['data']);
+    }
+    if (dataClassName == 'PackPublicView') {
+      return deserialize<_iprelrqf.PackPublicView>(data['data']);
+    }
+    if (dataClassName == 'PackUpdate') {
+      return deserialize<_icf9vjmf.PackUpdate>(data['data']);
+    }
+    if (dataClassName == 'PackView') {
+      return deserialize<_ix8hsdo0.PackView>(data['data']);
     }
     if (dataClassName == 'TableFloorStatus') {
       return deserialize<_i64byz7d.TableFloorStatus>(data['data']);

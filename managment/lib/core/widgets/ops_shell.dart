@@ -13,6 +13,7 @@ import '../di/theme_controller.dart';
 import '../routing/app_routes.dart';
 import '../theme/app_tokens.dart';
 import 'app_controls.dart';
+import 'pack_banner.dart';
 
 /// Persistent operations chrome: slate rail on wide screens; app bar, drawer,
 /// bottom nav (dashboard / tables / orders), and order FAB on compact.
@@ -247,7 +248,7 @@ class _OpsShellState extends ConsumerState<OpsShell> {
             body: Row(
               children: [
                 OpsSideBar(buildingId: buildingId),
-                Expanded(child: widget.child),
+                Expanded(child: _withPackBanner(widget.child)),
               ],
             ),
           );
@@ -317,9 +318,22 @@ class _OpsShellState extends ConsumerState<OpsShell> {
                           ),
                         ],
                 ),
-          body: widget.child,
+          body: _withPackBanner(widget.child, show: !immersiveOrderScreen),
         );
       },
+    );
+  }
+
+  Widget _withPackBanner(Widget child, {bool show = true}) {
+    if (!show) {
+      return child;
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const PackBanner(),
+        Expanded(child: child),
+      ],
     );
   }
 }

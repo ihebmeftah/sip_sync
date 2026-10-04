@@ -1,0 +1,12 @@
+### Replace the editable fields. Code and isSystem stay.
+class: PackUpdate
+fields:
+  id: UuidValue
+  name: String
+  monthlyMillimes: int
+  annualMillimes: int?
+  customerOrderFeeBps: int
+  isPublic: bool
+  isEnabled: bool
+  sortOrder: int
+  capabilities: PackCapabilities

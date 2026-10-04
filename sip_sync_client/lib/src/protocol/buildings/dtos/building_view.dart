@@ -13,6 +13,7 @@
 import 'package:serverpod_client/serverpod_client.dart' as _isc;
 import 'package:sip_sync_client/src/protocol/protocol.dart' as _iozg9o5r;
 import '../../buildings/dtos/strict_mode_step.dart' as _ik04yv2w;
+import '../../packs/dtos/building_pack_view.dart' as _i1961zho;
 
 abstract class BuildingView
     implements _isc.SerializableModel, _isc.ProtocolSerialization {
@@ -38,6 +39,7 @@ abstract class BuildingView
     required this.strictMode,
     required this.strictModeSteps,
     required this.employeeIds,
+    required this.pack,
   });
 
   factory BuildingView({
@@ -62,6 +64,7 @@ abstract class BuildingView
     required bool strictMode,
     required List<_ik04yv2w.StrictModeStep> strictModeSteps,
     required List<_isc.UuidValue> employeeIds,
+    required _i1961zho.BuildingPackView pack,
   }) = _BuildingViewImpl;
 
   factory BuildingView.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -101,6 +104,9 @@ abstract class BuildingView
           ),
       employeeIds: _iozg9o5r.Protocol().deserialize<List<_isc.UuidValue>>(
         jsonSerialization['employeeIds'],
+      ),
+      pack: _iozg9o5r.Protocol().deserialize<_i1961zho.BuildingPackView>(
+        jsonSerialization['pack'],
       ),
     );
   }
@@ -147,6 +153,8 @@ abstract class BuildingView
 
   List<_isc.UuidValue> employeeIds;
 
+  _i1961zho.BuildingPackView pack;
+
   /// Returns a shallow copy of this [BuildingView]
   /// with some or all fields replaced by the given arguments.
   @_isc.useResult
@@ -172,6 +180,7 @@ abstract class BuildingView
     bool? strictMode,
     List<_ik04yv2w.StrictModeStep>? strictModeSteps,
     List<_isc.UuidValue>? employeeIds,
+    _i1961zho.BuildingPackView? pack,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -198,6 +207,7 @@ abstract class BuildingView
       'strictMode': strictMode,
       'strictModeSteps': strictModeSteps.toJson(valueToJson: (v) => v.toJson()),
       'employeeIds': employeeIds.toJson(valueToJson: (v) => v.toJson()),
+      'pack': pack.toJson(),
     };
   }
 
@@ -228,6 +238,7 @@ abstract class BuildingView
         valueToJson: (v) => v.toJsonForProtocol(),
       ),
       'employeeIds': employeeIds.toJson(valueToJson: (v) => v.toJson()),
+      'pack': pack.toJsonForProtocol(),
     };
   }
 
@@ -262,6 +273,7 @@ class _BuildingViewImpl extends BuildingView {
     required bool strictMode,
     required List<_ik04yv2w.StrictModeStep> strictModeSteps,
     required List<_isc.UuidValue> employeeIds,
+    required _i1961zho.BuildingPackView pack,
   }) : super._(
          id: id,
          ownerId: ownerId,
@@ -284,6 +296,7 @@ class _BuildingViewImpl extends BuildingView {
          strictMode: strictMode,
          strictModeSteps: strictModeSteps,
          employeeIds: employeeIds,
+         pack: pack,
        );
 
   /// Returns a shallow copy of this [BuildingView]
@@ -312,6 +325,7 @@ class _BuildingViewImpl extends BuildingView {
     bool? strictMode,
     List<_ik04yv2w.StrictModeStep>? strictModeSteps,
     List<_isc.UuidValue>? employeeIds,
+    _i1961zho.BuildingPackView? pack,
   }) {
     return BuildingView(
       id: id ?? this.id,
@@ -338,6 +352,7 @@ class _BuildingViewImpl extends BuildingView {
           strictModeSteps ??
           this.strictModeSteps.map((e0) => e0.copyWith()).toList(),
       employeeIds: employeeIds ?? this.employeeIds.map((e0) => e0).toList(),
+      pack: pack ?? this.pack.copyWith(),
     );
   }
 }

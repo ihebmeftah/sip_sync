@@ -3,6 +3,7 @@ import 'package:serverpod/serverpod.dart';
 import '../auth/auth_context.dart';
 import '../auth/auth_guard.dart';
 import '../generated/protocol.dart';
+import '../packs/pack_gate.dart';
 
 /// Building-scoped ingredient create / list / restock / delete.
 class IngredientService {
@@ -34,6 +35,17 @@ class IngredientService {
       field: 'threshold',
     );
     await _assertNameAvailable(session, request.buildingId, name);
+    final pack = await PackGate.ofBuilding(session, request.buildingId);
+    PackGate.requireFeature(pack.inventory);
+    final current = await Ingredient.db.count(
+      session,
+      where: (t) => t.buildingId.equals(request.buildingId),
+    );
+    PackGate.requireRoom(
+      max: pack.maxIngredients,
+      current: current,
+      adding: 1,
+    );
 
     final row = await Ingredient.db.insertRow(
       session,
@@ -64,6 +76,8 @@ class IngredientService {
       );
     }
     await _requireBuildingAccess(session, existing.buildingId);
+    final pack = await PackGate.ofBuilding(session, existing.buildingId);
+    PackGate.requireFeature(pack.inventory);
     if (request.quantity <= 0 || request.quantity > 100000000) {
       throw IngredientException(
         message: 'Restock quantity must be greater than 0.',

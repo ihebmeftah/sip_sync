@@ -493,4 +493,10 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get venueTypeBar => 'بار';
+
+  @override
+  String get errorPackLimit => 'بلغت هذه الباقة حدها.';
+
+  @override
+  String get errorPackFeature => 'هذه الباقة لا تشمل ذلك.';
 }

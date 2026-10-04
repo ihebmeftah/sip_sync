@@ -2,6 +2,7 @@ import 'package:serverpod/serverpod.dart';
 
 import '../auth/auth_guard.dart';
 import '../generated/protocol.dart';
+import '../packs/pack_gate.dart';
 
 /// Building-scoped menu article CRUD.
 class MenuArticleService {
@@ -42,6 +43,16 @@ class MenuArticleService {
       request.buildingId,
     );
     await _assertNameAvailable(session, request.buildingId, name);
+    final pack = await PackGate.ofBuilding(session, request.buildingId);
+    final current = await MenuArticle.db.count(
+      session,
+      where: (t) => t.buildingId.equals(request.buildingId),
+    );
+    PackGate.requireRoom(
+      max: pack.maxArticles,
+      current: current,
+      adding: 1,
+    );
 
     final row = await MenuArticle.db.insertRow(
       session,

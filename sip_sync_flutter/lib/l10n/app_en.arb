@@ -184,5 +184,7 @@
   "venueTypeCafe": "Café",
   "venueTypeRestaurant": "Restaurant",
   "venueTypeLounge": "Lounge",
-  "venueTypeBar": "Bar"
+  "venueTypeBar": "Bar",
+  "errorPackLimit": "This plan has reached its limit.",
+  "errorPackFeature": "This plan does not include that."
 }

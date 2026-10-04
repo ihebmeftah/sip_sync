@@ -2,6 +2,7 @@ import 'package:serverpod/serverpod.dart';
 
 import '../auth/auth_guard.dart';
 import '../generated/protocol.dart';
+import '../packs/pack_gate.dart';
 
 /// Optional recipe lines linking articles to ingredients.
 class ArticleCompositionService {
@@ -43,6 +44,8 @@ class ArticleCompositionService {
       );
     }
     await _requireOwnedBuilding(session, ownerId, article.buildingId);
+    final pack = await PackGate.ofBuilding(session, article.buildingId);
+    PackGate.requireFeature(pack.inventory);
     final quantity = _validateQuantity(request.quantity);
     final ingredient = await Ingredient.db.findById(
       session,

@@ -41,6 +41,8 @@ fields:
   menuArticles: List<MenuArticle>?, relation(name=building_menu_articles)
   ingredients: List<Ingredient>?, relation(name=building_ingredients)
   orders: List<VenueOrder>?, relation(name=building_orders)
+  ### Plan this venue is on. Create assigns the free pack.
+  pack: Pack?, relation(name=building_pack, onDelete=Restrict)
 indexes:
   building_owner_idx:
     fields: ownerId

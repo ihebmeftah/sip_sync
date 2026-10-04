@@ -5,10 +5,12 @@ import 'package:shadcn_ui/shadcn_ui.dart';
 
 import '../../features/auth/views/register_view.dart';
 import '../../features/auth/views/sign_in_view.dart';
+import '../../features/buildings/views/building_detail_view.dart';
 import '../../features/buildings/views/buildings_view.dart';
 import '../../features/console/views/console_shell.dart';
 import '../../features/console/views/working_view.dart';
 import '../../features/customers/views/customers_view.dart';
+import '../../features/packs/views/packs_view.dart';
 import '../../features/users/views/users_view.dart';
 import '../../l10n/generated/app_localizations.dart';
 
@@ -36,7 +38,16 @@ class RegisterRoute extends GoRouteData with $RegisterRoute {
     TypedGoRoute<StatsRoute>(path: '/stats', name: 'stats'),
     TypedGoRoute<UsersRoute>(path: '/users', name: 'users'),
     TypedGoRoute<CustomersRoute>(path: '/customers', name: 'customers'),
-    TypedGoRoute<BuildingsRoute>(path: '/buildings', name: 'buildings'),
+    TypedGoRoute<BuildingsRoute>(
+      path: '/buildings',
+      name: 'buildings',
+      routes: [
+        TypedGoRoute<BuildingDetailRoute>(
+          path: ':buildingId',
+          name: 'buildingDetail',
+        ),
+      ],
+    ),
     TypedGoRoute<PacksRoute>(path: '/packs', name: 'packs'),
   ],
 )
@@ -82,12 +93,20 @@ class BuildingsRoute extends GoRouteData with $BuildingsRoute {
       const BuildingsView();
 }
 
+class BuildingDetailRoute extends GoRouteData with $BuildingDetailRoute {
+  const BuildingDetailRoute({required this.buildingId});
+
+  final String buildingId;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return BuildingDetailView(buildingId: buildingId);
+  }
+}
+
 class PacksRoute extends GoRouteData with $PacksRoute {
   const PacksRoute();
 
   @override
-  Widget build(BuildContext context, GoRouterState state) {
-    final l10n = AppLocalizations.of(context)!;
-    return WorkingView(title: l10n.packsTitle, icon: LucideIcons.package);
-  }
+  Widget build(BuildContext context, GoRouterState state) => const PacksView();
 }

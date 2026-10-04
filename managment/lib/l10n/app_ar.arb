@@ -518,5 +518,12 @@
   "accessFlagPrep": "تحضير",
   "accessFlagServe": "تقديم",
   "accessFlagConsultAll": "كل الطلبات",
-  "accessNoFlags": "بدون صلاحيات"
+  "accessNoFlags": "بدون صلاحيات",
+  "packBannerTitle": "الباقة: {name}",
+  "@packBannerTitle": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "packBannerHint": "لتغيير الباقة، تواصل مع فريق الدعم.",
+  "errorPackLimit": "بلغت هذه الباقة حدها.",
+  "errorPackFeature": "هذه الباقة لا تشمل ذلك."
 }

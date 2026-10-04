@@ -6,6 +6,7 @@ import 'src/auth/session_service.dart';
 import 'src/auth/super_admin_auth_endpoint.dart';
 import 'src/cache_busting.dart';
 import 'src/generated/serverpod.dart';
+import 'src/packs/pack_catalog.dart';
 import 'src/seed/dev_seed.dart';
 import 'src/web/routes/app_config_route.dart';
 
@@ -71,6 +72,7 @@ void run(List<String> args) async {
 
   await pod.withSession((session) async {
     await SuperAdminAuthEndpoint().ensureDefaultAdmin(session);
+    await PackCatalog.ensure(session);
     await DevSeed.ensureDemoData(session);
   });
 }

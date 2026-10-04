@@ -45,6 +45,10 @@ import 'package:sip_sync_server/src/generated/orders/dtos/customer_order_summary
     as _ivmn58qf;
 import 'package:sip_sync_server/src/generated/orders/dtos/order_view.dart'
     as _i6r0fe4s;
+import 'package:sip_sync_server/src/generated/packs/dtos/pack_public_view.dart'
+    as _itvm5eqz;
+import 'package:sip_sync_server/src/generated/packs/dtos/pack_view.dart'
+    as _i1rdqyf4;
 import 'package:sip_sync_server/src/generated/tables/dtos/venue_table_view.dart'
     as _i8j8iq89;
 import 'auth/dtos/account_error_code.dart' as _ipvvun4w;
@@ -76,6 +80,7 @@ import 'auth/entity/employee.dart' as _iwpz2vh7;
 import 'auth/entity/owner.dart' as _i00rpu3b;
 import 'auth/entity/password_reset.dart' as _i5m9ixa9;
 import 'auth/entity/super_admin.dart' as _ii4fooib;
+import 'buildings/dtos/admin_building_detail.dart' as _imz5zx1p;
 import 'buildings/dtos/admin_building_view.dart' as _ig4j3dzf;
 import 'buildings/dtos/building_create.dart' as _i8mj84pm;
 import 'buildings/dtos/building_error_code.dart' as _ip56joo9;
@@ -145,6 +150,15 @@ import 'orders/dtos/order_status.dart' as _iaqxrbm9;
 import 'orders/dtos/order_view.dart' as _i5x25q0s;
 import 'orders/entity/venue_order.dart' as _ihouontj;
 import 'orders/entity/venue_order_item.dart' as _ixvoqikw;
+import 'packs/dtos/building_pack_view.dart' as _inombaek;
+import 'packs/dtos/pack_capabilities.dart' as _it41yevh;
+import 'packs/dtos/pack_create.dart' as _i8zaxiah;
+import 'packs/dtos/pack_error_code.dart' as _iop7u0ua;
+import 'packs/dtos/pack_exception.dart' as _i2wkabnn;
+import 'packs/dtos/pack_public_view.dart' as _iprelrqf;
+import 'packs/dtos/pack_update.dart' as _icf9vjmf;
+import 'packs/dtos/pack_view.dart' as _ix8hsdo0;
+import 'packs/entity/pack.dart' as _ixvcqhi5;
 import 'tables/dtos/table_floor_status.dart' as _i64byz7d;
 import 'tables/dtos/table_list_filter.dart' as _iuz62fg4;
 import 'tables/dtos/venue_table_create.dart' as _iui9xd5q;
@@ -182,6 +196,7 @@ export 'auth/entity/employee.dart';
 export 'auth/entity/owner.dart';
 export 'auth/entity/password_reset.dart';
 export 'auth/entity/super_admin.dart';
+export 'buildings/dtos/admin_building_detail.dart';
 export 'buildings/dtos/admin_building_view.dart';
 export 'buildings/dtos/building_create.dart';
 export 'buildings/dtos/building_error_code.dart';
@@ -251,6 +266,15 @@ export 'orders/dtos/order_status.dart';
 export 'orders/dtos/order_view.dart';
 export 'orders/entity/venue_order.dart';
 export 'orders/entity/venue_order_item.dart';
+export 'packs/dtos/building_pack_view.dart';
+export 'packs/dtos/pack_capabilities.dart';
+export 'packs/dtos/pack_create.dart';
+export 'packs/dtos/pack_error_code.dart';
+export 'packs/dtos/pack_exception.dart';
+export 'packs/dtos/pack_public_view.dart';
+export 'packs/dtos/pack_update.dart';
+export 'packs/dtos/pack_view.dart';
+export 'packs/entity/pack.dart';
 export 'tables/dtos/table_floor_status.dart';
 export 'tables/dtos/table_list_filter.dart';
 export 'tables/dtos/venue_table_create.dart';
@@ -606,6 +630,12 @@ class Protocol extends _is.DatabaseSerializationManager {
           isNullable: false,
           dartType: 'DateTime',
         ),
+        _isp.ColumnDefinition(
+          name: 'packId',
+          columnType: _isp.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue',
+        ),
       ],
       foreignKeys: [
         _isp.ForeignKeyDefinition(
@@ -616,6 +646,16 @@ class Protocol extends _is.DatabaseSerializationManager {
           referenceColumns: ['id'],
           onUpdate: _isp.ForeignKeyAction.noAction,
           onDelete: _isp.ForeignKeyAction.cascade,
+          matchType: null,
+        ),
+        _isp.ForeignKeyDefinition(
+          constraintName: 'building_fk_1',
+          columns: ['packId'],
+          referenceTable: 'pack',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.restrict,
           matchType: null,
         ),
       ],
@@ -1400,6 +1440,189 @@ class Protocol extends _is.DatabaseSerializationManager {
       managed: true,
     ),
     _isp.TableDefinition(
+      name: 'pack',
+      dartName: 'Pack',
+      schema: 'public',
+      module: 'sip_sync',
+      columns: [
+        _isp.ColumnDefinition(
+          name: 'id',
+          columnType: _isp.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue?',
+          columnDefault: 'random_v7',
+        ),
+        _isp.ColumnDefinition(
+          name: 'code',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _isp.ColumnDefinition(
+          name: 'name',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _isp.ColumnDefinition(
+          name: 'monthlyMillimes',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _isp.ColumnDefinition(
+          name: 'annualMillimes',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: true,
+          dartType: 'int?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'customerOrderFeeBps',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+          columnDefault: '0',
+        ),
+        _isp.ColumnDefinition(
+          name: 'isPublic',
+          columnType: _isp.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'false',
+        ),
+        _isp.ColumnDefinition(
+          name: 'isEnabled',
+          columnType: _isp.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'true',
+        ),
+        _isp.ColumnDefinition(
+          name: 'isSystem',
+          columnType: _isp.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'false',
+        ),
+        _isp.ColumnDefinition(
+          name: 'sortOrder',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+          columnDefault: '0',
+        ),
+        _isp.ColumnDefinition(
+          name: 'maxEmployees',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: true,
+          dartType: 'int?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'maxTables',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: true,
+          dartType: 'int?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'maxCategories',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: true,
+          dartType: 'int?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'maxArticles',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: true,
+          dartType: 'int?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'maxIngredients',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: true,
+          dartType: 'int?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'customerDiscovery',
+          columnType: _isp.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'true',
+        ),
+        _isp.ColumnDefinition(
+          name: 'tableQr',
+          columnType: _isp.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'true',
+        ),
+        _isp.ColumnDefinition(
+          name: 'customerOrdering',
+          columnType: _isp.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'false',
+        ),
+        _isp.ColumnDefinition(
+          name: 'inventory',
+          columnType: _isp.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'true',
+        ),
+        _isp.ColumnDefinition(
+          name: 'allowAppendingItems',
+          columnType: _isp.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'true',
+        ),
+        _isp.ColumnDefinition(
+          name: 'tableMultiOrder',
+          columnType: _isp.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'false',
+        ),
+        _isp.ColumnDefinition(
+          name: 'strictMode',
+          columnType: _isp.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'false',
+        ),
+        _isp.ColumnDefinition(
+          name: 'customAccessProfiles',
+          columnType: _isp.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'false',
+        ),
+        _isp.ColumnDefinition(
+          name: 'createdAt',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+        ),
+      ],
+      foreignKeys: [],
+      indexes: [
+        _isp.IndexDefinition(
+          indexName: 'pack_code_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'code',
+            ),
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
+    _isp.TableDefinition(
       name: 'password_reset',
       dartName: 'PasswordReset',
       schema: 'public',
@@ -2167,6 +2390,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == _ii4fooib.SuperAdmin) {
       return _ii4fooib.SuperAdmin.fromJson(data) as T;
     }
+    if (t == _imz5zx1p.AdminBuildingDetail) {
+      return _imz5zx1p.AdminBuildingDetail.fromJson(data) as T;
+    }
     if (t == _ig4j3dzf.AdminBuildingView) {
       return _ig4j3dzf.AdminBuildingView.fromJson(data) as T;
     }
@@ -2374,6 +2600,33 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == _ixvoqikw.VenueOrderItem) {
       return _ixvoqikw.VenueOrderItem.fromJson(data) as T;
     }
+    if (t == _inombaek.BuildingPackView) {
+      return _inombaek.BuildingPackView.fromJson(data) as T;
+    }
+    if (t == _it41yevh.PackCapabilities) {
+      return _it41yevh.PackCapabilities.fromJson(data) as T;
+    }
+    if (t == _i8zaxiah.PackCreate) {
+      return _i8zaxiah.PackCreate.fromJson(data) as T;
+    }
+    if (t == _iop7u0ua.PackErrorCode) {
+      return _iop7u0ua.PackErrorCode.fromJson(data) as T;
+    }
+    if (t == _i2wkabnn.PackException) {
+      return _i2wkabnn.PackException.fromJson(data) as T;
+    }
+    if (t == _iprelrqf.PackPublicView) {
+      return _iprelrqf.PackPublicView.fromJson(data) as T;
+    }
+    if (t == _icf9vjmf.PackUpdate) {
+      return _icf9vjmf.PackUpdate.fromJson(data) as T;
+    }
+    if (t == _ix8hsdo0.PackView) {
+      return _ix8hsdo0.PackView.fromJson(data) as T;
+    }
+    if (t == _ixvcqhi5.Pack) {
+      return _ixvcqhi5.Pack.fromJson(data) as T;
+    }
     if (t == _i64byz7d.TableFloorStatus) {
       return _i64byz7d.TableFloorStatus.fromJson(data) as T;
     }
@@ -2524,6 +2777,12 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     if (t == _is.getType<_ii4fooib.SuperAdmin?>()) {
       return (data != null ? _ii4fooib.SuperAdmin.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_imz5zx1p.AdminBuildingDetail?>()) {
+      return (data != null
+              ? _imz5zx1p.AdminBuildingDetail.fromJson(data)
+              : null)
+          as T;
     }
     if (t == _is.getType<_ig4j3dzf.AdminBuildingView?>()) {
       return (data != null ? _ig4j3dzf.AdminBuildingView.fromJson(data) : null)
@@ -2838,6 +3097,38 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == _is.getType<_ixvoqikw.VenueOrderItem?>()) {
       return (data != null ? _ixvoqikw.VenueOrderItem.fromJson(data) : null)
           as T;
+    }
+    if (t == _is.getType<_inombaek.BuildingPackView?>()) {
+      return (data != null ? _inombaek.BuildingPackView.fromJson(data) : null)
+          as T;
+    }
+    if (t == _is.getType<_it41yevh.PackCapabilities?>()) {
+      return (data != null ? _it41yevh.PackCapabilities.fromJson(data) : null)
+          as T;
+    }
+    if (t == _is.getType<_i8zaxiah.PackCreate?>()) {
+      return (data != null ? _i8zaxiah.PackCreate.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_iop7u0ua.PackErrorCode?>()) {
+      return (data != null ? _iop7u0ua.PackErrorCode.fromJson(data) : null)
+          as T;
+    }
+    if (t == _is.getType<_i2wkabnn.PackException?>()) {
+      return (data != null ? _i2wkabnn.PackException.fromJson(data) : null)
+          as T;
+    }
+    if (t == _is.getType<_iprelrqf.PackPublicView?>()) {
+      return (data != null ? _iprelrqf.PackPublicView.fromJson(data) : null)
+          as T;
+    }
+    if (t == _is.getType<_icf9vjmf.PackUpdate?>()) {
+      return (data != null ? _icf9vjmf.PackUpdate.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_ix8hsdo0.PackView?>()) {
+      return (data != null ? _ix8hsdo0.PackView.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_ixvcqhi5.Pack?>()) {
+      return (data != null ? _ixvcqhi5.Pack.fromJson(data) : null) as T;
     }
     if (t == _is.getType<_i64byz7d.TableFloorStatus?>()) {
       return (data != null ? _i64byz7d.TableFloorStatus.fromJson(data) : null)
@@ -3159,6 +3450,18 @@ class Protocol extends _is.DatabaseSerializationManager {
               .toList()
           as T;
     }
+    if (t == List<_i1rdqyf4.PackView>) {
+      return (data as List)
+              .map((e) => deserialize<_i1rdqyf4.PackView>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_itvm5eqz.PackPublicView>) {
+      return (data as List)
+              .map((e) => deserialize<_itvm5eqz.PackPublicView>(e))
+              .toList()
+          as T;
+    }
     if (t == List<_i8j8iq89.VenueTableView>) {
       return (data as List)
               .map((e) => deserialize<_i8j8iq89.VenueTableView>(e))
@@ -3208,6 +3511,7 @@ class Protocol extends _is.DatabaseSerializationManager {
       _i00rpu3b.Owner => 'Owner',
       _i5m9ixa9.PasswordReset => 'PasswordReset',
       _ii4fooib.SuperAdmin => 'SuperAdmin',
+      _imz5zx1p.AdminBuildingDetail => 'AdminBuildingDetail',
       _ig4j3dzf.AdminBuildingView => 'AdminBuildingView',
       _i8mj84pm.BuildingCreate => 'BuildingCreate',
       _ip56joo9.BuildingErrorCode => 'BuildingErrorCode',
@@ -3277,6 +3581,15 @@ class Protocol extends _is.DatabaseSerializationManager {
       _i5x25q0s.OrderView => 'OrderView',
       _ihouontj.VenueOrder => 'VenueOrder',
       _ixvoqikw.VenueOrderItem => 'VenueOrderItem',
+      _inombaek.BuildingPackView => 'BuildingPackView',
+      _it41yevh.PackCapabilities => 'PackCapabilities',
+      _i8zaxiah.PackCreate => 'PackCreate',
+      _iop7u0ua.PackErrorCode => 'PackErrorCode',
+      _i2wkabnn.PackException => 'PackException',
+      _iprelrqf.PackPublicView => 'PackPublicView',
+      _icf9vjmf.PackUpdate => 'PackUpdate',
+      _ix8hsdo0.PackView => 'PackView',
+      _ixvcqhi5.Pack => 'Pack',
       _i64byz7d.TableFloorStatus => 'TableFloorStatus',
       _iuz62fg4.TableListFilter => 'TableListFilter',
       _iui9xd5q.VenueTableCreate => 'VenueTableCreate',
@@ -3357,6 +3670,8 @@ class Protocol extends _is.DatabaseSerializationManager {
         return 'PasswordReset';
       case _ii4fooib.SuperAdmin():
         return 'SuperAdmin';
+      case _imz5zx1p.AdminBuildingDetail():
+        return 'AdminBuildingDetail';
       case _ig4j3dzf.AdminBuildingView():
         return 'AdminBuildingView';
       case _i8mj84pm.BuildingCreate():
@@ -3495,6 +3810,24 @@ class Protocol extends _is.DatabaseSerializationManager {
         return 'VenueOrder';
       case _ixvoqikw.VenueOrderItem():
         return 'VenueOrderItem';
+      case _inombaek.BuildingPackView():
+        return 'BuildingPackView';
+      case _it41yevh.PackCapabilities():
+        return 'PackCapabilities';
+      case _i8zaxiah.PackCreate():
+        return 'PackCreate';
+      case _iop7u0ua.PackErrorCode():
+        return 'PackErrorCode';
+      case _i2wkabnn.PackException():
+        return 'PackException';
+      case _iprelrqf.PackPublicView():
+        return 'PackPublicView';
+      case _icf9vjmf.PackUpdate():
+        return 'PackUpdate';
+      case _ix8hsdo0.PackView():
+        return 'PackView';
+      case _ixvcqhi5.Pack():
+        return 'Pack';
       case _i64byz7d.TableFloorStatus():
         return 'TableFloorStatus';
       case _iuz62fg4.TableListFilter():
@@ -3623,6 +3956,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     if (dataClassName == 'SuperAdmin') {
       return deserialize<_ii4fooib.SuperAdmin>(data['data']);
+    }
+    if (dataClassName == 'AdminBuildingDetail') {
+      return deserialize<_imz5zx1p.AdminBuildingDetail>(data['data']);
     }
     if (dataClassName == 'AdminBuildingView') {
       return deserialize<_ig4j3dzf.AdminBuildingView>(data['data']);
@@ -3831,6 +4167,33 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (dataClassName == 'VenueOrderItem') {
       return deserialize<_ixvoqikw.VenueOrderItem>(data['data']);
     }
+    if (dataClassName == 'BuildingPackView') {
+      return deserialize<_inombaek.BuildingPackView>(data['data']);
+    }
+    if (dataClassName == 'PackCapabilities') {
+      return deserialize<_it41yevh.PackCapabilities>(data['data']);
+    }
+    if (dataClassName == 'PackCreate') {
+      return deserialize<_i8zaxiah.PackCreate>(data['data']);
+    }
+    if (dataClassName == 'PackErrorCode') {
+      return deserialize<_iop7u0ua.PackErrorCode>(data['data']);
+    }
+    if (dataClassName == 'PackException') {
+      return deserialize<_i2wkabnn.PackException>(data['data']);
+    }
+    if (dataClassName == 'PackPublicView') {
+      return deserialize<_iprelrqf.PackPublicView>(data['data']);
+    }
+    if (dataClassName == 'PackUpdate') {
+      return deserialize<_icf9vjmf.PackUpdate>(data['data']);
+    }
+    if (dataClassName == 'PackView') {
+      return deserialize<_ix8hsdo0.PackView>(data['data']);
+    }
+    if (dataClassName == 'Pack') {
+      return deserialize<_ixvcqhi5.Pack>(data['data']);
+    }
     if (dataClassName == 'TableFloorStatus') {
       return deserialize<_i64byz7d.TableFloorStatus>(data['data']);
     }
@@ -3924,6 +4287,8 @@ class Protocol extends _is.DatabaseSerializationManager {
         return _ihouontj.VenueOrder.t;
       case _ixvoqikw.VenueOrderItem:
         return _ixvoqikw.VenueOrderItem.t;
+      case _ixvcqhi5.Pack:
+        return _ixvcqhi5.Pack.t;
       case _ik40dtuz.VenueTable:
         return _ik40dtuz.VenueTable.t;
     }

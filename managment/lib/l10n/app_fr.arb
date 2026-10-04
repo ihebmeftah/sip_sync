@@ -518,5 +518,12 @@
   "accessFlagPrep": "Préparer",
   "accessFlagServe": "Servir",
   "accessFlagConsultAll": "Toutes",
-  "accessNoFlags": "Aucune permission"
+  "accessNoFlags": "Aucune permission",
+  "packBannerTitle": "Pack : {name}",
+  "@packBannerTitle": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "packBannerHint": "Pour changer de pack, contactez l'équipe support.",
+  "errorPackLimit": "Ce pack a atteint sa limite.",
+  "errorPackFeature": "Ce pack n'inclut pas cela."
 }

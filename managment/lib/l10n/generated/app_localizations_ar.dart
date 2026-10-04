@@ -1401,4 +1401,18 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get accessNoFlags => 'بدون صلاحيات';
+
+  @override
+  String packBannerTitle(String name) {
+    return 'الباقة: $name';
+  }
+
+  @override
+  String get packBannerHint => 'لتغيير الباقة، تواصل مع فريق الدعم.';
+
+  @override
+  String get errorPackLimit => 'بلغت هذه الباقة حدها.';
+
+  @override
+  String get errorPackFeature => 'هذه الباقة لا تشمل ذلك.';
 }

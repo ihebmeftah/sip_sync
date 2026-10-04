@@ -4,6 +4,7 @@ import '../auth/auth_support.dart';
 import '../buildings/strict_mode.dart';
 import '../employee_access/default_employee_access.dart';
 import '../generated/protocol.dart';
+import '../packs/pack_catalog.dart';
 
 /// Idempotent demo data for local development.
 ///
@@ -548,10 +549,12 @@ class DevSeed {
           ),
         );
 
+    final free = await PackCatalog.requireFree(session);
     final building = await Building.db.insertRow(
       session,
       Building(
         ownerId: savedOwner.id!,
+        packId: free.id!,
         name: buildingName,
         type: buildingType,
         address: address,

@@ -1,6 +1,7 @@
 import 'package:serverpod/serverpod.dart';
 
 import '../generated/protocol.dart';
+import '../packs/pack_gate.dart';
 import 'auth_guard.dart';
 import 'auth_support.dart';
 
@@ -46,6 +47,16 @@ class EmployeeEndpoint extends Endpoint {
       session,
       accessId: request.accessId,
       buildingId: request.buildingId,
+    );
+    final pack = await PackGate.ofBuilding(session, request.buildingId);
+    final staff = await Employee.db.count(
+      session,
+      where: (t) => t.buildingId.equals(request.buildingId),
+    );
+    PackGate.requireRoom(
+      max: pack.maxEmployees,
+      current: staff,
+      adding: 1,
     );
 
     final phoneHit = await Employee.db.findFirstRow(

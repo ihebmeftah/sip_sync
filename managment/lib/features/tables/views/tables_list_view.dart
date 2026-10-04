@@ -51,6 +51,13 @@ class _TablesListViewState extends ConsumerState<TablesListView> {
 
   Future<void> _exportQrPdf() async {
     final l10n = AppLocalizations.of(context)!;
+    final pack = ref.read(buildingSelectionProvider)?.pack;
+    if (pack != null && !pack.tableQr) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.errorPackFeature)));
+      return;
+    }
     setState(() => _exportingQr = true);
     try {
       final tables = await ref

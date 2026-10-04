@@ -1,5 +1,6 @@
 import 'package:serverpod/serverpod.dart';
 import 'package:sip_sync_server/src/generated/protocol.dart';
+import 'package:sip_sync_server/src/packs/pack_catalog.dart';
 import 'package:test/test.dart';
 
 import 'test_tools/serverpod_test_tools.dart';
@@ -95,6 +96,11 @@ void main() {
         );
         expect(building.ownerId, ownerAuth.owner!.id);
         expect(building.employeeIds, isEmpty);
+        await PackCatalog.assignCode(
+          sessionBuilder.build(),
+          building.id,
+          'floor',
+        );
 
         final access = await endpoints.employeeAccess.create(
           ownerSession,
@@ -180,11 +186,16 @@ void main() {
           strictModeSteps: [],
         ),
       );
+      await PackCatalog.assignCode(
+        sessionBuilder.build(),
+        building.id,
+        'floor',
+      );
       final access = await endpoints.employeeAccess.create(
         ownerSession,
         EmployeeAccessCreate(
           buildingId: building.id,
-          name: 'Waiter',
+          name: 'Host',
           orderCreation: true,
           orderPayment: false,
           cancelOrder: false,

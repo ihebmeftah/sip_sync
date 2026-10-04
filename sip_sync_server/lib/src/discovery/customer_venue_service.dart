@@ -97,8 +97,14 @@ class CustomerVenueService {
   }
 
   Future<Building> _building(Session session, UuidValue buildingId) async {
-    final building = await Building.db.findById(session, buildingId);
-    if (building == null || building.id == null) {
+    final building = await Building.db.findById(
+      session,
+      buildingId,
+      include: Building.include(pack: Pack.include()),
+    );
+    if (building == null ||
+        building.id == null ||
+        building.pack?.customerDiscovery != true) {
       throw BuildingException(
         message: 'Venue not found.',
         code: BuildingErrorCode.notFound,
@@ -146,6 +152,12 @@ class CustomerVenueService {
       );
     }
     final building = await _building(session, buildingId);
+    if (building.pack?.tableQr != true) {
+      throw BuildingException(
+        message: 'Table not found.',
+        code: BuildingErrorCode.notFound,
+      );
+    }
     final table = await VenueTable.db.findById(session, tableId);
     final matches =
         table != null &&

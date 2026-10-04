@@ -4,6 +4,7 @@ import '../auth/auth_context.dart';
 import '../auth/auth_guard.dart';
 import '../buildings/strict_mode.dart';
 import '../generated/protocol.dart';
+import '../packs/pack_gate.dart';
 
 /// Create / list / status updates for building orders.
 class OrderService {
@@ -115,6 +116,8 @@ class OrderService {
     CustomerOrderPlace request,
   ) async {
     final ctx = _requireCustomer(session);
+    final pack = await PackGate.ofBuilding(session, request.buildingId);
+    PackGate.requireFeature(pack.customerOrdering);
     final lines = _customerLines(request.items);
     final table = await _requireActiveTable(
       session,
@@ -279,6 +282,9 @@ class OrderService {
         code: OrderErrorCode.invalidStatus,
       );
     }
+    final pack = await PackGate.ofBuilding(session, order.buildingId);
+    PackGate.requireFeature(pack.customerOrdering);
+    PackGate.requireFeature(pack.allowAppendingItems);
     final building = await Building.db.findById(session, order.buildingId);
     if (building == null) {
       throw OrderException(
@@ -335,6 +341,8 @@ class OrderService {
         code: OrderErrorCode.appendNotAllowed,
       );
     }
+    final pack = await PackGate.ofBuilding(session, order.buildingId);
+    PackGate.requireFeature(pack.allowAppendingItems);
     final lines = _validateLines(request.items);
     final articles = await _resolveArticles(
       session,

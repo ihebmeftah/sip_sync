@@ -1,0 +1,4 @@
+exception: PackException
+fields:
+  message: String
+  code: PackErrorCode

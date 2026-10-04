@@ -21,6 +21,7 @@ import '../../menu/entity/ingredient.dart' as _ixki5cxr;
 import '../../menu/entity/menu_article.dart' as _is7gdyz6;
 import '../../menu/entity/menu_category.dart' as _illkjvef;
 import '../../orders/entity/venue_order.dart' as _iwamn8sj;
+import '../../packs/entity/pack.dart' as _iqwmqtub;
 import '../../tables/entity/venue_table.dart' as _ilcfc7kr;
 
 /// A café, restaurant, lounge, bar, or custom venue owned by one owner.
@@ -56,6 +57,8 @@ abstract class Building
     this.menuArticles,
     this.ingredients,
     this.orders,
+    required this.packId,
+    this.pack,
   }) : tableMultiOrder = tableMultiOrder ?? false,
        allowAppendingItemsToOrder = allowAppendingItemsToOrder ?? true,
        strictMode = strictMode ?? false,
@@ -91,6 +94,8 @@ abstract class Building
     List<_is7gdyz6.MenuArticle>? menuArticles,
     List<_ixki5cxr.Ingredient>? ingredients,
     List<_iwamn8sj.VenueOrder>? orders,
+    required _is.UuidValue packId,
+    _iqwmqtub.Pack? pack,
   }) = _BuildingImpl;
 
   factory Building.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -178,6 +183,12 @@ abstract class Building
           : _iaib1p48.Protocol().deserialize<List<_iwamn8sj.VenueOrder>>(
               jsonSerialization['orders'],
             ),
+      packId: _is.UuidValueJsonExtension.fromJson(jsonSerialization['packId']),
+      pack: jsonSerialization['pack'] == null
+          ? null
+          : _iaib1p48.Protocol().deserialize<_iqwmqtub.Pack>(
+              jsonSerialization['pack'],
+            ),
     );
   }
 
@@ -254,6 +265,11 @@ abstract class Building
 
   List<_iwamn8sj.VenueOrder>? orders;
 
+  _is.UuidValue packId;
+
+  /// Plan this venue is on. Create assigns the free pack.
+  _iqwmqtub.Pack? pack;
+
   @override
   _is.Table<_is.UuidValue?> get table => t;
 
@@ -290,6 +306,8 @@ abstract class Building
     List<_is7gdyz6.MenuArticle>? menuArticles,
     List<_ixki5cxr.Ingredient>? ingredients,
     List<_iwamn8sj.VenueOrder>? orders,
+    _is.UuidValue? packId,
+    _iqwmqtub.Pack? pack,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -335,6 +353,8 @@ abstract class Building
         'ingredients': ingredients?.toJson(valueToJson: (v) => v.toJson()),
       if (orders != null)
         'orders': orders?.toJson(valueToJson: (v) => v.toJson()),
+      'packId': packId.toJson(),
+      if (pack != null) 'pack': pack?.toJson(),
     };
   }
 
@@ -352,6 +372,7 @@ abstract class Building
     _is7gdyz6.MenuArticleIncludeList? menuArticles,
     _ixki5cxr.IngredientIncludeList? ingredients,
     _iwamn8sj.VenueOrderIncludeList? orders,
+    _iqwmqtub.PackInclude? pack,
   }) {
     return BuildingInclude._(
       owner: owner,
@@ -362,6 +383,7 @@ abstract class Building
       menuArticles: menuArticles,
       ingredients: ingredients,
       orders: orders,
+      pack: pack,
     );
   }
 
@@ -422,6 +444,8 @@ class _BuildingImpl extends Building {
     List<_is7gdyz6.MenuArticle>? menuArticles,
     List<_ixki5cxr.Ingredient>? ingredients,
     List<_iwamn8sj.VenueOrder>? orders,
+    required _is.UuidValue packId,
+    _iqwmqtub.Pack? pack,
   }) : super._(
          id: id,
          ownerId: ownerId,
@@ -452,6 +476,8 @@ class _BuildingImpl extends Building {
          menuArticles: menuArticles,
          ingredients: ingredients,
          orders: orders,
+         packId: packId,
+         pack: pack,
        );
 
   /// Returns a shallow copy of this [Building]
@@ -488,6 +514,8 @@ class _BuildingImpl extends Building {
     Object? menuArticles = _Undefined,
     Object? ingredients = _Undefined,
     Object? orders = _Undefined,
+    _is.UuidValue? packId,
+    Object? pack = _Undefined,
   }) {
     return Building(
       id: id is _is.UuidValue? ? id : this.id,
@@ -536,6 +564,8 @@ class _BuildingImpl extends Building {
       orders: orders is List<_iwamn8sj.VenueOrder>?
           ? orders
           : this.orders?.map((e0) => e0.copyWith()).toList(),
+      packId: packId ?? this.packId,
+      pack: pack is _iqwmqtub.Pack? ? pack : this.pack?.copyWith(),
     );
   }
 }
@@ -650,6 +680,12 @@ class BuildingUpdateTable extends _is.UpdateTable<BuildingTable> {
         table.createdAt,
         value,
       );
+
+  _is.ColumnValue<_is.UuidValue, _is.UuidValue> packId(_is.UuidValue value) =>
+      _is.ColumnValue(
+        table.packId,
+        value,
+      );
 }
 
 class BuildingTable extends _is.Table<_is.UuidValue?> {
@@ -733,6 +769,10 @@ class BuildingTable extends _is.Table<_is.UuidValue?> {
     );
     createdAt = _is.ColumnDateTime(
       'createdAt',
+      this,
+    );
+    packId = _is.ColumnUuid(
+      'packId',
       this,
     );
   }
@@ -819,6 +859,11 @@ class BuildingTable extends _is.Table<_is.UuidValue?> {
   _iwamn8sj.VenueOrderTable? ___orders;
 
   _is.ManyRelation<_iwamn8sj.VenueOrderTable>? _orders;
+
+  late final _is.ColumnUuid packId;
+
+  /// Plan this venue is on. Create assigns the free pack.
+  _iqwmqtub.PackTable? _pack;
 
   _i2wy11ca.OwnerTable get owner {
     if (_owner != null) return _owner!;
@@ -922,6 +967,19 @@ class BuildingTable extends _is.Table<_is.UuidValue?> {
           _iwamn8sj.VenueOrderTable(tableRelation: foreignTableRelation),
     );
     return ___orders!;
+  }
+
+  _iqwmqtub.PackTable get pack {
+    if (_pack != null) return _pack!;
+    _pack = _is.createRelationTable(
+      relationFieldName: 'pack',
+      field: Building.t.packId,
+      foreignField: _iqwmqtub.Pack.t.id,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _iqwmqtub.PackTable(tableRelation: foreignTableRelation),
+    );
+    return _pack!;
   }
 
   _is.ManyRelation<_ie30fksv.EmployeeTable> get employees {
@@ -1080,6 +1138,7 @@ class BuildingTable extends _is.Table<_is.UuidValue?> {
     strictMode,
     strictModeSteps,
     createdAt,
+    packId,
   ];
 
   @override
@@ -1108,6 +1167,9 @@ class BuildingTable extends _is.Table<_is.UuidValue?> {
     if (relationField == 'orders') {
       return __orders;
     }
+    if (relationField == 'pack') {
+      return pack;
+    }
     return null;
   }
 }
@@ -1122,6 +1184,7 @@ class BuildingInclude extends _is.IncludeObject {
     _is7gdyz6.MenuArticleIncludeList? menuArticles,
     _ixki5cxr.IngredientIncludeList? ingredients,
     _iwamn8sj.VenueOrderIncludeList? orders,
+    _iqwmqtub.PackInclude? pack,
   }) {
     _owner = owner;
     _employees = employees;
@@ -1131,6 +1194,7 @@ class BuildingInclude extends _is.IncludeObject {
     _menuArticles = menuArticles;
     _ingredients = ingredients;
     _orders = orders;
+    _pack = pack;
   }
 
   _i2wy11ca.OwnerInclude? _owner;
@@ -1149,6 +1213,8 @@ class BuildingInclude extends _is.IncludeObject {
 
   _iwamn8sj.VenueOrderIncludeList? _orders;
 
+  _iqwmqtub.PackInclude? _pack;
+
   @override
   Map<String, _is.Include?> get includes => {
     'owner': _owner,
@@ -1159,6 +1225,7 @@ class BuildingInclude extends _is.IncludeObject {
     'menuArticles': _menuArticles,
     'ingredients': _ingredients,
     'orders': _orders,
+    'pack': _pack,
   };
 
   @override
@@ -1790,6 +1857,29 @@ class BuildingAttachRowRepository {
     await session.db.updateRow<Building>(
       $building,
       columns: [Building.t.ownerId],
+      transaction: transaction,
+    );
+  }
+
+  /// Creates a relation between the given [Building] and [Pack]
+  /// by setting the [Building]'s foreign key `packId` to refer to the [Pack].
+  Future<void> pack(
+    _is.DatabaseSession session,
+    Building building,
+    _iqwmqtub.Pack pack, {
+    _is.Transaction? transaction,
+  }) async {
+    if (building.id == null) {
+      throw ArgumentError.notNull('building.id');
+    }
+    if (pack.id == null) {
+      throw ArgumentError.notNull('pack.id');
+    }
+
+    var $building = building.copyWith(packId: pack.id);
+    await session.db.updateRow<Building>(
+      $building,
+      columns: [Building.t.packId],
       transaction: transaction,
     );
   }

@@ -1,0 +1,12 @@
+### New catalog row. The server assigns the id and never marks it system.
+class: PackCreate
+fields:
+  code: String
+  name: String
+  monthlyMillimes: int
+  annualMillimes: int?
+  customerOrderFeeBps: int
+  isPublic: bool
+  isEnabled: bool
+  sortOrder: int
+  capabilities: PackCapabilities

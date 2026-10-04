@@ -2,6 +2,7 @@ import 'package:serverpod/serverpod.dart';
 
 import '../auth/auth_guard.dart';
 import '../generated/protocol.dart';
+import '../packs/pack_gate.dart';
 
 /// Owner CRUD for named employee access profiles in a building.
 class EmployeeAccessService {
@@ -43,6 +44,8 @@ class EmployeeAccessService {
     await _requireOwnedBuilding(session, ownerId, request.buildingId);
     final name = _validateName(request.name);
     await _assertNameAvailable(session, request.buildingId, name);
+    final pack = await PackGate.ofBuilding(session, request.buildingId);
+    PackGate.requireFeature(pack.customAccessProfiles);
 
     final row = await EmployeeAccess.db.insertRow(
       session,

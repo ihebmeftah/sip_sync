@@ -27,6 +27,17 @@ Failure mapError(Object error) {
       AccountErrorCode.cannotDisableSelf => 'errorGeneric',
     });
   }
+  if (error is PackException) {
+    return Failure(switch (error.code) {
+      PackErrorCode.invalidInput => 'errorInvalidInput',
+      PackErrorCode.notFound => 'errorNotFound',
+      PackErrorCode.codeTaken => 'errorGeneric',
+      PackErrorCode.cannotDeleteSystemPack => 'errorGeneric',
+      PackErrorCode.packInUse => 'errorGeneric',
+      PackErrorCode.limitReached => 'errorPackLimit',
+      PackErrorCode.featureOff => 'errorPackFeature',
+    });
+  }
   if (error is BuildingException) {
     return Failure(switch (error.code) {
       BuildingErrorCode.invalidInput => 'errorInvalidInput',
@@ -133,6 +144,8 @@ String lookupError(dynamic l10n, String key) {
     'errorAccessNameTaken' => l10n.errorAccessNameTaken,
     'errorAccessInUse' => l10n.errorAccessInUse,
     'errorCannotReachServer' => l10n.errorCannotReachServer,
+    'errorPackLimit' => l10n.errorPackLimit,
+    'errorPackFeature' => l10n.errorPackFeature,
     _ => l10n.errorGeneric,
   };
 }

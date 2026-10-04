@@ -57,6 +57,8 @@ import 'package:sip_sync_client/src/protocol/auth/dtos/super_admin_view.dart'
     as _ia930tyq;
 import 'package:sip_sync_client/src/protocol/auth/dtos/username_login_request.dart'
     as _ijt6q2rq;
+import 'package:sip_sync_client/src/protocol/buildings/dtos/admin_building_detail.dart'
+    as _ig0c1d2c;
 import 'package:sip_sync_client/src/protocol/buildings/dtos/admin_building_view.dart'
     as _icgw8yx3;
 import 'package:sip_sync_client/src/protocol/buildings/dtos/building_create.dart'
@@ -123,6 +125,14 @@ import 'package:sip_sync_client/src/protocol/orders/dtos/order_status.dart'
     as _iqp2kjae;
 import 'package:sip_sync_client/src/protocol/orders/dtos/order_view.dart'
     as _i5f9osh7;
+import 'package:sip_sync_client/src/protocol/packs/dtos/pack_create.dart'
+    as _iuhtf04l;
+import 'package:sip_sync_client/src/protocol/packs/dtos/pack_public_view.dart'
+    as _ir1kads3;
+import 'package:sip_sync_client/src/protocol/packs/dtos/pack_update.dart'
+    as _i8gbceh6;
+import 'package:sip_sync_client/src/protocol/packs/dtos/pack_view.dart'
+    as _ihy1alcs;
 import 'package:sip_sync_client/src/protocol/tables/dtos/table_list_filter.dart'
     as _izki6gkh;
 import 'package:sip_sync_client/src/protocol/tables/dtos/venue_table_create.dart'
@@ -476,6 +486,28 @@ class EndpointBuilding extends _isc.EndpointRef {
         'listAll',
         {},
       );
+
+  /// Venue, pack, counts, and platform gain. Super admin only.
+  _ida.Future<_ig0c1d2c.AdminBuildingDetail> adminDetail(
+    _isc.UuidValue buildingId,
+  ) => caller.callServerEndpoint<_ig0c1d2c.AdminBuildingDetail>(
+    'building',
+    'adminDetail',
+    {'buildingId': buildingId},
+  );
+
+  /// Moves the venue onto an enabled pack. Super admin only.
+  _ida.Future<_ig0c1d2c.AdminBuildingDetail> assignPack(
+    _isc.UuidValue buildingId,
+    _isc.UuidValue packId,
+  ) => caller.callServerEndpoint<_ig0c1d2c.AdminBuildingDetail>(
+    'building',
+    'assignPack',
+    {
+      'buildingId': buildingId,
+      'packId': packId,
+    },
+  );
 
   _ida.Future<_ik35q5v8.BuildingView> get(_isc.UuidValue buildingId) =>
       caller.callServerEndpoint<_ik35q5v8.BuildingView>(
@@ -948,6 +980,55 @@ class EndpointOrder extends _isc.EndpointRef {
       );
 }
 
+/// Catalog of commercial packs. Writes are super-admin only.
+/// {@category Endpoint}
+class EndpointPack extends _isc.EndpointRef {
+  EndpointPack(_isc.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'pack';
+
+  /// Every pack, including private and disabled. Super admin only.
+  _ida.Future<List<_ihy1alcs.PackView>> list() =>
+      caller.callServerEndpoint<List<_ihy1alcs.PackView>>(
+        'pack',
+        'list',
+        {},
+      );
+
+  /// Enabled public packs for the apps. Any signed-in actor.
+  _ida.Future<List<_ir1kads3.PackPublicView>> listPublic() =>
+      caller.callServerEndpoint<List<_ir1kads3.PackPublicView>>(
+        'pack',
+        'listPublic',
+        {},
+      );
+
+  /// Creates a pack. [PackCreate.code] is stored lowercase and must be unique.
+  _ida.Future<_ihy1alcs.PackView> create(_iuhtf04l.PackCreate request) =>
+      caller.callServerEndpoint<_ihy1alcs.PackView>(
+        'pack',
+        'create',
+        {'request': request},
+      );
+
+  /// Updates prices, flags, and capabilities.
+  _ida.Future<_ihy1alcs.PackView> update(_i8gbceh6.PackUpdate request) =>
+      caller.callServerEndpoint<_ihy1alcs.PackView>(
+        'pack',
+        'update',
+        {'request': request},
+      );
+
+  /// Deletes a pack that is not the system free plan and that no venue uses.
+  _ida.Future<void> delete(_isc.UuidValue id) =>
+      caller.callServerEndpoint<void>(
+        'pack',
+        'delete',
+        {'id': id},
+      );
+}
+
 /// Floor table RPC for a building.
 /// {@category Endpoint}
 class EndpointVenueTable extends _isc.EndpointRef {
@@ -1044,6 +1125,7 @@ class Client extends _isc.ServerpodClientShared {
     menuCategory = EndpointMenuCategory(this);
     customerOrder = EndpointCustomerOrder(this);
     order = EndpointOrder(this);
+    pack = EndpointPack(this);
     venueTable = EndpointVenueTable(this);
     modules = Modules(this);
   }
@@ -1080,6 +1162,8 @@ class Client extends _isc.ServerpodClientShared {
 
   late final EndpointOrder order;
 
+  late final EndpointPack pack;
+
   late final EndpointVenueTable venueTable;
 
   late final Modules modules;
@@ -1102,6 +1186,7 @@ class Client extends _isc.ServerpodClientShared {
     'menuCategory': menuCategory,
     'customerOrder': customerOrder,
     'order': order,
+    'pack': pack,
     'venueTable': venueTable,
   };
 

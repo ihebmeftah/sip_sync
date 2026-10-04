@@ -1,0 +1,15 @@
+### Admin catalog row. Grants are not stored; a new venue starts on the free pack.
+class: PackView
+fields:
+  id: UuidValue
+  code: String
+  name: String
+  monthlyMillimes: int
+  annualMillimes: int?
+  customerOrderFeeBps: int
+  isPublic: bool
+  isEnabled: bool
+  isSystem: bool
+  sortOrder: int
+  capabilities: PackCapabilities
+  createdAt: DateTime

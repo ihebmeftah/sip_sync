@@ -19,6 +19,23 @@ class BuildingEndpoint extends Endpoint {
     return _buildings.listAll(session);
   }
 
+  /// Venue, pack, counts, and platform gain. Super admin only.
+  Future<AdminBuildingDetail> adminDetail(
+    Session session,
+    UuidValue buildingId,
+  ) {
+    return _buildings.adminDetail(session, buildingId);
+  }
+
+  /// Moves the venue onto an enabled pack. Super admin only.
+  Future<AdminBuildingDetail> assignPack(
+    Session session,
+    UuidValue buildingId,
+    UuidValue packId,
+  ) {
+    return _buildings.assignPack(session, buildingId, packId);
+  }
+
   Future<BuildingView> get(Session session, UuidValue buildingId) {
     return _buildings.get(session, buildingId: buildingId);
   }
