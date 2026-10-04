@@ -8,6 +8,7 @@ import '../../../core/errors/error_mapper.dart';
 import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
+import '../../../core/widgets/app_loader.dart';
 import '../../../core/widgets/list_page_bar.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../console/views/console_shell.dart';
@@ -55,7 +56,7 @@ class _BuildingsViewState extends ConsumerState<BuildingsView> {
         children: [
           _filters(context, l10n, theme),
           buildings.when(
-            loading: () => const LinearProgressIndicator(),
+            loading: () => const AppScreenLoader(),
             error: (error, _) => Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -149,7 +150,7 @@ class _BuildingsViewState extends ConsumerState<BuildingsView> {
               }
               final packs = snapshot.data;
               if (packs == null) {
-                return const LinearProgressIndicator();
+                return const AppScreenLoader();
               }
               final ordered = [...packs]
                 ..sort((a, b) => a.name.compareTo(b.name));

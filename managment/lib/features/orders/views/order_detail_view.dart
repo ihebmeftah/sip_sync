@@ -9,6 +9,7 @@ import '../../../core/errors/error_mapper.dart';
 import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
+import '../../../core/widgets/app_loader.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../view_models/order_draft_view_model.dart';
 import '../view_models/orders_view_model.dart';
@@ -182,7 +183,7 @@ class _OrderDetailViewState extends ConsumerState<OrderDetailView> {
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: AppBreakpoints.pageMax),
           child: async.when(
-            loading: () => const LinearProgressIndicator(),
+            loading: () => const AppScreenLoader(),
             error: (error, _) => Padding(
               padding: const EdgeInsets.all(AppSpacing.xl),
               child: AppErrorBanner(
@@ -440,10 +441,7 @@ class _OrderHeaderCard extends StatelessWidget {
                         ? SizedBox(
                             width: 14,
                             height: 14,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              color: scheme.error,
-                            ),
+                            child: AppBusyIndicator(color: scheme.error),
                           )
                         : const Icon(Icons.cancel_outlined, size: 18),
                     label: AppButtonLabel(l10n.cancelOrder),
@@ -589,8 +587,7 @@ class _OrderItemCard extends StatelessWidget {
                         ? SizedBox(
                             width: 14,
                             height: 14,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
+                            child: AppBusyIndicator(
                               color: scheme.onSecondaryContainer,
                             ),
                           )

@@ -7,6 +7,7 @@ import '../../../core/errors/error_mapper.dart';
 import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
+import '../../../core/widgets/app_loader.dart';
 import '../../../core/widgets/form_presentation.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../view_models/tables_view_model.dart';
@@ -255,11 +256,7 @@ class _VenueTableDialogState extends ConsumerState<_VenueTableDialog> {
         FilledButton(
           onPressed: _saving ? null : _submit,
           child: _saving
-              ? const SizedBox(
-                  width: 18,
-                  height: 18,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                )
+              ? const SizedBox(width: 18, height: 18, child: AppBusyIndicator())
               : Text(_isEdit ? l10n.saveTable : l10n.addTable),
         ),
       ],

@@ -10,6 +10,7 @@ import '../../../core/errors/form_validators.dart';
 import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
+import '../../../core/widgets/app_loader.dart';
 import '../../../core/widgets/app_phone_field.dart';
 import '../../../core/phone/phone_numbers.dart';
 import '../../../l10n/generated/app_localizations.dart';
@@ -207,7 +208,7 @@ class _BuildingFormViewState extends ConsumerState<BuildingFormView> {
                   style: Theme.of(context).textTheme.headlineSmall,
                 ),
                 const SizedBox(height: AppSpacing.lg),
-                if (async.isLoading) const LinearProgressIndicator(),
+                if (async.isLoading) const AppScreenLoader(),
                 AppSurfaceCard(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -284,15 +285,10 @@ class _BuildingFormViewState extends ConsumerState<BuildingFormView> {
                                       ? null
                                       : _pickCurrentPosition,
                                   icon: _locating
-                                      ? SizedBox(
+                                      ? const SizedBox(
                                           width: 18,
                                           height: 18,
-                                          child: CircularProgressIndicator(
-                                            strokeWidth: 2,
-                                            color: Theme.of(
-                                              context,
-                                            ).colorScheme.primary,
-                                          ),
+                                          child: AppBusyIndicator(),
                                         )
                                       : const Icon(Icons.my_location_outlined),
                                   label: Text(l10n.pickCurrentPosition),

@@ -8,6 +8,7 @@ import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
 import '../../../core/paging/list_paging.dart';
+import '../../../core/widgets/app_loader.dart';
 import '../../../core/widgets/refresh_on_appear.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../view_models/orders_view_model.dart';
@@ -118,7 +119,7 @@ class _OrdersListViewState extends ConsumerState<OrdersListView> {
                 ),
                 const SizedBox(height: AppSpacing.lg),
                 ordersVm.when(
-                  loading: () => const LinearProgressIndicator(),
+                  loading: () => const AppScreenLoader(),
                   error: (error, _) => Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
@@ -239,12 +240,7 @@ class _OrdersListViewState extends ConsumerState<OrdersListView> {
                           const SizedBox(height: AppSpacing.sm),
                         ],
                         if (board.loadingMore)
-                          const Padding(
-                            padding: EdgeInsets.symmetric(
-                              vertical: AppSpacing.md,
-                            ),
-                            child: LinearProgressIndicator(),
-                          ),
+                          const AppScreenLoader(compact: true),
                         if (board.moreErrorKey != null)
                           TextButton(
                             onPressed: () => ref

@@ -17,6 +17,8 @@ fields:
   phoneNumber: String
   ### ISO 3166-1 alpha-2 derived from [phoneNumber] dial code.
   countryCode: String
+  ### English common name for [countryCode], such as Tunisia. Blank until filled from the code.
+  countryName: String, default=''
   ### Optional WhatsApp number (E.164) or empty.
   whatsapp: String?
   ### Instagram handle or profile URL.

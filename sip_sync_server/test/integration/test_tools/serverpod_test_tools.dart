@@ -71,6 +71,8 @@ import 'package:sip_sync_server/src/generated/buildings/dtos/building_update.dar
     as _ikeccdvf;
 import 'package:sip_sync_server/src/generated/buildings/dtos/building_view.dart'
     as _ihha274w;
+import 'package:sip_sync_server/src/generated/buildings/dtos/country_building_stat.dart'
+    as _iagq6ykd;
 import 'package:sip_sync_server/src/generated/discovery/dtos/customer_menu.dart'
     as _inirmmjl;
 import 'package:sip_sync_server/src/generated/discovery/dtos/customer_seated_table.dart'
@@ -1586,6 +1588,36 @@ class _BuildingEndpoint {
                   _localCallContext.arguments,
                 )
                 as _ida.Future<_iqww4u55.AdminBuildingPage>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<List<_iagq6ykd.CountryBuildingStat>> countryStats(
+    _ist.TestSessionBuilder sessionBuilder,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'building',
+            method: 'countryStats',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'building',
+          methodName: 'countryStats',
+          parameters: _ist.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<List<_iagq6ykd.CountryBuildingStat>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();

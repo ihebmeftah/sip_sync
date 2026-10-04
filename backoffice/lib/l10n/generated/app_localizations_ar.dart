@@ -169,6 +169,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get navBuildings => 'المباني';
 
   @override
+  String get navCountries => 'البلدان / الخرائط';
+
+  @override
   String get navPacks => 'الباقات';
 
   @override
@@ -279,6 +282,25 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get country => 'البلد';
+
+  @override
+  String countryLabeled(String name, String code) {
+    return '$name ($code)';
+  }
+
+  @override
+  String get countriesTitle => 'البلدان / الخرائط';
+
+  @override
+  String get countriesSubtitle => 'عدد الأماكن في كل بلد.';
+
+  @override
+  String countryVenueCount(int count) {
+    return '$count أماكن';
+  }
+
+  @override
+  String get osmAttribution => '© مساهمو OpenStreetMap';
 
   @override
   String coordinates(String lat, String lng) {

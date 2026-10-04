@@ -6,6 +6,7 @@ import '../../../core/errors/error_mapper.dart';
 import '../../../core/errors/form_validators.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
+import '../../../core/widgets/app_loader.dart';
 import '../../../core/widgets/app_phone_field.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../view_models/profile_view_model.dart';
@@ -103,7 +104,7 @@ class _ProfileViewPageState extends ConsumerState<ProfileViewPage> {
               if (!store.isSignedIn ||
                   (store.isOwner && store.owner == null) ||
                   (store.isEmployee && store.employee == null))
-                const LinearProgressIndicator(),
+                const AppScreenLoader(),
               AppSurfaceCard(
                 child: Form(
                   key: _formKey,

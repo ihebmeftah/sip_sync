@@ -16,6 +16,8 @@ import 'package:serverpod_auth_core_client/serverpod_auth_core_client.dart'
 import 'package:serverpod_auth_idp_client/serverpod_auth_idp_client.dart'
     as _iaic;
 import 'package:serverpod_client/serverpod_client.dart' as _isc;
+import 'package:sip_sync_client/src/protocol/buildings/dtos/country_building_stat.dart'
+    as _iebf7xye;
 import 'package:sip_sync_client/src/protocol/discovery/dtos/place_hit.dart'
     as _ijgfn5qw;
 import 'package:sip_sync_client/src/protocol/menu/dtos/article_composition_view.dart'
@@ -61,6 +63,7 @@ import 'buildings/dtos/building_exception.dart' as _ihbyyehn;
 import 'buildings/dtos/building_page.dart' as _istreh1i;
 import 'buildings/dtos/building_update.dart' as _irbupqdx;
 import 'buildings/dtos/building_view.dart' as _i9ph7g7s;
+import 'buildings/dtos/country_building_stat.dart' as _i92kzdia;
 import 'buildings/dtos/strict_mode_step.dart' as _i70klpnb;
 import 'discovery/dtos/customer_article_preview.dart' as _ipvj66ag;
 import 'discovery/dtos/customer_category_preview.dart' as _ia0qwq20;
@@ -179,6 +182,7 @@ export 'buildings/dtos/building_exception.dart';
 export 'buildings/dtos/building_page.dart';
 export 'buildings/dtos/building_update.dart';
 export 'buildings/dtos/building_view.dart';
+export 'buildings/dtos/country_building_stat.dart';
 export 'buildings/dtos/strict_mode_step.dart';
 export 'discovery/dtos/customer_article_preview.dart';
 export 'discovery/dtos/customer_category_preview.dart';
@@ -402,6 +406,9 @@ class Protocol extends _isc.SerializationManager {
     }
     if (t == _i9ph7g7s.BuildingView) {
       return _i9ph7g7s.BuildingView.fromJson(data) as T;
+    }
+    if (t == _i92kzdia.CountryBuildingStat) {
+      return _i92kzdia.CountryBuildingStat.fromJson(data) as T;
     }
     if (t == _i70klpnb.StrictModeStep) {
       return _i70klpnb.StrictModeStep.fromJson(data) as T;
@@ -806,6 +813,12 @@ class Protocol extends _isc.SerializationManager {
     }
     if (t == _isc.getType<_i9ph7g7s.BuildingView?>()) {
       return (data != null ? _i9ph7g7s.BuildingView.fromJson(data) : null) as T;
+    }
+    if (t == _isc.getType<_i92kzdia.CountryBuildingStat?>()) {
+      return (data != null
+              ? _i92kzdia.CountryBuildingStat.fromJson(data)
+              : null)
+          as T;
     }
     if (t == _isc.getType<_i70klpnb.StrictModeStep?>()) {
       return (data != null ? _i70klpnb.StrictModeStep.fromJson(data) : null)
@@ -1330,6 +1343,12 @@ class Protocol extends _isc.SerializationManager {
               .toList()
           as T;
     }
+    if (t == List<_iebf7xye.CountryBuildingStat>) {
+      return (data as List)
+              .map((e) => deserialize<_iebf7xye.CountryBuildingStat>(e))
+              .toList()
+          as T;
+    }
     if (t == List<_ijgfn5qw.PlaceHit>) {
       return (data as List)
               .map((e) => deserialize<_ijgfn5qw.PlaceHit>(e))
@@ -1406,6 +1425,7 @@ class Protocol extends _isc.SerializationManager {
       _istreh1i.BuildingPage => 'BuildingPage',
       _irbupqdx.BuildingUpdate => 'BuildingUpdate',
       _i9ph7g7s.BuildingView => 'BuildingView',
+      _i92kzdia.CountryBuildingStat => 'CountryBuildingStat',
       _i70klpnb.StrictModeStep => 'StrictModeStep',
       _ipvj66ag.CustomerArticlePreview => 'CustomerArticlePreview',
       _ia0qwq20.CustomerCategoryPreview => 'CustomerCategoryPreview',
@@ -1573,6 +1593,8 @@ class Protocol extends _isc.SerializationManager {
         return 'BuildingUpdate';
       case _i9ph7g7s.BuildingView():
         return 'BuildingView';
+      case _i92kzdia.CountryBuildingStat():
+        return 'CountryBuildingStat';
       case _i70klpnb.StrictModeStep():
         return 'StrictModeStep';
       case _ipvj66ag.CustomerArticlePreview():
@@ -1865,6 +1887,9 @@ class Protocol extends _isc.SerializationManager {
     }
     if (dataClassName == 'BuildingView') {
       return deserialize<_i9ph7g7s.BuildingView>(data['data']);
+    }
+    if (dataClassName == 'CountryBuildingStat') {
+      return deserialize<_i92kzdia.CountryBuildingStat>(data['data']);
     }
     if (dataClassName == 'StrictModeStep') {
       return deserialize<_i70klpnb.StrictModeStep>(data['data']);

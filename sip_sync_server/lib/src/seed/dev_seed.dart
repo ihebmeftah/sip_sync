@@ -2,6 +2,7 @@ import 'package:serverpod/serverpod.dart';
 
 import '../auth/auth_support.dart';
 import '../buildings/strict_mode.dart';
+import '../core/phone_numbers.dart';
 import '../employee_access/default_employee_access.dart';
 import '../generated/protocol.dart';
 import '../packs/pack_catalog.dart';
@@ -172,6 +173,8 @@ class DevSeed {
         currencyCode: currencyCode,
         phoneNumber: venuePhone,
         countryCode: countryCode,
+        countryName:
+            PhoneNumbers.countryNameFromCode(countryCode) ?? countryCode,
         whatsapp: venuePhone,
         instagram: null,
         facebook: null,

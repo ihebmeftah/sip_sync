@@ -171,6 +171,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get navBuildings => 'Buildings';
 
   @override
+  String get navCountries => 'Countries / Maps';
+
+  @override
   String get navPacks => 'Packs';
 
   @override
@@ -281,6 +284,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get country => 'Country';
+
+  @override
+  String countryLabeled(String name, String code) {
+    return '$name ($code)';
+  }
+
+  @override
+  String get countriesTitle => 'Countries / Maps';
+
+  @override
+  String get countriesSubtitle => 'How many venues sit in each country.';
+
+  @override
+  String countryVenueCount(int count) {
+    return '$count venues';
+  }
+
+  @override
+  String get osmAttribution => '© OpenStreetMap contributors';
 
   @override
   String coordinates(String lat, String lng) {

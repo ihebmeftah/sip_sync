@@ -26,6 +26,10 @@ class AdminBuildingRepository {
     return _client.building.adminDetail(buildingId);
   }
 
+  /// Venue counts by country, with a map point at the center of those venues.
+  Future<List<CountryBuildingStat>> countryStats() =>
+      _client.building.countryStats();
+
   /// Moves the venue onto an enabled pack. Super admin only.
   ///
   /// [billingPeriod] and [expiresAt] are required for every pack except free.

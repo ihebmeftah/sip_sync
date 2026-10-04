@@ -53,6 +53,7 @@
   "navUsers": "Users",
   "navCustomers": "Customers",
   "navBuildings": "Buildings",
+  "navCountries": "Countries / Maps",
   "navPacks": "Packs",
   "navSection": "Platform",
   "statsTitle": "Stats",
@@ -92,6 +93,20 @@
   "location": "Location",
   "currency": "Currency",
   "country": "Country",
+  "countryLabeled": "{name} ({code})",
+  "@countryLabeled": {
+    "placeholders": {
+      "name": { "type": "String" },
+      "code": { "type": "String" }
+    }
+  },
+  "countriesTitle": "Countries / Maps",
+  "countriesSubtitle": "How many venues sit in each country.",
+  "countryVenueCount": "{count} venues",
+  "@countryVenueCount": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "osmAttribution": "© OpenStreetMap contributors",
   "coordinates": "{lat}, {lng}",
   "@coordinates": {
     "description": "Latitude and longitude pair",

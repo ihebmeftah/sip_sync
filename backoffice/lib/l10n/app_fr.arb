@@ -51,6 +51,7 @@
   "navUsers": "Utilisateurs",
   "navCustomers": "Clients",
   "navBuildings": "Établissements",
+  "navCountries": "Pays / Cartes",
   "navPacks": "Packs",
   "navSection": "Plateforme",
   "statsTitle": "Statistiques",
@@ -87,6 +88,20 @@
   "location": "Emplacement",
   "currency": "Devise",
   "country": "Pays",
+  "countryLabeled": "{name} ({code})",
+  "@countryLabeled": {
+    "placeholders": {
+      "name": { "type": "String" },
+      "code": { "type": "String" }
+    }
+  },
+  "countriesTitle": "Pays / Cartes",
+  "countriesSubtitle": "Combien de lieux se trouvent dans chaque pays.",
+  "countryVenueCount": "{count} lieux",
+  "@countryVenueCount": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "osmAttribution": "© Contributeurs OpenStreetMap",
   "coordinates": "{lat}, {lng}",
   "passwordOptional": "Nouveau mot de passe (facultatif)",
   "deleteUser": "Supprimer l'utilisateur",

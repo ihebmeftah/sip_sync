@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../di/locale_controller.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../theme/app_tokens.dart';
+import 'app_loader.dart';
 
 class AppFilledButton extends StatelessWidget {
   const AppFilledButton({
@@ -29,10 +30,7 @@ class AppFilledButton extends StatelessWidget {
             ? SizedBox(
                 height: 22,
                 width: 22,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2.4,
-                  color: scheme.onPrimary,
-                ),
+                child: AppBusyIndicator(color: scheme.onPrimary),
               )
             : Text(label),
       ),

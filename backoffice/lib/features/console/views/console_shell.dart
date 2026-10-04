@@ -156,6 +156,12 @@ class _ConsoleNav extends ConsumerWidget {
         onPressed: () => go(() => const BuildingsRoute().go(context)),
       ),
       _NavItem(
+        icon: LucideIcons.map,
+        label: l10n.navCountries,
+        selected: path.startsWith('/countries'),
+        onPressed: () => go(() => const CountriesRoute().go(context)),
+      ),
+      _NavItem(
         icon: LucideIcons.package,
         label: l10n.navPacks,
         selected: path.startsWith('/packs'),

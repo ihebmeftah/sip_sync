@@ -73,6 +73,8 @@ import 'package:sip_sync_client/src/protocol/buildings/dtos/building_update.dart
     as _iimah2gv;
 import 'package:sip_sync_client/src/protocol/buildings/dtos/building_view.dart'
     as _ik35q5v8;
+import 'package:sip_sync_client/src/protocol/buildings/dtos/country_building_stat.dart'
+    as _iebf7xye;
 import 'package:sip_sync_client/src/protocol/discovery/dtos/customer_menu.dart'
     as _i1mbazw4;
 import 'package:sip_sync_client/src/protocol/discovery/dtos/customer_seated_table.dart'
@@ -546,6 +548,14 @@ class EndpointBuilding extends _isc.EndpointRef {
       'packId': packId,
     },
   );
+
+  /// Venue counts by country, with a map point. Super admin only.
+  _ida.Future<List<_iebf7xye.CountryBuildingStat>> countryStats() =>
+      caller.callServerEndpoint<List<_iebf7xye.CountryBuildingStat>>(
+        'building',
+        'countryStats',
+        {},
+      );
 
   /// Venue, pack, counts, and platform gain. Super admin only.
   _ida.Future<_ig0c1d2c.AdminBuildingDetail> adminDetail(

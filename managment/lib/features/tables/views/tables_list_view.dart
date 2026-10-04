@@ -10,6 +10,7 @@ import '../../../core/errors/error_mapper.dart';
 import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
+import '../../../core/widgets/app_loader.dart';
 import '../../../core/widgets/refresh_on_appear.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../orders/view_models/order_draft_view_model.dart';
@@ -226,9 +227,7 @@ class _TablesListViewState extends ConsumerState<TablesListView> {
                                 ? const SizedBox(
                                     width: 18,
                                     height: 18,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                    ),
+                                    child: AppBusyIndicator(),
                                   )
                                 : const Icon(Icons.qr_code_2_outlined),
                             label: AppButtonLabel(l10n.tableQrExportPdf),
@@ -315,7 +314,7 @@ class _TablesListViewState extends ConsumerState<TablesListView> {
                 ),
                 const SizedBox(height: AppSpacing.lg),
                 if (async.isLoading && async.asData == null)
-                  const LinearProgressIndicator()
+                  const AppScreenLoader()
                 else if (async.hasError && async.asData == null)
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,

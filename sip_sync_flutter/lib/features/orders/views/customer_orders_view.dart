@@ -7,6 +7,7 @@ import '../../../core/errors/error_mapper.dart';
 import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
+import '../../../core/widgets/app_loader.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../venue/menu_price.dart';
 import '../../venue/view_models/customer_order_view_model.dart';
@@ -102,8 +103,7 @@ class CustomerOrdersView extends ConsumerWidget {
               const SizedBox(height: AppSpacing.lg),
               Expanded(
                 child: orders.when(
-                  loading: () =>
-                      const Center(child: CircularProgressIndicator()),
+                  loading: () => const AppScreenLoader(),
                   error: (error, _) => Column(
                     children: [
                       AppErrorBanner(
@@ -149,14 +149,7 @@ class CustomerOrdersView extends ConsumerWidget {
                             if (!board.loadingMore) {
                               return const SizedBox(height: AppSpacing.md);
                             }
-                            return const Padding(
-                              padding: EdgeInsets.symmetric(
-                                vertical: AppSpacing.md,
-                              ),
-                              child: Center(
-                                child: CircularProgressIndicator(),
-                              ),
-                            );
+                            return const AppScreenLoader(compact: true);
                           }
                           return _OrderCard(row: rows[index]);
                         },

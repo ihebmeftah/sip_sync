@@ -5,6 +5,7 @@ import '../../features/auth/views/register_view.dart';
 import '../../features/auth/views/sign_in_view.dart';
 import '../../features/buildings/views/building_detail_view.dart';
 import '../../features/buildings/views/buildings_view.dart';
+import '../../features/countries/views/countries_view.dart';
 import '../../features/console/views/console_shell.dart';
 import '../../features/stats/views/stats_view.dart';
 import '../../features/customers/views/customers_view.dart';
@@ -45,6 +46,7 @@ class RegisterRoute extends GoRouteData with $RegisterRoute {
         ),
       ],
     ),
+    TypedGoRoute<CountriesRoute>(path: '/countries', name: 'countries'),
     TypedGoRoute<PacksRoute>(path: '/packs', name: 'packs'),
   ],
 )
@@ -103,4 +105,12 @@ class PacksRoute extends GoRouteData with $PacksRoute {
 
   @override
   Widget build(BuildContext context, GoRouterState state) => const PacksView();
+}
+
+class CountriesRoute extends GoRouteData with $CountriesRoute {
+  const CountriesRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) =>
+      const CountriesView();
 }

@@ -43,6 +43,7 @@ abstract class Building
     required this.currencyCode,
     required this.phoneNumber,
     required this.countryCode,
+    String? countryName,
     this.whatsapp,
     this.instagram,
     this.facebook,
@@ -64,7 +65,8 @@ abstract class Building
     this.pack,
     this.packBillingPeriod,
     this.packExpiresAt,
-  }) : tableMultiOrder = tableMultiOrder ?? false,
+  }) : countryName = countryName ?? '',
+       tableMultiOrder = tableMultiOrder ?? false,
        allowAppendingItemsToOrder = allowAppendingItemsToOrder ?? true,
        strictMode = strictMode ?? false,
        createdAt = createdAt ?? DateTime.now();
@@ -83,6 +85,7 @@ abstract class Building
     required String currencyCode,
     required String phoneNumber,
     required String countryCode,
+    String? countryName,
     String? whatsapp,
     String? instagram,
     String? facebook,
@@ -129,6 +132,7 @@ abstract class Building
       currencyCode: jsonSerialization['currencyCode'] as String,
       phoneNumber: jsonSerialization['phoneNumber'] as String,
       countryCode: jsonSerialization['countryCode'] as String,
+      countryName: jsonSerialization['countryName'] as String?,
       whatsapp: jsonSerialization['whatsapp'] as String?,
       instagram: jsonSerialization['instagram'] as String?,
       facebook: jsonSerialization['facebook'] as String?,
@@ -249,6 +253,9 @@ abstract class Building
   /// ISO 3166-1 alpha-2 derived from [phoneNumber] dial code.
   String countryCode;
 
+  /// English common name for [countryCode], such as Tunisia. Blank until filled from the code.
+  String countryName;
+
   /// Optional WhatsApp number (E.164) or empty.
   String? whatsapp;
 
@@ -323,6 +330,7 @@ abstract class Building
     String? currencyCode,
     String? phoneNumber,
     String? countryCode,
+    String? countryName,
     String? whatsapp,
     String? instagram,
     String? facebook,
@@ -362,6 +370,7 @@ abstract class Building
       'currencyCode': currencyCode,
       'phoneNumber': phoneNumber,
       'countryCode': countryCode,
+      'countryName': countryName,
       if (whatsapp != null) 'whatsapp': whatsapp,
       if (instagram != null) 'instagram': instagram,
       if (facebook != null) 'facebook': facebook,
@@ -473,6 +482,7 @@ class _BuildingImpl extends Building {
     required String currencyCode,
     required String phoneNumber,
     required String countryCode,
+    String? countryName,
     String? whatsapp,
     String? instagram,
     String? facebook,
@@ -508,6 +518,7 @@ class _BuildingImpl extends Building {
          currencyCode: currencyCode,
          phoneNumber: phoneNumber,
          countryCode: countryCode,
+         countryName: countryName,
          whatsapp: whatsapp,
          instagram: instagram,
          facebook: facebook,
@@ -549,6 +560,7 @@ class _BuildingImpl extends Building {
     String? currencyCode,
     String? phoneNumber,
     String? countryCode,
+    String? countryName,
     Object? whatsapp = _Undefined,
     Object? instagram = _Undefined,
     Object? facebook = _Undefined,
@@ -585,6 +597,7 @@ class _BuildingImpl extends Building {
       currencyCode: currencyCode ?? this.currencyCode,
       phoneNumber: phoneNumber ?? this.phoneNumber,
       countryCode: countryCode ?? this.countryCode,
+      countryName: countryName ?? this.countryName,
       whatsapp: whatsapp is String? ? whatsapp : this.whatsapp,
       instagram: instagram is String? ? instagram : this.instagram,
       facebook: facebook is String? ? facebook : this.facebook,
@@ -690,6 +703,11 @@ class BuildingUpdateTable extends _is.UpdateTable<BuildingTable> {
 
   _is.ColumnValue<String, String> countryCode(String value) => _is.ColumnValue(
     table.countryCode,
+    value,
+  );
+
+  _is.ColumnValue<String, String> countryName(String value) => _is.ColumnValue(
+    table.countryName,
     value,
   );
 
@@ -811,6 +829,11 @@ class BuildingTable extends _is.Table<_is.UuidValue?> {
       'countryCode',
       this,
     );
+    countryName = _is.ColumnString(
+      'countryName',
+      this,
+      hasDefault: true,
+    );
     whatsapp = _is.ColumnString(
       'whatsapp',
       this,
@@ -889,6 +912,9 @@ class BuildingTable extends _is.Table<_is.UuidValue?> {
 
   /// ISO 3166-1 alpha-2 derived from [phoneNumber] dial code.
   late final _is.ColumnString countryCode;
+
+  /// English common name for [countryCode], such as Tunisia. Blank until filled from the code.
+  late final _is.ColumnString countryName;
 
   /// Optional WhatsApp number (E.164) or empty.
   late final _is.ColumnString whatsapp;
@@ -1262,6 +1288,7 @@ class BuildingTable extends _is.Table<_is.UuidValue?> {
     currencyCode,
     phoneNumber,
     countryCode,
+    countryName,
     whatsapp,
     instagram,
     facebook,

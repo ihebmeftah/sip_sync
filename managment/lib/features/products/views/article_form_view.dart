@@ -6,6 +6,7 @@ import '../../../core/errors/app_notice.dart';
 import '../../../core/errors/error_mapper.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
+import '../../../core/widgets/app_loader.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../view_models/articles_view_model.dart';
 import '../view_models/categories_view_model.dart';
@@ -170,7 +171,7 @@ class _ArticleFormViewState extends ConsumerState<ArticleFormView> {
                 Text(l10n.articleFormHint, style: text.bodyMedium),
                 const SizedBox(height: AppSpacing.lg),
                 if (_isEdit && articlesAsync.isLoading && existing == null)
-                  const LinearProgressIndicator(),
+                  const AppScreenLoader(),
                 AppSurfaceCard(
                   child: Form(
                     key: _formKey,

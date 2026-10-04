@@ -7,6 +7,7 @@ import '../../../core/errors/error_mapper.dart';
 import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
+import '../../../core/widgets/app_loader.dart';
 import '../../../core/widgets/form_presentation.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../view_models/articles_view_model.dart';
@@ -257,11 +258,7 @@ class _ArticleDialogState extends ConsumerState<_ArticleDialog> {
         FilledButton(
           onPressed: _saving || categories.isEmpty ? null : _submit,
           child: _saving
-              ? const SizedBox(
-                  width: 18,
-                  height: 18,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                )
+              ? const SizedBox(width: 18, height: 18, child: AppBusyIndicator())
               : Text(_isEdit ? l10n.saveArticle : l10n.addArticle),
         ),
       ],

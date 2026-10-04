@@ -7,6 +7,7 @@ import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_icons.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
+import '../../../core/widgets/app_loader.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../discover/venue_distance.dart';
 import '../../home/widgets/venue_card.dart';
@@ -31,7 +32,7 @@ class VenueDetailView extends ConsumerWidget {
     return Scaffold(
       body: SafeArea(
         child: detail.when(
-          loading: () => const Center(child: CircularProgressIndicator()),
+          loading: () => const AppScreenLoader(),
           error: (error, _) => _VenueMessage(
             message: lookupError(l10n, mapError(error).l10nKey),
             onRetry: () =>

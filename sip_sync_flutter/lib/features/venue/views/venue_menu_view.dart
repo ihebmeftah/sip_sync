@@ -9,6 +9,7 @@ import '../../../core/theme/app_icons.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/paging/list_paging.dart';
 import '../../../core/widgets/app_controls.dart';
+import '../../../core/widgets/app_loader.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../menu_price.dart';
 import '../view_models/order_cart_view_model.dart';
@@ -111,7 +112,7 @@ class _VenueMenuViewState extends ConsumerState<VenueMenuView> {
     return Scaffold(
       body: SafeArea(
         child: menu.when(
-          loading: () => const Center(child: CircularProgressIndicator()),
+          loading: () => const AppScreenLoader(),
           error: (error, _) => _MenuMessage(
             message: lookupError(l10n, mapError(error).l10nKey),
             onRetry: () =>
@@ -288,10 +289,7 @@ class _MenuBody extends ConsumerWidget {
                           ),
                         ),
                       if (menu.loadingMore)
-                        const Padding(
-                          padding: EdgeInsets.only(top: AppSpacing.lg),
-                          child: Center(child: CircularProgressIndicator()),
-                        ),
+                        const AppScreenLoader(compact: true),
                     ],
                   ),
                 ),

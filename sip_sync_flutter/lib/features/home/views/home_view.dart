@@ -6,6 +6,7 @@ import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_icons.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
+import '../../../core/widgets/app_loader.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../auth/view_models/auth_view_model.dart';
 import '../../discover/venue_distance.dart';
@@ -218,7 +219,7 @@ class _DiscoverPane extends ConsumerWidget {
                     child: SizedBox(
                       width: 18,
                       height: 18,
-                      child: CircularProgressIndicator(strokeWidth: 2),
+                      child: AppBusyIndicator(),
                     ),
                   )
                 : IconButton(
@@ -416,7 +417,7 @@ class _Results extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     if (loading) {
-      return const Center(child: CircularProgressIndicator());
+      return const AppScreenLoader();
     }
     if (nearbyEmpty) {
       return _EmptyPane(
@@ -456,10 +457,7 @@ class _Results extends ConsumerWidget {
             if (!loadingMore) {
               return const SizedBox(height: AppSpacing.md);
             }
-            return const Padding(
-              padding: EdgeInsets.symmetric(vertical: AppSpacing.md),
-              child: Center(child: CircularProgressIndicator()),
-            );
+            return const AppScreenLoader(compact: true);
           }
           final row = ranked[index];
           return VenueCard(

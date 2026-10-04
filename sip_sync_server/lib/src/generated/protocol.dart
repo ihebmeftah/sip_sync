@@ -17,6 +17,8 @@ import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
     as _iacs;
 import 'package:serverpod_auth_idp_server/serverpod_auth_idp_server.dart'
     as _iais;
+import 'package:sip_sync_server/src/generated/buildings/dtos/country_building_stat.dart'
+    as _iagq6ykd;
 import 'package:sip_sync_server/src/generated/discovery/dtos/place_hit.dart'
     as _ibuzraci;
 import 'package:sip_sync_server/src/generated/menu/dtos/article_composition_view.dart'
@@ -68,6 +70,7 @@ import 'buildings/dtos/building_exception.dart' as _ihbyyehn;
 import 'buildings/dtos/building_page.dart' as _istreh1i;
 import 'buildings/dtos/building_update.dart' as _irbupqdx;
 import 'buildings/dtos/building_view.dart' as _i9ph7g7s;
+import 'buildings/dtos/country_building_stat.dart' as _i92kzdia;
 import 'buildings/dtos/strict_mode_step.dart' as _i70klpnb;
 import 'buildings/entity/building.dart' as _iit041ql;
 import 'discovery/dtos/customer_article_preview.dart' as _ipvj66ag;
@@ -203,6 +206,7 @@ export 'buildings/dtos/building_exception.dart';
 export 'buildings/dtos/building_page.dart';
 export 'buildings/dtos/building_update.dart';
 export 'buildings/dtos/building_view.dart';
+export 'buildings/dtos/country_building_stat.dart';
 export 'buildings/dtos/strict_mode_step.dart';
 export 'buildings/entity/building.dart';
 export 'discovery/dtos/customer_article_preview.dart';
@@ -589,6 +593,13 @@ class Protocol extends _is.DatabaseSerializationManager {
           columnType: _isp.ColumnType.text,
           isNullable: false,
           dartType: 'String',
+        ),
+        _isp.ColumnDefinition(
+          name: 'countryName',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+          columnDefault: '\'\'',
         ),
         _isp.ColumnDefinition(
           name: 'whatsapp',
@@ -2561,6 +2572,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == _i9ph7g7s.BuildingView) {
       return _i9ph7g7s.BuildingView.fromJson(data) as T;
     }
+    if (t == _i92kzdia.CountryBuildingStat) {
+      return _i92kzdia.CountryBuildingStat.fromJson(data) as T;
+    }
     if (t == _i70klpnb.StrictModeStep) {
       return _i70klpnb.StrictModeStep.fromJson(data) as T;
     }
@@ -3016,6 +3030,12 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     if (t == _is.getType<_i9ph7g7s.BuildingView?>()) {
       return (data != null ? _i9ph7g7s.BuildingView.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_i92kzdia.CountryBuildingStat?>()) {
+      return (data != null
+              ? _i92kzdia.CountryBuildingStat.fromJson(data)
+              : null)
+          as T;
     }
     if (t == _is.getType<_i70klpnb.StrictModeStep?>()) {
       return (data != null ? _i70klpnb.StrictModeStep.fromJson(data) : null)
@@ -3735,6 +3755,12 @@ class Protocol extends _is.DatabaseSerializationManager {
               .toList()
           as T;
     }
+    if (t == List<_iagq6ykd.CountryBuildingStat>) {
+      return (data as List)
+              .map((e) => deserialize<_iagq6ykd.CountryBuildingStat>(e))
+              .toList()
+          as T;
+    }
     if (t == List<_ibuzraci.PlaceHit>) {
       return (data as List)
               .map((e) => deserialize<_ibuzraci.PlaceHit>(e))
@@ -3820,6 +3846,7 @@ class Protocol extends _is.DatabaseSerializationManager {
       _istreh1i.BuildingPage => 'BuildingPage',
       _irbupqdx.BuildingUpdate => 'BuildingUpdate',
       _i9ph7g7s.BuildingView => 'BuildingView',
+      _i92kzdia.CountryBuildingStat => 'CountryBuildingStat',
       _i70klpnb.StrictModeStep => 'StrictModeStep',
       _iit041ql.Building => 'Building',
       _ipvj66ag.CustomerArticlePreview => 'CustomerArticlePreview',
@@ -4010,6 +4037,8 @@ class Protocol extends _is.DatabaseSerializationManager {
         return 'BuildingUpdate';
       case _i9ph7g7s.BuildingView():
         return 'BuildingView';
+      case _i92kzdia.CountryBuildingStat():
+        return 'CountryBuildingStat';
       case _i70klpnb.StrictModeStep():
         return 'StrictModeStep';
       case _iit041ql.Building():
@@ -4346,6 +4375,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     if (dataClassName == 'BuildingView') {
       return deserialize<_i9ph7g7s.BuildingView>(data['data']);
+    }
+    if (dataClassName == 'CountryBuildingStat') {
+      return deserialize<_i92kzdia.CountryBuildingStat>(data['data']);
     }
     if (dataClassName == 'StrictModeStep') {
       return deserialize<_i70klpnb.StrictModeStep>(data['data']);

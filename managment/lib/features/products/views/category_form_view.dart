@@ -6,6 +6,7 @@ import '../../../core/errors/app_notice.dart';
 import '../../../core/errors/error_mapper.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
+import '../../../core/widgets/app_loader.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../view_models/categories_view_model.dart';
 
@@ -139,7 +140,7 @@ class _CategoryFormViewState extends ConsumerState<CategoryFormView> {
                 Text(l10n.categoryFormHint, style: text.bodyMedium),
                 const SizedBox(height: AppSpacing.lg),
                 if (_isEdit && async.isLoading && existing == null)
-                  const LinearProgressIndicator(),
+                  const AppScreenLoader(),
                 if (_isEdit && async.hasError && existing == null)
                   AppErrorBanner(
                     message: lookupError(l10n, mapError(async.error!).l10nKey),

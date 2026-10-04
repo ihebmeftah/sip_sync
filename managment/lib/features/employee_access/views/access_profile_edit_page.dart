@@ -5,6 +5,7 @@ import 'package:sip_sync_client/sip_sync_client.dart';
 import '../../../core/errors/error_mapper.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
+import '../../../core/widgets/app_loader.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../view_models/access_profiles_view_model.dart';
 import 'access_profile_form_view.dart';
@@ -28,7 +29,7 @@ class AccessProfileEditPage extends ConsumerWidget {
     return async.when(
       loading: () => ColoredBox(
         color: Theme.of(context).scaffoldBackgroundColor,
-        child: const Center(child: CircularProgressIndicator()),
+        child: const AppScreenLoader(),
       ),
       error: (error, _) => ColoredBox(
         color: Theme.of(context).scaffoldBackgroundColor,

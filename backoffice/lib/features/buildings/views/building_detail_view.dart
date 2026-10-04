@@ -9,6 +9,7 @@ import '../../../core/errors/form_validators.dart';
 import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
+import '../../../core/widgets/app_loader.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../console/views/console_shell.dart';
 import '../../packs/pack_money.dart';
@@ -48,7 +49,7 @@ class _BuildingDetailViewState extends ConsumerState<BuildingDetailView> {
         child: Text(l10n.buildingsTitle),
       ),
       child: detail.when(
-        loading: () => const LinearProgressIndicator(),
+        loading: () => const AppScreenLoader(),
         error: (error, _) => Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -175,6 +176,13 @@ class _DetailsTab extends StatelessWidget {
         _Line(label: l10n.email, value: building.ownerEmail),
         _Line(label: l10n.phone, value: building.ownerPhoneNumber),
         _Line(label: l10n.address, value: building.address),
+        _Line(
+          label: l10n.country,
+          value: l10n.countryLabeled(
+            building.countryName,
+            building.countryCode,
+          ),
+        ),
         _Line(
           label: l10n.location,
           value: l10n.coordinates(
@@ -396,7 +404,7 @@ class _AssignPackDialogState extends ConsumerState<_AssignPackDialog> {
                 }
                 final rows = snapshot.data;
                 if (rows == null) {
-                  return const LinearProgressIndicator();
+                  return const AppScreenLoader();
                 }
                 return _packList(context, l10n, rows);
               },

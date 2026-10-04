@@ -15,8 +15,8 @@ The seeded default admin cannot be deleted or disabled. A signed-in admin cannot
 
 ## Flow
 
-1. Sign in → `/stats` inside the console shell. The sidebar is Stats, Users, Customers, Buildings, Packs.
-2. **Stats** shows platform counts and, for each public pack, how many venues and owners are on it. **Packs** is the plan catalog.
+1. Sign in → `/stats` inside the console shell. The sidebar is Stats, Users, Customers, Buildings, Countries / Maps, Packs.
+2. **Stats** shows platform counts and, for each public pack, how many venues and owners are on it. **Countries / Maps** lists how many venues sit in each country and places that count on an OpenStreetMap. **Packs** is the plan catalog.
 3. **Customers** has two tabs, Owners and Customers. Each card shows name, email, phone, and created time. Details opens the same fields. Each tab loads 20 people at a time, newest first, with previous and next.
 4. **Users** lists backoffice accounts (name, email, phone, enabled), 20 per page, oldest first. Create opens a dialog. Edit updates name, email, phone, optional new password, and the enabled switch.
 5. Disabled login returns `accountDisabled`.
@@ -28,10 +28,10 @@ The seeded default admin cannot be deleted or disabled. A signed-in admin cannot
 - `super_admin.isEnabled` (default true)
 - `SuperAdminUpdate` — id plus profile fields, optional password, `isEnabled`
 - `SuperAdminView` includes `isEnabled`
-- `AdminBuildingView` — venue contact and location, owner display fields, and the current pack id and name (no employee ids, no order config)
+- `AdminBuildingView` — venue contact and location, owner display fields, country code and name, and the current pack id and name (no employee ids, no order config)
 - `PlatformPersonView` — owner or customer name, email, phone, and `createdAt` (no password hash)
 - List methods take optional `limit` and `offset` (default 20, max 100) and return a page (`items`, `total`, `limit`, `offset`): `SuperAdminPage`, `PlatformPersonPage`, `AdminBuildingPage`. `Building.listAll` also takes optional `query` and `packId`.
-- Endpoints: `SuperAdminAuth.list` / `update` / `setEnabled`, `Building.listAll`, `PlatformDirectory.listOwners`, `PlatformDirectory.listCustomers`, `Pack.list` / `create` / `update` / `delete`, `PlatformStats.summary`
+- Endpoints: `SuperAdminAuth.list` / `update` / `setEnabled`, `Building.listAll` / `countryStats`, `PlatformDirectory.listOwners`, `PlatformDirectory.listCustomers`, `Pack.list` / `create` / `update` / `delete`, `PlatformStats.summary`
 
 ## Realtime
 

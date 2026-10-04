@@ -173,6 +173,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get navBuildings => 'Établissements';
 
   @override
+  String get navCountries => 'Pays / Cartes';
+
+  @override
   String get navPacks => 'Packs';
 
   @override
@@ -284,6 +287,26 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get country => 'Pays';
+
+  @override
+  String countryLabeled(String name, String code) {
+    return '$name ($code)';
+  }
+
+  @override
+  String get countriesTitle => 'Pays / Cartes';
+
+  @override
+  String get countriesSubtitle =>
+      'Combien de lieux se trouvent dans chaque pays.';
+
+  @override
+  String countryVenueCount(int count) {
+    return '$count lieux';
+  }
+
+  @override
+  String get osmAttribution => '© Contributeurs OpenStreetMap';
 
   @override
   String coordinates(String lat, String lng) {

@@ -6,6 +6,7 @@ import '../../../core/errors/app_notice.dart';
 import '../../../core/errors/error_mapper.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
+import '../../../core/widgets/app_loader.dart';
 import '../../../core/widgets/list_page_bar.dart';
 import '../../../core/widgets/refresh_on_appear.dart';
 import '../../../l10n/generated/app_localizations.dart';
@@ -96,7 +97,7 @@ class _CategoriesListViewState extends ConsumerState<CategoriesListView> {
               ),
               const SizedBox(height: AppSpacing.lg),
               async.when(
-                loading: () => const LinearProgressIndicator(),
+                loading: () => const AppScreenLoader(),
                 error: (error, _) => Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [

@@ -406,6 +406,12 @@ abstract class AppLocalizations {
   /// **'Buildings'**
   String get navBuildings;
 
+  /// No description provided for @navCountries.
+  ///
+  /// In en, this message translates to:
+  /// **'Countries / Maps'**
+  String get navCountries;
+
   /// No description provided for @navPacks.
   ///
   /// In en, this message translates to:
@@ -621,6 +627,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Country'**
   String get country;
+
+  /// No description provided for @countryLabeled.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} ({code})'**
+  String countryLabeled(String name, String code);
+
+  /// No description provided for @countriesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Countries / Maps'**
+  String get countriesTitle;
+
+  /// No description provided for @countriesSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'How many venues sit in each country.'**
+  String get countriesSubtitle;
+
+  /// No description provided for @countryVenueCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} venues'**
+  String countryVenueCount(int count);
+
+  /// No description provided for @osmAttribution.
+  ///
+  /// In en, this message translates to:
+  /// **'© OpenStreetMap contributors'**
+  String get osmAttribution;
 
   /// Latitude and longitude pair
   ///

@@ -39,6 +39,16 @@ abstract final class PhoneNumbers {
   static String? countryCodeFromPhone(String raw) =>
       countryFromPhone(raw)?.codeShort;
 
+  /// English common name for an ISO code, such as `TN` → Tunisia.
+  static String? countryNameFromCode(String code) {
+    final country = WorldCountry.maybeFromCodeShort(code.trim().toUpperCase());
+    final name = country?.name.common.trim() ?? '';
+    if (name.isEmpty) {
+      return null;
+    }
+    return name;
+  }
+
   /// Best-matching [WorldCountry] for an E.164 number (longest dial wins).
   static WorldCountry? countryFromPhone(String raw) {
     final digits = digitsOnly(raw);

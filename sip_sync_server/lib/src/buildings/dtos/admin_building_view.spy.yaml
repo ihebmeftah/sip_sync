@@ -10,6 +10,7 @@ fields:
   currencyCode: String
   phoneNumber: String
   countryCode: String
+  countryName: String
   whatsapp: String?
   instagram: String?
   facebook: String?

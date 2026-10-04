@@ -934,6 +934,16 @@ class Endpoints extends _is.EndpointDispatch {
                     packId: params['packId'],
                   ),
         ),
+        'countryStats': _is.MethodConnector(
+          name: 'countryStats',
+          params: {},
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['building'] as _i69ygv7j.BuildingEndpoint)
+                  .countryStats(session),
+        ),
         'adminDetail': _is.MethodConnector(
           name: 'adminDetail',
           params: {

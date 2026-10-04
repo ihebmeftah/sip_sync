@@ -25,6 +25,7 @@ abstract class AdminBuildingView
     required this.currencyCode,
     required this.phoneNumber,
     required this.countryCode,
+    required this.countryName,
     this.whatsapp,
     this.instagram,
     this.facebook,
@@ -47,6 +48,7 @@ abstract class AdminBuildingView
     required String currencyCode,
     required String phoneNumber,
     required String countryCode,
+    required String countryName,
     String? whatsapp,
     String? instagram,
     String? facebook,
@@ -70,6 +72,7 @@ abstract class AdminBuildingView
       currencyCode: jsonSerialization['currencyCode'] as String,
       phoneNumber: jsonSerialization['phoneNumber'] as String,
       countryCode: jsonSerialization['countryCode'] as String,
+      countryName: jsonSerialization['countryName'] as String,
       whatsapp: jsonSerialization['whatsapp'] as String?,
       instagram: jsonSerialization['instagram'] as String?,
       facebook: jsonSerialization['facebook'] as String?,
@@ -102,6 +105,8 @@ abstract class AdminBuildingView
   String phoneNumber;
 
   String countryCode;
+
+  String countryName;
 
   String? whatsapp;
 
@@ -136,6 +141,7 @@ abstract class AdminBuildingView
     String? currencyCode,
     String? phoneNumber,
     String? countryCode,
+    String? countryName,
     String? whatsapp,
     String? instagram,
     String? facebook,
@@ -160,6 +166,7 @@ abstract class AdminBuildingView
       'currencyCode': currencyCode,
       'phoneNumber': phoneNumber,
       'countryCode': countryCode,
+      'countryName': countryName,
       if (whatsapp != null) 'whatsapp': whatsapp,
       if (instagram != null) 'instagram': instagram,
       if (facebook != null) 'facebook': facebook,
@@ -186,6 +193,7 @@ abstract class AdminBuildingView
       'currencyCode': currencyCode,
       'phoneNumber': phoneNumber,
       'countryCode': countryCode,
+      'countryName': countryName,
       if (whatsapp != null) 'whatsapp': whatsapp,
       if (instagram != null) 'instagram': instagram,
       if (facebook != null) 'facebook': facebook,
@@ -218,6 +226,7 @@ class _AdminBuildingViewImpl extends AdminBuildingView {
     required String currencyCode,
     required String phoneNumber,
     required String countryCode,
+    required String countryName,
     String? whatsapp,
     String? instagram,
     String? facebook,
@@ -238,6 +247,7 @@ class _AdminBuildingViewImpl extends AdminBuildingView {
          currencyCode: currencyCode,
          phoneNumber: phoneNumber,
          countryCode: countryCode,
+         countryName: countryName,
          whatsapp: whatsapp,
          instagram: instagram,
          facebook: facebook,
@@ -264,6 +274,7 @@ class _AdminBuildingViewImpl extends AdminBuildingView {
     String? currencyCode,
     String? phoneNumber,
     String? countryCode,
+    String? countryName,
     Object? whatsapp = _Undefined,
     Object? instagram = _Undefined,
     Object? facebook = _Undefined,
@@ -285,6 +296,7 @@ class _AdminBuildingViewImpl extends AdminBuildingView {
       currencyCode: currencyCode ?? this.currencyCode,
       phoneNumber: phoneNumber ?? this.phoneNumber,
       countryCode: countryCode ?? this.countryCode,
+      countryName: countryName ?? this.countryName,
       whatsapp: whatsapp is String? ? whatsapp : this.whatsapp,
       instagram: instagram is String? ? instagram : this.instagram,
       facebook: facebook is String? ? facebook : this.facebook,

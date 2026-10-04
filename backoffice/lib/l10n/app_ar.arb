@@ -51,6 +51,7 @@
   "navUsers": "المستخدمون",
   "navCustomers": "العملاء",
   "navBuildings": "المباني",
+  "navCountries": "البلدان / الخرائط",
   "navPacks": "الباقات",
   "navSection": "المنصة",
   "statsTitle": "الإحصاءات",
@@ -87,6 +88,20 @@
   "location": "الموقع",
   "currency": "العملة",
   "country": "البلد",
+  "countryLabeled": "{name} ({code})",
+  "@countryLabeled": {
+    "placeholders": {
+      "name": { "type": "String" },
+      "code": { "type": "String" }
+    }
+  },
+  "countriesTitle": "البلدان / الخرائط",
+  "countriesSubtitle": "عدد الأماكن في كل بلد.",
+  "countryVenueCount": "{count} أماكن",
+  "@countryVenueCount": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "osmAttribution": "© مساهمو OpenStreetMap",
   "coordinates": "{lat}، {lng}",
   "passwordOptional": "كلمة مرور جديدة (اختياري)",
   "deleteUser": "حذف المستخدم",

@@ -211,6 +211,7 @@ void main() {
         expect(rows.single.name, 'Olive Café');
         expect(rows.single.type, 'cafe');
         expect(rows.single.countryCode, 'TN');
+        expect(rows.single.countryName, 'Tunisia');
         expect(rows.single.currencyCode, 'TND');
         expect(rows.single.phoneNumber, '+21671100021');
         expect(rows.single.address, '12 Rue Habib');
@@ -307,6 +308,84 @@ void main() {
         packId: floor.id,
       );
       expect(both.total, 0);
+    });
+
+    test('country stats group venues and reject an owner', () async {
+      final ownerAuth = await endpoints.ownerAuth.register(
+        sessionBuilder,
+        EmailRegisterCreate(
+          email: 'country-map@example.com',
+          password: 'password1',
+          phoneNumber: '+21621000018',
+          firstName: 'Map',
+          lastName: 'Owner',
+        ),
+      );
+      final ownerSession = sessionBuilder.copyWith(
+        authentication: AuthenticationOverride.authenticationInfo(
+          ownerAuth.owner!.id.uuid,
+          {Scope('sip.owner')},
+          authId: '01900000-0000-7000-8000-0000000000bd',
+        ),
+      );
+      await endpoints.building.create(
+        ownerSession,
+        BuildingCreate(
+          name: 'Tunis Room',
+          type: 'cafe',
+          address: '1 Avenue',
+          latitude: 36.8,
+          longitude: 10.18,
+          openingMinutes: 480,
+          closingMinutes: 1380,
+          phoneNumber: '+21671100031',
+          otherLinks: const [],
+          currencyCode: 'TND',
+          strictModeSteps: [],
+        ),
+      );
+      await endpoints.building.create(
+        ownerSession,
+        BuildingCreate(
+          name: 'Berlin Room',
+          type: 'bar',
+          address: '2 Strasse',
+          latitude: 52.52,
+          longitude: 13.4,
+          openingMinutes: 480,
+          closingMinutes: 1380,
+          phoneNumber: '+4930123456',
+          otherLinks: const [],
+          currencyCode: 'EUR',
+          strictModeSteps: [],
+        ),
+      );
+      await expectLater(
+        endpoints.building.countryStats(ownerSession),
+        throwsA(
+          isA<AccountException>().having(
+            (error) => error.code,
+            'code',
+            AccountErrorCode.notAuthorized,
+          ),
+        ),
+      );
+      final session = sessionBuilder.build();
+      final actor = await seedAdmin(
+        session,
+        email: 'country-admin@sipsync.dev',
+        phone: '+21621000019',
+        isSystemDefault: false,
+      );
+      final stats = await endpoints.building.countryStats(asAdmin(actor.id!));
+      final tunisia = stats.firstWhere((row) => row.countryCode == 'TN');
+      final germany = stats.firstWhere((row) => row.countryCode == 'DE');
+      expect(tunisia.countryName, 'Tunisia');
+      expect(tunisia.buildingCount, 1);
+      expect(germany.countryName, 'Germany');
+      expect(germany.buildingCount, 1);
+      expect(tunisia.latitude, closeTo(36.8, 0.001));
+      expect(germany.longitude, closeTo(13.4, 0.001));
     });
   });
 }

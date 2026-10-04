@@ -6,6 +6,7 @@ import 'package:sip_sync_client/sip_sync_client.dart';
 import '../../../core/errors/error_mapper.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
+import '../../../core/widgets/app_loader.dart';
 import '../../../core/widgets/list_page_bar.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../console/views/console_shell.dart';
@@ -34,7 +35,7 @@ class _CustomersViewState extends ConsumerState<CustomersView> {
       title: l10n.customersTitle,
       subtitle: l10n.customersSubtitle,
       child: directory.when(
-        loading: () => const LinearProgressIndicator(),
+        loading: () => const AppScreenLoader(),
         error: (error, _) => Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

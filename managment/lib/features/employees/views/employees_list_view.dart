@@ -7,6 +7,7 @@ import '../../../core/errors/error_mapper.dart';
 import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
+import '../../../core/widgets/app_loader.dart';
 import '../../../core/widgets/list_page_bar.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../view_models/employees_view_model.dart';
@@ -84,7 +85,7 @@ class EmployeesListView extends ConsumerWidget {
                 AppErrorBanner(message: l10n.employeesOwnerOnly)
               else
                 async.when(
-                  loading: () => const LinearProgressIndicator(),
+                  loading: () => const AppScreenLoader(),
                   error: (error, _) => Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [

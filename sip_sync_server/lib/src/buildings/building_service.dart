@@ -11,6 +11,7 @@ import '../packs/pack_gate.dart';
 import '../packs/pack_history.dart';
 import '../packs/pack_service.dart';
 import '../packs/pack_term.dart';
+import 'country_names.dart';
 import 'strict_mode.dart';
 
 /// Owner venues; employees can read their assigned building.
@@ -104,6 +105,43 @@ class BuildingService {
     );
   }
 
+  /// Venue counts grouped by country. Super admin only.
+  ///
+  /// Each row is one country, with the venue count and the average coordinates
+  /// so a map can place a marker. Blank names are filled from the ISO code first.
+  Future<List<CountryBuildingStat>> countryStats(Session session) async {
+    AuthGuard.requireSuperAdmin(session);
+    await CountryNames.fillMissing(session);
+    final rows = await session.db.unsafeQuery('''
+SELECT "countryCode", "countryName", COUNT(*)::int, AVG(latitude), AVG(longitude)
+FROM building
+GROUP BY "countryCode", "countryName"
+ORDER BY COUNT(*) DESC, "countryName" ASC
+''');
+    return [
+      for (final row in rows)
+        CountryBuildingStat(
+          countryCode: row[0]! as String,
+          countryName: row[1]! as String,
+          buildingCount: sqlInt(row[2]),
+          latitude: (row[3] as num).toDouble(),
+          longitude: (row[4] as num).toDouble(),
+        ),
+    ];
+  }
+
+  /// Stores the English country name when an older row only has the code.
+  Future<Building> _withCountryName(Session session, Building row) async {
+    if (row.countryName.isNotEmpty) {
+      return row;
+    }
+    final name = PhoneNumbers.countryNameFromCode(row.countryCode);
+    if (name == null) {
+      return row;
+    }
+    return Building.db.updateRow(session, row.copyWith(countryName: name));
+  }
+
   /// Blank search and no pack leave the list unfiltered.
   WhereExpressionBuilder<BuildingTable>? _listWhere({
     required String? query,
@@ -182,6 +220,7 @@ class BuildingService {
           currencyCode: request.currencyCode.trim().toUpperCase(),
           phoneNumber: contact.phoneNumber,
           countryCode: contact.countryCode,
+          countryName: contact.countryName,
           whatsapp: contact.whatsapp,
           instagram: contact.instagram,
           facebook: contact.facebook,
@@ -255,6 +294,7 @@ class BuildingService {
         currencyCode: request.currencyCode.trim().toUpperCase(),
         phoneNumber: contact.phoneNumber,
         countryCode: contact.countryCode,
+        countryName: contact.countryName,
         whatsapp: contact.whatsapp,
         instagram: contact.instagram,
         facebook: contact.facebook,
@@ -346,7 +386,10 @@ class BuildingService {
   }
 
   Future<BuildingView> _view(Session session, Building row) async {
-    final current = await PackExpiry.apply(session, row);
+    final current = await _withCountryName(
+      session,
+      await PackExpiry.apply(session, row),
+    );
     final staff = await Employee.db.find(
       session,
       where: (t) => t.buildingId.equals(current.id!),
@@ -372,6 +415,7 @@ class BuildingService {
       currencyCode: current.currencyCode,
       phoneNumber: current.phoneNumber,
       countryCode: current.countryCode,
+      countryName: current.countryName,
       whatsapp: current.whatsapp,
       instagram: current.instagram,
       facebook: current.facebook,
@@ -501,7 +545,10 @@ class BuildingService {
   }
 
   Future<AdminBuildingDetail> _detail(Session session, Building row) async {
-    final current = await PackExpiry.apply(session, row);
+    final current = await _withCountryName(
+      session,
+      await PackExpiry.apply(session, row),
+    );
     final id = current.id!;
     final pack = current.pack!;
     final categoryCount = await MenuCategory.db.count(
@@ -579,6 +626,7 @@ class BuildingService {
       currencyCode: row.currencyCode,
       phoneNumber: row.phoneNumber,
       countryCode: row.countryCode,
+      countryName: row.countryName,
       whatsapp: row.whatsapp,
       instagram: row.instagram,
       facebook: row.facebook,
@@ -639,6 +687,7 @@ class BuildingService {
   ({
     String phoneNumber,
     String countryCode,
+    String countryName,
     String? whatsapp,
     String? instagram,
     String? facebook,
@@ -652,7 +701,7 @@ class BuildingService {
         code: BuildingErrorCode.invalidInput,
       );
     }
-    final country = PhoneNumbers.countryCodeFromPhone(phone);
+    final country = PhoneNumbers.countryFromPhone(phone);
     if (country == null) {
       throw BuildingException(
         message: 'Unsupported phone country code.',
@@ -686,7 +735,8 @@ class BuildingService {
 
     return (
       phoneNumber: phone,
-      countryCode: country,
+      countryCode: country.codeShort,
+      countryName: PhoneNumbers.countryNameFromCode(country.codeShort)!,
       whatsapp: whatsapp,
       instagram: instagram,
       facebook: facebook,

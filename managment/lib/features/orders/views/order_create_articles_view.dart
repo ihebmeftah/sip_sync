@@ -8,6 +8,7 @@ import '../../../core/errors/error_mapper.dart';
 import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
+import '../../../core/widgets/app_loader.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../products/view_models/articles_view_model.dart';
 import '../../products/view_models/categories_view_model.dart';
@@ -255,8 +256,7 @@ class _OrderCreateArticlesViewState
               ),
               Expanded(
                 child: articlesAsync.when(
-                  loading: () =>
-                      const Center(child: CircularProgressIndicator()),
+                  loading: () => const AppScreenLoader(),
                   error: (error, _) => Padding(
                     padding: const EdgeInsets.all(AppSpacing.xl),
                     child: AppErrorBanner(
@@ -350,7 +350,7 @@ class _OrderCreateArticlesViewState
                 ? const SizedBox(
                     width: 18,
                     height: 18,
-                    child: CircularProgressIndicator(strokeWidth: 2),
+                    child: AppBusyIndicator(),
                   )
                 : Badge(
                     isLabelVisible: draft.totalArticleCount > 0,

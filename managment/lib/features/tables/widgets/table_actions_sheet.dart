@@ -8,6 +8,7 @@ import '../../../core/errors/error_mapper.dart';
 import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
+import '../../../core/widgets/app_loader.dart';
 import '../../../core/widgets/form_presentation.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../orders/view_models/order_draft_view_model.dart';
@@ -221,10 +222,7 @@ class _TableActionsBodyState extends ConsumerState<_TableActionsBody> {
             ),
             const SizedBox(height: AppSpacing.sm),
             if (_loadingOrders)
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: AppSpacing.lg),
-                child: Center(child: CircularProgressIndicator()),
-              )
+              const AppScreenLoader()
             else if (_ordersErrorKey != null)
               Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,

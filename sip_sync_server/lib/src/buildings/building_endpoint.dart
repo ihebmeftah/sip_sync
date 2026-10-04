@@ -41,6 +41,11 @@ class BuildingEndpoint extends Endpoint {
     );
   }
 
+  /// Venue counts by country, with a map point. Super admin only.
+  Future<List<CountryBuildingStat>> countryStats(Session session) {
+    return _buildings.countryStats(session);
+  }
+
   /// Venue, pack, counts, and platform gain. Super admin only.
   Future<AdminBuildingDetail> adminDetail(
     Session session,

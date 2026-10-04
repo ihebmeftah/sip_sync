@@ -5,6 +5,7 @@ import 'package:shadcn_ui/shadcn_ui.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../di/locale_controller.dart';
 import '../theme/app_tokens.dart';
+import 'app_loader.dart';
 
 class AppFilledButton extends StatelessWidget {
   const AppFilledButton({
@@ -28,10 +29,7 @@ class AppFilledButton extends StatelessWidget {
           ? SizedBox(
               height: 16,
               width: 16,
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
-                color: foreground,
-              ),
+              child: AppBusyIndicator(color: foreground),
             )
           : Text(label),
     );

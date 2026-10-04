@@ -8,6 +8,7 @@ import '../../../core/errors/form_validators.dart';
 import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
+import '../../../core/widgets/app_loader.dart';
 import '../../../core/widgets/app_phone_field.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../employee_access/view_models/access_profiles_view_model.dart';
@@ -94,7 +95,7 @@ class _EmployeeFormViewState extends ConsumerState<EmployeeFormView> {
                   style: text.headlineSmall,
                 ),
                 const SizedBox(height: AppSpacing.lg),
-                if (ui.loading) const LinearProgressIndicator(),
+                if (ui.loading) const AppScreenLoader(),
                 AppSurfaceCard(
                   child: Form(
                     key: _formKey,
@@ -144,10 +145,7 @@ class _EmployeeFormViewState extends ConsumerState<EmployeeFormView> {
                                 FormValidators.password(l10n, value),
                           ),
                         profilesAsync.when(
-                          loading: () => const Padding(
-                            padding: EdgeInsets.symmetric(vertical: 12),
-                            child: LinearProgressIndicator(),
-                          ),
+                          loading: () => const AppScreenLoader(compact: true),
                           error: (error, _) => AppErrorBanner(
                             message: lookupError(l10n, mapError(error).l10nKey),
                           ),

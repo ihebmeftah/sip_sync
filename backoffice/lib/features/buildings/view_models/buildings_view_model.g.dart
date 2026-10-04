@@ -37,7 +37,7 @@ final class BuildingsViewModelProvider
 }
 
 String _$buildingsViewModelHash() =>
-    r'a3b207b2662c0e37049faad5cf97d6a6dd40b9fe';
+    r'10cb8c1b4b0e607cf8072257232fe4f18c064b1d';
 
 /// Platform building list for the backoffice console.
 

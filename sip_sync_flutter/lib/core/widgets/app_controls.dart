@@ -6,6 +6,7 @@ import '../di/locale_controller.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../theme/app_icons.dart';
 import '../theme/app_tokens.dart';
+import 'app_loader.dart';
 
 /// Primary action. Stays full width unless [expand] is false.
 ///
@@ -90,8 +91,7 @@ Widget _actionButton(
   final spinner = SizedBox(
     height: 20,
     width: 20,
-    child: CircularProgressIndicator(
-      strokeWidth: 2.4,
+    child: AppBusyIndicator(
       color: tonal ? scheme.onSecondaryContainer : scheme.onPrimary,
     ),
   );
