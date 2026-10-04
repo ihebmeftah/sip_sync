@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/di/app_providers.dart';
+import '../../../core/errors/app_notice.dart';
 import '../../../core/errors/error_mapper.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
+import '../../../core/widgets/list_page_bar.dart';
 import '../../../core/widgets/refresh_on_appear.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../view_models/categories_view_model.dart';
@@ -70,10 +72,23 @@ class _CategoriesListViewState extends ConsumerState<CategoriesListView> {
                       style: FilledButton.styleFrom(
                         minimumSize: const Size(0, 44),
                       ),
-                      onPressed: () => openCategoryForm(
-                        context,
-                        buildingId: widget.buildingId,
-                      ),
+                      onPressed: () {
+                        final pack = ref.read(buildingSelectionProvider)?.pack;
+                        final count = async.asData?.value.total ?? 0;
+                        if (pack != null &&
+                            !allowPackRoom(
+                              context,
+                              max: pack.maxCategories,
+                              current: count,
+                              message: l10n.errorPackLimitCategories,
+                            )) {
+                          return;
+                        }
+                        openCategoryForm(
+                          context,
+                          buildingId: widget.buildingId,
+                        );
+                      },
                       icon: const Icon(Icons.add),
                       label: AppButtonLabel(l10n.addCategory),
                     ),
@@ -100,7 +115,8 @@ class _CategoriesListViewState extends ConsumerState<CategoriesListView> {
                     ),
                   ],
                 ),
-                data: (categories) {
+                data: (page) {
+                  final categories = page.items;
                   if (categories.isEmpty) {
                     return AppSurfaceCard(
                       child: Text(
@@ -110,33 +126,57 @@ class _CategoriesListViewState extends ConsumerState<CategoriesListView> {
                       ),
                     );
                   }
-                  return AppSurfaceCard(
-                    child: Column(
-                      children: [
-                        for (final category in categories)
-                          ListTile(
-                            contentPadding: EdgeInsets.zero,
-                            leading: CircleAvatar(
-                              backgroundColor: scheme.secondaryContainer,
-                              foregroundColor: scheme.onSecondaryContainer,
-                              child: const Icon(Icons.category_outlined),
-                            ),
-                            title: Text(category.name),
-                            subtitle: Text(
-                              (category.description?.trim().isNotEmpty ?? false)
-                                  ? category.description!
-                                  : l10n.noDescription,
-                            ),
-                            onTap: isOwner
-                                ? () => openCategoryForm(
-                                    context,
-                                    buildingId: widget.buildingId,
-                                    existing: category,
-                                  )
-                                : null,
-                          ),
-                      ],
-                    ),
+                  return Column(
+                    children: [
+                      AppSurfaceCard(
+                        child: Column(
+                          children: [
+                            for (final category in categories)
+                              ListTile(
+                                contentPadding: EdgeInsets.zero,
+                                leading: CircleAvatar(
+                                  backgroundColor: scheme.secondaryContainer,
+                                  foregroundColor: scheme.onSecondaryContainer,
+                                  child: const Icon(Icons.category_outlined),
+                                ),
+                                title: Text(category.name),
+                                subtitle: Text(
+                                  (category.description?.trim().isNotEmpty ??
+                                          false)
+                                      ? category.description!
+                                      : l10n.noDescription,
+                                ),
+                                onTap: isOwner
+                                    ? () => openCategoryForm(
+                                        context,
+                                        buildingId: widget.buildingId,
+                                        existing: category,
+                                      )
+                                    : null,
+                              ),
+                          ],
+                        ),
+                      ),
+                      ListPageBar(
+                        total: page.total,
+                        limit: page.limit,
+                        offset: page.offset,
+                        onPrevious: () => ref
+                            .read(
+                              categoriesViewModelProvider(
+                                widget.buildingId,
+                              ).notifier,
+                            )
+                            .previousPage(),
+                        onNext: () => ref
+                            .read(
+                              categoriesViewModelProvider(
+                                widget.buildingId,
+                              ).notifier,
+                            )
+                            .nextPage(),
+                      ),
+                    ],
                   );
                 },
               ),

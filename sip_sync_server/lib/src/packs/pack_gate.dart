@@ -1,6 +1,7 @@
 import 'package:serverpod/serverpod.dart';
 
 import '../generated/protocol.dart';
+import 'pack_expiry.dart';
 
 /// Checks a venue's pack before a write is stored.
 class PackGate {
@@ -14,8 +15,15 @@ class PackGate {
       buildingId,
       include: Building.include(pack: Pack.include()),
     );
-    final pack = building?.pack;
-    if (building == null || pack == null) {
+    if (building == null || building.pack == null) {
+      throw PackException(
+        message: 'This venue has no pack.',
+        code: PackErrorCode.notFound,
+      );
+    }
+    final current = await PackExpiry.apply(session, building);
+    final pack = current.pack;
+    if (pack == null) {
       throw PackException(
         message: 'This venue has no pack.',
         code: PackErrorCode.notFound,
@@ -25,19 +33,24 @@ class PackGate {
   }
 
   /// Rejects a write the pack does not include.
-  static void requireFeature(bool allowed) {
+  static void requireFeature(bool allowed, PackFeature feature) {
     if (!allowed) {
       throw PackException(
         message: 'This pack does not include that.',
         code: PackErrorCode.featureOff,
+        feature: feature,
       );
     }
   }
 
   /// Rejects only when the caller is turning the capability on.
-  static void requireIfRequested(bool requested, bool allowed) {
+  static void requireIfRequested(
+    bool requested,
+    bool allowed,
+    PackFeature feature,
+  ) {
     if (requested) {
-      requireFeature(allowed);
+      requireFeature(allowed, feature);
     }
   }
 
@@ -46,6 +59,7 @@ class PackGate {
     required int? max,
     required int current,
     required int adding,
+    required PackFeature feature,
   }) {
     if (max == null) {
       return;
@@ -54,6 +68,7 @@ class PackGate {
       throw PackException(
         message: 'This pack has reached its limit.',
         code: PackErrorCode.limitReached,
+        feature: feature,
       );
     }
   }

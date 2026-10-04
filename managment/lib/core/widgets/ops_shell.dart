@@ -5,6 +5,7 @@ import 'package:sip_sync_client/sip_sync_client.dart';
 
 import '../../features/auth/view_models/auth_view_model.dart';
 import '../../features/orders/view_models/order_draft_view_model.dart';
+import '../errors/app_notice.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../di/app_providers.dart';
 import '../di/building_session.dart';
@@ -520,9 +521,16 @@ class OpsSideBar extends ConsumerWidget {
                         icon: Icons.qr_code_scanner_outlined,
                         label: l10n.navScanTable,
                         selected: location.contains('/tables/scan'),
-                        onTap: () => TableQrScanRoute(
-                          buildingId: buildingId,
-                        ).go(context),
+                        onTap: () {
+                          final pack = ref
+                              .read(buildingSelectionProvider)
+                              ?.pack;
+                          if (pack != null && !pack.tableQr) {
+                            showAppSnackBar(context, l10n.errorPackFeatureQr);
+                            return;
+                          }
+                          TableQrScanRoute(buildingId: buildingId).go(context);
+                        },
                       ),
                   ],
                 ),

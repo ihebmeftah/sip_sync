@@ -23,7 +23,7 @@ class AccessProfileEditPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
-    final async = ref.watch(accessProfilesViewModelProvider(buildingId));
+    final async = ref.watch(accessCatalogProvider(buildingId));
 
     return async.when(
       loading: () => ColoredBox(
@@ -41,9 +41,8 @@ class AccessProfileEditPage extends ConsumerWidget {
                 message: lookupError(l10n, mapError(error).l10nKey),
               ),
               TextButton(
-                onPressed: () => ref
-                    .read(accessProfilesViewModelProvider(buildingId).notifier)
-                    .refresh(),
+                onPressed: () =>
+                    ref.invalidate(accessCatalogProvider(buildingId)),
                 child: Text(l10n.retry),
               ),
             ],

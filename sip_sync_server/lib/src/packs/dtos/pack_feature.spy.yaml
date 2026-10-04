@@ -1,0 +1,16 @@
+### Which plan rule rejected a write. Lets the app name the limit or the switch.
+enum: PackFeature
+serialized: byName
+values:
+  - employees
+  - tables
+  - categories
+  - articles
+  - ingredients
+  - customerOrdering
+  - inventory
+  - appendingItems
+  - tableMultiOrder
+  - strictMode
+  - customAccessProfiles
+  - tableQr

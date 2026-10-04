@@ -1,0 +1,7 @@
+### One page of venues the caller can open.
+class: BuildingPage
+fields:
+  items: List<BuildingView>
+  total: int
+  limit: int
+  offset: int

@@ -162,7 +162,11 @@ class _TableQrScanViewState extends ConsumerState<TableQrScanView> {
   /// Progress order already seated on [tableId], if any.
   Future<OrderView?> _openOrderForTable(UuidValue tableId) async {
     var orders =
-        ref.read(ordersViewModelProvider(widget.buildingId)).asData?.value ??
+        ref
+            .read(ordersViewModelProvider(widget.buildingId))
+            .asData
+            ?.value
+            .orders ??
         const <OrderView>[];
     if (orders.isEmpty) {
       try {
@@ -173,7 +177,8 @@ class _TableQrScanViewState extends ConsumerState<TableQrScanView> {
             ref
                 .read(ordersViewModelProvider(widget.buildingId))
                 .asData
-                ?.value ??
+                ?.value
+                .orders ??
             const <OrderView>[];
       } catch (_) {
         return null;

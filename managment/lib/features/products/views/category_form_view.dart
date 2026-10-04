@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sip_sync_client/sip_sync_client.dart';
 
+import '../../../core/errors/app_notice.dart';
 import '../../../core/errors/error_mapper.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
@@ -97,7 +98,7 @@ class _CategoryFormViewState extends ConsumerState<CategoryFormView> {
       }
       setState(() {
         _saving = false;
-        _errorKey = mapError(error).l10nKey;
+        _errorKey = captureError(context, error);
       });
     }
   }
@@ -106,7 +107,7 @@ class _CategoryFormViewState extends ConsumerState<CategoryFormView> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final text = Theme.of(context).textTheme;
-    final async = ref.watch(categoriesViewModelProvider(widget.buildingId));
+    final async = ref.watch(categoryCatalogProvider(widget.buildingId));
     final categories = async.asData?.value ?? const <MenuCategoryView>[];
     _fillFromList(categories);
 

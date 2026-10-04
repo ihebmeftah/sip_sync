@@ -15,7 +15,7 @@ const packsViewModelProvider = PacksViewModelProvider._();
 
 /// Pack catalog plus create, update, and delete.
 final class PacksViewModelProvider
-    extends $AsyncNotifierProvider<PacksViewModel, List<PackView>> {
+    extends $AsyncNotifierProvider<PacksViewModel, PackPage> {
   /// Pack catalog plus create, update, and delete.
   const PacksViewModelProvider._()
     : super(
@@ -36,22 +36,22 @@ final class PacksViewModelProvider
   PacksViewModel create() => PacksViewModel();
 }
 
-String _$packsViewModelHash() => r'246903f9ed35f94637c2e09930e3be7601c2c7b4';
+String _$packsViewModelHash() => r'61f992442a4379f10ccea59ffc7f524dee665148';
 
 /// Pack catalog plus create, update, and delete.
 
-abstract class _$PacksViewModel extends $AsyncNotifier<List<PackView>> {
-  FutureOr<List<PackView>> build();
+abstract class _$PacksViewModel extends $AsyncNotifier<PackPage> {
+  FutureOr<PackPage> build();
   @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<AsyncValue<List<PackView>>, List<PackView>>;
+    final ref = this.ref as $Ref<AsyncValue<PackPage>, PackPage>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<AsyncValue<List<PackView>>, List<PackView>>,
-              AsyncValue<List<PackView>>,
+              AnyNotifier<AsyncValue<PackPage>, PackPage>,
+              AsyncValue<PackPage>,
               Object?,
               Object?
             >;

@@ -27,6 +27,8 @@ import 'package:sip_sync_server/src/generated/auth/dtos/email_register_create.da
     as _i3wgjxde;
 import 'package:sip_sync_server/src/generated/auth/dtos/employee_create.dart'
     as _iohyx14n;
+import 'package:sip_sync_server/src/generated/auth/dtos/employee_page.dart'
+    as _idbtbw90;
 import 'package:sip_sync_server/src/generated/auth/dtos/employee_session_view.dart'
     as _im3kt6yf;
 import 'package:sip_sync_server/src/generated/auth/dtos/employee_update.dart'
@@ -41,12 +43,14 @@ import 'package:sip_sync_server/src/generated/auth/dtos/password_reset_request.d
     as _i533dha7;
 import 'package:sip_sync_server/src/generated/auth/dtos/password_reset_request_result.dart'
     as _ilnozemj;
-import 'package:sip_sync_server/src/generated/auth/dtos/platform_person_view.dart'
-    as _ibjv9650;
+import 'package:sip_sync_server/src/generated/auth/dtos/platform_person_page.dart'
+    as _iwh5zyn1;
 import 'package:sip_sync_server/src/generated/auth/dtos/profile_update.dart'
     as _itbs72nt;
 import 'package:sip_sync_server/src/generated/auth/dtos/super_admin_create.dart'
     as _in2dfwpu;
+import 'package:sip_sync_server/src/generated/auth/dtos/super_admin_page.dart'
+    as _ilmi4b6s;
 import 'package:sip_sync_server/src/generated/auth/dtos/super_admin_session_view.dart'
     as _ih5b3z5q;
 import 'package:sip_sync_server/src/generated/auth/dtos/super_admin_update.dart'
@@ -57,10 +61,12 @@ import 'package:sip_sync_server/src/generated/auth/dtos/username_login_request.d
     as _imoptt9g;
 import 'package:sip_sync_server/src/generated/buildings/dtos/admin_building_detail.dart'
     as _iphz3a1t;
-import 'package:sip_sync_server/src/generated/buildings/dtos/admin_building_view.dart'
-    as _idzabrxr;
+import 'package:sip_sync_server/src/generated/buildings/dtos/admin_building_page.dart'
+    as _iqww4u55;
 import 'package:sip_sync_server/src/generated/buildings/dtos/building_create.dart'
     as _iwyazuzj;
+import 'package:sip_sync_server/src/generated/buildings/dtos/building_page.dart'
+    as _ihtp62ds;
 import 'package:sip_sync_server/src/generated/buildings/dtos/building_update.dart'
     as _ikeccdvf;
 import 'package:sip_sync_server/src/generated/buildings/dtos/building_view.dart'
@@ -69,14 +75,16 @@ import 'package:sip_sync_server/src/generated/discovery/dtos/customer_menu.dart'
     as _inirmmjl;
 import 'package:sip_sync_server/src/generated/discovery/dtos/customer_seated_table.dart'
     as _if8zdks2;
-import 'package:sip_sync_server/src/generated/discovery/dtos/customer_venue_card.dart'
-    as _ik4e6xte;
 import 'package:sip_sync_server/src/generated/discovery/dtos/customer_venue_detail.dart'
     as _i50xcjlc;
+import 'package:sip_sync_server/src/generated/discovery/dtos/customer_venue_page.dart'
+    as _i8l1wjiz;
 import 'package:sip_sync_server/src/generated/discovery/dtos/place_hit.dart'
     as _ibuzraci;
 import 'package:sip_sync_server/src/generated/employee_access/dtos/employee_access_create.dart'
     as _iidenruw;
+import 'package:sip_sync_server/src/generated/employee_access/dtos/employee_access_page.dart'
+    as _iwfpbwk8;
 import 'package:sip_sync_server/src/generated/employee_access/dtos/employee_access_update.dart'
     as _if6umj7e;
 import 'package:sip_sync_server/src/generated/employee_access/dtos/employee_access_view.dart'
@@ -89,6 +97,8 @@ import 'package:sip_sync_server/src/generated/menu/dtos/article_composition_view
     as _ismrnuo7;
 import 'package:sip_sync_server/src/generated/menu/dtos/ingredient_create.dart'
     as _iplysw6f;
+import 'package:sip_sync_server/src/generated/menu/dtos/ingredient_page.dart'
+    as _i441irke;
 import 'package:sip_sync_server/src/generated/menu/dtos/ingredient_restock.dart'
     as _ibya07f7;
 import 'package:sip_sync_server/src/generated/menu/dtos/ingredient_view.dart'
@@ -101,16 +111,18 @@ import 'package:sip_sync_server/src/generated/menu/dtos/menu_article_view.dart'
     as _iftzx4at;
 import 'package:sip_sync_server/src/generated/menu/dtos/menu_category_create.dart'
     as _i2o0r9sg;
+import 'package:sip_sync_server/src/generated/menu/dtos/menu_category_page.dart'
+    as _iudfgg9b;
 import 'package:sip_sync_server/src/generated/menu/dtos/menu_category_update.dart'
     as _i8wyftia;
 import 'package:sip_sync_server/src/generated/menu/dtos/menu_category_view.dart'
     as _i87rh1jz;
 import 'package:sip_sync_server/src/generated/orders/dtos/customer_order_append.dart'
     as _ixtfjwlp;
+import 'package:sip_sync_server/src/generated/orders/dtos/customer_order_page.dart'
+    as _i4o0sgti;
 import 'package:sip_sync_server/src/generated/orders/dtos/customer_order_place.dart'
     as _iyljqgq2;
-import 'package:sip_sync_server/src/generated/orders/dtos/customer_order_summary.dart'
-    as _ivmn58qf;
 import 'package:sip_sync_server/src/generated/orders/dtos/customer_order_view.dart'
     as _i43y7jrp;
 import 'package:sip_sync_server/src/generated/orders/dtos/order_add_items.dart'
@@ -119,12 +131,18 @@ import 'package:sip_sync_server/src/generated/orders/dtos/order_create.dart'
     as _i5j23umo;
 import 'package:sip_sync_server/src/generated/orders/dtos/order_item_status_update.dart'
     as _itxma5c4;
+import 'package:sip_sync_server/src/generated/orders/dtos/order_page.dart'
+    as _ib6n4fyq;
 import 'package:sip_sync_server/src/generated/orders/dtos/order_status.dart'
     as _i9w9m1jz;
 import 'package:sip_sync_server/src/generated/orders/dtos/order_view.dart'
     as _i6r0fe4s;
+import 'package:sip_sync_server/src/generated/packs/dtos/pack_billing_period.dart'
+    as _is2535ld;
 import 'package:sip_sync_server/src/generated/packs/dtos/pack_create.dart'
     as _iijils8v;
+import 'package:sip_sync_server/src/generated/packs/dtos/pack_page.dart'
+    as _iqjfyzlz;
 import 'package:sip_sync_server/src/generated/packs/dtos/pack_public_view.dart'
     as _itvm5eqz;
 import 'package:sip_sync_server/src/generated/packs/dtos/pack_update.dart'
@@ -1127,9 +1145,11 @@ class _PlatformDirectoryEndpoint {
 
   final _is.SerializationManager _serializationManager;
 
-  _ida.Future<List<_ibjv9650.PlatformPersonView>> listOwners(
-    _ist.TestSessionBuilder sessionBuilder,
-  ) async {
+  _ida.Future<_iwh5zyn1.PlatformPersonPage> listOwners(
+    _ist.TestSessionBuilder sessionBuilder, {
+    int? limit,
+    int? offset,
+  }) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
           (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
@@ -1141,7 +1161,10 @@ class _PlatformDirectoryEndpoint {
           createSessionCallback: (_) => _localUniqueSession,
           endpointPath: 'platformDirectory',
           methodName: 'listOwners',
-          parameters: _ist.testObjectToJson({}),
+          parameters: _ist.testObjectToJson({
+            'limit': limit,
+            'offset': offset,
+          }),
           serializationManager: _serializationManager,
         );
         var _localReturnValue =
@@ -1149,7 +1172,7 @@ class _PlatformDirectoryEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _ida.Future<List<_ibjv9650.PlatformPersonView>>);
+                as _ida.Future<_iwh5zyn1.PlatformPersonPage>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1157,9 +1180,11 @@ class _PlatformDirectoryEndpoint {
     });
   }
 
-  _ida.Future<List<_ibjv9650.PlatformPersonView>> listCustomers(
-    _ist.TestSessionBuilder sessionBuilder,
-  ) async {
+  _ida.Future<_iwh5zyn1.PlatformPersonPage> listCustomers(
+    _ist.TestSessionBuilder sessionBuilder, {
+    int? limit,
+    int? offset,
+  }) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
           (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
@@ -1171,7 +1196,10 @@ class _PlatformDirectoryEndpoint {
           createSessionCallback: (_) => _localUniqueSession,
           endpointPath: 'platformDirectory',
           methodName: 'listCustomers',
-          parameters: _ist.testObjectToJson({}),
+          parameters: _ist.testObjectToJson({
+            'limit': limit,
+            'offset': offset,
+          }),
           serializationManager: _serializationManager,
         );
         var _localReturnValue =
@@ -1179,7 +1207,7 @@ class _PlatformDirectoryEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _ida.Future<List<_ibjv9650.PlatformPersonView>>);
+                as _ida.Future<_iwh5zyn1.PlatformPersonPage>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1384,9 +1412,11 @@ class _SuperAdminAuthEndpoint {
     });
   }
 
-  _ida.Future<List<_iubtczqk.SuperAdminView>> list(
-    _ist.TestSessionBuilder sessionBuilder,
-  ) async {
+  _ida.Future<_ilmi4b6s.SuperAdminPage> list(
+    _ist.TestSessionBuilder sessionBuilder, {
+    int? limit,
+    int? offset,
+  }) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
           (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
@@ -1398,7 +1428,10 @@ class _SuperAdminAuthEndpoint {
           createSessionCallback: (_) => _localUniqueSession,
           endpointPath: 'superAdminAuth',
           methodName: 'list',
-          parameters: _ist.testObjectToJson({}),
+          parameters: _ist.testObjectToJson({
+            'limit': limit,
+            'offset': offset,
+          }),
           serializationManager: _serializationManager,
         );
         var _localReturnValue =
@@ -1406,7 +1439,7 @@ class _SuperAdminAuthEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _ida.Future<List<_iubtczqk.SuperAdminView>>);
+                as _ida.Future<_ilmi4b6s.SuperAdminPage>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1486,9 +1519,11 @@ class _BuildingEndpoint {
 
   final _is.SerializationManager _serializationManager;
 
-  _ida.Future<List<_ihha274w.BuildingView>> listMine(
-    _ist.TestSessionBuilder sessionBuilder,
-  ) async {
+  _ida.Future<_ihtp62ds.BuildingPage> listMine(
+    _ist.TestSessionBuilder sessionBuilder, {
+    int? limit,
+    int? offset,
+  }) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
           (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
@@ -1500,7 +1535,10 @@ class _BuildingEndpoint {
           createSessionCallback: (_) => _localUniqueSession,
           endpointPath: 'building',
           methodName: 'listMine',
-          parameters: _ist.testObjectToJson({}),
+          parameters: _ist.testObjectToJson({
+            'limit': limit,
+            'offset': offset,
+          }),
           serializationManager: _serializationManager,
         );
         var _localReturnValue =
@@ -1508,7 +1546,7 @@ class _BuildingEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _ida.Future<List<_ihha274w.BuildingView>>);
+                as _ida.Future<_ihtp62ds.BuildingPage>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1516,9 +1554,11 @@ class _BuildingEndpoint {
     });
   }
 
-  _ida.Future<List<_idzabrxr.AdminBuildingView>> listAll(
-    _ist.TestSessionBuilder sessionBuilder,
-  ) async {
+  _ida.Future<_iqww4u55.AdminBuildingPage> listAll(
+    _ist.TestSessionBuilder sessionBuilder, {
+    int? limit,
+    int? offset,
+  }) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
           (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
@@ -1530,7 +1570,10 @@ class _BuildingEndpoint {
           createSessionCallback: (_) => _localUniqueSession,
           endpointPath: 'building',
           methodName: 'listAll',
-          parameters: _ist.testObjectToJson({}),
+          parameters: _ist.testObjectToJson({
+            'limit': limit,
+            'offset': offset,
+          }),
           serializationManager: _serializationManager,
         );
         var _localReturnValue =
@@ -1538,7 +1581,7 @@ class _BuildingEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _ida.Future<List<_idzabrxr.AdminBuildingView>>);
+                as _ida.Future<_iqww4u55.AdminBuildingPage>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1580,8 +1623,10 @@ class _BuildingEndpoint {
   _ida.Future<_iphz3a1t.AdminBuildingDetail> assignPack(
     _ist.TestSessionBuilder sessionBuilder,
     _is.UuidValue buildingId,
-    _is.UuidValue packId,
-  ) async {
+    _is.UuidValue packId, {
+    _is2535ld.PackBillingPeriod? billingPeriod,
+    DateTime? expiresAt,
+  }) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
           (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
@@ -1596,6 +1641,8 @@ class _BuildingEndpoint {
           parameters: _ist.testObjectToJson({
             'buildingId': buildingId,
             'packId': packId,
+            'billingPeriod': billingPeriod,
+            'expiresAt': expiresAt,
           }),
           serializationManager: _serializationManager,
         );
@@ -1705,10 +1752,12 @@ class _BuildingEndpoint {
     });
   }
 
-  _ida.Future<List<_im8o31wm.EmployeeView>> listEmployees(
+  _ida.Future<_idbtbw90.EmployeePage> listEmployees(
     _ist.TestSessionBuilder sessionBuilder,
-    _is.UuidValue buildingId,
-  ) async {
+    _is.UuidValue buildingId, {
+    int? limit,
+    int? offset,
+  }) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
           (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
@@ -1720,7 +1769,11 @@ class _BuildingEndpoint {
           createSessionCallback: (_) => _localUniqueSession,
           endpointPath: 'building',
           methodName: 'listEmployees',
-          parameters: _ist.testObjectToJson({'buildingId': buildingId}),
+          parameters: _ist.testObjectToJson({
+            'buildingId': buildingId,
+            'limit': limit,
+            'offset': offset,
+          }),
           serializationManager: _serializationManager,
         );
         var _localReturnValue =
@@ -1728,7 +1781,7 @@ class _BuildingEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _ida.Future<List<_im8o31wm.EmployeeView>>);
+                as _ida.Future<_idbtbw90.EmployeePage>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1824,9 +1877,14 @@ class _CustomerVenueEndpoint {
 
   final _is.SerializationManager _serializationManager;
 
-  _ida.Future<List<_ik4e6xte.CustomerVenueCard>> list(
-    _ist.TestSessionBuilder sessionBuilder,
-  ) async {
+  _ida.Future<_i8l1wjiz.CustomerVenuePage> list(
+    _ist.TestSessionBuilder sessionBuilder, {
+    int? limit,
+    int? offset,
+    double? latitude,
+    double? longitude,
+    required bool nearbyOnly,
+  }) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
           (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
@@ -1838,7 +1896,13 @@ class _CustomerVenueEndpoint {
           createSessionCallback: (_) => _localUniqueSession,
           endpointPath: 'customerVenue',
           methodName: 'list',
-          parameters: _ist.testObjectToJson({}),
+          parameters: _ist.testObjectToJson({
+            'limit': limit,
+            'offset': offset,
+            'latitude': latitude,
+            'longitude': longitude,
+            'nearbyOnly': nearbyOnly,
+          }),
           serializationManager: _serializationManager,
         );
         var _localReturnValue =
@@ -1846,7 +1910,7 @@ class _CustomerVenueEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _ida.Future<List<_ik4e6xte.CustomerVenueCard>>);
+                as _ida.Future<_i8l1wjiz.CustomerVenuePage>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1887,8 +1951,10 @@ class _CustomerVenueEndpoint {
 
   _ida.Future<_inirmmjl.CustomerMenu> menu(
     _ist.TestSessionBuilder sessionBuilder,
-    _is.UuidValue buildingId,
-  ) async {
+    _is.UuidValue buildingId, {
+    int? limit,
+    int? offset,
+  }) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
           (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
@@ -1900,7 +1966,11 @@ class _CustomerVenueEndpoint {
           createSessionCallback: (_) => _localUniqueSession,
           endpointPath: 'customerVenue',
           methodName: 'menu',
-          parameters: _ist.testObjectToJson({'buildingId': buildingId}),
+          parameters: _ist.testObjectToJson({
+            'buildingId': buildingId,
+            'limit': limit,
+            'offset': offset,
+          }),
           serializationManager: _serializationManager,
         );
         var _localReturnValue =
@@ -1964,10 +2034,12 @@ class _EmployeeAccessEndpoint {
 
   final _is.SerializationManager _serializationManager;
 
-  _ida.Future<List<_iwktg9rv.EmployeeAccessView>> list(
+  _ida.Future<_iwfpbwk8.EmployeeAccessPage> list(
     _ist.TestSessionBuilder sessionBuilder,
-    _is.UuidValue buildingId,
-  ) async {
+    _is.UuidValue buildingId, {
+    int? limit,
+    int? offset,
+  }) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
           (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
@@ -1979,7 +2051,11 @@ class _EmployeeAccessEndpoint {
           createSessionCallback: (_) => _localUniqueSession,
           endpointPath: 'employeeAccess',
           methodName: 'list',
-          parameters: _ist.testObjectToJson({'buildingId': buildingId}),
+          parameters: _ist.testObjectToJson({
+            'buildingId': buildingId,
+            'limit': limit,
+            'offset': offset,
+          }),
           serializationManager: _serializationManager,
         );
         var _localReturnValue =
@@ -1987,7 +2063,7 @@ class _EmployeeAccessEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _ida.Future<List<_iwktg9rv.EmployeeAccessView>>);
+                as _ida.Future<_iwfpbwk8.EmployeeAccessPage>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -2265,10 +2341,12 @@ class _IngredientEndpoint {
 
   final _is.SerializationManager _serializationManager;
 
-  _ida.Future<List<_i9jh3lrs.IngredientView>> list(
+  _ida.Future<_i441irke.IngredientPage> list(
     _ist.TestSessionBuilder sessionBuilder,
-    _is.UuidValue buildingId,
-  ) async {
+    _is.UuidValue buildingId, {
+    int? limit,
+    int? offset,
+  }) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
           (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
@@ -2280,7 +2358,11 @@ class _IngredientEndpoint {
           createSessionCallback: (_) => _localUniqueSession,
           endpointPath: 'ingredient',
           methodName: 'list',
-          parameters: _ist.testObjectToJson({'buildingId': buildingId}),
+          parameters: _ist.testObjectToJson({
+            'buildingId': buildingId,
+            'limit': limit,
+            'offset': offset,
+          }),
           serializationManager: _serializationManager,
         );
         var _localReturnValue =
@@ -2288,7 +2370,7 @@ class _IngredientEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _ida.Future<List<_i9jh3lrs.IngredientView>>);
+                as _ida.Future<_i441irke.IngredientPage>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -2504,10 +2586,12 @@ class _MenuCategoryEndpoint {
 
   final _is.SerializationManager _serializationManager;
 
-  _ida.Future<List<_i87rh1jz.MenuCategoryView>> list(
+  _ida.Future<_iudfgg9b.MenuCategoryPage> list(
     _ist.TestSessionBuilder sessionBuilder,
-    _is.UuidValue buildingId,
-  ) async {
+    _is.UuidValue buildingId, {
+    int? limit,
+    int? offset,
+  }) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
           (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
@@ -2519,7 +2603,11 @@ class _MenuCategoryEndpoint {
           createSessionCallback: (_) => _localUniqueSession,
           endpointPath: 'menuCategory',
           methodName: 'list',
-          parameters: _ist.testObjectToJson({'buildingId': buildingId}),
+          parameters: _ist.testObjectToJson({
+            'buildingId': buildingId,
+            'limit': limit,
+            'offset': offset,
+          }),
           serializationManager: _serializationManager,
         );
         var _localReturnValue =
@@ -2527,7 +2615,7 @@ class _MenuCategoryEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _ida.Future<List<_i87rh1jz.MenuCategoryView>>);
+                as _ida.Future<_iudfgg9b.MenuCategoryPage>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -2639,11 +2727,13 @@ class _CustomerOrderEndpoint {
     });
   }
 
-  _ida.Future<List<_ivmn58qf.CustomerOrderSummary>> list(
+  _ida.Future<_i4o0sgti.CustomerOrderPage> list(
     _ist.TestSessionBuilder sessionBuilder,
     DateTime from,
-    DateTime to,
-  ) async {
+    DateTime to, {
+    int? limit,
+    int? offset,
+  }) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
           (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
@@ -2658,6 +2748,8 @@ class _CustomerOrderEndpoint {
           parameters: _ist.testObjectToJson({
             'from': from,
             'to': to,
+            'limit': limit,
+            'offset': offset,
           }),
           serializationManager: _serializationManager,
         );
@@ -2666,7 +2758,7 @@ class _CustomerOrderEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _ida.Future<List<_ivmn58qf.CustomerOrderSummary>>);
+                as _ida.Future<_i4o0sgti.CustomerOrderPage>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -2777,11 +2869,14 @@ class _OrderEndpoint {
 
   final _is.SerializationManager _serializationManager;
 
-  _ida.Future<List<_i6r0fe4s.OrderView>> list(
+  _ida.Future<_ib6n4fyq.OrderPage> list(
     _ist.TestSessionBuilder sessionBuilder,
     _is.UuidValue buildingId,
-    _i9w9m1jz.OrderStatus? status,
-  ) async {
+    _i9w9m1jz.OrderStatus? status, {
+    _is.UuidValue? venueTableId,
+    int? limit,
+    int? offset,
+  }) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
           (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
@@ -2796,6 +2891,9 @@ class _OrderEndpoint {
           parameters: _ist.testObjectToJson({
             'buildingId': buildingId,
             'status': status,
+            'venueTableId': venueTableId,
+            'limit': limit,
+            'offset': offset,
           }),
           serializationManager: _serializationManager,
         );
@@ -2804,7 +2902,7 @@ class _OrderEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _ida.Future<List<_i6r0fe4s.OrderView>>);
+                as _ida.Future<_ib6n4fyq.OrderPage>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -2978,9 +3076,11 @@ class _PackEndpoint {
 
   final _is.SerializationManager _serializationManager;
 
-  _ida.Future<List<_i1rdqyf4.PackView>> list(
-    _ist.TestSessionBuilder sessionBuilder,
-  ) async {
+  _ida.Future<_iqjfyzlz.PackPage> list(
+    _ist.TestSessionBuilder sessionBuilder, {
+    int? limit,
+    int? offset,
+  }) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
           (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
@@ -2992,7 +3092,10 @@ class _PackEndpoint {
           createSessionCallback: (_) => _localUniqueSession,
           endpointPath: 'pack',
           methodName: 'list',
-          parameters: _ist.testObjectToJson({}),
+          parameters: _ist.testObjectToJson({
+            'limit': limit,
+            'offset': offset,
+          }),
           serializationManager: _serializationManager,
         );
         var _localReturnValue =
@@ -3000,7 +3103,7 @@ class _PackEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _ida.Future<List<_i1rdqyf4.PackView>>);
+                as _ida.Future<_iqjfyzlz.PackPage>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();

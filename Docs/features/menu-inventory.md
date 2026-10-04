@@ -15,9 +15,9 @@ Customer menu read comes later; management order create already deducts composit
 ## Flow
 
 1. Open a venue → **Products** in the ops rail.
-2. **Categories** — per-building catalog groups. Owner create/edit: **mobile** full-screen form; **wide** dialog.
+2. **Categories** — per-building catalog groups, 20 per page. Owner create/edit: **mobile** full-screen form; **wide** dialog. Article forms still load every category.
 3. **Articles** — sellable items (category, price). Composition is **optional**: an article can have zero recipe lines. Owner create/edit: **mobile** full-screen form; **wide** dialog.
-4. **Ingredients** — stock rows (`initialStock`, `currentStock`, `thresholdStock`) with a fill bar (`current / initial`), low-stock badge when `currentStock <= thresholdStock`, and **Restock** (owner/employee) to add incoming quantity (raises `initialStock` when the new level exceeds the previous full mark). Owner create ingredient: **mobile** full-screen form; **wide** dialog. Restock stays a dialog.
+4. **Ingredients** — stock rows, 20 per page (`initialStock`, `currentStock`, `thresholdStock`) with a fill bar (`current / initial`), low-stock badge when `currentStock <= thresholdStock`, and **Restock** (owner/employee) to add incoming quantity (raises `initialStock` when the new level exceeds the previous full mark). Owner create ingredient: **mobile** full-screen form; **wide** dialog. Restock stays a dialog. Recipe editors still load every ingredient.
 5. From an article, open **Composition** to add ingredient + quantity lines (quantity uses that ingredient’s unit). Same ingredient cannot appear twice on one article. Presentation: **mobile** full-screen; **wide** dialog.
 6. Names remain unique per building for categories, articles, and ingredients.
 

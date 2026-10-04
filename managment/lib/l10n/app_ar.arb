@@ -525,5 +525,22 @@
   },
   "packBannerHint": "لتغيير الباقة، تواصل مع فريق الدعم.",
   "errorPackLimit": "بلغت هذه الباقة حدها.",
-  "errorPackFeature": "هذه الباقة لا تشمل ذلك."
+  "errorPackFeature": "هذه الباقة لا تشمل ذلك.",
+  "errorPackLimitEmployees": "بلغت هذه الباقة حد الموظفين.",
+  "errorPackLimitTables": "بلغت هذه الباقة حد الطاولات.",
+  "errorPackLimitCategories": "بلغت هذه الباقة حد الفئات.",
+  "errorPackLimitArticles": "بلغت هذه الباقة حد الأصناف.",
+  "errorPackLimitIngredients": "بلغت هذه الباقة حد المكونات.",
+  "errorPackFeatureOrdering": "هذه الباقة لا تشمل طلبات الزبائن.",
+  "errorPackFeatureInventory": "هذه الباقة لا تشمل المخزون.",
+  "errorPackFeatureAppend": "هذه الباقة لا تشمل إضافة أصناف إلى طلب مفتوح.",
+  "errorPackFeatureMultiOrder": "هذه الباقة لا تشمل أكثر من طلب على الطاولة.",
+  "errorPackFeatureStrict": "هذه الباقة لا تشمل خطوات الطلب الصارمة.",
+  "errorPackFeatureAccess": "هذه الباقة لا تشمل ملفات صلاحيات مخصصة.",
+  "errorPackFeatureQr": "هذه الباقة لا تشمل رموز QR للطاولات.",
+  "errorPackPaidActive": "هذا المكان على باقة مدفوعة.",
+  "previousPage": "السابق",
+  "nextPage": "التالي",
+  "pageOf": "{current} / {total}",
+  "loadingMore": "جارٍ تحميل المزيد…"
 }

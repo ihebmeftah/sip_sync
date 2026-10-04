@@ -1,10 +1,56 @@
 import 'package:serverpod/serverpod.dart';
 
+import '../core/page_window.dart';
 import '../generated/protocol.dart';
+import '../packs/pack_expiry.dart';
 
 /// Customer-facing venue page and menu. Hides owner, staff, and stock.
 class CustomerVenueService {
   static const previewLimit = 5;
+
+  /// Same radius the customer app uses for the nearby chip.
+  static const nearbyRadiusKm = 15.0;
+
+  /// Discovery cards. Name order, or nearest first when a place is set.
+  Future<CustomerVenuePage> list(
+    Session session, {
+    int? limit,
+    int? offset,
+    double? latitude,
+    double? longitude,
+    bool nearbyOnly = false,
+  }) async {
+    await PackExpiry.revertDue(session);
+    final window = PageWindow.from(limit: limit, offset: offset);
+    final hasOrigin = latitude != null && longitude != null;
+    if (hasOrigin && session.db.dialect == DatabaseDialect.postgres) {
+      return _listByDistance(
+        session,
+        window: window,
+        latitude: latitude,
+        longitude: longitude,
+        nearbyOnly: nearbyOnly,
+      );
+    }
+    Expression where(BuildingTable t) => t.pack.customerDiscovery.equals(true);
+    final total = await Building.db.count(session, where: where);
+    final rows = await Building.db.find(
+      session,
+      where: where,
+      orderBy: (t) => t.name,
+      limit: window.limit,
+      offset: window.offset,
+    );
+    return CustomerVenuePage(
+      items: [
+        for (final row in rows)
+          if (row.id != null) _card(row),
+      ],
+      total: total,
+      limit: window.limit,
+      offset: window.offset,
+    );
+  }
 
   /// Venue card, free tables, and the top categories and articles.
   ///
@@ -61,38 +107,74 @@ class CustomerVenueService {
             ingredientNames: ingredients[row.id!.uuid] ?? const [],
           ),
       ],
+      customerOrdering: building.pack?.customerOrdering == true,
     );
   }
 
-  /// Every category in creation order, with its articles in creation order.
-  Future<CustomerMenu> menu(Session session, UuidValue buildingId) async {
+  /// One article window in catalog order, plus the full category index.
+  Future<CustomerMenu> menu(
+    Session session,
+    UuidValue buildingId, {
+    int? limit,
+    int? offset,
+  }) async {
     final building = await _building(session, buildingId);
+    final window = PageWindow.from(limit: limit, offset: offset);
     final categories = await _categories(session, buildingId);
-    final articles = await _articles(session, buildingId);
+    final counts = await _articleCounts(session, buildingId);
+    final totalArticles = counts.values.fold<int>(
+      0,
+      (sum, count) => sum + count,
+    );
+    final articleIds = await _articlePageIds(session, buildingId, window);
+    final articles = await _articlesByIds(session, articleIds);
     final ingredients = await _ingredientNames(session, articles);
-    return CustomerMenu(
-      currencyCode: building.currencyCode,
-      sections: [
-        for (final category in categories)
-          CustomerMenuSection(
+    final names = {for (final row in categories) row.id!.uuid: row.name};
+    final previews = [
+      for (final row in articles)
+        CustomerArticlePreview(
+          id: row.id!,
+          categoryId: row.categoryId,
+          categoryName: names[row.categoryId.uuid] ?? '',
+          name: row.name,
+          description: row.description,
+          price: row.price,
+          ingredientNames: ingredients[row.id!.uuid] ?? const [],
+        ),
+    ];
+    final byCategory = <String, List<CustomerArticlePreview>>{};
+    for (final article in previews) {
+      byCategory.putIfAbsent(article.categoryId.uuid, () => []).add(article);
+    }
+    final index = [
+      for (final category in categories)
+        if (category.id != null)
+          CustomerCategoryPreview(
             id: category.id!,
             name: category.name,
             description: category.description,
-            articles: [
-              for (final article in articles)
-                if (article.categoryId == category.id)
-                  CustomerArticlePreview(
-                    id: article.id!,
-                    categoryId: article.categoryId,
-                    categoryName: category.name,
-                    name: article.name,
-                    description: article.description,
-                    price: article.price,
-                    ingredientNames: ingredients[article.id!.uuid] ?? const [],
-                  ),
-            ],
+            articleCount: counts[category.id!.uuid] ?? 0,
           ),
+    ];
+    return CustomerMenu(
+      currencyCode: building.currencyCode,
+      sections: [
+        for (final category in index)
+          if (category.articleCount == 0 ||
+              byCategory.containsKey(category.id.uuid))
+            CustomerMenuSection(
+              id: category.id,
+              name: category.name,
+              description: category.description,
+              articles: byCategory[category.id.uuid] ?? const [],
+            ),
       ],
+      customerOrdering: building.pack?.customerOrdering == true,
+      categories: index,
+      articles: previews,
+      totalArticles: totalArticles,
+      limit: window.limit,
+      offset: window.offset,
     );
   }
 
@@ -102,15 +184,20 @@ class CustomerVenueService {
       buildingId,
       include: Building.include(pack: Pack.include()),
     );
-    if (building == null ||
-        building.id == null ||
-        building.pack?.customerDiscovery != true) {
+    if (building == null || building.id == null) {
       throw BuildingException(
         message: 'Venue not found.',
         code: BuildingErrorCode.notFound,
       );
     }
-    return building;
+    final current = await PackExpiry.apply(session, building);
+    if (current.pack?.customerDiscovery != true) {
+      throw BuildingException(
+        message: 'Venue not found.',
+        code: BuildingErrorCode.notFound,
+      );
+    }
+    return current;
   }
 
   Future<List<MenuCategory>> _categories(
@@ -133,6 +220,134 @@ class CustomerVenueService {
       where: (t) => t.buildingId.equals(buildingId),
       orderBy: (t) => t.createdAt,
     );
+  }
+
+  Future<CustomerVenuePage> _listByDistance(
+    Session session, {
+    required PageWindow window,
+    required double latitude,
+    required double longitude,
+    required bool nearbyOnly,
+  }) async {
+    const distance = '''
+6371.0 * acos(LEAST(1.0, GREATEST(-1.0,
+  cos(radians(@lat)) * cos(radians(b.latitude))
+  * cos(radians(b.longitude) - radians(@lon))
+  + sin(radians(@lat)) * sin(radians(b.latitude))
+)))''';
+    const from =
+        '''
+FROM building b
+INNER JOIN pack p ON p.id = b."packId"
+WHERE p."customerDiscovery" = true
+AND (
+  @nearbyOnly = false
+  OR ($distance) <= @radius
+)''';
+    final origin = QueryParameters.named({
+      'lat': latitude,
+      'lon': longitude,
+      'nearbyOnly': nearbyOnly,
+      'radius': nearbyRadiusKm,
+    });
+    final counted = await session.db.unsafeQuery(
+      'SELECT count(*)::int $from',
+      parameters: origin,
+    );
+    final ranked = await session.db.unsafeQuery(
+      'SELECT b.id::text $from ORDER BY ($distance) ASC, b.name ASC LIMIT @limit OFFSET @offset',
+      parameters: QueryParameters.named({
+        'lat': latitude,
+        'lon': longitude,
+        'nearbyOnly': nearbyOnly,
+        'radius': nearbyRadiusKm,
+        'limit': window.limit,
+        'offset': window.offset,
+      }),
+    );
+    final total = counted.isEmpty ? 0 : sqlInt(counted.first.first);
+    final ids = [for (final row in ranked) sqlUuid(row.first)];
+    if (ids.isEmpty) {
+      return CustomerVenuePage(
+        items: const [],
+        total: total,
+        limit: window.limit,
+        offset: window.offset,
+      );
+    }
+    final rows = await Building.db.find(
+      session,
+      where: (t) => t.id.inSet(ids.toSet()),
+    );
+    final byId = {for (final row in rows) row.id: row};
+    return CustomerVenuePage(
+      items: [
+        for (final id in ids)
+          if (byId[id] != null) _card(byId[id]!),
+      ],
+      total: total,
+      limit: window.limit,
+      offset: window.offset,
+    );
+  }
+
+  Future<Map<String, int>> _articleCounts(
+    Session session,
+    UuidValue buildingId,
+  ) async {
+    final rows = await session.db.unsafeQuery(
+      '''
+SELECT "categoryId"::text, count(*)::int
+FROM menu_article
+WHERE "buildingId" = @buildingId::uuid
+GROUP BY "categoryId"
+''',
+      parameters: QueryParameters.named({'buildingId': buildingId.uuid}),
+    );
+    return {
+      for (final row in rows) row[0].toString(): sqlInt(row[1]),
+    };
+  }
+
+  Future<List<UuidValue>> _articlePageIds(
+    Session session,
+    UuidValue buildingId,
+    PageWindow window,
+  ) async {
+    final rows = await session.db.unsafeQuery(
+      '''
+SELECT a.id::text
+FROM menu_article a
+INNER JOIN menu_category c ON c.id = a."categoryId"
+WHERE a."buildingId" = @buildingId::uuid
+ORDER BY c."createdAt" ASC, a."createdAt" ASC, a.id ASC
+LIMIT @limit OFFSET @offset
+''',
+      parameters: QueryParameters.named({
+        'buildingId': buildingId.uuid,
+        'limit': window.limit,
+        'offset': window.offset,
+      }),
+    );
+    return [for (final row in rows) sqlUuid(row.first)];
+  }
+
+  Future<List<MenuArticle>> _articlesByIds(
+    Session session,
+    List<UuidValue> ids,
+  ) async {
+    if (ids.isEmpty) {
+      return const [];
+    }
+    final rows = await MenuArticle.db.find(
+      session,
+      where: (t) => t.id.inSet(ids.toSet()),
+    );
+    final byId = {for (final row in rows) row.id: row};
+    return [
+      for (final id in ids)
+        if (byId[id] != null) byId[id]!,
+    ];
   }
 
   /// Confirms [tableId] is an active table in [buildingId] with [number].

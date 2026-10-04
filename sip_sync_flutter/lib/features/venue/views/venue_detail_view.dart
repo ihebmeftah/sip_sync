@@ -307,10 +307,25 @@ class _DetailBodyState extends ConsumerState<_DetailBody> {
               constraints: const BoxConstraints(
                 maxWidth: AppBreakpoints.pageMax,
               ),
-              child: AppFilledButton(
-                label: l10n.menu,
-                icon: AppIcons.menuBook,
-                onPressed: openMenu,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (!widget.page.customerOrdering) ...[
+                    Text(
+                      l10n.orderingUnavailable,
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Theme.of(context).colorScheme.error,
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.sm),
+                  ],
+                  AppFilledButton(
+                    label: l10n.menu,
+                    icon: AppIcons.menuBook,
+                    onPressed: openMenu,
+                  ),
+                ],
               ),
             ),
           ),

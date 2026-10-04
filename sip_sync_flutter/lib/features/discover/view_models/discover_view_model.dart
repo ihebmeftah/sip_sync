@@ -5,6 +5,7 @@ import 'package:sip_sync_client/sip_sync_client.dart';
 
 import '../../../core/di/app_providers.dart';
 import '../../../core/errors/error_mapper.dart';
+import '../../../core/paging/list_paging.dart';
 import '../../../data/repositories/customer_discovery_repository.dart';
 import '../device_location.dart';
 import '../venue_distance.dart';
@@ -38,6 +39,8 @@ class DiscoverState {
     this.mode = DiscoverViewMode.list,
     this.nearbyOnly = true,
     this.loadingVenues = true,
+    this.loadingMore = false,
+    this.totalVenues = 0,
     this.locating = false,
     this.searching = false,
     this.suggestions = const [],
@@ -50,17 +53,21 @@ class DiscoverState {
   final DiscoverViewMode mode;
   final bool nearbyOnly;
   final bool loadingVenues;
+  final bool loadingMore;
+  final int totalVenues;
   final bool locating;
   final bool searching;
   final List<PlaceHit> suggestions;
   final String? errorKey;
   final UuidValue? selectedId;
 
+  bool get hasMore => venues.length < totalVenues;
+
   List<RankedVenue> get ranked => rankVenues(
     venues: venues,
     originLat: place?.latitude,
     originLon: place?.longitude,
-    nearbyOnly: nearbyOnly && place != null,
+    nearbyOnly: false,
   );
 
   DiscoverState copyWith({
@@ -69,6 +76,8 @@ class DiscoverState {
     DiscoverViewMode? mode,
     bool? nearbyOnly,
     bool? loadingVenues,
+    bool? loadingMore,
+    int? totalVenues,
     bool? locating,
     bool? searching,
     List<PlaceHit>? suggestions,
@@ -84,6 +93,8 @@ class DiscoverState {
       mode: mode ?? this.mode,
       nearbyOnly: nearbyOnly ?? this.nearbyOnly,
       loadingVenues: loadingVenues ?? this.loadingVenues,
+      loadingMore: loadingMore ?? this.loadingMore,
+      totalVenues: totalVenues ?? this.totalVenues,
       locating: locating ?? this.locating,
       searching: searching ?? this.searching,
       suggestions: suggestions ?? this.suggestions,
@@ -110,16 +121,63 @@ class DiscoverViewModel extends _$DiscoverViewModel {
   }
 
   Future<void> loadVenues() async {
-    state = state.copyWith(loadingVenues: true, clearError: true);
+    state = state.copyWith(
+      loadingVenues: true,
+      venues: const [],
+      totalVenues: 0,
+      clearError: true,
+    );
     try {
-      final venues = await _repository.listVenues();
-      state = state.copyWith(venues: venues, loadingVenues: false);
+      final page = await _page(0);
+      state = state.copyWith(
+        venues: page.items,
+        totalVenues: page.total,
+        loadingVenues: false,
+        loadingMore: false,
+      );
     } catch (error) {
       state = state.copyWith(
         loadingVenues: false,
         errorKey: mapError(error).l10nKey,
       );
     }
+  }
+
+  /// Appends the next venues in the current place and nearby filter.
+  Future<void> loadMoreVenues() async {
+    if (state.loadingVenues || state.loadingMore || !state.hasMore) {
+      return;
+    }
+    state = state.copyWith(loadingMore: true, clearError: true);
+    try {
+      final page = await _page(state.venues.length);
+      final seen = {for (final venue in state.venues) venue.id};
+      state = state.copyWith(
+        venues: [
+          ...state.venues,
+          for (final venue in page.items)
+            if (!seen.contains(venue.id)) venue,
+        ],
+        totalVenues: page.total,
+        loadingMore: false,
+      );
+    } catch (error) {
+      state = state.copyWith(
+        loadingMore: false,
+        errorKey: mapError(error).l10nKey,
+      );
+    }
+  }
+
+  Future<CustomerVenuePage> _page(int offset) {
+    final place = state.place;
+    return _repository.listVenues(
+      limit: listPageSize,
+      offset: offset,
+      latitude: place?.latitude,
+      longitude: place?.longitude,
+      nearbyOnly: place != null && state.nearbyOnly,
+    );
   }
 
   /// Drops a place or venue failure the customer has dismissed.
@@ -136,6 +194,7 @@ class DiscoverViewModel extends _$DiscoverViewModel {
 
   void setNearbyOnly(bool nearbyOnly) {
     state = state.copyWith(nearbyOnly: nearbyOnly);
+    loadVenues();
   }
 
   void selectVenue(UuidValue? id) {
@@ -184,6 +243,7 @@ class DiscoverViewModel extends _$DiscoverViewModel {
       searching: false,
       clearError: true,
     );
+    loadVenues();
   }
 
   /// Device position, then a reverse-geocoded label when Nominatim has one.
@@ -220,6 +280,7 @@ class DiscoverViewModel extends _$DiscoverViewModel {
           useCurrentLabel: hit == null,
         ),
       );
+      loadVenues();
     } on DeviceLocationException catch (error) {
       state = state.copyWith(locating: false, errorKey: error.l10nKey);
     } catch (error) {

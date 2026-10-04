@@ -15,7 +15,7 @@ const usersViewModelProvider = UsersViewModelProvider._();
 
 /// Backoffice user list plus create, update, enable, and delete.
 final class UsersViewModelProvider
-    extends $AsyncNotifierProvider<UsersViewModel, List<SuperAdminView>> {
+    extends $AsyncNotifierProvider<UsersViewModel, SuperAdminPage> {
   /// Backoffice user list plus create, update, enable, and delete.
   const UsersViewModelProvider._()
     : super(
@@ -36,27 +36,22 @@ final class UsersViewModelProvider
   UsersViewModel create() => UsersViewModel();
 }
 
-String _$usersViewModelHash() => r'1b9726adcc26c5b6da92f8845469713a3dabb84f';
+String _$usersViewModelHash() => r'da878d07a3fcb3a501715011a5febf366c13c3b7';
 
 /// Backoffice user list plus create, update, enable, and delete.
 
-abstract class _$UsersViewModel extends $AsyncNotifier<List<SuperAdminView>> {
-  FutureOr<List<SuperAdminView>> build();
+abstract class _$UsersViewModel extends $AsyncNotifier<SuperAdminPage> {
+  FutureOr<SuperAdminPage> build();
   @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
-    final ref =
-        this.ref
-            as $Ref<AsyncValue<List<SuperAdminView>>, List<SuperAdminView>>;
+    final ref = this.ref as $Ref<AsyncValue<SuperAdminPage>, SuperAdminPage>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<
-                AsyncValue<List<SuperAdminView>>,
-                List<SuperAdminView>
-              >,
-              AsyncValue<List<SuperAdminView>>,
+              AnyNotifier<AsyncValue<SuperAdminPage>, SuperAdminPage>,
+              AsyncValue<SuperAdminPage>,
               Object?,
               Object?
             >;

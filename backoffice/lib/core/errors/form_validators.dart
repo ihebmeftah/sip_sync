@@ -53,6 +53,14 @@ abstract final class FormValidators {
     return null;
   }
 
+  /// A paid pack term must end after the current instant.
+  static String? packExpiry(AppLocalizations l10n, DateTime? value) {
+    if (value == null || !value.isAfter(DateTime.now())) {
+      return l10n.validationPackExpiry;
+    }
+    return null;
+  }
+
   static String? packName(AppLocalizations l10n, String? value) {
     final text = (value ?? '').trim();
     if (text.isEmpty || text.length > 80) {

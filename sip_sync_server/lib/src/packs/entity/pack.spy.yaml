@@ -33,6 +33,7 @@ fields:
   customAccessProfiles: bool, default=false
   createdAt: DateTime, defaultModel=now
   buildings: List<Building>?, relation(name=building_pack)
+  assignments: List<BuildingPackAssignment>?, relation(name=pack_building_assignments)
 indexes:
   pack_code_idx:
     fields: code

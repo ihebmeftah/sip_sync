@@ -45,7 +45,7 @@ class ArticleCompositionService {
     }
     await _requireOwnedBuilding(session, ownerId, article.buildingId);
     final pack = await PackGate.ofBuilding(session, article.buildingId);
-    PackGate.requireFeature(pack.inventory);
+    PackGate.requireFeature(pack.inventory, PackFeature.inventory);
     final quantity = _validateQuantity(request.quantity);
     final ingredient = await Ingredient.db.findById(
       session,

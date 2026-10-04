@@ -73,6 +73,8 @@ import 'package:sip_sync_server/src/generated/orders/dtos/order_item_status_upda
     as _itxma5c4;
 import 'package:sip_sync_server/src/generated/orders/dtos/order_status.dart'
     as _i9w9m1jz;
+import 'package:sip_sync_server/src/generated/packs/dtos/pack_billing_period.dart'
+    as _is2535ld;
 import 'package:sip_sync_server/src/generated/packs/dtos/pack_create.dart'
     as _iijils8v;
 import 'package:sip_sync_server/src/generated/packs/dtos/pack_update.dart'
@@ -632,7 +634,18 @@ class Endpoints extends _is.EndpointDispatch {
       methodConnectors: {
         'listOwners': _is.MethodConnector(
           name: 'listOwners',
-          params: {},
+          params: {
+            'limit': _is.ParameterDescription(
+              name: 'limit',
+              type: _is.getType<int?>(),
+              nullable: true,
+            ),
+            'offset': _is.ParameterDescription(
+              name: 'offset',
+              type: _is.getType<int?>(),
+              nullable: true,
+            ),
+          },
           call:
               (
                 _is.Session session,
@@ -640,11 +653,26 @@ class Endpoints extends _is.EndpointDispatch {
               ) async =>
                   (endpoints['platformDirectory']
                           as _i2rird0e.PlatformDirectoryEndpoint)
-                      .listOwners(session),
+                      .listOwners(
+                        session,
+                        limit: params['limit'],
+                        offset: params['offset'],
+                      ),
         ),
         'listCustomers': _is.MethodConnector(
           name: 'listCustomers',
-          params: {},
+          params: {
+            'limit': _is.ParameterDescription(
+              name: 'limit',
+              type: _is.getType<int?>(),
+              nullable: true,
+            ),
+            'offset': _is.ParameterDescription(
+              name: 'offset',
+              type: _is.getType<int?>(),
+              nullable: true,
+            ),
+          },
           call:
               (
                 _is.Session session,
@@ -652,7 +680,11 @@ class Endpoints extends _is.EndpointDispatch {
               ) async =>
                   (endpoints['platformDirectory']
                           as _i2rird0e.PlatformDirectoryEndpoint)
-                      .listCustomers(session),
+                      .listCustomers(
+                        session,
+                        limit: params['limit'],
+                        offset: params['offset'],
+                      ),
         ),
       },
     );
@@ -776,7 +808,18 @@ class Endpoints extends _is.EndpointDispatch {
         ),
         'list': _is.MethodConnector(
           name: 'list',
-          params: {},
+          params: {
+            'limit': _is.ParameterDescription(
+              name: 'limit',
+              type: _is.getType<int?>(),
+              nullable: true,
+            ),
+            'offset': _is.ParameterDescription(
+              name: 'offset',
+              type: _is.getType<int?>(),
+              nullable: true,
+            ),
+          },
           call:
               (
                 _is.Session session,
@@ -784,7 +827,11 @@ class Endpoints extends _is.EndpointDispatch {
               ) async =>
                   (endpoints['superAdminAuth']
                           as _itmp66ay.SuperAdminAuthEndpoint)
-                      .list(session),
+                      .list(
+                        session,
+                        limit: params['limit'],
+                        offset: params['offset'],
+                      ),
         ),
         'delete': _is.MethodConnector(
           name: 'delete',
@@ -827,23 +874,53 @@ class Endpoints extends _is.EndpointDispatch {
       methodConnectors: {
         'listMine': _is.MethodConnector(
           name: 'listMine',
-          params: {},
+          params: {
+            'limit': _is.ParameterDescription(
+              name: 'limit',
+              type: _is.getType<int?>(),
+              nullable: true,
+            ),
+            'offset': _is.ParameterDescription(
+              name: 'offset',
+              type: _is.getType<int?>(),
+              nullable: true,
+            ),
+          },
           call:
               (
                 _is.Session session,
                 Map<String, dynamic> params,
               ) async => (endpoints['building'] as _i69ygv7j.BuildingEndpoint)
-                  .listMine(session),
+                  .listMine(
+                    session,
+                    limit: params['limit'],
+                    offset: params['offset'],
+                  ),
         ),
         'listAll': _is.MethodConnector(
           name: 'listAll',
-          params: {},
+          params: {
+            'limit': _is.ParameterDescription(
+              name: 'limit',
+              type: _is.getType<int?>(),
+              nullable: true,
+            ),
+            'offset': _is.ParameterDescription(
+              name: 'offset',
+              type: _is.getType<int?>(),
+              nullable: true,
+            ),
+          },
           call:
               (
                 _is.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['building'] as _i69ygv7j.BuildingEndpoint)
-                  .listAll(session),
+              ) async =>
+                  (endpoints['building'] as _i69ygv7j.BuildingEndpoint).listAll(
+                    session,
+                    limit: params['limit'],
+                    offset: params['offset'],
+                  ),
         ),
         'adminDetail': _is.MethodConnector(
           name: 'adminDetail',
@@ -877,6 +954,16 @@ class Endpoints extends _is.EndpointDispatch {
               type: _is.getType<_is.UuidValue>(),
               nullable: false,
             ),
+            'billingPeriod': _is.ParameterDescription(
+              name: 'billingPeriod',
+              type: _is.getType<_is2535ld.PackBillingPeriod?>(),
+              nullable: true,
+            ),
+            'expiresAt': _is.ParameterDescription(
+              name: 'expiresAt',
+              type: _is.getType<DateTime?>(),
+              nullable: true,
+            ),
           },
           call:
               (
@@ -887,6 +974,8 @@ class Endpoints extends _is.EndpointDispatch {
                     session,
                     params['buildingId'],
                     params['packId'],
+                    billingPeriod: params['billingPeriod'],
+                    expiresAt: params['expiresAt'],
                   ),
         ),
         'get': _is.MethodConnector(
@@ -954,6 +1043,16 @@ class Endpoints extends _is.EndpointDispatch {
               type: _is.getType<_is.UuidValue>(),
               nullable: false,
             ),
+            'limit': _is.ParameterDescription(
+              name: 'limit',
+              type: _is.getType<int?>(),
+              nullable: true,
+            ),
+            'offset': _is.ParameterDescription(
+              name: 'offset',
+              type: _is.getType<int?>(),
+              nullable: true,
+            ),
           },
           call:
               (
@@ -963,6 +1062,8 @@ class Endpoints extends _is.EndpointDispatch {
                   .listEmployees(
                     session,
                     params['buildingId'],
+                    limit: params['limit'],
+                    offset: params['offset'],
                   ),
         ),
       },
@@ -1027,7 +1128,33 @@ class Endpoints extends _is.EndpointDispatch {
       methodConnectors: {
         'list': _is.MethodConnector(
           name: 'list',
-          params: {},
+          params: {
+            'limit': _is.ParameterDescription(
+              name: 'limit',
+              type: _is.getType<int?>(),
+              nullable: true,
+            ),
+            'offset': _is.ParameterDescription(
+              name: 'offset',
+              type: _is.getType<int?>(),
+              nullable: true,
+            ),
+            'latitude': _is.ParameterDescription(
+              name: 'latitude',
+              type: _is.getType<double?>(),
+              nullable: true,
+            ),
+            'longitude': _is.ParameterDescription(
+              name: 'longitude',
+              type: _is.getType<double?>(),
+              nullable: true,
+            ),
+            'nearbyOnly': _is.ParameterDescription(
+              name: 'nearbyOnly',
+              type: _is.getType<bool>(),
+              nullable: false,
+            ),
+          },
           call:
               (
                 _is.Session session,
@@ -1035,7 +1162,14 @@ class Endpoints extends _is.EndpointDispatch {
               ) async =>
                   (endpoints['customerVenue']
                           as _i4o7mcri.CustomerVenueEndpoint)
-                      .list(session),
+                      .list(
+                        session,
+                        limit: params['limit'],
+                        offset: params['offset'],
+                        latitude: params['latitude'],
+                        longitude: params['longitude'],
+                        nearbyOnly: params['nearbyOnly'],
+                      ),
         ),
         'detail': _is.MethodConnector(
           name: 'detail',
@@ -1066,6 +1200,16 @@ class Endpoints extends _is.EndpointDispatch {
               type: _is.getType<_is.UuidValue>(),
               nullable: false,
             ),
+            'limit': _is.ParameterDescription(
+              name: 'limit',
+              type: _is.getType<int?>(),
+              nullable: true,
+            ),
+            'offset': _is.ParameterDescription(
+              name: 'offset',
+              type: _is.getType<int?>(),
+              nullable: true,
+            ),
           },
           call:
               (
@@ -1077,6 +1221,8 @@ class Endpoints extends _is.EndpointDispatch {
                       .menu(
                         session,
                         params['buildingId'],
+                        limit: params['limit'],
+                        offset: params['offset'],
                       ),
         ),
         'resolveTable': _is.MethodConnector(
@@ -1126,6 +1272,16 @@ class Endpoints extends _is.EndpointDispatch {
               type: _is.getType<_is.UuidValue>(),
               nullable: false,
             ),
+            'limit': _is.ParameterDescription(
+              name: 'limit',
+              type: _is.getType<int?>(),
+              nullable: true,
+            ),
+            'offset': _is.ParameterDescription(
+              name: 'offset',
+              type: _is.getType<int?>(),
+              nullable: true,
+            ),
           },
           call:
               (
@@ -1137,6 +1293,8 @@ class Endpoints extends _is.EndpointDispatch {
                       .list(
                         session,
                         params['buildingId'],
+                        limit: params['limit'],
+                        offset: params['offset'],
                       ),
         ),
         'get': _is.MethodConnector(
@@ -1327,6 +1485,16 @@ class Endpoints extends _is.EndpointDispatch {
               type: _is.getType<_is.UuidValue>(),
               nullable: false,
             ),
+            'limit': _is.ParameterDescription(
+              name: 'limit',
+              type: _is.getType<int?>(),
+              nullable: true,
+            ),
+            'offset': _is.ParameterDescription(
+              name: 'offset',
+              type: _is.getType<int?>(),
+              nullable: true,
+            ),
           },
           call:
               (
@@ -1337,6 +1505,8 @@ class Endpoints extends _is.EndpointDispatch {
                       .list(
                         session,
                         params['buildingId'],
+                        limit: params['limit'],
+                        offset: params['offset'],
                       ),
         ),
         'create': _is.MethodConnector(
@@ -1479,6 +1649,16 @@ class Endpoints extends _is.EndpointDispatch {
               type: _is.getType<_is.UuidValue>(),
               nullable: false,
             ),
+            'limit': _is.ParameterDescription(
+              name: 'limit',
+              type: _is.getType<int?>(),
+              nullable: true,
+            ),
+            'offset': _is.ParameterDescription(
+              name: 'offset',
+              type: _is.getType<int?>(),
+              nullable: true,
+            ),
           },
           call:
               (
@@ -1489,6 +1669,8 @@ class Endpoints extends _is.EndpointDispatch {
                       .list(
                         session,
                         params['buildingId'],
+                        limit: params['limit'],
+                        offset: params['offset'],
                       ),
         ),
         'create': _is.MethodConnector(
@@ -1571,6 +1753,16 @@ class Endpoints extends _is.EndpointDispatch {
               type: _is.getType<DateTime>(),
               nullable: false,
             ),
+            'limit': _is.ParameterDescription(
+              name: 'limit',
+              type: _is.getType<int?>(),
+              nullable: true,
+            ),
+            'offset': _is.ParameterDescription(
+              name: 'offset',
+              type: _is.getType<int?>(),
+              nullable: true,
+            ),
           },
           call:
               (
@@ -1583,6 +1775,8 @@ class Endpoints extends _is.EndpointDispatch {
                         session,
                         params['from'],
                         params['to'],
+                        limit: params['limit'],
+                        offset: params['offset'],
                       ),
         ),
         'get': _is.MethodConnector(
@@ -1658,6 +1852,21 @@ class Endpoints extends _is.EndpointDispatch {
               type: _is.getType<_i9w9m1jz.OrderStatus?>(),
               nullable: true,
             ),
+            'venueTableId': _is.ParameterDescription(
+              name: 'venueTableId',
+              type: _is.getType<_is.UuidValue?>(),
+              nullable: true,
+            ),
+            'limit': _is.ParameterDescription(
+              name: 'limit',
+              type: _is.getType<int?>(),
+              nullable: true,
+            ),
+            'offset': _is.ParameterDescription(
+              name: 'offset',
+              type: _is.getType<int?>(),
+              nullable: true,
+            ),
           },
           call:
               (
@@ -1667,6 +1876,9 @@ class Endpoints extends _is.EndpointDispatch {
                 session,
                 params['buildingId'],
                 params['status'],
+                venueTableId: params['venueTableId'],
+                limit: params['limit'],
+                offset: params['offset'],
               ),
         ),
         'get': _is.MethodConnector(
@@ -1769,13 +1981,27 @@ class Endpoints extends _is.EndpointDispatch {
       methodConnectors: {
         'list': _is.MethodConnector(
           name: 'list',
-          params: {},
+          params: {
+            'limit': _is.ParameterDescription(
+              name: 'limit',
+              type: _is.getType<int?>(),
+              nullable: true,
+            ),
+            'offset': _is.ParameterDescription(
+              name: 'offset',
+              type: _is.getType<int?>(),
+              nullable: true,
+            ),
+          },
           call:
               (
                 _is.Session session,
                 Map<String, dynamic> params,
-              ) async =>
-                  (endpoints['pack'] as _i9krzab0.PackEndpoint).list(session),
+              ) async => (endpoints['pack'] as _i9krzab0.PackEndpoint).list(
+                session,
+                limit: params['limit'],
+                offset: params['offset'],
+              ),
         ),
         'listPublic': _is.MethodConnector(
           name: 'listPublic',

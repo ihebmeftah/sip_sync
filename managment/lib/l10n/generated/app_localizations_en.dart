@@ -1442,4 +1442,67 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get errorPackFeature => 'This plan does not include that.';
+
+  @override
+  String get errorPackLimitEmployees =>
+      'This plan has reached its employee limit.';
+
+  @override
+  String get errorPackLimitTables => 'This plan has reached its table limit.';
+
+  @override
+  String get errorPackLimitCategories =>
+      'This plan has reached its category limit.';
+
+  @override
+  String get errorPackLimitArticles =>
+      'This plan has reached its article limit.';
+
+  @override
+  String get errorPackLimitIngredients =>
+      'This plan has reached its ingredient limit.';
+
+  @override
+  String get errorPackFeatureOrdering =>
+      'This plan does not include customer ordering.';
+
+  @override
+  String get errorPackFeatureInventory =>
+      'This plan does not include inventory.';
+
+  @override
+  String get errorPackFeatureAppend =>
+      'This plan does not include adding items to an open order.';
+
+  @override
+  String get errorPackFeatureMultiOrder =>
+      'This plan does not include more than one order on a table.';
+
+  @override
+  String get errorPackFeatureStrict =>
+      'This plan does not include strict order steps.';
+
+  @override
+  String get errorPackFeatureAccess =>
+      'This plan does not include custom access profiles.';
+
+  @override
+  String get errorPackFeatureQr => 'This plan does not include table QR codes.';
+
+  @override
+  String get errorPackPaidActive => 'This venue already has a paid plan.';
+
+  @override
+  String get previousPage => 'Previous';
+
+  @override
+  String get nextPage => 'Next';
+
+  @override
+  String pageOf(int current, int total) {
+    return '$current / $total';
+  }
+
+  @override
+  String get loadingMore => 'Loading more…';
 }

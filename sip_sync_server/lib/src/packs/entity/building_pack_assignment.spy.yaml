@@ -1,0 +1,16 @@
+### One stretch of time a venue spent on a pack. The row with a null [endedAt] is current.
+class: BuildingPackAssignment
+table: building_pack_assignment
+serverOnly: true
+fields:
+  id: UuidValue?, defaultPersist=random_v7
+  building: Building?, relation(name=building_pack_assignments, onDelete=Cascade)
+  pack: Pack?, relation(name=pack_building_assignments, onDelete=Restrict)
+  billingPeriod: PackBillingPeriod?
+  startedAt: DateTime, default=now
+  expiresAt: DateTime?
+  endedAt: DateTime?
+  endReason: BuildingPackEndReason?
+indexes:
+  building_pack_assignment_building_idx:
+    fields: buildingId

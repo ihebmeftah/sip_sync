@@ -27,6 +27,7 @@ abstract class CustomerVenueDetail
     required this.availableTables,
     required this.categories,
     required this.articles,
+    required this.customerOrdering,
   });
 
   factory CustomerVenueDetail({
@@ -36,6 +37,7 @@ abstract class CustomerVenueDetail
     required List<_iwd58pyr.CustomerTablePreview> availableTables,
     required List<_irq7e2mv.CustomerCategoryPreview> categories,
     required List<_iy9yvlrm.CustomerArticlePreview> articles,
+    required bool customerOrdering,
   }) = _CustomerVenueDetailImpl;
 
   factory CustomerVenueDetail.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -57,6 +59,9 @@ abstract class CustomerVenueDetail
           .deserialize<List<_iy9yvlrm.CustomerArticlePreview>>(
             jsonSerialization['articles'],
           ),
+      customerOrdering: _is.BoolJsonExtension.fromJson(
+        jsonSerialization['customerOrdering'],
+      ),
     );
   }
 
@@ -76,6 +81,9 @@ abstract class CustomerVenueDetail
   /// Up to five articles, busiest first. Creation order when nothing was ordered.
   List<_iy9yvlrm.CustomerArticlePreview> articles;
 
+  /// False when the venue pack does not include customer-app orders.
+  bool customerOrdering;
+
   /// Returns a shallow copy of this [CustomerVenueDetail]
   /// with some or all fields replaced by the given arguments.
   @_is.useResult
@@ -86,6 +94,7 @@ abstract class CustomerVenueDetail
     List<_iwd58pyr.CustomerTablePreview>? availableTables,
     List<_irq7e2mv.CustomerCategoryPreview>? categories,
     List<_iy9yvlrm.CustomerArticlePreview>? articles,
+    bool? customerOrdering,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -97,6 +106,7 @@ abstract class CustomerVenueDetail
       'availableTables': availableTables.toJson(valueToJson: (v) => v.toJson()),
       'categories': categories.toJson(valueToJson: (v) => v.toJson()),
       'articles': articles.toJson(valueToJson: (v) => v.toJson()),
+      'customerOrdering': customerOrdering,
     };
   }
 
@@ -114,6 +124,7 @@ abstract class CustomerVenueDetail
         valueToJson: (v) => v.toJsonForProtocol(),
       ),
       'articles': articles.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+      'customerOrdering': customerOrdering,
     };
   }
 
@@ -131,6 +142,7 @@ class _CustomerVenueDetailImpl extends CustomerVenueDetail {
     required List<_iwd58pyr.CustomerTablePreview> availableTables,
     required List<_irq7e2mv.CustomerCategoryPreview> categories,
     required List<_iy9yvlrm.CustomerArticlePreview> articles,
+    required bool customerOrdering,
   }) : super._(
          venue: venue,
          currencyCode: currencyCode,
@@ -138,6 +150,7 @@ class _CustomerVenueDetailImpl extends CustomerVenueDetail {
          availableTables: availableTables,
          categories: categories,
          articles: articles,
+         customerOrdering: customerOrdering,
        );
 
   /// Returns a shallow copy of this [CustomerVenueDetail]
@@ -151,6 +164,7 @@ class _CustomerVenueDetailImpl extends CustomerVenueDetail {
     List<_iwd58pyr.CustomerTablePreview>? availableTables,
     List<_irq7e2mv.CustomerCategoryPreview>? categories,
     List<_iy9yvlrm.CustomerArticlePreview>? articles,
+    bool? customerOrdering,
   }) {
     return CustomerVenueDetail(
       venue: venue ?? this.venue.copyWith(),
@@ -162,6 +176,7 @@ class _CustomerVenueDetailImpl extends CustomerVenueDetail {
       categories:
           categories ?? this.categories.map((e0) => e0.copyWith()).toList(),
       articles: articles ?? this.articles.map((e0) => e0.copyWith()).toList(),
+      customerOrdering: customerOrdering ?? this.customerOrdering,
     );
   }
 }

@@ -6,6 +6,7 @@ import 'package:sip_sync_client/sip_sync_client.dart';
 import '../../../core/errors/error_mapper.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
+import '../../../core/widgets/list_page_bar.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../console/views/console_shell.dart';
 import '../pack_money.dart';
@@ -59,33 +60,49 @@ class _PacksViewState extends ConsumerState<PacksView> {
                 ),
               ],
             ),
-            data: (rows) {
+            data: (page) {
+              final rows = page.items;
               if (rows.isEmpty) {
                 return Text(l10n.empty, style: theme.textTheme.muted);
               }
-              return DecoratedBox(
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.card,
-                  borderRadius: theme.radius,
-                  border: Border.all(color: theme.colorScheme.border),
-                ),
-                child: Column(
-                  children: [
-                    for (var i = 0; i < rows.length; i++) ...[
-                      if (i > 0) const ShadSeparator.horizontal(),
-                      _PackRow(
-                        pack: rows[i],
-                        onEdit: () => showShadDialog<void>(
-                          context: context,
-                          builder: (_) => PackFormDialog(pack: rows[i]),
-                        ),
-                        onDelete: rows[i].isSystem
-                            ? null
-                            : () => _confirmDelete(rows[i]),
-                      ),
-                    ],
-                  ],
-                ),
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.card,
+                      borderRadius: theme.radius,
+                      border: Border.all(color: theme.colorScheme.border),
+                    ),
+                    child: Column(
+                      children: [
+                        for (var i = 0; i < rows.length; i++) ...[
+                          if (i > 0) const ShadSeparator.horizontal(),
+                          _PackRow(
+                            pack: rows[i],
+                            onEdit: () => showShadDialog<void>(
+                              context: context,
+                              builder: (_) => PackFormDialog(pack: rows[i]),
+                            ),
+                            onDelete: rows[i].isSystem
+                                ? null
+                                : () => _confirmDelete(rows[i]),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                  ListPageBar(
+                    total: page.total,
+                    limit: page.limit,
+                    offset: page.offset,
+                    onPrevious: () => ref
+                        .read(packsViewModelProvider.notifier)
+                        .previousPage(),
+                    onNext: () =>
+                        ref.read(packsViewModelProvider.notifier).nextPage(),
+                  ),
+                ],
               );
             },
           ),

@@ -102,18 +102,27 @@ void main() {
           throwsA(isA<IngredientException>()),
         );
 
-        final list = await endpoints.ingredient.list(
+        final list = (await endpoints.ingredient.list(
           setup.ownerSession,
           setup.building.id,
-        );
+        )).items;
         expect(list, hasLength(2));
+        final page = await endpoints.ingredient.list(
+          setup.ownerSession,
+          setup.building.id,
+          limit: 1,
+          offset: 1,
+        );
+        expect(page.total, 2);
+        expect(page.items, hasLength(1));
+        expect(page.offset, 1);
 
         await endpoints.ingredient.delete(setup.ownerSession, created.id);
         await endpoints.ingredient.delete(setup.ownerSession, low.id);
-        final afterDelete = await endpoints.ingredient.list(
+        final afterDelete = (await endpoints.ingredient.list(
           setup.ownerSession,
           setup.building.id,
-        );
+        )).items;
         expect(afterDelete, isEmpty);
       },
     );

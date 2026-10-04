@@ -1,0 +1,6 @@
+### Why an assignment row closed. A null reason means the row is still current.
+enum: BuildingPackEndReason
+serialized: byName
+values:
+  - replaced
+  - expired

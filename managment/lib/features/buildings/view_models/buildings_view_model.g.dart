@@ -13,7 +13,7 @@ part of 'buildings_view_model.dart';
 const buildingsViewModelProvider = BuildingsViewModelProvider._();
 
 final class BuildingsViewModelProvider
-    extends $AsyncNotifierProvider<BuildingsViewModel, List<BuildingView>> {
+    extends $AsyncNotifierProvider<BuildingsViewModel, BuildingPage> {
   const BuildingsViewModelProvider._()
     : super(
         from: null,
@@ -34,21 +34,20 @@ final class BuildingsViewModelProvider
 }
 
 String _$buildingsViewModelHash() =>
-    r'1bbac8cbf8c4a33ad28cfba401f6662a81ee04a1';
+    r'a4adc0a33538a58049db03c27653400ea4b0d741';
 
-abstract class _$BuildingsViewModel extends $AsyncNotifier<List<BuildingView>> {
-  FutureOr<List<BuildingView>> build();
+abstract class _$BuildingsViewModel extends $AsyncNotifier<BuildingPage> {
+  FutureOr<BuildingPage> build();
   @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
-    final ref =
-        this.ref as $Ref<AsyncValue<List<BuildingView>>, List<BuildingView>>;
+    final ref = this.ref as $Ref<AsyncValue<BuildingPage>, BuildingPage>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<AsyncValue<List<BuildingView>>, List<BuildingView>>,
-              AsyncValue<List<BuildingView>>,
+              AnyNotifier<AsyncValue<BuildingPage>, BuildingPage>,
+              AsyncValue<BuildingPage>,
               Object?,
               Object?
             >;
@@ -98,7 +97,7 @@ final class BuildingFormViewModelProvider
 }
 
 String _$buildingFormViewModelHash() =>
-    r'f0514d237eeb5a8dd4829f2eca4af35805b10f50';
+    r'97262650177d8590536f395a3749861bec60c2bd';
 
 final class BuildingFormViewModelFamily extends $Family
     with

@@ -1,0 +1,7 @@
+### One page of staff for a venue.
+class: EmployeePage
+fields:
+  items: List<EmployeeView>
+  total: int
+  limit: int
+  offset: int

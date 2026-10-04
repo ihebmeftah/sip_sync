@@ -58,10 +58,12 @@ void main() {
           ),
         );
 
-        final owners = await endpoints.platformDirectory.listOwners(authed);
-        final customers = await endpoints.platformDirectory.listCustomers(
+        final owners = (await endpoints.platformDirectory.listOwners(
           authed,
-        );
+        )).items;
+        final customers = (await endpoints.platformDirectory.listCustomers(
+          authed,
+        )).items;
 
         expect(owners, hasLength(1));
         expect(owners.single.id, ownerAuth.owner!.id);

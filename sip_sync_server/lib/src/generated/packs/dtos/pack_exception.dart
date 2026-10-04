@@ -12,6 +12,7 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _is;
 import '../../packs/dtos/pack_error_code.dart' as _ids0co2z;
+import '../../packs/dtos/pack_feature.dart' as _iub8zary;
 
 abstract class PackException
     implements
@@ -21,11 +22,13 @@ abstract class PackException
   PackException._({
     required this.message,
     required this.code,
+    this.feature,
   });
 
   factory PackException({
     required String message,
     required _ids0co2z.PackErrorCode code,
+    _iub8zary.PackFeature? feature,
   }) = _PackExceptionImpl;
 
   factory PackException.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -34,6 +37,11 @@ abstract class PackException
       code: _ids0co2z.PackErrorCode.fromJson(
         (jsonSerialization['code'] as int),
       ),
+      feature: jsonSerialization['feature'] == null
+          ? null
+          : _iub8zary.PackFeature.fromJson(
+              (jsonSerialization['feature'] as String),
+            ),
     );
   }
 
@@ -41,12 +49,16 @@ abstract class PackException
 
   _ids0co2z.PackErrorCode code;
 
+  /// Which rule failed, when [code] is limitReached or featureOff.
+  _iub8zary.PackFeature? feature;
+
   /// Returns a shallow copy of this [PackException]
   /// with some or all fields replaced by the given arguments.
   @_is.useResult
   PackException copyWith({
     String? message,
     _ids0co2z.PackErrorCode? code,
+    _iub8zary.PackFeature? feature,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -54,6 +66,7 @@ abstract class PackException
       '__className__': 'PackException',
       'message': message,
       'code': code.toJson(),
+      if (feature != null) 'feature': feature?.toJson(),
     };
   }
 
@@ -63,22 +76,27 @@ abstract class PackException
       '__className__': 'PackException',
       'message': message,
       'code': code.toJson(),
+      if (feature != null) 'feature': feature?.toJson(),
     };
   }
 
   @override
   String toString() {
-    return 'PackException(message: $message, code: $code)';
+    return 'PackException(message: $message, code: $code, feature: $feature)';
   }
 }
+
+class _Undefined {}
 
 class _PackExceptionImpl extends PackException {
   _PackExceptionImpl({
     required String message,
     required _ids0co2z.PackErrorCode code,
+    _iub8zary.PackFeature? feature,
   }) : super._(
          message: message,
          code: code,
+         feature: feature,
        );
 
   /// Returns a shallow copy of this [PackException]
@@ -88,10 +106,12 @@ class _PackExceptionImpl extends PackException {
   PackException copyWith({
     String? message,
     _ids0co2z.PackErrorCode? code,
+    Object? feature = _Undefined,
   }) {
     return PackException(
       message: message ?? this.message,
       code: code ?? this.code,
+      feature: feature is _iub8zary.PackFeature? ? feature : this.feature,
     );
   }
 }

@@ -10,12 +10,21 @@ class IngredientEndpoint extends Endpoint {
   @override
   bool get requireLogin => true;
 
-  /// Lists ingredients for [buildingId] (owner or assigned employee).
-  Future<List<IngredientView>> list(
+  /// Ingredients for [buildingId], name order.
+  ///
+  /// Owner or assigned employee. [limit] defaults to 20 and is capped at 100.
+  Future<IngredientPage> list(
     Session session,
-    UuidValue buildingId,
-  ) {
-    return _ingredients.listForBuilding(session, buildingId);
+    UuidValue buildingId, {
+    int? limit,
+    int? offset,
+  }) {
+    return _ingredients.listForBuilding(
+      session,
+      buildingId,
+      limit: limit,
+      offset: offset,
+    );
   }
 
   /// Owner creates an ingredient.

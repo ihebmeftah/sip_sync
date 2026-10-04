@@ -10,12 +10,21 @@ class MenuCategoryEndpoint extends Endpoint {
   @override
   bool get requireLogin => true;
 
-  /// Lists categories for [buildingId] (owner or assigned employee).
-  Future<List<MenuCategoryView>> list(
+  /// Categories for [buildingId], name order.
+  ///
+  /// Owner or assigned employee. [limit] defaults to 20 and is capped at 100.
+  Future<MenuCategoryPage> list(
     Session session,
-    UuidValue buildingId,
-  ) {
-    return _categories.listForBuilding(session, buildingId);
+    UuidValue buildingId, {
+    int? limit,
+    int? offset,
+  }) {
+    return _categories.listForBuilding(
+      session,
+      buildingId,
+      limit: limit,
+      offset: offset,
+    );
   }
 
   /// Owner creates a category.

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sip_sync_client/sip_sync_client.dart';
 
 import '../../../core/di/app_providers.dart';
+import '../../../core/errors/app_notice.dart';
 import '../../../core/errors/error_mapper.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
@@ -30,23 +31,16 @@ class _ArticlesListViewState extends ConsumerState<ArticlesListView> {
     final articlesAlive = ref.exists(
       articlesViewModelProvider(widget.buildingId),
     );
-    final categoriesAlive = ref.exists(
-      categoriesViewModelProvider(widget.buildingId),
-    );
     refreshCachedListOnAppear(
       this,
-      providerAlreadyAlive: articlesAlive || categoriesAlive,
+      providerAlreadyAlive: articlesAlive,
       refresh: () async {
-        await Future.wait([
-          if (articlesAlive)
-            ref
-                .read(articlesViewModelProvider(widget.buildingId).notifier)
-                .refresh(),
-          if (categoriesAlive)
-            ref
-                .read(categoriesViewModelProvider(widget.buildingId).notifier)
-                .refresh(),
-        ]);
+        ref.invalidate(categoryCatalogProvider(widget.buildingId));
+        if (articlesAlive) {
+          await ref
+              .read(articlesViewModelProvider(widget.buildingId).notifier)
+              .refresh();
+        }
       },
     );
   }
@@ -60,10 +54,7 @@ class _ArticlesListViewState extends ConsumerState<ArticlesListView> {
     final currency = ref.watch(buildingSelectionProvider)?.currencyCode ?? '';
     final async = ref.watch(articlesViewModelProvider(widget.buildingId));
     final categories =
-        ref
-            .watch(categoriesViewModelProvider(widget.buildingId))
-            .asData
-            ?.value ??
+        ref.watch(categoryCatalogProvider(widget.buildingId)).asData?.value ??
         const <MenuCategoryView>[];
 
     return ColoredBox(
@@ -99,10 +90,20 @@ class _ArticlesListViewState extends ConsumerState<ArticlesListView> {
                       style: FilledButton.styleFrom(
                         minimumSize: const Size(0, 44),
                       ),
-                      onPressed: () => openArticleForm(
-                        context,
-                        buildingId: widget.buildingId,
-                      ),
+                      onPressed: () {
+                        final pack = ref.read(buildingSelectionProvider)?.pack;
+                        final count = async.asData?.value.length ?? 0;
+                        if (pack != null &&
+                            !allowPackRoom(
+                              context,
+                              max: pack.maxArticles,
+                              current: count,
+                              message: l10n.errorPackLimitArticles,
+                            )) {
+                          return;
+                        }
+                        openArticleForm(context, buildingId: widget.buildingId);
+                      },
                       icon: const Icon(Icons.add),
                       label: AppButtonLabel(l10n.addArticle),
                     ),
@@ -186,11 +187,24 @@ class _ArticlesListViewState extends ConsumerState<ArticlesListView> {
                                     : null,
                               ),
                               TextButton.icon(
-                                onPressed: () => openArticleComposition(
-                                  context,
-                                  buildingId: widget.buildingId,
-                                  article: article,
-                                ),
+                                onPressed: () {
+                                  final pack = ref
+                                      .read(buildingSelectionProvider)
+                                      ?.pack;
+                                  if (pack != null &&
+                                      !allowPackFeature(
+                                        context,
+                                        allowed: pack.inventory,
+                                        message: l10n.errorPackFeatureInventory,
+                                      )) {
+                                    return;
+                                  }
+                                  openArticleComposition(
+                                    context,
+                                    buildingId: widget.buildingId,
+                                    article: article,
+                                  );
+                                },
                                 icon: const Icon(Icons.blender_outlined),
                                 label: Text(
                                   article.compositionLineCount == 0

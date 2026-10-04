@@ -1,24 +1,37 @@
 import 'package:serverpod/serverpod.dart';
 
 import '../auth/auth_guard.dart';
+import '../core/page_window.dart';
 import '../generated/protocol.dart';
 import '../packs/pack_gate.dart';
 
 /// Owner CRUD for named employee access profiles in a building.
 class EmployeeAccessService {
-  /// Lists access profiles for a building the owner owns.
-  Future<List<EmployeeAccessView>> listForBuilding(
+  /// Access profiles for a building the owner owns, name order.
+  Future<EmployeeAccessPage> listForBuilding(
     Session session,
-    UuidValue buildingId,
-  ) async {
+    UuidValue buildingId, {
+    int? limit,
+    int? offset,
+  }) async {
     final ownerId = AuthGuard.requireOwner(session);
     await _requireOwnedBuilding(session, ownerId, buildingId);
+    final window = PageWindow.from(limit: limit, offset: offset);
+    Expression where(EmployeeAccessTable t) => t.buildingId.equals(buildingId);
+    final total = await EmployeeAccess.db.count(session, where: where);
     final rows = await EmployeeAccess.db.find(
       session,
-      where: (t) => t.buildingId.equals(buildingId),
+      where: where,
       orderBy: (t) => t.name,
+      limit: window.limit,
+      offset: window.offset,
     );
-    return rows.map(_view).toList();
+    return EmployeeAccessPage(
+      items: rows.map(_view).toList(),
+      total: total,
+      limit: window.limit,
+      offset: window.offset,
+    );
   }
 
   /// Loads one profile; owner must own the building.
@@ -45,7 +58,10 @@ class EmployeeAccessService {
     final name = _validateName(request.name);
     await _assertNameAvailable(session, request.buildingId, name);
     final pack = await PackGate.ofBuilding(session, request.buildingId);
-    PackGate.requireFeature(pack.customAccessProfiles);
+    PackGate.requireFeature(
+      pack.customAccessProfiles,
+      PackFeature.customAccessProfiles,
+    );
 
     final row = await EmployeeAccess.db.insertRow(
       session,

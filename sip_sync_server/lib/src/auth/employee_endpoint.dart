@@ -57,6 +57,7 @@ class EmployeeEndpoint extends Endpoint {
       max: pack.maxEmployees,
       current: staff,
       adding: 1,
+      feature: PackFeature.employees,
     );
 
     final phoneHit = await Employee.db.findFirstRow(

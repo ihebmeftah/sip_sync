@@ -15,8 +15,7 @@ const buildingsViewModelProvider = BuildingsViewModelProvider._();
 
 /// Platform building list for the backoffice console.
 final class BuildingsViewModelProvider
-    extends
-        $AsyncNotifierProvider<BuildingsViewModel, List<AdminBuildingView>> {
+    extends $AsyncNotifierProvider<BuildingsViewModel, AdminBuildingPage> {
   /// Platform building list for the backoffice console.
   const BuildingsViewModelProvider._()
     : super(
@@ -38,31 +37,23 @@ final class BuildingsViewModelProvider
 }
 
 String _$buildingsViewModelHash() =>
-    r'cde7f9e108f071ef721feadeb79c041b369b9f03';
+    r'a3b207b2662c0e37049faad5cf97d6a6dd40b9fe';
 
 /// Platform building list for the backoffice console.
 
-abstract class _$BuildingsViewModel
-    extends $AsyncNotifier<List<AdminBuildingView>> {
-  FutureOr<List<AdminBuildingView>> build();
+abstract class _$BuildingsViewModel extends $AsyncNotifier<AdminBuildingPage> {
+  FutureOr<AdminBuildingPage> build();
   @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
     final ref =
-        this.ref
-            as $Ref<
-              AsyncValue<List<AdminBuildingView>>,
-              List<AdminBuildingView>
-            >;
+        this.ref as $Ref<AsyncValue<AdminBuildingPage>, AdminBuildingPage>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<
-                AsyncValue<List<AdminBuildingView>>,
-                List<AdminBuildingView>
-              >,
-              AsyncValue<List<AdminBuildingView>>,
+              AnyNotifier<AsyncValue<AdminBuildingPage>, AdminBuildingPage>,
+              AsyncValue<AdminBuildingPage>,
               Object?,
               Object?
             >;

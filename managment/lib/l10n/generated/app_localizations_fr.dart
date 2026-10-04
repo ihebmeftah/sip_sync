@@ -1468,4 +1468,67 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get errorPackFeature => 'Ce pack n\'inclut pas cela.';
+
+  @override
+  String get errorPackLimitEmployees =>
+      'Ce pack a atteint la limite d\'employés.';
+
+  @override
+  String get errorPackLimitTables => 'Ce pack a atteint la limite de tables.';
+
+  @override
+  String get errorPackLimitCategories =>
+      'Ce pack a atteint la limite de catégories.';
+
+  @override
+  String get errorPackLimitArticles =>
+      'Ce pack a atteint la limite d\'articles.';
+
+  @override
+  String get errorPackLimitIngredients =>
+      'Ce pack a atteint la limite d\'ingrédients.';
+
+  @override
+  String get errorPackFeatureOrdering =>
+      'Ce pack n\'inclut pas les commandes client.';
+
+  @override
+  String get errorPackFeatureInventory =>
+      'Ce pack n\'inclut pas l\'inventaire.';
+
+  @override
+  String get errorPackFeatureAppend =>
+      'Ce pack n\'inclut pas l\'ajout d\'articles à une commande ouverte.';
+
+  @override
+  String get errorPackFeatureMultiOrder =>
+      'Ce pack n\'inclut pas plusieurs commandes sur une table.';
+
+  @override
+  String get errorPackFeatureStrict =>
+      'Ce pack n\'inclut pas les étapes strictes.';
+
+  @override
+  String get errorPackFeatureAccess =>
+      'Ce pack n\'inclut pas les profils d\'accès personnalisés.';
+
+  @override
+  String get errorPackFeatureQr => 'Ce pack n\'inclut pas les QR de table.';
+
+  @override
+  String get errorPackPaidActive => 'Ce lieu a déjà un pack payant.';
+
+  @override
+  String get previousPage => 'Précédent';
+
+  @override
+  String get nextPage => 'Suivant';
+
+  @override
+  String pageOf(int current, int total) {
+    return '$current / $total';
+  }
+
+  @override
+  String get loadingMore => 'Chargement…';
 }

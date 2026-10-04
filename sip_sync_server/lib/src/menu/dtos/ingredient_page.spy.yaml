@@ -1,0 +1,7 @@
+### One page of ingredients for a venue.
+class: IngredientPage
+fields:
+  items: List<IngredientView>
+  total: int
+  limit: int
+  offset: int

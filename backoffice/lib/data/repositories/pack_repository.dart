@@ -1,13 +1,26 @@
 import 'package:sip_sync_client/sip_sync_client.dart';
 
+import '../../core/paging/list_paging.dart';
+
 /// Pack catalog for the backoffice console.
 class PackRepository {
   PackRepository(this._client);
 
   final Client _client;
 
-  /// Every pack, including private and disabled. Super admin only.
-  Future<List<PackView>> list() => _client.pack.list();
+  /// One page of packs, including private and disabled. Super admin only.
+  Future<PackPage> list({int? limit, int? offset}) =>
+      _client.pack.list(limit: limit, offset: offset);
+
+  /// Every pack, for the assign dialog.
+  Future<List<PackView>> listAll() {
+    return collectPages(
+      load: (offset) async {
+        final page = await list(limit: 100, offset: offset);
+        return (items: page.items, total: page.total);
+      },
+    );
+  }
 
   /// Creates a pack. [code] is stored lowercase.
   Future<PackView> create(PackCreate request) => _client.pack.create(request);

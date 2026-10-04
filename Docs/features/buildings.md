@@ -11,12 +11,12 @@ Status: in progress
 - **Owner** — create/update buildings they own (`building.ownerId`). After login → `/buildings` until they open a venue.
 - **Employee** — one building on their row; after login → `/b/:buildingId/dashboard`. No venue create/edit.
 - Enforcement on `BuildingEndpoint` via custom `AuthGuard`.
-- **Super admin** — `building.listAll` returns every venue with owner name, email, and phone plus contact fields. Opening a card calls `building.adminDetail`. `building.assignPack` moves the venue onto an enabled pack. No venue create or update from backoffice.
+- **Super admin** — `building.listAll` returns every venue with owner name, email, and phone plus contact fields. Opening a card calls `building.adminDetail`. `building.assignPack` moves a free-plan venue onto an enabled pack and keeps the previous row in history. A paid plan cannot be replaced until cancellation exists. No venue create or update from backoffice.
 - **Customer** — `CustomerVenue.list` returns a `CustomerVenueCard` (name, type, address, coordinates, hours, phone). Ops flags and owner identity stay off that card.
 
 ## Flow
 
-1. Owner signs in → `/buildings` (list + add), no ops sidebar.
+1. Owner signs in → `/buildings` (list + add), no ops sidebar. The owner list is 20 venues per page. An employee sees only their venue.
 2. Employee signs in → dashboard for their `buildingId`.
 3. Create/update: name, type, address, lat/long, hours, currency, **phone** (E.164 with country dial code), WhatsApp / Instagram / Facebook / other links, and **Multiple orders per table** (`tableMultiOrder`). No employee picker. The server sets the venue on the **free** pack.
 4. Server derives `countryCode` (ISO 3166-1 alpha-2, e.g. `TN` from `+216…`) from the venue phone via [`sealed_countries`](https://pub.dev/packages/sealed_countries) dial data and stores it. Currency codes are validated against ISO 4217 fiat list from the same ecosystem.

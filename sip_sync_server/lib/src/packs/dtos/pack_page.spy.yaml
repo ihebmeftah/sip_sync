@@ -1,0 +1,7 @@
+### One page of the pack catalog.
+class: PackPage
+fields:
+  items: List<PackView>
+  total: int
+  limit: int
+  offset: int

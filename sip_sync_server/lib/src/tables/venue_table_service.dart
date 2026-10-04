@@ -60,6 +60,7 @@ class VenueTableService {
       max: pack.maxTables,
       current: current,
       adding: request.count,
+      feature: PackFeature.tables,
     );
 
     final existing = await VenueTable.db.find(

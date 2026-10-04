@@ -13,12 +13,24 @@ class OrderEndpoint extends Endpoint {
   /// Lists orders for [buildingId] (owner or assigned employee).
   ///
   /// When [status] is set, only orders with that status are returned.
-  Future<List<OrderView>> list(
+  /// [venueTableId] limits the page to one table, so a seat lookup does not
+  /// depend on the floor page. [limit] defaults to 20 and is capped at 100.
+  Future<OrderPage> list(
     Session session,
     UuidValue buildingId,
-    OrderStatus? status,
-  ) {
-    return _orders.listForBuilding(session, buildingId, status: status);
+    OrderStatus? status, {
+    UuidValue? venueTableId,
+    int? limit,
+    int? offset,
+  }) {
+    return _orders.listForBuilding(
+      session,
+      buildingId,
+      status: status,
+      venueTableId: venueTableId,
+      limit: limit,
+      offset: offset,
+    );
   }
 
   /// Loads one order with items.

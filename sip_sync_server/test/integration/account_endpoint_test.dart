@@ -147,7 +147,7 @@ void main() {
             authId: 'test-session-employee',
           ),
         );
-        final listed = await endpoints.building.listMine(staffSession);
+        final listed = (await endpoints.building.listMine(staffSession)).items;
         expect(listed.single.id, building.id);
       },
     );

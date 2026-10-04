@@ -27,7 +27,7 @@ An employee with **no** access assigned cannot perform floor order actions (exce
 ## Flow
 
 1. Owner creates a **building** → server seeds default profiles **Waiter**, **Gerant**, **Barista**.
-2. Owner opens **Access** (from Employees) → adjust toggles or add custom profiles.
+2. Owner opens **Access** (from Employees) → adjust toggles or add custom profiles. The list is 20 profiles per page. The employee form still loads every profile.
 3. Owner creates/edits an employee and picks an access profile.
 4. Employee login loads session with access summary for UX; server re-checks on every order RPC.
 5. Order list for employees with `consultAllOrders: false` is filtered to their launched orders / added lines.

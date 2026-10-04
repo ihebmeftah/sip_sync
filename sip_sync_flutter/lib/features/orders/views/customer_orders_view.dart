@@ -11,6 +11,7 @@ import '../../../l10n/generated/app_localizations.dart';
 import '../../venue/menu_price.dart';
 import '../../venue/view_models/customer_order_view_model.dart';
 import '../../venue/widgets/venue_chrome.dart';
+import '../../../core/paging/list_paging.dart';
 import '../order_history_range.dart';
 import '../view_models/customer_orders_view_model.dart';
 
@@ -114,7 +115,8 @@ class CustomerOrdersView extends ConsumerWidget {
                       ),
                     ],
                   ),
-                  data: (rows) {
+                  data: (board) {
+                    final rows = board.orders;
                     if (rows.isEmpty) {
                       return Text(
                         l10n.emptyOrders,
@@ -123,12 +125,42 @@ class CustomerOrdersView extends ConsumerWidget {
                         ),
                       );
                     }
-                    return ListView.separated(
-                      itemCount: rows.length,
-                      separatorBuilder: (_, _) =>
-                          const SizedBox(height: AppSpacing.md),
-                      itemBuilder: (context, index) =>
-                          _OrderCard(row: rows[index]),
+                    return NotificationListener<ScrollNotification>(
+                      onNotification: (notification) {
+                        if (nearListEnd(notification)) {
+                          ref.read(customerOrdersProvider.notifier).loadMore();
+                        }
+                        return false;
+                      },
+                      child: ListView.separated(
+                        itemCount: rows.length + 1,
+                        separatorBuilder: (_, _) =>
+                            const SizedBox(height: AppSpacing.md),
+                        itemBuilder: (context, index) {
+                          if (index >= rows.length) {
+                            if (board.moreErrorKey != null) {
+                              return AppTonalButton(
+                                label: l10n.retry,
+                                onPressed: () => ref
+                                    .read(customerOrdersProvider.notifier)
+                                    .loadMore(),
+                              );
+                            }
+                            if (!board.loadingMore) {
+                              return const SizedBox(height: AppSpacing.md);
+                            }
+                            return const Padding(
+                              padding: EdgeInsets.symmetric(
+                                vertical: AppSpacing.md,
+                              ),
+                              child: Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                            );
+                          }
+                          return _OrderCard(row: rows[index]);
+                        },
+                      ),
                     );
                   },
                 ),

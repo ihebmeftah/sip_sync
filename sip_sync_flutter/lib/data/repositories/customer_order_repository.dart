@@ -38,9 +38,11 @@ class CustomerOrderRepository {
     );
   }
 
-  /// Orders this customer placed in `[from, to)`, every venue.
-  Future<List<CustomerOrderSummary>> list({
+  /// One page of orders this customer placed in `[from, to)`, every venue.
+  Future<CustomerOrderPage> list({
     required DateTime from,
     required DateTime to,
-  }) => _client.customerOrder.list(from, to);
+    int? limit,
+    int? offset,
+  }) => _client.customerOrder.list(from, to, limit: limit, offset: offset);
 }

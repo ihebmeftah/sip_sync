@@ -3,9 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sip_sync_client/sip_sync_client.dart';
 
 import '../../../core/di/app_providers.dart';
+import '../../../core/errors/app_notice.dart';
 import '../../../core/errors/error_mapper.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
+import '../../../core/widgets/list_page_bar.dart';
 import '../../../core/widgets/refresh_on_appear.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../view_models/ingredients_view_model.dart';
@@ -79,9 +81,7 @@ class _IngredientsListViewState extends ConsumerState<IngredientsListView> {
       if (!mounted) {
         return;
       }
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(lookupError(l10n, mapError(error).l10nKey))),
-      );
+      showAppSnackBar(context, lookupError(l10n, mapError(error).l10nKey));
     }
   }
 
@@ -131,10 +131,31 @@ class _IngredientsListViewState extends ConsumerState<IngredientsListView> {
                       style: FilledButton.styleFrom(
                         minimumSize: const Size(0, 44),
                       ),
-                      onPressed: () => openIngredientForm(
-                        context,
-                        buildingId: widget.buildingId,
-                      ),
+                      onPressed: () {
+                        final pack = ref.read(buildingSelectionProvider)?.pack;
+                        final count = async.asData?.value.total ?? 0;
+                        if (pack != null &&
+                            !allowPackFeature(
+                              context,
+                              allowed: pack.inventory,
+                              message: l10n.errorPackFeatureInventory,
+                            )) {
+                          return;
+                        }
+                        if (pack != null &&
+                            !allowPackRoom(
+                              context,
+                              max: pack.maxIngredients,
+                              current: count,
+                              message: l10n.errorPackLimitIngredients,
+                            )) {
+                          return;
+                        }
+                        openIngredientForm(
+                          context,
+                          buildingId: widget.buildingId,
+                        );
+                      },
                       icon: const Icon(Icons.add),
                       label: AppButtonLabel(l10n.addIngredient),
                     ),
@@ -142,6 +163,8 @@ class _IngredientsListViewState extends ConsumerState<IngredientsListView> {
                 ],
               ),
               const SizedBox(height: AppSpacing.lg),
+              if (ref.watch(buildingSelectionProvider)?.pack.inventory == false)
+                AppErrorBanner(message: l10n.errorPackFeatureInventory),
               async.when(
                 loading: () => const LinearProgressIndicator(),
                 error: (error, _) => Column(
@@ -162,7 +185,8 @@ class _IngredientsListViewState extends ConsumerState<IngredientsListView> {
                     ),
                   ],
                 ),
-                data: (ingredients) {
+                data: (page) {
+                  final ingredients = page.items;
                   if (ingredients.isEmpty) {
                     return AppSurfaceCard(
                       child: Text(
@@ -314,12 +338,25 @@ class _IngredientsListViewState extends ConsumerState<IngredientsListView> {
                                           MaterialTapTargetSize.shrinkWrap,
                                       minimumSize: const Size(0, 32),
                                     ),
-                                    onPressed: () =>
-                                        showIngredientRestockDialog(
-                                          context,
-                                          buildingId: widget.buildingId,
-                                          ingredient: ingredient,
-                                        ),
+                                    onPressed: () {
+                                      final pack = ref
+                                          .read(buildingSelectionProvider)
+                                          ?.pack;
+                                      if (pack != null &&
+                                          !allowPackFeature(
+                                            context,
+                                            allowed: pack.inventory,
+                                            message:
+                                                l10n.errorPackFeatureInventory,
+                                          )) {
+                                        return;
+                                      }
+                                      showIngredientRestockDialog(
+                                        context,
+                                        buildingId: widget.buildingId,
+                                        ingredient: ingredient,
+                                      );
+                                    },
                                     icon: const Icon(Icons.add, size: 16),
                                     label: Text(l10n.ingredientRestock),
                                   ),
@@ -342,6 +379,25 @@ class _IngredientsListViewState extends ConsumerState<IngredientsListView> {
                         ),
                         const SizedBox(height: AppSpacing.sm),
                       ],
+                      ListPageBar(
+                        total: page.total,
+                        limit: page.limit,
+                        offset: page.offset,
+                        onPrevious: () => ref
+                            .read(
+                              ingredientsViewModelProvider(
+                                widget.buildingId,
+                              ).notifier,
+                            )
+                            .previousPage(),
+                        onNext: () => ref
+                            .read(
+                              ingredientsViewModelProvider(
+                                widget.buildingId,
+                              ).notifier,
+                            )
+                            .nextPage(),
+                      ),
                     ],
                   );
                 },

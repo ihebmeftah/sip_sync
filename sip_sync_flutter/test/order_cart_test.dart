@@ -112,7 +112,11 @@ class _Repo extends CustomerDiscoveryRepository {
   final _articleId = UuidValue.fromString(_article);
 
   @override
-  Future<CustomerMenu> venueMenu(UuidValue buildingId) async {
+  Future<CustomerMenu> venueMenu(
+    UuidValue buildingId, {
+    int? limit,
+    int? offset,
+  }) async {
     return CustomerMenu(
       currencyCode: 'TND',
       sections: [
@@ -133,6 +137,12 @@ class _Repo extends CustomerDiscoveryRepository {
           ],
         ),
       ],
+      customerOrdering: true,
+      categories: const [],
+      articles: const [],
+      totalArticles: 0,
+      limit: limit ?? 20,
+      offset: offset ?? 0,
     );
   }
 }

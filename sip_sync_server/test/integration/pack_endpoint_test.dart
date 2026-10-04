@@ -78,7 +78,7 @@ void main() {
         await PackCatalog.ensure(session);
         await PackCatalog.ensure(session);
         final admin = await seedAdmin(session);
-        final rows = await endpoints.pack.list(asAdmin(admin.id!));
+        final rows = (await endpoints.pack.list(asAdmin(admin.id!))).items;
 
         expect(rows.map((row) => row.code), [
           'free',
@@ -226,7 +226,7 @@ void main() {
       await PackCatalog.ensure(session);
       final admin = await seedAdmin(session);
       final authed = asAdmin(admin.id!);
-      final rows = await endpoints.pack.list(authed);
+      final rows = (await endpoints.pack.list(authed)).items;
       final free = rows.firstWhere((row) => row.code == 'free');
       await expectLater(
         endpoints.pack.delete(authed, free.id),
@@ -241,7 +241,7 @@ void main() {
 
       final counter = rows.firstWhere((row) => row.code == 'counter');
       await endpoints.pack.delete(authed, counter.id);
-      final left = await endpoints.pack.list(authed);
+      final left = (await endpoints.pack.list(authed)).items;
       expect(left.map((row) => row.code), isNot(contains('counter')));
     });
 

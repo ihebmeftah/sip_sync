@@ -6,6 +6,7 @@ import 'package:sip_sync_client/sip_sync_client.dart';
 import '../../../core/errors/error_mapper.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
+import '../../../core/widgets/list_page_bar.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../console/views/console_shell.dart';
 import '../view_models/customers_view_model.dart';
@@ -52,18 +53,31 @@ class _CustomersViewState extends ConsumerState<CustomersView> {
             ShadTab(
               value: _DirectoryTab.owners,
               content: _PeopleList(
-                people: state.owners,
+                people: state.owners.items,
+                page: state.owners,
                 empty: l10n.empty,
                 theme: theme,
+                onPrevious: () => ref
+                    .read(customersViewModelProvider.notifier)
+                    .previousOwners(),
+                onNext: () =>
+                    ref.read(customersViewModelProvider.notifier).nextOwners(),
               ),
               child: Text(l10n.tabOwners),
             ),
             ShadTab(
               value: _DirectoryTab.customers,
               content: _PeopleList(
-                people: state.customers,
+                people: state.customers.items,
+                page: state.customers,
                 empty: l10n.empty,
                 theme: theme,
+                onPrevious: () => ref
+                    .read(customersViewModelProvider.notifier)
+                    .previousCustomers(),
+                onNext: () => ref
+                    .read(customersViewModelProvider.notifier)
+                    .nextCustomers(),
               ),
               child: Text(l10n.tabCustomers),
             ),
@@ -77,13 +91,19 @@ class _CustomersViewState extends ConsumerState<CustomersView> {
 class _PeopleList extends StatelessWidget {
   const _PeopleList({
     required this.people,
+    required this.page,
     required this.empty,
     required this.theme,
+    required this.onPrevious,
+    required this.onNext,
   });
 
   final List<PlatformPersonView> people;
+  final PlatformPersonPage page;
   final String empty;
   final ShadThemeData theme;
+  final VoidCallback onPrevious;
+  final VoidCallback onNext;
 
   @override
   Widget build(BuildContext context) {
@@ -101,6 +121,13 @@ class _PeopleList extends StatelessWidget {
             _PersonCard(person: person),
             const SizedBox(height: AppSpacing.md),
           ],
+          ListPageBar(
+            total: page.total,
+            limit: page.limit,
+            offset: page.offset,
+            onPrevious: onPrevious,
+            onNext: onNext,
+          ),
         ],
       ),
     );

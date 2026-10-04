@@ -2691,6 +2691,108 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This plan does not include that.'**
   String get errorPackFeature;
+
+  /// No description provided for @errorPackLimitEmployees.
+  ///
+  /// In en, this message translates to:
+  /// **'This plan has reached its employee limit.'**
+  String get errorPackLimitEmployees;
+
+  /// No description provided for @errorPackLimitTables.
+  ///
+  /// In en, this message translates to:
+  /// **'This plan has reached its table limit.'**
+  String get errorPackLimitTables;
+
+  /// No description provided for @errorPackLimitCategories.
+  ///
+  /// In en, this message translates to:
+  /// **'This plan has reached its category limit.'**
+  String get errorPackLimitCategories;
+
+  /// No description provided for @errorPackLimitArticles.
+  ///
+  /// In en, this message translates to:
+  /// **'This plan has reached its article limit.'**
+  String get errorPackLimitArticles;
+
+  /// No description provided for @errorPackLimitIngredients.
+  ///
+  /// In en, this message translates to:
+  /// **'This plan has reached its ingredient limit.'**
+  String get errorPackLimitIngredients;
+
+  /// No description provided for @errorPackFeatureOrdering.
+  ///
+  /// In en, this message translates to:
+  /// **'This plan does not include customer ordering.'**
+  String get errorPackFeatureOrdering;
+
+  /// No description provided for @errorPackFeatureInventory.
+  ///
+  /// In en, this message translates to:
+  /// **'This plan does not include inventory.'**
+  String get errorPackFeatureInventory;
+
+  /// No description provided for @errorPackFeatureAppend.
+  ///
+  /// In en, this message translates to:
+  /// **'This plan does not include adding items to an open order.'**
+  String get errorPackFeatureAppend;
+
+  /// No description provided for @errorPackFeatureMultiOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'This plan does not include more than one order on a table.'**
+  String get errorPackFeatureMultiOrder;
+
+  /// No description provided for @errorPackFeatureStrict.
+  ///
+  /// In en, this message translates to:
+  /// **'This plan does not include strict order steps.'**
+  String get errorPackFeatureStrict;
+
+  /// No description provided for @errorPackFeatureAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'This plan does not include custom access profiles.'**
+  String get errorPackFeatureAccess;
+
+  /// No description provided for @errorPackFeatureQr.
+  ///
+  /// In en, this message translates to:
+  /// **'This plan does not include table QR codes.'**
+  String get errorPackFeatureQr;
+
+  /// No description provided for @errorPackPaidActive.
+  ///
+  /// In en, this message translates to:
+  /// **'This venue already has a paid plan.'**
+  String get errorPackPaidActive;
+
+  /// No description provided for @previousPage.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous'**
+  String get previousPage;
+
+  /// No description provided for @nextPage.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get nextPage;
+
+  /// No description provided for @pageOf.
+  ///
+  /// In en, this message translates to:
+  /// **'{current} / {total}'**
+  String pageOf(int current, int total);
+
+  /// No description provided for @loadingMore.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading more…'**
+  String get loadingMore;
 }
 
 class _AppLocalizationsDelegate

@@ -1,36 +1,65 @@
 import 'package:serverpod/serverpod.dart';
 
 import '../auth/auth_guard.dart';
+import '../core/page_window.dart';
 import '../core/phone_numbers.dart';
 import '../employee_access/default_employee_access.dart';
 import '../generated/protocol.dart';
 import '../packs/pack_catalog.dart';
+import '../packs/pack_expiry.dart';
 import '../packs/pack_gate.dart';
+import '../packs/pack_history.dart';
 import '../packs/pack_service.dart';
 import 'strict_mode.dart';
 
 /// Owner venues; employees can read their assigned building.
 class BuildingService {
-  Future<List<BuildingView>> listMine(Session session) async {
+  /// Venues this owner created, oldest first, or the one building a staff
+  /// member is assigned to.
+  Future<BuildingPage> listMine(
+    Session session, {
+    int? limit,
+    int? offset,
+  }) async {
+    final window = PageWindow.from(limit: limit, offset: offset);
     final ctx = AuthGuard.requireAny(session);
     if (ctx.actorType == ActorType.owner) {
+      Expression where(BuildingTable t) => t.ownerId.equals(ctx.actorId);
+      final total = await Building.db.count(session, where: where);
       final rows = await Building.db.find(
         session,
-        where: (t) => t.ownerId.equals(ctx.actorId),
+        where: where,
         orderBy: (t) => t.createdAt,
+        limit: window.limit,
+        offset: window.offset,
       );
-      return Future.wait(rows.map((row) => _view(session, row)));
+      return BuildingPage(
+        items: await Future.wait(rows.map((row) => _view(session, row))),
+        total: total,
+        limit: window.limit,
+        offset: window.offset,
+      );
     }
     if (ctx.actorType == ActorType.employee) {
       final employee = await Employee.db.findById(session, ctx.actorId);
       if (employee == null) {
-        return const [];
+        return _emptyBuildings(window);
       }
       final row = await Building.db.findById(session, employee.buildingId);
-      if (row == null) {
-        return const [];
+      if (row == null || window.offset > 0) {
+        return BuildingPage(
+          items: const [],
+          total: row == null ? 0 : 1,
+          limit: window.limit,
+          offset: window.offset,
+        );
       }
-      return [await _view(session, row)];
+      return BuildingPage(
+        items: [await _view(session, row)],
+        total: 1,
+        limit: window.limit,
+        offset: window.offset,
+      );
     }
     throw BuildingException(
       message: 'Sign in as an owner or employee.',
@@ -38,15 +67,37 @@ class BuildingService {
     );
   }
 
-  /// Platform list for super admins. Owners and staff are rejected.
-  Future<List<AdminBuildingView>> listAll(Session session) async {
+  /// Platform list for super admins, name order. Owners and staff are rejected.
+  Future<AdminBuildingPage> listAll(
+    Session session, {
+    int? limit,
+    int? offset,
+  }) async {
     AuthGuard.requireSuperAdmin(session);
+    final window = PageWindow.from(limit: limit, offset: offset);
+    final total = await Building.db.count(session);
     final rows = await Building.db.find(
       session,
       include: Building.include(owner: Owner.include()),
       orderBy: (t) => t.name,
+      limit: window.limit,
+      offset: window.offset,
     );
-    return rows.map(_adminView).toList();
+    return AdminBuildingPage(
+      items: rows.map(_adminView).toList(),
+      total: total,
+      limit: window.limit,
+      offset: window.offset,
+    );
+  }
+
+  BuildingPage _emptyBuildings(PageWindow window) {
+    return BuildingPage(
+      items: const [],
+      total: 0,
+      limit: window.limit,
+      offset: window.offset,
+    );
   }
 
   Future<BuildingView> get(
@@ -65,37 +116,56 @@ class BuildingService {
     final contact = _validateContact(request);
     _validate(request);
     final free = await PackCatalog.requireFree(session);
-    PackGate.requireIfRequested(request.tableMultiOrder, free.tableMultiOrder);
-    PackGate.requireIfRequested(request.strictMode, free.strictMode);
+    PackGate.requireIfRequested(
+      request.tableMultiOrder,
+      free.tableMultiOrder,
+      PackFeature.tableMultiOrder,
+    );
+    PackGate.requireIfRequested(
+      request.strictMode,
+      free.strictMode,
+      PackFeature.strictMode,
+    );
     PackGate.requireIfRequested(
       request.allowAppendingItemsToOrder,
       free.allowAppendingItems,
+      PackFeature.appendingItems,
     );
-    final row = await Building.db.insertRow(
-      session,
-      Building(
-        ownerId: ownerId,
+    final row = await session.db.transaction((transaction) async {
+      final inserted = await Building.db.insertRow(
+        session,
+        Building(
+          ownerId: ownerId,
+          packId: free.id!,
+          name: request.name.trim(),
+          type: _normalizeType(request.type),
+          address: request.address.trim(),
+          latitude: request.latitude,
+          longitude: request.longitude,
+          openingMinutes: request.openingMinutes,
+          closingMinutes: request.closingMinutes,
+          currencyCode: request.currencyCode.trim().toUpperCase(),
+          phoneNumber: contact.phoneNumber,
+          countryCode: contact.countryCode,
+          whatsapp: contact.whatsapp,
+          instagram: contact.instagram,
+          facebook: contact.facebook,
+          otherLinks: contact.otherLinks,
+          tableMultiOrder: request.tableMultiOrder,
+          allowAppendingItemsToOrder: request.allowAppendingItemsToOrder,
+          strictMode: request.strictMode,
+          strictModeSteps: normalizeStrictModeSteps(request.strictModeSteps),
+        ),
+        transaction: transaction,
+      );
+      await BuildingPackHistory.openInitial(
+        session,
+        buildingId: inserted.id!,
         packId: free.id!,
-        name: request.name.trim(),
-        type: _normalizeType(request.type),
-        address: request.address.trim(),
-        latitude: request.latitude,
-        longitude: request.longitude,
-        openingMinutes: request.openingMinutes,
-        closingMinutes: request.closingMinutes,
-        currencyCode: request.currencyCode.trim().toUpperCase(),
-        phoneNumber: contact.phoneNumber,
-        countryCode: contact.countryCode,
-        whatsapp: contact.whatsapp,
-        instagram: contact.instagram,
-        facebook: contact.facebook,
-        otherLinks: contact.otherLinks,
-        tableMultiOrder: request.tableMultiOrder,
-        allowAppendingItemsToOrder: request.allowAppendingItemsToOrder,
-        strictMode: request.strictMode,
-        strictModeSteps: normalizeStrictModeSteps(request.strictModeSteps),
-      ),
-    );
+        transaction: transaction,
+      );
+      return inserted;
+    });
     await DefaultEmployeeAccess.seedForBuilding(session, row.id!);
     return _view(session, row);
   }
@@ -115,21 +185,31 @@ class BuildingService {
       );
     }
     final pack = await PackGate.ofBuilding(session, row.id!);
+    final current = await Building.db.findById(session, row.id!);
+    if (current == null) {
+      throw BuildingException(
+        message: 'Building not found.',
+        code: BuildingErrorCode.notFound,
+      );
+    }
     PackGate.requireIfRequested(
       request.tableMultiOrder && !row.tableMultiOrder,
       pack.tableMultiOrder,
+      PackFeature.tableMultiOrder,
     );
     PackGate.requireIfRequested(
       request.strictMode && !row.strictMode,
       pack.strictMode,
+      PackFeature.strictMode,
     );
     PackGate.requireIfRequested(
       request.allowAppendingItemsToOrder && !row.allowAppendingItemsToOrder,
       pack.allowAppendingItems,
+      PackFeature.appendingItems,
     );
     final updated = await Building.db.updateRow(
       session,
-      row.copyWith(
+      current.copyWith(
         name: request.name.trim(),
         type: _normalizeType(request.type),
         address: request.address.trim(),
@@ -153,10 +233,13 @@ class BuildingService {
     return _view(session, updated);
   }
 
-  Future<List<EmployeeView>> listEmployees(
+  /// Staff of [buildingId], last name then first name. Owner only.
+  Future<EmployeePage> listEmployees(
     Session session,
-    UuidValue buildingId,
-  ) async {
+    UuidValue buildingId, {
+    int? limit,
+    int? offset,
+  }) async {
     // Staff directory is owner-only (matches EmployeeEndpoint CRUD).
     final ownerId = AuthGuard.requireOwner(session);
     final row = await Building.db.findById(session, buildingId);
@@ -166,27 +249,38 @@ class BuildingService {
         code: BuildingErrorCode.notFound,
       );
     }
+    final window = PageWindow.from(limit: limit, offset: offset);
+    Expression where(EmployeeTable t) => t.buildingId.equals(buildingId);
+    final total = await Employee.db.count(session, where: where);
     final records = await Employee.db.find(
       session,
-      where: (t) => t.buildingId.equals(buildingId),
+      where: where,
+      orderByList: (t) => [t.lastName, t.firstName],
       include: Employee.include(access: EmployeeAccess.include()),
+      limit: window.limit,
+      offset: window.offset,
     );
-    return records
-        .map(
-          (e) => EmployeeView(
-            id: e.id!,
-            buildingId: e.buildingId,
-            ownerId: e.ownerId,
-            accessId: e.accessId,
-            accessName: e.access?.name,
-            username: e.username,
-            phoneNumber: e.phoneNumber,
-            firstName: e.firstName,
-            lastName: e.lastName,
-            isEnabled: e.isEnabled,
-          ),
-        )
-        .toList();
+    return EmployeePage(
+      items: records
+          .map(
+            (e) => EmployeeView(
+              id: e.id!,
+              buildingId: e.buildingId,
+              ownerId: e.ownerId,
+              accessId: e.accessId,
+              accessName: e.access?.name,
+              username: e.username,
+              phoneNumber: e.phoneNumber,
+              firstName: e.firstName,
+              lastName: e.lastName,
+              isEnabled: e.isEnabled,
+            ),
+          )
+          .toList(),
+      total: total,
+      limit: window.limit,
+      offset: window.offset,
+    );
   }
 
   Future<Building> _readableBuilding(
@@ -217,11 +311,13 @@ class BuildingService {
   }
 
   Future<BuildingView> _view(Session session, Building row) async {
+    final current = await PackExpiry.apply(session, row);
     final staff = await Employee.db.find(
       session,
-      where: (t) => t.buildingId.equals(row.id!),
+      where: (t) => t.buildingId.equals(current.id!),
     );
-    final pack = row.pack ?? await Pack.db.findById(session, row.packId);
+    final pack =
+        current.pack ?? await Pack.db.findById(session, current.packId);
     if (pack == null) {
       throw PackException(
         message: 'This venue has no pack.',
@@ -229,26 +325,26 @@ class BuildingService {
       );
     }
     return BuildingView(
-      id: row.id!,
-      ownerId: row.ownerId,
-      name: row.name,
-      type: row.type,
-      address: row.address,
-      latitude: row.latitude,
-      longitude: row.longitude,
-      openingMinutes: row.openingMinutes,
-      closingMinutes: row.closingMinutes,
-      currencyCode: row.currencyCode,
-      phoneNumber: row.phoneNumber,
-      countryCode: row.countryCode,
-      whatsapp: row.whatsapp,
-      instagram: row.instagram,
-      facebook: row.facebook,
-      otherLinks: row.otherLinks,
-      tableMultiOrder: row.tableMultiOrder,
-      allowAppendingItemsToOrder: row.allowAppendingItemsToOrder,
-      strictMode: row.strictMode,
-      strictModeSteps: normalizeStrictModeSteps(row.strictModeSteps),
+      id: current.id!,
+      ownerId: current.ownerId,
+      name: current.name,
+      type: current.type,
+      address: current.address,
+      latitude: current.latitude,
+      longitude: current.longitude,
+      openingMinutes: current.openingMinutes,
+      closingMinutes: current.closingMinutes,
+      currencyCode: current.currencyCode,
+      phoneNumber: current.phoneNumber,
+      countryCode: current.countryCode,
+      whatsapp: current.whatsapp,
+      instagram: current.instagram,
+      facebook: current.facebook,
+      otherLinks: current.otherLinks,
+      tableMultiOrder: current.tableMultiOrder,
+      allowAppendingItemsToOrder: current.allowAppendingItemsToOrder,
+      strictMode: current.strictMode,
+      strictModeSteps: normalizeStrictModeSteps(current.strictModeSteps),
       employeeIds: staff.map((s) => s.id!).toList(),
       pack: PackGate.summary(pack),
     );
@@ -264,12 +360,20 @@ class BuildingService {
     return _detail(session, row);
   }
 
-  /// Puts the venue on [packId]. A missing or disabled pack is rejected.
+  /// Puts a venue that is on the free pack onto [packId].
+  ///
+  /// A venue already on a paid plan is rejected until cancellation exists.
+  /// The free pack clears any term. Every other enabled pack needs
+  /// [billingPeriod] and an [expiresAt] in the future. When that instant
+  /// passes, the venue returns to the free pack and both steps are kept
+  /// in the assignment history.
   Future<AdminBuildingDetail> assignPack(
     Session session,
     UuidValue buildingId,
-    UuidValue packId,
-  ) async {
+    UuidValue packId, {
+    PackBillingPeriod? billingPeriod,
+    DateTime? expiresAt,
+  }) async {
     AuthGuard.requireSuperAdmin(session);
     final pack = await Pack.db.findById(session, packId);
     if (pack == null || pack.id == null || !pack.isEnabled) {
@@ -278,15 +382,76 @@ class BuildingService {
         code: PackErrorCode.notFound,
       );
     }
-    final row = await Building.db.findById(session, buildingId);
-    if (row == null) {
+    final stored = await Building.db.findById(
+      session,
+      buildingId,
+      include: Building.include(pack: Pack.include()),
+    );
+    if (stored == null || stored.pack == null) {
       throw BuildingException(
         message: 'Building not found.',
         code: BuildingErrorCode.notFound,
       );
     }
-    await Building.db.updateRow(session, row.copyWith(packId: pack.id));
+    final row = await PackExpiry.apply(session, stored);
+    final current = row.pack;
+    if (current == null) {
+      throw PackException(
+        message: 'This venue has no pack.',
+        code: PackErrorCode.notFound,
+      );
+    }
+    if (current.code != PackCatalog.freeCode) {
+      throw PackException(
+        message: 'This venue already has a paid plan.',
+        code: PackErrorCode.paidPlanActive,
+      );
+    }
+    if (current.id == pack.id) {
+      return adminDetail(session, buildingId);
+    }
+    final isFree = pack.code == PackCatalog.freeCode;
+    final term = _paidTerm(
+      isFree: isFree,
+      billingPeriod: billingPeriod,
+      expiresAt: expiresAt,
+    );
+    await BuildingPackHistory.change(
+      session,
+      building: row,
+      pack: pack,
+      billingPeriod: term?.period,
+      expiresAt: term?.expiresAt,
+      reason: BuildingPackEndReason.replaced,
+    );
     return adminDetail(session, buildingId);
+  }
+
+  /// A paid assignment, or null when the venue is moving to the free pack.
+  ({PackBillingPeriod period, DateTime expiresAt})? _paidTerm({
+    required bool isFree,
+    required PackBillingPeriod? billingPeriod,
+    required DateTime? expiresAt,
+  }) {
+    if (isFree) {
+      return null;
+    }
+    if (billingPeriod == null || expiresAt == null) {
+      throw PackException(
+        message: 'Choose monthly or yearly, and an end date.',
+        code: PackErrorCode.invalidInput,
+      );
+    }
+    final end = expiresAt.toUtc();
+    final now = DateTime.now().toUtc();
+    if (!end.isAfter(now) ||
+        end.isAfter(now.add(const Duration(days: 366 * 6)))) {
+      throw PackException(
+        message: 'Choose an end date in the future.',
+        code: PackErrorCode.invalidInput,
+      );
+    }
+    return (period: billingPeriod, expiresAt: end);
   }
 
   Future<Building> _adminRow(Session session, UuidValue buildingId) async {
@@ -308,8 +473,9 @@ class BuildingService {
   }
 
   Future<AdminBuildingDetail> _detail(Session session, Building row) async {
-    final id = row.id!;
-    final pack = row.pack!;
+    final current = await PackExpiry.apply(session, row);
+    final id = current.id!;
+    final pack = current.pack!;
     final categoryCount = await MenuCategory.db.count(
       session,
       where: (t) => t.buildingId.equals(id),
@@ -347,7 +513,7 @@ class BuildingService {
     }
     final feeEarned = customerSales * pack.customerOrderFeeBps / 10000;
     return AdminBuildingDetail(
-      building: _adminView(row),
+      building: _adminView(current),
       pack: PackService().present(pack),
       categoryCount: categoryCount,
       articleCount: articleCount,
@@ -356,6 +522,9 @@ class BuildingService {
       customerOrderCount: customerOrders.length,
       customerSales: customerSales,
       feeEarned: feeEarned,
+      packBillingPeriod: current.packBillingPeriod,
+      packExpiresAt: current.packExpiresAt,
+      packHistory: await BuildingPackHistory.list(session, id),
     );
   }
 

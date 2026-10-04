@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sip_sync_client/sip_sync_client.dart';
 
+import '../../../core/errors/app_notice.dart';
 import '../../../core/errors/error_mapper.dart';
 import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_tokens.dart';
@@ -107,7 +108,7 @@ class _IngredientDialogState extends ConsumerState<_IngredientDialog> {
       }
       setState(() {
         _saving = false;
-        _errorKey = mapError(error).l10nKey;
+        _errorKey = captureError(context, error);
       });
     }
   }

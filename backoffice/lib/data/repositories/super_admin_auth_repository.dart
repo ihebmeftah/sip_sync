@@ -22,7 +22,8 @@ class SuperAdminAuthRepository {
 
   Future<SuperAdminSessionView> me() => _client.superAdminAuth.me();
 
-  Future<List<SuperAdminView>> list() => _client.superAdminAuth.list();
+  Future<SuperAdminPage> list({int? limit, int? offset}) =>
+      _client.superAdminAuth.list(limit: limit, offset: offset);
 
   Future<SuperAdminView> add({
     required String email,

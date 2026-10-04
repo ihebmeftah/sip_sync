@@ -204,7 +204,9 @@ void main() {
           phone: '+21621000006',
           isSystemDefault: false,
         );
-        final rows = await endpoints.building.listAll(asAdmin(actor.id!));
+        final rows = (await endpoints.building.listAll(
+          asAdmin(actor.id!),
+        )).items;
         expect(rows, hasLength(1));
         expect(rows.single.name, 'Olive Café');
         expect(rows.single.type, 'cafe');

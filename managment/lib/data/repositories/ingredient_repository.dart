@@ -1,13 +1,28 @@
 import 'package:sip_sync_client/sip_sync_client.dart';
 
+import '../../core/paging/list_paging.dart';
+
 /// Building-scoped ingredient create / list / delete.
 class IngredientRepository {
   IngredientRepository(this._client);
 
   final Client _client;
 
-  Future<List<IngredientView>> list(UuidValue buildingId) =>
-      _client.ingredient.list(buildingId);
+  Future<IngredientPage> list(
+    UuidValue buildingId, {
+    int? limit,
+    int? offset,
+  }) => _client.ingredient.list(buildingId, limit: limit, offset: offset);
+
+  /// Every ingredient, for recipe pickers.
+  Future<List<IngredientView>> listAll(UuidValue buildingId) {
+    return collectPages(
+      load: (offset) async {
+        final page = await list(buildingId, limit: 100, offset: offset);
+        return (items: page.items, total: page.total);
+      },
+    );
+  }
 
   Future<IngredientView> create({
     required UuidValue buildingId,

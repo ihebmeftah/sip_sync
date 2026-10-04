@@ -13,6 +13,8 @@
 import 'package:serverpod_client/serverpod_client.dart' as _isc;
 import 'package:sip_sync_client/src/protocol/protocol.dart' as _iozg9o5r;
 import '../../buildings/dtos/admin_building_view.dart' as _i991oo14;
+import '../../packs/dtos/building_pack_assignment_view.dart' as _ijuhp44c;
+import '../../packs/dtos/pack_billing_period.dart' as _iohcjejn;
 import '../../packs/dtos/pack_view.dart' as _i9ywrq0m;
 
 /// One venue for the backoffice detail screen: contact, pack, counts, and platform gain.
@@ -28,6 +30,9 @@ abstract class AdminBuildingDetail
     required this.customerOrderCount,
     required this.customerSales,
     required this.feeEarned,
+    this.packBillingPeriod,
+    this.packExpiresAt,
+    required this.packHistory,
   });
 
   factory AdminBuildingDetail({
@@ -40,6 +45,9 @@ abstract class AdminBuildingDetail
     required int customerOrderCount,
     required double customerSales,
     required double feeEarned,
+    _iohcjejn.PackBillingPeriod? packBillingPeriod,
+    DateTime? packExpiresAt,
+    required List<_ijuhp44c.BuildingPackAssignmentView> packHistory,
   }) = _AdminBuildingDetailImpl;
 
   factory AdminBuildingDetail.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -57,6 +65,20 @@ abstract class AdminBuildingDetail
       customerOrderCount: jsonSerialization['customerOrderCount'] as int,
       customerSales: (jsonSerialization['customerSales'] as num).toDouble(),
       feeEarned: (jsonSerialization['feeEarned'] as num).toDouble(),
+      packBillingPeriod: jsonSerialization['packBillingPeriod'] == null
+          ? null
+          : _iohcjejn.PackBillingPeriod.fromJson(
+              (jsonSerialization['packBillingPeriod'] as String),
+            ),
+      packExpiresAt: jsonSerialization['packExpiresAt'] == null
+          ? null
+          : _isc.DateTimeJsonExtension.fromJson(
+              jsonSerialization['packExpiresAt'],
+            ),
+      packHistory: _iozg9o5r.Protocol()
+          .deserialize<List<_ijuhp44c.BuildingPackAssignmentView>>(
+            jsonSerialization['packHistory'],
+          ),
     );
   }
 
@@ -80,6 +102,15 @@ abstract class AdminBuildingDetail
   /// [customerSales] times the pack fee. Staff tickets are not included.
   double feeEarned;
 
+  /// monthly or yearly while a paid pack is assigned. Null on the free pack.
+  _iohcjejn.PackBillingPeriod? packBillingPeriod;
+
+  /// When the paid term ends. Null on the free pack.
+  DateTime? packExpiresAt;
+
+  /// Newest first. The open row is the plan the venue is on now.
+  List<_ijuhp44c.BuildingPackAssignmentView> packHistory;
+
   /// Returns a shallow copy of this [AdminBuildingDetail]
   /// with some or all fields replaced by the given arguments.
   @_isc.useResult
@@ -93,6 +124,9 @@ abstract class AdminBuildingDetail
     int? customerOrderCount,
     double? customerSales,
     double? feeEarned,
+    _iohcjejn.PackBillingPeriod? packBillingPeriod,
+    DateTime? packExpiresAt,
+    List<_ijuhp44c.BuildingPackAssignmentView>? packHistory,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -107,6 +141,10 @@ abstract class AdminBuildingDetail
       'customerOrderCount': customerOrderCount,
       'customerSales': customerSales,
       'feeEarned': feeEarned,
+      if (packBillingPeriod != null)
+        'packBillingPeriod': packBillingPeriod?.toJson(),
+      if (packExpiresAt != null) 'packExpiresAt': packExpiresAt?.toJson(),
+      'packHistory': packHistory.toJson(valueToJson: (v) => v.toJson()),
     };
   }
 
@@ -123,6 +161,12 @@ abstract class AdminBuildingDetail
       'customerOrderCount': customerOrderCount,
       'customerSales': customerSales,
       'feeEarned': feeEarned,
+      if (packBillingPeriod != null)
+        'packBillingPeriod': packBillingPeriod?.toJson(),
+      if (packExpiresAt != null) 'packExpiresAt': packExpiresAt?.toJson(),
+      'packHistory': packHistory.toJson(
+        valueToJson: (v) => v.toJsonForProtocol(),
+      ),
     };
   }
 
@@ -131,6 +175,8 @@ abstract class AdminBuildingDetail
     return _isc.SerializationManager.encode(this);
   }
 }
+
+class _Undefined {}
 
 class _AdminBuildingDetailImpl extends AdminBuildingDetail {
   _AdminBuildingDetailImpl({
@@ -143,6 +189,9 @@ class _AdminBuildingDetailImpl extends AdminBuildingDetail {
     required int customerOrderCount,
     required double customerSales,
     required double feeEarned,
+    _iohcjejn.PackBillingPeriod? packBillingPeriod,
+    DateTime? packExpiresAt,
+    required List<_ijuhp44c.BuildingPackAssignmentView> packHistory,
   }) : super._(
          building: building,
          pack: pack,
@@ -153,6 +202,9 @@ class _AdminBuildingDetailImpl extends AdminBuildingDetail {
          customerOrderCount: customerOrderCount,
          customerSales: customerSales,
          feeEarned: feeEarned,
+         packBillingPeriod: packBillingPeriod,
+         packExpiresAt: packExpiresAt,
+         packHistory: packHistory,
        );
 
   /// Returns a shallow copy of this [AdminBuildingDetail]
@@ -169,6 +221,9 @@ class _AdminBuildingDetailImpl extends AdminBuildingDetail {
     int? customerOrderCount,
     double? customerSales,
     double? feeEarned,
+    Object? packBillingPeriod = _Undefined,
+    Object? packExpiresAt = _Undefined,
+    List<_ijuhp44c.BuildingPackAssignmentView>? packHistory,
   }) {
     return AdminBuildingDetail(
       building: building ?? this.building.copyWith(),
@@ -180,6 +235,14 @@ class _AdminBuildingDetailImpl extends AdminBuildingDetail {
       customerOrderCount: customerOrderCount ?? this.customerOrderCount,
       customerSales: customerSales ?? this.customerSales,
       feeEarned: feeEarned ?? this.feeEarned,
+      packBillingPeriod: packBillingPeriod is _iohcjejn.PackBillingPeriod?
+          ? packBillingPeriod
+          : this.packBillingPeriod,
+      packExpiresAt: packExpiresAt is DateTime?
+          ? packExpiresAt
+          : this.packExpiresAt,
+      packHistory:
+          packHistory ?? this.packHistory.map((e0) => e0.copyWith()).toList(),
     );
   }
 }

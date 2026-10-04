@@ -48,10 +48,10 @@ void main() {
         building.id,
         'floor',
       );
-      final defaults = await endpoints.employeeAccess.list(
+      final defaults = (await endpoints.employeeAccess.list(
         ownerSession,
         building.id,
-      );
+      )).items;
       expect(
         defaults.map((a) => a.name).toSet(),
         containsAll(['Waiter', 'Gerant', 'Barista']),
@@ -77,10 +77,10 @@ void main() {
       expect(access.name, 'Cashier');
       expect(access.orderPayment, isTrue);
 
-      final listed = await endpoints.employeeAccess.list(
+      final listed = (await endpoints.employeeAccess.list(
         setup.ownerSession,
         setup.building.id,
-      );
+      )).items;
       expect(listed.map((a) => a.id), contains(access.id));
 
       final employee = await endpoints.employee.add(

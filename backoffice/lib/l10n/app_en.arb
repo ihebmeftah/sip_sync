@@ -168,6 +168,24 @@
   "errorPackInUse": "A venue is still on this pack.",
   "errorPackLimit": "This plan has reached its limit.",
   "errorPackFeature": "This plan does not include that.",
+  "errorPackLimitEmployees": "This plan has reached its employee limit.",
+  "errorPackLimitTables": "This plan has reached its table limit.",
+  "errorPackLimitCategories": "This plan has reached its category limit.",
+  "errorPackLimitArticles": "This plan has reached its article limit.",
+  "errorPackLimitIngredients": "This plan has reached its ingredient limit.",
+  "errorPackFeatureOrdering": "This plan does not include customer ordering.",
+  "errorPackFeatureInventory": "This plan does not include inventory.",
+  "errorPackFeatureAppend": "This plan does not include adding items to an open order.",
+  "errorPackFeatureMultiOrder": "This plan does not include more than one order on a table.",
+  "errorPackFeatureStrict": "This plan does not include strict order steps.",
+  "errorPackFeatureAccess": "This plan does not include custom access profiles.",
+  "errorPackFeatureQr": "This plan does not include table QR codes.",
+  "errorPackPaidActive": "This venue already has a paid plan. Assign another plan after it ends.",
+  "packHistoryTitle": "Plan history",
+  "packHistoryCurrent": "Current",
+  "packEndReplaced": "Replaced",
+  "packEndExpired": "Expired",
+  "packPaidLocked": "This venue is on a paid plan. Another plan can be assigned after the term ends.",
   "buildingDetailTitle": "Building",
   "buildingDetailSubtitle": "Contact, pack, gain, and counts for this venue.",
   "buildingTabDetails": "Details",
@@ -175,6 +193,17 @@
   "buildingTabGain": "Gain",
   "buildingTabStats": "Stats",
   "assignPack": "Assign pack",
+  "packBillingMonthly": "Monthly",
+  "packBillingYearly": "Yearly",
+  "packExpiresOn": "Returns to Free on {date}",
+  "@packExpiresOn": {
+    "placeholders": { "date": { "type": "String" } }
+  },
+  "packExpiresNever": "Free pack. No end date.",
+  "packTermHint": "A monthly term ends in one month. A yearly term ends in one year. You can move the date.",
+  "packChangeDate": "Change date",
+  "packAssignConfirm": "Assign",
+  "validationPackExpiry": "Choose a date after today.",
   "quickCreatePack": "Create private pack",
   "quickCreatePackHint": "A new pack starts private. It stays off the public list.",
   "packFeeLabel": "{fee}% on customer-app orders",
@@ -208,5 +237,15 @@
   "validationPackMoney": "Enter a price in dinars, up to 3 decimals.",
   "validationPackFee": "Enter a percent from 0 to 100.",
   "validationPackSort": "Enter a whole number.",
-  "validationPackLimit": "Enter a number, or leave empty for no limit."
+  "validationPackLimit": "Enter a number, or leave empty for no limit.",
+  "previousPage": "Previous",
+  "nextPage": "Next",
+  "pageOf": "{current} / {total}",
+  "@pageOf": {
+    "placeholders": {
+      "current": {"type": "int"},
+      "total": {"type": "int"}
+    }
+  },
+  "loadingMore": "Loading more…"
 }

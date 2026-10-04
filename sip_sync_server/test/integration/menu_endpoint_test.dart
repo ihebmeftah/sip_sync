@@ -82,10 +82,10 @@ void main() {
       expect(updated.name, 'Espresso bar');
       expect(updated.description, isNull);
 
-      final list = await endpoints.menuCategory.list(
+      final list = (await endpoints.menuCategory.list(
         setup.ownerSession,
         setup.building.id,
-      );
+      )).items;
       expect(list, hasLength(1));
     });
 

@@ -1,0 +1,7 @@
+### One page of access profiles for a venue.
+class: EmployeeAccessPage
+fields:
+  items: List<EmployeeAccessView>
+  total: int
+  limit: int
+  offset: int

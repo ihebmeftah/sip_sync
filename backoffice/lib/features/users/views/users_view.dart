@@ -6,6 +6,7 @@ import 'package:sip_sync_client/sip_sync_client.dart';
 import '../../../core/errors/error_mapper.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
+import '../../../core/widgets/list_page_bar.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../auth/view_models/auth_view_model.dart';
 import '../../console/views/console_shell.dart';
@@ -60,41 +61,58 @@ class _UsersViewState extends ConsumerState<UsersView> {
                 ),
               ],
             ),
-            data: (rows) {
+            data: (page) {
+              final rows = page.items;
               if (rows.isEmpty) {
                 return Text(l10n.empty, style: theme.textTheme.muted);
               }
-              return DecoratedBox(
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.card,
-                  borderRadius: theme.radius,
-                  border: Border.all(color: theme.colorScheme.border),
-                ),
-                child: Column(
-                  children: [
-                    for (var i = 0; i < rows.length; i++) ...[
-                      if (i > 0) const ShadSeparator.horizontal(),
-                      _UserRow(
-                        user: rows[i],
-                        locked: rows[i].isSystemDefault || rows[i].id == selfId,
-                        onEdit: () => showShadDialog<void>(
-                          context: context,
-                          builder: (_) => UserFormDialog(user: rows[i]),
-                        ),
-                        onToggle: (enabled) async {
-                          final error = await ref
-                              .read(usersViewModelProvider.notifier)
-                              .setEnabled(rows[i].id, enabled);
-                          if (!mounted) return;
-                          setState(() => _bannerKey = error);
-                        },
-                        onDelete: rows[i].isSystemDefault
-                            ? null
-                            : () => _confirmDelete(rows[i]),
-                      ),
-                    ],
-                  ],
-                ),
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.card,
+                      borderRadius: theme.radius,
+                      border: Border.all(color: theme.colorScheme.border),
+                    ),
+                    child: Column(
+                      children: [
+                        for (var i = 0; i < rows.length; i++) ...[
+                          if (i > 0) const ShadSeparator.horizontal(),
+                          _UserRow(
+                            user: rows[i],
+                            locked:
+                                rows[i].isSystemDefault || rows[i].id == selfId,
+                            onEdit: () => showShadDialog<void>(
+                              context: context,
+                              builder: (_) => UserFormDialog(user: rows[i]),
+                            ),
+                            onToggle: (enabled) async {
+                              final error = await ref
+                                  .read(usersViewModelProvider.notifier)
+                                  .setEnabled(rows[i].id, enabled);
+                              if (!mounted) return;
+                              setState(() => _bannerKey = error);
+                            },
+                            onDelete: rows[i].isSystemDefault
+                                ? null
+                                : () => _confirmDelete(rows[i]),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                  ListPageBar(
+                    total: page.total,
+                    limit: page.limit,
+                    offset: page.offset,
+                    onPrevious: () => ref
+                        .read(usersViewModelProvider.notifier)
+                        .previousPage(),
+                    onNext: () =>
+                        ref.read(usersViewModelProvider.notifier).nextPage(),
+                  ),
+                ],
               );
             },
           ),

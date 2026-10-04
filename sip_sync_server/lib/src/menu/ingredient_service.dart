@@ -2,23 +2,36 @@ import 'package:serverpod/serverpod.dart';
 
 import '../auth/auth_context.dart';
 import '../auth/auth_guard.dart';
+import '../core/page_window.dart';
 import '../generated/protocol.dart';
 import '../packs/pack_gate.dart';
 
 /// Building-scoped ingredient create / list / restock / delete.
 class IngredientService {
-  /// Lists ingredients for a building the caller can access.
-  Future<List<IngredientView>> listForBuilding(
+  /// Ingredients for a building the caller can access, name order.
+  Future<IngredientPage> listForBuilding(
     Session session,
-    UuidValue buildingId,
-  ) async {
+    UuidValue buildingId, {
+    int? limit,
+    int? offset,
+  }) async {
     await _requireBuildingAccess(session, buildingId);
+    final window = PageWindow.from(limit: limit, offset: offset);
+    Expression where(IngredientTable t) => t.buildingId.equals(buildingId);
+    final total = await Ingredient.db.count(session, where: where);
     final rows = await Ingredient.db.find(
       session,
-      where: (t) => t.buildingId.equals(buildingId),
+      where: where,
       orderBy: (t) => t.name,
+      limit: window.limit,
+      offset: window.offset,
     );
-    return rows.map(_view).toList();
+    return IngredientPage(
+      items: rows.map(_view).toList(),
+      total: total,
+      limit: window.limit,
+      offset: window.offset,
+    );
   }
 
   /// Owner-only create.
@@ -36,7 +49,7 @@ class IngredientService {
     );
     await _assertNameAvailable(session, request.buildingId, name);
     final pack = await PackGate.ofBuilding(session, request.buildingId);
-    PackGate.requireFeature(pack.inventory);
+    PackGate.requireFeature(pack.inventory, PackFeature.inventory);
     final current = await Ingredient.db.count(
       session,
       where: (t) => t.buildingId.equals(request.buildingId),
@@ -45,6 +58,7 @@ class IngredientService {
       max: pack.maxIngredients,
       current: current,
       adding: 1,
+      feature: PackFeature.ingredients,
     );
 
     final row = await Ingredient.db.insertRow(
@@ -77,7 +91,7 @@ class IngredientService {
     }
     await _requireBuildingAccess(session, existing.buildingId);
     final pack = await PackGate.ofBuilding(session, existing.buildingId);
-    PackGate.requireFeature(pack.inventory);
+    PackGate.requireFeature(pack.inventory, PackFeature.inventory);
     if (request.quantity <= 0 || request.quantity > 100000000) {
       throw IngredientException(
         message: 'Restock quantity must be greater than 0.',

@@ -11,32 +11,28 @@ class CustomerVenueEndpoint extends Endpoint {
   @override
   bool get requireLogin => true;
 
-  /// Every venue as a [CustomerVenueCard]. Customers only.
+  /// Public venue cards, name order, or nearest first when a place is set.
   ///
-  /// Omits owner identity, staff, and order-pipeline flags. Distance is
-  /// computed on the client from the customer's chosen place.
-  Future<List<CustomerVenueCard>> list(Session session) async {
+  /// Customers only. [nearbyOnly] keeps venues inside 15 km of
+  /// [latitude]/[longitude]. [limit] defaults to 20 and is capped at 100.
+  /// Omits owner identity, staff, and order-pipeline flags.
+  Future<CustomerVenuePage> list(
+    Session session, {
+    int? limit,
+    int? offset,
+    double? latitude,
+    double? longitude,
+    bool nearbyOnly = false,
+  }) {
     AuthGuard.requireCustomer(session);
-    final rows = await Building.db.find(
+    return _venues.list(
       session,
-      orderBy: (t) => t.name,
-      include: Building.include(pack: Pack.include()),
+      limit: limit,
+      offset: offset,
+      latitude: latitude,
+      longitude: longitude,
+      nearbyOnly: nearbyOnly,
     );
-    return [
-      for (final row in rows)
-        if (row.id != null && row.pack?.customerDiscovery == true)
-          CustomerVenueCard(
-            id: row.id!,
-            name: row.name,
-            type: row.type,
-            address: row.address,
-            latitude: row.latitude,
-            longitude: row.longitude,
-            openingMinutes: row.openingMinutes,
-            closingMinutes: row.closingMinutes,
-            phoneNumber: row.phoneNumber,
-          ),
-    ];
   }
 
   /// Venue page: free tables and the top categories and articles.
@@ -50,10 +46,17 @@ class CustomerVenueEndpoint extends Endpoint {
     return _venues.detail(session, buildingId);
   }
 
-  /// Full menu in catalog order. Customers only.
-  Future<CustomerMenu> menu(Session session, UuidValue buildingId) async {
+  /// Menu window in catalog order, plus every category for the rail.
+  ///
+  /// Customers only. [limit] defaults to 20 articles and is capped at 100.
+  Future<CustomerMenu> menu(
+    Session session,
+    UuidValue buildingId, {
+    int? limit,
+    int? offset,
+  }) async {
     AuthGuard.requireCustomer(session);
-    return _venues.menu(session, buildingId);
+    return _venues.menu(session, buildingId, limit: limit, offset: offset);
   }
 
   /// Confirms a scanned table sticker belongs to an active table.

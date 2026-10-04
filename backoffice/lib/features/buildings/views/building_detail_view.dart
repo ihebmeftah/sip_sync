@@ -3,15 +3,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:sip_sync_client/sip_sync_client.dart';
 
+import '../../../core/di/app_providers.dart';
 import '../../../core/errors/error_mapper.dart';
+import '../../../core/errors/form_validators.dart';
 import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../console/views/console_shell.dart';
 import '../../packs/pack_money.dart';
-import '../../packs/view_models/packs_view_model.dart';
 import '../../packs/views/pack_form_dialog.dart';
+import '../pack_assignment.dart';
+import '../pack_term_preview.dart';
 import '../view_models/building_detail_view_model.dart';
 
 /// Venue contact, pack, platform gain, and counts.
@@ -112,20 +115,14 @@ class _BuildingDetailViewState extends ConsumerState<BuildingDetailView> {
   }
 
   Future<void> _assign() async {
-    final packId = await showShadDialog<UuidValue>(
+    final assignment = await showShadDialog<PackAssignment>(
       context: context,
       builder: (_) => const _AssignPackDialog(),
     );
-    if (packId == null || !mounted) {
+    if (assignment == null || !mounted) {
       return;
     }
-    final error = await ref
-        .read(buildingDetailViewModelProvider(widget.buildingId).notifier)
-        .assignPack(packId);
-    if (!mounted) {
-      return;
-    }
-    setState(() => _errorKey = error);
+    await _saveAssignment(assignment);
   }
 
   Future<void> _createPrivate() async {
@@ -136,14 +133,30 @@ class _BuildingDetailViewState extends ConsumerState<BuildingDetailView> {
     if (created == null || !mounted) {
       return;
     }
+    final assignment = await showShadDialog<PackAssignment>(
+      context: context,
+      builder: (_) => _AssignPackDialog(pack: created),
+    );
+    if (assignment == null || !mounted) {
+      return;
+    }
+    await _saveAssignment(assignment);
+  }
+
+  Future<void> _saveAssignment(PackAssignment assignment) async {
     final error = await ref
         .read(buildingDetailViewModelProvider(widget.buildingId).notifier)
-        .assignPack(created.id);
+        .assignPack(assignment);
     if (!mounted) {
       return;
     }
     setState(() => _errorKey = error);
   }
+}
+
+String _formatExpiry(BuildContext context, DateTime value) {
+  final locale = Localizations.localeOf(context).toString();
+  return DateFormat.yMMMMd(locale).format(value.toLocal());
 }
 
 class _DetailsTab extends StatelessWidget {
@@ -219,22 +232,48 @@ class _PackTab extends StatelessWidget {
           l10n.packFeeLabel(formatBps(pack.customerOrderFeeBps)),
           style: theme.textTheme.muted,
         ),
+        const SizedBox(height: AppSpacing.sm),
+        if (detail.packBillingPeriod != null)
+          Text(
+            detail.packBillingPeriod == PackBillingPeriod.monthly
+                ? l10n.packBillingMonthly
+                : l10n.packBillingYearly,
+            style: theme.textTheme.p,
+          ),
+        Text(
+          detail.packExpiresAt == null
+              ? l10n.packExpiresNever
+              : l10n.packExpiresOn(
+                  _formatExpiry(context, detail.packExpiresAt!),
+                ),
+          style: theme.textTheme.p,
+        ),
         const SizedBox(height: AppSpacing.md),
         Text(_limits(l10n, caps), style: theme.textTheme.small),
         const SizedBox(height: AppSpacing.lg),
-        Wrap(
-          spacing: AppSpacing.sm,
-          runSpacing: AppSpacing.sm,
-          children: [
-            ShadButton(onPressed: onAssign, child: Text(l10n.assignPack)),
-            ShadButton.outline(
-              onPressed: onCreate,
-              child: Text(l10n.quickCreatePack),
-            ),
-          ],
-        ),
+        if (pack.code == 'free') ...[
+          Wrap(
+            spacing: AppSpacing.sm,
+            runSpacing: AppSpacing.sm,
+            children: [
+              ShadButton(onPressed: onAssign, child: Text(l10n.assignPack)),
+              ShadButton.outline(
+                onPressed: onCreate,
+                child: Text(l10n.quickCreatePack),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          Text(l10n.quickCreatePackHint, style: theme.textTheme.muted),
+        ] else
+          AppErrorBanner(message: l10n.packPaidLocked),
+        const SizedBox(height: AppSpacing.lg),
+        Text(l10n.packHistoryTitle, style: theme.textTheme.h4),
         const SizedBox(height: AppSpacing.sm),
-        Text(l10n.quickCreatePackHint, style: theme.textTheme.muted),
+        if (detail.packHistory.isEmpty)
+          Text(l10n.empty, style: theme.textTheme.muted)
+        else
+          for (final row in detail.packHistory) _HistoryLine(row: row),
       ],
     );
   }
@@ -313,41 +352,251 @@ class _StatsTab extends StatelessWidget {
   }
 }
 
-class _AssignPackDialog extends ConsumerWidget {
-  const _AssignPackDialog();
+class _AssignPackDialog extends ConsumerStatefulWidget {
+  const _AssignPackDialog({this.pack});
+
+  /// Skips the catalog list when a private pack was just created.
+  final PackView? pack;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<_AssignPackDialog> createState() => _AssignPackDialogState();
+}
+
+class _AssignPackDialogState extends ConsumerState<_AssignPackDialog> {
+  PackView? _selected;
+  PackBillingPeriod _period = PackBillingPeriod.monthly;
+  late DateTime _expires = previewPackExpiry(_period);
+  String? _dateError;
+  late final Future<List<PackView>> _catalog;
+
+  @override
+  void initState() {
+    super.initState();
+    _catalog = ref.read(packRepositoryProvider).listAll();
+    final pack = widget.pack;
+    if (pack != null && pack.code != 'free') {
+      _selected = pack;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final packs = ref.watch(packsViewModelProvider);
+    final selected = _selected;
     return ShadDialog(
       title: Text(l10n.assignPack),
       constraints: const BoxConstraints(maxWidth: AppBreakpoints.formMax),
-      child: packs.when(
-        loading: () => const LinearProgressIndicator(),
-        error: (error, _) => Text(lookupError(l10n, mapError(error).l10nKey)),
-        data: (rows) {
-          final enabled = rows.where((pack) => pack.isEnabled).toList();
-          if (enabled.isEmpty) {
-            return Text(l10n.empty);
-          }
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              for (final pack in enabled)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-                  child: ShadButton.outline(
-                    onPressed: () => Navigator.of(context).pop(pack.id),
-                    child: Text(
-                      '${pack.name} · ${l10n.packPriceMonth(formatMillimes(pack.monthlyMillimes))}',
-                    ),
-                  ),
-                ),
-            ],
-          );
-        },
+      child: selected == null
+          ? FutureBuilder<List<PackView>>(
+              future: _catalog,
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return Text(
+                    lookupError(l10n, mapError(snapshot.error!).l10nKey),
+                  );
+                }
+                final rows = snapshot.data;
+                if (rows == null) {
+                  return const LinearProgressIndicator();
+                }
+                return _packList(context, l10n, rows);
+              },
+            )
+          : _termStep(context, l10n, selected),
+    );
+  }
+
+  Widget _packList(
+    BuildContext context,
+    AppLocalizations l10n,
+    List<PackView> rows,
+  ) {
+    final enabled = rows.where((pack) => pack.isEnabled).toList();
+    if (enabled.isEmpty) {
+      return Text(l10n.empty);
+    }
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        for (final pack in enabled)
+          Padding(
+            padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+            child: ShadButton.outline(
+              onPressed: () => _choose(pack),
+              child: Text(
+                '${pack.name} · ${l10n.packPriceMonth(formatMillimes(pack.monthlyMillimes))}',
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+
+  void _choose(PackView pack) {
+    if (pack.code == 'free') {
+      Navigator.of(context).pop(PackAssignment(packId: pack.id));
+      return;
+    }
+    setState(() {
+      _selected = pack;
+      _period = PackBillingPeriod.monthly;
+      _expires = previewPackExpiry(PackBillingPeriod.monthly);
+      _dateError = null;
+    });
+  }
+
+  Widget _termStep(BuildContext context, AppLocalizations l10n, PackView pack) {
+    final theme = ShadTheme.of(context);
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(pack.name, style: theme.textTheme.h4),
+        const SizedBox(height: AppSpacing.sm),
+        Text(l10n.packTermHint, style: theme.textTheme.muted),
+        const SizedBox(height: AppSpacing.md),
+        Wrap(
+          spacing: AppSpacing.sm,
+          children: [
+            _periodButton(
+              label: l10n.packBillingMonthly,
+              period: PackBillingPeriod.monthly,
+            ),
+            _periodButton(
+              label: l10n.packBillingYearly,
+              period: PackBillingPeriod.yearly,
+            ),
+          ],
+        ),
+        const SizedBox(height: AppSpacing.md),
+        Text(
+          l10n.packExpiresOn(_formatExpiry(context, _expires)),
+          style: theme.textTheme.p,
+        ),
+        if (_dateError != null) ...[
+          const SizedBox(height: AppSpacing.xs),
+          Text(
+            _dateError!,
+            style: theme.textTheme.small.copyWith(
+              color: theme.colorScheme.destructive,
+            ),
+          ),
+        ],
+        const SizedBox(height: AppSpacing.md),
+        Wrap(
+          spacing: AppSpacing.sm,
+          runSpacing: AppSpacing.sm,
+          children: [
+            if (widget.pack == null)
+              ShadButton.outline(
+                onPressed: () => setState(() {
+                  _selected = null;
+                  _dateError = null;
+                }),
+                child: Text(l10n.packsTitle),
+              ),
+            ShadButton.outline(
+              onPressed: _changeDate,
+              child: Text(l10n.packChangeDate),
+            ),
+            ShadButton(
+              onPressed: () => _confirm(l10n, pack),
+              child: Text(l10n.packAssignConfirm),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _periodButton({
+    required String label,
+    required PackBillingPeriod period,
+  }) {
+    void select() => setState(() {
+      _period = period;
+      _expires = previewPackExpiry(period);
+      _dateError = null;
+    });
+    if (_period == period) {
+      return ShadButton(onPressed: select, child: Text(label));
+    }
+    return ShadButton.outline(onPressed: select, child: Text(label));
+  }
+
+  Future<void> _changeDate() async {
+    final now = DateTime.now();
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: _expires.toLocal().isAfter(now)
+          ? _expires.toLocal()
+          : now.add(const Duration(days: 1)),
+      firstDate: now.add(const Duration(days: 1)),
+      lastDate: now.add(const Duration(days: 365 * 5)),
+    );
+    if (picked == null) {
+      return;
+    }
+    setState(() {
+      _expires = endOfLocalDay(picked);
+      _dateError = null;
+    });
+  }
+
+  void _confirm(AppLocalizations l10n, PackView pack) {
+    final error = FormValidators.packExpiry(l10n, _expires);
+    if (error != null) {
+      setState(() => _dateError = error);
+      return;
+    }
+    Navigator.of(context).pop(
+      PackAssignment(
+        packId: pack.id,
+        billingPeriod: _period,
+        expiresAt: _expires.toUtc(),
+      ),
+    );
+  }
+}
+
+class _HistoryLine extends StatelessWidget {
+  const _HistoryLine({required this.row});
+
+  final BuildingPackAssignmentView row;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final theme = ShadTheme.of(context);
+    final status = row.endedAt == null
+        ? l10n.packHistoryCurrent
+        : switch (row.endReason) {
+            BuildingPackEndReason.replaced => l10n.packEndReplaced,
+            BuildingPackEndReason.expired => l10n.packEndExpired,
+            null => l10n.packHistoryCurrent,
+          };
+    final period = switch (row.billingPeriod) {
+      PackBillingPeriod.monthly => l10n.packBillingMonthly,
+      PackBillingPeriod.yearly => l10n.packBillingYearly,
+      null => null,
+    };
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AppSpacing.md),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(row.packName, style: theme.textTheme.p),
+          Text(
+            [
+              status,
+              ?period,
+              _formatExpiry(context, row.startedAt),
+              if (row.endedAt != null) _formatExpiry(context, row.endedAt!),
+            ].join(' · '),
+            style: theme.textTheme.muted,
+          ),
+        ],
       ),
     );
   }

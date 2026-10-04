@@ -3,6 +3,7 @@ import 'package:sip_sync_client/sip_sync_client.dart';
 
 import '../../../core/di/app_providers.dart';
 import '../../../core/errors/error_mapper.dart';
+import '../pack_assignment.dart';
 
 part 'building_detail_view_model.g.dart';
 
@@ -16,12 +17,17 @@ class BuildingDetailViewModel extends _$BuildingDetailViewModel {
         .detail(UuidValue.fromString(buildingId));
   }
 
-  /// Puts this venue on [packId] and refreshes the screen.
-  Future<String?> assignPack(UuidValue packId) async {
+  /// Puts this venue on [assignment] and refreshes the screen.
+  Future<String?> assignPack(PackAssignment assignment) async {
     try {
       final detail = await ref
           .read(adminBuildingRepositoryProvider)
-          .assignPack(UuidValue.fromString(buildingId), packId);
+          .assignPack(
+            UuidValue.fromString(buildingId),
+            assignment.packId,
+            billingPeriod: assignment.billingPeriod,
+            expiresAt: assignment.expiresAt,
+          );
       state = AsyncData(detail);
       return null;
     } catch (error) {

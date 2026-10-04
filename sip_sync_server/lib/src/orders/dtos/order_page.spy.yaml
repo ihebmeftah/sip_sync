@@ -1,0 +1,7 @@
+### One page of floor orders, newest first.
+class: OrderPage
+fields:
+  items: List<OrderView>
+  total: int
+  limit: int
+  offset: int

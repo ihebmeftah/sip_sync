@@ -52,6 +52,7 @@ class MenuArticleService {
       max: pack.maxArticles,
       current: current,
       adding: 1,
+      feature: PackFeature.articles,
     );
 
     final row = await MenuArticle.db.insertRow(

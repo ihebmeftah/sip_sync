@@ -56,7 +56,7 @@ final class BuildingDetailViewModelProvider
 }
 
 String _$buildingDetailViewModelHash() =>
-    r'da7dfbcc5156e8b5a8b569fa35b0dd6cc076d883';
+    r'dee6debe2430ed3346b1403b1b373d32a242b8af';
 
 /// One venue for the backoffice detail screen.
 

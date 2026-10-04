@@ -27,12 +27,21 @@ class CustomerOrderEndpoint extends Endpoint {
   /// Every venue is included. [from] is inclusive and [to] is exclusive.
   /// Another customer's orders are never returned. A reversed or oversized
   /// window throws [OrderException] / [OrderErrorCode.invalidInput].
-  Future<List<CustomerOrderSummary>> list(
+  /// [limit] defaults to 20 and is capped at 100.
+  Future<CustomerOrderPage> list(
     Session session,
     DateTime from,
-    DateTime to,
-  ) {
-    return _orders.listForCustomer(session, from, to);
+    DateTime to, {
+    int? limit,
+    int? offset,
+  }) {
+    return _orders.listForCustomer(
+      session,
+      from,
+      to,
+      limit: limit,
+      offset: offset,
+    );
   }
 
   /// Loads one order the signed-in customer placed.

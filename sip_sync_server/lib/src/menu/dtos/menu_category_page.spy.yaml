@@ -1,0 +1,7 @@
+### One page of menu categories for a venue.
+class: MenuCategoryPage
+fields:
+  items: List<MenuCategoryView>
+  total: int
+  limit: int
+  offset: int

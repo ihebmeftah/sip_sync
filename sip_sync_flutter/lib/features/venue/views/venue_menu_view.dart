@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sip_sync_client/sip_sync_client.dart';
 
+import '../../../core/errors/app_notice.dart';
 import '../../../core/errors/error_mapper.dart';
 import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_icons.dart';
 import '../../../core/theme/app_tokens.dart';
+import '../../../core/paging/list_paging.dart';
 import '../../../core/widgets/app_controls.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../menu_price.dart';
@@ -42,28 +44,46 @@ class _VenueMenuViewState extends ConsumerState<VenueMenuView> {
     }
   }
 
-  void _scrollTo(int index) {
-    final target = _sectionKeys[index].currentContext;
-    if (target == null) {
-      return;
-    }
+  Future<void> _scrollTo(int index) async {
     setState(() {
       _selected = index;
       _lockSelection = true;
     });
-    Scrollable.ensureVisible(
-      target,
-      duration: const Duration(milliseconds: 420),
-      curve: Curves.easeOutCubic,
-      alignment: 0.08,
-    ).whenComplete(() {
-      if (mounted) {
-        setState(() => _lockSelection = false);
+    await ref
+        .read(venueMenuViewModelProvider(widget.buildingId).notifier)
+        .loadUntil(index);
+    if (!mounted) {
+      return;
+    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final target = index < _sectionKeys.length
+          ? _sectionKeys[index].currentContext
+          : null;
+      if (target == null) {
+        if (mounted) {
+          setState(() => _lockSelection = false);
+        }
+        return;
       }
+      Scrollable.ensureVisible(
+        target,
+        duration: const Duration(milliseconds: 420),
+        curve: Curves.easeOutCubic,
+        alignment: 0.08,
+      ).whenComplete(() {
+        if (mounted) {
+          setState(() => _lockSelection = false);
+        }
+      });
     });
   }
 
   bool _followScroll(ScrollNotification notification) {
+    if (nearListEnd(notification)) {
+      ref
+          .read(venueMenuViewModelProvider(widget.buildingId).notifier)
+          .loadMore();
+    }
     if (_lockSelection || notification.metrics.axis != Axis.vertical) {
       return false;
     }
@@ -98,14 +118,16 @@ class _VenueMenuViewState extends ConsumerState<VenueMenuView> {
                 ref.invalidate(venueMenuViewModelProvider(widget.buildingId)),
           ),
           data: (page) {
-            _ensureKeys(page.sections.length);
+            _ensureKeys(page.categories.length);
             return _MenuBody(
               buildingId: widget.buildingId,
               venueName: widget.venueName,
               menu: page,
               selected: _selected,
               sectionKeys: _sectionKeys,
-              onSelect: _scrollTo,
+              onSelect: (index) {
+                _scrollTo(index);
+              },
               onScroll: _followScroll,
             );
           },
@@ -128,7 +150,7 @@ class _MenuBody extends ConsumerWidget {
 
   final String buildingId;
   final String? venueName;
-  final CustomerMenu menu;
+  final VenueMenuState menu;
   final int selected;
   final List<GlobalKey> sectionKeys;
   final ValueChanged<int> onSelect;
@@ -143,7 +165,8 @@ class _MenuBody extends ConsumerWidget {
     final title = (venueName == null || venueName!.trim().isEmpty)
         ? l10n.menu
         : venueName!.trim();
-    if (menu.sections.isEmpty) {
+    final sections = menu.visibleSections;
+    if (menu.categories.isEmpty) {
       return Column(
         children: [
           const Align(
@@ -187,6 +210,21 @@ class _MenuBody extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const VenueBackButton(),
+                      if (!menu.customerOrdering)
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(
+                            AppSpacing.md,
+                            0,
+                            AppSpacing.md,
+                            AppSpacing.md,
+                          ),
+                          child: Text(
+                            l10n.orderingUnavailable,
+                            style: text.bodyMedium?.copyWith(
+                              color: scheme.error,
+                            ),
+                          ),
+                        ),
                       Padding(
                         padding: const EdgeInsets.symmetric(
                           horizontal: AppSpacing.md,
@@ -221,7 +259,7 @@ class _MenuBody extends ConsumerWidget {
                 pinned: true,
                 delegate: _RailDelegate(
                   selected: selected,
-                  sections: menu.sections,
+                  categories: menu.categories,
                   onSelect: onSelect,
                 ),
               ),
@@ -235,19 +273,24 @@ class _MenuBody extends ConsumerWidget {
                 sliver: SliverToBoxAdapter(
                   child: Column(
                     children: [
-                      for (var index = 0; index < menu.sections.length; index++)
+                      for (var index = 0; index < sections.length; index++)
                         Padding(
                           padding: EdgeInsets.only(
-                            bottom: index == menu.sections.length - 1
+                            bottom: index == sections.length - 1
                                 ? 0
                                 : AppSpacing.xl,
                           ),
                           child: _MenuSection(
                             key: sectionKeys[index],
                             buildingId: buildingId,
-                            section: menu.sections[index],
+                            section: sections[index],
                             currencyCode: menu.currencyCode,
                           ),
+                        ),
+                      if (menu.loadingMore)
+                        const Padding(
+                          padding: EdgeInsets.only(top: AppSpacing.lg),
+                          child: Center(child: CircularProgressIndicator()),
                         ),
                     ],
                   ),
@@ -261,7 +304,7 @@ class _MenuBody extends ConsumerWidget {
     return Column(
       children: [
         Expanded(child: menuScroll),
-        if (cart.isNotEmpty)
+        if (cart.isNotEmpty && menu.customerOrdering)
           _CartBar(
             buildingId: buildingId,
             venueName: title,
@@ -336,12 +379,12 @@ class _CartBar extends StatelessWidget {
 class _RailDelegate extends SliverPersistentHeaderDelegate {
   _RailDelegate({
     required this.selected,
-    required this.sections,
+    required this.categories,
     required this.onSelect,
   });
 
   final int selected;
-  final List<CustomerMenuSection> sections;
+  final List<CustomerCategoryPreview> categories;
   final ValueChanged<int> onSelect;
 
   @override
@@ -372,14 +415,14 @@ class _RailDelegate extends SliverPersistentHeaderDelegate {
           horizontal: AppSpacing.lg,
           vertical: AppSpacing.sm,
         ),
-        itemCount: sections.length,
+        itemCount: categories.length,
         separatorBuilder: (_, _) => const SizedBox(width: AppSpacing.sm),
         itemBuilder: (context, index) {
           return Align(
             alignment: Alignment.center,
             child: _CategoryChip(
               key: ValueKey('menu-chip-$index'),
-              label: sections[index].name,
+              label: categories[index].name,
               selected: index == selected,
               onTap: () => onSelect(index),
             ),
@@ -391,7 +434,8 @@ class _RailDelegate extends SliverPersistentHeaderDelegate {
 
   @override
   bool shouldRebuild(covariant _RailDelegate oldDelegate) {
-    return oldDelegate.selected != selected || oldDelegate.sections != sections;
+    return oldDelegate.selected != selected ||
+        oldDelegate.categories != categories;
   }
 }
 
@@ -628,7 +672,25 @@ class _ArticleRow extends ConsumerWidget {
                                 _QtyButton(
                                   tooltip: l10n.addArticle,
                                   icon: AppIcons.add,
-                                  onPressed: () => cart.add(article),
+                                  onPressed: () {
+                                    final ordering = ref
+                                        .read(
+                                          venueMenuViewModelProvider(
+                                            buildingId,
+                                          ),
+                                        )
+                                        .asData
+                                        ?.value
+                                        .customerOrdering;
+                                    if (ordering == false) {
+                                      showAppSnackBar(
+                                        context,
+                                        l10n.errorPackFeatureOrdering,
+                                      );
+                                      return;
+                                    }
+                                    cart.add(article);
+                                  },
                                 ),
                               ],
                             ),

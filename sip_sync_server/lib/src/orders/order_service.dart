@@ -3,6 +3,7 @@ import 'package:serverpod/serverpod.dart';
 import '../auth/auth_context.dart';
 import '../auth/auth_guard.dart';
 import '../buildings/strict_mode.dart';
+import '../core/page_window.dart';
 import '../generated/protocol.dart';
 import '../packs/pack_gate.dart';
 
@@ -10,15 +11,23 @@ import '../packs/pack_gate.dart';
 class OrderService {
   /// Lists orders for a building sorted by [VenueOrder.createdAt] newest first.
   ///
-  /// Optional [status] filters at the database before access scoping.
-  Future<List<OrderView>> listForBuilding(
+  /// Optional [status] and [venueTableId] filter in the database, including
+  /// the employee visibility rule, so a page is not shortened after the read.
+  Future<OrderPage> listForBuilding(
     Session session,
     UuidValue buildingId, {
     OrderStatus? status,
+    UuidValue? venueTableId,
+    int? limit,
+    int? offset,
   }) async {
     await _requireBuildingAccess(session, buildingId);
     final ctx = AuthGuard.requireAny(session);
     final access = await _requireEmployeeAccessIfNeeded(session, ctx);
+    final window = PageWindow.from(limit: limit, offset: offset);
+    final restricted = access != null && !access.consultAllOrders;
+
+    var total = 0;
     final rows = await VenueOrder.db.find(
       session,
       where: (t) {
@@ -26,9 +35,25 @@ class OrderService {
         if (status != null) {
           filter = filter & t.status.equals(status);
         }
+        if (venueTableId != null) {
+          filter = filter & t.venueTableId.equals(venueTableId);
+        }
+        if (restricted) {
+          filter =
+              filter &
+              ((t.launchedByType.equals(ctx.actorType) &
+                      t.launchedById.equals(ctx.actorId)) |
+                  t.items.any(
+                    (item) =>
+                        item.addedByType.equals(ctx.actorType) &
+                        item.addedById.equals(ctx.actorId),
+                  ));
+        }
         return filter;
       },
       orderBy: (t) => t.createdAt.desc(),
+      limit: window.limit,
+      offset: window.offset,
       include: VenueOrder.include(
         venueTable: VenueTable.include(),
         items: VenueOrderItem.includeList(
@@ -36,11 +61,37 @@ class OrderService {
         ),
       ),
     );
-    final visible = _filterOrdersForAccess(rows, ctx, access);
-    final names = await _actorNameCache(session, visible);
-    return [
-      for (final row in visible) _view(row, names),
-    ];
+    total = await VenueOrder.db.count(
+      session,
+      where: (t) {
+        var filter = t.buildingId.equals(buildingId);
+        if (status != null) {
+          filter = filter & t.status.equals(status);
+        }
+        if (venueTableId != null) {
+          filter = filter & t.venueTableId.equals(venueTableId);
+        }
+        if (restricted) {
+          filter =
+              filter &
+              ((t.launchedByType.equals(ctx.actorType) &
+                      t.launchedById.equals(ctx.actorId)) |
+                  t.items.any(
+                    (item) =>
+                        item.addedByType.equals(ctx.actorType) &
+                        item.addedById.equals(ctx.actorId),
+                  ));
+        }
+        return filter;
+      },
+    );
+    final names = await _actorNameCache(session, rows);
+    return OrderPage(
+      items: [for (final row in rows) _view(row, names)],
+      total: total,
+      limit: window.limit,
+      offset: window.offset,
+    );
   }
 
   /// Loads one order with items.
@@ -117,7 +168,10 @@ class OrderService {
   ) async {
     final ctx = _requireCustomer(session);
     final pack = await PackGate.ofBuilding(session, request.buildingId);
-    PackGate.requireFeature(pack.customerOrdering);
+    PackGate.requireFeature(
+      pack.customerOrdering,
+      PackFeature.customerOrdering,
+    );
     final lines = _customerLines(request.items);
     final table = await _requireActiveTable(
       session,
@@ -163,11 +217,13 @@ class OrderService {
   ///
   /// The window is capped at 62 days so the history tabs stay day, week,
   /// and month.
-  Future<List<CustomerOrderSummary>> listForCustomer(
+  Future<CustomerOrderPage> listForCustomer(
     Session session,
     DateTime from,
-    DateTime to,
-  ) async {
+    DateTime to, {
+    int? limit,
+    int? offset,
+  }) async {
     final ctx = _requireCustomer(session);
     if (!to.isAfter(from) || to.difference(from) > const Duration(days: 62)) {
       throw OrderException(
@@ -175,39 +231,49 @@ class OrderService {
         code: OrderErrorCode.invalidInput,
       );
     }
+    final window = PageWindow.from(limit: limit, offset: offset);
+    Expression where(VenueOrderTable t) =>
+        t.launchedByType.equals(ActorType.customer) &
+        t.launchedById.equals(ctx.actorId) &
+        (t.createdAt >= from) &
+        (t.createdAt < to);
+    final total = await VenueOrder.db.count(session, where: where);
     final rows = await VenueOrder.db.find(
       session,
-      where: (t) =>
-          t.launchedByType.equals(ActorType.customer) &
-          t.launchedById.equals(ctx.actorId) &
-          (t.createdAt >= from) &
-          (t.createdAt < to),
+      where: where,
       orderBy: (t) => t.createdAt.desc(),
+      limit: window.limit,
+      offset: window.offset,
       include: VenueOrder.include(
         building: Building.include(),
         venueTable: VenueTable.include(),
         items: VenueOrderItem.includeList(),
       ),
     );
-    return [
-      for (final row in rows)
-        if (row.id != null)
-          CustomerOrderSummary(
-            id: row.id!,
-            buildingId: row.buildingId,
-            venueName: row.building?.name ?? '',
-            ref: row.ref,
-            tableNumber: row.venueTable?.number ?? 0,
-            currencyCode: row.building?.currencyCode ?? '',
-            status: row.status,
-            itemCount: row.items?.length ?? 0,
-            totalAmount: (row.items ?? const <VenueOrderItem>[]).fold<double>(
-              0,
-              (sum, item) => sum + item.unitPrice,
+    return CustomerOrderPage(
+      items: [
+        for (final row in rows)
+          if (row.id != null)
+            CustomerOrderSummary(
+              id: row.id!,
+              buildingId: row.buildingId,
+              venueName: row.building?.name ?? '',
+              ref: row.ref,
+              tableNumber: row.venueTable?.number ?? 0,
+              currencyCode: row.building?.currencyCode ?? '',
+              status: row.status,
+              itemCount: row.items?.length ?? 0,
+              totalAmount: (row.items ?? const <VenueOrderItem>[]).fold<double>(
+                0,
+                (sum, item) => sum + item.unitPrice,
+              ),
+              createdAt: row.createdAt,
             ),
-            createdAt: row.createdAt,
-          ),
-    ];
+      ],
+      total: total,
+      limit: window.limit,
+      offset: window.offset,
+    );
   }
 
   /// One order this customer launched. Other orders look missing.
@@ -283,8 +349,14 @@ class OrderService {
       );
     }
     final pack = await PackGate.ofBuilding(session, order.buildingId);
-    PackGate.requireFeature(pack.customerOrdering);
-    PackGate.requireFeature(pack.allowAppendingItems);
+    PackGate.requireFeature(
+      pack.customerOrdering,
+      PackFeature.customerOrdering,
+    );
+    PackGate.requireFeature(
+      pack.allowAppendingItems,
+      PackFeature.appendingItems,
+    );
     final building = await Building.db.findById(session, order.buildingId);
     if (building == null) {
       throw OrderException(
@@ -342,7 +414,10 @@ class OrderService {
       );
     }
     final pack = await PackGate.ofBuilding(session, order.buildingId);
-    PackGate.requireFeature(pack.allowAppendingItems);
+    PackGate.requireFeature(
+      pack.allowAppendingItems,
+      PackFeature.appendingItems,
+    );
     final lines = _validateLines(request.items);
     final articles = await _resolveArticles(
       session,
@@ -1138,20 +1213,6 @@ class OrderService {
       case OrderItemStatus.progress:
         break;
     }
-  }
-
-  List<VenueOrder> _filterOrdersForAccess(
-    List<VenueOrder> rows,
-    AuthContext ctx,
-    EmployeeAccess? access,
-  ) {
-    if (access == null || access.consultAllOrders) {
-      return rows;
-    }
-    return [
-      for (final row in rows)
-        if (_canConsultOrder(row, ctx, access)) row,
-    ];
   }
 
   /// Employee without [EmployeeAccess.consultAllOrders] sees orders they launched

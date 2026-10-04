@@ -14,6 +14,7 @@
 import 'package:serverpod/serverpod.dart' as _is;
 import 'package:sip_sync_server/src/generated/protocol.dart' as _iaib1p48;
 import '../../buildings/entity/building.dart' as _iaohraio;
+import '../../packs/entity/building_pack_assignment.dart' as _iq3bhcsv;
 
 /// Commercial plan. Prices are millimes (89 TND = 89000). Null limits mean no cap.
 abstract class Pack
@@ -44,6 +45,7 @@ abstract class Pack
     bool? customAccessProfiles,
     DateTime? createdAt,
     this.buildings,
+    this.assignments,
   }) : customerOrderFeeBps = customerOrderFeeBps ?? 0,
        isPublic = isPublic ?? false,
        isEnabled = isEnabled ?? true,
@@ -85,6 +87,7 @@ abstract class Pack
     bool? customAccessProfiles,
     DateTime? createdAt,
     List<_iaohraio.Building>? buildings,
+    List<_iq3bhcsv.BuildingPackAssignment>? assignments,
   }) = _PackImpl;
 
   factory Pack.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -154,6 +157,12 @@ abstract class Pack
           : _iaib1p48.Protocol().deserialize<List<_iaohraio.Building>>(
               jsonSerialization['buildings'],
             ),
+      assignments: jsonSerialization['assignments'] == null
+          ? null
+          : _iaib1p48.Protocol()
+                .deserialize<List<_iq3bhcsv.BuildingPackAssignment>>(
+                  jsonSerialization['assignments'],
+                ),
     );
   }
 
@@ -217,6 +226,8 @@ abstract class Pack
 
   List<_iaohraio.Building>? buildings;
 
+  List<_iq3bhcsv.BuildingPackAssignment>? assignments;
+
   @override
   _is.Table<_is.UuidValue?> get table => t;
 
@@ -249,6 +260,7 @@ abstract class Pack
     bool? customAccessProfiles,
     DateTime? createdAt,
     List<_iaohraio.Building>? buildings,
+    List<_iq3bhcsv.BuildingPackAssignment>? assignments,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -280,6 +292,8 @@ abstract class Pack
       'createdAt': createdAt.toJson(),
       if (buildings != null)
         'buildings': buildings?.toJson(valueToJson: (v) => v.toJson()),
+      if (assignments != null)
+        'assignments': assignments?.toJson(valueToJson: (v) => v.toJson()),
     };
   }
 
@@ -288,8 +302,14 @@ abstract class Pack
     return {};
   }
 
-  static PackInclude include({_iaohraio.BuildingIncludeList? buildings}) {
-    return PackInclude._(buildings: buildings);
+  static PackInclude include({
+    _iaohraio.BuildingIncludeList? buildings,
+    _iq3bhcsv.BuildingPackAssignmentIncludeList? assignments,
+  }) {
+    return PackInclude._(
+      buildings: buildings,
+      assignments: assignments,
+    );
   }
 
   static PackIncludeList includeList({
@@ -345,6 +365,7 @@ class _PackImpl extends Pack {
     bool? customAccessProfiles,
     DateTime? createdAt,
     List<_iaohraio.Building>? buildings,
+    List<_iq3bhcsv.BuildingPackAssignment>? assignments,
   }) : super._(
          id: id,
          code: code,
@@ -371,6 +392,7 @@ class _PackImpl extends Pack {
          customAccessProfiles: customAccessProfiles,
          createdAt: createdAt,
          buildings: buildings,
+         assignments: assignments,
        );
 
   /// Returns a shallow copy of this [Pack]
@@ -403,6 +425,7 @@ class _PackImpl extends Pack {
     bool? customAccessProfiles,
     DateTime? createdAt,
     Object? buildings = _Undefined,
+    Object? assignments = _Undefined,
   }) {
     return Pack(
       id: id is _is.UuidValue? ? id : this.id,
@@ -436,6 +459,9 @@ class _PackImpl extends Pack {
       buildings: buildings is List<_iaohraio.Building>?
           ? buildings
           : this.buildings?.map((e0) => e0.copyWith()).toList(),
+      assignments: assignments is List<_iq3bhcsv.BuildingPackAssignment>?
+          ? assignments
+          : this.assignments?.map((e0) => e0.copyWith()).toList(),
     );
   }
 }
@@ -729,6 +755,10 @@ class PackTable extends _is.Table<_is.UuidValue?> {
 
   _is.ManyRelation<_iaohraio.BuildingTable>? _buildings;
 
+  _iq3bhcsv.BuildingPackAssignmentTable? ___assignments;
+
+  _is.ManyRelation<_iq3bhcsv.BuildingPackAssignmentTable>? _assignments;
+
   _iaohraio.BuildingTable get __buildings {
     if (___buildings != null) return ___buildings!;
     ___buildings = _is.createRelationTable(
@@ -740,6 +770,21 @@ class PackTable extends _is.Table<_is.UuidValue?> {
           _iaohraio.BuildingTable(tableRelation: foreignTableRelation),
     );
     return ___buildings!;
+  }
+
+  _iq3bhcsv.BuildingPackAssignmentTable get __assignments {
+    if (___assignments != null) return ___assignments!;
+    ___assignments = _is.createRelationTable(
+      relationFieldName: '__assignments',
+      field: Pack.t.id,
+      foreignField: _iq3bhcsv.BuildingPackAssignment.t.packId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _iq3bhcsv.BuildingPackAssignmentTable(
+            tableRelation: foreignTableRelation,
+          ),
+    );
+    return ___assignments!;
   }
 
   _is.ManyRelation<_iaohraio.BuildingTable> get buildings {
@@ -759,6 +804,27 @@ class PackTable extends _is.Table<_is.UuidValue?> {
       ),
     );
     return _buildings!;
+  }
+
+  _is.ManyRelation<_iq3bhcsv.BuildingPackAssignmentTable> get assignments {
+    if (_assignments != null) return _assignments!;
+    var relationTable = _is.createRelationTable(
+      relationFieldName: 'assignments',
+      field: Pack.t.id,
+      foreignField: _iq3bhcsv.BuildingPackAssignment.t.packId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _iq3bhcsv.BuildingPackAssignmentTable(
+            tableRelation: foreignTableRelation,
+          ),
+    );
+    _assignments = _is.ManyRelation<_iq3bhcsv.BuildingPackAssignmentTable>(
+      tableWithRelations: relationTable,
+      table: _iq3bhcsv.BuildingPackAssignmentTable(
+        tableRelation: relationTable.tableRelation!.lastRelation,
+      ),
+    );
+    return _assignments!;
   }
 
   @override
@@ -794,19 +860,31 @@ class PackTable extends _is.Table<_is.UuidValue?> {
     if (relationField == 'buildings') {
       return __buildings;
     }
+    if (relationField == 'assignments') {
+      return __assignments;
+    }
     return null;
   }
 }
 
 class PackInclude extends _is.IncludeObject {
-  PackInclude._({_iaohraio.BuildingIncludeList? buildings}) {
+  PackInclude._({
+    _iaohraio.BuildingIncludeList? buildings,
+    _iq3bhcsv.BuildingPackAssignmentIncludeList? assignments,
+  }) {
     _buildings = buildings;
+    _assignments = assignments;
   }
 
   _iaohraio.BuildingIncludeList? _buildings;
 
+  _iq3bhcsv.BuildingPackAssignmentIncludeList? _assignments;
+
   @override
-  Map<String, _is.Include?> get includes => {'buildings': _buildings};
+  Map<String, _is.Include?> get includes => {
+    'buildings': _buildings,
+    'assignments': _assignments,
+  };
 
   @override
   _is.Table<_is.UuidValue?> get table => Pack.t;
@@ -1261,6 +1339,31 @@ class PackAttachRepository {
       transaction: transaction,
     );
   }
+
+  /// Creates a relation between this [Pack] and the given [BuildingPackAssignment]s
+  /// by setting each [BuildingPackAssignment]'s foreign key `packId` to refer to this [Pack].
+  Future<void> assignments(
+    _is.DatabaseSession session,
+    Pack pack,
+    List<_iq3bhcsv.BuildingPackAssignment> buildingPackAssignment, {
+    _is.Transaction? transaction,
+  }) async {
+    if (buildingPackAssignment.any((e) => e.id == null)) {
+      throw ArgumentError.notNull('buildingPackAssignment.id');
+    }
+    if (pack.id == null) {
+      throw ArgumentError.notNull('pack.id');
+    }
+
+    var $buildingPackAssignment = buildingPackAssignment
+        .map((e) => e.copyWith(packId: pack.id))
+        .toList();
+    await session.db.update<_iq3bhcsv.BuildingPackAssignment>(
+      $buildingPackAssignment,
+      columns: [_iq3bhcsv.BuildingPackAssignment.t.packId],
+      transaction: transaction,
+    );
+  }
 }
 
 class PackAttachRowRepository {
@@ -1285,6 +1388,31 @@ class PackAttachRowRepository {
     await session.db.updateRow<_iaohraio.Building>(
       $building,
       columns: [_iaohraio.Building.t.packId],
+      transaction: transaction,
+    );
+  }
+
+  /// Creates a relation between this [Pack] and the given [BuildingPackAssignment]
+  /// by setting the [BuildingPackAssignment]'s foreign key `packId` to refer to this [Pack].
+  Future<void> assignments(
+    _is.DatabaseSession session,
+    Pack pack,
+    _iq3bhcsv.BuildingPackAssignment buildingPackAssignment, {
+    _is.Transaction? transaction,
+  }) async {
+    if (buildingPackAssignment.id == null) {
+      throw ArgumentError.notNull('buildingPackAssignment.id');
+    }
+    if (pack.id == null) {
+      throw ArgumentError.notNull('pack.id');
+    }
+
+    var $buildingPackAssignment = buildingPackAssignment.copyWith(
+      packId: pack.id,
+    );
+    await session.db.updateRow<_iq3bhcsv.BuildingPackAssignment>(
+      $buildingPackAssignment,
+      columns: [_iq3bhcsv.BuildingPackAssignment.t.packId],
       transaction: transaction,
     );
   }

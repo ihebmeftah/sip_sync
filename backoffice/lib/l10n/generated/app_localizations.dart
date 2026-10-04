@@ -964,6 +964,114 @@ abstract class AppLocalizations {
   /// **'This plan does not include that.'**
   String get errorPackFeature;
 
+  /// No description provided for @errorPackLimitEmployees.
+  ///
+  /// In en, this message translates to:
+  /// **'This plan has reached its employee limit.'**
+  String get errorPackLimitEmployees;
+
+  /// No description provided for @errorPackLimitTables.
+  ///
+  /// In en, this message translates to:
+  /// **'This plan has reached its table limit.'**
+  String get errorPackLimitTables;
+
+  /// No description provided for @errorPackLimitCategories.
+  ///
+  /// In en, this message translates to:
+  /// **'This plan has reached its category limit.'**
+  String get errorPackLimitCategories;
+
+  /// No description provided for @errorPackLimitArticles.
+  ///
+  /// In en, this message translates to:
+  /// **'This plan has reached its article limit.'**
+  String get errorPackLimitArticles;
+
+  /// No description provided for @errorPackLimitIngredients.
+  ///
+  /// In en, this message translates to:
+  /// **'This plan has reached its ingredient limit.'**
+  String get errorPackLimitIngredients;
+
+  /// No description provided for @errorPackFeatureOrdering.
+  ///
+  /// In en, this message translates to:
+  /// **'This plan does not include customer ordering.'**
+  String get errorPackFeatureOrdering;
+
+  /// No description provided for @errorPackFeatureInventory.
+  ///
+  /// In en, this message translates to:
+  /// **'This plan does not include inventory.'**
+  String get errorPackFeatureInventory;
+
+  /// No description provided for @errorPackFeatureAppend.
+  ///
+  /// In en, this message translates to:
+  /// **'This plan does not include adding items to an open order.'**
+  String get errorPackFeatureAppend;
+
+  /// No description provided for @errorPackFeatureMultiOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'This plan does not include more than one order on a table.'**
+  String get errorPackFeatureMultiOrder;
+
+  /// No description provided for @errorPackFeatureStrict.
+  ///
+  /// In en, this message translates to:
+  /// **'This plan does not include strict order steps.'**
+  String get errorPackFeatureStrict;
+
+  /// No description provided for @errorPackFeatureAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'This plan does not include custom access profiles.'**
+  String get errorPackFeatureAccess;
+
+  /// No description provided for @errorPackFeatureQr.
+  ///
+  /// In en, this message translates to:
+  /// **'This plan does not include table QR codes.'**
+  String get errorPackFeatureQr;
+
+  /// No description provided for @errorPackPaidActive.
+  ///
+  /// In en, this message translates to:
+  /// **'This venue already has a paid plan. Assign another plan after it ends.'**
+  String get errorPackPaidActive;
+
+  /// No description provided for @packHistoryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan history'**
+  String get packHistoryTitle;
+
+  /// No description provided for @packHistoryCurrent.
+  ///
+  /// In en, this message translates to:
+  /// **'Current'**
+  String get packHistoryCurrent;
+
+  /// No description provided for @packEndReplaced.
+  ///
+  /// In en, this message translates to:
+  /// **'Replaced'**
+  String get packEndReplaced;
+
+  /// No description provided for @packEndExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'Expired'**
+  String get packEndExpired;
+
+  /// No description provided for @packPaidLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'This venue is on a paid plan. Another plan can be assigned after the term ends.'**
+  String get packPaidLocked;
+
   /// No description provided for @buildingDetailTitle.
   ///
   /// In en, this message translates to:
@@ -1005,6 +1113,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Assign pack'**
   String get assignPack;
+
+  /// No description provided for @packBillingMonthly.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly'**
+  String get packBillingMonthly;
+
+  /// No description provided for @packBillingYearly.
+  ///
+  /// In en, this message translates to:
+  /// **'Yearly'**
+  String get packBillingYearly;
+
+  /// No description provided for @packExpiresOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Returns to Free on {date}'**
+  String packExpiresOn(String date);
+
+  /// No description provided for @packExpiresNever.
+  ///
+  /// In en, this message translates to:
+  /// **'Free pack. No end date.'**
+  String get packExpiresNever;
+
+  /// No description provided for @packTermHint.
+  ///
+  /// In en, this message translates to:
+  /// **'A monthly term ends in one month. A yearly term ends in one year. You can move the date.'**
+  String get packTermHint;
+
+  /// No description provided for @packChangeDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Change date'**
+  String get packChangeDate;
+
+  /// No description provided for @packAssignConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Assign'**
+  String get packAssignConfirm;
+
+  /// No description provided for @validationPackExpiry.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a date after today.'**
+  String get validationPackExpiry;
 
   /// No description provided for @quickCreatePack.
   ///
@@ -1191,6 +1347,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Enter a number, or leave empty for no limit.'**
   String get validationPackLimit;
+
+  /// No description provided for @previousPage.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous'**
+  String get previousPage;
+
+  /// No description provided for @nextPage.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get nextPage;
+
+  /// No description provided for @pageOf.
+  ///
+  /// In en, this message translates to:
+  /// **'{current} / {total}'**
+  String pageOf(int current, int total);
+
+  /// No description provided for @loadingMore.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading more…'**
+  String get loadingMore;
 }
 
 class _AppLocalizationsDelegate

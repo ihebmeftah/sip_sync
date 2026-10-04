@@ -28,15 +28,7 @@ Failure mapError(Object error) {
     });
   }
   if (error is PackException) {
-    return Failure(switch (error.code) {
-      PackErrorCode.invalidInput => 'errorInvalidInput',
-      PackErrorCode.notFound => 'errorNotFound',
-      PackErrorCode.codeTaken => 'errorGeneric',
-      PackErrorCode.cannotDeleteSystemPack => 'errorGeneric',
-      PackErrorCode.packInUse => 'errorGeneric',
-      PackErrorCode.limitReached => 'errorPackLimit',
-      PackErrorCode.featureOff => 'errorPackFeature',
-    });
+    return Failure(_packFailureKey(error));
   }
   if (error is BuildingException) {
     return Failure(switch (error.code) {
@@ -111,6 +103,35 @@ Failure mapError(Object error) {
   return const Failure('errorGeneric');
 }
 
+String _packFailureKey(PackException error) {
+  return switch (error.code) {
+    PackErrorCode.invalidInput => 'errorInvalidInput',
+    PackErrorCode.notFound => 'errorNotFound',
+    PackErrorCode.codeTaken => 'errorGeneric',
+    PackErrorCode.cannotDeleteSystemPack => 'errorGeneric',
+    PackErrorCode.packInUse => 'errorGeneric',
+    PackErrorCode.paidPlanActive => 'errorPackPaidActive',
+    PackErrorCode.limitReached => switch (error.feature) {
+      PackFeature.employees => 'errorPackLimitEmployees',
+      PackFeature.tables => 'errorPackLimitTables',
+      PackFeature.categories => 'errorPackLimitCategories',
+      PackFeature.articles => 'errorPackLimitArticles',
+      PackFeature.ingredients => 'errorPackLimitIngredients',
+      _ => 'errorPackLimit',
+    },
+    PackErrorCode.featureOff => switch (error.feature) {
+      PackFeature.customerOrdering => 'errorPackFeatureOrdering',
+      PackFeature.inventory => 'errorPackFeatureInventory',
+      PackFeature.appendingItems => 'errorPackFeatureAppend',
+      PackFeature.tableMultiOrder => 'errorPackFeatureMultiOrder',
+      PackFeature.strictMode => 'errorPackFeatureStrict',
+      PackFeature.customAccessProfiles => 'errorPackFeatureAccess',
+      PackFeature.tableQr => 'errorPackFeatureQr',
+      _ => 'errorPackFeature',
+    },
+  };
+}
+
 String lookupError(dynamic l10n, String key) {
   return switch (key) {
     'errorInvalidInput' => l10n.errorInvalidInput,
@@ -145,7 +166,20 @@ String lookupError(dynamic l10n, String key) {
     'errorAccessInUse' => l10n.errorAccessInUse,
     'errorCannotReachServer' => l10n.errorCannotReachServer,
     'errorPackLimit' => l10n.errorPackLimit,
+    'errorPackLimitEmployees' => l10n.errorPackLimitEmployees,
+    'errorPackLimitTables' => l10n.errorPackLimitTables,
+    'errorPackLimitCategories' => l10n.errorPackLimitCategories,
+    'errorPackLimitArticles' => l10n.errorPackLimitArticles,
+    'errorPackLimitIngredients' => l10n.errorPackLimitIngredients,
     'errorPackFeature' => l10n.errorPackFeature,
+    'errorPackFeatureOrdering' => l10n.errorPackFeatureOrdering,
+    'errorPackFeatureInventory' => l10n.errorPackFeatureInventory,
+    'errorPackFeatureAppend' => l10n.errorPackFeatureAppend,
+    'errorPackFeatureMultiOrder' => l10n.errorPackFeatureMultiOrder,
+    'errorPackFeatureStrict' => l10n.errorPackFeatureStrict,
+    'errorPackFeatureAccess' => l10n.errorPackFeatureAccess,
+    'errorPackFeatureQr' => l10n.errorPackFeatureQr,
+    'errorPackPaidActive' => l10n.errorPackPaidActive,
     _ => l10n.errorGeneric,
   };
 }

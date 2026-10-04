@@ -117,6 +117,11 @@ void main() {
       expect(detail.orderCount, 0);
       expect(detail.customerSales, 0);
       expect(detail.feeEarned, 0);
+      expect(detail.packBillingPeriod, isNull);
+      expect(detail.packExpiresAt, isNull);
+      expect(detail.packHistory, hasLength(1));
+      expect(detail.packHistory.single.packCode, 'free');
+      expect(detail.packHistory.single.endedAt, isNull);
       expect(seeded.building.pack.code, 'free');
     });
 
@@ -206,14 +211,139 @@ void main() {
         ),
       );
       expect(created.isPublic, isFalse);
+      final expires = DateTime.now().toUtc().add(const Duration(days: 40));
       final detail = await endpoints.building.assignPack(
         seeded.adminSession,
         seeded.building.id,
         created.id,
+        billingPeriod: PackBillingPeriod.yearly,
+        expiresAt: expires,
       );
       expect(detail.pack.code, 'popup');
       expect(detail.pack.isPublic, isFalse);
       expect(detail.building.id, seeded.building.id);
+      expect(detail.packBillingPeriod, PackBillingPeriod.yearly);
+      expect(detail.packExpiresAt, expires);
+      expect(detail.packHistory, hasLength(2));
+      expect(detail.packHistory.first.packCode, 'popup');
+      expect(detail.packHistory.first.endedAt, isNull);
+      expect(detail.packHistory.last.packCode, 'free');
+      expect(detail.packHistory.last.endReason, BuildingPackEndReason.replaced);
+    });
+
+    test('a paid pack without a term is rejected', () async {
+      final seeded = await seed();
+      final packs = (await endpoints.pack.list(seeded.adminSession)).items;
+      final floor = packs.firstWhere((pack) => pack.code == 'floor');
+      await expectLater(
+        endpoints.building.assignPack(
+          seeded.adminSession,
+          seeded.building.id,
+          floor.id,
+        ),
+        throwsA(
+          isA<PackException>().having(
+            (error) => error.code,
+            'code',
+            PackErrorCode.invalidInput,
+          ),
+        ),
+      );
+    });
+
+    test('a past end date is rejected', () async {
+      final seeded = await seed();
+      final packs = (await endpoints.pack.list(seeded.adminSession)).items;
+      final floor = packs.firstWhere((pack) => pack.code == 'floor');
+      await expectLater(
+        endpoints.building.assignPack(
+          seeded.adminSession,
+          seeded.building.id,
+          floor.id,
+          billingPeriod: PackBillingPeriod.monthly,
+          expiresAt: DateTime.now().toUtc().subtract(const Duration(days: 1)),
+        ),
+        throwsA(
+          isA<PackException>().having(
+            (error) => error.code,
+            'code',
+            PackErrorCode.invalidInput,
+          ),
+        ),
+      );
+    });
+
+    test('a paid plan blocks another assignment', () async {
+      final seeded = await seed();
+      final packs = (await endpoints.pack.list(seeded.adminSession)).items;
+      final floor = packs.firstWhere((pack) => pack.code == 'floor');
+      final free = packs.firstWhere((pack) => pack.code == 'free');
+      await endpoints.building.assignPack(
+        seeded.adminSession,
+        seeded.building.id,
+        floor.id,
+        billingPeriod: PackBillingPeriod.monthly,
+        expiresAt: DateTime.now().toUtc().add(const Duration(days: 20)),
+      );
+      await expectLater(
+        endpoints.building.assignPack(
+          seeded.adminSession,
+          seeded.building.id,
+          free.id,
+        ),
+        throwsA(
+          isA<PackException>().having(
+            (error) => error.code,
+            'code',
+            PackErrorCode.paidPlanActive,
+          ),
+        ),
+      );
+    });
+
+    test('a venue returns to free after the end date', () async {
+      final seeded = await seed();
+      final packs = (await endpoints.pack.list(seeded.adminSession)).items;
+      final floor = packs.firstWhere((pack) => pack.code == 'floor');
+      await endpoints.building.assignPack(
+        seeded.adminSession,
+        seeded.building.id,
+        floor.id,
+        billingPeriod: PackBillingPeriod.monthly,
+        expiresAt: DateTime.now().toUtc().add(const Duration(days: 20)),
+      );
+      final session = sessionBuilder.build();
+      final row = await Building.db.findById(session, seeded.building.id);
+      await Building.db.updateRow(
+        session,
+        row!.copyWith(
+          packExpiresAt: DateTime.now().toUtc().subtract(
+            const Duration(minutes: 1),
+          ),
+        ),
+      );
+      final view = await endpoints.building.get(
+        seeded.ownerSession,
+        seeded.building.id,
+      );
+      expect(view.pack.code, 'free');
+      final detail = await endpoints.building.adminDetail(
+        seeded.adminSession,
+        seeded.building.id,
+      );
+      expect(detail.pack.code, 'free');
+      expect(detail.packBillingPeriod, isNull);
+      expect(detail.packExpiresAt, isNull);
+      expect(detail.packHistory.first.packCode, 'free');
+      expect(detail.packHistory.first.endedAt, isNull);
+      expect(
+        detail.packHistory.any(
+          (row) =>
+              row.packCode == 'floor' &&
+              row.endReason == BuildingPackEndReason.expired,
+        ),
+        isTrue,
+      );
     });
   });
 }

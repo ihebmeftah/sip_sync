@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sip_sync_client/sip_sync_client.dart';
 
+import '../../../core/errors/app_notice.dart';
 import '../../../core/errors/error_mapper.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
@@ -121,7 +122,7 @@ class _ArticleFormViewState extends ConsumerState<ArticleFormView> {
       }
       setState(() {
         _saving = false;
-        _errorKey = mapError(error).l10nKey;
+        _errorKey = captureError(context, error);
       });
     }
   }
@@ -134,7 +135,7 @@ class _ArticleFormViewState extends ConsumerState<ArticleFormView> {
       articlesViewModelProvider(widget.buildingId),
     );
     final categoriesAsync = ref.watch(
-      categoriesViewModelProvider(widget.buildingId),
+      categoryCatalogProvider(widget.buildingId),
     );
     final articles = articlesAsync.asData?.value ?? const <MenuArticleView>[];
     final categories =

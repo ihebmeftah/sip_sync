@@ -1,0 +1,12 @@
+### One row of a venue's pack history for the backoffice.
+class: BuildingPackAssignmentView
+fields:
+  id: UuidValue
+  packId: UuidValue
+  packCode: String
+  packName: String
+  billingPeriod: PackBillingPeriod?
+  startedAt: DateTime
+  expiresAt: DateTime?
+  endedAt: DateTime?
+  endReason: BuildingPackEndReason?

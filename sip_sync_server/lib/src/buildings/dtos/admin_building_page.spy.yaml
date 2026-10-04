@@ -1,0 +1,7 @@
+### One page of venues for the backoffice.
+class: AdminBuildingPage
+fields:
+  items: List<AdminBuildingView>
+  total: int
+  limit: int
+  offset: int

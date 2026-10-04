@@ -84,28 +84,35 @@ class _Repo extends CustomerOrderRepository {
   Future<CustomerOrderView?> current() async => null;
 
   @override
-  Future<List<CustomerOrderSummary>> list({
+  Future<CustomerOrderPage> list({
     required DateTime from,
     required DateTime to,
+    int? limit,
+    int? offset,
   }) async {
     calls += 1;
     lastFrom = from;
     lastTo = to;
-    return [
-      CustomerOrderSummary(
-        id: UuidValue.fromString('01990000-0000-7000-8000-000000000031'),
-        buildingId: UuidValue.fromString(
-          '01990000-0000-7000-8000-000000000032',
+    return CustomerOrderPage(
+      items: [
+        CustomerOrderSummary(
+          id: UuidValue.fromString('01990000-0000-7000-8000-000000000031'),
+          buildingId: UuidValue.fromString(
+            '01990000-0000-7000-8000-000000000032',
+          ),
+          venueName: 'House Menu',
+          ref: 4,
+          tableNumber: 2,
+          currencyCode: 'TND',
+          status: OrderStatus.progress,
+          itemCount: 2,
+          totalAmount: 13,
+          createdAt: DateTime.utc(2026, 10, 1, 18, 30),
         ),
-        venueName: 'House Menu',
-        ref: 4,
-        tableNumber: 2,
-        currencyCode: 'TND',
-        status: OrderStatus.progress,
-        itemCount: 2,
-        totalAmount: 13,
-        createdAt: DateTime.utc(2026, 10, 1, 18, 30),
-      ),
-    ];
+      ],
+      total: 1,
+      limit: limit ?? 20,
+      offset: offset ?? 0,
+    );
   }
 }

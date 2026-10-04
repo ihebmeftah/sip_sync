@@ -13,7 +13,7 @@ part of 'orders_view_model.dart';
 const ordersViewModelProvider = OrdersViewModelFamily._();
 
 final class OrdersViewModelProvider
-    extends $AsyncNotifierProvider<OrdersViewModel, List<OrderView>> {
+    extends $AsyncNotifierProvider<OrdersViewModel, OrderBoardState> {
   const OrdersViewModelProvider._({
     required OrdersViewModelFamily super.from,
     required String super.argument,
@@ -50,15 +50,15 @@ final class OrdersViewModelProvider
   }
 }
 
-String _$ordersViewModelHash() => r'74db21a7ebabdda64fd52b50995090293fdd55ec';
+String _$ordersViewModelHash() => r'ed607f821e60ec1bdc76f78bb6f624f4be0fc32b';
 
 final class OrdersViewModelFamily extends $Family
     with
         $ClassFamilyOverride<
           OrdersViewModel,
-          AsyncValue<List<OrderView>>,
-          List<OrderView>,
-          FutureOr<List<OrderView>>,
+          AsyncValue<OrderBoardState>,
+          OrderBoardState,
+          FutureOr<OrderBoardState>,
           String
         > {
   const OrdersViewModelFamily._()
@@ -77,21 +77,21 @@ final class OrdersViewModelFamily extends $Family
   String toString() => r'ordersViewModelProvider';
 }
 
-abstract class _$OrdersViewModel extends $AsyncNotifier<List<OrderView>> {
+abstract class _$OrdersViewModel extends $AsyncNotifier<OrderBoardState> {
   late final _$args = ref.$arg as String;
   String get buildingId => _$args;
 
-  FutureOr<List<OrderView>> build(String buildingId);
+  FutureOr<OrderBoardState> build(String buildingId);
   @$mustCallSuper
   @override
   void runBuild() {
     final created = build(_$args);
-    final ref = this.ref as $Ref<AsyncValue<List<OrderView>>, List<OrderView>>;
+    final ref = this.ref as $Ref<AsyncValue<OrderBoardState>, OrderBoardState>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<AsyncValue<List<OrderView>>, List<OrderView>>,
-              AsyncValue<List<OrderView>>,
+              AnyNotifier<AsyncValue<OrderBoardState>, OrderBoardState>,
+              AsyncValue<OrderBoardState>,
               Object?,
               Object?
             >;

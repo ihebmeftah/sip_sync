@@ -1,0 +1,7 @@
+### One page of backoffice users.
+class: SuperAdminPage
+fields:
+  items: List<SuperAdminView>
+  total: int
+  limit: int
+  offset: int

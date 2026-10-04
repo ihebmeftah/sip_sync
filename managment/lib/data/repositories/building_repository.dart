@@ -5,7 +5,9 @@ class BuildingRepository {
 
   final Client _client;
 
-  Future<List<BuildingView>> listMine() => _client.building.listMine();
+  /// One page of venues this account can open.
+  Future<BuildingPage> listMine({int? limit, int? offset}) =>
+      _client.building.listMine(limit: limit, offset: offset);
 
   Future<BuildingView> get(UuidValue id) => _client.building.get(id);
 
@@ -95,7 +97,16 @@ class BuildingRepository {
     );
   }
 
-  Future<List<EmployeeView>> listEmployees(UuidValue buildingId) {
-    return _client.building.listEmployees(buildingId);
+  /// One page of staff, name order.
+  Future<EmployeePage> listEmployees(
+    UuidValue buildingId, {
+    int? limit,
+    int? offset,
+  }) {
+    return _client.building.listEmployees(
+      buildingId,
+      limit: limit,
+      offset: offset,
+    );
   }
 }

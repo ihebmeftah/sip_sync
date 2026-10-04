@@ -6,16 +6,31 @@ class CustomerDiscoveryRepository {
 
   final Client _client;
 
-  /// Public venue cards for the signed-in customer.
-  Future<List<CustomerVenueCard>> listVenues() => _client.customerVenue.list();
+  /// Public venue cards. Nearest first when a place is set.
+  Future<CustomerVenuePage> listVenues({
+    int? limit,
+    int? offset,
+    double? latitude,
+    double? longitude,
+    bool nearbyOnly = false,
+  }) => _client.customerVenue.list(
+    limit: limit,
+    offset: offset,
+    latitude: latitude,
+    longitude: longitude,
+    nearbyOnly: nearbyOnly,
+  );
 
   /// Free tables and the top categories and articles for one venue.
   Future<CustomerVenueDetail> venueDetail(UuidValue buildingId) =>
       _client.customerVenue.detail(buildingId);
 
-  /// Full menu in catalog order.
-  Future<CustomerMenu> venueMenu(UuidValue buildingId) =>
-      _client.customerVenue.menu(buildingId);
+  /// One window of the menu in catalog order.
+  Future<CustomerMenu> venueMenu(
+    UuidValue buildingId, {
+    int? limit,
+    int? offset,
+  }) => _client.customerVenue.menu(buildingId, limit: limit, offset: offset);
 
   /// Confirms a scanned sticker is an active table in that venue.
   Future<CustomerSeatedTable> resolveTable({

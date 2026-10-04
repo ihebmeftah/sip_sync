@@ -1,0 +1,7 @@
+### One page of public venue cards.
+class: CustomerVenuePage
+fields:
+  items: List<CustomerVenueCard>
+  total: int
+  limit: int
+  offset: int

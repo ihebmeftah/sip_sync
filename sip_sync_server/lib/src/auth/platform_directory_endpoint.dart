@@ -11,12 +11,22 @@ class PlatformDirectoryEndpoint extends Endpoint {
   bool get requireLogin => true;
 
   /// Owners on the platform, newest first. Super admin only.
-  Future<List<PlatformPersonView>> listOwners(Session session) {
-    return _directory.listOwners(session);
+  ///
+  /// [limit] defaults to 20 and is capped at 100. [offset] skips that many rows.
+  Future<PlatformPersonPage> listOwners(
+    Session session, {
+    int? limit,
+    int? offset,
+  }) {
+    return _directory.listOwners(session, limit: limit, offset: offset);
   }
 
   /// Customers on the platform, newest first. Super admin only.
-  Future<List<PlatformPersonView>> listCustomers(Session session) {
-    return _directory.listCustomers(session);
+  Future<PlatformPersonPage> listCustomers(
+    Session session, {
+    int? limit,
+    int? offset,
+  }) {
+    return _directory.listCustomers(session, limit: limit, offset: offset);
   }
 }

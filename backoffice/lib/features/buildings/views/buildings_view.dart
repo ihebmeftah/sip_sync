@@ -7,6 +7,7 @@ import '../../../core/errors/error_mapper.dart';
 import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
+import '../../../core/widgets/list_page_bar.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../console/views/console_shell.dart';
 import '../view_models/buildings_view_model.dart';
@@ -36,7 +37,8 @@ class BuildingsView extends ConsumerWidget {
             ),
           ],
         ),
-        data: (rows) {
+        data: (page) {
+          final rows = page.items;
           if (rows.isEmpty) {
             return Text(l10n.empty, style: theme.textTheme.muted);
           }
@@ -46,6 +48,16 @@ class BuildingsView extends ConsumerWidget {
                 _BuildingCard(building: building),
                 const SizedBox(height: AppSpacing.md),
               ],
+              ListPageBar(
+                total: page.total,
+                limit: page.limit,
+                offset: page.offset,
+                onPrevious: () => ref
+                    .read(buildingsViewModelProvider.notifier)
+                    .previousPage(),
+                onNext: () =>
+                    ref.read(buildingsViewModelProvider.notifier).nextPage(),
+              ),
             ],
           );
         },

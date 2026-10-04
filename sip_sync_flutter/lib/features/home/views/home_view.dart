@@ -10,6 +10,7 @@ import '../../../l10n/generated/app_localizations.dart';
 import '../../auth/view_models/auth_view_model.dart';
 import '../../discover/venue_distance.dart';
 import '../../discover/view_models/discover_view_model.dart';
+import '../../../core/paging/list_paging.dart';
 import '../../venue/view_models/customer_order_view_model.dart';
 import '../widgets/venue_card.dart';
 import '../widgets/venue_map.dart';
@@ -155,9 +156,9 @@ class _DiscoverPane extends ConsumerWidget {
     final showNearbyEmpty =
         discover.place != null &&
         discover.nearbyOnly &&
-        ranked.isEmpty &&
-        discover.venues.isNotEmpty &&
-        !discover.loadingVenues;
+        discover.venues.isEmpty &&
+        !discover.loadingVenues &&
+        discover.errorKey == null;
     final banner = discover.errorKey == null
         ? null
         : lookupError(l10n, discover.errorKey!);
@@ -417,14 +418,6 @@ class _Results extends ConsumerWidget {
     if (loading) {
       return const Center(child: CircularProgressIndicator());
     }
-    if (empty) {
-      return _EmptyPane(
-        message: l10n.noVenues,
-        retryLabel: l10n.retry,
-        onRetry: () =>
-            ref.read(discoverViewModelProvider.notifier).loadVenues(),
-      );
-    }
     if (nearbyEmpty) {
       return _EmptyPane(
         message: l10n.nearbyEmpty,
@@ -433,21 +426,49 @@ class _Results extends ConsumerWidget {
             ref.read(discoverViewModelProvider.notifier).setNearbyOnly(false),
       );
     }
+    if (empty) {
+      return _EmptyPane(
+        message: l10n.noVenues,
+        retryLabel: l10n.retry,
+        onRetry: () =>
+            ref.read(discoverViewModelProvider.notifier).loadVenues(),
+      );
+    }
     if (mapMode) {
       return VenueMap(ranked: ranked, place: place, selectedId: selectedId);
     }
-    return ListView.separated(
-      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-      itemCount: ranked.length,
-      separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.md),
-      itemBuilder: (context, index) {
-        final row = ranked[index];
-        return VenueCard(
-          row: row,
-          selected: selectedId == row.venue.id.uuid,
-          onTap: () => VenueRoute(id: row.venue.id.uuid).go(context),
-        );
+    return NotificationListener<ScrollNotification>(
+      onNotification: (notification) {
+        if (nearListEnd(notification)) {
+          ref.read(discoverViewModelProvider.notifier).loadMoreVenues();
+        }
+        return false;
       },
+      child: ListView.separated(
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+        itemCount: ranked.length + 1,
+        separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.md),
+        itemBuilder: (context, index) {
+          if (index >= ranked.length) {
+            final loadingMore = ref
+                .watch(discoverViewModelProvider)
+                .loadingMore;
+            if (!loadingMore) {
+              return const SizedBox(height: AppSpacing.md);
+            }
+            return const Padding(
+              padding: EdgeInsets.symmetric(vertical: AppSpacing.md),
+              child: Center(child: CircularProgressIndicator()),
+            );
+          }
+          final row = ranked[index];
+          return VenueCard(
+            row: row,
+            selected: selectedId == row.venue.id.uuid,
+            onTap: () => VenueRoute(id: row.venue.id.uuid).go(context),
+          );
+        },
+      ),
     );
   }
 }

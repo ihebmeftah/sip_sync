@@ -10,9 +10,15 @@ class PackEndpoint extends Endpoint {
   @override
   bool get requireLogin => true;
 
-  /// Every pack, including private and disabled. Super admin only.
-  Future<List<PackView>> list(Session session) {
-    return _packs.list(session);
+  /// Packs, including private and disabled, sort order then name.
+  ///
+  /// Super admin only. [limit] defaults to 20 and is capped at 100.
+  Future<PackPage> list(
+    Session session, {
+    int? limit,
+    int? offset,
+  }) {
+    return _packs.list(session, limit: limit, offset: offset);
   }
 
   /// Enabled public packs for the apps. Any signed-in actor.

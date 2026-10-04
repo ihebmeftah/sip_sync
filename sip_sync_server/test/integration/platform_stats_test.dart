@@ -103,10 +103,13 @@ void main() {
       final counter = before.publicPacks.firstWhere(
         (pack) => pack.code == 'counter',
       );
+      final expires = DateTime.now().toUtc().add(const Duration(days: 30));
       await endpoints.building.assignPack(
         seeded.adminSession,
         seeded.building.id,
         counter.id,
+        billingPeriod: PackBillingPeriod.monthly,
+        expiresAt: expires,
       );
       final second = await endpoints.building.create(
         seeded.ownerSession,
@@ -128,6 +131,8 @@ void main() {
         seeded.adminSession,
         second.id,
         counter.id,
+        billingPeriod: PackBillingPeriod.monthly,
+        expiresAt: expires,
       );
 
       final after = await endpoints.platformStats.summary(seeded.adminSession);

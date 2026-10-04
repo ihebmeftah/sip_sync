@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sip_sync_client/sip_sync_client.dart';
 
+import '../../../core/errors/app_notice.dart';
 import '../../../core/errors/error_mapper.dart';
 import '../../../core/errors/form_validators.dart';
 import '../../../core/routing/app_routes.dart';
@@ -66,9 +67,15 @@ class _EmployeeFormViewState extends ConsumerState<EmployeeFormView> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final ui = ref.watch(employeeFormViewModelProvider(_employeeKey));
-    final profilesAsync = ref.watch(
-      accessProfilesViewModelProvider(widget.buildingId),
-    );
+    ref.listen(employeeFormViewModelProvider(_employeeKey), (previous, next) {
+      final key = next.errorKey;
+      if (key != null &&
+          key != previous?.errorKey &&
+          key.startsWith('errorPack')) {
+        showAppSnackBar(context, lookupError(l10n, key));
+      }
+    });
+    final profilesAsync = ref.watch(accessCatalogProvider(widget.buildingId));
     _fill(ui);
     final text = Theme.of(context).textTheme;
 

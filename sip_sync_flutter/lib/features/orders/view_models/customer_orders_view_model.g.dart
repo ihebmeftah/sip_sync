@@ -73,21 +73,12 @@ abstract class _$OrderHistoryFilterController
 
 /// Orders the signed-in customer placed in the selected window, all venues.
 
-@ProviderFor(customerOrders)
+@ProviderFor(CustomerOrders)
 const customerOrdersProvider = CustomerOrdersProvider._();
 
 /// Orders the signed-in customer placed in the selected window, all venues.
-
 final class CustomerOrdersProvider
-    extends
-        $FunctionalProvider<
-          AsyncValue<List<CustomerOrderSummary>>,
-          List<CustomerOrderSummary>,
-          FutureOr<List<CustomerOrderSummary>>
-        >
-    with
-        $FutureModifier<List<CustomerOrderSummary>>,
-        $FutureProvider<List<CustomerOrderSummary>> {
+    extends $AsyncNotifierProvider<CustomerOrders, CustomerOrderBoard> {
   /// Orders the signed-in customer placed in the selected window, all venues.
   const CustomerOrdersProvider._()
     : super(
@@ -105,14 +96,29 @@ final class CustomerOrdersProvider
 
   @$internal
   @override
-  $FutureProviderElement<List<CustomerOrderSummary>> $createElement(
-    $ProviderPointer pointer,
-  ) => $FutureProviderElement(pointer);
-
-  @override
-  FutureOr<List<CustomerOrderSummary>> create(Ref ref) {
-    return customerOrders(ref);
-  }
+  CustomerOrders create() => CustomerOrders();
 }
 
-String _$customerOrdersHash() => r'dab9cff0bc72327457d9b5a7c9afe7f9b2261eae';
+String _$customerOrdersHash() => r'2f12be41d41ffbe437b46b8cca44693f8f45dfea';
+
+/// Orders the signed-in customer placed in the selected window, all venues.
+
+abstract class _$CustomerOrders extends $AsyncNotifier<CustomerOrderBoard> {
+  FutureOr<CustomerOrderBoard> build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final created = build();
+    final ref =
+        this.ref as $Ref<AsyncValue<CustomerOrderBoard>, CustomerOrderBoard>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<AsyncValue<CustomerOrderBoard>, CustomerOrderBoard>,
+              AsyncValue<CustomerOrderBoard>,
+              Object?,
+              Object?
+            >;
+    element.handleValue(ref, created);
+  }
+}

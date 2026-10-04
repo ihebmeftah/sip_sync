@@ -6,8 +6,9 @@ class AdminBuildingRepository {
 
   final Client _client;
 
-  /// Every venue, with owner and contact fields. Super admin only.
-  Future<List<AdminBuildingView>> listAll() => _client.building.listAll();
+  /// One page of venues, with owner and contact fields. Super admin only.
+  Future<AdminBuildingPage> listAll({int? limit, int? offset}) =>
+      _client.building.listAll(limit: limit, offset: offset);
 
   /// Pack, counts, and platform gain for one venue. Super admin only.
   Future<AdminBuildingDetail> detail(UuidValue buildingId) {
@@ -15,10 +16,19 @@ class AdminBuildingRepository {
   }
 
   /// Moves the venue onto an enabled pack. Super admin only.
+  ///
+  /// [billingPeriod] and [expiresAt] are required for every pack except free.
   Future<AdminBuildingDetail> assignPack(
     UuidValue buildingId,
-    UuidValue packId,
-  ) {
-    return _client.building.assignPack(buildingId, packId);
+    UuidValue packId, {
+    PackBillingPeriod? billingPeriod,
+    DateTime? expiresAt,
+  }) {
+    return _client.building.assignPack(
+      buildingId,
+      packId,
+      billingPeriod: billingPeriod,
+      expiresAt: expiresAt,
+    );
   }
 }

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sip_sync_client/sip_sync_client.dart';
 
 import '../../../core/di/app_providers.dart';
+import '../../../core/errors/app_notice.dart';
 import '../../../core/errors/error_mapper.dart';
 import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_tokens.dart';
@@ -111,7 +112,7 @@ class _CompositionDialogState extends ConsumerState<_CompositionDialog> {
       }
       setState(() {
         _adding = false;
-        _errorKey = mapError(error).l10nKey;
+        _errorKey = captureError(context, error);
       });
     }
   }
@@ -162,7 +163,7 @@ class _CompositionDialogState extends ConsumerState<_CompositionDialog> {
       if (!mounted) {
         return;
       }
-      setState(() => _errorKey = mapError(error).l10nKey);
+      setState(() => _errorKey = captureError(context, error));
     }
   }
 
@@ -201,7 +202,7 @@ class _CompositionDialogState extends ConsumerState<_CompositionDialog> {
       if (!mounted) {
         return;
       }
-      setState(() => _errorKey = mapError(error).l10nKey);
+      setState(() => _errorKey = captureError(context, error));
     }
   }
 
@@ -217,10 +218,7 @@ class _CompositionDialogState extends ConsumerState<_CompositionDialog> {
       ),
     );
     final ingredients =
-        ref
-            .watch(ingredientsViewModelProvider(widget.buildingId))
-            .asData
-            ?.value ??
+        ref.watch(ingredientCatalogProvider(widget.buildingId)).asData?.value ??
         const <IngredientView>[];
     final usedIds = {
       for (final line

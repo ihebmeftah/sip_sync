@@ -8,3 +8,4 @@ values:
   - packInUse
   - limitReached
   - featureOff
+  - paidPlanActive

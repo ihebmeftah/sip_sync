@@ -3,10 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sip_sync_client/sip_sync_client.dart';
 
 import '../../../core/di/app_providers.dart';
+import '../../../core/errors/app_notice.dart';
 import '../../../core/errors/error_mapper.dart';
 import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
+import '../../../core/widgets/list_page_bar.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../view_models/access_profiles_view_model.dart';
 
@@ -51,15 +53,32 @@ class AccessProfilesListView extends ConsumerWidget {
                       style: FilledButton.styleFrom(
                         minimumSize: const Size(0, 44),
                       ),
-                      onPressed: () => AccessProfileCreateRoute(
-                        buildingId: buildingId,
-                      ).go(context),
+                      onPressed: () {
+                        final pack = ref.read(buildingSelectionProvider)?.pack;
+                        if (pack != null &&
+                            !allowPackFeature(
+                              context,
+                              allowed: pack.customAccessProfiles,
+                              message: l10n.errorPackFeatureAccess,
+                            )) {
+                          return;
+                        }
+                        AccessProfileCreateRoute(
+                          buildingId: buildingId,
+                        ).go(context);
+                      },
                       icon: const Icon(Icons.add),
                       label: AppButtonLabel(l10n.addAccessProfile),
                     ),
                 ],
               ),
               const SizedBox(height: AppSpacing.lg),
+              if (ref
+                      .watch(buildingSelectionProvider)
+                      ?.pack
+                      .customAccessProfiles ==
+                  false)
+                AppErrorBanner(message: l10n.errorPackFeatureAccess),
               if (!isOwner)
                 AppErrorBanner(message: l10n.employeesOwnerOnly)
               else
@@ -83,33 +102,58 @@ class AccessProfilesListView extends ConsumerWidget {
                       ),
                     ],
                   ),
-                  data: (profiles) {
+                  data: (page) {
+                    final profiles = page.items;
                     if (profiles.isEmpty) {
                       return AppSurfaceCard(
                         child: Text(l10n.accessProfilesEmpty),
                       );
                     }
-                    return AppSurfaceCard(
-                      child: Column(
-                        children: [
-                          for (final profile in profiles)
-                            ListTile(
-                              contentPadding: EdgeInsets.zero,
-                              leading: CircleAvatar(
-                                backgroundColor: scheme.secondaryContainer,
-                                foregroundColor: scheme.onSecondaryContainer,
-                                child: const Icon(Icons.lock_outline),
-                              ),
-                              title: Text(profile.name),
-                              subtitle: Text(_summary(l10n, profile)),
-                              trailing: const Icon(Icons.chevron_right),
-                              onTap: () => AccessProfileEditRoute(
-                                buildingId: buildingId,
-                                accessId: profile.id.uuid,
-                              ).go(context),
-                            ),
-                        ],
-                      ),
+                    return Column(
+                      children: [
+                        AppSurfaceCard(
+                          child: Column(
+                            children: [
+                              for (final profile in profiles)
+                                ListTile(
+                                  contentPadding: EdgeInsets.zero,
+                                  leading: CircleAvatar(
+                                    backgroundColor: scheme.secondaryContainer,
+                                    foregroundColor:
+                                        scheme.onSecondaryContainer,
+                                    child: const Icon(Icons.lock_outline),
+                                  ),
+                                  title: Text(profile.name),
+                                  subtitle: Text(_summary(l10n, profile)),
+                                  trailing: const Icon(Icons.chevron_right),
+                                  onTap: () => AccessProfileEditRoute(
+                                    buildingId: buildingId,
+                                    accessId: profile.id.uuid,
+                                  ).go(context),
+                                ),
+                            ],
+                          ),
+                        ),
+                        ListPageBar(
+                          total: page.total,
+                          limit: page.limit,
+                          offset: page.offset,
+                          onPrevious: () => ref
+                              .read(
+                                accessProfilesViewModelProvider(
+                                  buildingId,
+                                ).notifier,
+                              )
+                              .previousPage(),
+                          onNext: () => ref
+                              .read(
+                                accessProfilesViewModelProvider(
+                                  buildingId,
+                                ).notifier,
+                              )
+                              .nextPage(),
+                        ),
+                      ],
                     );
                   },
                 ),

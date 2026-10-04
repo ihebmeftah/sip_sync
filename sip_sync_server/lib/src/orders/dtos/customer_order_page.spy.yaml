@@ -1,0 +1,7 @@
+### One page of a customer's order history.
+class: CustomerOrderPage
+fields:
+  items: List<CustomerOrderSummary>
+  total: int
+  limit: int
+  offset: int

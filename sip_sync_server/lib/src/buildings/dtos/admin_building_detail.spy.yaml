@@ -12,3 +12,9 @@ fields:
   customerSales: double
   ### [customerSales] times the pack fee. Staff tickets are not included.
   feeEarned: double
+  ### monthly or yearly while a paid pack is assigned. Null on the free pack.
+  packBillingPeriod: PackBillingPeriod?
+  ### When the paid term ends. Null on the free pack.
+  packExpiresAt: DateTime?
+  ### Newest first. The open row is the plan the venue is on now.
+  packHistory: List<BuildingPackAssignmentView>

@@ -199,10 +199,10 @@ void main() {
         ),
       );
 
-      final afterCreate = await endpoints.ingredient.list(
+      final afterCreate = (await endpoints.ingredient.list(
         setup.ownerSession,
         setup.building.id,
-      );
+      )).items;
       expect(
         afterCreate.firstWhere((i) => i.id == beans.id).currentStock,
         64,
@@ -210,10 +210,10 @@ void main() {
 
       await endpoints.order.cancel(setup.ownerSession, created.id);
 
-      final afterCancel = await endpoints.ingredient.list(
+      final afterCancel = (await endpoints.ingredient.list(
         setup.ownerSession,
         setup.building.id,
-      );
+      )).items;
       expect(
         afterCancel.firstWhere((i) => i.id == beans.id).currentStock,
         100,

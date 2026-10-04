@@ -29,6 +29,8 @@ import 'package:sip_sync_client/src/protocol/auth/dtos/email_register_create.dar
     as _imyts17l;
 import 'package:sip_sync_client/src/protocol/auth/dtos/employee_create.dart'
     as _ic5onu3b;
+import 'package:sip_sync_client/src/protocol/auth/dtos/employee_page.dart'
+    as _it4lhkdu;
 import 'package:sip_sync_client/src/protocol/auth/dtos/employee_session_view.dart'
     as _igulf7jx;
 import 'package:sip_sync_client/src/protocol/auth/dtos/employee_update.dart'
@@ -43,12 +45,14 @@ import 'package:sip_sync_client/src/protocol/auth/dtos/password_reset_request.da
     as _ifcla4ri;
 import 'package:sip_sync_client/src/protocol/auth/dtos/password_reset_request_result.dart'
     as _iv84wffs;
-import 'package:sip_sync_client/src/protocol/auth/dtos/platform_person_view.dart'
-    as _iypg1oaf;
+import 'package:sip_sync_client/src/protocol/auth/dtos/platform_person_page.dart'
+    as _i2elmu13;
 import 'package:sip_sync_client/src/protocol/auth/dtos/profile_update.dart'
     as _i9d1xwh7;
 import 'package:sip_sync_client/src/protocol/auth/dtos/super_admin_create.dart'
     as _itncnxe5;
+import 'package:sip_sync_client/src/protocol/auth/dtos/super_admin_page.dart'
+    as _iy2qxild;
 import 'package:sip_sync_client/src/protocol/auth/dtos/super_admin_session_view.dart'
     as _i6jd5pnx;
 import 'package:sip_sync_client/src/protocol/auth/dtos/super_admin_update.dart'
@@ -59,10 +63,12 @@ import 'package:sip_sync_client/src/protocol/auth/dtos/username_login_request.da
     as _ijt6q2rq;
 import 'package:sip_sync_client/src/protocol/buildings/dtos/admin_building_detail.dart'
     as _ig0c1d2c;
-import 'package:sip_sync_client/src/protocol/buildings/dtos/admin_building_view.dart'
-    as _icgw8yx3;
+import 'package:sip_sync_client/src/protocol/buildings/dtos/admin_building_page.dart'
+    as _ihfql4vm;
 import 'package:sip_sync_client/src/protocol/buildings/dtos/building_create.dart'
     as _iu09iw1h;
+import 'package:sip_sync_client/src/protocol/buildings/dtos/building_page.dart'
+    as _idr0ofas;
 import 'package:sip_sync_client/src/protocol/buildings/dtos/building_update.dart'
     as _iimah2gv;
 import 'package:sip_sync_client/src/protocol/buildings/dtos/building_view.dart'
@@ -71,14 +77,16 @@ import 'package:sip_sync_client/src/protocol/discovery/dtos/customer_menu.dart'
     as _i1mbazw4;
 import 'package:sip_sync_client/src/protocol/discovery/dtos/customer_seated_table.dart'
     as _iggqoelg;
-import 'package:sip_sync_client/src/protocol/discovery/dtos/customer_venue_card.dart'
-    as _i2waekzp;
 import 'package:sip_sync_client/src/protocol/discovery/dtos/customer_venue_detail.dart'
     as _i3ttx85w;
+import 'package:sip_sync_client/src/protocol/discovery/dtos/customer_venue_page.dart'
+    as _ihk3nm0c;
 import 'package:sip_sync_client/src/protocol/discovery/dtos/place_hit.dart'
     as _ijgfn5qw;
 import 'package:sip_sync_client/src/protocol/employee_access/dtos/employee_access_create.dart'
     as _iv0z0sh6;
+import 'package:sip_sync_client/src/protocol/employee_access/dtos/employee_access_page.dart'
+    as _idopbith;
 import 'package:sip_sync_client/src/protocol/employee_access/dtos/employee_access_update.dart'
     as _i7zd8pyu;
 import 'package:sip_sync_client/src/protocol/employee_access/dtos/employee_access_view.dart'
@@ -91,6 +99,8 @@ import 'package:sip_sync_client/src/protocol/menu/dtos/article_composition_view.
     as _ier7rmyd;
 import 'package:sip_sync_client/src/protocol/menu/dtos/ingredient_create.dart'
     as _iv1xmy57;
+import 'package:sip_sync_client/src/protocol/menu/dtos/ingredient_page.dart'
+    as _i5p5mc8n;
 import 'package:sip_sync_client/src/protocol/menu/dtos/ingredient_restock.dart'
     as _iif93805;
 import 'package:sip_sync_client/src/protocol/menu/dtos/ingredient_view.dart'
@@ -103,16 +113,18 @@ import 'package:sip_sync_client/src/protocol/menu/dtos/menu_article_view.dart'
     as _i8rrzffs;
 import 'package:sip_sync_client/src/protocol/menu/dtos/menu_category_create.dart'
     as _iqn5nclg;
+import 'package:sip_sync_client/src/protocol/menu/dtos/menu_category_page.dart'
+    as _i48lt3pj;
 import 'package:sip_sync_client/src/protocol/menu/dtos/menu_category_update.dart'
     as _ifcginy4;
 import 'package:sip_sync_client/src/protocol/menu/dtos/menu_category_view.dart'
     as _i6z5knea;
 import 'package:sip_sync_client/src/protocol/orders/dtos/customer_order_append.dart'
     as _izdy5w2j;
+import 'package:sip_sync_client/src/protocol/orders/dtos/customer_order_page.dart'
+    as _iwuqnthl;
 import 'package:sip_sync_client/src/protocol/orders/dtos/customer_order_place.dart'
     as _i5gpmr9n;
-import 'package:sip_sync_client/src/protocol/orders/dtos/customer_order_summary.dart'
-    as _ia5a8dtx;
 import 'package:sip_sync_client/src/protocol/orders/dtos/customer_order_view.dart'
     as _iiy8950w;
 import 'package:sip_sync_client/src/protocol/orders/dtos/order_add_items.dart'
@@ -121,12 +133,18 @@ import 'package:sip_sync_client/src/protocol/orders/dtos/order_create.dart'
     as _i0prt93r;
 import 'package:sip_sync_client/src/protocol/orders/dtos/order_item_status_update.dart'
     as _i6knlbz9;
+import 'package:sip_sync_client/src/protocol/orders/dtos/order_page.dart'
+    as _ith3f88l;
 import 'package:sip_sync_client/src/protocol/orders/dtos/order_status.dart'
     as _iqp2kjae;
 import 'package:sip_sync_client/src/protocol/orders/dtos/order_view.dart'
     as _i5f9osh7;
+import 'package:sip_sync_client/src/protocol/packs/dtos/pack_billing_period.dart'
+    as _ikrrfqlm;
 import 'package:sip_sync_client/src/protocol/packs/dtos/pack_create.dart'
     as _iuhtf04l;
+import 'package:sip_sync_client/src/protocol/packs/dtos/pack_page.dart'
+    as _iv7y27qe;
 import 'package:sip_sync_client/src/protocol/packs/dtos/pack_public_view.dart'
     as _ir1kads3;
 import 'package:sip_sync_client/src/protocol/packs/dtos/pack_update.dart'
@@ -364,20 +382,32 @@ class EndpointPlatformDirectory extends _isc.EndpointRef {
   String get name => 'platformDirectory';
 
   /// Owners on the platform, newest first. Super admin only.
-  _ida.Future<List<_iypg1oaf.PlatformPersonView>> listOwners() =>
-      caller.callServerEndpoint<List<_iypg1oaf.PlatformPersonView>>(
-        'platformDirectory',
-        'listOwners',
-        {},
-      );
+  ///
+  /// [limit] defaults to 20 and is capped at 100. [offset] skips that many rows.
+  _ida.Future<_i2elmu13.PlatformPersonPage> listOwners({
+    int? limit,
+    int? offset,
+  }) => caller.callServerEndpoint<_i2elmu13.PlatformPersonPage>(
+    'platformDirectory',
+    'listOwners',
+    {
+      'limit': limit,
+      'offset': offset,
+    },
+  );
 
   /// Customers on the platform, newest first. Super admin only.
-  _ida.Future<List<_iypg1oaf.PlatformPersonView>> listCustomers() =>
-      caller.callServerEndpoint<List<_iypg1oaf.PlatformPersonView>>(
-        'platformDirectory',
-        'listCustomers',
-        {},
-      );
+  _ida.Future<_i2elmu13.PlatformPersonPage> listCustomers({
+    int? limit,
+    int? offset,
+  }) => caller.callServerEndpoint<_i2elmu13.PlatformPersonPage>(
+    'platformDirectory',
+    'listCustomers',
+    {
+      'limit': limit,
+      'offset': offset,
+    },
+  );
 }
 
 /// Super admin login, profile, and staff management for backoffice.
@@ -444,12 +474,20 @@ class EndpointSuperAdminAuth extends _isc.EndpointRef {
     },
   );
 
-  _ida.Future<List<_ia930tyq.SuperAdminView>> list() =>
-      caller.callServerEndpoint<List<_ia930tyq.SuperAdminView>>(
-        'superAdminAuth',
-        'list',
-        {},
-      );
+  /// Backoffice users, oldest first.
+  ///
+  /// [limit] defaults to 20 and is capped at 100. [offset] skips that many rows.
+  _ida.Future<_iy2qxild.SuperAdminPage> list({
+    int? limit,
+    int? offset,
+  }) => caller.callServerEndpoint<_iy2qxild.SuperAdminPage>(
+    'superAdminAuth',
+    'list',
+    {
+      'limit': limit,
+      'offset': offset,
+    },
+  );
 
   _ida.Future<void> delete(_isc.UuidValue targetId) =>
       caller.callServerEndpoint<void>(
@@ -474,20 +512,33 @@ class EndpointBuilding extends _isc.EndpointRef {
   @override
   String get name => 'building';
 
-  _ida.Future<List<_ik35q5v8.BuildingView>> listMine() =>
-      caller.callServerEndpoint<List<_ik35q5v8.BuildingView>>(
-        'building',
-        'listMine',
-        {},
-      );
+  /// Venues the caller can open. Owners see their own; staff see one.
+  ///
+  /// [limit] defaults to 20 and is capped at 100.
+  _ida.Future<_idr0ofas.BuildingPage> listMine({
+    int? limit,
+    int? offset,
+  }) => caller.callServerEndpoint<_idr0ofas.BuildingPage>(
+    'building',
+    'listMine',
+    {
+      'limit': limit,
+      'offset': offset,
+    },
+  );
 
-  /// Every venue for the backoffice, including owner contact. Super admin only.
-  _ida.Future<List<_icgw8yx3.AdminBuildingView>> listAll() =>
-      caller.callServerEndpoint<List<_icgw8yx3.AdminBuildingView>>(
-        'building',
-        'listAll',
-        {},
-      );
+  /// Venues for the backoffice, including owner contact. Super admin only.
+  _ida.Future<_ihfql4vm.AdminBuildingPage> listAll({
+    int? limit,
+    int? offset,
+  }) => caller.callServerEndpoint<_ihfql4vm.AdminBuildingPage>(
+    'building',
+    'listAll',
+    {
+      'limit': limit,
+      'offset': offset,
+    },
+  );
 
   /// Venue, pack, counts, and platform gain. Super admin only.
   _ida.Future<_ig0c1d2c.AdminBuildingDetail> adminDetail(
@@ -498,16 +549,24 @@ class EndpointBuilding extends _isc.EndpointRef {
     {'buildingId': buildingId},
   );
 
-  /// Moves the venue onto an enabled pack. Super admin only.
+  /// Moves a free-plan venue onto an enabled pack. Super admin only.
+  ///
+  /// A venue already on a paid plan is rejected. The free pack takes no term.
+  /// Any other pack needs [billingPeriod] and [expiresAt]. The venue returns
+  /// to the free pack when that date arrives. Each step is kept as history.
   _ida.Future<_ig0c1d2c.AdminBuildingDetail> assignPack(
     _isc.UuidValue buildingId,
-    _isc.UuidValue packId,
-  ) => caller.callServerEndpoint<_ig0c1d2c.AdminBuildingDetail>(
+    _isc.UuidValue packId, {
+    _ikrrfqlm.PackBillingPeriod? billingPeriod,
+    DateTime? expiresAt,
+  }) => caller.callServerEndpoint<_ig0c1d2c.AdminBuildingDetail>(
     'building',
     'assignPack',
     {
       'buildingId': buildingId,
       'packId': packId,
+      'billingPeriod': billingPeriod,
+      'expiresAt': expiresAt,
     },
   );
 
@@ -534,12 +593,19 @@ class EndpointBuilding extends _isc.EndpointRef {
     {'request': request},
   );
 
-  _ida.Future<List<_iz70mzqw.EmployeeView>> listEmployees(
-    _isc.UuidValue buildingId,
-  ) => caller.callServerEndpoint<List<_iz70mzqw.EmployeeView>>(
+  /// Staff of [buildingId], owner only. Name order.
+  _ida.Future<_it4lhkdu.EmployeePage> listEmployees(
+    _isc.UuidValue buildingId, {
+    int? limit,
+    int? offset,
+  }) => caller.callServerEndpoint<_it4lhkdu.EmployeePage>(
     'building',
     'listEmployees',
-    {'buildingId': buildingId},
+    {
+      'buildingId': buildingId,
+      'limit': limit,
+      'offset': offset,
+    },
   );
 }
 
@@ -583,16 +649,28 @@ class EndpointCustomerVenue extends _isc.EndpointRef {
   @override
   String get name => 'customerVenue';
 
-  /// Every venue as a [CustomerVenueCard]. Customers only.
+  /// Public venue cards, name order, or nearest first when a place is set.
   ///
-  /// Omits owner identity, staff, and order-pipeline flags. Distance is
-  /// computed on the client from the customer's chosen place.
-  _ida.Future<List<_i2waekzp.CustomerVenueCard>> list() =>
-      caller.callServerEndpoint<List<_i2waekzp.CustomerVenueCard>>(
-        'customerVenue',
-        'list',
-        {},
-      );
+  /// Customers only. [nearbyOnly] keeps venues inside 15 km of
+  /// [latitude]/[longitude]. [limit] defaults to 20 and is capped at 100.
+  /// Omits owner identity, staff, and order-pipeline flags.
+  _ida.Future<_ihk3nm0c.CustomerVenuePage> list({
+    int? limit,
+    int? offset,
+    double? latitude,
+    double? longitude,
+    required bool nearbyOnly,
+  }) => caller.callServerEndpoint<_ihk3nm0c.CustomerVenuePage>(
+    'customerVenue',
+    'list',
+    {
+      'limit': limit,
+      'offset': offset,
+      'latitude': latitude,
+      'longitude': longitude,
+      'nearbyOnly': nearbyOnly,
+    },
+  );
 
   /// Venue page: free tables and the top categories and articles.
   ///
@@ -605,13 +683,22 @@ class EndpointCustomerVenue extends _isc.EndpointRef {
     {'buildingId': buildingId},
   );
 
-  /// Full menu in catalog order. Customers only.
-  _ida.Future<_i1mbazw4.CustomerMenu> menu(_isc.UuidValue buildingId) =>
-      caller.callServerEndpoint<_i1mbazw4.CustomerMenu>(
-        'customerVenue',
-        'menu',
-        {'buildingId': buildingId},
-      );
+  /// Menu window in catalog order, plus every category for the rail.
+  ///
+  /// Customers only. [limit] defaults to 20 articles and is capped at 100.
+  _ida.Future<_i1mbazw4.CustomerMenu> menu(
+    _isc.UuidValue buildingId, {
+    int? limit,
+    int? offset,
+  }) => caller.callServerEndpoint<_i1mbazw4.CustomerMenu>(
+    'customerVenue',
+    'menu',
+    {
+      'buildingId': buildingId,
+      'limit': limit,
+      'offset': offset,
+    },
+  );
 
   /// Confirms a scanned table sticker belongs to an active table.
   ///
@@ -641,13 +728,21 @@ class EndpointEmployeeAccess extends _isc.EndpointRef {
   @override
   String get name => 'employeeAccess';
 
-  /// Lists access profiles for [buildingId].
-  _ida.Future<List<_imdxt5mh.EmployeeAccessView>> list(
-    _isc.UuidValue buildingId,
-  ) => caller.callServerEndpoint<List<_imdxt5mh.EmployeeAccessView>>(
+  /// Access profiles for [buildingId], name order. Owner only.
+  ///
+  /// [limit] defaults to 20 and is capped at 100.
+  _ida.Future<_idopbith.EmployeeAccessPage> list(
+    _isc.UuidValue buildingId, {
+    int? limit,
+    int? offset,
+  }) => caller.callServerEndpoint<_idopbith.EmployeeAccessPage>(
     'employeeAccess',
     'list',
-    {'buildingId': buildingId},
+    {
+      'buildingId': buildingId,
+      'limit': limit,
+      'offset': offset,
+    },
   );
 
   /// Loads one access profile.
@@ -737,13 +832,22 @@ class EndpointIngredient extends _isc.EndpointRef {
   @override
   String get name => 'ingredient';
 
-  /// Lists ingredients for [buildingId] (owner or assigned employee).
-  _ida.Future<List<_i25phy6n.IngredientView>> list(_isc.UuidValue buildingId) =>
-      caller.callServerEndpoint<List<_i25phy6n.IngredientView>>(
-        'ingredient',
-        'list',
-        {'buildingId': buildingId},
-      );
+  /// Ingredients for [buildingId], name order.
+  ///
+  /// Owner or assigned employee. [limit] defaults to 20 and is capped at 100.
+  _ida.Future<_i5p5mc8n.IngredientPage> list(
+    _isc.UuidValue buildingId, {
+    int? limit,
+    int? offset,
+  }) => caller.callServerEndpoint<_i5p5mc8n.IngredientPage>(
+    'ingredient',
+    'list',
+    {
+      'buildingId': buildingId,
+      'limit': limit,
+      'offset': offset,
+    },
+  );
 
   /// Owner creates an ingredient.
   _ida.Future<_i25phy6n.IngredientView> create(
@@ -816,13 +920,21 @@ class EndpointMenuCategory extends _isc.EndpointRef {
   @override
   String get name => 'menuCategory';
 
-  /// Lists categories for [buildingId] (owner or assigned employee).
-  _ida.Future<List<_i6z5knea.MenuCategoryView>> list(
-    _isc.UuidValue buildingId,
-  ) => caller.callServerEndpoint<List<_i6z5knea.MenuCategoryView>>(
+  /// Categories for [buildingId], name order.
+  ///
+  /// Owner or assigned employee. [limit] defaults to 20 and is capped at 100.
+  _ida.Future<_i48lt3pj.MenuCategoryPage> list(
+    _isc.UuidValue buildingId, {
+    int? limit,
+    int? offset,
+  }) => caller.callServerEndpoint<_i48lt3pj.MenuCategoryPage>(
     'menuCategory',
     'list',
-    {'buildingId': buildingId},
+    {
+      'buildingId': buildingId,
+      'limit': limit,
+      'offset': offset,
+    },
   );
 
   /// Owner creates a category.
@@ -870,15 +982,20 @@ class EndpointCustomerOrder extends _isc.EndpointRef {
   /// Every venue is included. [from] is inclusive and [to] is exclusive.
   /// Another customer's orders are never returned. A reversed or oversized
   /// window throws [OrderException] / [OrderErrorCode.invalidInput].
-  _ida.Future<List<_ia5a8dtx.CustomerOrderSummary>> list(
+  /// [limit] defaults to 20 and is capped at 100.
+  _ida.Future<_iwuqnthl.CustomerOrderPage> list(
     DateTime from,
-    DateTime to,
-  ) => caller.callServerEndpoint<List<_ia5a8dtx.CustomerOrderSummary>>(
+    DateTime to, {
+    int? limit,
+    int? offset,
+  }) => caller.callServerEndpoint<_iwuqnthl.CustomerOrderPage>(
     'customerOrder',
     'list',
     {
       'from': from,
       'to': to,
+      'limit': limit,
+      'offset': offset,
     },
   );
 
@@ -928,15 +1045,23 @@ class EndpointOrder extends _isc.EndpointRef {
   /// Lists orders for [buildingId] (owner or assigned employee).
   ///
   /// When [status] is set, only orders with that status are returned.
-  _ida.Future<List<_i5f9osh7.OrderView>> list(
+  /// [venueTableId] limits the page to one table, so a seat lookup does not
+  /// depend on the floor page. [limit] defaults to 20 and is capped at 100.
+  _ida.Future<_ith3f88l.OrderPage> list(
     _isc.UuidValue buildingId,
-    _iqp2kjae.OrderStatus? status,
-  ) => caller.callServerEndpoint<List<_i5f9osh7.OrderView>>(
+    _iqp2kjae.OrderStatus? status, {
+    _isc.UuidValue? venueTableId,
+    int? limit,
+    int? offset,
+  }) => caller.callServerEndpoint<_ith3f88l.OrderPage>(
     'order',
     'list',
     {
       'buildingId': buildingId,
       'status': status,
+      'venueTableId': venueTableId,
+      'limit': limit,
+      'offset': offset,
     },
   );
 
@@ -990,13 +1115,20 @@ class EndpointPack extends _isc.EndpointRef {
   @override
   String get name => 'pack';
 
-  /// Every pack, including private and disabled. Super admin only.
-  _ida.Future<List<_ihy1alcs.PackView>> list() =>
-      caller.callServerEndpoint<List<_ihy1alcs.PackView>>(
-        'pack',
-        'list',
-        {},
-      );
+  /// Packs, including private and disabled, sort order then name.
+  ///
+  /// Super admin only. [limit] defaults to 20 and is capped at 100.
+  _ida.Future<_iv7y27qe.PackPage> list({
+    int? limit,
+    int? offset,
+  }) => caller.callServerEndpoint<_iv7y27qe.PackPage>(
+    'pack',
+    'list',
+    {
+      'limit': limit,
+      'offset': offset,
+    },
+  );
 
   /// Enabled public packs for the apps. Any signed-in actor.
   _ida.Future<List<_ir1kads3.PackPublicView>> listPublic() =>

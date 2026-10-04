@@ -1,13 +1,28 @@
 import 'package:sip_sync_client/sip_sync_client.dart';
 
+import '../../core/paging/list_paging.dart';
+
 /// Owner CRUD for building-scoped employee access profiles.
 class EmployeeAccessRepository {
   EmployeeAccessRepository(this._client);
 
   final Client _client;
 
-  Future<List<EmployeeAccessView>> list(UuidValue buildingId) =>
-      _client.employeeAccess.list(buildingId);
+  Future<EmployeeAccessPage> list(
+    UuidValue buildingId, {
+    int? limit,
+    int? offset,
+  }) => _client.employeeAccess.list(buildingId, limit: limit, offset: offset);
+
+  /// Every profile, for the employee form and edit screen.
+  Future<List<EmployeeAccessView>> listAll(UuidValue buildingId) {
+    return collectPages(
+      load: (offset) async {
+        final page = await list(buildingId, limit: 100, offset: offset);
+        return (items: page.items, total: page.total);
+      },
+    );
+  }
 
   Future<EmployeeAccessView> get(UuidValue id) =>
       _client.employeeAccess.get(id);

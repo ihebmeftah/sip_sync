@@ -102,11 +102,11 @@ void main() {
         expect(placed.totalAmount, 13);
 
         final now = DateTime.now().toUtc();
-        final history = await endpoints.customerOrder.list(
+        final history = (await endpoints.customerOrder.list(
           customerSession,
           now.subtract(const Duration(hours: 1)),
           now.add(const Duration(hours: 1)),
-        );
+        )).items;
         expect(history, hasLength(1));
         expect(history.single.id, placed.id);
         expect(history.single.venueName, 'Order House');
@@ -115,11 +115,11 @@ void main() {
         expect(history.single.totalAmount, 13);
         expect(history.single.currencyCode, 'TND');
 
-        final earlier = await endpoints.customerOrder.list(
+        final earlier = (await endpoints.customerOrder.list(
           customerSession,
           now.subtract(const Duration(days: 3)),
           now.subtract(const Duration(days: 2)),
-        );
+        )).items;
         expect(earlier, isEmpty);
         await expectLater(
           endpoints.customerOrder.list(customerSession, now, now),
@@ -154,10 +154,10 @@ void main() {
         expect(appended.totalAmount, 19.5);
         expect(appended.ref, placed.ref);
 
-        final stock = await endpoints.ingredient.list(
+        final stock = (await endpoints.ingredient.list(
           ownerSession,
           building.id,
-        );
+        )).items;
         expect(stock.single.currentStock, 2);
 
         await expectLater(
@@ -407,7 +407,10 @@ void main() {
           ),
         ),
       );
-      final stock = await endpoints.ingredient.list(ownerSession, building.id);
+      final stock = (await endpoints.ingredient.list(
+        ownerSession,
+        building.id,
+      )).items;
       expect(stock.single.currentStock, 1);
     });
 

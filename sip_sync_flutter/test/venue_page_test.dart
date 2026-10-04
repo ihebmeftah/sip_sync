@@ -334,17 +334,24 @@ class _Repo extends CustomerDiscoveryRepository {
                 : const <String>[],
           ),
       ],
+      customerOrdering: true,
     );
   }
 
   @override
-  Future<CustomerMenu> venueMenu(UuidValue buildingId) async {
+  Future<CustomerMenu> venueMenu(
+    UuidValue buildingId, {
+    int? limit,
+    int? offset,
+  }) async {
     return CustomerMenu(
       currencyCode: 'TND',
       sections: [
         for (var n = 1; n <= 6; n++)
           CustomerMenuSection(
-            id: _buildingId,
+            id: UuidValue.fromString(
+              '01990000-0000-7000-8000-00000000020$n',
+            ),
             name: '0$n Course',
             description: 'Section note',
             articles: n == 6
@@ -352,8 +359,12 @@ class _Repo extends CustomerDiscoveryRepository {
                 : [
                     for (var dish = 1; dish <= 3; dish++)
                       CustomerArticlePreview(
-                        id: _buildingId,
-                        categoryId: _buildingId,
+                        id: UuidValue.fromString(
+                          '01990000-0000-7000-8000-0000000003$n$dish',
+                        ),
+                        categoryId: UuidValue.fromString(
+                          '01990000-0000-7000-8000-00000000020$n',
+                        ),
                         categoryName: '0$n Course',
                         name: 'Plate $n-$dish',
                         description:
@@ -364,6 +375,12 @@ class _Repo extends CustomerDiscoveryRepository {
                   ],
           ),
       ],
+      customerOrdering: true,
+      categories: const [],
+      articles: const [],
+      totalArticles: 0,
+      limit: limit ?? 20,
+      offset: offset ?? 0,
     );
   }
 }

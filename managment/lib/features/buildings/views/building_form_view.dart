@@ -4,6 +4,7 @@ import 'package:sip_sync_client/sip_sync_client.dart';
 
 import '../../../core/di/building_session.dart';
 import '../../../core/di/service_locator.dart';
+import '../../../core/errors/app_notice.dart';
 import '../../../core/errors/error_mapper.dart';
 import '../../../core/errors/form_validators.dart';
 import '../../../core/routing/app_routes.dart';
@@ -426,24 +427,60 @@ class _BuildingFormViewState extends ConsumerState<BuildingFormView> {
                         title: Text(l10n.buildingTableMultiOrder),
                         subtitle: Text(l10n.buildingTableMultiOrderHint),
                         value: _tableMultiOrder,
-                        onChanged: (value) =>
-                            setState(() => _tableMultiOrder = value),
+                        onChanged: (value) {
+                          final pack = async.asData?.value?.pack;
+                          if (value &&
+                              !_tableMultiOrder &&
+                              pack != null &&
+                              !pack.tableMultiOrder) {
+                            showAppSnackBar(
+                              context,
+                              l10n.errorPackFeatureMultiOrder,
+                            );
+                            return;
+                          }
+                          setState(() => _tableMultiOrder = value);
+                        },
                       ),
                       SwitchListTile(
                         contentPadding: EdgeInsets.zero,
                         title: Text(l10n.buildingAllowAppendingItems),
                         subtitle: Text(l10n.buildingAllowAppendingItemsHint),
                         value: _allowAppendingItemsToOrder,
-                        onChanged: (value) =>
-                            setState(() => _allowAppendingItemsToOrder = value),
+                        onChanged: (value) {
+                          final pack = async.asData?.value?.pack;
+                          if (value &&
+                              !_allowAppendingItemsToOrder &&
+                              pack != null &&
+                              !pack.allowAppendingItems) {
+                            showAppSnackBar(
+                              context,
+                              l10n.errorPackFeatureAppend,
+                            );
+                            return;
+                          }
+                          setState(() => _allowAppendingItemsToOrder = value);
+                        },
                       ),
                       SwitchListTile(
                         contentPadding: EdgeInsets.zero,
                         title: Text(l10n.buildingStrictMode),
                         subtitle: Text(l10n.buildingStrictModeHint),
                         value: _strictMode,
-                        onChanged: (value) =>
-                            setState(() => _strictMode = value),
+                        onChanged: (value) {
+                          final pack = async.asData?.value?.pack;
+                          if (value &&
+                              !_strictMode &&
+                              pack != null &&
+                              !pack.strictMode) {
+                            showAppSnackBar(
+                              context,
+                              l10n.errorPackFeatureStrict,
+                            );
+                            return;
+                          }
+                          setState(() => _strictMode = value);
+                        },
                       ),
                       Text(
                         l10n.buildingStrictModeStepsTitle,
@@ -529,6 +566,12 @@ class _BuildingFormViewState extends ConsumerState<BuildingFormView> {
                           }
                           setState(() => _saving = false);
                           if (saved == null) {
+                            final error = ref
+                                .read(buildingFormViewModelProvider(_id))
+                                .error;
+                            if (error != null) {
+                              captureError(context, error);
+                            }
                             return;
                           }
                           getIt<BuildingSession>().upsert(saved);

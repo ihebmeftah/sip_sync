@@ -44,7 +44,7 @@ final class DiscoverViewModelProvider
   }
 }
 
-String _$discoverViewModelHash() => r'5d5706c4dfeaa7c5fc605711ee0b7fd103f3212d';
+String _$discoverViewModelHash() => r'b3b6cbb8b93b461991a58d7db22d0be3054de087';
 
 /// Nearby venues for the signed-in customer: place, list or map, and distance.
 

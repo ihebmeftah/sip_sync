@@ -2,3 +2,5 @@ exception: PackException
 fields:
   message: String
   code: PackErrorCode
+  ### Which rule failed, when [code] is limitReached or featureOff.
+  feature: PackFeature?

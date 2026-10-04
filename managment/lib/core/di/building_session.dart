@@ -17,6 +17,16 @@ class BuildingSession extends ChangeNotifier {
     return null;
   }
 
+  void showPage(List<BuildingView> page) {
+    final kept = selected;
+    buildings = [
+      ...page,
+      if (kept != null && !page.any((building) => building.id == kept.id)) kept,
+    ];
+    loaded = true;
+    notifyListeners();
+  }
+
   void replace(List<BuildingView> next) {
     buildings = next;
     if (selectedId != null && !next.any((b) => b.id == selectedId)) {

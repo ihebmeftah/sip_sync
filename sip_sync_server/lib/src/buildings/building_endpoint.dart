@@ -10,13 +10,24 @@ class BuildingEndpoint extends Endpoint {
   @override
   bool get requireLogin => true;
 
-  Future<List<BuildingView>> listMine(Session session) {
-    return _buildings.listMine(session);
+  /// Venues the caller can open. Owners see their own; staff see one.
+  ///
+  /// [limit] defaults to 20 and is capped at 100.
+  Future<BuildingPage> listMine(
+    Session session, {
+    int? limit,
+    int? offset,
+  }) {
+    return _buildings.listMine(session, limit: limit, offset: offset);
   }
 
-  /// Every venue for the backoffice, including owner contact. Super admin only.
-  Future<List<AdminBuildingView>> listAll(Session session) {
-    return _buildings.listAll(session);
+  /// Venues for the backoffice, including owner contact. Super admin only.
+  Future<AdminBuildingPage> listAll(
+    Session session, {
+    int? limit,
+    int? offset,
+  }) {
+    return _buildings.listAll(session, limit: limit, offset: offset);
   }
 
   /// Venue, pack, counts, and platform gain. Super admin only.
@@ -27,13 +38,25 @@ class BuildingEndpoint extends Endpoint {
     return _buildings.adminDetail(session, buildingId);
   }
 
-  /// Moves the venue onto an enabled pack. Super admin only.
+  /// Moves a free-plan venue onto an enabled pack. Super admin only.
+  ///
+  /// A venue already on a paid plan is rejected. The free pack takes no term.
+  /// Any other pack needs [billingPeriod] and [expiresAt]. The venue returns
+  /// to the free pack when that date arrives. Each step is kept as history.
   Future<AdminBuildingDetail> assignPack(
     Session session,
     UuidValue buildingId,
-    UuidValue packId,
-  ) {
-    return _buildings.assignPack(session, buildingId, packId);
+    UuidValue packId, {
+    PackBillingPeriod? billingPeriod,
+    DateTime? expiresAt,
+  }) {
+    return _buildings.assignPack(
+      session,
+      buildingId,
+      packId,
+      billingPeriod: billingPeriod,
+      expiresAt: expiresAt,
+    );
   }
 
   Future<BuildingView> get(Session session, UuidValue buildingId) {
@@ -48,10 +71,18 @@ class BuildingEndpoint extends Endpoint {
     return _buildings.update(session, request);
   }
 
-  Future<List<EmployeeView>> listEmployees(
+  /// Staff of [buildingId], owner only. Name order.
+  Future<EmployeePage> listEmployees(
     Session session,
-    UuidValue buildingId,
-  ) {
-    return _buildings.listEmployees(session, buildingId);
+    UuidValue buildingId, {
+    int? limit,
+    int? offset,
+  }) {
+    return _buildings.listEmployees(
+      session,
+      buildingId,
+      limit: limit,
+      offset: offset,
+    );
   }
 }

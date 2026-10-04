@@ -1,0 +1,7 @@
+### One page of owners or customers.
+class: PlatformPersonPage
+fields:
+  items: List<PlatformPersonView>
+  total: int
+  limit: int
+  offset: int

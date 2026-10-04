@@ -1,6 +1,7 @@
 import 'package:serverpod/serverpod.dart';
 
 import '../auth/auth_guard.dart';
+import '../core/page_window.dart';
 import '../generated/protocol.dart';
 
 /// Pack catalog for super admins, plus the public list the apps will read.
@@ -11,12 +12,27 @@ class PackService {
   static const _feeMax = 10000;
   static const _limitMax = 100000;
 
-  /// Every pack, sort order then name. Super admin only.
-  Future<List<PackView>> list(Session session) async {
+  /// Packs, sort order then name. Super admin only.
+  Future<PackPage> list(
+    Session session, {
+    int? limit,
+    int? offset,
+  }) async {
     AuthGuard.requireSuperAdmin(session);
-    final rows = await Pack.db.find(session);
-    rows.sort(_bySortThenName);
-    return rows.map(_view).toList();
+    final window = PageWindow.from(limit: limit, offset: offset);
+    final total = await Pack.db.count(session);
+    final rows = await Pack.db.find(
+      session,
+      orderByList: (t) => [t.sortOrder, t.name],
+      limit: window.limit,
+      offset: window.offset,
+    );
+    return PackPage(
+      items: rows.map(_view).toList(),
+      total: total,
+      limit: window.limit,
+      offset: window.offset,
+    );
   }
 
   /// Enabled public packs. Any signed-in actor.

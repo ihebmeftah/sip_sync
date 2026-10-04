@@ -1,5 +1,15 @@
-### Full customer menu for one venue. No ingredients or composition.
+### One window of a customer menu, plus the category index for the rail.
 class: CustomerMenu
 fields:
   currencyCode: String
+  ### Categories touched by this window, including truly empty ones.
   sections: List<CustomerMenuSection>
+  ### False when the venue pack does not include customer-app orders.
+  customerOrdering: bool
+  ### Every category in catalog order. Article counts, no dishes.
+  categories: List<CustomerCategoryPreview>
+  ### Dishes in this window, catalog order.
+  articles: List<CustomerArticlePreview>
+  totalArticles: int
+  limit: int
+  offset: int

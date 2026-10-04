@@ -1,23 +1,36 @@
 import 'package:serverpod/serverpod.dart';
 
 import '../auth/auth_guard.dart';
+import '../core/page_window.dart';
 import '../generated/protocol.dart';
 import '../packs/pack_gate.dart';
 
 /// Building-scoped menu category CRUD.
 class MenuCategoryService {
-  /// Lists categories for a building the caller can access.
-  Future<List<MenuCategoryView>> listForBuilding(
+  /// Categories for a building the caller can access, name order.
+  Future<MenuCategoryPage> listForBuilding(
     Session session,
-    UuidValue buildingId,
-  ) async {
+    UuidValue buildingId, {
+    int? limit,
+    int? offset,
+  }) async {
     await _requireBuildingAccess(session, buildingId);
+    final window = PageWindow.from(limit: limit, offset: offset);
+    Expression where(MenuCategoryTable t) => t.buildingId.equals(buildingId);
+    final total = await MenuCategory.db.count(session, where: where);
     final rows = await MenuCategory.db.find(
       session,
-      where: (t) => t.buildingId.equals(buildingId),
+      where: where,
       orderBy: (t) => t.name,
+      limit: window.limit,
+      offset: window.offset,
     );
-    return rows.map(_view).toList();
+    return MenuCategoryPage(
+      items: rows.map(_view).toList(),
+      total: total,
+      limit: window.limit,
+      offset: window.offset,
+    );
   }
 
   /// Owner-only create.
@@ -38,6 +51,7 @@ class MenuCategoryService {
     PackGate.requireRoom(
       max: pack.maxCategories,
       current: current,
+      feature: PackFeature.categories,
       adding: 1,
     );
 

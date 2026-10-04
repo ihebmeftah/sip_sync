@@ -1,5 +1,6 @@
 import 'package:serverpod/serverpod.dart';
 
+import '../core/page_window.dart';
 import '../generated/protocol.dart';
 import 'auth_guard.dart';
 import 'auth_support.dart';
@@ -154,10 +155,29 @@ class SuperAdminAuthEndpoint extends Endpoint {
     return _adminView(updated);
   }
 
-  Future<List<SuperAdminView>> list(Session session) async {
+  /// Backoffice users, oldest first.
+  ///
+  /// [limit] defaults to 20 and is capped at 100. [offset] skips that many rows.
+  Future<SuperAdminPage> list(
+    Session session, {
+    int? limit,
+    int? offset,
+  }) async {
     AuthGuard.requireSuperAdmin(session);
-    final rows = await SuperAdmin.db.find(session, orderBy: (t) => t.createdAt);
-    return rows.map(_adminView).toList();
+    final window = PageWindow.from(limit: limit, offset: offset);
+    final total = await SuperAdmin.db.count(session);
+    final rows = await SuperAdmin.db.find(
+      session,
+      orderBy: (t) => t.createdAt,
+      limit: window.limit,
+      offset: window.offset,
+    );
+    return SuperAdminPage(
+      items: rows.map(_adminView).toList(),
+      total: total,
+      limit: window.limit,
+      offset: window.offset,
+    );
   }
 
   Future<void> delete(Session session, UuidValue targetId) async {

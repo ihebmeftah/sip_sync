@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/di/app_providers.dart';
+import '../../../core/errors/app_notice.dart';
 import '../../../core/errors/error_mapper.dart';
 import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
+import '../../../core/widgets/list_page_bar.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../view_models/employees_view_model.dart';
 
@@ -38,9 +40,18 @@ class EmployeesListView extends ConsumerWidget {
                   ),
                   if (isOwner) ...[
                     TextButton(
-                      onPressed: () => AccessProfilesRoute(
-                        buildingId: buildingId,
-                      ).go(context),
+                      onPressed: () {
+                        final pack = ref.read(buildingSelectionProvider)?.pack;
+                        if (pack != null &&
+                            !allowPackFeature(
+                              context,
+                              allowed: pack.customAccessProfiles,
+                              message: l10n.errorPackFeatureAccess,
+                            )) {
+                          return;
+                        }
+                        AccessProfilesRoute(buildingId: buildingId).go(context);
+                      },
                       child: Text(l10n.navAccessProfiles),
                     ),
                     const SizedBox(width: AppSpacing.sm),
@@ -48,9 +59,20 @@ class EmployeesListView extends ConsumerWidget {
                       style: FilledButton.styleFrom(
                         minimumSize: const Size(0, 44),
                       ),
-                      onPressed: () => EmployeeCreateRoute(
-                        buildingId: buildingId,
-                      ).go(context),
+                      onPressed: () {
+                        final pack = ref.read(buildingSelectionProvider)?.pack;
+                        final count = async.asData?.value.total ?? 0;
+                        if (pack != null &&
+                            !allowPackRoom(
+                              context,
+                              max: pack.maxEmployees,
+                              current: count,
+                              message: l10n.errorPackLimitEmployees,
+                            )) {
+                          return;
+                        }
+                        EmployeeCreateRoute(buildingId: buildingId).go(context);
+                      },
                       icon: const Icon(Icons.add),
                       label: AppButtonLabel(l10n.addEmployee),
                     ),
@@ -79,50 +101,71 @@ class EmployeesListView extends ConsumerWidget {
                       ),
                     ],
                   ),
-                  data: (employees) {
+                  data: (page) {
+                    final employees = page.items;
                     if (employees.isEmpty) {
                       return AppSurfaceCard(
                         child: Text(l10n.employeesEmptyBuilding),
                       );
                     }
-                    return AppSurfaceCard(
-                      child: Column(
-                        children: [
-                          for (final employee in employees)
-                            ListTile(
-                              contentPadding: EdgeInsets.zero,
-                              leading: CircleAvatar(
-                                backgroundColor: scheme.secondaryContainer,
-                                foregroundColor: scheme.onSecondaryContainer,
-                                child: Text(
-                                  employee.firstName.isEmpty
-                                      ? '?'
-                                      : employee.firstName.characters.first,
+                    return Column(
+                      children: [
+                        AppSurfaceCard(
+                          child: Column(
+                            children: [
+                              for (final employee in employees)
+                                ListTile(
+                                  contentPadding: EdgeInsets.zero,
+                                  leading: CircleAvatar(
+                                    backgroundColor: scheme.secondaryContainer,
+                                    foregroundColor:
+                                        scheme.onSecondaryContainer,
+                                    child: Text(
+                                      employee.firstName.isEmpty
+                                          ? '?'
+                                          : employee.firstName.characters.first,
+                                    ),
+                                  ),
+                                  title: Text(
+                                    '${employee.firstName} ${employee.lastName}',
+                                  ),
+                                  subtitle: Text(
+                                    employee.accessName == null ||
+                                            employee.accessName!.isEmpty
+                                        ? employee.username
+                                        : '${employee.username} · ${employee.accessName}',
+                                  ),
+                                  trailing: Chip(
+                                    label: Text(
+                                      employee.isEnabled
+                                          ? l10n.accountEnabled
+                                          : l10n.accountDisabled,
+                                    ),
+                                  ),
+                                  onTap: () => EmployeeDetailsRoute(
+                                    buildingId: buildingId,
+                                    employeeId: employee.id.uuid,
+                                  ).go(context),
                                 ),
-                              ),
-                              title: Text(
-                                '${employee.firstName} ${employee.lastName}',
-                              ),
-                              subtitle: Text(
-                                employee.accessName == null ||
-                                        employee.accessName!.isEmpty
-                                    ? employee.username
-                                    : '${employee.username} · ${employee.accessName}',
-                              ),
-                              trailing: Chip(
-                                label: Text(
-                                  employee.isEnabled
-                                      ? l10n.accountEnabled
-                                      : l10n.accountDisabled,
-                                ),
-                              ),
-                              onTap: () => EmployeeDetailsRoute(
-                                buildingId: buildingId,
-                                employeeId: employee.id.uuid,
-                              ).go(context),
-                            ),
-                        ],
-                      ),
+                            ],
+                          ),
+                        ),
+                        ListPageBar(
+                          total: page.total,
+                          limit: page.limit,
+                          offset: page.offset,
+                          onPrevious: () => ref
+                              .read(
+                                employeesViewModelProvider(buildingId).notifier,
+                              )
+                              .previousPage(),
+                          onNext: () => ref
+                              .read(
+                                employeesViewModelProvider(buildingId).notifier,
+                              )
+                              .nextPage(),
+                        ),
+                      ],
                     );
                   },
                 ),

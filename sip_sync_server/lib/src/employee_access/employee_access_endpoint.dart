@@ -10,12 +10,21 @@ class EmployeeAccessEndpoint extends Endpoint {
   @override
   bool get requireLogin => true;
 
-  /// Lists access profiles for [buildingId].
-  Future<List<EmployeeAccessView>> list(
+  /// Access profiles for [buildingId], name order. Owner only.
+  ///
+  /// [limit] defaults to 20 and is capped at 100.
+  Future<EmployeeAccessPage> list(
     Session session,
-    UuidValue buildingId,
-  ) {
-    return _access.listForBuilding(session, buildingId);
+    UuidValue buildingId, {
+    int? limit,
+    int? offset,
+  }) {
+    return _access.listForBuilding(
+      session,
+      buildingId,
+      limit: limit,
+      offset: offset,
+    );
   }
 
   /// Loads one access profile.

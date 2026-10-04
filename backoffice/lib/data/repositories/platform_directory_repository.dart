@@ -6,11 +6,11 @@ class PlatformDirectoryRepository {
 
   final Client _client;
 
-  /// Every owner, newest first. Super admin only.
-  Future<List<PlatformPersonView>> listOwners() =>
-      _client.platformDirectory.listOwners();
+  /// One page of owners, newest first. Super admin only.
+  Future<PlatformPersonPage> listOwners({int? limit, int? offset}) =>
+      _client.platformDirectory.listOwners(limit: limit, offset: offset);
 
-  /// Every customer, newest first. Super admin only.
-  Future<List<PlatformPersonView>> listCustomers() =>
-      _client.platformDirectory.listCustomers();
+  /// One page of customers, newest first. Super admin only.
+  Future<PlatformPersonPage> listCustomers({int? limit, int? offset}) =>
+      _client.platformDirectory.listCustomers(limit: limit, offset: offset);
 }

@@ -476,6 +476,66 @@ class AppLocalizationsAr extends AppLocalizations {
   String get errorPackFeature => 'هذه الباقة لا تشمل ذلك.';
 
   @override
+  String get errorPackLimitEmployees => 'بلغت هذه الباقة حد الموظفين.';
+
+  @override
+  String get errorPackLimitTables => 'بلغت هذه الباقة حد الطاولات.';
+
+  @override
+  String get errorPackLimitCategories => 'بلغت هذه الباقة حد الفئات.';
+
+  @override
+  String get errorPackLimitArticles => 'بلغت هذه الباقة حد الأصناف.';
+
+  @override
+  String get errorPackLimitIngredients => 'بلغت هذه الباقة حد المكونات.';
+
+  @override
+  String get errorPackFeatureOrdering => 'هذه الباقة لا تشمل طلبات الزبائن.';
+
+  @override
+  String get errorPackFeatureInventory => 'هذه الباقة لا تشمل المخزون.';
+
+  @override
+  String get errorPackFeatureAppend =>
+      'هذه الباقة لا تشمل إضافة أصناف إلى طلب مفتوح.';
+
+  @override
+  String get errorPackFeatureMultiOrder =>
+      'هذه الباقة لا تشمل أكثر من طلب على الطاولة.';
+
+  @override
+  String get errorPackFeatureStrict =>
+      'هذه الباقة لا تشمل خطوات الطلب الصارمة.';
+
+  @override
+  String get errorPackFeatureAccess =>
+      'هذه الباقة لا تشمل ملفات صلاحيات مخصصة.';
+
+  @override
+  String get errorPackFeatureQr => 'هذه الباقة لا تشمل رموز QR للطاولات.';
+
+  @override
+  String get errorPackPaidActive =>
+      'هذا المكان على باقة مدفوعة. يمكن تعيين باقة أخرى بعد انتهاء المدة.';
+
+  @override
+  String get packHistoryTitle => 'سجل الباقات';
+
+  @override
+  String get packHistoryCurrent => 'الحالية';
+
+  @override
+  String get packEndReplaced => 'استُبدلت';
+
+  @override
+  String get packEndExpired => 'انتهت';
+
+  @override
+  String get packPaidLocked =>
+      'هذا المكان على باقة مدفوعة. يمكن تعيين باقة أخرى بعد انتهاء المدة.';
+
+  @override
   String get buildingDetailTitle => 'المكان';
 
   @override
@@ -496,6 +556,33 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get assignPack => 'تعيين باقة';
+
+  @override
+  String get packBillingMonthly => 'شهري';
+
+  @override
+  String get packBillingYearly => 'سنوي';
+
+  @override
+  String packExpiresOn(String date) {
+    return 'يعود إلى المجاني في $date';
+  }
+
+  @override
+  String get packExpiresNever => 'الباقة المجانية. بلا تاريخ انتهاء.';
+
+  @override
+  String get packTermHint =>
+      'المدة الشهرية تنتهي بعد شهر. المدة السنوية تنتهي بعد سنة. يمكنك تغيير التاريخ.';
+
+  @override
+  String get packChangeDate => 'تغيير التاريخ';
+
+  @override
+  String get packAssignConfirm => 'تعيين';
+
+  @override
+  String get validationPackExpiry => 'اختر تاريخاً بعد اليوم.';
 
   @override
   String get quickCreatePack => 'إنشاء باقة خاصة';
@@ -596,4 +683,18 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get validationPackLimit => 'أدخل رقماً، أو اتركه فارغاً بلا حد.';
+
+  @override
+  String get previousPage => 'السابق';
+
+  @override
+  String get nextPage => 'التالي';
+
+  @override
+  String pageOf(int current, int total) {
+    return '$current / $total';
+  }
+
+  @override
+  String get loadingMore => 'جارٍ تحميل المزيد…';
 }

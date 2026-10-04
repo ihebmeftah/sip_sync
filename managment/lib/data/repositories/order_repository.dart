@@ -1,14 +1,46 @@
 import 'package:sip_sync_client/sip_sync_client.dart';
 
+import '../../core/paging/list_paging.dart';
+
 /// Floor / POS orders for a building.
 class OrderRepository {
   OrderRepository(this._client);
 
   final Client _client;
 
-  /// When [status] is null, returns all orders for the building.
-  Future<List<OrderView>> list(UuidValue buildingId, {OrderStatus? status}) =>
-      _client.order.list(buildingId, status);
+  /// One page of orders. [status] null is every status.
+  Future<OrderPage> list(
+    UuidValue buildingId, {
+    OrderStatus? status,
+    UuidValue? venueTableId,
+    int? limit,
+    int? offset,
+  }) => _client.order.list(
+    buildingId,
+    status,
+    venueTableId: venueTableId,
+    limit: limit,
+    offset: offset,
+  );
+
+  /// Every open order seated on [venueTableId].
+  Future<List<OrderView>> openForTable(
+    UuidValue buildingId,
+    UuidValue venueTableId,
+  ) {
+    return collectPages(
+      load: (offset) async {
+        final page = await list(
+          buildingId,
+          status: OrderStatus.progress,
+          venueTableId: venueTableId,
+          limit: 100,
+          offset: offset,
+        );
+        return (items: page.items, total: page.total);
+      },
+    );
+  }
 
   Future<OrderView> get(UuidValue orderId) => _client.order.get(orderId);
 

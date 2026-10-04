@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sip_sync_client/sip_sync_client.dart';
 
+import '../../../core/errors/app_notice.dart';
 import '../../../core/errors/error_mapper.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
@@ -62,7 +63,7 @@ class _OrderDetailDialogState extends ConsumerState<_OrderDetailDialog> {
       if (!mounted) {
         return;
       }
-      setState(() => _errorKey = mapError(error).l10nKey);
+      setState(() => _errorKey = captureError(context, error));
     } finally {
       if (mounted) {
         setState(() => _busy = false);
@@ -83,7 +84,7 @@ class _OrderDetailDialogState extends ConsumerState<_OrderDetailDialog> {
       if (!mounted) {
         return;
       }
-      setState(() => _errorKey = mapError(error).l10nKey);
+      setState(() => _errorKey = captureError(context, error));
     } finally {
       if (mounted) {
         setState(() => _busy = false);
@@ -129,7 +130,7 @@ class _OrderDetailDialogState extends ConsumerState<_OrderDetailDialog> {
       }
       setState(() {
         _busy = false;
-        _errorKey = mapError(error).l10nKey;
+        _errorKey = captureError(context, error);
       });
     }
   }
@@ -139,7 +140,7 @@ class _OrderDetailDialogState extends ConsumerState<_OrderDetailDialog> {
     final l10n = AppLocalizations.of(context)!;
     final text = Theme.of(context).textTheme;
     final async = ref.watch(ordersViewModelProvider(widget.buildingId));
-    final order = _current(async.asData?.value ?? const []);
+    final order = _current(async.asData?.value.orders ?? const []);
 
     return AlertDialog(
       title: Text(

@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sip_sync_client/sip_sync_client.dart';
 
 import '../../../core/di/app_providers.dart';
+import '../../../core/errors/app_notice.dart';
 import '../../../core/errors/error_mapper.dart';
 import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_tokens.dart';
@@ -53,9 +54,7 @@ class _TablesListViewState extends ConsumerState<TablesListView> {
     final l10n = AppLocalizations.of(context)!;
     final pack = ref.read(buildingSelectionProvider)?.pack;
     if (pack != null && !pack.tableQr) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.errorPackFeature)));
+      showAppSnackBar(context, l10n.errorPackFeatureQr);
       return;
     }
     setState(() => _exportingQr = true);
@@ -247,6 +246,18 @@ class _TablesListViewState extends ConsumerState<TablesListView> {
                                   )
                                   .listAllForExport();
                               if (!context.mounted) return;
+                              final pack = ref
+                                  .read(buildingSelectionProvider)
+                                  ?.pack;
+                              if (pack != null &&
+                                  !allowPackRoom(
+                                    context,
+                                    max: pack.maxTables,
+                                    current: all.length,
+                                    message: l10n.errorPackLimitTables,
+                                  )) {
+                                return;
+                              }
                               final nextNumber = all.isEmpty
                                   ? 1
                                   : all.map((t) => t.number).reduce(math.max) +

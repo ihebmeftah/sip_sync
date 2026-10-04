@@ -13,7 +13,7 @@ Status: shipped
 
 ## Flow
 
-1. Owner opens `/b/:buildingId/employees` (and **Access** to manage profiles).
+1. Owner opens `/b/:buildingId/employees` (and **Access** to manage profiles). The staff list is 20 people per page. The access picker on the form still loads every profile.
 2. Create: password, phone, names, required `buildingId` + `accessId` — username generated.
 3. Details show username (read-only), access name; enable/disable; edit phone/names/access.
 4. Staff login: username + password via `EmployeeAuth` (session includes access summary).

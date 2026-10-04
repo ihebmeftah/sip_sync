@@ -8,15 +8,15 @@ part of 'venue_menu_view_model.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-/// Full customer menu for one building, in catalog order.
+/// Customer menu for one building, loaded in catalog order.
 
 @ProviderFor(VenueMenuViewModel)
 const venueMenuViewModelProvider = VenueMenuViewModelFamily._();
 
-/// Full customer menu for one building, in catalog order.
+/// Customer menu for one building, loaded in catalog order.
 final class VenueMenuViewModelProvider
-    extends $AsyncNotifierProvider<VenueMenuViewModel, CustomerMenu> {
-  /// Full customer menu for one building, in catalog order.
+    extends $AsyncNotifierProvider<VenueMenuViewModel, VenueMenuState> {
+  /// Customer menu for one building, loaded in catalog order.
   const VenueMenuViewModelProvider._({
     required VenueMenuViewModelFamily super.from,
     required String super.argument,
@@ -54,17 +54,17 @@ final class VenueMenuViewModelProvider
 }
 
 String _$venueMenuViewModelHash() =>
-    r'd5dd79f098d41b02edabdf4718587c9f5fac34cc';
+    r'bcbf56ce426b6f12077635c32dd4257b2871420d';
 
-/// Full customer menu for one building, in catalog order.
+/// Customer menu for one building, loaded in catalog order.
 
 final class VenueMenuViewModelFamily extends $Family
     with
         $ClassFamilyOverride<
           VenueMenuViewModel,
-          AsyncValue<CustomerMenu>,
-          CustomerMenu,
-          FutureOr<CustomerMenu>,
+          AsyncValue<VenueMenuState>,
+          VenueMenuState,
+          FutureOr<VenueMenuState>,
           String
         > {
   const VenueMenuViewModelFamily._()
@@ -76,7 +76,7 @@ final class VenueMenuViewModelFamily extends $Family
         isAutoDispose: true,
       );
 
-  /// Full customer menu for one building, in catalog order.
+  /// Customer menu for one building, loaded in catalog order.
 
   VenueMenuViewModelProvider call(String buildingId) =>
       VenueMenuViewModelProvider._(argument: buildingId, from: this);
@@ -85,23 +85,23 @@ final class VenueMenuViewModelFamily extends $Family
   String toString() => r'venueMenuViewModelProvider';
 }
 
-/// Full customer menu for one building, in catalog order.
+/// Customer menu for one building, loaded in catalog order.
 
-abstract class _$VenueMenuViewModel extends $AsyncNotifier<CustomerMenu> {
+abstract class _$VenueMenuViewModel extends $AsyncNotifier<VenueMenuState> {
   late final _$args = ref.$arg as String;
   String get buildingId => _$args;
 
-  FutureOr<CustomerMenu> build(String buildingId);
+  FutureOr<VenueMenuState> build(String buildingId);
   @$mustCallSuper
   @override
   void runBuild() {
     final created = build(_$args);
-    final ref = this.ref as $Ref<AsyncValue<CustomerMenu>, CustomerMenu>;
+    final ref = this.ref as $Ref<AsyncValue<VenueMenuState>, VenueMenuState>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<AsyncValue<CustomerMenu>, CustomerMenu>,
-              AsyncValue<CustomerMenu>,
+              AnyNotifier<AsyncValue<VenueMenuState>, VenueMenuState>,
+              AsyncValue<VenueMenuState>,
               Object?,
               Object?
             >;

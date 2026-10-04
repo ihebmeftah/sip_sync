@@ -19,7 +19,8 @@ enum PackErrorCode implements _is.SerializableModel {
   cannotDeleteSystemPack,
   packInUse,
   limitReached,
-  featureOff;
+  featureOff,
+  paidPlanActive;
 
   static PackErrorCode fromJson(int index) {
     switch (index) {
@@ -37,6 +38,8 @@ enum PackErrorCode implements _is.SerializableModel {
         return PackErrorCode.limitReached;
       case 6:
         return PackErrorCode.featureOff;
+      case 7:
+        return PackErrorCode.paidPlanActive;
       default:
         throw ArgumentError(
           'Value "$index" cannot be converted to "PackErrorCode"',

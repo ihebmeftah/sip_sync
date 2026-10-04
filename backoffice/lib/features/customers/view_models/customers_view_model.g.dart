@@ -37,7 +37,7 @@ final class CustomersViewModelProvider
 }
 
 String _$customersViewModelHash() =>
-    r'abb03858975aa9f3359d9f41d81daa663671d79e';
+    r'a67facb4f038ca244d076e7681a9e01abcf892bf';
 
 /// Platform owner and customer lists for the backoffice console.
 

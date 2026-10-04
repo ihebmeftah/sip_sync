@@ -17,11 +17,11 @@ The seeded default admin cannot be deleted or disabled. A signed-in admin cannot
 
 1. Sign in → `/stats` inside the console shell. The sidebar is Stats, Users, Customers, Buildings, Packs.
 2. **Stats** shows platform counts and, for each public pack, how many venues and owners are on it. **Packs** is the plan catalog.
-3. **Customers** has two tabs, Owners and Customers. Each card shows name, email, phone, and created time. Details opens the same fields.
-4. **Users** lists backoffice accounts (name, email, phone, enabled). Create opens a dialog. Edit updates name, email, phone, optional new password, and the enabled switch.
+3. **Customers** has two tabs, Owners and Customers. Each card shows name, email, phone, and created time. Details opens the same fields. Each tab loads 20 people at a time, newest first, with previous and next.
+4. **Users** lists backoffice accounts (name, email, phone, enabled), 20 per page, oldest first. Create opens a dialog. Edit updates name, email, phone, optional new password, and the enabled switch.
 5. Disabled login returns `accountDisabled`.
-6. **Buildings** lists every venue. The type sits on the same row as the name. The card opens `/buildings/:id`.
-7. The detail screen has four tabs. **Details** is contact and location. **Pack** shows the current plan, assigns an enabled pack, or creates a private pack and assigns it. **Gain** is the monthly price plus the customer-app fee on customer orders. **Stats** is category, article, table, and order counts.
+6. **Buildings** lists every venue, 20 per page by name. The type sits on the same row as the name. The card opens `/buildings/:id`.
+7. The detail screen has four tabs. **Details** is contact and location. **Pack** shows the current plan, its history, and, for a paid plan, whether it is monthly or yearly and the date it returns to free. Assign and private-pack create stay available only while the venue is on the free pack. **Gain** is the monthly price plus the customer-app fee on customer orders. **Stats** is category, article, table, and order counts.
 
 ## Data
 
@@ -30,7 +30,8 @@ The seeded default admin cannot be deleted or disabled. A signed-in admin cannot
 - `SuperAdminView` includes `isEnabled`
 - `AdminBuildingView` — venue contact and location plus owner display fields (no employee ids, no order config)
 - `PlatformPersonView` — owner or customer name, email, phone, and `createdAt` (no password hash)
-- Endpoints: `SuperAdminAuth.update`, `SuperAdminAuth.setEnabled`, `Building.listAll`, `PlatformDirectory.listOwners`, `PlatformDirectory.listCustomers`, `Pack.list` / `create` / `update` / `delete`, `PlatformStats.summary`
+- List methods take optional `limit` and `offset` (default 20, max 100) and return a page (`items`, `total`, `limit`, `offset`): `SuperAdminPage`, `PlatformPersonPage`, `AdminBuildingPage`.
+- Endpoints: `SuperAdminAuth.list` / `update` / `setEnabled`, `Building.listAll`, `PlatformDirectory.listOwners`, `PlatformDirectory.listCustomers`, `Pack.list` / `create` / `update` / `delete`, `PlatformStats.summary`
 
 ## Realtime
 

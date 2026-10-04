@@ -4,31 +4,56 @@ import 'package:sip_sync_client/sip_sync_client.dart';
 import '../../../core/di/app_providers.dart';
 import '../../../core/di/building_session.dart';
 import '../../../core/di/service_locator.dart';
+import '../../../core/paging/list_paging.dart';
 import '../../auth/view_models/auth_view_model.dart';
 
 part 'buildings_view_model.g.dart';
 
 @Riverpod(keepAlive: true)
 class BuildingsViewModel extends _$BuildingsViewModel {
+  var _offset = 0;
+
   @override
-  Future<List<BuildingView>> build() async {
+  Future<BuildingPage> build() async {
+    _offset = 0;
     final actorId = ref.watch(signedInActorIdProvider);
     if (actorId == null) {
       getIt<BuildingSession>().replace(const []);
-      return const [];
+      return BuildingPage(
+        items: const [],
+        total: 0,
+        limit: listPageSize,
+        offset: 0,
+      );
     }
-    final list = await ref.read(buildingRepositoryProvider).listMine();
-    getIt<BuildingSession>().replace(list);
-    return list;
+    return _load();
   }
 
   Future<void> refresh() async {
     state = const AsyncLoading();
-    state = await AsyncValue.guard(() async {
-      final list = await ref.read(buildingRepositoryProvider).listMine();
-      getIt<BuildingSession>().replace(list);
-      return list;
-    });
+    state = await AsyncValue.guard(_load);
+  }
+
+  Future<void> previousPage() => _show(_offset - listPageSize);
+
+  Future<void> nextPage() => _show(_offset + listPageSize);
+
+  Future<void> _show(int offset) async {
+    _offset = offset < 0 ? 0 : offset;
+    state = const AsyncLoading();
+    state = await AsyncValue.guard(_load);
+  }
+
+  Future<BuildingPage> _load() async {
+    final page = await ref
+        .read(buildingRepositoryProvider)
+        .listMine(limit: listPageSize, offset: _offset);
+    if (page.items.isEmpty && page.offset > 0 && page.total > 0) {
+      _offset = ((page.total - 1) ~/ listPageSize) * listPageSize;
+      return _load();
+    }
+    getIt<BuildingSession>().showPage(page.items);
+    return page;
   }
 }
 

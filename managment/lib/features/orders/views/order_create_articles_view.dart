@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sip_sync_client/sip_sync_client.dart';
 
 import '../../../core/di/app_providers.dart';
+import '../../../core/errors/app_notice.dart';
 import '../../../core/errors/error_mapper.dart';
 import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_tokens.dart';
@@ -73,7 +74,7 @@ class _OrderCreateArticlesViewState
     } catch (error) {
       if (!mounted) return;
       setState(() {
-        _errorKey = mapError(error).l10nKey;
+        _errorKey = captureError(context, error);
         _confirming = false;
       });
     }
@@ -108,7 +109,7 @@ class _OrderCreateArticlesViewState
     final currency = ref.watch(buildingSelectionProvider)?.currencyCode ?? '';
     final draft = ref.watch(orderDraftViewModelProvider(widget.buildingId));
     final categoriesAsync = ref.watch(
-      categoriesViewModelProvider(widget.buildingId),
+      categoryCatalogProvider(widget.buildingId),
     );
     final articlesAsync = ref.watch(
       articlesViewModelProvider(widget.buildingId),

@@ -8,6 +8,7 @@ import '../../../core/errors/error_mapper.dart';
 import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
+import '../../../core/widgets/list_page_bar.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../view_models/buildings_view_model.dart';
 
@@ -57,7 +58,8 @@ class BuildingsListView extends ConsumerWidget {
                 error: (error, _) => AppErrorBanner(
                   message: lookupError(l10n, mapError(error).l10nKey),
                 ),
-                data: (buildings) {
+                data: (page) {
+                  final buildings = page.items;
                   if (buildings.isEmpty) {
                     return AppSurfaceCard(
                       child: Text(
@@ -113,6 +115,17 @@ class BuildingsListView extends ConsumerWidget {
                             ),
                           ),
                         ),
+                      ListPageBar(
+                        total: page.total,
+                        limit: page.limit,
+                        offset: page.offset,
+                        onPrevious: () => ref
+                            .read(buildingsViewModelProvider.notifier)
+                            .previousPage(),
+                        onNext: () => ref
+                            .read(buildingsViewModelProvider.notifier)
+                            .nextPage(),
+                      ),
                     ],
                   );
                 },

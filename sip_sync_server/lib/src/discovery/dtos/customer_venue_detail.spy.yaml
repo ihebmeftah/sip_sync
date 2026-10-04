@@ -11,3 +11,5 @@ fields:
   categories: List<CustomerCategoryPreview>
   ### Up to five articles, busiest first. Creation order when nothing was ordered.
   articles: List<CustomerArticlePreview>
+  ### False when the venue pack does not include customer-app orders.
+  customerOrdering: bool

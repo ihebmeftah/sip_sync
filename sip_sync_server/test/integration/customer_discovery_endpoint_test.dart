@@ -59,7 +59,10 @@ void main() {
         ),
       );
 
-      final cards = await endpoints.customerVenue.list(customerSession);
+      final cards = (await endpoints.customerVenue.list(
+        customerSession,
+        nearbyOnly: false,
+      )).items;
       expect(cards, isNotEmpty);
       final olive = cards.singleWhere((card) => card.name == 'Olive Café');
       expect(olive.type, 'cafe');
@@ -70,6 +73,68 @@ void main() {
       expect(olive.closingMinutes, 1380);
       expect(olive.phoneNumber, '+21671110001');
       expect(olive.id.uuid, isNotEmpty);
+    });
+
+    test('a place still returns venues ordered from that point', () async {
+      final ownerAuth = await endpoints.ownerAuth.register(
+        sessionBuilder,
+        EmailRegisterCreate(
+          email: 'discover-owner-near@example.com',
+          password: 'password1',
+          phoneNumber: '+21621100011',
+          firstName: 'Near',
+          lastName: 'Owner',
+        ),
+      );
+      final ownerSession = sessionBuilder.copyWith(
+        authentication: AuthenticationOverride.authenticationInfo(
+          ownerAuth.owner!.id.uuid,
+          {Scope('sip.owner')},
+          authId: 'test-session-discover-owner-near',
+        ),
+      );
+      await endpoints.building.create(
+        ownerSession,
+        BuildingCreate(
+          name: 'Near Café',
+          type: 'cafe',
+          address: '1 Avenue Habib',
+          latitude: 36.8,
+          longitude: 10.18,
+          openingMinutes: 480,
+          closingMinutes: 1380,
+          phoneNumber: '+21671110011',
+          otherLinks: const [],
+          currencyCode: 'TND',
+          strictModeSteps: [],
+        ),
+      );
+      final customer = await endpoints.customerAuth.register(
+        sessionBuilder,
+        EmailRegisterCreate(
+          email: 'discover-guest-near@example.com',
+          password: 'password1',
+          phoneNumber: '+21621100012',
+          firstName: 'Near',
+          lastName: 'Guest',
+        ),
+      );
+      final customerSession = sessionBuilder.copyWith(
+        authentication: AuthenticationOverride.authenticationInfo(
+          customer.customer!.id.uuid,
+          {Scope('sip.customer')},
+          authId: 'test-session-discover-customer-near',
+        ),
+      );
+
+      final page = await endpoints.customerVenue.list(
+        customerSession,
+        latitude: 36.8,
+        longitude: 10.18,
+        nearbyOnly: true,
+      );
+      expect(page.items.map((card) => card.name), contains('Near Café'));
+      expect(page.total, greaterThan(0));
     });
 
     test('owner token is rejected from the customer venue list', () async {
@@ -92,7 +157,7 @@ void main() {
       );
 
       await expectLater(
-        endpoints.customerVenue.list(ownerSession),
+        endpoints.customerVenue.list(ownerSession, nearbyOnly: false),
         throwsA(
           isA<AccountException>().having(
             (error) => error.code,

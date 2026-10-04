@@ -3,6 +3,7 @@ import 'package:serverpod/serverpod.dart';
 import '../auth/auth_guard.dart';
 import '../generated/protocol.dart';
 import '../packs/pack_catalog.dart';
+import '../packs/pack_expiry.dart';
 
 /// Read-only platform totals. Counts stay on the server so the console
 /// does not download every owner, order, or venue.
@@ -14,6 +15,7 @@ class PlatformStatsService {
   Future<PlatformStats> summary(Session session) async {
     AuthGuard.requireSuperAdmin(session);
     await PackCatalog.ensure(session);
+    await PackExpiry.revertDue(session);
 
     final ownerCount = await Owner.db.count(session);
     final customerCount = await Customer.db.count(session);

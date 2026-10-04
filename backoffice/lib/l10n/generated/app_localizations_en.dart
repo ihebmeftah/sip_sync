@@ -481,6 +481,72 @@ class AppLocalizationsEn extends AppLocalizations {
   String get errorPackFeature => 'This plan does not include that.';
 
   @override
+  String get errorPackLimitEmployees =>
+      'This plan has reached its employee limit.';
+
+  @override
+  String get errorPackLimitTables => 'This plan has reached its table limit.';
+
+  @override
+  String get errorPackLimitCategories =>
+      'This plan has reached its category limit.';
+
+  @override
+  String get errorPackLimitArticles =>
+      'This plan has reached its article limit.';
+
+  @override
+  String get errorPackLimitIngredients =>
+      'This plan has reached its ingredient limit.';
+
+  @override
+  String get errorPackFeatureOrdering =>
+      'This plan does not include customer ordering.';
+
+  @override
+  String get errorPackFeatureInventory =>
+      'This plan does not include inventory.';
+
+  @override
+  String get errorPackFeatureAppend =>
+      'This plan does not include adding items to an open order.';
+
+  @override
+  String get errorPackFeatureMultiOrder =>
+      'This plan does not include more than one order on a table.';
+
+  @override
+  String get errorPackFeatureStrict =>
+      'This plan does not include strict order steps.';
+
+  @override
+  String get errorPackFeatureAccess =>
+      'This plan does not include custom access profiles.';
+
+  @override
+  String get errorPackFeatureQr => 'This plan does not include table QR codes.';
+
+  @override
+  String get errorPackPaidActive =>
+      'This venue already has a paid plan. Assign another plan after it ends.';
+
+  @override
+  String get packHistoryTitle => 'Plan history';
+
+  @override
+  String get packHistoryCurrent => 'Current';
+
+  @override
+  String get packEndReplaced => 'Replaced';
+
+  @override
+  String get packEndExpired => 'Expired';
+
+  @override
+  String get packPaidLocked =>
+      'This venue is on a paid plan. Another plan can be assigned after the term ends.';
+
+  @override
   String get buildingDetailTitle => 'Building';
 
   @override
@@ -501,6 +567,33 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get assignPack => 'Assign pack';
+
+  @override
+  String get packBillingMonthly => 'Monthly';
+
+  @override
+  String get packBillingYearly => 'Yearly';
+
+  @override
+  String packExpiresOn(String date) {
+    return 'Returns to Free on $date';
+  }
+
+  @override
+  String get packExpiresNever => 'Free pack. No end date.';
+
+  @override
+  String get packTermHint =>
+      'A monthly term ends in one month. A yearly term ends in one year. You can move the date.';
+
+  @override
+  String get packChangeDate => 'Change date';
+
+  @override
+  String get packAssignConfirm => 'Assign';
+
+  @override
+  String get validationPackExpiry => 'Choose a date after today.';
 
   @override
   String get quickCreatePack => 'Create private pack';
@@ -604,4 +697,18 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get validationPackLimit =>
       'Enter a number, or leave empty for no limit.';
+
+  @override
+  String get previousPage => 'Previous';
+
+  @override
+  String get nextPage => 'Next';
+
+  @override
+  String pageOf(int current, int total) {
+    return '$current / $total';
+  }
+
+  @override
+  String get loadingMore => 'Loading more…';
 }

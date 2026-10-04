@@ -186,5 +186,29 @@
   "venueTypeLounge": "Lounge",
   "venueTypeBar": "Bar",
   "errorPackLimit": "This plan has reached its limit.",
-  "errorPackFeature": "This plan does not include that."
+  "errorPackFeature": "This plan does not include that.",
+  "errorPackLimitEmployees": "This plan has reached its employee limit.",
+  "errorPackLimitTables": "This plan has reached its table limit.",
+  "errorPackLimitCategories": "This plan has reached its category limit.",
+  "errorPackLimitArticles": "This plan has reached its article limit.",
+  "errorPackLimitIngredients": "This plan has reached its ingredient limit.",
+  "errorPackFeatureOrdering": "This plan does not include customer ordering.",
+  "errorPackFeatureInventory": "This plan does not include inventory.",
+  "errorPackFeatureAppend": "This plan does not include adding items to an open order.",
+  "errorPackFeatureMultiOrder": "This plan does not include more than one order on a table.",
+  "errorPackFeatureStrict": "This plan does not include strict order steps.",
+  "errorPackFeatureAccess": "This plan does not include custom access profiles.",
+  "errorPackFeatureQr": "This plan does not include table QR codes.",
+  "errorPackPaidActive": "This venue already has a paid plan.",
+  "orderingUnavailable": "This venue's plan does not include ordering from the app. You can still browse the menu.",
+  "previousPage": "Previous",
+  "nextPage": "Next",
+  "pageOf": "{current} / {total}",
+  "@pageOf": {
+    "placeholders": {
+      "current": {"type": "int"},
+      "total": {"type": "int"}
+    }
+  },
+  "loadingMore": "Loading more…"
 }

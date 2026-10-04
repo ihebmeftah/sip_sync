@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sip_sync_client/sip_sync_client.dart';
 
-import '../../../core/errors/error_mapper.dart';
+import '../../../core/errors/app_notice.dart';
 import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_icons.dart';
 import '../../../core/theme/app_tokens.dart';
@@ -75,9 +75,7 @@ class OrderReviewView extends ConsumerWidget {
         if (!context.mounted) {
           return;
         }
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(lookupError(l10n, mapError(error).l10nKey))),
-        );
+        showMappedError(context, error);
       }
     }
 

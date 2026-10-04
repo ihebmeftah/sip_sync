@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:serverpod_cloud_storage/serverpod_cloud_storage.dart';
@@ -7,8 +8,12 @@ import 'src/auth/super_admin_auth_endpoint.dart';
 import 'src/cache_busting.dart';
 import 'src/generated/serverpod.dart';
 import 'src/packs/pack_catalog.dart';
+import 'src/packs/pack_expiry.dart';
 import 'src/seed/dev_seed.dart';
 import 'src/web/routes/app_config_route.dart';
+
+/// One sweep timer for the process. Replaced if the isolate starts again.
+Timer? _packExpiryTimer;
 
 /// The starting point of the Serverpod server.
 void run(List<String> args) async {
@@ -73,6 +78,26 @@ void run(List<String> args) async {
   await pod.withSession((session) async {
     await SuperAdminAuthEndpoint().ensureDefaultAdmin(session);
     await PackCatalog.ensure(session);
+    await PackExpiry.revertDue(session);
     await DevSeed.ensureDemoData(session);
   });
+  _watchPackExpiry(pod);
+}
+
+/// Checks paid terms every 15 minutes and returns due venues to the free pack.
+///
+/// Also runs once during startup, before the demo seed.
+void _watchPackExpiry(Serverpod pod) {
+  _packExpiryTimer?.cancel();
+  _packExpiryTimer = Timer.periodic(const Duration(minutes: 15), (_) {
+    unawaited(_sweepPacks(pod));
+  });
+}
+
+Future<void> _sweepPacks(Serverpod pod) async {
+  try {
+    await pod.withSession((session) => PackExpiry.revertDue(session));
+  } catch (error, stackTrace) {
+    stderr.writeln('PackExpiry sweep failed: $error\n$stackTrace');
+  }
 }

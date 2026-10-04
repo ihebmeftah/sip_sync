@@ -16,12 +16,15 @@ Status: in progress
 ## Flow
 
 1. On an empty `pack` table, server boot inserts five plans. Later boots leave the catalog alone, so an edit or a delete survives a restart.
-2. **Packs** lists every plan: name, code, monthly price, public or private, and enabled.
+2. **Packs** lists every plan, 20 per page: name, code, monthly price, public or private, and enabled.
 3. Create and update edit the price, the customer-app fee, the public flag, enabled, sort order, and every capability value. Each limit and each switch has a short explanation in the form.
 4. **Public** packs are the ones apps may list so an owner can upgrade later. **Private** packs stay off that list.
 5. Creating a venue sets `building.packId` to the free pack. The owner does not choose.
 6. `free` is a system pack (0 TND, private). It cannot be deleted. Any other pack can be deleted only when no venue is still on it.
 7. A disabled pack is hidden from `listPublic`. Venues already on it stay there.
+8. Assigning any pack other than `free` requires a term: **monthly** or **yearly**. The console previews the end date (one month or one year from now) and the admin can move it. The free pack has no end date. A venue that is already on a paid plan cannot be moved to another pack. Cancellation will be a later action. The term ending still returns the venue to free.
+9. When `building.packExpiresAt` is reached, the venue returns to the free pack and the term is cleared. The previous assignment stays in history with reason `expired`. The server checks on boot, every 15 minutes, and the next time that venue is read.
+10. The pack tab lists every assignment, newest first, so a change of plan stays visible.
 
 Prices are millimes (89 TND = 89,000). The catalog currency is TND, separate from a venue’s `currencyCode`. The customer-app fee is basis points on orders placed in the customer app (`150` = 1.5%). Staff-entered tickets are not charged.
 
@@ -42,12 +45,15 @@ Capability keys match features that exist today. An empty limit means no cap. Ca
 ## Data
 
 - `pack` — code (unique), prices in millimes, fee in basis points, `isPublic`, `isEnabled`, `isSystem`, sort order, limit columns (null = unlimited), capability booleans.
-- `building.packId` — the venue’s plan. Restrict delete while a venue still points at the pack.
+- `building.packId` — the venue’s current plan. Restrict delete while a venue still points at the pack.
+- `building_pack_assignment` — one row per plan the venue has been on. The open row (`endedAt` null) matches `building.packId`. Closed rows keep `replaced` or `expired`.
+- `building.packBillingPeriod` — `monthly` or `yearly` while a paid pack is assigned. Null on the free pack.
+- `building.packExpiresAt` — when that term ends. Null on the free pack.
 - `PackCreate` / `PackUpdate` / `PackView` — admin shape. No owner grant list.
 - `PackPublicView` — id, code, name, prices, fee, sort, capabilities.
-- `PackException` / `PackErrorCode` — `invalidInput`, `notFound`, `codeTaken`, `cannotDeleteSystemPack`, `packInUse`, `limitReached`, `featureOff`. A caller who is signed in as the wrong role gets `AccountException` / `notAuthorized`.
+- `PackException` / `PackErrorCode` — `invalidInput`, `notFound`, `codeTaken`, `cannotDeleteSystemPack`, `packInUse`, `limitReached`, `featureOff`, `paidPlanActive`. `limitReached` and `featureOff` also name the `PackFeature`. A caller who is signed in as the wrong role gets `AccountException` / `notAuthorized`.
 - Endpoint: `Pack.list`, `Pack.listPublic`, `Pack.create`, `Pack.update`, `Pack.delete`.
-- `Building.adminDetail` and `Building.assignPack` — super admin. Detail includes the pack, category / article / table / order counts, and platform gain (monthly price plus the customer-app fee on non-cancelled customer orders).
+- `Building.adminDetail` and `Building.assignPack` — super admin. Detail includes the pack, the billing period, `packExpiresAt`, the assignment history, category / article / table / order counts, and platform gain (monthly price plus the customer-app fee on non-cancelled customer orders). `assignPack` takes an optional period and end date. The free pack ignores them. A paid pack rejects a missing or past date. A venue already on a paid plan rejects any new assignment (`paidPlanActive`). Expiry still returns the venue to free and keeps both rows.
 - `BuildingView.pack` — the plan the owner app shows in the top banner.
 
 ## Enforcement
@@ -58,8 +64,12 @@ Before a write is stored, the server loads the venue pack:
 - Flags: customer ordering, appending items, inventory (ingredients, restock, recipes), custom access profiles, and turning on multi-order, strict mode, or append on the venue.
 - Customer discovery hides a venue from the customer map and venue page. Table QR hides sticker resolution. The owner app blocks QR export before the call when the pack leaves it off.
 
-The owner banner names the current pack and says a change goes through the support team. There is no self-serve upgrade. The management and customer apps map `limitReached` and `featureOff` to a message.
+The owner banner names the current pack and says a change goes through the support team. There is no self-serve upgrade. The management app blocks a create that would pass a cap or turn on a switch the pack leaves off, and shows that reason in a banner and a snackbar. The customer app shows the same snackbar when ordering is off, and hides the cart action. Discovery and table QR still answer as not found when those switches are off.
+
+## Demo data
+
+A fresh development database seeds 50 owners in Tunisia and 50 in Germany (Marburg, Kirchhain, Kassel, Frankfurt, and nearby cities). Each owner has one venue, a menu, ingredients, and a rotating pack (`free`, `counter`, `floor`, `house`, `group`). Paid packs are monthly or yearly with a future `packExpiresAt`. Sign in with `owner.tn.01@sipsync.dev` through `owner.de.50@sipsync.dev`, password `password1`.
 
 ## Realtime
 
-None.
+None. The expiry sweep is a server timer, not a client stream.

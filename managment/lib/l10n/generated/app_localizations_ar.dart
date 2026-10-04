@@ -1415,4 +1415,61 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get errorPackFeature => 'هذه الباقة لا تشمل ذلك.';
+
+  @override
+  String get errorPackLimitEmployees => 'بلغت هذه الباقة حد الموظفين.';
+
+  @override
+  String get errorPackLimitTables => 'بلغت هذه الباقة حد الطاولات.';
+
+  @override
+  String get errorPackLimitCategories => 'بلغت هذه الباقة حد الفئات.';
+
+  @override
+  String get errorPackLimitArticles => 'بلغت هذه الباقة حد الأصناف.';
+
+  @override
+  String get errorPackLimitIngredients => 'بلغت هذه الباقة حد المكونات.';
+
+  @override
+  String get errorPackFeatureOrdering => 'هذه الباقة لا تشمل طلبات الزبائن.';
+
+  @override
+  String get errorPackFeatureInventory => 'هذه الباقة لا تشمل المخزون.';
+
+  @override
+  String get errorPackFeatureAppend =>
+      'هذه الباقة لا تشمل إضافة أصناف إلى طلب مفتوح.';
+
+  @override
+  String get errorPackFeatureMultiOrder =>
+      'هذه الباقة لا تشمل أكثر من طلب على الطاولة.';
+
+  @override
+  String get errorPackFeatureStrict =>
+      'هذه الباقة لا تشمل خطوات الطلب الصارمة.';
+
+  @override
+  String get errorPackFeatureAccess =>
+      'هذه الباقة لا تشمل ملفات صلاحيات مخصصة.';
+
+  @override
+  String get errorPackFeatureQr => 'هذه الباقة لا تشمل رموز QR للطاولات.';
+
+  @override
+  String get errorPackPaidActive => 'هذا المكان على باقة مدفوعة.';
+
+  @override
+  String get previousPage => 'السابق';
+
+  @override
+  String get nextPage => 'التالي';
+
+  @override
+  String pageOf(int current, int total) {
+    return '$current / $total';
+  }
+
+  @override
+  String get loadingMore => 'جارٍ تحميل المزيد…';
 }

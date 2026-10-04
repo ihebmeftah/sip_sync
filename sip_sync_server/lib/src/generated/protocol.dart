@@ -17,38 +17,14 @@ import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
     as _iacs;
 import 'package:serverpod_auth_idp_server/serverpod_auth_idp_server.dart'
     as _iais;
-import 'package:sip_sync_server/src/generated/auth/dtos/employee_view.dart'
-    as _im8o31wm;
-import 'package:sip_sync_server/src/generated/auth/dtos/platform_person_view.dart'
-    as _ibjv9650;
-import 'package:sip_sync_server/src/generated/auth/dtos/super_admin_view.dart'
-    as _iubtczqk;
-import 'package:sip_sync_server/src/generated/buildings/dtos/admin_building_view.dart'
-    as _idzabrxr;
-import 'package:sip_sync_server/src/generated/buildings/dtos/building_view.dart'
-    as _ihha274w;
-import 'package:sip_sync_server/src/generated/discovery/dtos/customer_venue_card.dart'
-    as _ik4e6xte;
 import 'package:sip_sync_server/src/generated/discovery/dtos/place_hit.dart'
     as _ibuzraci;
-import 'package:sip_sync_server/src/generated/employee_access/dtos/employee_access_view.dart'
-    as _iwktg9rv;
 import 'package:sip_sync_server/src/generated/menu/dtos/article_composition_view.dart'
     as _ismrnuo7;
-import 'package:sip_sync_server/src/generated/menu/dtos/ingredient_view.dart'
-    as _i9jh3lrs;
 import 'package:sip_sync_server/src/generated/menu/dtos/menu_article_view.dart'
     as _iftzx4at;
-import 'package:sip_sync_server/src/generated/menu/dtos/menu_category_view.dart'
-    as _i87rh1jz;
-import 'package:sip_sync_server/src/generated/orders/dtos/customer_order_summary.dart'
-    as _ivmn58qf;
-import 'package:sip_sync_server/src/generated/orders/dtos/order_view.dart'
-    as _i6r0fe4s;
 import 'package:sip_sync_server/src/generated/packs/dtos/pack_public_view.dart'
     as _itvm5eqz;
-import 'package:sip_sync_server/src/generated/packs/dtos/pack_view.dart'
-    as _i1rdqyf4;
 import 'package:sip_sync_server/src/generated/tables/dtos/venue_table_view.dart'
     as _i8j8iq89;
 import 'auth/dtos/account_error_code.dart' as _ipvvun4w;
@@ -60,6 +36,7 @@ import 'auth/dtos/customer_session_view.dart' as _ith71up9;
 import 'auth/dtos/email_login_request.dart' as _ibcfczkm;
 import 'auth/dtos/email_register_create.dart' as _iokpa1pa;
 import 'auth/dtos/employee_create.dart' as _iubn3z7h;
+import 'auth/dtos/employee_page.dart' as _iish3ytj;
 import 'auth/dtos/employee_session_view.dart' as _i5opmp1h;
 import 'auth/dtos/employee_update.dart' as _i08axu9z;
 import 'auth/dtos/employee_view.dart' as _inacnd8t;
@@ -67,9 +44,11 @@ import 'auth/dtos/owner_session_view.dart' as _isqlfqk2;
 import 'auth/dtos/password_reset_confirm.dart' as _i9u54egm;
 import 'auth/dtos/password_reset_request.dart' as _in4l34z2;
 import 'auth/dtos/password_reset_request_result.dart' as _ixrmg4rs;
+import 'auth/dtos/platform_person_page.dart' as _i299iuwl;
 import 'auth/dtos/platform_person_view.dart' as _im0nv2xr;
 import 'auth/dtos/profile_update.dart' as _iul4y12k;
 import 'auth/dtos/super_admin_create.dart' as _ieisqlnm;
+import 'auth/dtos/super_admin_page.dart' as _iwurmzek;
 import 'auth/dtos/super_admin_session_view.dart' as _i4itilxd;
 import 'auth/dtos/super_admin_update.dart' as _iccfx1hz;
 import 'auth/dtos/super_admin_view.dart' as _ima36n4q;
@@ -81,10 +60,12 @@ import 'auth/entity/owner.dart' as _i00rpu3b;
 import 'auth/entity/password_reset.dart' as _i5m9ixa9;
 import 'auth/entity/super_admin.dart' as _ii4fooib;
 import 'buildings/dtos/admin_building_detail.dart' as _imz5zx1p;
+import 'buildings/dtos/admin_building_page.dart' as _i2fmmvbz;
 import 'buildings/dtos/admin_building_view.dart' as _ig4j3dzf;
 import 'buildings/dtos/building_create.dart' as _i8mj84pm;
 import 'buildings/dtos/building_error_code.dart' as _ip56joo9;
 import 'buildings/dtos/building_exception.dart' as _ihbyyehn;
+import 'buildings/dtos/building_page.dart' as _istreh1i;
 import 'buildings/dtos/building_update.dart' as _irbupqdx;
 import 'buildings/dtos/building_view.dart' as _i9ph7g7s;
 import 'buildings/dtos/strict_mode_step.dart' as _i70klpnb;
@@ -97,12 +78,14 @@ import 'discovery/dtos/customer_seated_table.dart' as _i6iqxieg;
 import 'discovery/dtos/customer_table_preview.dart' as _iga4xgem;
 import 'discovery/dtos/customer_venue_card.dart' as _irx49b3p;
 import 'discovery/dtos/customer_venue_detail.dart' as _i7jvptbt;
+import 'discovery/dtos/customer_venue_page.dart' as _ifmn6pnl;
 import 'discovery/dtos/place_error_code.dart' as _id14pl4h;
 import 'discovery/dtos/place_exception.dart' as _i3rwc79w;
 import 'discovery/dtos/place_hit.dart' as _irmybich;
 import 'employee_access/dtos/employee_access_create.dart' as _izbvctbv;
 import 'employee_access/dtos/employee_access_error_code.dart' as _ixnbpcjj;
 import 'employee_access/dtos/employee_access_exception.dart' as _ilz0jt85;
+import 'employee_access/dtos/employee_access_page.dart' as _ibeoku4h;
 import 'employee_access/dtos/employee_access_update.dart' as _ifygdwz2;
 import 'employee_access/dtos/employee_access_view.dart' as _i8t0l2jw;
 import 'employee_access/entity/employee_access.dart' as _in0lpay2;
@@ -114,6 +97,7 @@ import 'menu/dtos/article_composition_view.dart' as _ibgf2aer;
 import 'menu/dtos/ingredient_create.dart' as _ii1yylu5;
 import 'menu/dtos/ingredient_error_code.dart' as _i7okswdu;
 import 'menu/dtos/ingredient_exception.dart' as _i6yqbuhf;
+import 'menu/dtos/ingredient_page.dart' as _ibw9d571;
 import 'menu/dtos/ingredient_restock.dart' as _i1tfcnyz;
 import 'menu/dtos/ingredient_view.dart' as _i8smn6k1;
 import 'menu/dtos/menu_article_create.dart' as _ilqdzk9u;
@@ -124,6 +108,7 @@ import 'menu/dtos/menu_article_view.dart' as _in0m6e44;
 import 'menu/dtos/menu_category_create.dart' as _i3y2wlpl;
 import 'menu/dtos/menu_category_error_code.dart' as _if8o71j1;
 import 'menu/dtos/menu_category_exception.dart' as _idwl0wi8;
+import 'menu/dtos/menu_category_page.dart' as _imphhgkl;
 import 'menu/dtos/menu_category_update.dart' as _iu0xgttg;
 import 'menu/dtos/menu_category_view.dart' as _igs74mgr;
 import 'menu/dtos/units_type.dart' as _ipcoxh71;
@@ -134,6 +119,7 @@ import 'menu/entity/menu_category.dart' as _iiovp1sp;
 import 'orders/dtos/customer_order_append.dart' as _iq3ckjf2;
 import 'orders/dtos/customer_order_item.dart' as _i8sd1sxe;
 import 'orders/dtos/customer_order_line.dart' as _ibdj4rsl;
+import 'orders/dtos/customer_order_page.dart' as _i19z85bh;
 import 'orders/dtos/customer_order_place.dart' as _ilng8y1i;
 import 'orders/dtos/customer_order_summary.dart' as _ipj20c5x;
 import 'orders/dtos/customer_order_view.dart' as _iw1gx7eb;
@@ -146,18 +132,25 @@ import 'orders/dtos/order_item_create_line.dart' as _ihzk2s8h;
 import 'orders/dtos/order_item_status.dart' as _ihsl512g;
 import 'orders/dtos/order_item_status_update.dart' as _i8vmkag3;
 import 'orders/dtos/order_item_view.dart' as _in19xqkp;
+import 'orders/dtos/order_page.dart' as _iyracxy5;
 import 'orders/dtos/order_status.dart' as _iaqxrbm9;
 import 'orders/dtos/order_view.dart' as _i5x25q0s;
 import 'orders/entity/venue_order.dart' as _ihouontj;
 import 'orders/entity/venue_order_item.dart' as _ixvoqikw;
+import 'packs/dtos/building_pack_assignment_view.dart' as _imgn43b3;
+import 'packs/dtos/building_pack_end_reason.dart' as _i48cxm1k;
 import 'packs/dtos/building_pack_view.dart' as _inombaek;
+import 'packs/dtos/pack_billing_period.dart' as _ilfxay8b;
 import 'packs/dtos/pack_capabilities.dart' as _it41yevh;
 import 'packs/dtos/pack_create.dart' as _i8zaxiah;
 import 'packs/dtos/pack_error_code.dart' as _iop7u0ua;
 import 'packs/dtos/pack_exception.dart' as _i2wkabnn;
+import 'packs/dtos/pack_feature.dart' as _iujtn9zd;
+import 'packs/dtos/pack_page.dart' as _i5b0y4d5;
 import 'packs/dtos/pack_public_view.dart' as _iprelrqf;
 import 'packs/dtos/pack_update.dart' as _icf9vjmf;
 import 'packs/dtos/pack_view.dart' as _ix8hsdo0;
+import 'packs/entity/building_pack_assignment.dart' as _iv7bzyjr;
 import 'packs/entity/pack.dart' as _ixvcqhi5;
 import 'stats/dtos/platform_stats.dart' as _igzxiay6;
 import 'stats/dtos/public_pack_usage.dart' as _icz9v6v9;
@@ -178,6 +171,7 @@ export 'auth/dtos/customer_session_view.dart';
 export 'auth/dtos/email_login_request.dart';
 export 'auth/dtos/email_register_create.dart';
 export 'auth/dtos/employee_create.dart';
+export 'auth/dtos/employee_page.dart';
 export 'auth/dtos/employee_session_view.dart';
 export 'auth/dtos/employee_update.dart';
 export 'auth/dtos/employee_view.dart';
@@ -185,9 +179,11 @@ export 'auth/dtos/owner_session_view.dart';
 export 'auth/dtos/password_reset_confirm.dart';
 export 'auth/dtos/password_reset_request.dart';
 export 'auth/dtos/password_reset_request_result.dart';
+export 'auth/dtos/platform_person_page.dart';
 export 'auth/dtos/platform_person_view.dart';
 export 'auth/dtos/profile_update.dart';
 export 'auth/dtos/super_admin_create.dart';
+export 'auth/dtos/super_admin_page.dart';
 export 'auth/dtos/super_admin_session_view.dart';
 export 'auth/dtos/super_admin_update.dart';
 export 'auth/dtos/super_admin_view.dart';
@@ -199,10 +195,12 @@ export 'auth/entity/owner.dart';
 export 'auth/entity/password_reset.dart';
 export 'auth/entity/super_admin.dart';
 export 'buildings/dtos/admin_building_detail.dart';
+export 'buildings/dtos/admin_building_page.dart';
 export 'buildings/dtos/admin_building_view.dart';
 export 'buildings/dtos/building_create.dart';
 export 'buildings/dtos/building_error_code.dart';
 export 'buildings/dtos/building_exception.dart';
+export 'buildings/dtos/building_page.dart';
 export 'buildings/dtos/building_update.dart';
 export 'buildings/dtos/building_view.dart';
 export 'buildings/dtos/strict_mode_step.dart';
@@ -215,12 +213,14 @@ export 'discovery/dtos/customer_seated_table.dart';
 export 'discovery/dtos/customer_table_preview.dart';
 export 'discovery/dtos/customer_venue_card.dart';
 export 'discovery/dtos/customer_venue_detail.dart';
+export 'discovery/dtos/customer_venue_page.dart';
 export 'discovery/dtos/place_error_code.dart';
 export 'discovery/dtos/place_exception.dart';
 export 'discovery/dtos/place_hit.dart';
 export 'employee_access/dtos/employee_access_create.dart';
 export 'employee_access/dtos/employee_access_error_code.dart';
 export 'employee_access/dtos/employee_access_exception.dart';
+export 'employee_access/dtos/employee_access_page.dart';
 export 'employee_access/dtos/employee_access_update.dart';
 export 'employee_access/dtos/employee_access_view.dart';
 export 'employee_access/entity/employee_access.dart';
@@ -232,6 +232,7 @@ export 'menu/dtos/article_composition_view.dart';
 export 'menu/dtos/ingredient_create.dart';
 export 'menu/dtos/ingredient_error_code.dart';
 export 'menu/dtos/ingredient_exception.dart';
+export 'menu/dtos/ingredient_page.dart';
 export 'menu/dtos/ingredient_restock.dart';
 export 'menu/dtos/ingredient_view.dart';
 export 'menu/dtos/menu_article_create.dart';
@@ -242,6 +243,7 @@ export 'menu/dtos/menu_article_view.dart';
 export 'menu/dtos/menu_category_create.dart';
 export 'menu/dtos/menu_category_error_code.dart';
 export 'menu/dtos/menu_category_exception.dart';
+export 'menu/dtos/menu_category_page.dart';
 export 'menu/dtos/menu_category_update.dart';
 export 'menu/dtos/menu_category_view.dart';
 export 'menu/dtos/units_type.dart';
@@ -252,6 +254,7 @@ export 'menu/entity/menu_category.dart';
 export 'orders/dtos/customer_order_append.dart';
 export 'orders/dtos/customer_order_item.dart';
 export 'orders/dtos/customer_order_line.dart';
+export 'orders/dtos/customer_order_page.dart';
 export 'orders/dtos/customer_order_place.dart';
 export 'orders/dtos/customer_order_summary.dart';
 export 'orders/dtos/customer_order_view.dart';
@@ -264,18 +267,25 @@ export 'orders/dtos/order_item_create_line.dart';
 export 'orders/dtos/order_item_status.dart';
 export 'orders/dtos/order_item_status_update.dart';
 export 'orders/dtos/order_item_view.dart';
+export 'orders/dtos/order_page.dart';
 export 'orders/dtos/order_status.dart';
 export 'orders/dtos/order_view.dart';
 export 'orders/entity/venue_order.dart';
 export 'orders/entity/venue_order_item.dart';
+export 'packs/dtos/building_pack_assignment_view.dart';
+export 'packs/dtos/building_pack_end_reason.dart';
 export 'packs/dtos/building_pack_view.dart';
+export 'packs/dtos/pack_billing_period.dart';
 export 'packs/dtos/pack_capabilities.dart';
 export 'packs/dtos/pack_create.dart';
 export 'packs/dtos/pack_error_code.dart';
 export 'packs/dtos/pack_exception.dart';
+export 'packs/dtos/pack_feature.dart';
+export 'packs/dtos/pack_page.dart';
 export 'packs/dtos/pack_public_view.dart';
 export 'packs/dtos/pack_update.dart';
 export 'packs/dtos/pack_view.dart';
+export 'packs/entity/building_pack_assignment.dart';
 export 'packs/entity/pack.dart';
 export 'stats/dtos/platform_stats.dart';
 export 'stats/dtos/public_pack_usage.dart';
@@ -640,6 +650,18 @@ class Protocol extends _is.DatabaseSerializationManager {
           isNullable: false,
           dartType: 'UuidValue',
         ),
+        _isp.ColumnDefinition(
+          name: 'packBillingPeriod',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'protocol:PackBillingPeriod?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'packExpiresAt',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: true,
+          dartType: 'DateTime?',
+        ),
       ],
       foreignKeys: [
         _isp.ForeignKeyDefinition(
@@ -671,6 +693,115 @@ class Protocol extends _is.DatabaseSerializationManager {
             _isp.IndexElementDefinition(
               type: _isp.IndexElementDefinitionType.column,
               definition: 'ownerId',
+            ),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+        _isp.IndexDefinition(
+          indexName: 'building_pack_expires_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'packExpiresAt',
+            ),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
+    _isp.TableDefinition(
+      name: 'building_pack_assignment',
+      dartName: 'BuildingPackAssignment',
+      schema: 'public',
+      module: 'sip_sync',
+      columns: [
+        _isp.ColumnDefinition(
+          name: 'id',
+          columnType: _isp.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue?',
+          columnDefault: 'random_v7',
+        ),
+        _isp.ColumnDefinition(
+          name: 'buildingId',
+          columnType: _isp.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue',
+        ),
+        _isp.ColumnDefinition(
+          name: 'packId',
+          columnType: _isp.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue',
+        ),
+        _isp.ColumnDefinition(
+          name: 'billingPeriod',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'protocol:PackBillingPeriod?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'startedAt',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+          columnDefault: 'now',
+        ),
+        _isp.ColumnDefinition(
+          name: 'expiresAt',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: true,
+          dartType: 'DateTime?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'endedAt',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: true,
+          dartType: 'DateTime?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'endReason',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'protocol:BuildingPackEndReason?',
+        ),
+      ],
+      foreignKeys: [
+        _isp.ForeignKeyDefinition(
+          constraintName: 'building_pack_assignment_fk_0',
+          columns: ['buildingId'],
+          referenceTable: 'building',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.cascade,
+          matchType: null,
+        ),
+        _isp.ForeignKeyDefinition(
+          constraintName: 'building_pack_assignment_fk_1',
+          columns: ['packId'],
+          referenceTable: 'pack',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.restrict,
+          matchType: null,
+        ),
+      ],
+      indexes: [
+        _isp.IndexDefinition(
+          indexName: 'building_pack_assignment_building_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'buildingId',
             ),
           ],
           type: 'btree',
@@ -2334,6 +2465,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == _iubn3z7h.EmployeeCreate) {
       return _iubn3z7h.EmployeeCreate.fromJson(data) as T;
     }
+    if (t == _iish3ytj.EmployeePage) {
+      return _iish3ytj.EmployeePage.fromJson(data) as T;
+    }
     if (t == _i5opmp1h.EmployeeSessionView) {
       return _i5opmp1h.EmployeeSessionView.fromJson(data) as T;
     }
@@ -2355,6 +2489,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == _ixrmg4rs.PasswordResetRequestResult) {
       return _ixrmg4rs.PasswordResetRequestResult.fromJson(data) as T;
     }
+    if (t == _i299iuwl.PlatformPersonPage) {
+      return _i299iuwl.PlatformPersonPage.fromJson(data) as T;
+    }
     if (t == _im0nv2xr.PlatformPersonView) {
       return _im0nv2xr.PlatformPersonView.fromJson(data) as T;
     }
@@ -2363,6 +2500,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     if (t == _ieisqlnm.SuperAdminCreate) {
       return _ieisqlnm.SuperAdminCreate.fromJson(data) as T;
+    }
+    if (t == _iwurmzek.SuperAdminPage) {
+      return _iwurmzek.SuperAdminPage.fromJson(data) as T;
     }
     if (t == _i4itilxd.SuperAdminSessionView) {
       return _i4itilxd.SuperAdminSessionView.fromJson(data) as T;
@@ -2397,6 +2537,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == _imz5zx1p.AdminBuildingDetail) {
       return _imz5zx1p.AdminBuildingDetail.fromJson(data) as T;
     }
+    if (t == _i2fmmvbz.AdminBuildingPage) {
+      return _i2fmmvbz.AdminBuildingPage.fromJson(data) as T;
+    }
     if (t == _ig4j3dzf.AdminBuildingView) {
       return _ig4j3dzf.AdminBuildingView.fromJson(data) as T;
     }
@@ -2408,6 +2551,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     if (t == _ihbyyehn.BuildingException) {
       return _ihbyyehn.BuildingException.fromJson(data) as T;
+    }
+    if (t == _istreh1i.BuildingPage) {
+      return _istreh1i.BuildingPage.fromJson(data) as T;
     }
     if (t == _irbupqdx.BuildingUpdate) {
       return _irbupqdx.BuildingUpdate.fromJson(data) as T;
@@ -2445,6 +2591,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == _i7jvptbt.CustomerVenueDetail) {
       return _i7jvptbt.CustomerVenueDetail.fromJson(data) as T;
     }
+    if (t == _ifmn6pnl.CustomerVenuePage) {
+      return _ifmn6pnl.CustomerVenuePage.fromJson(data) as T;
+    }
     if (t == _id14pl4h.PlaceErrorCode) {
       return _id14pl4h.PlaceErrorCode.fromJson(data) as T;
     }
@@ -2462,6 +2611,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     if (t == _ilz0jt85.EmployeeAccessException) {
       return _ilz0jt85.EmployeeAccessException.fromJson(data) as T;
+    }
+    if (t == _ibeoku4h.EmployeeAccessPage) {
+      return _ibeoku4h.EmployeeAccessPage.fromJson(data) as T;
     }
     if (t == _ifygdwz2.EmployeeAccessUpdate) {
       return _ifygdwz2.EmployeeAccessUpdate.fromJson(data) as T;
@@ -2496,6 +2648,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == _i6yqbuhf.IngredientException) {
       return _i6yqbuhf.IngredientException.fromJson(data) as T;
     }
+    if (t == _ibw9d571.IngredientPage) {
+      return _ibw9d571.IngredientPage.fromJson(data) as T;
+    }
     if (t == _i1tfcnyz.IngredientRestock) {
       return _i1tfcnyz.IngredientRestock.fromJson(data) as T;
     }
@@ -2526,6 +2681,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == _idwl0wi8.MenuCategoryException) {
       return _idwl0wi8.MenuCategoryException.fromJson(data) as T;
     }
+    if (t == _imphhgkl.MenuCategoryPage) {
+      return _imphhgkl.MenuCategoryPage.fromJson(data) as T;
+    }
     if (t == _iu0xgttg.MenuCategoryUpdate) {
       return _iu0xgttg.MenuCategoryUpdate.fromJson(data) as T;
     }
@@ -2555,6 +2713,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     if (t == _ibdj4rsl.CustomerOrderLine) {
       return _ibdj4rsl.CustomerOrderLine.fromJson(data) as T;
+    }
+    if (t == _i19z85bh.CustomerOrderPage) {
+      return _i19z85bh.CustomerOrderPage.fromJson(data) as T;
     }
     if (t == _ilng8y1i.CustomerOrderPlace) {
       return _ilng8y1i.CustomerOrderPlace.fromJson(data) as T;
@@ -2592,6 +2753,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == _in19xqkp.OrderItemView) {
       return _in19xqkp.OrderItemView.fromJson(data) as T;
     }
+    if (t == _iyracxy5.OrderPage) {
+      return _iyracxy5.OrderPage.fromJson(data) as T;
+    }
     if (t == _iaqxrbm9.OrderStatus) {
       return _iaqxrbm9.OrderStatus.fromJson(data) as T;
     }
@@ -2604,8 +2768,17 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == _ixvoqikw.VenueOrderItem) {
       return _ixvoqikw.VenueOrderItem.fromJson(data) as T;
     }
+    if (t == _imgn43b3.BuildingPackAssignmentView) {
+      return _imgn43b3.BuildingPackAssignmentView.fromJson(data) as T;
+    }
+    if (t == _i48cxm1k.BuildingPackEndReason) {
+      return _i48cxm1k.BuildingPackEndReason.fromJson(data) as T;
+    }
     if (t == _inombaek.BuildingPackView) {
       return _inombaek.BuildingPackView.fromJson(data) as T;
+    }
+    if (t == _ilfxay8b.PackBillingPeriod) {
+      return _ilfxay8b.PackBillingPeriod.fromJson(data) as T;
     }
     if (t == _it41yevh.PackCapabilities) {
       return _it41yevh.PackCapabilities.fromJson(data) as T;
@@ -2619,6 +2792,12 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == _i2wkabnn.PackException) {
       return _i2wkabnn.PackException.fromJson(data) as T;
     }
+    if (t == _iujtn9zd.PackFeature) {
+      return _iujtn9zd.PackFeature.fromJson(data) as T;
+    }
+    if (t == _i5b0y4d5.PackPage) {
+      return _i5b0y4d5.PackPage.fromJson(data) as T;
+    }
     if (t == _iprelrqf.PackPublicView) {
       return _iprelrqf.PackPublicView.fromJson(data) as T;
     }
@@ -2627,6 +2806,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     if (t == _ix8hsdo0.PackView) {
       return _ix8hsdo0.PackView.fromJson(data) as T;
+    }
+    if (t == _iv7bzyjr.BuildingPackAssignment) {
+      return _iv7bzyjr.BuildingPackAssignment.fromJson(data) as T;
     }
     if (t == _ixvcqhi5.Pack) {
       return _ixvcqhi5.Pack.fromJson(data) as T;
@@ -2702,6 +2884,9 @@ class Protocol extends _is.DatabaseSerializationManager {
       return (data != null ? _iubn3z7h.EmployeeCreate.fromJson(data) : null)
           as T;
     }
+    if (t == _is.getType<_iish3ytj.EmployeePage?>()) {
+      return (data != null ? _iish3ytj.EmployeePage.fromJson(data) : null) as T;
+    }
     if (t == _is.getType<_i5opmp1h.EmployeeSessionView?>()) {
       return (data != null
               ? _i5opmp1h.EmployeeSessionView.fromJson(data)
@@ -2737,6 +2922,10 @@ class Protocol extends _is.DatabaseSerializationManager {
               : null)
           as T;
     }
+    if (t == _is.getType<_i299iuwl.PlatformPersonPage?>()) {
+      return (data != null ? _i299iuwl.PlatformPersonPage.fromJson(data) : null)
+          as T;
+    }
     if (t == _is.getType<_im0nv2xr.PlatformPersonView?>()) {
       return (data != null ? _im0nv2xr.PlatformPersonView.fromJson(data) : null)
           as T;
@@ -2747,6 +2936,10 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     if (t == _is.getType<_ieisqlnm.SuperAdminCreate?>()) {
       return (data != null ? _ieisqlnm.SuperAdminCreate.fromJson(data) : null)
+          as T;
+    }
+    if (t == _is.getType<_iwurmzek.SuperAdminPage?>()) {
+      return (data != null ? _iwurmzek.SuperAdminPage.fromJson(data) : null)
           as T;
     }
     if (t == _is.getType<_i4itilxd.SuperAdminSessionView?>()) {
@@ -2794,6 +2987,10 @@ class Protocol extends _is.DatabaseSerializationManager {
               : null)
           as T;
     }
+    if (t == _is.getType<_i2fmmvbz.AdminBuildingPage?>()) {
+      return (data != null ? _i2fmmvbz.AdminBuildingPage.fromJson(data) : null)
+          as T;
+    }
     if (t == _is.getType<_ig4j3dzf.AdminBuildingView?>()) {
       return (data != null ? _ig4j3dzf.AdminBuildingView.fromJson(data) : null)
           as T;
@@ -2809,6 +3006,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == _is.getType<_ihbyyehn.BuildingException?>()) {
       return (data != null ? _ihbyyehn.BuildingException.fromJson(data) : null)
           as T;
+    }
+    if (t == _is.getType<_istreh1i.BuildingPage?>()) {
+      return (data != null ? _istreh1i.BuildingPage.fromJson(data) : null) as T;
     }
     if (t == _is.getType<_irbupqdx.BuildingUpdate?>()) {
       return (data != null ? _irbupqdx.BuildingUpdate.fromJson(data) : null)
@@ -2867,6 +3067,10 @@ class Protocol extends _is.DatabaseSerializationManager {
               : null)
           as T;
     }
+    if (t == _is.getType<_ifmn6pnl.CustomerVenuePage?>()) {
+      return (data != null ? _ifmn6pnl.CustomerVenuePage.fromJson(data) : null)
+          as T;
+    }
     if (t == _is.getType<_id14pl4h.PlaceErrorCode?>()) {
       return (data != null ? _id14pl4h.PlaceErrorCode.fromJson(data) : null)
           as T;
@@ -2894,6 +3098,10 @@ class Protocol extends _is.DatabaseSerializationManager {
       return (data != null
               ? _ilz0jt85.EmployeeAccessException.fromJson(data)
               : null)
+          as T;
+    }
+    if (t == _is.getType<_ibeoku4h.EmployeeAccessPage?>()) {
+      return (data != null ? _ibeoku4h.EmployeeAccessPage.fromJson(data) : null)
           as T;
     }
     if (t == _is.getType<_ifygdwz2.EmployeeAccessUpdate?>()) {
@@ -2956,6 +3164,10 @@ class Protocol extends _is.DatabaseSerializationManager {
               : null)
           as T;
     }
+    if (t == _is.getType<_ibw9d571.IngredientPage?>()) {
+      return (data != null ? _ibw9d571.IngredientPage.fromJson(data) : null)
+          as T;
+    }
     if (t == _is.getType<_i1tfcnyz.IngredientRestock?>()) {
       return (data != null ? _i1tfcnyz.IngredientRestock.fromJson(data) : null)
           as T;
@@ -3004,6 +3216,10 @@ class Protocol extends _is.DatabaseSerializationManager {
               : null)
           as T;
     }
+    if (t == _is.getType<_imphhgkl.MenuCategoryPage?>()) {
+      return (data != null ? _imphhgkl.MenuCategoryPage.fromJson(data) : null)
+          as T;
+    }
     if (t == _is.getType<_iu0xgttg.MenuCategoryUpdate?>()) {
       return (data != null ? _iu0xgttg.MenuCategoryUpdate.fromJson(data) : null)
           as T;
@@ -3040,6 +3256,10 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     if (t == _is.getType<_ibdj4rsl.CustomerOrderLine?>()) {
       return (data != null ? _ibdj4rsl.CustomerOrderLine.fromJson(data) : null)
+          as T;
+    }
+    if (t == _is.getType<_i19z85bh.CustomerOrderPage?>()) {
+      return (data != null ? _i19z85bh.CustomerOrderPage.fromJson(data) : null)
           as T;
     }
     if (t == _is.getType<_ilng8y1i.CustomerOrderPlace?>()) {
@@ -3095,6 +3315,9 @@ class Protocol extends _is.DatabaseSerializationManager {
       return (data != null ? _in19xqkp.OrderItemView.fromJson(data) : null)
           as T;
     }
+    if (t == _is.getType<_iyracxy5.OrderPage?>()) {
+      return (data != null ? _iyracxy5.OrderPage.fromJson(data) : null) as T;
+    }
     if (t == _is.getType<_iaqxrbm9.OrderStatus?>()) {
       return (data != null ? _iaqxrbm9.OrderStatus.fromJson(data) : null) as T;
     }
@@ -3108,8 +3331,24 @@ class Protocol extends _is.DatabaseSerializationManager {
       return (data != null ? _ixvoqikw.VenueOrderItem.fromJson(data) : null)
           as T;
     }
+    if (t == _is.getType<_imgn43b3.BuildingPackAssignmentView?>()) {
+      return (data != null
+              ? _imgn43b3.BuildingPackAssignmentView.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_i48cxm1k.BuildingPackEndReason?>()) {
+      return (data != null
+              ? _i48cxm1k.BuildingPackEndReason.fromJson(data)
+              : null)
+          as T;
+    }
     if (t == _is.getType<_inombaek.BuildingPackView?>()) {
       return (data != null ? _inombaek.BuildingPackView.fromJson(data) : null)
+          as T;
+    }
+    if (t == _is.getType<_ilfxay8b.PackBillingPeriod?>()) {
+      return (data != null ? _ilfxay8b.PackBillingPeriod.fromJson(data) : null)
           as T;
     }
     if (t == _is.getType<_it41yevh.PackCapabilities?>()) {
@@ -3127,6 +3366,12 @@ class Protocol extends _is.DatabaseSerializationManager {
       return (data != null ? _i2wkabnn.PackException.fromJson(data) : null)
           as T;
     }
+    if (t == _is.getType<_iujtn9zd.PackFeature?>()) {
+      return (data != null ? _iujtn9zd.PackFeature.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_i5b0y4d5.PackPage?>()) {
+      return (data != null ? _i5b0y4d5.PackPage.fromJson(data) : null) as T;
+    }
     if (t == _is.getType<_iprelrqf.PackPublicView?>()) {
       return (data != null ? _iprelrqf.PackPublicView.fromJson(data) : null)
           as T;
@@ -3136,6 +3381,12 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     if (t == _is.getType<_ix8hsdo0.PackView?>()) {
       return (data != null ? _ix8hsdo0.PackView.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_iv7bzyjr.BuildingPackAssignment?>()) {
+      return (data != null
+              ? _iv7bzyjr.BuildingPackAssignment.fromJson(data)
+              : null)
+          as T;
     }
     if (t == _is.getType<_ixvcqhi5.Pack?>()) {
       return (data != null ? _ixvcqhi5.Pack.fromJson(data) : null) as T;
@@ -3183,6 +3434,24 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == _is.getType<_ik40dtuz.VenueTable?>()) {
       return (data != null ? _ik40dtuz.VenueTable.fromJson(data) : null) as T;
     }
+    if (t == List<_inacnd8t.EmployeeView>) {
+      return (data as List)
+              .map((e) => deserialize<_inacnd8t.EmployeeView>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_im0nv2xr.PlatformPersonView>) {
+      return (data as List)
+              .map((e) => deserialize<_im0nv2xr.PlatformPersonView>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_ima36n4q.SuperAdminView>) {
+      return (data as List)
+              .map((e) => deserialize<_ima36n4q.SuperAdminView>(e))
+              .toList()
+          as T;
+    }
     if (t == List<_iit041ql.Building>) {
       return (data as List)
               .map((e) => deserialize<_iit041ql.Building>(e))
@@ -3211,12 +3480,30 @@ class Protocol extends _is.DatabaseSerializationManager {
               : null)
           as T;
     }
+    if (t == List<_imgn43b3.BuildingPackAssignmentView>) {
+      return (data as List)
+              .map((e) => deserialize<_imgn43b3.BuildingPackAssignmentView>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_ig4j3dzf.AdminBuildingView>) {
+      return (data as List)
+              .map((e) => deserialize<_ig4j3dzf.AdminBuildingView>(e))
+              .toList()
+          as T;
+    }
     if (t == List<String>) {
       return (data as List).map((e) => deserialize<String>(e)).toList() as T;
     }
     if (t == List<_i70klpnb.StrictModeStep>) {
       return (data as List)
               .map((e) => deserialize<_i70klpnb.StrictModeStep>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_i9ph7g7s.BuildingView>) {
+      return (data as List)
+              .map((e) => deserialize<_i9ph7g7s.BuildingView>(e))
               .toList()
           as T;
     }
@@ -3308,9 +3595,31 @@ class Protocol extends _is.DatabaseSerializationManager {
               : null)
           as T;
     }
+    if (t == List<_iv7bzyjr.BuildingPackAssignment>) {
+      return (data as List)
+              .map((e) => deserialize<_iv7bzyjr.BuildingPackAssignment>(e))
+              .toList()
+          as T;
+    }
+    if (t == _is.getType<List<_iv7bzyjr.BuildingPackAssignment>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map(
+                      (e) => deserialize<_iv7bzyjr.BuildingPackAssignment>(e),
+                    )
+                    .toList()
+              : null)
+          as T;
+    }
     if (t == List<_i15x0mxo.CustomerMenuSection>) {
       return (data as List)
               .map((e) => deserialize<_i15x0mxo.CustomerMenuSection>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_ia0qwq20.CustomerCategoryPreview>) {
+      return (data as List)
+              .map((e) => deserialize<_ia0qwq20.CustomerCategoryPreview>(e))
               .toList()
           as T;
     }
@@ -3326,9 +3635,27 @@ class Protocol extends _is.DatabaseSerializationManager {
               .toList()
           as T;
     }
-    if (t == List<_ia0qwq20.CustomerCategoryPreview>) {
+    if (t == List<_irx49b3p.CustomerVenueCard>) {
       return (data as List)
-              .map((e) => deserialize<_ia0qwq20.CustomerCategoryPreview>(e))
+              .map((e) => deserialize<_irx49b3p.CustomerVenueCard>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_i8t0l2jw.EmployeeAccessView>) {
+      return (data as List)
+              .map((e) => deserialize<_i8t0l2jw.EmployeeAccessView>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_i8smn6k1.IngredientView>) {
+      return (data as List)
+              .map((e) => deserialize<_i8smn6k1.IngredientView>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_igs74mgr.MenuCategoryView>) {
+      return (data as List)
+              .map((e) => deserialize<_igs74mgr.MenuCategoryView>(e))
               .toList()
           as T;
     }
@@ -3366,6 +3693,12 @@ class Protocol extends _is.DatabaseSerializationManager {
               .toList()
           as T;
     }
+    if (t == List<_ipj20c5x.CustomerOrderSummary>) {
+      return (data as List)
+              .map((e) => deserialize<_ipj20c5x.CustomerOrderSummary>(e))
+              .toList()
+          as T;
+    }
     if (t == List<_ibdj4rsl.CustomerOrderLine>) {
       return (data as List)
               .map((e) => deserialize<_ibdj4rsl.CustomerOrderLine>(e))
@@ -3378,9 +3711,21 @@ class Protocol extends _is.DatabaseSerializationManager {
               .toList()
           as T;
     }
+    if (t == List<_i5x25q0s.OrderView>) {
+      return (data as List)
+              .map((e) => deserialize<_i5x25q0s.OrderView>(e))
+              .toList()
+          as T;
+    }
     if (t == List<_in19xqkp.OrderItemView>) {
       return (data as List)
               .map((e) => deserialize<_in19xqkp.OrderItemView>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_ix8hsdo0.PackView>) {
+      return (data as List)
+              .map((e) => deserialize<_ix8hsdo0.PackView>(e))
               .toList()
           as T;
     }
@@ -3390,51 +3735,9 @@ class Protocol extends _is.DatabaseSerializationManager {
               .toList()
           as T;
     }
-    if (t == List<_ibjv9650.PlatformPersonView>) {
-      return (data as List)
-              .map((e) => deserialize<_ibjv9650.PlatformPersonView>(e))
-              .toList()
-          as T;
-    }
-    if (t == List<_iubtczqk.SuperAdminView>) {
-      return (data as List)
-              .map((e) => deserialize<_iubtczqk.SuperAdminView>(e))
-              .toList()
-          as T;
-    }
-    if (t == List<_ihha274w.BuildingView>) {
-      return (data as List)
-              .map((e) => deserialize<_ihha274w.BuildingView>(e))
-              .toList()
-          as T;
-    }
-    if (t == List<_idzabrxr.AdminBuildingView>) {
-      return (data as List)
-              .map((e) => deserialize<_idzabrxr.AdminBuildingView>(e))
-              .toList()
-          as T;
-    }
-    if (t == List<_im8o31wm.EmployeeView>) {
-      return (data as List)
-              .map((e) => deserialize<_im8o31wm.EmployeeView>(e))
-              .toList()
-          as T;
-    }
     if (t == List<_ibuzraci.PlaceHit>) {
       return (data as List)
               .map((e) => deserialize<_ibuzraci.PlaceHit>(e))
-              .toList()
-          as T;
-    }
-    if (t == List<_ik4e6xte.CustomerVenueCard>) {
-      return (data as List)
-              .map((e) => deserialize<_ik4e6xte.CustomerVenueCard>(e))
-              .toList()
-          as T;
-    }
-    if (t == List<_iwktg9rv.EmployeeAccessView>) {
-      return (data as List)
-              .map((e) => deserialize<_iwktg9rv.EmployeeAccessView>(e))
               .toList()
           as T;
     }
@@ -3444,39 +3747,9 @@ class Protocol extends _is.DatabaseSerializationManager {
               .toList()
           as T;
     }
-    if (t == List<_i9jh3lrs.IngredientView>) {
-      return (data as List)
-              .map((e) => deserialize<_i9jh3lrs.IngredientView>(e))
-              .toList()
-          as T;
-    }
     if (t == List<_iftzx4at.MenuArticleView>) {
       return (data as List)
               .map((e) => deserialize<_iftzx4at.MenuArticleView>(e))
-              .toList()
-          as T;
-    }
-    if (t == List<_i87rh1jz.MenuCategoryView>) {
-      return (data as List)
-              .map((e) => deserialize<_i87rh1jz.MenuCategoryView>(e))
-              .toList()
-          as T;
-    }
-    if (t == List<_ivmn58qf.CustomerOrderSummary>) {
-      return (data as List)
-              .map((e) => deserialize<_ivmn58qf.CustomerOrderSummary>(e))
-              .toList()
-          as T;
-    }
-    if (t == List<_i6r0fe4s.OrderView>) {
-      return (data as List)
-              .map((e) => deserialize<_i6r0fe4s.OrderView>(e))
-              .toList()
-          as T;
-    }
-    if (t == List<_i1rdqyf4.PackView>) {
-      return (data as List)
-              .map((e) => deserialize<_i1rdqyf4.PackView>(e))
               .toList()
           as T;
     }
@@ -3515,6 +3788,7 @@ class Protocol extends _is.DatabaseSerializationManager {
       _ibcfczkm.EmailLoginRequest => 'EmailLoginRequest',
       _iokpa1pa.EmailRegisterCreate => 'EmailRegisterCreate',
       _iubn3z7h.EmployeeCreate => 'EmployeeCreate',
+      _iish3ytj.EmployeePage => 'EmployeePage',
       _i5opmp1h.EmployeeSessionView => 'EmployeeSessionView',
       _i08axu9z.EmployeeUpdate => 'EmployeeUpdate',
       _inacnd8t.EmployeeView => 'EmployeeView',
@@ -3522,9 +3796,11 @@ class Protocol extends _is.DatabaseSerializationManager {
       _i9u54egm.PasswordResetConfirm => 'PasswordResetConfirm',
       _in4l34z2.PasswordResetRequest => 'PasswordResetRequest',
       _ixrmg4rs.PasswordResetRequestResult => 'PasswordResetRequestResult',
+      _i299iuwl.PlatformPersonPage => 'PlatformPersonPage',
       _im0nv2xr.PlatformPersonView => 'PlatformPersonView',
       _iul4y12k.ProfileUpdate => 'ProfileUpdate',
       _ieisqlnm.SuperAdminCreate => 'SuperAdminCreate',
+      _iwurmzek.SuperAdminPage => 'SuperAdminPage',
       _i4itilxd.SuperAdminSessionView => 'SuperAdminSessionView',
       _iccfx1hz.SuperAdminUpdate => 'SuperAdminUpdate',
       _ima36n4q.SuperAdminView => 'SuperAdminView',
@@ -3536,10 +3812,12 @@ class Protocol extends _is.DatabaseSerializationManager {
       _i5m9ixa9.PasswordReset => 'PasswordReset',
       _ii4fooib.SuperAdmin => 'SuperAdmin',
       _imz5zx1p.AdminBuildingDetail => 'AdminBuildingDetail',
+      _i2fmmvbz.AdminBuildingPage => 'AdminBuildingPage',
       _ig4j3dzf.AdminBuildingView => 'AdminBuildingView',
       _i8mj84pm.BuildingCreate => 'BuildingCreate',
       _ip56joo9.BuildingErrorCode => 'BuildingErrorCode',
       _ihbyyehn.BuildingException => 'BuildingException',
+      _istreh1i.BuildingPage => 'BuildingPage',
       _irbupqdx.BuildingUpdate => 'BuildingUpdate',
       _i9ph7g7s.BuildingView => 'BuildingView',
       _i70klpnb.StrictModeStep => 'StrictModeStep',
@@ -3552,12 +3830,14 @@ class Protocol extends _is.DatabaseSerializationManager {
       _iga4xgem.CustomerTablePreview => 'CustomerTablePreview',
       _irx49b3p.CustomerVenueCard => 'CustomerVenueCard',
       _i7jvptbt.CustomerVenueDetail => 'CustomerVenueDetail',
+      _ifmn6pnl.CustomerVenuePage => 'CustomerVenuePage',
       _id14pl4h.PlaceErrorCode => 'PlaceErrorCode',
       _i3rwc79w.PlaceException => 'PlaceException',
       _irmybich.PlaceHit => 'PlaceHit',
       _izbvctbv.EmployeeAccessCreate => 'EmployeeAccessCreate',
       _ixnbpcjj.EmployeeAccessErrorCode => 'EmployeeAccessErrorCode',
       _ilz0jt85.EmployeeAccessException => 'EmployeeAccessException',
+      _ibeoku4h.EmployeeAccessPage => 'EmployeeAccessPage',
       _ifygdwz2.EmployeeAccessUpdate => 'EmployeeAccessUpdate',
       _i8t0l2jw.EmployeeAccessView => 'EmployeeAccessView',
       _in0lpay2.EmployeeAccess => 'EmployeeAccess',
@@ -3569,6 +3849,7 @@ class Protocol extends _is.DatabaseSerializationManager {
       _ii1yylu5.IngredientCreate => 'IngredientCreate',
       _i7okswdu.IngredientErrorCode => 'IngredientErrorCode',
       _i6yqbuhf.IngredientException => 'IngredientException',
+      _ibw9d571.IngredientPage => 'IngredientPage',
       _i1tfcnyz.IngredientRestock => 'IngredientRestock',
       _i8smn6k1.IngredientView => 'IngredientView',
       _ilqdzk9u.MenuArticleCreate => 'MenuArticleCreate',
@@ -3579,6 +3860,7 @@ class Protocol extends _is.DatabaseSerializationManager {
       _i3y2wlpl.MenuCategoryCreate => 'MenuCategoryCreate',
       _if8o71j1.MenuCategoryErrorCode => 'MenuCategoryErrorCode',
       _idwl0wi8.MenuCategoryException => 'MenuCategoryException',
+      _imphhgkl.MenuCategoryPage => 'MenuCategoryPage',
       _iu0xgttg.MenuCategoryUpdate => 'MenuCategoryUpdate',
       _igs74mgr.MenuCategoryView => 'MenuCategoryView',
       _ipcoxh71.UnitsType => 'UnitsType',
@@ -3589,6 +3871,7 @@ class Protocol extends _is.DatabaseSerializationManager {
       _iq3ckjf2.CustomerOrderAppend => 'CustomerOrderAppend',
       _i8sd1sxe.CustomerOrderItem => 'CustomerOrderItem',
       _ibdj4rsl.CustomerOrderLine => 'CustomerOrderLine',
+      _i19z85bh.CustomerOrderPage => 'CustomerOrderPage',
       _ilng8y1i.CustomerOrderPlace => 'CustomerOrderPlace',
       _ipj20c5x.CustomerOrderSummary => 'CustomerOrderSummary',
       _iw1gx7eb.CustomerOrderView => 'CustomerOrderView',
@@ -3601,18 +3884,25 @@ class Protocol extends _is.DatabaseSerializationManager {
       _ihsl512g.OrderItemStatus => 'OrderItemStatus',
       _i8vmkag3.OrderItemStatusUpdate => 'OrderItemStatusUpdate',
       _in19xqkp.OrderItemView => 'OrderItemView',
+      _iyracxy5.OrderPage => 'OrderPage',
       _iaqxrbm9.OrderStatus => 'OrderStatus',
       _i5x25q0s.OrderView => 'OrderView',
       _ihouontj.VenueOrder => 'VenueOrder',
       _ixvoqikw.VenueOrderItem => 'VenueOrderItem',
+      _imgn43b3.BuildingPackAssignmentView => 'BuildingPackAssignmentView',
+      _i48cxm1k.BuildingPackEndReason => 'BuildingPackEndReason',
       _inombaek.BuildingPackView => 'BuildingPackView',
+      _ilfxay8b.PackBillingPeriod => 'PackBillingPeriod',
       _it41yevh.PackCapabilities => 'PackCapabilities',
       _i8zaxiah.PackCreate => 'PackCreate',
       _iop7u0ua.PackErrorCode => 'PackErrorCode',
       _i2wkabnn.PackException => 'PackException',
+      _iujtn9zd.PackFeature => 'PackFeature',
+      _i5b0y4d5.PackPage => 'PackPage',
       _iprelrqf.PackPublicView => 'PackPublicView',
       _icf9vjmf.PackUpdate => 'PackUpdate',
       _ix8hsdo0.PackView => 'PackView',
+      _iv7bzyjr.BuildingPackAssignment => 'BuildingPackAssignment',
       _ixvcqhi5.Pack => 'Pack',
       _igzxiay6.PlatformStats => 'PlatformStats',
       _icz9v6v9.PublicPackUsage => 'PublicPackUsage',
@@ -3656,6 +3946,8 @@ class Protocol extends _is.DatabaseSerializationManager {
         return 'EmailRegisterCreate';
       case _iubn3z7h.EmployeeCreate():
         return 'EmployeeCreate';
+      case _iish3ytj.EmployeePage():
+        return 'EmployeePage';
       case _i5opmp1h.EmployeeSessionView():
         return 'EmployeeSessionView';
       case _i08axu9z.EmployeeUpdate():
@@ -3670,12 +3962,16 @@ class Protocol extends _is.DatabaseSerializationManager {
         return 'PasswordResetRequest';
       case _ixrmg4rs.PasswordResetRequestResult():
         return 'PasswordResetRequestResult';
+      case _i299iuwl.PlatformPersonPage():
+        return 'PlatformPersonPage';
       case _im0nv2xr.PlatformPersonView():
         return 'PlatformPersonView';
       case _iul4y12k.ProfileUpdate():
         return 'ProfileUpdate';
       case _ieisqlnm.SuperAdminCreate():
         return 'SuperAdminCreate';
+      case _iwurmzek.SuperAdminPage():
+        return 'SuperAdminPage';
       case _i4itilxd.SuperAdminSessionView():
         return 'SuperAdminSessionView';
       case _iccfx1hz.SuperAdminUpdate():
@@ -3698,6 +3994,8 @@ class Protocol extends _is.DatabaseSerializationManager {
         return 'SuperAdmin';
       case _imz5zx1p.AdminBuildingDetail():
         return 'AdminBuildingDetail';
+      case _i2fmmvbz.AdminBuildingPage():
+        return 'AdminBuildingPage';
       case _ig4j3dzf.AdminBuildingView():
         return 'AdminBuildingView';
       case _i8mj84pm.BuildingCreate():
@@ -3706,6 +4004,8 @@ class Protocol extends _is.DatabaseSerializationManager {
         return 'BuildingErrorCode';
       case _ihbyyehn.BuildingException():
         return 'BuildingException';
+      case _istreh1i.BuildingPage():
+        return 'BuildingPage';
       case _irbupqdx.BuildingUpdate():
         return 'BuildingUpdate';
       case _i9ph7g7s.BuildingView():
@@ -3730,6 +4030,8 @@ class Protocol extends _is.DatabaseSerializationManager {
         return 'CustomerVenueCard';
       case _i7jvptbt.CustomerVenueDetail():
         return 'CustomerVenueDetail';
+      case _ifmn6pnl.CustomerVenuePage():
+        return 'CustomerVenuePage';
       case _id14pl4h.PlaceErrorCode():
         return 'PlaceErrorCode';
       case _i3rwc79w.PlaceException():
@@ -3742,6 +4044,8 @@ class Protocol extends _is.DatabaseSerializationManager {
         return 'EmployeeAccessErrorCode';
       case _ilz0jt85.EmployeeAccessException():
         return 'EmployeeAccessException';
+      case _ibeoku4h.EmployeeAccessPage():
+        return 'EmployeeAccessPage';
       case _ifygdwz2.EmployeeAccessUpdate():
         return 'EmployeeAccessUpdate';
       case _i8t0l2jw.EmployeeAccessView():
@@ -3764,6 +4068,8 @@ class Protocol extends _is.DatabaseSerializationManager {
         return 'IngredientErrorCode';
       case _i6yqbuhf.IngredientException():
         return 'IngredientException';
+      case _ibw9d571.IngredientPage():
+        return 'IngredientPage';
       case _i1tfcnyz.IngredientRestock():
         return 'IngredientRestock';
       case _i8smn6k1.IngredientView():
@@ -3784,6 +4090,8 @@ class Protocol extends _is.DatabaseSerializationManager {
         return 'MenuCategoryErrorCode';
       case _idwl0wi8.MenuCategoryException():
         return 'MenuCategoryException';
+      case _imphhgkl.MenuCategoryPage():
+        return 'MenuCategoryPage';
       case _iu0xgttg.MenuCategoryUpdate():
         return 'MenuCategoryUpdate';
       case _igs74mgr.MenuCategoryView():
@@ -3804,6 +4112,8 @@ class Protocol extends _is.DatabaseSerializationManager {
         return 'CustomerOrderItem';
       case _ibdj4rsl.CustomerOrderLine():
         return 'CustomerOrderLine';
+      case _i19z85bh.CustomerOrderPage():
+        return 'CustomerOrderPage';
       case _ilng8y1i.CustomerOrderPlace():
         return 'CustomerOrderPlace';
       case _ipj20c5x.CustomerOrderSummary():
@@ -3828,6 +4138,8 @@ class Protocol extends _is.DatabaseSerializationManager {
         return 'OrderItemStatusUpdate';
       case _in19xqkp.OrderItemView():
         return 'OrderItemView';
+      case _iyracxy5.OrderPage():
+        return 'OrderPage';
       case _iaqxrbm9.OrderStatus():
         return 'OrderStatus';
       case _i5x25q0s.OrderView():
@@ -3836,8 +4148,14 @@ class Protocol extends _is.DatabaseSerializationManager {
         return 'VenueOrder';
       case _ixvoqikw.VenueOrderItem():
         return 'VenueOrderItem';
+      case _imgn43b3.BuildingPackAssignmentView():
+        return 'BuildingPackAssignmentView';
+      case _i48cxm1k.BuildingPackEndReason():
+        return 'BuildingPackEndReason';
       case _inombaek.BuildingPackView():
         return 'BuildingPackView';
+      case _ilfxay8b.PackBillingPeriod():
+        return 'PackBillingPeriod';
       case _it41yevh.PackCapabilities():
         return 'PackCapabilities';
       case _i8zaxiah.PackCreate():
@@ -3846,12 +4164,18 @@ class Protocol extends _is.DatabaseSerializationManager {
         return 'PackErrorCode';
       case _i2wkabnn.PackException():
         return 'PackException';
+      case _iujtn9zd.PackFeature():
+        return 'PackFeature';
+      case _i5b0y4d5.PackPage():
+        return 'PackPage';
       case _iprelrqf.PackPublicView():
         return 'PackPublicView';
       case _icf9vjmf.PackUpdate():
         return 'PackUpdate';
       case _ix8hsdo0.PackView():
         return 'PackView';
+      case _iv7bzyjr.BuildingPackAssignment():
+        return 'BuildingPackAssignment';
       case _ixvcqhi5.Pack():
         return 'Pack';
       case _igzxiay6.PlatformStats():
@@ -3927,6 +4251,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (dataClassName == 'EmployeeCreate') {
       return deserialize<_iubn3z7h.EmployeeCreate>(data['data']);
     }
+    if (dataClassName == 'EmployeePage') {
+      return deserialize<_iish3ytj.EmployeePage>(data['data']);
+    }
     if (dataClassName == 'EmployeeSessionView') {
       return deserialize<_i5opmp1h.EmployeeSessionView>(data['data']);
     }
@@ -3948,6 +4275,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (dataClassName == 'PasswordResetRequestResult') {
       return deserialize<_ixrmg4rs.PasswordResetRequestResult>(data['data']);
     }
+    if (dataClassName == 'PlatformPersonPage') {
+      return deserialize<_i299iuwl.PlatformPersonPage>(data['data']);
+    }
     if (dataClassName == 'PlatformPersonView') {
       return deserialize<_im0nv2xr.PlatformPersonView>(data['data']);
     }
@@ -3956,6 +4286,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     if (dataClassName == 'SuperAdminCreate') {
       return deserialize<_ieisqlnm.SuperAdminCreate>(data['data']);
+    }
+    if (dataClassName == 'SuperAdminPage') {
+      return deserialize<_iwurmzek.SuperAdminPage>(data['data']);
     }
     if (dataClassName == 'SuperAdminSessionView') {
       return deserialize<_i4itilxd.SuperAdminSessionView>(data['data']);
@@ -3990,6 +4323,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (dataClassName == 'AdminBuildingDetail') {
       return deserialize<_imz5zx1p.AdminBuildingDetail>(data['data']);
     }
+    if (dataClassName == 'AdminBuildingPage') {
+      return deserialize<_i2fmmvbz.AdminBuildingPage>(data['data']);
+    }
     if (dataClassName == 'AdminBuildingView') {
       return deserialize<_ig4j3dzf.AdminBuildingView>(data['data']);
     }
@@ -4001,6 +4337,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     if (dataClassName == 'BuildingException') {
       return deserialize<_ihbyyehn.BuildingException>(data['data']);
+    }
+    if (dataClassName == 'BuildingPage') {
+      return deserialize<_istreh1i.BuildingPage>(data['data']);
     }
     if (dataClassName == 'BuildingUpdate') {
       return deserialize<_irbupqdx.BuildingUpdate>(data['data']);
@@ -4038,6 +4377,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (dataClassName == 'CustomerVenueDetail') {
       return deserialize<_i7jvptbt.CustomerVenueDetail>(data['data']);
     }
+    if (dataClassName == 'CustomerVenuePage') {
+      return deserialize<_ifmn6pnl.CustomerVenuePage>(data['data']);
+    }
     if (dataClassName == 'PlaceErrorCode') {
       return deserialize<_id14pl4h.PlaceErrorCode>(data['data']);
     }
@@ -4055,6 +4397,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     if (dataClassName == 'EmployeeAccessException') {
       return deserialize<_ilz0jt85.EmployeeAccessException>(data['data']);
+    }
+    if (dataClassName == 'EmployeeAccessPage') {
+      return deserialize<_ibeoku4h.EmployeeAccessPage>(data['data']);
     }
     if (dataClassName == 'EmployeeAccessUpdate') {
       return deserialize<_ifygdwz2.EmployeeAccessUpdate>(data['data']);
@@ -4089,6 +4434,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (dataClassName == 'IngredientException') {
       return deserialize<_i6yqbuhf.IngredientException>(data['data']);
     }
+    if (dataClassName == 'IngredientPage') {
+      return deserialize<_ibw9d571.IngredientPage>(data['data']);
+    }
     if (dataClassName == 'IngredientRestock') {
       return deserialize<_i1tfcnyz.IngredientRestock>(data['data']);
     }
@@ -4119,6 +4467,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (dataClassName == 'MenuCategoryException') {
       return deserialize<_idwl0wi8.MenuCategoryException>(data['data']);
     }
+    if (dataClassName == 'MenuCategoryPage') {
+      return deserialize<_imphhgkl.MenuCategoryPage>(data['data']);
+    }
     if (dataClassName == 'MenuCategoryUpdate') {
       return deserialize<_iu0xgttg.MenuCategoryUpdate>(data['data']);
     }
@@ -4148,6 +4499,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     if (dataClassName == 'CustomerOrderLine') {
       return deserialize<_ibdj4rsl.CustomerOrderLine>(data['data']);
+    }
+    if (dataClassName == 'CustomerOrderPage') {
+      return deserialize<_i19z85bh.CustomerOrderPage>(data['data']);
     }
     if (dataClassName == 'CustomerOrderPlace') {
       return deserialize<_ilng8y1i.CustomerOrderPlace>(data['data']);
@@ -4185,6 +4539,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (dataClassName == 'OrderItemView') {
       return deserialize<_in19xqkp.OrderItemView>(data['data']);
     }
+    if (dataClassName == 'OrderPage') {
+      return deserialize<_iyracxy5.OrderPage>(data['data']);
+    }
     if (dataClassName == 'OrderStatus') {
       return deserialize<_iaqxrbm9.OrderStatus>(data['data']);
     }
@@ -4197,8 +4554,17 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (dataClassName == 'VenueOrderItem') {
       return deserialize<_ixvoqikw.VenueOrderItem>(data['data']);
     }
+    if (dataClassName == 'BuildingPackAssignmentView') {
+      return deserialize<_imgn43b3.BuildingPackAssignmentView>(data['data']);
+    }
+    if (dataClassName == 'BuildingPackEndReason') {
+      return deserialize<_i48cxm1k.BuildingPackEndReason>(data['data']);
+    }
     if (dataClassName == 'BuildingPackView') {
       return deserialize<_inombaek.BuildingPackView>(data['data']);
+    }
+    if (dataClassName == 'PackBillingPeriod') {
+      return deserialize<_ilfxay8b.PackBillingPeriod>(data['data']);
     }
     if (dataClassName == 'PackCapabilities') {
       return deserialize<_it41yevh.PackCapabilities>(data['data']);
@@ -4212,6 +4578,12 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (dataClassName == 'PackException') {
       return deserialize<_i2wkabnn.PackException>(data['data']);
     }
+    if (dataClassName == 'PackFeature') {
+      return deserialize<_iujtn9zd.PackFeature>(data['data']);
+    }
+    if (dataClassName == 'PackPage') {
+      return deserialize<_i5b0y4d5.PackPage>(data['data']);
+    }
     if (dataClassName == 'PackPublicView') {
       return deserialize<_iprelrqf.PackPublicView>(data['data']);
     }
@@ -4220,6 +4592,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     if (dataClassName == 'PackView') {
       return deserialize<_ix8hsdo0.PackView>(data['data']);
+    }
+    if (dataClassName == 'BuildingPackAssignment') {
+      return deserialize<_iv7bzyjr.BuildingPackAssignment>(data['data']);
     }
     if (dataClassName == 'Pack') {
       return deserialize<_ixvcqhi5.Pack>(data['data']);
@@ -4323,6 +4698,8 @@ class Protocol extends _is.DatabaseSerializationManager {
         return _ihouontj.VenueOrder.t;
       case _ixvoqikw.VenueOrderItem:
         return _ixvoqikw.VenueOrderItem.t;
+      case _iv7bzyjr.BuildingPackAssignment:
+        return _iv7bzyjr.BuildingPackAssignment.t;
       case _ixvcqhi5.Pack:
         return _ixvcqhi5.Pack.t;
       case _ik40dtuz.VenueTable:

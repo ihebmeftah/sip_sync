@@ -1,0 +1,6 @@
+### How long a paid pack assignment runs before the venue returns to free.
+enum: PackBillingPeriod
+serialized: byName
+values:
+  - monthly
+  - yearly
