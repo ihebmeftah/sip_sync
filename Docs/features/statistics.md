@@ -1,24 +1,29 @@
 # Statistics & analytics
 
-Status: draft
+Status: in progress
 
 ## Apps
 
-`managment` (owner dashboard), `backoffice` (platform metrics if needed), `sip_sync_server`.
+`sip_sync_server`, `backoffice`. The owner dashboard in `managment` is still later.
 
 ## Actors and permissions
 
-- Owners: own buildings only.
-- Super admin: aggregated platform stats.
-- Employees: only if a permission is granted (default off).
+- **Super admin** — `PlatformStats.summary` on the backoffice Stats screen.
+- **Owner, employee, customer** — rejected. Route guards are UX only.
 
 ## Flow
 
-Dashboard: orders, revenue (per building currency), employee performance. Prefer aggregated queries, not dumping raw order lists.
+1. Stats opens on sign-in. It shows owners, customers, venues, employees, orders, customer orders that were not cancelled, and the monthly plan total.
+2. The monthly total is the sum of each venue’s current pack price, in TND millimes. A private pack still counts in that total.
+3. **Public packs** lists every public pack, including a disabled one, with how many venues are on it and how many distinct owners those venues belong to. Private packs stay off this list.
+
+The owner dashboard (revenue in the venue currency, employee performance) is not this screen.
 
 ## Data
 
-Read-only view models / summary DTOs. No PII beyond what the role may see.
+- `PlatformStats` — the counts above plus `publicPacks`.
+- `PublicPackUsage` — pack id, code, name, monthly price, fee, enabled, `venueCount`, `ownerCount`.
+- Endpoint: `PlatformStats.summary`. No writes.
 
 ## Realtime
 

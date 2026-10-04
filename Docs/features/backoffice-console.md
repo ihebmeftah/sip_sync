@@ -16,7 +16,7 @@ The seeded default admin cannot be deleted or disabled. A signed-in admin cannot
 ## Flow
 
 1. Sign in → `/stats` inside the console shell. The sidebar is Stats, Users, Customers, Buildings, Packs.
-2. **Stats** is a placeholder (“This screen is working.”). **Packs** is the plan catalog.
+2. **Stats** shows platform counts and, for each public pack, how many venues and owners are on it. **Packs** is the plan catalog.
 3. **Customers** has two tabs, Owners and Customers. Each card shows name, email, phone, and created time. Details opens the same fields.
 4. **Users** lists backoffice accounts (name, email, phone, enabled). Create opens a dialog. Edit updates name, email, phone, optional new password, and the enabled switch.
 5. Disabled login returns `accountDisabled`.
@@ -30,7 +30,7 @@ The seeded default admin cannot be deleted or disabled. A signed-in admin cannot
 - `SuperAdminView` includes `isEnabled`
 - `AdminBuildingView` — venue contact and location plus owner display fields (no employee ids, no order config)
 - `PlatformPersonView` — owner or customer name, email, phone, and `createdAt` (no password hash)
-- Endpoints: `SuperAdminAuth.update`, `SuperAdminAuth.setEnabled`, `Building.listAll`, `PlatformDirectory.listOwners`, `PlatformDirectory.listCustomers`, `Pack.list` / `create` / `update` / `delete`
+- Endpoints: `SuperAdminAuth.update`, `SuperAdminAuth.setEnabled`, `Building.listAll`, `PlatformDirectory.listOwners`, `PlatformDirectory.listCustomers`, `Pack.list` / `create` / `update` / `delete`, `PlatformStats.summary`
 
 ## Realtime
 

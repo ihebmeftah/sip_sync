@@ -552,4 +552,30 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get statOrders => 'Commandes';
+
+  @override
+  String get statsSubtitle =>
+      'Personnes, lieux, commandes, et qui est sur chaque pack public.';
+
+  @override
+  String get statOwners => 'Propriétaires';
+
+  @override
+  String get statCustomers => 'Clients';
+
+  @override
+  String get statVenues => 'Lieux';
+
+  @override
+  String get statEmployees => 'Employés';
+
+  @override
+  String get statSubscription => 'Abonnements mensuels';
+
+  @override
+  String get publicPacksTitle => 'Packs publics';
+
+  @override
+  String get publicPacksSubtitle =>
+      'Lieux et propriétaires actuellement sur chaque pack public.';
 }

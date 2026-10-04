@@ -1,0 +1,13 @@
+### Platform totals for the backoffice stats screen. Super admin only.
+class: PlatformStats
+fields:
+  ownerCount: int
+  customerCount: int
+  employeeCount: int
+  venueCount: int
+  orderCount: int
+  ### Customer-placed orders that were not cancelled.
+  customerOrderCount: int
+  ### Sum of each venue's monthly pack price, in millimes. Catalog currency is TND.
+  subscriptionMillimes: int
+  publicPacks: List<PublicPackUsage>

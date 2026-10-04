@@ -1089,6 +1089,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Orders'**
   String get statOrders;
+
+  /// No description provided for @statsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'People, venues, orders, and who is on each public pack.'**
+  String get statsSubtitle;
+
+  /// No description provided for @statOwners.
+  ///
+  /// In en, this message translates to:
+  /// **'Owners'**
+  String get statOwners;
+
+  /// No description provided for @statCustomers.
+  ///
+  /// In en, this message translates to:
+  /// **'Customers'**
+  String get statCustomers;
+
+  /// No description provided for @statVenues.
+  ///
+  /// In en, this message translates to:
+  /// **'Venues'**
+  String get statVenues;
+
+  /// No description provided for @statEmployees.
+  ///
+  /// In en, this message translates to:
+  /// **'Employees'**
+  String get statEmployees;
+
+  /// No description provided for @statSubscription.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly plans'**
+  String get statSubscription;
+
+  /// No description provided for @publicPacksTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Public packs'**
+  String get publicPacksTitle;
+
+  /// No description provided for @publicPacksSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Venues and owners currently on each public pack.'**
+  String get publicPacksSubtitle;
 }
 
 class _AppLocalizationsDelegate

@@ -176,5 +176,13 @@
   "statCategories": "Catégories",
   "statArticles": "Articles",
   "statTables": "Tables",
-  "statOrders": "Commandes"
+  "statOrders": "Commandes",
+  "statsSubtitle": "Personnes, lieux, commandes, et qui est sur chaque pack public.",
+  "statOwners": "Propriétaires",
+  "statCustomers": "Clients",
+  "statVenues": "Lieux",
+  "statEmployees": "Employés",
+  "statSubscription": "Abonnements mensuels",
+  "publicPacksTitle": "Packs publics",
+  "publicPacksSubtitle": "Lieux et propriétaires actuellement sur chaque pack public."
 }

@@ -176,5 +176,13 @@
   "statCategories": "التصنيفات",
   "statArticles": "المواد",
   "statTables": "الطاولات",
-  "statOrders": "الطلبات"
+  "statOrders": "الطلبات",
+  "statsSubtitle": "الأشخاص والأماكن والطلبات، ومن على كل باقة عامة.",
+  "statOwners": "المالكون",
+  "statCustomers": "الزبائن",
+  "statVenues": "الأماكن",
+  "statEmployees": "الموظفون",
+  "statSubscription": "الاشتراكات الشهرية",
+  "publicPacksTitle": "الباقات العامة",
+  "publicPacksSubtitle": "الأماكن والمالكون الموجودون حالياً على كل باقة عامة."
 }

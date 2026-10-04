@@ -3,6 +3,7 @@ import 'package:sip_sync_client/sip_sync_client.dart';
 
 import '../../data/repositories/admin_building_repository.dart';
 import '../../data/repositories/pack_repository.dart';
+import '../../data/repositories/platform_stats_repository.dart';
 import '../../data/repositories/platform_directory_repository.dart';
 import '../../data/repositories/super_admin_auth_repository.dart';
 import 'app_session_store.dart';
@@ -27,6 +28,10 @@ PlatformDirectoryRepository platformDirectoryRepository(Ref ref) =>
 
 @Riverpod(keepAlive: true)
 PackRepository packRepository(Ref ref) => getIt<PackRepository>();
+
+@Riverpod(keepAlive: true)
+PlatformStatsRepository platformStatsRepository(Ref ref) =>
+    getIt<PlatformStatsRepository>();
 
 @Riverpod(keepAlive: true)
 AppSessionStore appSessionStore(Ref ref) {

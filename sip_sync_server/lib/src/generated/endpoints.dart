@@ -100,6 +100,7 @@ import '../menu/menu_category_endpoint.dart' as _i1h28rjj;
 import '../orders/customer_order_endpoint.dart' as _i3ulyznx;
 import '../orders/order_endpoint.dart' as _iuf1spo6;
 import '../packs/pack_endpoint.dart' as _i9krzab0;
+import '../stats/platform_stats_endpoint.dart' as _i586lkkn;
 import '../tables/venue_table_endpoint.dart' as _ira8yrq4;
 
 class Endpoints extends _is.EndpointDispatch {
@@ -206,6 +207,12 @@ class Endpoints extends _is.EndpointDispatch {
         ..initialize(
           server,
           'pack',
+          null,
+        ),
+      'platformStats': _i586lkkn.PlatformStatsEndpoint()
+        ..initialize(
+          server,
+          'platformStats',
           null,
         ),
       'venueTable': _ira8yrq4.VenueTableEndpoint()
@@ -1833,6 +1840,24 @@ class Endpoints extends _is.EndpointDispatch {
                 session,
                 params['id'],
               ),
+        ),
+      },
+    );
+    connectors['platformStats'] = _is.EndpointConnector(
+      name: 'platformStats',
+      endpoint: endpoints['platformStats']!,
+      methodConnectors: {
+        'summary': _is.MethodConnector(
+          name: 'summary',
+          params: {},
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['platformStats']
+                          as _i586lkkn.PlatformStatsEndpoint)
+                      .summary(session),
         ),
       },
     );

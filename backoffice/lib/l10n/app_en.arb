@@ -191,5 +191,13 @@
   "statCategories": "Categories",
   "statArticles": "Articles",
   "statTables": "Tables",
-  "statOrders": "Orders"
+  "statOrders": "Orders",
+  "statsSubtitle": "People, venues, orders, and who is on each public pack.",
+  "statOwners": "Owners",
+  "statCustomers": "Customers",
+  "statVenues": "Venues",
+  "statEmployees": "Employees",
+  "statSubscription": "Monthly plans",
+  "publicPacksTitle": "Public packs",
+  "publicPacksSubtitle": "Venues and owners currently on each public pack."
 }

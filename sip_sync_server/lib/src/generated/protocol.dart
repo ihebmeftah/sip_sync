@@ -159,6 +159,8 @@ import 'packs/dtos/pack_public_view.dart' as _iprelrqf;
 import 'packs/dtos/pack_update.dart' as _icf9vjmf;
 import 'packs/dtos/pack_view.dart' as _ix8hsdo0;
 import 'packs/entity/pack.dart' as _ixvcqhi5;
+import 'stats/dtos/platform_stats.dart' as _igzxiay6;
+import 'stats/dtos/public_pack_usage.dart' as _icz9v6v9;
 import 'tables/dtos/table_floor_status.dart' as _i64byz7d;
 import 'tables/dtos/table_list_filter.dart' as _iuz62fg4;
 import 'tables/dtos/venue_table_create.dart' as _iui9xd5q;
@@ -275,6 +277,8 @@ export 'packs/dtos/pack_public_view.dart';
 export 'packs/dtos/pack_update.dart';
 export 'packs/dtos/pack_view.dart';
 export 'packs/entity/pack.dart';
+export 'stats/dtos/platform_stats.dart';
+export 'stats/dtos/public_pack_usage.dart';
 export 'tables/dtos/table_floor_status.dart';
 export 'tables/dtos/table_list_filter.dart';
 export 'tables/dtos/venue_table_create.dart';
@@ -2627,6 +2631,12 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == _ixvcqhi5.Pack) {
       return _ixvcqhi5.Pack.fromJson(data) as T;
     }
+    if (t == _igzxiay6.PlatformStats) {
+      return _igzxiay6.PlatformStats.fromJson(data) as T;
+    }
+    if (t == _icz9v6v9.PublicPackUsage) {
+      return _icz9v6v9.PublicPackUsage.fromJson(data) as T;
+    }
     if (t == _i64byz7d.TableFloorStatus) {
       return _i64byz7d.TableFloorStatus.fromJson(data) as T;
     }
@@ -3130,6 +3140,14 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == _is.getType<_ixvcqhi5.Pack?>()) {
       return (data != null ? _ixvcqhi5.Pack.fromJson(data) : null) as T;
     }
+    if (t == _is.getType<_igzxiay6.PlatformStats?>()) {
+      return (data != null ? _igzxiay6.PlatformStats.fromJson(data) : null)
+          as T;
+    }
+    if (t == _is.getType<_icz9v6v9.PublicPackUsage?>()) {
+      return (data != null ? _icz9v6v9.PublicPackUsage.fromJson(data) : null)
+          as T;
+    }
     if (t == _is.getType<_i64byz7d.TableFloorStatus?>()) {
       return (data != null ? _i64byz7d.TableFloorStatus.fromJson(data) : null)
           as T;
@@ -3366,6 +3384,12 @@ class Protocol extends _is.DatabaseSerializationManager {
               .toList()
           as T;
     }
+    if (t == List<_icz9v6v9.PublicPackUsage>) {
+      return (data as List)
+              .map((e) => deserialize<_icz9v6v9.PublicPackUsage>(e))
+              .toList()
+          as T;
+    }
     if (t == List<_ibjv9650.PlatformPersonView>) {
       return (data as List)
               .map((e) => deserialize<_ibjv9650.PlatformPersonView>(e))
@@ -3590,6 +3614,8 @@ class Protocol extends _is.DatabaseSerializationManager {
       _icf9vjmf.PackUpdate => 'PackUpdate',
       _ix8hsdo0.PackView => 'PackView',
       _ixvcqhi5.Pack => 'Pack',
+      _igzxiay6.PlatformStats => 'PlatformStats',
+      _icz9v6v9.PublicPackUsage => 'PublicPackUsage',
       _i64byz7d.TableFloorStatus => 'TableFloorStatus',
       _iuz62fg4.TableListFilter => 'TableListFilter',
       _iui9xd5q.VenueTableCreate => 'VenueTableCreate',
@@ -3828,6 +3854,10 @@ class Protocol extends _is.DatabaseSerializationManager {
         return 'PackView';
       case _ixvcqhi5.Pack():
         return 'Pack';
+      case _igzxiay6.PlatformStats():
+        return 'PlatformStats';
+      case _icz9v6v9.PublicPackUsage():
+        return 'PublicPackUsage';
       case _i64byz7d.TableFloorStatus():
         return 'TableFloorStatus';
       case _iuz62fg4.TableListFilter():
@@ -4193,6 +4223,12 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     if (dataClassName == 'Pack') {
       return deserialize<_ixvcqhi5.Pack>(data['data']);
+    }
+    if (dataClassName == 'PlatformStats') {
+      return deserialize<_igzxiay6.PlatformStats>(data['data']);
+    }
+    if (dataClassName == 'PublicPackUsage') {
+      return deserialize<_icz9v6v9.PublicPackUsage>(data['data']);
     }
     if (dataClassName == 'TableFloorStatus') {
       return deserialize<_i64byz7d.TableFloorStatus>(data['data']);

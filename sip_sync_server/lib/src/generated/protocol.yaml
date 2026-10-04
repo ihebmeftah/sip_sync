@@ -97,6 +97,8 @@ pack:
   - create:
   - update:
   - delete:
+platformStats:
+  - summary:
 venueTable:
   - list:
   - create:

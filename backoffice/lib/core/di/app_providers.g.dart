@@ -235,6 +235,54 @@ final class PackRepositoryProvider
 
 String _$packRepositoryHash() => r'd401f121657f67a0d50be9ec7cd41401962dc635';
 
+@ProviderFor(platformStatsRepository)
+const platformStatsRepositoryProvider = PlatformStatsRepositoryProvider._();
+
+final class PlatformStatsRepositoryProvider
+    extends
+        $FunctionalProvider<
+          PlatformStatsRepository,
+          PlatformStatsRepository,
+          PlatformStatsRepository
+        >
+    with $Provider<PlatformStatsRepository> {
+  const PlatformStatsRepositoryProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'platformStatsRepositoryProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$platformStatsRepositoryHash();
+
+  @$internal
+  @override
+  $ProviderElement<PlatformStatsRepository> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  PlatformStatsRepository create(Ref ref) {
+    return platformStatsRepository(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(PlatformStatsRepository value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<PlatformStatsRepository>(value),
+    );
+  }
+}
+
+String _$platformStatsRepositoryHash() =>
+    r'c8f452a5910b55198a468904ca62b6f1868faa38';
+
 @ProviderFor(appSessionStore)
 const appSessionStoreProvider = AppSessionStoreProvider._();
 

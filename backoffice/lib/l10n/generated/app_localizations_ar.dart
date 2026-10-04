@@ -542,4 +542,30 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get statOrders => 'الطلبات';
+
+  @override
+  String get statsSubtitle =>
+      'الأشخاص والأماكن والطلبات، ومن على كل باقة عامة.';
+
+  @override
+  String get statOwners => 'المالكون';
+
+  @override
+  String get statCustomers => 'الزبائن';
+
+  @override
+  String get statVenues => 'الأماكن';
+
+  @override
+  String get statEmployees => 'الموظفون';
+
+  @override
+  String get statSubscription => 'الاشتراكات الشهرية';
+
+  @override
+  String get publicPacksTitle => 'الباقات العامة';
+
+  @override
+  String get publicPacksSubtitle =>
+      'الأماكن والمالكون الموجودون حالياً على كل باقة عامة.';
 }

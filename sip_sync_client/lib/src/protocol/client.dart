@@ -133,6 +133,8 @@ import 'package:sip_sync_client/src/protocol/packs/dtos/pack_update.dart'
     as _i8gbceh6;
 import 'package:sip_sync_client/src/protocol/packs/dtos/pack_view.dart'
     as _ihy1alcs;
+import 'package:sip_sync_client/src/protocol/stats/dtos/platform_stats.dart'
+    as _i6db8rp3;
 import 'package:sip_sync_client/src/protocol/tables/dtos/table_list_filter.dart'
     as _izki6gkh;
 import 'package:sip_sync_client/src/protocol/tables/dtos/venue_table_create.dart'
@@ -1029,6 +1031,23 @@ class EndpointPack extends _isc.EndpointRef {
       );
 }
 
+/// Platform totals for the backoffice. Super admin only.
+/// {@category Endpoint}
+class EndpointPlatformStats extends _isc.EndpointRef {
+  EndpointPlatformStats(_isc.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'platformStats';
+
+  /// Owners, venues, orders, monthly plan total, and public-pack adoption.
+  _ida.Future<_i6db8rp3.PlatformStats> summary() =>
+      caller.callServerEndpoint<_i6db8rp3.PlatformStats>(
+        'platformStats',
+        'summary',
+        {},
+      );
+}
+
 /// Floor table RPC for a building.
 /// {@category Endpoint}
 class EndpointVenueTable extends _isc.EndpointRef {
@@ -1126,6 +1145,7 @@ class Client extends _isc.ServerpodClientShared {
     customerOrder = EndpointCustomerOrder(this);
     order = EndpointOrder(this);
     pack = EndpointPack(this);
+    platformStats = EndpointPlatformStats(this);
     venueTable = EndpointVenueTable(this);
     modules = Modules(this);
   }
@@ -1164,6 +1184,8 @@ class Client extends _isc.ServerpodClientShared {
 
   late final EndpointPack pack;
 
+  late final EndpointPlatformStats platformStats;
+
   late final EndpointVenueTable venueTable;
 
   late final Modules modules;
@@ -1187,6 +1209,7 @@ class Client extends _isc.ServerpodClientShared {
     'customerOrder': customerOrder,
     'order': order,
     'pack': pack,
+    'platformStats': platformStats,
     'venueTable': venueTable,
   };
 

@@ -547,4 +547,30 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get statOrders => 'Orders';
+
+  @override
+  String get statsSubtitle =>
+      'People, venues, orders, and who is on each public pack.';
+
+  @override
+  String get statOwners => 'Owners';
+
+  @override
+  String get statCustomers => 'Customers';
+
+  @override
+  String get statVenues => 'Venues';
+
+  @override
+  String get statEmployees => 'Employees';
+
+  @override
+  String get statSubscription => 'Monthly plans';
+
+  @override
+  String get publicPacksTitle => 'Public packs';
+
+  @override
+  String get publicPacksSubtitle =>
+      'Venues and owners currently on each public pack.';
 }

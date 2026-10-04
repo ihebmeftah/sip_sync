@@ -1,0 +1,13 @@
+### One public pack and how many venues and owners are on it.
+class: PublicPackUsage
+fields:
+  id: UuidValue
+  code: String
+  name: String
+  monthlyMillimes: int
+  customerOrderFeeBps: int
+  isEnabled: bool
+  ### Buildings whose current pack is this one.
+  venueCount: int
+  ### Distinct owners of those buildings.
+  ownerCount: int

@@ -131,6 +131,8 @@ import 'package:sip_sync_server/src/generated/packs/dtos/pack_update.dart'
     as _imymid9b;
 import 'package:sip_sync_server/src/generated/packs/dtos/pack_view.dart'
     as _i1rdqyf4;
+import 'package:sip_sync_server/src/generated/stats/dtos/platform_stats.dart'
+    as _ii13vz4n;
 import 'package:sip_sync_server/src/generated/tables/dtos/table_list_filter.dart'
     as _i2br6vxf;
 import 'package:sip_sync_server/src/generated/tables/dtos/venue_table_create.dart'
@@ -306,6 +308,8 @@ class TestEndpoints {
 
   late final _PackEndpoint pack;
 
+  late final _PlatformStatsEndpoint platformStats;
+
   late final _VenueTableEndpoint venueTable;
 }
 
@@ -381,6 +385,10 @@ class _InternalTestEndpoints extends TestEndpoints
       serializationManager,
     );
     pack = _PackEndpoint(
+      endpoints,
+      serializationManager,
+    );
+    platformStats = _PlatformStatsEndpoint(
       endpoints,
       serializationManager,
     );
@@ -3116,6 +3124,47 @@ class _PackEndpoint {
                   _localCallContext.arguments,
                 )
                 as _ida.Future<void>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+}
+
+class _PlatformStatsEndpoint {
+  _PlatformStatsEndpoint(
+    this._endpointDispatch,
+    this._serializationManager,
+  );
+
+  final _is.EndpointDispatch _endpointDispatch;
+
+  final _is.SerializationManager _serializationManager;
+
+  _ida.Future<_ii13vz4n.PlatformStats> summary(
+    _ist.TestSessionBuilder sessionBuilder,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'platformStats',
+            method: 'summary',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'platformStats',
+          methodName: 'summary',
+          parameters: _ist.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_ii13vz4n.PlatformStats>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();

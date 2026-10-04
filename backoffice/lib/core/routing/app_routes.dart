@@ -1,18 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:shadcn_ui/shadcn_ui.dart';
-
 import '../../features/auth/views/register_view.dart';
 import '../../features/auth/views/sign_in_view.dart';
 import '../../features/buildings/views/building_detail_view.dart';
 import '../../features/buildings/views/buildings_view.dart';
 import '../../features/console/views/console_shell.dart';
-import '../../features/console/views/working_view.dart';
+import '../../features/stats/views/stats_view.dart';
 import '../../features/customers/views/customers_view.dart';
 import '../../features/packs/views/packs_view.dart';
 import '../../features/users/views/users_view.dart';
-import '../../l10n/generated/app_localizations.dart';
 
 part 'app_routes.g.dart';
 
@@ -64,10 +61,7 @@ class StatsRoute extends GoRouteData with $StatsRoute {
   const StatsRoute();
 
   @override
-  Widget build(BuildContext context, GoRouterState state) {
-    final l10n = AppLocalizations.of(context)!;
-    return WorkingView(title: l10n.statsTitle, icon: LucideIcons.chartColumn);
-  }
+  Widget build(BuildContext context, GoRouterState state) => const StatsView();
 }
 
 class UsersRoute extends GoRouteData with $UsersRoute {
