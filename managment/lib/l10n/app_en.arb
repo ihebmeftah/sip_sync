@@ -551,5 +551,49 @@
       "total": {"type": "int"}
     }
   },
-  "loadingMore": "Loading more…"
+  "loadingMore": "Loading more…",
+  "packUpgrade": "Upgrade",
+  "packCatalogTitle": "Plans",
+  "packCatalogIntro": "Compare the public plans. Changing this venue's plan still goes through the support team.",
+  "packCatalogIntroCurrent": "This venue is on {name}. Changing the plan still goes through the support team.",
+  "@packCatalogIntroCurrent": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "packCatalogEmpty": "No public plans are available.",
+  "packCurrent": "Current",
+  "packPriceMonth": "{price} TND / month",
+  "@packPriceMonth": {
+    "placeholders": { "price": { "type": "String" } }
+  },
+  "packPriceYear": "{price} TND / year",
+  "@packPriceYear": {
+    "placeholders": { "price": { "type": "String" } }
+  },
+  "packFeeLine": "Customer app fee {percent}%",
+  "@packFeeLine": {
+    "placeholders": { "percent": { "type": "String" } }
+  },
+  "packUnlimited": "Unlimited",
+  "packLimits": "Limits",
+  "packCapabilities": "Capabilities",
+  "packLimitValue": "{label}: {value}",
+  "@packLimitValue": {
+    "placeholders": {
+      "label": { "type": "String" },
+      "value": { "type": "String" }
+    }
+  },
+  "packCapEmployees": "Employees",
+  "packCapTables": "Tables",
+  "packCapCategories": "Categories",
+  "packCapArticles": "Articles",
+  "packCapIngredients": "Ingredients",
+  "packCapDiscovery": "Customer map",
+  "packCapQr": "Table QR",
+  "packCapOrdering": "Customer ordering",
+  "packCapInventory": "Inventory and recipes",
+  "packCapAppend": "Add items to an open order",
+  "packCapMultiOrder": "Several orders on a table",
+  "packCapStrict": "Strict kitchen steps",
+  "packCapAccess": "Custom access profiles"
 }

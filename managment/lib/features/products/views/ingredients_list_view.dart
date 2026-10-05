@@ -7,6 +7,7 @@ import '../../../core/errors/app_notice.dart';
 import '../../../core/errors/error_mapper.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
+import '../../../core/widgets/pack_locked_action.dart';
 import '../../../core/widgets/app_loader.dart';
 import '../../../core/widgets/list_page_bar.dart';
 import '../../../core/widgets/refresh_on_appear.dart';
@@ -93,6 +94,14 @@ class _IngredientsListViewState extends ConsumerState<IngredientsListView> {
     final scheme = Theme.of(context).colorScheme;
     final isOwner = ref.watch(appSessionStoreProvider).isOwner;
     final async = ref.watch(ingredientsViewModelProvider(widget.buildingId));
+    final pack = ref.watch(buildingSelectionProvider)?.pack;
+    final inventoryLocked = pack != null && !pack.inventory;
+    final addLocked =
+        inventoryLocked ||
+        packCapReached(
+          max: pack?.maxIngredients,
+          current: async.asData?.value.total ?? 0,
+        );
 
     return ColoredBox(
       color: Theme.of(context).scaffoldBackgroundColor,
@@ -128,37 +137,21 @@ class _IngredientsListViewState extends ConsumerState<IngredientsListView> {
                   ),
                   if (isOwner) ...[
                     const SizedBox(width: AppSpacing.sm),
-                    FilledButton.icon(
-                      style: FilledButton.styleFrom(
-                        minimumSize: const Size(0, 44),
+                    PackLockedAction(
+                      locked: addLocked,
+                      child: FilledButton.icon(
+                        style: FilledButton.styleFrom(
+                          minimumSize: const Size(0, 44),
+                        ),
+                        onPressed: addLocked
+                            ? null
+                            : () => openIngredientForm(
+                                context,
+                                buildingId: widget.buildingId,
+                              ),
+                        icon: const Icon(Icons.add),
+                        label: AppButtonLabel(l10n.addIngredient),
                       ),
-                      onPressed: () {
-                        final pack = ref.read(buildingSelectionProvider)?.pack;
-                        final count = async.asData?.value.total ?? 0;
-                        if (pack != null &&
-                            !allowPackFeature(
-                              context,
-                              allowed: pack.inventory,
-                              message: l10n.errorPackFeatureInventory,
-                            )) {
-                          return;
-                        }
-                        if (pack != null &&
-                            !allowPackRoom(
-                              context,
-                              max: pack.maxIngredients,
-                              current: count,
-                              message: l10n.errorPackLimitIngredients,
-                            )) {
-                          return;
-                        }
-                        openIngredientForm(
-                          context,
-                          buildingId: widget.buildingId,
-                        );
-                      },
-                      icon: const Icon(Icons.add),
-                      label: AppButtonLabel(l10n.addIngredient),
                     ),
                   ],
                 ],
@@ -332,34 +325,25 @@ class _IngredientsListViewState extends ConsumerState<IngredientsListView> {
                               const SizedBox(height: AppSpacing.sm),
                               Row(
                                 children: [
-                                  FilledButton.tonalIcon(
-                                    style: FilledButton.styleFrom(
-                                      visualDensity: VisualDensity.compact,
-                                      tapTargetSize:
-                                          MaterialTapTargetSize.shrinkWrap,
-                                      minimumSize: const Size(0, 32),
+                                  PackLockedAction(
+                                    locked: inventoryLocked,
+                                    child: FilledButton.tonalIcon(
+                                      style: FilledButton.styleFrom(
+                                        visualDensity: VisualDensity.compact,
+                                        tapTargetSize:
+                                            MaterialTapTargetSize.shrinkWrap,
+                                        minimumSize: const Size(0, 32),
+                                      ),
+                                      onPressed: inventoryLocked
+                                          ? null
+                                          : () => showIngredientRestockDialog(
+                                              context,
+                                              buildingId: widget.buildingId,
+                                              ingredient: ingredient,
+                                            ),
+                                      icon: const Icon(Icons.add, size: 16),
+                                      label: Text(l10n.ingredientRestock),
                                     ),
-                                    onPressed: () {
-                                      final pack = ref
-                                          .read(buildingSelectionProvider)
-                                          ?.pack;
-                                      if (pack != null &&
-                                          !allowPackFeature(
-                                            context,
-                                            allowed: pack.inventory,
-                                            message:
-                                                l10n.errorPackFeatureInventory,
-                                          )) {
-                                        return;
-                                      }
-                                      showIngredientRestockDialog(
-                                        context,
-                                        buildingId: widget.buildingId,
-                                        ingredient: ingredient,
-                                      );
-                                    },
-                                    icon: const Icon(Icons.add, size: 16),
-                                    label: Text(l10n.ingredientRestock),
                                   ),
                                   const Spacer(),
                                   if (isOwner)

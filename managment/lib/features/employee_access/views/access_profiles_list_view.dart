@@ -3,11 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sip_sync_client/sip_sync_client.dart';
 
 import '../../../core/di/app_providers.dart';
-import '../../../core/errors/app_notice.dart';
 import '../../../core/errors/error_mapper.dart';
 import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
+import '../../../core/widgets/pack_locked_action.dart';
 import '../../../core/widgets/app_loader.dart';
 import '../../../core/widgets/list_page_bar.dart';
 import '../../../l10n/generated/app_localizations.dart';
@@ -26,6 +26,9 @@ class AccessProfilesListView extends ConsumerWidget {
     final scheme = Theme.of(context).colorScheme;
     final isOwner = ref.watch(appSessionStoreProvider).isOwner;
     final async = ref.watch(accessProfilesViewModelProvider(buildingId));
+    final profilesLocked =
+        ref.watch(buildingSelectionProvider)?.pack.customAccessProfiles ==
+        false;
 
     return ColoredBox(
       color: Theme.of(context).scaffoldBackgroundColor,
@@ -50,26 +53,20 @@ class AccessProfilesListView extends ConsumerWidget {
                     ),
                   ),
                   if (isOwner)
-                    FilledButton.icon(
-                      style: FilledButton.styleFrom(
-                        minimumSize: const Size(0, 44),
+                    PackLockedAction(
+                      locked: profilesLocked,
+                      child: FilledButton.icon(
+                        style: FilledButton.styleFrom(
+                          minimumSize: const Size(0, 44),
+                        ),
+                        onPressed: profilesLocked
+                            ? null
+                            : () => AccessProfileCreateRoute(
+                                buildingId: buildingId,
+                              ).go(context),
+                        icon: const Icon(Icons.add),
+                        label: AppButtonLabel(l10n.addAccessProfile),
                       ),
-                      onPressed: () {
-                        final pack = ref.read(buildingSelectionProvider)?.pack;
-                        if (pack != null &&
-                            !allowPackFeature(
-                              context,
-                              allowed: pack.customAccessProfiles,
-                              message: l10n.errorPackFeatureAccess,
-                            )) {
-                          return;
-                        }
-                        AccessProfileCreateRoute(
-                          buildingId: buildingId,
-                        ).go(context);
-                      },
-                      icon: const Icon(Icons.add),
-                      label: AppButtonLabel(l10n.addAccessProfile),
                     ),
                 ],
               ),

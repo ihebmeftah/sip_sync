@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/di/app_providers.dart';
-import '../../../core/errors/app_notice.dart';
 import '../../../core/errors/error_mapper.dart';
 import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
+import '../../../core/widgets/pack_locked_action.dart';
 import '../../../core/widgets/app_loader.dart';
 import '../../../core/widgets/list_page_bar.dart';
 import '../../../l10n/generated/app_localizations.dart';
@@ -24,6 +24,12 @@ class EmployeesListView extends ConsumerWidget {
     final scheme = Theme.of(context).colorScheme;
     final isOwner = ref.watch(appSessionStoreProvider).isOwner;
     final async = ref.watch(employeesViewModelProvider(buildingId));
+    final pack = ref.watch(buildingSelectionProvider)?.pack;
+    final profilesLocked = pack != null && !pack.customAccessProfiles;
+    final addLocked = packCapReached(
+      max: pack?.maxEmployees,
+      current: async.asData?.value.total ?? 0,
+    );
 
     return ColoredBox(
       color: Theme.of(context).scaffoldBackgroundColor,
@@ -40,42 +46,32 @@ class EmployeesListView extends ConsumerWidget {
                     child: Text(l10n.navEmployees, style: text.headlineSmall),
                   ),
                   if (isOwner) ...[
-                    TextButton(
-                      onPressed: () {
-                        final pack = ref.read(buildingSelectionProvider)?.pack;
-                        if (pack != null &&
-                            !allowPackFeature(
-                              context,
-                              allowed: pack.customAccessProfiles,
-                              message: l10n.errorPackFeatureAccess,
-                            )) {
-                          return;
-                        }
-                        AccessProfilesRoute(buildingId: buildingId).go(context);
-                      },
-                      child: Text(l10n.navAccessProfiles),
+                    PackLockedAction(
+                      locked: profilesLocked,
+                      child: TextButton(
+                        onPressed: profilesLocked
+                            ? null
+                            : () => AccessProfilesRoute(
+                                buildingId: buildingId,
+                              ).go(context),
+                        child: Text(l10n.navAccessProfiles),
+                      ),
                     ),
                     const SizedBox(width: AppSpacing.sm),
-                    FilledButton.icon(
-                      style: FilledButton.styleFrom(
-                        minimumSize: const Size(0, 44),
+                    PackLockedAction(
+                      locked: addLocked,
+                      child: FilledButton.icon(
+                        style: FilledButton.styleFrom(
+                          minimumSize: const Size(0, 44),
+                        ),
+                        onPressed: addLocked
+                            ? null
+                            : () => EmployeeCreateRoute(
+                                buildingId: buildingId,
+                              ).go(context),
+                        icon: const Icon(Icons.add),
+                        label: AppButtonLabel(l10n.addEmployee),
                       ),
-                      onPressed: () {
-                        final pack = ref.read(buildingSelectionProvider)?.pack;
-                        final count = async.asData?.value.total ?? 0;
-                        if (pack != null &&
-                            !allowPackRoom(
-                              context,
-                              max: pack.maxEmployees,
-                              current: count,
-                              message: l10n.errorPackLimitEmployees,
-                            )) {
-                          return;
-                        }
-                        EmployeeCreateRoute(buildingId: buildingId).go(context);
-                      },
-                      icon: const Icon(Icons.add),
-                      label: AppButtonLabel(l10n.addEmployee),
                     ),
                   ],
                 ],

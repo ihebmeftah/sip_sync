@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/di/app_providers.dart';
-import '../../../core/errors/app_notice.dart';
 import '../../../core/errors/error_mapper.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
+import '../../../core/widgets/pack_locked_action.dart';
 import '../../../core/widgets/app_loader.dart';
 import '../../../core/widgets/list_page_bar.dart';
 import '../../../core/widgets/refresh_on_appear.dart';
@@ -45,6 +45,10 @@ class _CategoriesListViewState extends ConsumerState<CategoriesListView> {
     final scheme = Theme.of(context).colorScheme;
     final isOwner = ref.watch(appSessionStoreProvider).isOwner;
     final async = ref.watch(categoriesViewModelProvider(widget.buildingId));
+    final addLocked = packCapReached(
+      max: ref.watch(buildingSelectionProvider)?.pack.maxCategories,
+      current: async.asData?.value.total ?? 0,
+    );
 
     return ColoredBox(
       color: Theme.of(context).scaffoldBackgroundColor,
@@ -69,29 +73,21 @@ class _CategoriesListViewState extends ConsumerState<CategoriesListView> {
                     ),
                   ),
                   if (isOwner)
-                    FilledButton.icon(
-                      style: FilledButton.styleFrom(
-                        minimumSize: const Size(0, 44),
+                    PackLockedAction(
+                      locked: addLocked,
+                      child: FilledButton.icon(
+                        style: FilledButton.styleFrom(
+                          minimumSize: const Size(0, 44),
+                        ),
+                        onPressed: addLocked
+                            ? null
+                            : () => openCategoryForm(
+                                context,
+                                buildingId: widget.buildingId,
+                              ),
+                        icon: const Icon(Icons.add),
+                        label: AppButtonLabel(l10n.addCategory),
                       ),
-                      onPressed: () {
-                        final pack = ref.read(buildingSelectionProvider)?.pack;
-                        final count = async.asData?.value.total ?? 0;
-                        if (pack != null &&
-                            !allowPackRoom(
-                              context,
-                              max: pack.maxCategories,
-                              current: count,
-                              message: l10n.errorPackLimitCategories,
-                            )) {
-                          return;
-                        }
-                        openCategoryForm(
-                          context,
-                          buildingId: widget.buildingId,
-                        );
-                      },
-                      icon: const Icon(Icons.add),
-                      label: AppButtonLabel(l10n.addCategory),
                     ),
                 ],
               ),

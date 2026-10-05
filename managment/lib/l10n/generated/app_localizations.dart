@@ -2793,6 +2793,162 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Loading more…'**
   String get loadingMore;
+
+  /// No description provided for @packUpgrade.
+  ///
+  /// In en, this message translates to:
+  /// **'Upgrade'**
+  String get packUpgrade;
+
+  /// No description provided for @packCatalogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Plans'**
+  String get packCatalogTitle;
+
+  /// No description provided for @packCatalogIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Compare the public plans. Changing this venue\'s plan still goes through the support team.'**
+  String get packCatalogIntro;
+
+  /// No description provided for @packCatalogIntroCurrent.
+  ///
+  /// In en, this message translates to:
+  /// **'This venue is on {name}. Changing the plan still goes through the support team.'**
+  String packCatalogIntroCurrent(String name);
+
+  /// No description provided for @packCatalogEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No public plans are available.'**
+  String get packCatalogEmpty;
+
+  /// No description provided for @packCurrent.
+  ///
+  /// In en, this message translates to:
+  /// **'Current'**
+  String get packCurrent;
+
+  /// No description provided for @packPriceMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'{price} TND / month'**
+  String packPriceMonth(String price);
+
+  /// No description provided for @packPriceYear.
+  ///
+  /// In en, this message translates to:
+  /// **'{price} TND / year'**
+  String packPriceYear(String price);
+
+  /// No description provided for @packFeeLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Customer app fee {percent}%'**
+  String packFeeLine(String percent);
+
+  /// No description provided for @packUnlimited.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlimited'**
+  String get packUnlimited;
+
+  /// No description provided for @packLimits.
+  ///
+  /// In en, this message translates to:
+  /// **'Limits'**
+  String get packLimits;
+
+  /// No description provided for @packCapabilities.
+  ///
+  /// In en, this message translates to:
+  /// **'Capabilities'**
+  String get packCapabilities;
+
+  /// No description provided for @packLimitValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{label}: {value}'**
+  String packLimitValue(String label, String value);
+
+  /// No description provided for @packCapEmployees.
+  ///
+  /// In en, this message translates to:
+  /// **'Employees'**
+  String get packCapEmployees;
+
+  /// No description provided for @packCapTables.
+  ///
+  /// In en, this message translates to:
+  /// **'Tables'**
+  String get packCapTables;
+
+  /// No description provided for @packCapCategories.
+  ///
+  /// In en, this message translates to:
+  /// **'Categories'**
+  String get packCapCategories;
+
+  /// No description provided for @packCapArticles.
+  ///
+  /// In en, this message translates to:
+  /// **'Articles'**
+  String get packCapArticles;
+
+  /// No description provided for @packCapIngredients.
+  ///
+  /// In en, this message translates to:
+  /// **'Ingredients'**
+  String get packCapIngredients;
+
+  /// No description provided for @packCapDiscovery.
+  ///
+  /// In en, this message translates to:
+  /// **'Customer map'**
+  String get packCapDiscovery;
+
+  /// No description provided for @packCapQr.
+  ///
+  /// In en, this message translates to:
+  /// **'Table QR'**
+  String get packCapQr;
+
+  /// No description provided for @packCapOrdering.
+  ///
+  /// In en, this message translates to:
+  /// **'Customer ordering'**
+  String get packCapOrdering;
+
+  /// No description provided for @packCapInventory.
+  ///
+  /// In en, this message translates to:
+  /// **'Inventory and recipes'**
+  String get packCapInventory;
+
+  /// No description provided for @packCapAppend.
+  ///
+  /// In en, this message translates to:
+  /// **'Add items to an open order'**
+  String get packCapAppend;
+
+  /// No description provided for @packCapMultiOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Several orders on a table'**
+  String get packCapMultiOrder;
+
+  /// No description provided for @packCapStrict.
+  ///
+  /// In en, this message translates to:
+  /// **'Strict kitchen steps'**
+  String get packCapStrict;
+
+  /// No description provided for @packCapAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom access profiles'**
+  String get packCapAccess;
 }
 
 class _AppLocalizationsDelegate

@@ -9,7 +9,7 @@ class PackCatalog {
   static const freeCode = 'free';
 
   /// Seeds Counter, Floor, House, Group, and the private free pack.
-  static Future<void> ensure(Session session) async {
+  static Future<void>  ensure(Session session) async {
     final existing = await Pack.db.count(session);
     if (existing > 0) {
       return;

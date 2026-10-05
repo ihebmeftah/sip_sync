@@ -1472,4 +1472,93 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get loadingMore => 'جارٍ تحميل المزيد…';
+
+  @override
+  String get packUpgrade => 'ترقية';
+
+  @override
+  String get packCatalogTitle => 'الباقات';
+
+  @override
+  String get packCatalogIntro =>
+      'قارن الباقات العامة. تغيير باقة هذا المكان يتم عبر فريق الدعم.';
+
+  @override
+  String packCatalogIntroCurrent(String name) {
+    return 'هذا المكان على $name. تغيير الباقة يتم عبر فريق الدعم.';
+  }
+
+  @override
+  String get packCatalogEmpty => 'لا توجد باقات عامة.';
+
+  @override
+  String get packCurrent => 'الحالية';
+
+  @override
+  String packPriceMonth(String price) {
+    return '$price د.ت / شهر';
+  }
+
+  @override
+  String packPriceYear(String price) {
+    return '$price د.ت / سنة';
+  }
+
+  @override
+  String packFeeLine(String percent) {
+    return 'رسوم تطبيق الزبون $percent%';
+  }
+
+  @override
+  String get packUnlimited => 'بلا حد';
+
+  @override
+  String get packLimits => 'الحدود';
+
+  @override
+  String get packCapabilities => 'الإمكانات';
+
+  @override
+  String packLimitValue(String label, String value) {
+    return '$label: $value';
+  }
+
+  @override
+  String get packCapEmployees => 'الموظفون';
+
+  @override
+  String get packCapTables => 'الطاولات';
+
+  @override
+  String get packCapCategories => 'التصنيفات';
+
+  @override
+  String get packCapArticles => 'الأصناف';
+
+  @override
+  String get packCapIngredients => 'المكونات';
+
+  @override
+  String get packCapDiscovery => 'خريطة الزبائن';
+
+  @override
+  String get packCapQr => 'رمز الطاولة';
+
+  @override
+  String get packCapOrdering => 'طلب الزبون';
+
+  @override
+  String get packCapInventory => 'المخزون والوصفات';
+
+  @override
+  String get packCapAppend => 'إضافة أصناف إلى طلب';
+
+  @override
+  String get packCapMultiOrder => 'عدة طلبات على الطاولة';
+
+  @override
+  String get packCapStrict => 'خطوات المطبخ الصارمة';
+
+  @override
+  String get packCapAccess => 'ملفات صلاحيات مخصصة';
 }

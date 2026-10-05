@@ -4,7 +4,7 @@ Status: in progress
 
 ## Apps
 
-`sip_sync_server`, `backoffice`, `managment` (a new venue is placed on the free pack; the ops shell shows that pack). There is no self-serve upgrade. `Pack.listPublic` stays available for a later upgrade screen.
+`sip_sync_server`, `backoffice`, `managment` (a new venue is placed on the free pack; the ops shell shows that pack). There is no self-serve purchase. In the management app, an action the pack turns off — or a create that would pass a cap — is disabled and carries an Upgrade badge. Tapping the badge, or the Upgrade chip on the owner banner, lists public packs with price, limits, and capabilities. Changing the plan still goes through the support team. `Pack.listPublic` feeds that catalog.
 
 ## Actors and permissions
 
@@ -64,7 +64,7 @@ Before a write is stored, the server loads the venue pack:
 - Flags: customer ordering, appending items, inventory (ingredients, restock, recipes), custom access profiles, and turning on multi-order, strict mode, or append on the venue.
 - Customer discovery hides a venue from the customer map and venue page. Table QR hides sticker resolution. The owner app blocks QR export before the call when the pack leaves it off.
 
-The owner banner names the current pack and says a change goes through the support team. There is no self-serve upgrade. The management app blocks a create that would pass a cap or turn on a switch the pack leaves off, and shows that reason in a banner and a snackbar. The customer app shows the same snackbar when ordering is off, and hides the cart action. Discovery and table QR still answer as not found when those switches are off.
+The owner banner names the current pack, says a change goes through the support team, and offers an Upgrade chip that opens the public catalog. A locked action is drawn disabled with the same Upgrade badge; tapping it opens that catalog instead of running the action. A switch the pack leaves off stays off and locked unless it is already on, so the owner can still turn it off. The customer app shows a snackbar when ordering is off, and hides the cart action. Discovery and table QR still answer as not found when those switches are off.
 
 ## Demo data
 

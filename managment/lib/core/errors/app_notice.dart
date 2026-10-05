@@ -31,30 +31,3 @@ String captureError(BuildContext context, Object error) {
   }
   return key;
 }
-
-/// False when [current] is already at [max]. Shows [message].
-bool allowPackRoom(
-  BuildContext context, {
-  required int? max,
-  required int current,
-  required String message,
-}) {
-  if (max != null && current >= max) {
-    showAppSnackBar(context, message);
-    return false;
-  }
-  return true;
-}
-
-/// False when [allowed] is false. Shows [message].
-bool allowPackFeature(
-  BuildContext context, {
-  required bool allowed,
-  required String message,
-}) {
-  if (!allowed) {
-    showAppSnackBar(context, message);
-    return false;
-  }
-  return true;
-}

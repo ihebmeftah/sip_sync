@@ -1505,4 +1505,93 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get loadingMore => 'Loading more…';
+
+  @override
+  String get packUpgrade => 'Upgrade';
+
+  @override
+  String get packCatalogTitle => 'Plans';
+
+  @override
+  String get packCatalogIntro =>
+      'Compare the public plans. Changing this venue\'s plan still goes through the support team.';
+
+  @override
+  String packCatalogIntroCurrent(String name) {
+    return 'This venue is on $name. Changing the plan still goes through the support team.';
+  }
+
+  @override
+  String get packCatalogEmpty => 'No public plans are available.';
+
+  @override
+  String get packCurrent => 'Current';
+
+  @override
+  String packPriceMonth(String price) {
+    return '$price TND / month';
+  }
+
+  @override
+  String packPriceYear(String price) {
+    return '$price TND / year';
+  }
+
+  @override
+  String packFeeLine(String percent) {
+    return 'Customer app fee $percent%';
+  }
+
+  @override
+  String get packUnlimited => 'Unlimited';
+
+  @override
+  String get packLimits => 'Limits';
+
+  @override
+  String get packCapabilities => 'Capabilities';
+
+  @override
+  String packLimitValue(String label, String value) {
+    return '$label: $value';
+  }
+
+  @override
+  String get packCapEmployees => 'Employees';
+
+  @override
+  String get packCapTables => 'Tables';
+
+  @override
+  String get packCapCategories => 'Categories';
+
+  @override
+  String get packCapArticles => 'Articles';
+
+  @override
+  String get packCapIngredients => 'Ingredients';
+
+  @override
+  String get packCapDiscovery => 'Customer map';
+
+  @override
+  String get packCapQr => 'Table QR';
+
+  @override
+  String get packCapOrdering => 'Customer ordering';
+
+  @override
+  String get packCapInventory => 'Inventory and recipes';
+
+  @override
+  String get packCapAppend => 'Add items to an open order';
+
+  @override
+  String get packCapMultiOrder => 'Several orders on a table';
+
+  @override
+  String get packCapStrict => 'Strict kitchen steps';
+
+  @override
+  String get packCapAccess => 'Custom access profiles';
 }

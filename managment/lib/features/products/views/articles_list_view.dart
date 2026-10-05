@@ -3,10 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sip_sync_client/sip_sync_client.dart';
 
 import '../../../core/di/app_providers.dart';
-import '../../../core/errors/app_notice.dart';
 import '../../../core/errors/error_mapper.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
+import '../../../core/widgets/pack_locked_action.dart';
 import '../../../core/widgets/app_loader.dart';
 import '../../../core/widgets/refresh_on_appear.dart';
 import '../../../l10n/generated/app_localizations.dart';
@@ -52,8 +52,14 @@ class _ArticlesListViewState extends ConsumerState<ArticlesListView> {
     final text = Theme.of(context).textTheme;
     final scheme = Theme.of(context).colorScheme;
     final isOwner = ref.watch(appSessionStoreProvider).isOwner;
-    final currency = ref.watch(buildingSelectionProvider)?.currencyCode ?? '';
+    final building = ref.watch(buildingSelectionProvider);
+    final currency = building?.currencyCode ?? '';
     final async = ref.watch(articlesViewModelProvider(widget.buildingId));
+    final inventoryLocked = building?.pack.inventory == false;
+    final addLocked = packCapReached(
+      max: building?.pack.maxArticles,
+      current: async.asData?.value.length ?? 0,
+    );
     final categories =
         ref.watch(categoryCatalogProvider(widget.buildingId)).asData?.value ??
         const <MenuCategoryView>[];
@@ -87,26 +93,21 @@ class _ArticlesListViewState extends ConsumerState<ArticlesListView> {
                   ),
                   if (isOwner) ...[
                     const SizedBox(width: AppSpacing.sm),
-                    FilledButton.icon(
-                      style: FilledButton.styleFrom(
-                        minimumSize: const Size(0, 44),
+                    PackLockedAction(
+                      locked: addLocked,
+                      child: FilledButton.icon(
+                        style: FilledButton.styleFrom(
+                          minimumSize: const Size(0, 44),
+                        ),
+                        onPressed: addLocked
+                            ? null
+                            : () => openArticleForm(
+                                context,
+                                buildingId: widget.buildingId,
+                              ),
+                        icon: const Icon(Icons.add),
+                        label: AppButtonLabel(l10n.addArticle),
                       ),
-                      onPressed: () {
-                        final pack = ref.read(buildingSelectionProvider)?.pack;
-                        final count = async.asData?.value.length ?? 0;
-                        if (pack != null &&
-                            !allowPackRoom(
-                              context,
-                              max: pack.maxArticles,
-                              current: count,
-                              message: l10n.errorPackLimitArticles,
-                            )) {
-                          return;
-                        }
-                        openArticleForm(context, buildingId: widget.buildingId);
-                      },
-                      icon: const Icon(Icons.add),
-                      label: AppButtonLabel(l10n.addArticle),
                     ),
                   ],
                 ],
@@ -187,32 +188,24 @@ class _ArticlesListViewState extends ConsumerState<ArticlesListView> {
                                       )
                                     : null,
                               ),
-                              TextButton.icon(
-                                onPressed: () {
-                                  final pack = ref
-                                      .read(buildingSelectionProvider)
-                                      ?.pack;
-                                  if (pack != null &&
-                                      !allowPackFeature(
-                                        context,
-                                        allowed: pack.inventory,
-                                        message: l10n.errorPackFeatureInventory,
-                                      )) {
-                                    return;
-                                  }
-                                  openArticleComposition(
-                                    context,
-                                    buildingId: widget.buildingId,
-                                    article: article,
-                                  );
-                                },
-                                icon: const Icon(Icons.blender_outlined),
-                                label: Text(
-                                  article.compositionLineCount == 0
-                                      ? l10n.compositionNone
-                                      : l10n.compositionCount(
-                                          article.compositionLineCount,
+                              PackLockedAction(
+                                locked: inventoryLocked,
+                                child: TextButton.icon(
+                                  onPressed: inventoryLocked
+                                      ? null
+                                      : () => openArticleComposition(
+                                          context,
+                                          buildingId: widget.buildingId,
+                                          article: article,
                                         ),
+                                  icon: const Icon(Icons.blender_outlined),
+                                  label: Text(
+                                    article.compositionLineCount == 0
+                                        ? l10n.compositionNone
+                                        : l10n.compositionCount(
+                                            article.compositionLineCount,
+                                          ),
+                                  ),
                                 ),
                               ),
                               const Divider(),

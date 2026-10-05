@@ -5,11 +5,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sip_sync_client/sip_sync_client.dart';
 
 import '../../../core/di/app_providers.dart';
-import '../../../core/errors/app_notice.dart';
 import '../../../core/errors/error_mapper.dart';
 import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
+import '../../../core/widgets/pack_catalog_sheet.dart';
+import '../../../core/widgets/pack_locked_action.dart';
 import '../../../core/widgets/app_loader.dart';
 import '../../../core/widgets/refresh_on_appear.dart';
 import '../../../l10n/generated/app_localizations.dart';
@@ -53,11 +54,6 @@ class _TablesListViewState extends ConsumerState<TablesListView> {
 
   Future<void> _exportQrPdf() async {
     final l10n = AppLocalizations.of(context)!;
-    final pack = ref.read(buildingSelectionProvider)?.pack;
-    if (pack != null && !pack.tableQr) {
-      showAppSnackBar(context, l10n.errorPackFeatureQr);
-      return;
-    }
     setState(() => _exportingQr = true);
     try {
       final tables = await ref
@@ -160,6 +156,11 @@ class _TablesListViewState extends ConsumerState<TablesListView> {
         .watch(tablesViewModelProvider(widget.buildingId).notifier)
         .filter;
     final tables = async.asData?.value ?? const <VenueTableView>[];
+    final pack = ref.watch(buildingSelectionProvider)?.pack;
+    final qrLocked = pack != null && !pack.tableQr;
+    final addLocked =
+        filter == TableListFilter.all &&
+        packCapReached(max: pack?.maxTables, current: tables.length);
     final hint = picking
         ? l10n.orderSelectTablePrompt
         : isEmployee
@@ -218,53 +219,66 @@ class _TablesListViewState extends ConsumerState<TablesListView> {
                         runSpacing: AppSpacing.sm,
                         alignment: WrapAlignment.end,
                         children: [
-                          OutlinedButton.icon(
-                            style: OutlinedButton.styleFrom(
-                              minimumSize: const Size(0, 44),
+                          PackLockedAction(
+                            locked: qrLocked,
+                            child: OutlinedButton.icon(
+                              style: OutlinedButton.styleFrom(
+                                minimumSize: const Size(0, 44),
+                              ),
+                              onPressed: qrLocked || _exportingQr
+                                  ? null
+                                  : _exportQrPdf,
+                              icon: _exportingQr
+                                  ? const SizedBox(
+                                      width: 18,
+                                      height: 18,
+                                      child: AppBusyIndicator(),
+                                    )
+                                  : const Icon(Icons.qr_code_2_outlined),
+                              label: AppButtonLabel(l10n.tableQrExportPdf),
                             ),
-                            onPressed: _exportingQr ? null : _exportQrPdf,
-                            icon: _exportingQr
-                                ? const SizedBox(
-                                    width: 18,
-                                    height: 18,
-                                    child: AppBusyIndicator(),
-                                  )
-                                : const Icon(Icons.qr_code_2_outlined),
-                            label: AppButtonLabel(l10n.tableQrExportPdf),
                           ),
-                          FilledButton.icon(
-                            style: FilledButton.styleFrom(
-                              minimumSize: const Size(0, 44),
+                          PackLockedAction(
+                            locked: addLocked,
+                            child: FilledButton.icon(
+                              style: FilledButton.styleFrom(
+                                minimumSize: const Size(0, 44),
+                              ),
+                              onPressed: addLocked
+                                  ? null
+                                  : () async {
+                                      final all = await ref
+                                          .read(
+                                            tablesViewModelProvider(
+                                              widget.buildingId,
+                                            ).notifier,
+                                          )
+                                          .listAllForExport();
+                                      if (!context.mounted) return;
+                                      final cap = ref
+                                          .read(buildingSelectionProvider)
+                                          ?.pack
+                                          .maxTables;
+                                      if (packCapReached(
+                                        max: cap,
+                                        current: all.length,
+                                      )) {
+                                        showPackCatalog(context);
+                                        return;
+                                      }
+                                      final nextNumber = all.isEmpty
+                                          ? 1
+                                          : all
+                                                    .map((t) => t.number)
+                                                    .reduce(math.max) +
+                                                1;
+                                      await _openForm(
+                                        suggestedNumber: nextNumber,
+                                      );
+                                    },
+                              icon: const Icon(Icons.add),
+                              label: AppButtonLabel(l10n.addTable),
                             ),
-                            onPressed: () async {
-                              final all = await ref
-                                  .read(
-                                    tablesViewModelProvider(
-                                      widget.buildingId,
-                                    ).notifier,
-                                  )
-                                  .listAllForExport();
-                              if (!context.mounted) return;
-                              final pack = ref
-                                  .read(buildingSelectionProvider)
-                                  ?.pack;
-                              if (pack != null &&
-                                  !allowPackRoom(
-                                    context,
-                                    max: pack.maxTables,
-                                    current: all.length,
-                                    message: l10n.errorPackLimitTables,
-                                  )) {
-                                return;
-                              }
-                              final nextNumber = all.isEmpty
-                                  ? 1
-                                  : all.map((t) => t.number).reduce(math.max) +
-                                        1;
-                              await _openForm(suggestedNumber: nextNumber);
-                            },
-                            icon: const Icon(Icons.add),
-                            label: AppButtonLabel(l10n.addTable),
                           ),
                         ],
                       ),

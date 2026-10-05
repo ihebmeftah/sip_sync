@@ -7,6 +7,8 @@ import '../../../core/access/floor_access.dart';
 import '../../../core/di/app_providers.dart';
 import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_tokens.dart';
+import '../../../core/widgets/app_controls.dart';
+import '../../../core/widgets/pack_locked_action.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../orders/view_models/order_draft_view_model.dart';
 import '../../orders/view_models/orders_view_model.dart';
@@ -208,6 +210,49 @@ class _TableQrScanViewState extends ConsumerState<TableQrScanView> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final scheme = Theme.of(context).colorScheme;
+    final qrLocked =
+        ref.watch(buildingSelectionProvider)?.pack.tableQr == false;
+    if (qrLocked) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(l10n.tableQrScanTitle),
+          leading: IconButton(
+            icon: const Icon(Icons.close),
+            onPressed: () =>
+                TablesRoute(buildingId: widget.buildingId).go(context),
+          ),
+        ),
+        body: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 420),
+            child: Padding(
+              padding: const EdgeInsets.all(AppSpacing.xl),
+              child: PackLockedAction(
+                locked: true,
+                child: AppSurfaceCard(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.qr_code_2_outlined,
+                        size: 40,
+                        color: scheme.primary,
+                      ),
+                      const SizedBox(height: AppSpacing.md),
+                      Text(
+                        l10n.errorPackFeatureQr,
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.bodyLarge,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
 
     return Scaffold(
       backgroundColor: Colors.black,

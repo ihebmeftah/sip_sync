@@ -10,6 +10,7 @@ import '../../../core/errors/form_validators.dart';
 import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
+import '../../../core/widgets/pack_locked_action.dart';
 import '../../../core/widgets/app_loader.dart';
 import '../../../core/widgets/app_phone_field.dart';
 import '../../../core/phone/phone_numbers.dart';
@@ -186,6 +187,7 @@ class _BuildingFormViewState extends ConsumerState<BuildingFormView> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final async = ref.watch(buildingFormViewModelProvider(_id));
+    final pack = async.asData?.value?.pack;
     async.whenData((building) {
       if (building != null) {
         _fill(building);
@@ -418,65 +420,36 @@ class _BuildingFormViewState extends ConsumerState<BuildingFormView> {
                           return null;
                         },
                       ),
-                      SwitchListTile(
-                        contentPadding: EdgeInsets.zero,
-                        title: Text(l10n.buildingTableMultiOrder),
-                        subtitle: Text(l10n.buildingTableMultiOrderHint),
+                      PackLockedSwitch(
+                        locked:
+                            pack != null &&
+                            !pack.tableMultiOrder &&
+                            !_tableMultiOrder,
+                        title: l10n.buildingTableMultiOrder,
+                        subtitle: l10n.buildingTableMultiOrderHint,
                         value: _tableMultiOrder,
-                        onChanged: (value) {
-                          final pack = async.asData?.value?.pack;
-                          if (value &&
-                              !_tableMultiOrder &&
-                              pack != null &&
-                              !pack.tableMultiOrder) {
-                            showAppSnackBar(
-                              context,
-                              l10n.errorPackFeatureMultiOrder,
-                            );
-                            return;
-                          }
-                          setState(() => _tableMultiOrder = value);
-                        },
+                        onChanged: (value) =>
+                            setState(() => _tableMultiOrder = value),
                       ),
-                      SwitchListTile(
-                        contentPadding: EdgeInsets.zero,
-                        title: Text(l10n.buildingAllowAppendingItems),
-                        subtitle: Text(l10n.buildingAllowAppendingItemsHint),
+                      PackLockedSwitch(
+                        locked:
+                            pack != null &&
+                            !pack.allowAppendingItems &&
+                            !_allowAppendingItemsToOrder,
+                        title: l10n.buildingAllowAppendingItems,
+                        subtitle: l10n.buildingAllowAppendingItemsHint,
                         value: _allowAppendingItemsToOrder,
-                        onChanged: (value) {
-                          final pack = async.asData?.value?.pack;
-                          if (value &&
-                              !_allowAppendingItemsToOrder &&
-                              pack != null &&
-                              !pack.allowAppendingItems) {
-                            showAppSnackBar(
-                              context,
-                              l10n.errorPackFeatureAppend,
-                            );
-                            return;
-                          }
-                          setState(() => _allowAppendingItemsToOrder = value);
-                        },
+                        onChanged: (value) =>
+                            setState(() => _allowAppendingItemsToOrder = value),
                       ),
-                      SwitchListTile(
-                        contentPadding: EdgeInsets.zero,
-                        title: Text(l10n.buildingStrictMode),
-                        subtitle: Text(l10n.buildingStrictModeHint),
+                      PackLockedSwitch(
+                        locked:
+                            pack != null && !pack.strictMode && !_strictMode,
+                        title: l10n.buildingStrictMode,
+                        subtitle: l10n.buildingStrictModeHint,
                         value: _strictMode,
-                        onChanged: (value) {
-                          final pack = async.asData?.value?.pack;
-                          if (value &&
-                              !_strictMode &&
-                              pack != null &&
-                              !pack.strictMode) {
-                            showAppSnackBar(
-                              context,
-                              l10n.errorPackFeatureStrict,
-                            );
-                            return;
-                          }
-                          setState(() => _strictMode = value);
-                        },
+                        onChanged: (value) =>
+                            setState(() => _strictMode = value),
                       ),
                       Text(
                         l10n.buildingStrictModeStepsTitle,

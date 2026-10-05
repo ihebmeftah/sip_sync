@@ -524,6 +524,93 @@ final class OrderRepositoryProvider
 
 String _$orderRepositoryHash() => r'123bae3919b9677cdc746da0f56d37ca35bdb5c1';
 
+@ProviderFor(packRepository)
+const packRepositoryProvider = PackRepositoryProvider._();
+
+final class PackRepositoryProvider
+    extends $FunctionalProvider<PackRepository, PackRepository, PackRepository>
+    with $Provider<PackRepository> {
+  const PackRepositoryProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'packRepositoryProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$packRepositoryHash();
+
+  @$internal
+  @override
+  $ProviderElement<PackRepository> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  PackRepository create(Ref ref) {
+    return packRepository(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(PackRepository value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<PackRepository>(value),
+    );
+  }
+}
+
+String _$packRepositoryHash() => r'd401f121657f67a0d50be9ec7cd41401962dc635';
+
+/// Enabled public plans. The owner compares them; support still changes the venue.
+
+@ProviderFor(publicPacks)
+const publicPacksProvider = PublicPacksProvider._();
+
+/// Enabled public plans. The owner compares them; support still changes the venue.
+
+final class PublicPacksProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<List<PackPublicView>>,
+          List<PackPublicView>,
+          FutureOr<List<PackPublicView>>
+        >
+    with
+        $FutureModifier<List<PackPublicView>>,
+        $FutureProvider<List<PackPublicView>> {
+  /// Enabled public plans. The owner compares them; support still changes the venue.
+  const PublicPacksProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'publicPacksProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$publicPacksHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<List<PackPublicView>> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<List<PackPublicView>> create(Ref ref) {
+    return publicPacks(ref);
+  }
+}
+
+String _$publicPacksHash() => r'd45cabd355a19fee5aa456bd7d7fa5d853bd7b57';
+
 @ProviderFor(appSessionStore)
 const appSessionStoreProvider = AppSessionStoreProvider._();
 

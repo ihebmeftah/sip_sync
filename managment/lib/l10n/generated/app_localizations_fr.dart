@@ -1531,4 +1531,93 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get loadingMore => 'Chargement…';
+
+  @override
+  String get packUpgrade => 'Améliorer';
+
+  @override
+  String get packCatalogTitle => 'Packs';
+
+  @override
+  String get packCatalogIntro =>
+      'Comparez les packs publics. Changer le pack de ce lieu passe toujours par l\'équipe support.';
+
+  @override
+  String packCatalogIntroCurrent(String name) {
+    return 'Ce lieu est sur $name. Changer de pack passe toujours par l\'équipe support.';
+  }
+
+  @override
+  String get packCatalogEmpty => 'Aucun pack public n\'est disponible.';
+
+  @override
+  String get packCurrent => 'Actuel';
+
+  @override
+  String packPriceMonth(String price) {
+    return '$price TND / mois';
+  }
+
+  @override
+  String packPriceYear(String price) {
+    return '$price TND / an';
+  }
+
+  @override
+  String packFeeLine(String percent) {
+    return 'Frais app client $percent %';
+  }
+
+  @override
+  String get packUnlimited => 'Illimité';
+
+  @override
+  String get packLimits => 'Limites';
+
+  @override
+  String get packCapabilities => 'Capacités';
+
+  @override
+  String packLimitValue(String label, String value) {
+    return '$label : $value';
+  }
+
+  @override
+  String get packCapEmployees => 'Employés';
+
+  @override
+  String get packCapTables => 'Tables';
+
+  @override
+  String get packCapCategories => 'Catégories';
+
+  @override
+  String get packCapArticles => 'Articles';
+
+  @override
+  String get packCapIngredients => 'Ingrédients';
+
+  @override
+  String get packCapDiscovery => 'Carte client';
+
+  @override
+  String get packCapQr => 'QR des tables';
+
+  @override
+  String get packCapOrdering => 'Commande client';
+
+  @override
+  String get packCapInventory => 'Stock et recettes';
+
+  @override
+  String get packCapAppend => 'Ajouter des articles à une commande';
+
+  @override
+  String get packCapMultiOrder => 'Plusieurs commandes par table';
+
+  @override
+  String get packCapStrict => 'Étapes cuisine strictes';
+
+  @override
+  String get packCapAccess => 'Profils d\'accès personnalisés';
 }

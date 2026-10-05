@@ -5,7 +5,6 @@ import 'package:sip_sync_client/sip_sync_client.dart';
 
 import '../../features/auth/view_models/auth_view_model.dart';
 import '../../features/orders/view_models/order_draft_view_model.dart';
-import '../errors/app_notice.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../di/app_providers.dart';
 import '../di/building_session.dart';
@@ -15,6 +14,26 @@ import '../routing/app_routes.dart';
 import '../theme/app_tokens.dart';
 import 'app_controls.dart';
 import 'pack_banner.dart';
+import 'pack_catalog_sheet.dart';
+import 'pack_locked_action.dart';
+
+Widget _upgradeIcon(
+  IconData icon, {
+  required bool upgrade,
+  required AppLocalizations l10n,
+  required ColorScheme scheme,
+}) {
+  final glyph = Icon(icon);
+  if (!upgrade) {
+    return glyph;
+  }
+  return Badge(
+    label: Text(l10n.packUpgrade),
+    backgroundColor: scheme.tertiary,
+    textColor: scheme.onTertiary,
+    child: glyph,
+  );
+}
 
 /// Persistent operations chrome: slate rail on wide screens; app bar, drawer,
 /// bottom nav (dashboard / tables / orders), and order FAB on compact.
@@ -128,7 +147,12 @@ class _OpsShellState extends ConsumerState<OpsShell> {
     String buildingId,
     int index, {
     required bool isEmployee,
+    required bool scanLocked,
   }) {
+    if (isEmployee && index == 1 && scanLocked) {
+      showPackCatalog(context);
+      return;
+    }
     setState(() => _lastBottomIndex = index);
     if (isEmployee) {
       switch (index) {
@@ -230,6 +254,8 @@ class _OpsShellState extends ConsumerState<OpsShell> {
         final l10n = AppLocalizations.of(context)!;
         final scheme = Theme.of(context).colorScheme;
         final isEmployee = ref.watch(appSessionStoreProvider).isEmployee;
+        final scanLocked =
+            ref.watch(buildingSelectionProvider)?.pack.tableQr == false;
         final draft = buildingId.isEmpty
             ? const OrderDraftState()
             : ref.watch(orderDraftViewModelProvider(buildingId));
@@ -282,6 +308,7 @@ class _OpsShellState extends ConsumerState<OpsShell> {
                     buildingId,
                     index,
                     isEmployee: isEmployee,
+                    scanLocked: scanLocked,
                   ),
                   destinations: isEmployee
                       ? [
@@ -291,8 +318,18 @@ class _OpsShellState extends ConsumerState<OpsShell> {
                             label: l10n.navTables,
                           ),
                           NavigationDestination(
-                            icon: const Icon(Icons.qr_code_scanner_outlined),
-                            selectedIcon: const Icon(Icons.qr_code_scanner),
+                            icon: _upgradeIcon(
+                              Icons.qr_code_scanner_outlined,
+                              upgrade: scanLocked,
+                              l10n: l10n,
+                              scheme: scheme,
+                            ),
+                            selectedIcon: _upgradeIcon(
+                              Icons.qr_code_scanner,
+                              upgrade: scanLocked,
+                              l10n: l10n,
+                              scheme: scheme,
+                            ),
                             label: l10n.navScanTable,
                           ),
                           NavigationDestination(
@@ -489,12 +526,19 @@ class OpsSideBar extends ConsumerWidget {
                             icon: Icons.science_outlined,
                             label: l10n.navIngredients,
                             indent: true,
+                            upgradeLocked: selected?.pack.inventory == false,
                             selected: location.endsWith(
                               '/products/ingredients',
                             ),
-                            onTap: () => IngredientsRoute(
-                              buildingId: buildingId,
-                            ).go(context),
+                            onTap: () {
+                              if (selected?.pack.inventory == false) {
+                                showPackCatalog(context, closeDrawer: inDrawer);
+                                return;
+                              }
+                              IngredientsRoute(
+                                buildingId: buildingId,
+                              ).go(context);
+                            },
                           ),
                         ],
                       ),
@@ -520,13 +564,11 @@ class OpsSideBar extends ConsumerWidget {
                       _NavTile(
                         icon: Icons.qr_code_scanner_outlined,
                         label: l10n.navScanTable,
+                        upgradeLocked: selected?.pack.tableQr == false,
                         selected: location.contains('/tables/scan'),
                         onTap: () {
-                          final pack = ref
-                              .read(buildingSelectionProvider)
-                              ?.pack;
-                          if (pack != null && !pack.tableQr) {
-                            showAppSnackBar(context, l10n.errorPackFeatureQr);
+                          if (selected?.pack.tableQr == false) {
+                            showPackCatalog(context, closeDrawer: inDrawer);
                             return;
                           }
                           TableQrScanRoute(buildingId: buildingId).go(context);
@@ -626,6 +668,7 @@ class _NavTile extends StatelessWidget {
     required this.selected,
     required this.onTap,
     this.indent = false,
+    this.upgradeLocked = false,
   });
 
   final IconData icon;
@@ -633,6 +676,9 @@ class _NavTile extends StatelessWidget {
   final bool selected;
   final VoidCallback? onTap;
   final bool indent;
+
+  /// Pack turns this destination off. The row stays tappable and opens plans.
+  final bool upgradeLocked;
 
   @override
   Widget build(BuildContext context) {
@@ -658,19 +704,26 @@ class _NavTile extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  Icon(icon, color: fg, size: 22),
+                  Opacity(
+                    opacity: upgradeLocked ? 0.45 : 1,
+                    child: Icon(icon, color: fg, size: 22),
+                  ),
                   const SizedBox(width: AppSpacing.md),
                   Expanded(
-                    child: Text(
-                      label,
-                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                        color: fg,
-                        fontWeight: selected
-                            ? FontWeight.w700
-                            : FontWeight.w500,
+                    child: Opacity(
+                      opacity: upgradeLocked ? 0.45 : 1,
+                      child: Text(
+                        label,
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          color: fg,
+                          fontWeight: selected
+                              ? FontWeight.w700
+                              : FontWeight.w500,
+                        ),
                       ),
                     ),
                   ),
+                  if (upgradeLocked) const PackUpgradeChip(),
                 ],
               ),
             ),
