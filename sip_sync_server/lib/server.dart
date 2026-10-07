@@ -5,12 +5,10 @@ import 'package:serverpod_cloud_storage/serverpod_cloud_storage.dart';
 
 import 'src/auth/session_service.dart';
 import 'src/auth/super_admin_auth_endpoint.dart';
-import 'src/buildings/country_names.dart';
 import 'src/cache_busting.dart';
 import 'src/generated/serverpod.dart';
 import 'src/packs/pack_catalog.dart';
 import 'src/packs/pack_expiry.dart';
-import 'src/seed/dev_seed.dart';
 import 'src/web/routes/app_config_route.dart';
 
 /// One sweep timer for the process. Replaced if the isolate starts again.
@@ -79,9 +77,8 @@ void run(List<String> args) async {
   await pod.withSession((session) async {
     await SuperAdminAuthEndpoint().ensureDefaultAdmin(session);
     await PackCatalog.ensure(session);
-    await CountryNames.fillMissing(session);
     await PackExpiry.revertDue(session);
-    await DevSeed.ensureDemoData(session);
+//    await DevSeed.ensureDemoData(session);
   });
   _watchPackExpiry(pod);
 }

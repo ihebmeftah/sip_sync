@@ -11,7 +11,6 @@ import '../packs/pack_gate.dart';
 import '../packs/pack_history.dart';
 import '../packs/pack_service.dart';
 import '../packs/pack_term.dart';
-import 'country_names.dart';
 import 'strict_mode.dart';
 
 /// Owner venues; employees can read their assigned building.
@@ -111,7 +110,6 @@ class BuildingService {
   /// so a map can place a marker. Blank names are filled from the ISO code first.
   Future<List<CountryBuildingStat>> countryStats(Session session) async {
     AuthGuard.requireSuperAdmin(session);
-    await CountryNames.fillMissing(session);
     final rows = await session.db.unsafeQuery('''
 SELECT "countryCode", "countryName", COUNT(*)::int, AVG(latitude), AVG(longitude)
 FROM building
