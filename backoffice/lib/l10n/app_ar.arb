@@ -155,6 +155,10 @@
   "capStrictModeHint": "يمكن للمكان فرض الخطوات بالترتيب: مأخوذ، جاهز، مُقدَّم، ثم مدفوع.",
   "capCustomAccess": "ملفات صلاحيات مخصصة",
   "capCustomAccessHint": "يمكن للمالك إضافة ملفات صلاحيات غير النادل والمدير والباريستا.",
+  "capReservations": "الحجوزات",
+  "capReservationsHint": "يمكن للموظفين والزبائن حجز الطاولات. يسري حد يومي إذا تم ضبطه.",
+  "capMaxReservations": "حجوزات في اليوم",
+  "capMaxReservationsHint": "اتركه فارغاً بلا حد. يُحسب كل حجز غير ملغى يبدأ في تاريخ UTC واحد.",
   "packPriceMonth": "{price} د.ت / شهر",
   "@packPriceMonth": {
     "placeholders": { "price": { "type": "String" } }
@@ -186,6 +190,8 @@
   "errorPackFeatureStrict": "هذه الباقة لا تشمل خطوات الطلب الصارمة.",
   "errorPackFeatureAccess": "هذه الباقة لا تشمل ملفات صلاحيات مخصصة.",
   "errorPackFeatureQr": "هذه الباقة لا تشمل رموز QR للطاولات.",
+  "errorPackFeatureReservations": "هذه الباقة لا تشمل الحجوزات.",
+  "errorPackLimitReservations": "بلغت هذه الباقة حد الحجوزات لهذا اليوم.",
   "errorPackPaidActive": "هذا المكان على باقة مدفوعة. يمكن تعيين باقة أخرى بعد انتهاء المدة.",
   "packHistoryTitle": "سجل الباقات",
   "packHistoryCurrent": "الحالية",

@@ -309,6 +309,9 @@ class _Repo extends CustomerDiscoveryRepository {
         ),
         CustomerTablePreview(id: _buildingId, number: 4, maxSeats: 2),
       ],
+      bookableTables: [
+        CustomerTablePreview(id: _buildingId, number: 1, maxSeats: 2),
+      ],
       categories: [
         for (var n = 1; n <= 5; n++)
           CustomerCategoryPreview(
@@ -335,6 +338,8 @@ class _Repo extends CustomerDiscoveryRepository {
           ),
       ],
       customerOrdering: true,
+      reservationsEnabled: false,
+      reservationFee: 0,
     );
   }
 

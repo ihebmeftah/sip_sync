@@ -97,7 +97,7 @@ class TableFloorPreview extends StatelessWidget {
                       ),
                       child: Text(
                         table.isActive
-                            ? _statusLabel(l10n, table.status)
+                            ? _statusLabel(l10n, table)
                             : l10n.tableFilterInactive,
                         style: text.labelMedium?.copyWith(
                           color: colors.stroke,
@@ -125,11 +125,15 @@ class TableFloorPreview extends StatelessWidget {
     return 136;
   }
 
-  static String _statusLabel(AppLocalizations l10n, TableFloorStatus status) {
-    return switch (status) {
+  static String _statusLabel(AppLocalizations l10n, VenueTableView table) {
+    return switch (table.status) {
       TableFloorStatus.available => l10n.tableStatusAvailable,
       TableFloorStatus.occupied => l10n.tableStatusOccupied,
-      TableFloorStatus.reserved => l10n.tableStatusReserved,
+      TableFloorStatus.reserved => switch (table.reservationPhase) {
+        ReservationPhase.holding => l10n.reservationHolding,
+        ReservationPhase.soon => l10n.reservationSoon,
+        ReservationPhase.none => l10n.tableStatusReserved,
+      },
     };
   }
 

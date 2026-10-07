@@ -480,6 +480,20 @@ class AppLocalizationsAr extends AppLocalizations {
       'يمكن للمالك إضافة ملفات صلاحيات غير النادل والمدير والباريستا.';
 
   @override
+  String get capReservations => 'الحجوزات';
+
+  @override
+  String get capReservationsHint =>
+      'يمكن للموظفين والزبائن حجز الطاولات. يسري حد يومي إذا تم ضبطه.';
+
+  @override
+  String get capMaxReservations => 'حجوزات في اليوم';
+
+  @override
+  String get capMaxReservationsHint =>
+      'اتركه فارغاً بلا حد. يُحسب كل حجز غير ملغى يبدأ في تاريخ UTC واحد.';
+
+  @override
   String packPriceMonth(String price) {
     return '$price د.ت / شهر';
   }
@@ -554,6 +568,13 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get errorPackFeatureQr => 'هذه الباقة لا تشمل رموز QR للطاولات.';
+
+  @override
+  String get errorPackFeatureReservations => 'هذه الباقة لا تشمل الحجوزات.';
+
+  @override
+  String get errorPackLimitReservations =>
+      'بلغت هذه الباقة حد الحجوزات لهذا اليوم.';
 
   @override
   String get errorPackPaidActive =>

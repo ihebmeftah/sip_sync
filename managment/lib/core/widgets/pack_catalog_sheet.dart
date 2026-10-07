@@ -167,6 +167,7 @@ class _PackCard extends StatelessWidget {
       (l10n.packCapCategories, caps.maxCategories),
       (l10n.packCapArticles, caps.maxArticles),
       (l10n.packCapIngredients, caps.maxIngredients),
+      (l10n.packCapReservationsPerDay, caps.maxReservationsPerDay),
     ];
     final flags = <(String, bool)>[
       (l10n.packCapDiscovery, caps.customerDiscovery),
@@ -177,6 +178,7 @@ class _PackCard extends StatelessWidget {
       (l10n.packCapMultiOrder, caps.tableMultiOrder),
       (l10n.packCapStrict, caps.strictMode),
       (l10n.packCapAccess, caps.customAccessProfiles),
+      (l10n.packCapReservations, caps.reservations),
     ];
 
     return Material(

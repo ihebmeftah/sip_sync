@@ -78,6 +78,7 @@ class AccessProfilesViewModel extends _$AccessProfilesViewModel {
     required bool preparation,
     required bool serving,
     required bool consultAllOrders,
+    required bool reservations,
   }) async {
     final saved = await ref
         .read(employeeAccessRepositoryProvider)
@@ -90,6 +91,7 @@ class AccessProfilesViewModel extends _$AccessProfilesViewModel {
           preparation: preparation,
           serving: serving,
           consultAllOrders: consultAllOrders,
+          reservations: reservations,
         );
     await refresh();
     return saved;
@@ -104,6 +106,7 @@ class AccessProfilesViewModel extends _$AccessProfilesViewModel {
     required bool preparation,
     required bool serving,
     required bool consultAllOrders,
+    required bool reservations,
   }) async {
     final saved = await ref
         .read(employeeAccessRepositoryProvider)
@@ -116,6 +119,7 @@ class AccessProfilesViewModel extends _$AccessProfilesViewModel {
           preparation: preparation,
           serving: serving,
           consultAllOrders: consultAllOrders,
+          reservations: reservations,
         );
     await refresh();
     return saved;

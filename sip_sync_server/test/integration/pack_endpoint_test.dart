@@ -53,6 +53,8 @@ void main() {
       bool tableMultiOrder = false,
       bool strictMode = false,
       bool customAccessProfiles = false,
+      bool reservations = false,
+      int? maxReservationsPerDay,
     }) {
       return PackCapabilities(
         maxEmployees: maxEmployees,
@@ -68,6 +70,8 @@ void main() {
         tableMultiOrder: tableMultiOrder,
         strictMode: strictMode,
         customAccessProfiles: customAccessProfiles,
+        reservations: reservations,
+        maxReservationsPerDay: maxReservationsPerDay,
       );
     }
 

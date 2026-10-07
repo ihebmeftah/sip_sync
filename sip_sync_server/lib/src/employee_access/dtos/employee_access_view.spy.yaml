@@ -9,4 +9,5 @@ fields:
   preparation: bool
   serving: bool
   consultAllOrders: bool
+  reservations: bool
   createdAt: DateTime

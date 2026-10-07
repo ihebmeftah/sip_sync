@@ -1,0 +1,4 @@
+exception: ReservationException
+fields:
+  message: String
+  code: ReservationErrorCode

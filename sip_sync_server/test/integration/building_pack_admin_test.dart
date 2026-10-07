@@ -208,6 +208,7 @@ void main() {
             tableMultiOrder: false,
             strictMode: false,
             customAccessProfiles: false,
+            reservations: false,
           ),
         ),
       );

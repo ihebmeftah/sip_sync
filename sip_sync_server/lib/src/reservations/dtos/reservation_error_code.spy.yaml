@@ -1,0 +1,7 @@
+enum: ReservationErrorCode
+serialized: byName
+values:
+  - invalidInput
+  - notAuthorized
+  - notFound
+  - overlap

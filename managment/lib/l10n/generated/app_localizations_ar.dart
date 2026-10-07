@@ -1457,6 +1457,127 @@ class AppLocalizationsAr extends AppLocalizations {
   String get errorPackFeatureQr => 'هذه الباقة لا تشمل رموز QR للطاولات.';
 
   @override
+  String get navReservations => 'الحجوزات';
+
+  @override
+  String get reservationsTitle => 'الحجوزات';
+
+  @override
+  String get reservationNew => 'حجز جديد';
+
+  @override
+  String get reservationPreviousDay => 'اليوم السابق';
+
+  @override
+  String get reservationNextDay => 'اليوم التالي';
+
+  @override
+  String get reservationEmpty => 'لا حجوزات في هذا اليوم.';
+
+  @override
+  String get reservationGuestName => 'اسم الضيف';
+
+  @override
+  String get reservationGuestPhone => 'الهاتف';
+
+  @override
+  String get reservationPaidAmount => 'المبلغ المدفوع';
+
+  @override
+  String get reservationPaidInvalid => 'أدخل مبلغاً من 0 إلى 1000000.';
+
+  @override
+  String get reservationFee => 'رسوم الحجز';
+
+  @override
+  String get reservationFeeHint => 'تملأ المبلغ في حجز الموظفين، بعملة المكان.';
+
+  @override
+  String get reservationDate => 'التاريخ';
+
+  @override
+  String get reservationStart => 'البداية';
+
+  @override
+  String get reservationEnd => 'النهاية';
+
+  @override
+  String get reservationTables => 'الطاولات';
+
+  @override
+  String get reservationFindCustomer => 'البحث عن زبون';
+
+  @override
+  String get reservationGuestInstead => 'كتابة ضيف بدل حساب';
+
+  @override
+  String get reservationCancel => 'إلغاء الحجز';
+
+  @override
+  String get reservationCancelConfirm => 'إلغاء هذا الحجز؟';
+
+  @override
+  String get reservationStatusBooked => 'محجوز';
+
+  @override
+  String get reservationStatusArrived => 'وصل';
+
+  @override
+  String get reservationStatusCancelled => 'ملغى';
+
+  @override
+  String get reservationStatusNoShow => 'لم يحضر';
+
+  @override
+  String get reservationSoon => 'يبدأ قريباً';
+
+  @override
+  String get reservationHolding => 'بانتظار الوصول';
+
+  @override
+  String get reservationHeldOrder =>
+      'هذه الطاولة محجوزة. امسحها لتأكيد الوصول قبل أخذ الطلب.';
+
+  @override
+  String get reservationScanNeedsAccess =>
+      'وحده من لديه صلاحية الحجوزات يمكنه تأكيد هذه الطاولة.';
+
+  @override
+  String get reservationWindow =>
+      'يدوم الحجز بين 30 دقيقة و8 ساعات، ويجب أن يكون ما زال مفتوحاً.';
+
+  @override
+  String get reservationSelectTables => 'اختر طاولة واحدة على الأقل.';
+
+  @override
+  String get accessReservations => 'الحجوزات';
+
+  @override
+  String get accessReservationsHint => 'إنشاء الحجوزات وإلغاؤها وتأكيدها.';
+
+  @override
+  String get errorPackFeatureReservations => 'هذه الباقة لا تشمل الحجوزات.';
+
+  @override
+  String get errorPackLimitReservations =>
+      'بلغت هذه الباقة حد الحجوزات لهذا اليوم.';
+
+  @override
+  String get errorOrderReservationHeld => 'أكّد الحجز قبل أخذ الطلب.';
+
+  @override
+  String get errorReservationOverlap => 'طاولة محجوزة بالفعل في هذا الوقت.';
+
+  @override
+  String get errorReservationNotFound => 'لا يوجد زبون أو حجز مطابق.';
+
+  @override
+  String get packCapReservations => 'الحجوزات';
+
+  @override
+  String get packCapReservationsPerDay => 'حجوزات / يوم';
+
+  @override
   String get errorPackPaidActive => 'هذا المكان على باقة مدفوعة.';
 
   @override

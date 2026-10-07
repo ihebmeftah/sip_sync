@@ -4,3 +4,4 @@ fields:
   id: UuidValue
   number: int
   maxSeats: int
+  reservationPhase: ReservationPhase, default=none

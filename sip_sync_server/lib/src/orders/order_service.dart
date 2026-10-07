@@ -6,6 +6,7 @@ import '../buildings/strict_mode.dart';
 import '../core/page_window.dart';
 import '../generated/protocol.dart';
 import '../packs/pack_gate.dart';
+import '../reservations/reservation_service.dart';
 
 /// Create / list / status updates for building orders.
 class OrderService {
@@ -127,6 +128,9 @@ class OrderService {
       buildingId: request.buildingId,
       tableId: tableId,
     );
+    if (tableId != null) {
+      await ReservationService().assertTableOpenForOrders(session, tableId);
+    }
     final articles = await _resolveArticles(
       session,
       request.buildingId,
@@ -183,6 +187,7 @@ class OrderService {
       buildingId: request.buildingId,
       tableId: table.id,
     );
+    await ReservationService().assertTableOpenForOrders(session, table.id!);
     final articles = await _resolveArticles(
       session,
       request.buildingId,

@@ -24,6 +24,7 @@ abstract class EmployeeAccessView
     required this.preparation,
     required this.serving,
     required this.consultAllOrders,
+    required this.reservations,
     required this.createdAt,
   });
 
@@ -37,6 +38,7 @@ abstract class EmployeeAccessView
     required bool preparation,
     required bool serving,
     required bool consultAllOrders,
+    required bool reservations,
     required DateTime createdAt,
   }) = _EmployeeAccessViewImpl;
 
@@ -63,6 +65,9 @@ abstract class EmployeeAccessView
       consultAllOrders: _is.BoolJsonExtension.fromJson(
         jsonSerialization['consultAllOrders'],
       ),
+      reservations: _is.BoolJsonExtension.fromJson(
+        jsonSerialization['reservations'],
+      ),
       createdAt: _is.DateTimeJsonExtension.fromJson(
         jsonSerialization['createdAt'],
       ),
@@ -87,6 +92,8 @@ abstract class EmployeeAccessView
 
   bool consultAllOrders;
 
+  bool reservations;
+
   DateTime createdAt;
 
   /// Returns a shallow copy of this [EmployeeAccessView]
@@ -102,6 +109,7 @@ abstract class EmployeeAccessView
     bool? preparation,
     bool? serving,
     bool? consultAllOrders,
+    bool? reservations,
     DateTime? createdAt,
   });
   @override
@@ -117,6 +125,7 @@ abstract class EmployeeAccessView
       'preparation': preparation,
       'serving': serving,
       'consultAllOrders': consultAllOrders,
+      'reservations': reservations,
       'createdAt': createdAt.toJson(),
     };
   }
@@ -134,6 +143,7 @@ abstract class EmployeeAccessView
       'preparation': preparation,
       'serving': serving,
       'consultAllOrders': consultAllOrders,
+      'reservations': reservations,
       'createdAt': createdAt.toJson(),
     };
   }
@@ -155,6 +165,7 @@ class _EmployeeAccessViewImpl extends EmployeeAccessView {
     required bool preparation,
     required bool serving,
     required bool consultAllOrders,
+    required bool reservations,
     required DateTime createdAt,
   }) : super._(
          id: id,
@@ -166,6 +177,7 @@ class _EmployeeAccessViewImpl extends EmployeeAccessView {
          preparation: preparation,
          serving: serving,
          consultAllOrders: consultAllOrders,
+         reservations: reservations,
          createdAt: createdAt,
        );
 
@@ -183,6 +195,7 @@ class _EmployeeAccessViewImpl extends EmployeeAccessView {
     bool? preparation,
     bool? serving,
     bool? consultAllOrders,
+    bool? reservations,
     DateTime? createdAt,
   }) {
     return EmployeeAccessView(
@@ -195,6 +208,7 @@ class _EmployeeAccessViewImpl extends EmployeeAccessView {
       preparation: preparation ?? this.preparation,
       serving: serving ?? this.serving,
       consultAllOrders: consultAllOrders ?? this.consultAllOrders,
+      reservations: reservations ?? this.reservations,
       createdAt: createdAt ?? this.createdAt,
     );
   }

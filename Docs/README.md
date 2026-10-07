@@ -26,3 +26,4 @@ Product and feature documentation for Sip Sync. Update these pages when behavior
 | Statistics & analytics | in progress | [statistics](features/statistics.md) |
 | Real-time notifications | planned | [notifications](features/notifications.md) |
 | Packs | in progress | [packs](features/packs.md) |
+| Reservations | in progress | [reservations](features/reservations.md) |

@@ -96,6 +96,8 @@ class PackService {
         tableMultiOrder: request.capabilities.tableMultiOrder,
         strictMode: request.capabilities.strictMode,
         customAccessProfiles: request.capabilities.customAccessProfiles,
+        reservations: request.capabilities.reservations,
+        maxReservationsPerDay: request.capabilities.maxReservationsPerDay,
       ),
     );
     return _view(row);
@@ -139,6 +141,8 @@ class PackService {
         tableMultiOrder: request.capabilities.tableMultiOrder,
         strictMode: request.capabilities.strictMode,
         customAccessProfiles: request.capabilities.customAccessProfiles,
+        reservations: request.capabilities.reservations,
+        maxReservationsPerDay: request.capabilities.maxReservationsPerDay,
       ),
     );
     return _view(updated);
@@ -221,6 +225,8 @@ class PackService {
       tableMultiOrder: row.tableMultiOrder,
       strictMode: row.strictMode,
       customAccessProfiles: row.customAccessProfiles,
+      reservations: row.reservations,
+      maxReservationsPerDay: row.maxReservationsPerDay,
     );
   }
 
@@ -273,6 +279,7 @@ class PackService {
     _limit(capabilities.maxCategories);
     _limit(capabilities.maxArticles);
     _limit(capabilities.maxIngredients);
+    _limit(capabilities.maxReservationsPerDay);
   }
 
   void _limit(int? value) {

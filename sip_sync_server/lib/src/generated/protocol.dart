@@ -27,6 +27,8 @@ import 'package:sip_sync_server/src/generated/menu/dtos/menu_article_view.dart'
     as _iftzx4at;
 import 'package:sip_sync_server/src/generated/packs/dtos/pack_public_view.dart'
     as _itvm5eqz;
+import 'package:sip_sync_server/src/generated/reservations/dtos/reservation_view.dart'
+    as _ixji9mob;
 import 'package:sip_sync_server/src/generated/tables/dtos/venue_table_view.dart'
     as _i8j8iq89;
 import 'auth/dtos/account_error_code.dart' as _ipvvun4w;
@@ -155,6 +157,16 @@ import 'packs/dtos/pack_update.dart' as _icf9vjmf;
 import 'packs/dtos/pack_view.dart' as _ix8hsdo0;
 import 'packs/entity/building_pack_assignment.dart' as _iv7bzyjr;
 import 'packs/entity/pack.dart' as _ixvcqhi5;
+import 'reservations/dtos/customer_reservation_create.dart' as _i8w5m1f8;
+import 'reservations/dtos/reservation_create.dart' as _iy7p1gx0;
+import 'reservations/dtos/reservation_customer_match.dart' as _i8125fsw;
+import 'reservations/dtos/reservation_error_code.dart' as _ik5ecx68;
+import 'reservations/dtos/reservation_exception.dart' as _iog9n1vh;
+import 'reservations/dtos/reservation_view.dart' as _ircxdpx7;
+import 'reservations/entity/reservation.dart' as _i1793voz;
+import 'reservations/entity/table_reservation.dart' as _im4oimaj;
+import 'reservations/reservation_phase.dart' as _ij54j0d7;
+import 'reservations/reservation_status.dart' as _igxvw6d4;
 import 'stats/dtos/platform_stats.dart' as _igzxiay6;
 import 'stats/dtos/public_pack_usage.dart' as _icz9v6v9;
 import 'tables/dtos/table_floor_status.dart' as _i64byz7d;
@@ -291,6 +303,16 @@ export 'packs/dtos/pack_update.dart';
 export 'packs/dtos/pack_view.dart';
 export 'packs/entity/building_pack_assignment.dart';
 export 'packs/entity/pack.dart';
+export 'reservations/dtos/customer_reservation_create.dart';
+export 'reservations/dtos/reservation_create.dart';
+export 'reservations/dtos/reservation_customer_match.dart';
+export 'reservations/dtos/reservation_error_code.dart';
+export 'reservations/dtos/reservation_exception.dart';
+export 'reservations/dtos/reservation_view.dart';
+export 'reservations/entity/reservation.dart';
+export 'reservations/entity/table_reservation.dart';
+export 'reservations/reservation_phase.dart';
+export 'reservations/reservation_status.dart';
 export 'stats/dtos/platform_stats.dart';
 export 'stats/dtos/public_pack_usage.dart';
 export 'tables/dtos/table_floor_status.dart';
@@ -648,6 +670,13 @@ class Protocol extends _is.DatabaseSerializationManager {
           columnType: _isp.ColumnType.json,
           isNullable: false,
           dartType: 'List<protocol:StrictModeStep>',
+        ),
+        _isp.ColumnDefinition(
+          name: 'reservationFee',
+          columnType: _isp.ColumnType.doublePrecision,
+          isNullable: false,
+          dartType: 'double',
+          columnDefault: '0',
         ),
         _isp.ColumnDefinition(
           name: 'createdAt',
@@ -1141,6 +1170,13 @@ class Protocol extends _is.DatabaseSerializationManager {
         ),
         _isp.ColumnDefinition(
           name: 'consultAllOrders',
+          columnType: _isp.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'false',
+        ),
+        _isp.ColumnDefinition(
+          name: 'reservations',
           columnType: _isp.ColumnType.boolean,
           isNullable: false,
           dartType: 'bool',
@@ -1744,6 +1780,19 @@ class Protocol extends _is.DatabaseSerializationManager {
           columnDefault: 'false',
         ),
         _isp.ColumnDefinition(
+          name: 'reservations',
+          columnType: _isp.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'false',
+        ),
+        _isp.ColumnDefinition(
+          name: 'maxReservationsPerDay',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: true,
+          dartType: 'int?',
+        ),
+        _isp.ColumnDefinition(
           name: 'createdAt',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: false,
@@ -1821,6 +1870,142 @@ class Protocol extends _is.DatabaseSerializationManager {
             _isp.IndexElementDefinition(
               type: _isp.IndexElementDefinitionType.column,
               definition: 'email',
+            ),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
+    _isp.TableDefinition(
+      name: 'reservation',
+      dartName: 'Reservation',
+      schema: 'public',
+      module: 'sip_sync',
+      columns: [
+        _isp.ColumnDefinition(
+          name: 'id',
+          columnType: _isp.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue?',
+          columnDefault: 'random_v7',
+        ),
+        _isp.ColumnDefinition(
+          name: 'buildingId',
+          columnType: _isp.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue',
+        ),
+        _isp.ColumnDefinition(
+          name: 'startsAt',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+        ),
+        _isp.ColumnDefinition(
+          name: 'endsAt',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+        ),
+        _isp.ColumnDefinition(
+          name: 'customerId',
+          columnType: _isp.ColumnType.uuid,
+          isNullable: true,
+          dartType: 'UuidValue?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'guestName',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _isp.ColumnDefinition(
+          name: 'guestPhone',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'paidAmount',
+          columnType: _isp.ColumnType.doublePrecision,
+          isNullable: false,
+          dartType: 'double',
+          columnDefault: '0',
+        ),
+        _isp.ColumnDefinition(
+          name: 'status',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'protocol:ReservationStatus',
+        ),
+        _isp.ColumnDefinition(
+          name: 'createdByType',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'protocol:ActorType',
+        ),
+        _isp.ColumnDefinition(
+          name: 'createdById',
+          columnType: _isp.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue',
+        ),
+        _isp.ColumnDefinition(
+          name: 'confirmedAt',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: true,
+          dartType: 'DateTime?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'confirmedById',
+          columnType: _isp.ColumnType.uuid,
+          isNullable: true,
+          dartType: 'UuidValue?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'createdAt',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+        ),
+      ],
+      foreignKeys: [
+        _isp.ForeignKeyDefinition(
+          constraintName: 'reservation_fk_0',
+          columns: ['buildingId'],
+          referenceTable: 'building',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.cascade,
+          matchType: null,
+        ),
+        _isp.ForeignKeyDefinition(
+          constraintName: 'reservation_fk_1',
+          columns: ['customerId'],
+          referenceTable: 'customer',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.setNull,
+          matchType: null,
+        ),
+      ],
+      indexes: [
+        _isp.IndexDefinition(
+          indexName: 'reservation_building_start_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'buildingId',
+            ),
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'startsAt',
             ),
           ],
           type: 'btree',
@@ -1920,6 +2105,88 @@ class Protocol extends _is.DatabaseSerializationManager {
           ],
           type: 'btree',
           isUnique: true,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
+    _isp.TableDefinition(
+      name: 'table_reservation',
+      dartName: 'TableReservation',
+      schema: 'public',
+      module: 'sip_sync',
+      columns: [
+        _isp.ColumnDefinition(
+          name: 'id',
+          columnType: _isp.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue?',
+          columnDefault: 'random_v7',
+        ),
+        _isp.ColumnDefinition(
+          name: 'reservationId',
+          columnType: _isp.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue',
+        ),
+        _isp.ColumnDefinition(
+          name: 'venueTableId',
+          columnType: _isp.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue',
+        ),
+      ],
+      foreignKeys: [
+        _isp.ForeignKeyDefinition(
+          constraintName: 'table_reservation_fk_0',
+          columns: ['reservationId'],
+          referenceTable: 'reservation',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.cascade,
+          matchType: null,
+        ),
+        _isp.ForeignKeyDefinition(
+          constraintName: 'table_reservation_fk_1',
+          columns: ['venueTableId'],
+          referenceTable: 'venue_table',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.cascade,
+          matchType: null,
+        ),
+      ],
+      indexes: [
+        _isp.IndexDefinition(
+          indexName: 'table_reservation_pair_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'reservationId',
+            ),
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'venueTableId',
+            ),
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: false,
+        ),
+        _isp.IndexDefinition(
+          indexName: 'table_reservation_venue_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'venueTableId',
+            ),
+          ],
+          type: 'btree',
+          isUnique: false,
           isPrimary: false,
         ),
       ],
@@ -2827,6 +3094,36 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == _ixvcqhi5.Pack) {
       return _ixvcqhi5.Pack.fromJson(data) as T;
     }
+    if (t == _i8w5m1f8.CustomerReservationCreate) {
+      return _i8w5m1f8.CustomerReservationCreate.fromJson(data) as T;
+    }
+    if (t == _iy7p1gx0.ReservationCreate) {
+      return _iy7p1gx0.ReservationCreate.fromJson(data) as T;
+    }
+    if (t == _i8125fsw.ReservationCustomerMatch) {
+      return _i8125fsw.ReservationCustomerMatch.fromJson(data) as T;
+    }
+    if (t == _ik5ecx68.ReservationErrorCode) {
+      return _ik5ecx68.ReservationErrorCode.fromJson(data) as T;
+    }
+    if (t == _iog9n1vh.ReservationException) {
+      return _iog9n1vh.ReservationException.fromJson(data) as T;
+    }
+    if (t == _ircxdpx7.ReservationView) {
+      return _ircxdpx7.ReservationView.fromJson(data) as T;
+    }
+    if (t == _i1793voz.Reservation) {
+      return _i1793voz.Reservation.fromJson(data) as T;
+    }
+    if (t == _im4oimaj.TableReservation) {
+      return _im4oimaj.TableReservation.fromJson(data) as T;
+    }
+    if (t == _ij54j0d7.ReservationPhase) {
+      return _ij54j0d7.ReservationPhase.fromJson(data) as T;
+    }
+    if (t == _igxvw6d4.ReservationStatus) {
+      return _igxvw6d4.ReservationStatus.fromJson(data) as T;
+    }
     if (t == _igzxiay6.PlatformStats) {
       return _igzxiay6.PlatformStats.fromJson(data) as T;
     }
@@ -3411,6 +3708,53 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == _is.getType<_ixvcqhi5.Pack?>()) {
       return (data != null ? _ixvcqhi5.Pack.fromJson(data) : null) as T;
     }
+    if (t == _is.getType<_i8w5m1f8.CustomerReservationCreate?>()) {
+      return (data != null
+              ? _i8w5m1f8.CustomerReservationCreate.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_iy7p1gx0.ReservationCreate?>()) {
+      return (data != null ? _iy7p1gx0.ReservationCreate.fromJson(data) : null)
+          as T;
+    }
+    if (t == _is.getType<_i8125fsw.ReservationCustomerMatch?>()) {
+      return (data != null
+              ? _i8125fsw.ReservationCustomerMatch.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_ik5ecx68.ReservationErrorCode?>()) {
+      return (data != null
+              ? _ik5ecx68.ReservationErrorCode.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_iog9n1vh.ReservationException?>()) {
+      return (data != null
+              ? _iog9n1vh.ReservationException.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_ircxdpx7.ReservationView?>()) {
+      return (data != null ? _ircxdpx7.ReservationView.fromJson(data) : null)
+          as T;
+    }
+    if (t == _is.getType<_i1793voz.Reservation?>()) {
+      return (data != null ? _i1793voz.Reservation.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_im4oimaj.TableReservation?>()) {
+      return (data != null ? _im4oimaj.TableReservation.fromJson(data) : null)
+          as T;
+    }
+    if (t == _is.getType<_ij54j0d7.ReservationPhase?>()) {
+      return (data != null ? _ij54j0d7.ReservationPhase.fromJson(data) : null)
+          as T;
+    }
+    if (t == _is.getType<_igxvw6d4.ReservationStatus?>()) {
+      return (data != null ? _igxvw6d4.ReservationStatus.fromJson(data) : null)
+          as T;
+    }
     if (t == _is.getType<_igzxiay6.PlatformStats?>()) {
       return (data != null ? _igzxiay6.PlatformStats.fromJson(data) : null)
           as T;
@@ -3470,6 +3814,20 @@ class Protocol extends _is.DatabaseSerializationManager {
       return (data as List)
               .map((e) => deserialize<_ima36n4q.SuperAdminView>(e))
               .toList()
+          as T;
+    }
+    if (t == List<_i1793voz.Reservation>) {
+      return (data as List)
+              .map((e) => deserialize<_i1793voz.Reservation>(e))
+              .toList()
+          as T;
+    }
+    if (t == _is.getType<List<_i1793voz.Reservation>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map((e) => deserialize<_i1793voz.Reservation>(e))
+                    .toList()
+              : null)
           as T;
     }
     if (t == List<_iit041ql.Building>) {
@@ -3749,6 +4107,23 @@ class Protocol extends _is.DatabaseSerializationManager {
               .toList()
           as T;
     }
+    if (t == List<int>) {
+      return (data as List).map((e) => deserialize<int>(e)).toList() as T;
+    }
+    if (t == List<_im4oimaj.TableReservation>) {
+      return (data as List)
+              .map((e) => deserialize<_im4oimaj.TableReservation>(e))
+              .toList()
+          as T;
+    }
+    if (t == _is.getType<List<_im4oimaj.TableReservation>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map((e) => deserialize<_im4oimaj.TableReservation>(e))
+                    .toList()
+              : null)
+          as T;
+    }
     if (t == List<_icz9v6v9.PublicPackUsage>) {
       return (data as List)
               .map((e) => deserialize<_icz9v6v9.PublicPackUsage>(e))
@@ -3782,6 +4157,12 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == List<_itvm5eqz.PackPublicView>) {
       return (data as List)
               .map((e) => deserialize<_itvm5eqz.PackPublicView>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_ixji9mob.ReservationView>) {
+      return (data as List)
+              .map((e) => deserialize<_ixji9mob.ReservationView>(e))
               .toList()
           as T;
     }
@@ -3931,6 +4312,16 @@ class Protocol extends _is.DatabaseSerializationManager {
       _ix8hsdo0.PackView => 'PackView',
       _iv7bzyjr.BuildingPackAssignment => 'BuildingPackAssignment',
       _ixvcqhi5.Pack => 'Pack',
+      _i8w5m1f8.CustomerReservationCreate => 'CustomerReservationCreate',
+      _iy7p1gx0.ReservationCreate => 'ReservationCreate',
+      _i8125fsw.ReservationCustomerMatch => 'ReservationCustomerMatch',
+      _ik5ecx68.ReservationErrorCode => 'ReservationErrorCode',
+      _iog9n1vh.ReservationException => 'ReservationException',
+      _ircxdpx7.ReservationView => 'ReservationView',
+      _i1793voz.Reservation => 'Reservation',
+      _im4oimaj.TableReservation => 'TableReservation',
+      _ij54j0d7.ReservationPhase => 'ReservationPhase',
+      _igxvw6d4.ReservationStatus => 'ReservationStatus',
       _igzxiay6.PlatformStats => 'PlatformStats',
       _icz9v6v9.PublicPackUsage => 'PublicPackUsage',
       _i64byz7d.TableFloorStatus => 'TableFloorStatus',
@@ -4207,6 +4598,26 @@ class Protocol extends _is.DatabaseSerializationManager {
         return 'BuildingPackAssignment';
       case _ixvcqhi5.Pack():
         return 'Pack';
+      case _i8w5m1f8.CustomerReservationCreate():
+        return 'CustomerReservationCreate';
+      case _iy7p1gx0.ReservationCreate():
+        return 'ReservationCreate';
+      case _i8125fsw.ReservationCustomerMatch():
+        return 'ReservationCustomerMatch';
+      case _ik5ecx68.ReservationErrorCode():
+        return 'ReservationErrorCode';
+      case _iog9n1vh.ReservationException():
+        return 'ReservationException';
+      case _ircxdpx7.ReservationView():
+        return 'ReservationView';
+      case _i1793voz.Reservation():
+        return 'Reservation';
+      case _im4oimaj.TableReservation():
+        return 'TableReservation';
+      case _ij54j0d7.ReservationPhase():
+        return 'ReservationPhase';
+      case _igxvw6d4.ReservationStatus():
+        return 'ReservationStatus';
       case _igzxiay6.PlatformStats():
         return 'PlatformStats';
       case _icz9v6v9.PublicPackUsage():
@@ -4631,6 +5042,36 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (dataClassName == 'Pack') {
       return deserialize<_ixvcqhi5.Pack>(data['data']);
     }
+    if (dataClassName == 'CustomerReservationCreate') {
+      return deserialize<_i8w5m1f8.CustomerReservationCreate>(data['data']);
+    }
+    if (dataClassName == 'ReservationCreate') {
+      return deserialize<_iy7p1gx0.ReservationCreate>(data['data']);
+    }
+    if (dataClassName == 'ReservationCustomerMatch') {
+      return deserialize<_i8125fsw.ReservationCustomerMatch>(data['data']);
+    }
+    if (dataClassName == 'ReservationErrorCode') {
+      return deserialize<_ik5ecx68.ReservationErrorCode>(data['data']);
+    }
+    if (dataClassName == 'ReservationException') {
+      return deserialize<_iog9n1vh.ReservationException>(data['data']);
+    }
+    if (dataClassName == 'ReservationView') {
+      return deserialize<_ircxdpx7.ReservationView>(data['data']);
+    }
+    if (dataClassName == 'Reservation') {
+      return deserialize<_i1793voz.Reservation>(data['data']);
+    }
+    if (dataClassName == 'TableReservation') {
+      return deserialize<_im4oimaj.TableReservation>(data['data']);
+    }
+    if (dataClassName == 'ReservationPhase') {
+      return deserialize<_ij54j0d7.ReservationPhase>(data['data']);
+    }
+    if (dataClassName == 'ReservationStatus') {
+      return deserialize<_igxvw6d4.ReservationStatus>(data['data']);
+    }
     if (dataClassName == 'PlatformStats') {
       return deserialize<_igzxiay6.PlatformStats>(data['data']);
     }
@@ -4734,6 +5175,10 @@ class Protocol extends _is.DatabaseSerializationManager {
         return _iv7bzyjr.BuildingPackAssignment.t;
       case _ixvcqhi5.Pack:
         return _ixvcqhi5.Pack.t;
+      case _i1793voz.Reservation:
+        return _i1793voz.Reservation.t;
+      case _im4oimaj.TableReservation:
+        return _im4oimaj.TableReservation.t;
       case _ik40dtuz.VenueTable:
         return _ik40dtuz.VenueTable.t;
     }

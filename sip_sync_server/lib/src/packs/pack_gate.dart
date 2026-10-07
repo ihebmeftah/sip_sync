@@ -93,6 +93,8 @@ class PackGate {
       tableMultiOrder: pack.tableMultiOrder,
       strictMode: pack.strictMode,
       customAccessProfiles: pack.customAccessProfiles,
+      reservations: pack.reservations,
+      maxReservationsPerDay: pack.maxReservationsPerDay,
     );
   }
 }

@@ -976,6 +976,30 @@ abstract class AppLocalizations {
   /// **'The owner may add access profiles beyond Waiter, Gerant, and Barista.'**
   String get capCustomAccessHint;
 
+  /// No description provided for @capReservations.
+  ///
+  /// In en, this message translates to:
+  /// **'Reservations'**
+  String get capReservations;
+
+  /// No description provided for @capReservationsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Staff and customers can book tables. A daily cap still applies when it is set.'**
+  String get capReservationsHint;
+
+  /// No description provided for @capMaxReservations.
+  ///
+  /// In en, this message translates to:
+  /// **'Reservations per day'**
+  String get capMaxReservations;
+
+  /// No description provided for @capMaxReservationsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave empty for no daily cap. Counts non-cancelled bookings whose start falls on one UTC date.'**
+  String get capMaxReservationsHint;
+
   /// No description provided for @packPriceMonth.
   ///
   /// In en, this message translates to:
@@ -1107,6 +1131,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This plan does not include table QR codes.'**
   String get errorPackFeatureQr;
+
+  /// No description provided for @errorPackFeatureReservations.
+  ///
+  /// In en, this message translates to:
+  /// **'This plan does not include reservations.'**
+  String get errorPackFeatureReservations;
+
+  /// No description provided for @errorPackLimitReservations.
+  ///
+  /// In en, this message translates to:
+  /// **'This plan has reached its reservation limit for the day.'**
+  String get errorPackLimitReservations;
 
   /// No description provided for @errorPackPaidActive.
   ///

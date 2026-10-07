@@ -16,6 +16,7 @@ List<RouteBase> get $appRoutes => [
   $venueRoute,
   $orderReviewRoute,
   $customerOrderRoute,
+  $venueReserveRoute,
   $venueMenuRoute,
 ];
 
@@ -310,6 +311,37 @@ mixin $CustomerOrderRoute on GoRouteData {
   String get location => GoRouteData.$location(
     '/venues/${Uri.encodeComponent(_self.id)}/orders/${Uri.encodeComponent(_self.orderId)}',
   );
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+RouteBase get $venueReserveRoute => GoRouteData.$route(
+  path: '/venues/:id/reserve',
+  name: 'venueReserve',
+  hasOverriddenOnExit: false,
+  factory: $VenueReserveRoute._fromState,
+);
+
+mixin $VenueReserveRoute on GoRouteData {
+  static VenueReserveRoute _fromState(GoRouterState state) =>
+      VenueReserveRoute(id: state.pathParameters['id']!);
+
+  VenueReserveRoute get _self => this as VenueReserveRoute;
+
+  @override
+  String get location =>
+      GoRouteData.$location('/venues/${Uri.encodeComponent(_self.id)}/reserve');
 
   @override
   void go(BuildContext context) => context.go(location);

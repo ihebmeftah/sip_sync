@@ -39,6 +39,7 @@ abstract class BuildingView
     required this.allowAppendingItemsToOrder,
     required this.strictMode,
     required this.strictModeSteps,
+    required this.reservationFee,
     required this.employeeIds,
     required this.pack,
   });
@@ -65,6 +66,7 @@ abstract class BuildingView
     required bool allowAppendingItemsToOrder,
     required bool strictMode,
     required List<_ik04yv2w.StrictModeStep> strictModeSteps,
+    required double reservationFee,
     required List<_is.UuidValue> employeeIds,
     required _i1961zho.BuildingPackView pack,
   }) = _BuildingViewImpl;
@@ -105,6 +107,7 @@ abstract class BuildingView
           .deserialize<List<_ik04yv2w.StrictModeStep>>(
             jsonSerialization['strictModeSteps'],
           ),
+      reservationFee: (jsonSerialization['reservationFee'] as num).toDouble(),
       employeeIds: _iaib1p48.Protocol().deserialize<List<_is.UuidValue>>(
         jsonSerialization['employeeIds'],
       ),
@@ -156,6 +159,8 @@ abstract class BuildingView
 
   List<_ik04yv2w.StrictModeStep> strictModeSteps;
 
+  double reservationFee;
+
   List<_is.UuidValue> employeeIds;
 
   _i1961zho.BuildingPackView pack;
@@ -185,6 +190,7 @@ abstract class BuildingView
     bool? allowAppendingItemsToOrder,
     bool? strictMode,
     List<_ik04yv2w.StrictModeStep>? strictModeSteps,
+    double? reservationFee,
     List<_is.UuidValue>? employeeIds,
     _i1961zho.BuildingPackView? pack,
   });
@@ -213,6 +219,7 @@ abstract class BuildingView
       'allowAppendingItemsToOrder': allowAppendingItemsToOrder,
       'strictMode': strictMode,
       'strictModeSteps': strictModeSteps.toJson(valueToJson: (v) => v.toJson()),
+      'reservationFee': reservationFee,
       'employeeIds': employeeIds.toJson(valueToJson: (v) => v.toJson()),
       'pack': pack.toJson(),
     };
@@ -245,6 +252,7 @@ abstract class BuildingView
       'strictModeSteps': strictModeSteps.toJson(
         valueToJson: (v) => v.toJsonForProtocol(),
       ),
+      'reservationFee': reservationFee,
       'employeeIds': employeeIds.toJson(valueToJson: (v) => v.toJson()),
       'pack': pack.toJsonForProtocol(),
     };
@@ -281,6 +289,7 @@ class _BuildingViewImpl extends BuildingView {
     required bool allowAppendingItemsToOrder,
     required bool strictMode,
     required List<_ik04yv2w.StrictModeStep> strictModeSteps,
+    required double reservationFee,
     required List<_is.UuidValue> employeeIds,
     required _i1961zho.BuildingPackView pack,
   }) : super._(
@@ -305,6 +314,7 @@ class _BuildingViewImpl extends BuildingView {
          allowAppendingItemsToOrder: allowAppendingItemsToOrder,
          strictMode: strictMode,
          strictModeSteps: strictModeSteps,
+         reservationFee: reservationFee,
          employeeIds: employeeIds,
          pack: pack,
        );
@@ -335,6 +345,7 @@ class _BuildingViewImpl extends BuildingView {
     bool? allowAppendingItemsToOrder,
     bool? strictMode,
     List<_ik04yv2w.StrictModeStep>? strictModeSteps,
+    double? reservationFee,
     List<_is.UuidValue>? employeeIds,
     _i1961zho.BuildingPackView? pack,
   }) {
@@ -363,6 +374,7 @@ class _BuildingViewImpl extends BuildingView {
       strictModeSteps:
           strictModeSteps ??
           this.strictModeSteps.map((e0) => e0.copyWith()).toList(),
+      reservationFee: reservationFee ?? this.reservationFee,
       employeeIds: employeeIds ?? this.employeeIds.map((e0) => e0).toList(),
       pack: pack ?? this.pack.copyWith(),
     );

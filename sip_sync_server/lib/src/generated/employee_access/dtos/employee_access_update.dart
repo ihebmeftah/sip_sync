@@ -23,7 +23,8 @@ abstract class EmployeeAccessUpdate
     required this.preparation,
     required this.serving,
     required this.consultAllOrders,
-  });
+    bool? reservations,
+  }) : reservations = reservations ?? false;
 
   factory EmployeeAccessUpdate({
     required _is.UuidValue id,
@@ -34,6 +35,7 @@ abstract class EmployeeAccessUpdate
     required bool preparation,
     required bool serving,
     required bool consultAllOrders,
+    bool? reservations,
   }) = _EmployeeAccessUpdateImpl;
 
   factory EmployeeAccessUpdate.fromJson(
@@ -58,6 +60,9 @@ abstract class EmployeeAccessUpdate
       consultAllOrders: _is.BoolJsonExtension.fromJson(
         jsonSerialization['consultAllOrders'],
       ),
+      reservations: jsonSerialization['reservations'] == null
+          ? null
+          : _is.BoolJsonExtension.fromJson(jsonSerialization['reservations']),
     );
   }
 
@@ -77,6 +82,8 @@ abstract class EmployeeAccessUpdate
 
   bool consultAllOrders;
 
+  bool reservations;
+
   /// Returns a shallow copy of this [EmployeeAccessUpdate]
   /// with some or all fields replaced by the given arguments.
   @_is.useResult
@@ -89,6 +96,7 @@ abstract class EmployeeAccessUpdate
     bool? preparation,
     bool? serving,
     bool? consultAllOrders,
+    bool? reservations,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -102,6 +110,7 @@ abstract class EmployeeAccessUpdate
       'preparation': preparation,
       'serving': serving,
       'consultAllOrders': consultAllOrders,
+      'reservations': reservations,
     };
   }
 
@@ -117,6 +126,7 @@ abstract class EmployeeAccessUpdate
       'preparation': preparation,
       'serving': serving,
       'consultAllOrders': consultAllOrders,
+      'reservations': reservations,
     };
   }
 
@@ -136,6 +146,7 @@ class _EmployeeAccessUpdateImpl extends EmployeeAccessUpdate {
     required bool preparation,
     required bool serving,
     required bool consultAllOrders,
+    bool? reservations,
   }) : super._(
          id: id,
          name: name,
@@ -145,6 +156,7 @@ class _EmployeeAccessUpdateImpl extends EmployeeAccessUpdate {
          preparation: preparation,
          serving: serving,
          consultAllOrders: consultAllOrders,
+         reservations: reservations,
        );
 
   /// Returns a shallow copy of this [EmployeeAccessUpdate]
@@ -160,6 +172,7 @@ class _EmployeeAccessUpdateImpl extends EmployeeAccessUpdate {
     bool? preparation,
     bool? serving,
     bool? consultAllOrders,
+    bool? reservations,
   }) {
     return EmployeeAccessUpdate(
       id: id ?? this.id,
@@ -170,6 +183,7 @@ class _EmployeeAccessUpdateImpl extends EmployeeAccessUpdate {
       preparation: preparation ?? this.preparation,
       serving: serving ?? this.serving,
       consultAllOrders: consultAllOrders ?? this.consultAllOrders,
+      reservations: reservations ?? this.reservations,
     );
   }
 }

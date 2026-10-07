@@ -30,6 +30,7 @@ abstract class EmployeeAccess
     bool? preparation,
     bool? serving,
     bool? consultAllOrders,
+    bool? reservations,
     DateTime? createdAt,
     this.employees,
   }) : orderCreation = orderCreation ?? false,
@@ -38,6 +39,7 @@ abstract class EmployeeAccess
        preparation = preparation ?? false,
        serving = serving ?? false,
        consultAllOrders = consultAllOrders ?? false,
+       reservations = reservations ?? false,
        createdAt = createdAt ?? DateTime.now();
 
   factory EmployeeAccess({
@@ -51,6 +53,7 @@ abstract class EmployeeAccess
     bool? preparation,
     bool? serving,
     bool? consultAllOrders,
+    bool? reservations,
     DateTime? createdAt,
     List<_ie30fksv.Employee>? employees,
   }) = _EmployeeAccessImpl;
@@ -89,6 +92,9 @@ abstract class EmployeeAccess
           : _is.BoolJsonExtension.fromJson(
               jsonSerialization['consultAllOrders'],
             ),
+      reservations: jsonSerialization['reservations'] == null
+          ? null
+          : _is.BoolJsonExtension.fromJson(jsonSerialization['reservations']),
       createdAt: jsonSerialization['createdAt'] == null
           ? null
           : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
@@ -125,6 +131,9 @@ abstract class EmployeeAccess
 
   bool consultAllOrders;
 
+  /// Create, cancel, and confirm reservations for this building.
+  bool reservations;
+
   DateTime createdAt;
 
   List<_ie30fksv.Employee>? employees;
@@ -146,6 +155,7 @@ abstract class EmployeeAccess
     bool? preparation,
     bool? serving,
     bool? consultAllOrders,
+    bool? reservations,
     DateTime? createdAt,
     List<_ie30fksv.Employee>? employees,
   });
@@ -163,6 +173,7 @@ abstract class EmployeeAccess
       'preparation': preparation,
       'serving': serving,
       'consultAllOrders': consultAllOrders,
+      'reservations': reservations,
       'createdAt': createdAt.toJson(),
       if (employees != null)
         'employees': employees?.toJson(valueToJson: (v) => v.toJson()),
@@ -222,6 +233,7 @@ class _EmployeeAccessImpl extends EmployeeAccess {
     bool? preparation,
     bool? serving,
     bool? consultAllOrders,
+    bool? reservations,
     DateTime? createdAt,
     List<_ie30fksv.Employee>? employees,
   }) : super._(
@@ -235,6 +247,7 @@ class _EmployeeAccessImpl extends EmployeeAccess {
          preparation: preparation,
          serving: serving,
          consultAllOrders: consultAllOrders,
+         reservations: reservations,
          createdAt: createdAt,
          employees: employees,
        );
@@ -254,6 +267,7 @@ class _EmployeeAccessImpl extends EmployeeAccess {
     bool? preparation,
     bool? serving,
     bool? consultAllOrders,
+    bool? reservations,
     DateTime? createdAt,
     Object? employees = _Undefined,
   }) {
@@ -270,6 +284,7 @@ class _EmployeeAccessImpl extends EmployeeAccess {
       preparation: preparation ?? this.preparation,
       serving: serving ?? this.serving,
       consultAllOrders: consultAllOrders ?? this.consultAllOrders,
+      reservations: reservations ?? this.reservations,
       createdAt: createdAt ?? this.createdAt,
       employees: employees is List<_ie30fksv.Employee>?
           ? employees
@@ -323,6 +338,11 @@ class EmployeeAccessUpdateTable extends _is.UpdateTable<EmployeeAccessTable> {
     value,
   );
 
+  _is.ColumnValue<bool, bool> reservations(bool value) => _is.ColumnValue(
+    table.reservations,
+    value,
+  );
+
   _is.ColumnValue<DateTime, DateTime> createdAt(DateTime value) =>
       _is.ColumnValue(
         table.createdAt,
@@ -372,6 +392,11 @@ class EmployeeAccessTable extends _is.Table<_is.UuidValue?> {
       this,
       hasDefault: true,
     );
+    reservations = _is.ColumnBool(
+      'reservations',
+      this,
+      hasDefault: true,
+    );
     createdAt = _is.ColumnDateTime(
       'createdAt',
       this,
@@ -397,6 +422,9 @@ class EmployeeAccessTable extends _is.Table<_is.UuidValue?> {
   late final _is.ColumnBool serving;
 
   late final _is.ColumnBool consultAllOrders;
+
+  /// Create, cancel, and confirm reservations for this building.
+  late final _is.ColumnBool reservations;
 
   late final _is.ColumnDateTime createdAt;
 
@@ -460,6 +488,7 @@ class EmployeeAccessTable extends _is.Table<_is.UuidValue?> {
     preparation,
     serving,
     consultAllOrders,
+    reservations,
     createdAt,
   ];
 

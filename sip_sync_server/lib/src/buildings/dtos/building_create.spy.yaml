@@ -17,3 +17,4 @@ fields:
   allowAppendingItemsToOrder: bool, defaultModel=true
   strictMode: bool, defaultModel=false
   strictModeSteps: List<StrictModeStep>
+  reservationFee: double, defaultModel=0

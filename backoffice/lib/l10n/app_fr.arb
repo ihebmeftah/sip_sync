@@ -155,6 +155,10 @@
   "capStrictModeHint": "Le lieu peut imposer les étapes dans l'ordre : pris, prêt, servi, puis payé.",
   "capCustomAccess": "Profils d'accès personnalisés",
   "capCustomAccessHint": "Le propriétaire peut ajouter des profils au-delà de Serveur, Gérant et Barista.",
+  "capReservations": "Réservations",
+  "capReservationsHint": "Le personnel et les clients peuvent réserver. Un plafond quotidien s'applique s'il est renseigné.",
+  "capMaxReservations": "Réservations par jour",
+  "capMaxReservationsHint": "Laissez vide pour aucun plafond. Compte les réservations non annulées dont le début tombe sur une date UTC.",
   "packPriceMonth": "{price} TND / mois",
   "@packPriceMonth": {
     "placeholders": { "price": { "type": "String" } }
@@ -186,6 +190,8 @@
   "errorPackFeatureStrict": "Ce pack n'inclut pas les étapes strictes.",
   "errorPackFeatureAccess": "Ce pack n'inclut pas les profils d'accès personnalisés.",
   "errorPackFeatureQr": "Ce pack n'inclut pas les QR de table.",
+  "errorPackFeatureReservations": "Ce pack n'inclut pas les réservations.",
+  "errorPackLimitReservations": "Ce pack a atteint sa limite de réservations pour la journée.",
   "errorPackPaidActive": "Ce lieu a déjà un pack payant. Assignez un autre pack après la fin du terme.",
   "packHistoryTitle": "Historique des packs",
   "packHistoryCurrent": "En cours",

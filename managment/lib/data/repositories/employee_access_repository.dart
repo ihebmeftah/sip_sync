@@ -36,6 +36,7 @@ class EmployeeAccessRepository {
     required bool preparation,
     required bool serving,
     required bool consultAllOrders,
+    required bool reservations,
   }) {
     return _client.employeeAccess.create(
       EmployeeAccessCreate(
@@ -47,6 +48,7 @@ class EmployeeAccessRepository {
         preparation: preparation,
         serving: serving,
         consultAllOrders: consultAllOrders,
+        reservations: reservations,
       ),
     );
   }
@@ -60,6 +62,7 @@ class EmployeeAccessRepository {
     required bool preparation,
     required bool serving,
     required bool consultAllOrders,
+    required bool reservations,
   }) {
     return _client.employeeAccess.update(
       EmployeeAccessUpdate(
@@ -71,6 +74,7 @@ class EmployeeAccessRepository {
         preparation: preparation,
         serving: serving,
         consultAllOrders: consultAllOrders,
+        reservations: reservations,
       ),
     );
   }

@@ -98,6 +98,14 @@ pack:
   - create:
   - update:
   - delete:
+reservation:
+  - listForDay:
+  - listMine:
+  - create:
+  - createForCustomer:
+  - findCustomer:
+  - cancel:
+  - confirmByTable:
 platformStats:
   - summary:
 venueTable:

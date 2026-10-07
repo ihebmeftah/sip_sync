@@ -14,3 +14,6 @@ fields:
   tableMultiOrder: bool
   strictMode: bool
   customAccessProfiles: bool
+  reservations: bool
+  ### Non-cancelled reservations whose start falls on one UTC date. Null means no cap.
+  maxReservationsPerDay: int?

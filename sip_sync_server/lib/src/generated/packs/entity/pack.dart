@@ -43,6 +43,8 @@ abstract class Pack
     bool? tableMultiOrder,
     bool? strictMode,
     bool? customAccessProfiles,
+    bool? reservations,
+    this.maxReservationsPerDay,
     DateTime? createdAt,
     this.buildings,
     this.assignments,
@@ -59,6 +61,7 @@ abstract class Pack
        tableMultiOrder = tableMultiOrder ?? false,
        strictMode = strictMode ?? false,
        customAccessProfiles = customAccessProfiles ?? false,
+       reservations = reservations ?? false,
        createdAt = createdAt ?? DateTime.now();
 
   factory Pack({
@@ -85,6 +88,8 @@ abstract class Pack
     bool? tableMultiOrder,
     bool? strictMode,
     bool? customAccessProfiles,
+    bool? reservations,
+    int? maxReservationsPerDay,
     DateTime? createdAt,
     List<_iaohraio.Building>? buildings,
     List<_iq3bhcsv.BuildingPackAssignment>? assignments,
@@ -149,6 +154,10 @@ abstract class Pack
           : _is.BoolJsonExtension.fromJson(
               jsonSerialization['customAccessProfiles'],
             ),
+      reservations: jsonSerialization['reservations'] == null
+          ? null
+          : _is.BoolJsonExtension.fromJson(jsonSerialization['reservations']),
+      maxReservationsPerDay: jsonSerialization['maxReservationsPerDay'] as int?,
       createdAt: jsonSerialization['createdAt'] == null
           ? null
           : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
@@ -222,6 +231,11 @@ abstract class Pack
 
   bool customAccessProfiles;
 
+  bool reservations;
+
+  /// Non-cancelled reservations per UTC date. Null means no cap.
+  int? maxReservationsPerDay;
+
   DateTime createdAt;
 
   List<_iaohraio.Building>? buildings;
@@ -258,6 +272,8 @@ abstract class Pack
     bool? tableMultiOrder,
     bool? strictMode,
     bool? customAccessProfiles,
+    bool? reservations,
+    int? maxReservationsPerDay,
     DateTime? createdAt,
     List<_iaohraio.Building>? buildings,
     List<_iq3bhcsv.BuildingPackAssignment>? assignments,
@@ -289,6 +305,9 @@ abstract class Pack
       'tableMultiOrder': tableMultiOrder,
       'strictMode': strictMode,
       'customAccessProfiles': customAccessProfiles,
+      'reservations': reservations,
+      if (maxReservationsPerDay != null)
+        'maxReservationsPerDay': maxReservationsPerDay,
       'createdAt': createdAt.toJson(),
       if (buildings != null)
         'buildings': buildings?.toJson(valueToJson: (v) => v.toJson()),
@@ -363,6 +382,8 @@ class _PackImpl extends Pack {
     bool? tableMultiOrder,
     bool? strictMode,
     bool? customAccessProfiles,
+    bool? reservations,
+    int? maxReservationsPerDay,
     DateTime? createdAt,
     List<_iaohraio.Building>? buildings,
     List<_iq3bhcsv.BuildingPackAssignment>? assignments,
@@ -390,6 +411,8 @@ class _PackImpl extends Pack {
          tableMultiOrder: tableMultiOrder,
          strictMode: strictMode,
          customAccessProfiles: customAccessProfiles,
+         reservations: reservations,
+         maxReservationsPerDay: maxReservationsPerDay,
          createdAt: createdAt,
          buildings: buildings,
          assignments: assignments,
@@ -423,6 +446,8 @@ class _PackImpl extends Pack {
     bool? tableMultiOrder,
     bool? strictMode,
     bool? customAccessProfiles,
+    bool? reservations,
+    Object? maxReservationsPerDay = _Undefined,
     DateTime? createdAt,
     Object? buildings = _Undefined,
     Object? assignments = _Undefined,
@@ -455,6 +480,10 @@ class _PackImpl extends Pack {
       tableMultiOrder: tableMultiOrder ?? this.tableMultiOrder,
       strictMode: strictMode ?? this.strictMode,
       customAccessProfiles: customAccessProfiles ?? this.customAccessProfiles,
+      reservations: reservations ?? this.reservations,
+      maxReservationsPerDay: maxReservationsPerDay is int?
+          ? maxReservationsPerDay
+          : this.maxReservationsPerDay,
       createdAt: createdAt ?? this.createdAt,
       buildings: buildings is List<_iaohraio.Building>?
           ? buildings
@@ -581,6 +610,17 @@ class PackUpdateTable extends _is.UpdateTable<PackTable> {
         value,
       );
 
+  _is.ColumnValue<bool, bool> reservations(bool value) => _is.ColumnValue(
+    table.reservations,
+    value,
+  );
+
+  _is.ColumnValue<int, int> maxReservationsPerDay(int? value) =>
+      _is.ColumnValue(
+        table.maxReservationsPerDay,
+        value,
+      );
+
   _is.ColumnValue<DateTime, DateTime> createdAt(DateTime value) =>
       _is.ColumnValue(
         table.createdAt,
@@ -692,6 +732,15 @@ class PackTable extends _is.Table<_is.UuidValue?> {
       this,
       hasDefault: true,
     );
+    reservations = _is.ColumnBool(
+      'reservations',
+      this,
+      hasDefault: true,
+    );
+    maxReservationsPerDay = _is.ColumnInt(
+      'maxReservationsPerDay',
+      this,
+    );
     createdAt = _is.ColumnDateTime(
       'createdAt',
       this,
@@ -748,6 +797,11 @@ class PackTable extends _is.Table<_is.UuidValue?> {
   late final _is.ColumnBool strictMode;
 
   late final _is.ColumnBool customAccessProfiles;
+
+  late final _is.ColumnBool reservations;
+
+  /// Non-cancelled reservations per UTC date. Null means no cap.
+  late final _is.ColumnInt maxReservationsPerDay;
 
   late final _is.ColumnDateTime createdAt;
 
@@ -852,6 +906,8 @@ class PackTable extends _is.Table<_is.UuidValue?> {
     tableMultiOrder,
     strictMode,
     customAccessProfiles,
+    reservations,
+    maxReservationsPerDay,
     createdAt,
   ];
 

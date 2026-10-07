@@ -1490,6 +1490,133 @@ class AppLocalizationsEn extends AppLocalizations {
   String get errorPackFeatureQr => 'This plan does not include table QR codes.';
 
   @override
+  String get navReservations => 'Reservations';
+
+  @override
+  String get reservationsTitle => 'Reservations';
+
+  @override
+  String get reservationNew => 'New reservation';
+
+  @override
+  String get reservationPreviousDay => 'Previous day';
+
+  @override
+  String get reservationNextDay => 'Next day';
+
+  @override
+  String get reservationEmpty => 'No reservations this day.';
+
+  @override
+  String get reservationGuestName => 'Guest name';
+
+  @override
+  String get reservationGuestPhone => 'Phone';
+
+  @override
+  String get reservationPaidAmount => 'Amount paid';
+
+  @override
+  String get reservationPaidInvalid => 'Enter an amount from 0 up to 1000000.';
+
+  @override
+  String get reservationFee => 'Reservation fee';
+
+  @override
+  String get reservationFeeHint =>
+      'Prefills the amount on a staff booking, in the venue currency.';
+
+  @override
+  String get reservationDate => 'Date';
+
+  @override
+  String get reservationStart => 'Start';
+
+  @override
+  String get reservationEnd => 'End';
+
+  @override
+  String get reservationTables => 'Tables';
+
+  @override
+  String get reservationFindCustomer => 'Find customer';
+
+  @override
+  String get reservationGuestInstead => 'Type a guest instead of an account';
+
+  @override
+  String get reservationCancel => 'Cancel reservation';
+
+  @override
+  String get reservationCancelConfirm => 'Cancel this reservation?';
+
+  @override
+  String get reservationStatusBooked => 'Booked';
+
+  @override
+  String get reservationStatusArrived => 'Arrived';
+
+  @override
+  String get reservationStatusCancelled => 'Cancelled';
+
+  @override
+  String get reservationStatusNoShow => 'No-show';
+
+  @override
+  String get reservationSoon => 'Starting soon';
+
+  @override
+  String get reservationHolding => 'Waiting for arrival';
+
+  @override
+  String get reservationHeldOrder =>
+      'This table is reserved. Scan it to confirm arrival before taking an order.';
+
+  @override
+  String get reservationScanNeedsAccess =>
+      'Only someone with reservation access can confirm this table.';
+
+  @override
+  String get reservationWindow =>
+      'A reservation lasts between 30 minutes and 8 hours, and it must still be open.';
+
+  @override
+  String get reservationSelectTables => 'Select at least one table.';
+
+  @override
+  String get accessReservations => 'Reservations';
+
+  @override
+  String get accessReservationsHint =>
+      'Create, cancel, and confirm reservations.';
+
+  @override
+  String get errorPackFeatureReservations =>
+      'This plan does not include reservations.';
+
+  @override
+  String get errorPackLimitReservations =>
+      'This plan has reached its reservation limit for the day.';
+
+  @override
+  String get errorOrderReservationHeld =>
+      'Confirm the reservation before taking an order.';
+
+  @override
+  String get errorReservationOverlap =>
+      'A table is already reserved for that time.';
+
+  @override
+  String get errorReservationNotFound =>
+      'No customer or reservation matches that.';
+
+  @override
+  String get packCapReservations => 'Reservations';
+
+  @override
+  String get packCapReservationsPerDay => 'Reservations / day';
+
+  @override
   String get errorPackPaidActive => 'This venue already has a paid plan.';
 
   @override

@@ -35,7 +35,8 @@ abstract class BuildingUpdate
     required this.allowAppendingItemsToOrder,
     required this.strictMode,
     required this.strictModeSteps,
-  });
+    double? reservationFee,
+  }) : reservationFee = reservationFee ?? 0.0;
 
   factory BuildingUpdate({
     required _is.UuidValue id,
@@ -56,6 +57,7 @@ abstract class BuildingUpdate
     required bool allowAppendingItemsToOrder,
     required bool strictMode,
     required List<_ik04yv2w.StrictModeStep> strictModeSteps,
+    double? reservationFee,
   }) = _BuildingUpdateImpl;
 
   factory BuildingUpdate.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -89,6 +91,7 @@ abstract class BuildingUpdate
           .deserialize<List<_ik04yv2w.StrictModeStep>>(
             jsonSerialization['strictModeSteps'],
           ),
+      reservationFee: (jsonSerialization['reservationFee'] as num?)?.toDouble(),
     );
   }
 
@@ -128,6 +131,8 @@ abstract class BuildingUpdate
 
   List<_ik04yv2w.StrictModeStep> strictModeSteps;
 
+  double reservationFee;
+
   /// Returns a shallow copy of this [BuildingUpdate]
   /// with some or all fields replaced by the given arguments.
   @_is.useResult
@@ -150,6 +155,7 @@ abstract class BuildingUpdate
     bool? allowAppendingItemsToOrder,
     bool? strictMode,
     List<_ik04yv2w.StrictModeStep>? strictModeSteps,
+    double? reservationFee,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -173,6 +179,7 @@ abstract class BuildingUpdate
       'allowAppendingItemsToOrder': allowAppendingItemsToOrder,
       'strictMode': strictMode,
       'strictModeSteps': strictModeSteps.toJson(valueToJson: (v) => v.toJson()),
+      'reservationFee': reservationFee,
     };
   }
 
@@ -200,6 +207,7 @@ abstract class BuildingUpdate
       'strictModeSteps': strictModeSteps.toJson(
         valueToJson: (v) => v.toJsonForProtocol(),
       ),
+      'reservationFee': reservationFee,
     };
   }
 
@@ -231,6 +239,7 @@ class _BuildingUpdateImpl extends BuildingUpdate {
     required bool allowAppendingItemsToOrder,
     required bool strictMode,
     required List<_ik04yv2w.StrictModeStep> strictModeSteps,
+    double? reservationFee,
   }) : super._(
          id: id,
          name: name,
@@ -250,6 +259,7 @@ class _BuildingUpdateImpl extends BuildingUpdate {
          allowAppendingItemsToOrder: allowAppendingItemsToOrder,
          strictMode: strictMode,
          strictModeSteps: strictModeSteps,
+         reservationFee: reservationFee,
        );
 
   /// Returns a shallow copy of this [BuildingUpdate]
@@ -275,6 +285,7 @@ class _BuildingUpdateImpl extends BuildingUpdate {
     bool? allowAppendingItemsToOrder,
     bool? strictMode,
     List<_ik04yv2w.StrictModeStep>? strictModeSteps,
+    double? reservationFee,
   }) {
     return BuildingUpdate(
       id: id ?? this.id,
@@ -298,6 +309,7 @@ class _BuildingUpdateImpl extends BuildingUpdate {
       strictModeSteps:
           strictModeSteps ??
           this.strictModeSteps.map((e0) => e0.copyWith()).toList(),
+      reservationFee: reservationFee ?? this.reservationFee,
     );
   }
 }

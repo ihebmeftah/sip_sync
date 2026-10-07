@@ -74,6 +74,7 @@ class EmployeeAccessService {
         preparation: request.preparation,
         serving: request.serving,
         consultAllOrders: request.consultAllOrders,
+        reservations: request.reservations,
       ),
     );
     return _view(row);
@@ -111,6 +112,7 @@ class EmployeeAccessService {
         preparation: request.preparation,
         serving: request.serving,
         consultAllOrders: request.consultAllOrders,
+        reservations: request.reservations,
       ),
     );
     return _view(updated);
@@ -150,6 +152,7 @@ class EmployeeAccessService {
     preparation: row.preparation,
     serving: row.serving,
     consultAllOrders: row.consultAllOrders,
+    reservations: row.reservations,
     createdAt: row.createdAt,
   );
 

@@ -87,6 +87,7 @@ class BuildingFormViewModel extends _$BuildingFormViewModel {
     required bool allowAppendingItemsToOrder,
     required bool strictMode,
     required List<StrictModeStep> strictModeSteps,
+    required double reservationFee,
   }) async {
     try {
       final existing = state.asData?.value;
@@ -112,6 +113,7 @@ class BuildingFormViewModel extends _$BuildingFormViewModel {
               allowAppendingItemsToOrder: allowAppendingItemsToOrder,
               strictMode: strictMode,
               strictModeSteps: strictModeSteps,
+              reservationFee: reservationFee,
             );
       } else {
         saved = await ref
@@ -135,6 +137,7 @@ class BuildingFormViewModel extends _$BuildingFormViewModel {
               allowAppendingItemsToOrder: allowAppendingItemsToOrder,
               strictMode: strictMode,
               strictModeSteps: strictModeSteps,
+              reservationFee: reservationFee,
             );
       }
       getIt<BuildingSession>().upsert(saved);

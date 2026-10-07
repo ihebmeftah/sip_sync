@@ -33,6 +33,8 @@ abstract class BuildingPackView
     required this.tableMultiOrder,
     required this.strictMode,
     required this.customAccessProfiles,
+    required this.reservations,
+    this.maxReservationsPerDay,
   });
 
   factory BuildingPackView({
@@ -53,6 +55,8 @@ abstract class BuildingPackView
     required bool tableMultiOrder,
     required bool strictMode,
     required bool customAccessProfiles,
+    required bool reservations,
+    int? maxReservationsPerDay,
   }) = _BuildingPackViewImpl;
 
   factory BuildingPackView.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -86,6 +90,10 @@ abstract class BuildingPackView
       customAccessProfiles: _is.BoolJsonExtension.fromJson(
         jsonSerialization['customAccessProfiles'],
       ),
+      reservations: _is.BoolJsonExtension.fromJson(
+        jsonSerialization['reservations'],
+      ),
+      maxReservationsPerDay: jsonSerialization['maxReservationsPerDay'] as int?,
     );
   }
 
@@ -123,6 +131,10 @@ abstract class BuildingPackView
 
   bool customAccessProfiles;
 
+  bool reservations;
+
+  int? maxReservationsPerDay;
+
   /// Returns a shallow copy of this [BuildingPackView]
   /// with some or all fields replaced by the given arguments.
   @_is.useResult
@@ -144,6 +156,8 @@ abstract class BuildingPackView
     bool? tableMultiOrder,
     bool? strictMode,
     bool? customAccessProfiles,
+    bool? reservations,
+    int? maxReservationsPerDay,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -166,6 +180,9 @@ abstract class BuildingPackView
       'tableMultiOrder': tableMultiOrder,
       'strictMode': strictMode,
       'customAccessProfiles': customAccessProfiles,
+      'reservations': reservations,
+      if (maxReservationsPerDay != null)
+        'maxReservationsPerDay': maxReservationsPerDay,
     };
   }
 
@@ -190,6 +207,9 @@ abstract class BuildingPackView
       'tableMultiOrder': tableMultiOrder,
       'strictMode': strictMode,
       'customAccessProfiles': customAccessProfiles,
+      'reservations': reservations,
+      if (maxReservationsPerDay != null)
+        'maxReservationsPerDay': maxReservationsPerDay,
     };
   }
 
@@ -220,6 +240,8 @@ class _BuildingPackViewImpl extends BuildingPackView {
     required bool tableMultiOrder,
     required bool strictMode,
     required bool customAccessProfiles,
+    required bool reservations,
+    int? maxReservationsPerDay,
   }) : super._(
          code: code,
          name: name,
@@ -238,6 +260,8 @@ class _BuildingPackViewImpl extends BuildingPackView {
          tableMultiOrder: tableMultiOrder,
          strictMode: strictMode,
          customAccessProfiles: customAccessProfiles,
+         reservations: reservations,
+         maxReservationsPerDay: maxReservationsPerDay,
        );
 
   /// Returns a shallow copy of this [BuildingPackView]
@@ -262,6 +286,8 @@ class _BuildingPackViewImpl extends BuildingPackView {
     bool? tableMultiOrder,
     bool? strictMode,
     bool? customAccessProfiles,
+    bool? reservations,
+    Object? maxReservationsPerDay = _Undefined,
   }) {
     return BuildingPackView(
       code: code ?? this.code,
@@ -283,6 +309,10 @@ class _BuildingPackViewImpl extends BuildingPackView {
       tableMultiOrder: tableMultiOrder ?? this.tableMultiOrder,
       strictMode: strictMode ?? this.strictMode,
       customAccessProfiles: customAccessProfiles ?? this.customAccessProfiles,
+      reservations: reservations ?? this.reservations,
+      maxReservationsPerDay: maxReservationsPerDay is int?
+          ? maxReservationsPerDay
+          : this.maxReservationsPerDay,
     );
   }
 }

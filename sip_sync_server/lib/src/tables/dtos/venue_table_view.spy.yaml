@@ -7,3 +7,7 @@ fields:
   isActive: bool
   ### Computed floor status (not a DB column).
   status: TableFloorStatus
+  ### Upcoming or in-progress booking on this table. Not stored.
+  reservationPhase: ReservationPhase, default=none
+  reservationGuest: String?
+  reservationStartsAt: DateTime?

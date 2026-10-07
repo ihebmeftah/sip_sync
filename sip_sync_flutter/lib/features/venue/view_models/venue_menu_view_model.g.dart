@@ -54,7 +54,7 @@ final class VenueMenuViewModelProvider
 }
 
 String _$venueMenuViewModelHash() =>
-    r'bcbf56ce426b6f12077635c32dd4257b2871420d';
+    r'4c4a06a3c80e5373b668ea3856b4369d286d5342';
 
 /// Customer menu for one building, loaded in catalog order.
 

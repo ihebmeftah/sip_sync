@@ -5,6 +5,7 @@ import 'package:sip_sync_client/sip_sync_client.dart';
 
 import '../../../core/access/floor_access.dart';
 import '../../../core/di/app_providers.dart';
+import '../../../core/errors/error_mapper.dart';
 import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
@@ -107,9 +108,29 @@ class _TableQrScanViewState extends ConsumerState<TableQrScanView> {
       return;
     }
 
-    if (!FloorAccess.fromSession(
-      ref.read(appSessionStoreProvider),
-    ).canCreateOrders) {
+    final access = FloorAccess.fromSession(ref.read(appSessionStoreProvider));
+    if (table.reservationPhase == ReservationPhase.holding) {
+      if (!access.canManageReservations) {
+        await _rejectAndClose(l10n.reservationScanNeedsAccess);
+        return;
+      }
+      try {
+        await ref
+            .read(reservationRepositoryProvider)
+            .confirmByTable(
+              buildingId: UuidValue.fromString(widget.buildingId),
+              tableId: table.id,
+            );
+      } catch (error) {
+        if (!mounted) {
+          return;
+        }
+        await _rejectAndClose(lookupError(l10n, mapError(error).l10nKey));
+        return;
+      }
+    }
+
+    if (!access.canCreateOrders) {
       await _rejectAndClose(l10n.errorOrderPermissionDenied);
       return;
     }

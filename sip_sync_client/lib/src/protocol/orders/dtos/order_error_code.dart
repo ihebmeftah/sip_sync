@@ -28,7 +28,10 @@ enum OrderErrorCode implements _isc.SerializableModel {
   appendNotAllowed,
 
   /// Employee access profile does not allow this action.
-  permissionDenied;
+  permissionDenied,
+
+  /// A reservation has started and staff have not confirmed arrival.
+  reservationHeld;
 
   static OrderErrorCode fromJson(String name) {
     switch (name) {
@@ -48,6 +51,8 @@ enum OrderErrorCode implements _isc.SerializableModel {
         return OrderErrorCode.appendNotAllowed;
       case 'permissionDenied':
         return OrderErrorCode.permissionDenied;
+      case 'reservationHeld':
+        return OrderErrorCode.reservationHeld;
       default:
         throw ArgumentError(
           'Value "$name" cannot be converted to "OrderErrorCode"',

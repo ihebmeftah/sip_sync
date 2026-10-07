@@ -536,6 +536,69 @@ class AppLocalizationsEn extends AppLocalizations {
   String get errorPackFeatureQr => 'This plan does not include table QR codes.';
 
   @override
+  String get reserveTable => 'Reserve a table';
+
+  @override
+  String get signInToReserve => 'Sign in to reserve a table';
+
+  @override
+  String get reservationBook => 'Book';
+
+  @override
+  String get reservationMine => 'My reservations';
+
+  @override
+  String get reservationEmpty => 'You have no upcoming reservations.';
+
+  @override
+  String get reservationDate => 'Date';
+
+  @override
+  String get reservationStart => 'Start';
+
+  @override
+  String get reservationEnd => 'End';
+
+  @override
+  String get reservationCancel => 'Cancel reservation';
+
+  @override
+  String get reservationSoon => 'Starting soon';
+
+  @override
+  String get reservationHolding => 'Waiting for the venue to confirm arrival';
+
+  @override
+  String get reservationHeldOrder =>
+      'This table is reserved until the venue confirms the guests have arrived.';
+
+  @override
+  String get reservationWindow =>
+      'A reservation lasts between 30 minutes and 8 hours, and it must start in the future.';
+
+  @override
+  String get reservationSelectTables => 'Select at least one table.';
+
+  @override
+  String get errorPackFeatureReservations =>
+      'This plan does not include reservations.';
+
+  @override
+  String get errorPackLimitReservations =>
+      'This plan has reached its reservation limit for the day.';
+
+  @override
+  String get errorOrderReservationHeld =>
+      'This table is reserved until the venue confirms arrival.';
+
+  @override
+  String get errorReservationOverlap =>
+      'A table is already reserved for that time.';
+
+  @override
+  String get errorReservationNotFound => 'No reservation matches that.';
+
+  @override
   String get errorPackPaidActive => 'This venue already has a paid plan.';
 
   @override

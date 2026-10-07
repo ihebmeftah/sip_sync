@@ -1,0 +1,25 @@
+### A booking for one or more tables in a venue.
+class: Reservation
+table: reservation
+serverOnly: true
+fields:
+  id: UuidValue?, defaultPersist=random_v7
+  building: Building?, relation(name=building_reservations, onDelete=Cascade)
+  startsAt: DateTime
+  endsAt: DateTime
+  customer: Customer?, relation(name=customer_reservations, optional, onDelete=SetNull)
+  ### Display name. Copied from the customer account or typed for a guest.
+  guestName: String
+  guestPhone: String?
+  ### Amount recorded as paid, in the venue currency.
+  paidAmount: double, default=0
+  status: ReservationStatus
+  createdByType: ActorType
+  createdById: UuidValue
+  confirmedAt: DateTime?
+  confirmedById: UuidValue?
+  createdAt: DateTime, defaultModel=now
+  links: List<TableReservation>?, relation(name=reservation_tables)
+indexes:
+  reservation_building_start_idx:
+    fields: buildingId, startsAt

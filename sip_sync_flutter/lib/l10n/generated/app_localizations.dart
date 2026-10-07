@@ -976,6 +976,120 @@ abstract class AppLocalizations {
   /// **'This plan does not include table QR codes.'**
   String get errorPackFeatureQr;
 
+  /// No description provided for @reserveTable.
+  ///
+  /// In en, this message translates to:
+  /// **'Reserve a table'**
+  String get reserveTable;
+
+  /// No description provided for @signInToReserve.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to reserve a table'**
+  String get signInToReserve;
+
+  /// No description provided for @reservationBook.
+  ///
+  /// In en, this message translates to:
+  /// **'Book'**
+  String get reservationBook;
+
+  /// No description provided for @reservationMine.
+  ///
+  /// In en, this message translates to:
+  /// **'My reservations'**
+  String get reservationMine;
+
+  /// No description provided for @reservationEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'You have no upcoming reservations.'**
+  String get reservationEmpty;
+
+  /// No description provided for @reservationDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get reservationDate;
+
+  /// No description provided for @reservationStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Start'**
+  String get reservationStart;
+
+  /// No description provided for @reservationEnd.
+  ///
+  /// In en, this message translates to:
+  /// **'End'**
+  String get reservationEnd;
+
+  /// No description provided for @reservationCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel reservation'**
+  String get reservationCancel;
+
+  /// No description provided for @reservationSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Starting soon'**
+  String get reservationSoon;
+
+  /// No description provided for @reservationHolding.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for the venue to confirm arrival'**
+  String get reservationHolding;
+
+  /// No description provided for @reservationHeldOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'This table is reserved until the venue confirms the guests have arrived.'**
+  String get reservationHeldOrder;
+
+  /// No description provided for @reservationWindow.
+  ///
+  /// In en, this message translates to:
+  /// **'A reservation lasts between 30 minutes and 8 hours, and it must start in the future.'**
+  String get reservationWindow;
+
+  /// No description provided for @reservationSelectTables.
+  ///
+  /// In en, this message translates to:
+  /// **'Select at least one table.'**
+  String get reservationSelectTables;
+
+  /// No description provided for @errorPackFeatureReservations.
+  ///
+  /// In en, this message translates to:
+  /// **'This plan does not include reservations.'**
+  String get errorPackFeatureReservations;
+
+  /// No description provided for @errorPackLimitReservations.
+  ///
+  /// In en, this message translates to:
+  /// **'This plan has reached its reservation limit for the day.'**
+  String get errorPackLimitReservations;
+
+  /// No description provided for @errorOrderReservationHeld.
+  ///
+  /// In en, this message translates to:
+  /// **'This table is reserved until the venue confirms arrival.'**
+  String get errorOrderReservationHeld;
+
+  /// No description provided for @errorReservationOverlap.
+  ///
+  /// In en, this message translates to:
+  /// **'A table is already reserved for that time.'**
+  String get errorReservationOverlap;
+
+  /// No description provided for @errorReservationNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No reservation matches that.'**
+  String get errorReservationNotFound;
+
   /// No description provided for @errorPackPaidActive.
   ///
   /// In en, this message translates to:

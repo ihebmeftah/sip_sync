@@ -11,6 +11,7 @@ import '../../data/repositories/menu_category_repository.dart';
 import '../../data/repositories/order_repository.dart';
 import '../../data/repositories/owner_auth_repository.dart';
 import '../../data/repositories/pack_repository.dart';
+import '../../data/repositories/reservation_repository.dart';
 import '../../data/repositories/venue_table_repository.dart';
 import '../../data/services/api_client.dart';
 import 'app_session_store.dart';
@@ -55,4 +56,7 @@ Future<void> setupServiceLocator() async {
   );
   getIt.registerLazySingleton<OrderRepository>(() => OrderRepository(client));
   getIt.registerLazySingleton<PackRepository>(() => PackRepository(client));
+  getIt.registerLazySingleton<ReservationRepository>(
+    () => ReservationRepository(client),
+  );
 }

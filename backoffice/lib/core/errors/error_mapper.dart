@@ -52,6 +52,7 @@ String _packFailureKey(PackException error) {
       PackFeature.categories => 'errorPackLimitCategories',
       PackFeature.articles => 'errorPackLimitArticles',
       PackFeature.ingredients => 'errorPackLimitIngredients',
+      PackFeature.reservations => 'errorPackLimitReservations',
       _ => 'errorPackLimit',
     },
     PackErrorCode.featureOff => switch (error.feature) {
@@ -62,6 +63,7 @@ String _packFailureKey(PackException error) {
       PackFeature.strictMode => 'errorPackFeatureStrict',
       PackFeature.customAccessProfiles => 'errorPackFeatureAccess',
       PackFeature.tableQr => 'errorPackFeatureQr',
+      PackFeature.reservations => 'errorPackFeatureReservations',
       _ => 'errorPackFeature',
     },
   };
@@ -100,6 +102,8 @@ String lookupError(dynamic l10n, String key) {
     'errorPackFeatureStrict' => l10n.errorPackFeatureStrict,
     'errorPackFeatureAccess' => l10n.errorPackFeatureAccess,
     'errorPackFeatureQr' => l10n.errorPackFeatureQr,
+    'errorPackFeatureReservations' => l10n.errorPackFeatureReservations,
+    'errorPackLimitReservations' => l10n.errorPackLimitReservations,
     'errorPackPaidActive' => l10n.errorPackPaidActive,
     _ => l10n.errorGeneric,
   };

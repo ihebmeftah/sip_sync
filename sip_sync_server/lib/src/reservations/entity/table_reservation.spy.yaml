@@ -1,0 +1,14 @@
+### One table included in a reservation.
+class: TableReservation
+table: table_reservation
+serverOnly: true
+fields:
+  id: UuidValue?, defaultPersist=random_v7
+  reservation: Reservation?, relation(name=reservation_tables, onDelete=Cascade)
+  venueTable: VenueTable?, relation(name=table_reservations, onDelete=Cascade)
+indexes:
+  table_reservation_pair_idx:
+    fields: reservationId, venueTableId
+    unique: true
+  table_reservation_venue_idx:
+    fields: venueTableId

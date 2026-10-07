@@ -8,9 +8,12 @@
 // ignore_for_file: type_literal_in_constant_pattern
 // ignore_for_file: use_super_parameters
 // ignore_for_file: invalid_use_of_internal_member
+// ignore_for_file: dead_code, unnecessary_null_comparison
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _is;
+import 'package:sip_sync_server/src/generated/protocol.dart' as _iaib1p48;
+import '../../reservations/entity/reservation.dart' as _iq51mm5o;
 
 /// Customer account for the consumer app.
 abstract class Customer
@@ -23,6 +26,7 @@ abstract class Customer
     required this.lastName,
     required this.passwordHash,
     DateTime? createdAt,
+    this.reservations,
   }) : createdAt = createdAt ?? DateTime.now();
 
   factory Customer({
@@ -33,6 +37,7 @@ abstract class Customer
     required String lastName,
     required String passwordHash,
     DateTime? createdAt,
+    List<_iq51mm5o.Reservation>? reservations,
   }) = _CustomerImpl;
 
   factory Customer.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -48,6 +53,11 @@ abstract class Customer
       createdAt: jsonSerialization['createdAt'] == null
           ? null
           : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
+      reservations: jsonSerialization['reservations'] == null
+          ? null
+          : _iaib1p48.Protocol().deserialize<List<_iq51mm5o.Reservation>>(
+              jsonSerialization['reservations'],
+            ),
     );
   }
 
@@ -70,6 +80,8 @@ abstract class Customer
 
   DateTime createdAt;
 
+  List<_iq51mm5o.Reservation>? reservations;
+
   @override
   _is.Table<_is.UuidValue?> get table => t;
 
@@ -84,6 +96,7 @@ abstract class Customer
     String? lastName,
     String? passwordHash,
     DateTime? createdAt,
+    List<_iq51mm5o.Reservation>? reservations,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -96,6 +109,8 @@ abstract class Customer
       'lastName': lastName,
       'passwordHash': passwordHash,
       'createdAt': createdAt.toJson(),
+      if (reservations != null)
+        'reservations': reservations?.toJson(valueToJson: (v) => v.toJson()),
     };
   }
 
@@ -104,8 +119,10 @@ abstract class Customer
     return {};
   }
 
-  static CustomerInclude include() {
-    return CustomerInclude._();
+  static CustomerInclude include({
+    _iq51mm5o.ReservationIncludeList? reservations,
+  }) {
+    return CustomerInclude._(reservations: reservations);
   }
 
   static CustomerIncludeList includeList({
@@ -143,6 +160,7 @@ class _CustomerImpl extends Customer {
     required String lastName,
     required String passwordHash,
     DateTime? createdAt,
+    List<_iq51mm5o.Reservation>? reservations,
   }) : super._(
          id: id,
          email: email,
@@ -151,6 +169,7 @@ class _CustomerImpl extends Customer {
          lastName: lastName,
          passwordHash: passwordHash,
          createdAt: createdAt,
+         reservations: reservations,
        );
 
   /// Returns a shallow copy of this [Customer]
@@ -165,6 +184,7 @@ class _CustomerImpl extends Customer {
     String? lastName,
     String? passwordHash,
     DateTime? createdAt,
+    Object? reservations = _Undefined,
   }) {
     return Customer(
       id: id is _is.UuidValue? ? id : this.id,
@@ -174,6 +194,9 @@ class _CustomerImpl extends Customer {
       lastName: lastName ?? this.lastName,
       passwordHash: passwordHash ?? this.passwordHash,
       createdAt: createdAt ?? this.createdAt,
+      reservations: reservations is List<_iq51mm5o.Reservation>?
+          ? reservations
+          : this.reservations?.map((e0) => e0.copyWith()).toList(),
     );
   }
 }
@@ -256,6 +279,42 @@ class CustomerTable extends _is.Table<_is.UuidValue?> {
 
   late final _is.ColumnDateTime createdAt;
 
+  _iq51mm5o.ReservationTable? ___reservations;
+
+  _is.ManyRelation<_iq51mm5o.ReservationTable>? _reservations;
+
+  _iq51mm5o.ReservationTable get __reservations {
+    if (___reservations != null) return ___reservations!;
+    ___reservations = _is.createRelationTable(
+      relationFieldName: '__reservations',
+      field: Customer.t.id,
+      foreignField: _iq51mm5o.Reservation.t.customerId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _iq51mm5o.ReservationTable(tableRelation: foreignTableRelation),
+    );
+    return ___reservations!;
+  }
+
+  _is.ManyRelation<_iq51mm5o.ReservationTable> get reservations {
+    if (_reservations != null) return _reservations!;
+    var relationTable = _is.createRelationTable(
+      relationFieldName: 'reservations',
+      field: Customer.t.id,
+      foreignField: _iq51mm5o.Reservation.t.customerId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _iq51mm5o.ReservationTable(tableRelation: foreignTableRelation),
+    );
+    _reservations = _is.ManyRelation<_iq51mm5o.ReservationTable>(
+      tableWithRelations: relationTable,
+      table: _iq51mm5o.ReservationTable(
+        tableRelation: relationTable.tableRelation!.lastRelation,
+      ),
+    );
+    return _reservations!;
+  }
+
   @override
   List<_is.Column> get columns => [
     id,
@@ -266,13 +325,25 @@ class CustomerTable extends _is.Table<_is.UuidValue?> {
     passwordHash,
     createdAt,
   ];
+
+  @override
+  _is.Table? getRelationTable(String relationField) {
+    if (relationField == 'reservations') {
+      return __reservations;
+    }
+    return null;
+  }
 }
 
 class CustomerInclude extends _is.IncludeObject {
-  CustomerInclude._();
+  CustomerInclude._({_iq51mm5o.ReservationIncludeList? reservations}) {
+    _reservations = reservations;
+  }
+
+  _iq51mm5o.ReservationIncludeList? _reservations;
 
   @override
-  Map<String, _is.Include?> get includes => {};
+  Map<String, _is.Include?> get includes => {'reservations': _reservations};
 
   @override
   _is.Table<_is.UuidValue?> get table => Customer.t;
@@ -299,6 +370,14 @@ class CustomerIncludeList extends _is.IncludeList {
 
 class CustomerRepository {
   const CustomerRepository._();
+
+  final attach = const CustomerAttachRepository._();
+
+  final attachRow = const CustomerAttachRowRepository._();
+
+  final detach = const CustomerDetachRepository._();
+
+  final detachRow = const CustomerDetachRowRepository._();
 
   /// Returns a list of [Customer]s matching the given query parameters.
   ///
@@ -330,6 +409,7 @@ class CustomerRepository {
     _is.OrderByBuilder<CustomerTable>? orderBy,
     _is.OrderByListBuilder<CustomerTable>? orderByList,
     _is.Transaction? transaction,
+    CustomerInclude? include,
     _is.LockMode? lockMode,
     _is.LockBehavior? lockBehavior,
   }) async {
@@ -340,6 +420,7 @@ class CustomerRepository {
       limit: limit,
       offset: offset,
       transaction: transaction,
+      include: include,
       lockMode: lockMode,
       lockBehavior: lockBehavior,
     );
@@ -369,6 +450,7 @@ class CustomerRepository {
     _is.OrderByBuilder<CustomerTable>? orderBy,
     _is.OrderByListBuilder<CustomerTable>? orderByList,
     _is.Transaction? transaction,
+    CustomerInclude? include,
     _is.LockMode? lockMode,
     _is.LockBehavior? lockBehavior,
   }) async {
@@ -378,6 +460,7 @@ class CustomerRepository {
       orderByList: orderByList?.call(Customer.t),
       offset: offset,
       transaction: transaction,
+      include: include,
       lockMode: lockMode,
       lockBehavior: lockBehavior,
     );
@@ -388,12 +471,14 @@ class CustomerRepository {
     _is.DatabaseSession session,
     _is.UuidValue id, {
     _is.Transaction? transaction,
+    CustomerInclude? include,
     _is.LockMode? lockMode,
     _is.LockBehavior? lockBehavior,
   }) async {
     return session.db.findById<Customer>(
       id,
       transaction: transaction,
+      include: include,
       lockMode: lockMode,
       lockBehavior: lockBehavior,
     );
@@ -687,6 +772,116 @@ class CustomerRepository {
       where: where(Customer.t),
       lockMode: lockMode,
       lockBehavior: lockBehavior,
+      transaction: transaction,
+    );
+  }
+}
+
+class CustomerAttachRepository {
+  const CustomerAttachRepository._();
+
+  /// Creates a relation between this [Customer] and the given [Reservation]s
+  /// by setting each [Reservation]'s foreign key `customerId` to refer to this [Customer].
+  Future<void> reservations(
+    _is.DatabaseSession session,
+    Customer customer,
+    List<_iq51mm5o.Reservation> reservation, {
+    _is.Transaction? transaction,
+  }) async {
+    if (reservation.any((e) => e.id == null)) {
+      throw ArgumentError.notNull('reservation.id');
+    }
+    if (customer.id == null) {
+      throw ArgumentError.notNull('customer.id');
+    }
+
+    var $reservation = reservation
+        .map((e) => e.copyWith(customerId: customer.id))
+        .toList();
+    await session.db.update<_iq51mm5o.Reservation>(
+      $reservation,
+      columns: [_iq51mm5o.Reservation.t.customerId],
+      transaction: transaction,
+    );
+  }
+}
+
+class CustomerAttachRowRepository {
+  const CustomerAttachRowRepository._();
+
+  /// Creates a relation between this [Customer] and the given [Reservation]
+  /// by setting the [Reservation]'s foreign key `customerId` to refer to this [Customer].
+  Future<void> reservations(
+    _is.DatabaseSession session,
+    Customer customer,
+    _iq51mm5o.Reservation reservation, {
+    _is.Transaction? transaction,
+  }) async {
+    if (reservation.id == null) {
+      throw ArgumentError.notNull('reservation.id');
+    }
+    if (customer.id == null) {
+      throw ArgumentError.notNull('customer.id');
+    }
+
+    var $reservation = reservation.copyWith(customerId: customer.id);
+    await session.db.updateRow<_iq51mm5o.Reservation>(
+      $reservation,
+      columns: [_iq51mm5o.Reservation.t.customerId],
+      transaction: transaction,
+    );
+  }
+}
+
+class CustomerDetachRepository {
+  const CustomerDetachRepository._();
+
+  /// Detaches the relation between this [Customer] and the given [Reservation]
+  /// by setting the [Reservation]'s foreign key `customerId` to `null`.
+  ///
+  /// This removes the association between the two models without deleting
+  /// the related record.
+  Future<void> reservations(
+    _is.DatabaseSession session,
+    List<_iq51mm5o.Reservation> reservation, {
+    _is.Transaction? transaction,
+  }) async {
+    if (reservation.any((e) => e.id == null)) {
+      throw ArgumentError.notNull('reservation.id');
+    }
+
+    var $reservation = reservation
+        .map((e) => e.copyWith(customerId: null))
+        .toList();
+    await session.db.update<_iq51mm5o.Reservation>(
+      $reservation,
+      columns: [_iq51mm5o.Reservation.t.customerId],
+      transaction: transaction,
+    );
+  }
+}
+
+class CustomerDetachRowRepository {
+  const CustomerDetachRowRepository._();
+
+  /// Detaches the relation between this [Customer] and the given [Reservation]
+  /// by setting the [Reservation]'s foreign key `customerId` to `null`.
+  ///
+  /// This removes the association between the two models without deleting
+  /// the related record.
+  Future<void> reservations(
+    _is.DatabaseSession session,
+    _iq51mm5o.Reservation reservation, {
+    _is.Transaction? transaction,
+  }) async {
+    if (reservation.id == null) {
+      throw ArgumentError.notNull('reservation.id');
+    }
+
+    var $reservation = reservation.copyWith(customerId: null);
+    await session.db.updateRow<_iq51mm5o.Reservation>(
+      $reservation,
+      columns: [_iq51mm5o.Reservation.t.customerId],
       transaction: transaction,
     );
   }

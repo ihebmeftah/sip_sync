@@ -31,6 +31,7 @@ class DefaultEmployeeAccess {
           preparation: profile.preparation,
           serving: profile.serving,
           consultAllOrders: profile.consultAllOrders,
+          reservations: profile.reservations,
         ),
       );
     }
@@ -46,6 +47,7 @@ class DefaultEmployeeAccess {
           bool preparation,
           bool serving,
           bool consultAllOrders,
+          bool reservations,
         })
       >[
         (
@@ -56,6 +58,7 @@ class DefaultEmployeeAccess {
           preparation: false,
           serving: true,
           consultAllOrders: false,
+          reservations: false,
         ),
         (
           name: 'Gerant',
@@ -65,6 +68,7 @@ class DefaultEmployeeAccess {
           preparation: true,
           serving: true,
           consultAllOrders: true,
+          reservations: true,
         ),
         (
           name: 'Barista',
@@ -74,6 +78,7 @@ class DefaultEmployeeAccess {
           preparation: true,
           serving: false,
           consultAllOrders: false,
+          reservations: false,
         ),
       ];
 }

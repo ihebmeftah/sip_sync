@@ -29,6 +29,8 @@ abstract class PackCapabilities
     required this.tableMultiOrder,
     required this.strictMode,
     required this.customAccessProfiles,
+    required this.reservations,
+    this.maxReservationsPerDay,
   });
 
   factory PackCapabilities({
@@ -45,6 +47,8 @@ abstract class PackCapabilities
     required bool tableMultiOrder,
     required bool strictMode,
     required bool customAccessProfiles,
+    required bool reservations,
+    int? maxReservationsPerDay,
   }) = _PackCapabilitiesImpl;
 
   factory PackCapabilities.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -76,6 +80,10 @@ abstract class PackCapabilities
       customAccessProfiles: _isc.BoolJsonExtension.fromJson(
         jsonSerialization['customAccessProfiles'],
       ),
+      reservations: _isc.BoolJsonExtension.fromJson(
+        jsonSerialization['reservations'],
+      ),
+      maxReservationsPerDay: jsonSerialization['maxReservationsPerDay'] as int?,
     );
   }
 
@@ -105,6 +113,11 @@ abstract class PackCapabilities
 
   bool customAccessProfiles;
 
+  bool reservations;
+
+  /// Non-cancelled reservations whose start falls on one UTC date. Null means no cap.
+  int? maxReservationsPerDay;
+
   /// Returns a shallow copy of this [PackCapabilities]
   /// with some or all fields replaced by the given arguments.
   @_isc.useResult
@@ -122,6 +135,8 @@ abstract class PackCapabilities
     bool? tableMultiOrder,
     bool? strictMode,
     bool? customAccessProfiles,
+    bool? reservations,
+    int? maxReservationsPerDay,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -140,6 +155,9 @@ abstract class PackCapabilities
       'tableMultiOrder': tableMultiOrder,
       'strictMode': strictMode,
       'customAccessProfiles': customAccessProfiles,
+      'reservations': reservations,
+      if (maxReservationsPerDay != null)
+        'maxReservationsPerDay': maxReservationsPerDay,
     };
   }
 
@@ -160,6 +178,9 @@ abstract class PackCapabilities
       'tableMultiOrder': tableMultiOrder,
       'strictMode': strictMode,
       'customAccessProfiles': customAccessProfiles,
+      'reservations': reservations,
+      if (maxReservationsPerDay != null)
+        'maxReservationsPerDay': maxReservationsPerDay,
     };
   }
 
@@ -186,6 +207,8 @@ class _PackCapabilitiesImpl extends PackCapabilities {
     required bool tableMultiOrder,
     required bool strictMode,
     required bool customAccessProfiles,
+    required bool reservations,
+    int? maxReservationsPerDay,
   }) : super._(
          maxEmployees: maxEmployees,
          maxTables: maxTables,
@@ -200,6 +223,8 @@ class _PackCapabilitiesImpl extends PackCapabilities {
          tableMultiOrder: tableMultiOrder,
          strictMode: strictMode,
          customAccessProfiles: customAccessProfiles,
+         reservations: reservations,
+         maxReservationsPerDay: maxReservationsPerDay,
        );
 
   /// Returns a shallow copy of this [PackCapabilities]
@@ -220,6 +245,8 @@ class _PackCapabilitiesImpl extends PackCapabilities {
     bool? tableMultiOrder,
     bool? strictMode,
     bool? customAccessProfiles,
+    bool? reservations,
+    Object? maxReservationsPerDay = _Undefined,
   }) {
     return PackCapabilities(
       maxEmployees: maxEmployees is int? ? maxEmployees : this.maxEmployees,
@@ -237,6 +264,10 @@ class _PackCapabilitiesImpl extends PackCapabilities {
       tableMultiOrder: tableMultiOrder ?? this.tableMultiOrder,
       strictMode: strictMode ?? this.strictMode,
       customAccessProfiles: customAccessProfiles ?? this.customAccessProfiles,
+      reservations: reservations ?? this.reservations,
+      maxReservationsPerDay: maxReservationsPerDay is int?
+          ? maxReservationsPerDay
+          : this.maxReservationsPerDay,
     );
   }
 }

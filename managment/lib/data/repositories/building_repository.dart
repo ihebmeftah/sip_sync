@@ -29,6 +29,7 @@ class BuildingRepository {
     required bool allowAppendingItemsToOrder,
     required bool strictMode,
     required List<StrictModeStep> strictModeSteps,
+    required double reservationFee,
   }) {
     return _client.building.create(
       BuildingCreate(
@@ -49,6 +50,7 @@ class BuildingRepository {
         allowAppendingItemsToOrder: allowAppendingItemsToOrder,
         strictMode: strictMode,
         strictModeSteps: strictModeSteps,
+        reservationFee: reservationFee,
       ),
     );
   }
@@ -72,6 +74,7 @@ class BuildingRepository {
     required bool allowAppendingItemsToOrder,
     required bool strictMode,
     required List<StrictModeStep> strictModeSteps,
+    required double reservationFee,
   }) {
     return _client.building.update(
       BuildingUpdate(
@@ -93,6 +96,7 @@ class BuildingRepository {
         allowAppendingItemsToOrder: allowAppendingItemsToOrder,
         strictMode: strictMode,
         strictModeSteps: strictModeSteps,
+        reservationFee: reservationFee,
       ),
     );
   }

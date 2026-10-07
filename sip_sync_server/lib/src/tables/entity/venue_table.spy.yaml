@@ -10,6 +10,7 @@ fields:
   isActive: bool, default=true
   createdAt: DateTime, defaultModel=now
   orders: List<VenueOrder>?, relation(name=table_orders)
+  reservationLinks: List<TableReservation>?, relation(name=table_reservations)
 indexes:
   venue_table_building_number_idx:
     fields: buildingId, number

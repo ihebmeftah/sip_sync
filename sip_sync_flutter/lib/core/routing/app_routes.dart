@@ -11,6 +11,7 @@ import '../../features/venue/views/order_review_view.dart';
 import '../../features/venue/views/table_scan_view.dart';
 import '../../features/venue/views/venue_detail_view.dart';
 import '../../features/venue/views/venue_menu_view.dart';
+import '../../features/venue/views/venue_reserve_view.dart';
 
 part 'app_routes.g.dart';
 
@@ -127,6 +128,21 @@ class CustomerOrderRoute extends GoRouteData with $CustomerOrderRoute {
   @override
   Widget build(BuildContext context, GoRouterState state) =>
       CustomerOrderReceiptView(buildingId: id, orderId: orderId);
+}
+
+@TypedGoRoute<VenueReserveRoute>(
+  path: '/venues/:id/reserve',
+  name: 'venueReserve',
+)
+class VenueReserveRoute extends GoRouteData with $VenueReserveRoute {
+  const VenueReserveRoute({required this.id});
+
+  /// Building id as a UUID string.
+  final String id;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) =>
+      VenueReserveView(buildingId: id);
 }
 
 @TypedGoRoute<VenueMenuRoute>(path: '/venues/:id/menu', name: 'venueMenu')

@@ -18,3 +18,5 @@ fields:
   tableMultiOrder: bool
   strictMode: bool
   customAccessProfiles: bool
+  reservations: bool
+  maxReservationsPerDay: int?

@@ -156,6 +156,7 @@ class EmployeeAuthEndpoint extends Endpoint {
               preparation: access.preparation,
               serving: access.serving,
               consultAllOrders: access.consultAllOrders,
+              reservations: access.reservations,
               createdAt: access.createdAt,
             ),
       username: employee.username,

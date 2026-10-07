@@ -276,6 +276,18 @@ RouteBase get $opsShellRoute => ShellRouteData.$route(
       factory: $OrdersRoute._fromState,
     ),
     GoRouteData.$route(
+      path: '/b/:buildingId/reservations',
+      name: 'reservations',
+      hasOverriddenOnExit: false,
+      factory: $ReservationsRoute._fromState,
+    ),
+    GoRouteData.$route(
+      path: '/b/:buildingId/reservations/new',
+      name: 'reservationCreate',
+      hasOverriddenOnExit: false,
+      factory: $ReservationCreateRoute._fromState,
+    ),
+    GoRouteData.$route(
       path: '/b/:buildingId/tables',
       name: 'tables',
       hasOverriddenOnExit: false,
@@ -678,6 +690,56 @@ mixin $OrdersRoute on GoRouteData {
   @override
   String get location => GoRouteData.$location(
     '/b/${Uri.encodeComponent(_self.buildingId)}/orders',
+  );
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+mixin $ReservationsRoute on GoRouteData {
+  static ReservationsRoute _fromState(GoRouterState state) =>
+      ReservationsRoute(buildingId: state.pathParameters['buildingId']!);
+
+  ReservationsRoute get _self => this as ReservationsRoute;
+
+  @override
+  String get location => GoRouteData.$location(
+    '/b/${Uri.encodeComponent(_self.buildingId)}/reservations',
+  );
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+mixin $ReservationCreateRoute on GoRouteData {
+  static ReservationCreateRoute _fromState(GoRouterState state) =>
+      ReservationCreateRoute(buildingId: state.pathParameters['buildingId']!);
+
+  ReservationCreateRoute get _self => this as ReservationCreateRoute;
+
+  @override
+  String get location => GoRouteData.$location(
+    '/b/${Uri.encodeComponent(_self.buildingId)}/reservations/new',
   );
 
   @override

@@ -11,6 +11,7 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _is;
+import '../../reservations/reservation_phase.dart' as _imjzfucu;
 import '../../tables/dtos/table_floor_status.dart' as _iv1evzd3;
 
 abstract class VenueTableView
@@ -22,7 +23,10 @@ abstract class VenueTableView
     required this.maxSeats,
     required this.isActive,
     required this.status,
-  });
+    _imjzfucu.ReservationPhase? reservationPhase,
+    this.reservationGuest,
+    this.reservationStartsAt,
+  }) : reservationPhase = reservationPhase ?? _imjzfucu.ReservationPhase.none;
 
   factory VenueTableView({
     required _is.UuidValue id,
@@ -31,6 +35,9 @@ abstract class VenueTableView
     required int maxSeats,
     required bool isActive,
     required _iv1evzd3.TableFloorStatus status,
+    _imjzfucu.ReservationPhase? reservationPhase,
+    String? reservationGuest,
+    DateTime? reservationStartsAt,
   }) = _VenueTableViewImpl;
 
   factory VenueTableView.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -45,6 +52,17 @@ abstract class VenueTableView
       status: _iv1evzd3.TableFloorStatus.fromJson(
         (jsonSerialization['status'] as String),
       ),
+      reservationPhase: jsonSerialization['reservationPhase'] == null
+          ? null
+          : _imjzfucu.ReservationPhase.fromJson(
+              (jsonSerialization['reservationPhase'] as String),
+            ),
+      reservationGuest: jsonSerialization['reservationGuest'] as String?,
+      reservationStartsAt: jsonSerialization['reservationStartsAt'] == null
+          ? null
+          : _is.DateTimeJsonExtension.fromJson(
+              jsonSerialization['reservationStartsAt'],
+            ),
     );
   }
 
@@ -61,6 +79,13 @@ abstract class VenueTableView
   /// Computed floor status (not a DB column).
   _iv1evzd3.TableFloorStatus status;
 
+  /// Upcoming or in-progress booking on this table. Not stored.
+  _imjzfucu.ReservationPhase reservationPhase;
+
+  String? reservationGuest;
+
+  DateTime? reservationStartsAt;
+
   /// Returns a shallow copy of this [VenueTableView]
   /// with some or all fields replaced by the given arguments.
   @_is.useResult
@@ -71,6 +96,9 @@ abstract class VenueTableView
     int? maxSeats,
     bool? isActive,
     _iv1evzd3.TableFloorStatus? status,
+    _imjzfucu.ReservationPhase? reservationPhase,
+    String? reservationGuest,
+    DateTime? reservationStartsAt,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -82,6 +110,10 @@ abstract class VenueTableView
       'maxSeats': maxSeats,
       'isActive': isActive,
       'status': status.toJson(),
+      'reservationPhase': reservationPhase.toJson(),
+      if (reservationGuest != null) 'reservationGuest': reservationGuest,
+      if (reservationStartsAt != null)
+        'reservationStartsAt': reservationStartsAt?.toJson(),
     };
   }
 
@@ -95,6 +127,10 @@ abstract class VenueTableView
       'maxSeats': maxSeats,
       'isActive': isActive,
       'status': status.toJson(),
+      'reservationPhase': reservationPhase.toJson(),
+      if (reservationGuest != null) 'reservationGuest': reservationGuest,
+      if (reservationStartsAt != null)
+        'reservationStartsAt': reservationStartsAt?.toJson(),
     };
   }
 
@@ -104,6 +140,8 @@ abstract class VenueTableView
   }
 }
 
+class _Undefined {}
+
 class _VenueTableViewImpl extends VenueTableView {
   _VenueTableViewImpl({
     required _is.UuidValue id,
@@ -112,6 +150,9 @@ class _VenueTableViewImpl extends VenueTableView {
     required int maxSeats,
     required bool isActive,
     required _iv1evzd3.TableFloorStatus status,
+    _imjzfucu.ReservationPhase? reservationPhase,
+    String? reservationGuest,
+    DateTime? reservationStartsAt,
   }) : super._(
          id: id,
          buildingId: buildingId,
@@ -119,6 +160,9 @@ class _VenueTableViewImpl extends VenueTableView {
          maxSeats: maxSeats,
          isActive: isActive,
          status: status,
+         reservationPhase: reservationPhase,
+         reservationGuest: reservationGuest,
+         reservationStartsAt: reservationStartsAt,
        );
 
   /// Returns a shallow copy of this [VenueTableView]
@@ -132,6 +176,9 @@ class _VenueTableViewImpl extends VenueTableView {
     int? maxSeats,
     bool? isActive,
     _iv1evzd3.TableFloorStatus? status,
+    _imjzfucu.ReservationPhase? reservationPhase,
+    Object? reservationGuest = _Undefined,
+    Object? reservationStartsAt = _Undefined,
   }) {
     return VenueTableView(
       id: id ?? this.id,
@@ -140,6 +187,13 @@ class _VenueTableViewImpl extends VenueTableView {
       maxSeats: maxSeats ?? this.maxSeats,
       isActive: isActive ?? this.isActive,
       status: status ?? this.status,
+      reservationPhase: reservationPhase ?? this.reservationPhase,
+      reservationGuest: reservationGuest is String?
+          ? reservationGuest
+          : this.reservationGuest,
+      reservationStartsAt: reservationStartsAt is DateTime?
+          ? reservationStartsAt
+          : this.reservationStartsAt,
     );
   }
 }

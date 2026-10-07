@@ -9,6 +9,7 @@ class FloorAccess {
     this._preparation,
     this._serving,
     this._consultAllOrders,
+    this._reservations,
   );
 
   final bool _orderCreation;
@@ -17,15 +18,16 @@ class FloorAccess {
   final bool _preparation;
   final bool _serving;
   final bool _consultAllOrders;
+  final bool _reservations;
 
   /// Owners get full floor powers; employees use their assigned profile.
   factory FloorAccess.fromSession(AppSessionStore session) {
     if (session.isOwner) {
-      return FloorAccess._(true, true, true, true, true, true);
+      return FloorAccess._(true, true, true, true, true, true, true);
     }
     final access = session.employee?.access;
     if (access == null) {
-      return FloorAccess._(false, false, false, false, false, false);
+      return FloorAccess._(false, false, false, false, false, false, false);
     }
     return FloorAccess._(
       access.orderCreation,
@@ -34,6 +36,7 @@ class FloorAccess {
       access.preparation,
       access.serving,
       access.consultAllOrders,
+      access.reservations,
     );
   }
 
@@ -43,4 +46,7 @@ class FloorAccess {
   bool get canPrepare => _preparation;
   bool get canServe => _serving;
   bool get canConsultAll => _consultAllOrders;
+
+  /// Create, cancel, and confirm reservations. Order access does not imply this.
+  bool get canManageReservations => _reservations;
 }

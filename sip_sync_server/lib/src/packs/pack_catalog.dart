@@ -9,7 +9,7 @@ class PackCatalog {
   static const freeCode = 'free';
 
   /// Seeds Counter, Floor, House, Group, and the private free pack.
-  static Future<void>  ensure(Session session) async {
+  static Future<void> ensure(Session session) async {
     final existing = await Pack.db.count(session);
     if (existing > 0) {
       return;
@@ -81,82 +81,8 @@ final _seeds = <Pack>[
     tableMultiOrder: false,
     strictMode: false,
     customAccessProfiles: false,
-  ),
-  _pack(
-    code: 'counter',
-    name: 'Counter',
-    monthlyMillimes: 39000,
-    annualMillimes: 390000,
-    customerOrderFeeBps: 0,
-    isPublic: true,
-    isSystem: false,
-    sortOrder: 10,
-    maxEmployees: 3,
-    maxTables: 12,
-    maxCategories: 6,
-    maxArticles: 40,
-    maxIngredients: 40,
-    customerOrdering: false,
-    tableMultiOrder: false,
-    strictMode: false,
-    customAccessProfiles: false,
-  ),
-  _pack(
-    code: 'floor',
-    name: 'Floor',
-    monthlyMillimes: 89000,
-    annualMillimes: 890000,
-    customerOrderFeeBps: 150,
-    isPublic: true,
-    isSystem: false,
-    sortOrder: 20,
-    maxEmployees: 12,
-    maxTables: 40,
-    maxCategories: 20,
-    maxArticles: 200,
-    maxIngredients: 200,
-    customerOrdering: true,
-    tableMultiOrder: true,
-    strictMode: true,
-    customAccessProfiles: true,
-  ),
-  _pack(
-    code: 'house',
-    name: 'House',
-    monthlyMillimes: 149000,
-    annualMillimes: 1490000,
-    customerOrderFeeBps: 100,
-    isPublic: true,
-    isSystem: false,
-    sortOrder: 30,
-    maxEmployees: 30,
-    maxTables: 100,
-    maxCategories: null,
-    maxArticles: null,
-    maxIngredients: null,
-    customerOrdering: true,
-    tableMultiOrder: true,
-    strictMode: true,
-    customAccessProfiles: true,
-  ),
-  _pack(
-    code: 'group',
-    name: 'Group',
-    monthlyMillimes: 249000,
-    annualMillimes: 2490000,
-    customerOrderFeeBps: 50,
-    isPublic: false,
-    isSystem: false,
-    sortOrder: 40,
-    maxEmployees: 80,
-    maxTables: 250,
-    maxCategories: null,
-    maxArticles: null,
-    maxIngredients: null,
-    customerOrdering: true,
-    tableMultiOrder: true,
-    strictMode: true,
-    customAccessProfiles: true,
+    reservations: false,
+    maxReservationsPerDay: null,
   ),
 ];
 
@@ -178,6 +104,8 @@ Pack _pack({
   required bool tableMultiOrder,
   required bool strictMode,
   required bool customAccessProfiles,
+  required bool reservations,
+  required int? maxReservationsPerDay,
 }) {
   return Pack(
     code: code,
@@ -202,5 +130,7 @@ Pack _pack({
     tableMultiOrder: tableMultiOrder,
     strictMode: strictMode,
     customAccessProfiles: customAccessProfiles,
+    reservations: reservations,
+    maxReservationsPerDay: maxReservationsPerDay,
   );
 }

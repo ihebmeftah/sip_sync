@@ -1,0 +1,7 @@
+### Customer booking. The signed-in customer is the guest.
+class: CustomerReservationCreate
+fields:
+  buildingId: UuidValue
+  tableIds: List<UuidValue>
+  startsAt: DateTime
+  endsAt: DateTime

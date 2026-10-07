@@ -1,0 +1,11 @@
+### Staff booking. Either [customerId] or [guestName] identifies the guest.
+class: ReservationCreate
+fields:
+  buildingId: UuidValue
+  tableIds: List<UuidValue>
+  startsAt: DateTime
+  endsAt: DateTime
+  customerId: UuidValue?
+  guestName: String?
+  guestPhone: String?
+  paidAmount: double

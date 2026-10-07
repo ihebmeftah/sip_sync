@@ -170,6 +170,10 @@
   "capStrictModeHint": "The venue may require kitchen steps in order: picked, ready, served, then paid.",
   "capCustomAccess": "Custom access profiles",
   "capCustomAccessHint": "The owner may add access profiles beyond Waiter, Gerant, and Barista.",
+  "capReservations": "Reservations",
+  "capReservationsHint": "Staff and customers can book tables. A daily cap still applies when it is set.",
+  "capMaxReservations": "Reservations per day",
+  "capMaxReservationsHint": "Leave empty for no daily cap. Counts non-cancelled bookings whose start falls on one UTC date.",
   "packPriceMonth": "{price} TND / month",
   "@packPriceMonth": {
     "placeholders": { "price": { "type": "String" } }
@@ -201,6 +205,8 @@
   "errorPackFeatureStrict": "This plan does not include strict order steps.",
   "errorPackFeatureAccess": "This plan does not include custom access profiles.",
   "errorPackFeatureQr": "This plan does not include table QR codes.",
+  "errorPackFeatureReservations": "This plan does not include reservations.",
+  "errorPackLimitReservations": "This plan has reached its reservation limit for the day.",
   "errorPackPaidActive": "This venue already has a paid plan. Assign another plan after it ends.",
   "packHistoryTitle": "Plan history",
   "packHistoryCurrent": "Current",

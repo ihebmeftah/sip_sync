@@ -30,6 +30,8 @@ import '../../features/tables/views/table_qr_scan_view.dart';
 import '../../features/tables/views/tables_list_view.dart';
 import '../../features/tables/views/venue_table_form_view.dart';
 import '../../features/profile/views/profile_view.dart';
+import '../../features/reservations/views/reservation_create_view.dart';
+import '../../features/reservations/views/reservations_list_view.dart';
 
 part 'app_routes.g.dart';
 
@@ -160,6 +162,14 @@ class BuildingEditRoute extends GoRouteData with $BuildingEditRoute {
       name: 'orderDetail',
     ),
     TypedGoRoute<OrdersRoute>(path: '/b/:buildingId/orders', name: 'orders'),
+    TypedGoRoute<ReservationsRoute>(
+      path: '/b/:buildingId/reservations',
+      name: 'reservations',
+    ),
+    TypedGoRoute<ReservationCreateRoute>(
+      path: '/b/:buildingId/reservations/new',
+      name: 'reservationCreate',
+    ),
     TypedGoRoute<TablesRoute>(path: '/b/:buildingId/tables', name: 'tables'),
     TypedGoRoute<TableQrScanRoute>(
       path: '/b/:buildingId/tables/scan',
@@ -336,6 +346,28 @@ class PosRoute extends GoRouteData with $PosRoute {
   @override
   Widget build(BuildContext context, GoRouterState state) {
     return OrdersListView(buildingId: buildingId);
+  }
+}
+
+class ReservationsRoute extends GoRouteData with $ReservationsRoute {
+  const ReservationsRoute({required this.buildingId});
+
+  final String buildingId;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return ReservationsListView(buildingId: buildingId);
+  }
+}
+
+class ReservationCreateRoute extends GoRouteData with $ReservationCreateRoute {
+  const ReservationCreateRoute({required this.buildingId});
+
+  final String buildingId;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return ReservationCreateView(buildingId: buildingId);
   }
 }
 

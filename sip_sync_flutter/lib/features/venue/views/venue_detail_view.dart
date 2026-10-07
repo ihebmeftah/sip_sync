@@ -321,6 +321,16 @@ class _DetailBodyState extends ConsumerState<_DetailBody> {
                     ),
                     const SizedBox(height: AppSpacing.sm),
                   ],
+                  if (widget.page.reservationsEnabled) ...[
+                    AppFilledButton(
+                      label: l10n.reserveTable,
+                      icon: AppIcons.table,
+                      onPressed: () => VenueReserveRoute(
+                        id: widget.buildingId,
+                      ).go(context),
+                    ),
+                    const SizedBox(height: AppSpacing.sm),
+                  ],
                   AppFilledButton(
                     label: l10n.menu,
                     icon: AppIcons.menuBook,
@@ -548,6 +558,20 @@ class _TableChip extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
               style: text.bodySmall?.copyWith(color: foreground),
             ),
+            if (table.reservationPhase == ReservationPhase.soon)
+              Text(
+                l10n.reservationSoon,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: text.bodySmall?.copyWith(color: foreground),
+              ),
+            if (table.reservationPhase == ReservationPhase.holding)
+              Text(
+                l10n.reservationHolding,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: text.bodySmall?.copyWith(color: foreground),
+              ),
           ],
         ),
       ),

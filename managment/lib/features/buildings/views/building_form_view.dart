@@ -43,6 +43,7 @@ class _BuildingFormViewState extends ConsumerState<BuildingFormView> {
   final _instagram = TextEditingController();
   final _facebook = TextEditingController();
   final _otherLinks = TextEditingController();
+  final _reservationFee = TextEditingController(text: '0');
   TimeOfDay _opens = const TimeOfDay(hour: 8, minute: 0);
   TimeOfDay _closes = const TimeOfDay(hour: 23, minute: 0);
   String _type = 'cafe';
@@ -61,6 +62,14 @@ class _BuildingFormViewState extends ConsumerState<BuildingFormView> {
   final _locationPicker = VenueLocationPicker();
 
   String get _id => widget.buildingId ?? '';
+
+  String _money(double value) {
+    if (value == value.roundToDouble()) {
+      return value.round().toString();
+    }
+    return value.toString();
+  }
+
   bool get _isEdit => _id.isNotEmpty;
 
   @override
@@ -81,6 +90,7 @@ class _BuildingFormViewState extends ConsumerState<BuildingFormView> {
     _instagram.dispose();
     _facebook.dispose();
     _otherLinks.dispose();
+    _reservationFee.dispose();
     super.dispose();
   }
 
@@ -110,6 +120,7 @@ class _BuildingFormViewState extends ConsumerState<BuildingFormView> {
     );
     _tableMultiOrder = building.tableMultiOrder;
     _allowAppendingItemsToOrder = building.allowAppendingItemsToOrder;
+    _reservationFee.text = _money(building.reservationFee);
     _strictMode = building.strictMode;
     _strictModeSteps = normalizeStrictModeSteps(building.strictModeSteps);
     _syncTimeFields();
@@ -376,6 +387,25 @@ class _BuildingFormViewState extends ConsumerState<BuildingFormView> {
                           }
                         },
                       ),
+                      AppTextField(
+                        controller: _reservationFee,
+                        label: l10n.reservationFee,
+                        helperText: l10n.reservationFeeHint,
+                        keyboardType: const TextInputType.numberWithOptions(
+                          decimal: true,
+                        ),
+                        validator: (value) {
+                          final parsed = double.tryParse(
+                            (value ?? '').trim().replaceAll(',', '.'),
+                          );
+                          if (parsed == null ||
+                              parsed < 0 ||
+                              parsed > 1000000) {
+                            return l10n.reservationPaidInvalid;
+                          }
+                          return null;
+                        },
+                      ),
                       AppPhoneField(
                         label: l10n.buildingPhone,
                         value: _phoneNumber,
@@ -529,6 +559,12 @@ class _BuildingFormViewState extends ConsumerState<BuildingFormView> {
                                     _allowAppendingItemsToOrder,
                                 strictMode: _strictMode,
                                 strictModeSteps: _strictModeSteps,
+                                reservationFee: double.parse(
+                                  _reservationFee.text.trim().replaceAll(
+                                    ',',
+                                    '.',
+                                  ),
+                                ),
                               );
                           if (!context.mounted) {
                             return;

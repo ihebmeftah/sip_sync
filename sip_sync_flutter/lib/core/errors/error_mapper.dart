@@ -44,6 +44,15 @@ Failure mapError(Object error) {
       OrderErrorCode.invalidStatus => 'errorGeneric',
       OrderErrorCode.appendNotAllowed => 'errorAppendNotAllowed',
       OrderErrorCode.permissionDenied => 'errorNotAuthorized',
+      OrderErrorCode.reservationHeld => 'errorOrderReservationHeld',
+    });
+  }
+  if (error is ReservationException) {
+    return Failure(switch (error.code) {
+      ReservationErrorCode.invalidInput => 'errorInvalidInput',
+      ReservationErrorCode.notAuthorized => 'errorNotAuthorized',
+      ReservationErrorCode.notFound => 'errorReservationNotFound',
+      ReservationErrorCode.overlap => 'errorReservationOverlap',
     });
   }
   if (error is PlaceException) {
@@ -70,6 +79,7 @@ String _packFailureKey(PackException error) {
       PackFeature.categories => 'errorPackLimitCategories',
       PackFeature.articles => 'errorPackLimitArticles',
       PackFeature.ingredients => 'errorPackLimitIngredients',
+      PackFeature.reservations => 'errorPackLimitReservations',
       _ => 'errorPackLimit',
     },
     PackErrorCode.featureOff => switch (error.feature) {
@@ -80,6 +90,7 @@ String _packFailureKey(PackException error) {
       PackFeature.strictMode => 'errorPackFeatureStrict',
       PackFeature.customAccessProfiles => 'errorPackFeatureAccess',
       PackFeature.tableQr => 'errorPackFeatureQr',
+      PackFeature.reservations => 'errorPackFeatureReservations',
       _ => 'errorPackFeature',
     },
   };
@@ -120,6 +131,13 @@ String lookupError(dynamic l10n, String key) {
     'errorPackFeatureStrict' => l10n.errorPackFeatureStrict,
     'errorPackFeatureAccess' => l10n.errorPackFeatureAccess,
     'errorPackFeatureQr' => l10n.errorPackFeatureQr,
+    'errorPackFeatureReservations' => l10n.errorPackFeatureReservations,
+    'errorPackLimitReservations' => l10n.errorPackLimitReservations,
+    'errorOrderReservationHeld' => l10n.errorOrderReservationHeld,
+    'errorReservationOverlap' => l10n.errorReservationOverlap,
+    'errorReservationNotFound' => l10n.errorReservationNotFound,
+    'reservationWindow' => l10n.reservationWindow,
+    'reservationSelectTables' => l10n.reservationSelectTables,
     'errorPackPaidActive' => l10n.errorPackPaidActive,
     _ => l10n.errorGeneric,
   };

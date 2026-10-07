@@ -1,0 +1,8 @@
+### Lifecycle of a table booking.
+enum: ReservationStatus
+serialized: byName
+values:
+  - booked
+  - arrived
+  - cancelled
+  - noShow

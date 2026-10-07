@@ -7,9 +7,15 @@ fields:
   availableTableCount: int
   ### Those free tables, lowest number first.
   availableTables: List<CustomerTablePreview>
+  ### Every active table, so a later booking can include one that is busy now.
+  bookableTables: List<CustomerTablePreview>
   ### Up to five categories, busiest first. Creation order when nothing was ordered.
   categories: List<CustomerCategoryPreview>
   ### Up to five articles, busiest first. Creation order when nothing was ordered.
   articles: List<CustomerArticlePreview>
   ### False when the venue pack does not include customer-app orders.
   customerOrdering: bool
+  ### False when the venue pack does not include reservations.
+  reservationsEnabled: bool
+  ### Building default, in [currencyCode].
+  reservationFee: double

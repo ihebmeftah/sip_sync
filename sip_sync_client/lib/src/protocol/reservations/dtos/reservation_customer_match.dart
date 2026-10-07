@@ -1,0 +1,118 @@
+/* AUTOMATICALLY GENERATED CODE DO NOT MODIFY */
+/*   To generate run: "serverpod generate"    */
+
+// ignore_for_file: implementation_imports
+// ignore_for_file: library_private_types_in_public_api
+// ignore_for_file: non_constant_identifier_names
+// ignore_for_file: public_member_api_docs
+// ignore_for_file: type_literal_in_constant_pattern
+// ignore_for_file: use_super_parameters
+// ignore_for_file: invalid_use_of_internal_member
+
+// ignore_for_file: no_leading_underscores_for_library_prefixes
+import 'package:serverpod_client/serverpod_client.dart' as _isc;
+
+/// Customer row a staff booking may attach. No email or secret.
+abstract class ReservationCustomerMatch
+    implements _isc.SerializableModel, _isc.ProtocolSerialization {
+  ReservationCustomerMatch._({
+    required this.id,
+    required this.firstName,
+    required this.lastName,
+    required this.phoneNumber,
+  });
+
+  factory ReservationCustomerMatch({
+    required _isc.UuidValue id,
+    required String firstName,
+    required String lastName,
+    required String phoneNumber,
+  }) = _ReservationCustomerMatchImpl;
+
+  factory ReservationCustomerMatch.fromJson(
+    Map<String, dynamic> jsonSerialization,
+  ) {
+    return ReservationCustomerMatch(
+      id: _isc.UuidValueJsonExtension.fromJson(jsonSerialization['id']),
+      firstName: jsonSerialization['firstName'] as String,
+      lastName: jsonSerialization['lastName'] as String,
+      phoneNumber: jsonSerialization['phoneNumber'] as String,
+    );
+  }
+
+  _isc.UuidValue id;
+
+  String firstName;
+
+  String lastName;
+
+  String phoneNumber;
+
+  /// Returns a shallow copy of this [ReservationCustomerMatch]
+  /// with some or all fields replaced by the given arguments.
+  @_isc.useResult
+  ReservationCustomerMatch copyWith({
+    _isc.UuidValue? id,
+    String? firstName,
+    String? lastName,
+    String? phoneNumber,
+  });
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      '__className__': 'ReservationCustomerMatch',
+      'id': id.toJson(),
+      'firstName': firstName,
+      'lastName': lastName,
+      'phoneNumber': phoneNumber,
+    };
+  }
+
+  @override
+  Map<String, dynamic> toJsonForProtocol() {
+    return {
+      '__className__': 'ReservationCustomerMatch',
+      'id': id.toJson(),
+      'firstName': firstName,
+      'lastName': lastName,
+      'phoneNumber': phoneNumber,
+    };
+  }
+
+  @override
+  String toString() {
+    return _isc.SerializationManager.encode(this);
+  }
+}
+
+class _ReservationCustomerMatchImpl extends ReservationCustomerMatch {
+  _ReservationCustomerMatchImpl({
+    required _isc.UuidValue id,
+    required String firstName,
+    required String lastName,
+    required String phoneNumber,
+  }) : super._(
+         id: id,
+         firstName: firstName,
+         lastName: lastName,
+         phoneNumber: phoneNumber,
+       );
+
+  /// Returns a shallow copy of this [ReservationCustomerMatch]
+  /// with some or all fields replaced by the given arguments.
+  @_isc.useResult
+  @override
+  ReservationCustomerMatch copyWith({
+    _isc.UuidValue? id,
+    String? firstName,
+    String? lastName,
+    String? phoneNumber,
+  }) {
+    return ReservationCustomerMatch(
+      id: id ?? this.id,
+      firstName: firstName ?? this.firstName,
+      lastName: lastName ?? this.lastName,
+      phoneNumber: phoneNumber ?? this.phoneNumber,
+    );
+  }
+}

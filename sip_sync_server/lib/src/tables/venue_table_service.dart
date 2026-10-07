@@ -3,6 +3,7 @@ import 'package:serverpod/serverpod.dart';
 import '../auth/auth_guard.dart';
 import '../generated/protocol.dart';
 import '../packs/pack_gate.dart';
+import '../reservations/reservation_service.dart';
 
 /// CRUD for venue floor tables. [TableFloorStatus] is computed, never stored.
 class VenueTableService {
@@ -30,7 +31,13 @@ class VenueTableService {
       orderBy: (t) => t.number,
     );
     final occupiedIds = await _occupiedTableIds(session, buildingId);
-    final views = rows.map((row) => _view(row, occupiedIds)).toList();
+    final signals = await ReservationService().signalsForBuilding(
+      session,
+      buildingId,
+    );
+    final views = rows
+        .map((row) => _view(row, occupiedIds, signals[row.id]))
+        .toList();
     return switch (filter) {
       TableListFilter.all || TableListFilter.inactive => views,
       TableListFilter.available =>
@@ -92,7 +99,7 @@ class VenueTableService {
       created.add(row);
     }
     final occupiedIds = await _occupiedTableIds(session, request.buildingId);
-    return created.map((row) => _view(row, occupiedIds)).toList();
+    return created.map((row) => _view(row, occupiedIds, null)).toList();
   }
 
   /// Owner-only: update seats and active flag (table number is immutable).
@@ -119,7 +126,11 @@ class VenueTableService {
       ),
     );
     final occupiedIds = await _occupiedTableIds(session, updated.buildingId);
-    return _view(updated, occupiedIds);
+    final signals = await ReservationService().signalsForBuilding(
+      session,
+      updated.buildingId,
+    );
+    return _view(updated, occupiedIds, signals[updated.id]);
   }
 
   /// Tables with at least one open ([OrderStatus.progress]) order.
@@ -140,15 +151,29 @@ class VenueTableService {
     };
   }
 
-  VenueTableView _view(VenueTable row, Set<UuidValue> occupiedIds) {
+  VenueTableView _view(
+    VenueTable row,
+    Set<UuidValue> occupiedIds,
+    TableReservationSignal? signal,
+  ) {
     final occupied = row.id != null && occupiedIds.contains(row.id);
+    final reserved =
+        !occupied && signal != null && signal.phase != ReservationPhase.none;
+    final status = occupied
+        ? TableFloorStatus.occupied
+        : reserved
+        ? TableFloorStatus.reserved
+        : TableFloorStatus.available;
     return VenueTableView(
       id: row.id!,
       buildingId: row.buildingId,
       number: row.number,
       maxSeats: row.maxSeats,
       isActive: row.isActive,
-      status: occupied ? TableFloorStatus.occupied : TableFloorStatus.available,
+      status: status,
+      reservationPhase: signal?.phase ?? ReservationPhase.none,
+      reservationGuest: signal?.guestName,
+      reservationStartsAt: signal?.startsAt,
     );
   }
 

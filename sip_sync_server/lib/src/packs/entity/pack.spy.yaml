@@ -31,6 +31,9 @@ fields:
   tableMultiOrder: bool, default=false
   strictMode: bool, default=false
   customAccessProfiles: bool, default=false
+  reservations: bool, default=false
+  ### Non-cancelled reservations per UTC date. Null means no cap.
+  maxReservationsPerDay: int?
   createdAt: DateTime, defaultModel=now
   buildings: List<Building>?, relation(name=building_pack)
   assignments: List<BuildingPackAssignment>?, relation(name=pack_building_assignments)

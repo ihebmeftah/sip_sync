@@ -10,6 +10,7 @@ fields:
   lastName: String
   passwordHash: String
   createdAt: DateTime, defaultModel=now
+  reservations: List<Reservation>?, relation(name=customer_reservations)
 indexes:
   customer_email_idx:
     fields: email

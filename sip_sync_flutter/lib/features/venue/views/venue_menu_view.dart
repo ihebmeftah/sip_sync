@@ -13,6 +13,8 @@ import '../../../core/widgets/app_loader.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../menu_price.dart';
 import '../view_models/order_cart_view_model.dart';
+import '../view_models/seated_table_view_model.dart';
+import '../view_models/venue_detail_view_model.dart';
 import '../view_models/venue_menu_view_model.dart';
 import '../widgets/menu_image_slot.dart';
 import '../widgets/venue_chrome.dart';
@@ -163,6 +165,19 @@ class _MenuBody extends ConsumerWidget {
     final text = Theme.of(context).textTheme;
     final scheme = Theme.of(context).colorScheme;
     final cart = ref.watch(orderCartProvider(buildingId));
+    final seated = ref.watch(seatedTableProvider)?.table;
+    final detail = ref
+        .watch(venueDetailViewModelProvider(buildingId))
+        .asData
+        ?.value;
+    final held =
+        seated != null &&
+        detail != null &&
+        detail.bookableTables.any(
+          (table) =>
+              table.id == seated.tableId &&
+              table.reservationPhase == ReservationPhase.holding,
+        );
     final title = (venueName == null || venueName!.trim().isEmpty)
         ? l10n.menu
         : venueName!.trim();
@@ -211,7 +226,22 @@ class _MenuBody extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const VenueBackButton(),
-                      if (!menu.customerOrdering)
+                      if (held)
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(
+                            AppSpacing.md,
+                            0,
+                            AppSpacing.md,
+                            AppSpacing.md,
+                          ),
+                          child: Text(
+                            l10n.reservationHeldOrder,
+                            style: text.bodyMedium?.copyWith(
+                              color: scheme.error,
+                            ),
+                          ),
+                        )
+                      else if (!menu.customerOrdering)
                         Padding(
                           padding: const EdgeInsets.fromLTRB(
                             AppSpacing.md,
@@ -302,7 +332,7 @@ class _MenuBody extends ConsumerWidget {
     return Column(
       children: [
         Expanded(child: menuScroll),
-        if (cart.isNotEmpty && menu.customerOrdering)
+        if (cart.isNotEmpty && menu.customerOrdering && !held)
           _CartBar(
             buildingId: buildingId,
             venueName: title,

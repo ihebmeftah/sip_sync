@@ -229,6 +229,7 @@ ORDER BY COUNT(*) DESC, "countryName" ASC
           allowAppendingItemsToOrder: request.allowAppendingItemsToOrder,
           strictMode: request.strictMode,
           strictModeSteps: normalizeStrictModeSteps(request.strictModeSteps),
+          reservationFee: _fee(request.reservationFee),
         ),
         transaction: transaction,
       );
@@ -303,6 +304,7 @@ ORDER BY COUNT(*) DESC, "countryName" ASC
         allowAppendingItemsToOrder: request.allowAppendingItemsToOrder,
         strictMode: request.strictMode,
         strictModeSteps: normalizeStrictModeSteps(request.strictModeSteps),
+        reservationFee: _fee(request.reservationFee),
       ),
     );
     return _view(session, updated);
@@ -424,6 +426,7 @@ ORDER BY COUNT(*) DESC, "countryName" ASC
       allowAppendingItemsToOrder: current.allowAppendingItemsToOrder,
       strictMode: current.strictMode,
       strictModeSteps: normalizeStrictModeSteps(current.strictModeSteps),
+      reservationFee: current.reservationFee,
       employeeIds: staff.map((s) => s.id!).toList(),
       pack: PackGate.summary(pack),
     );
@@ -781,6 +784,16 @@ ORDER BY COUNT(*) DESC, "countryName" ASC
       }
     }
     return out;
+  }
+
+  double _fee(double value) {
+    if (value < 0 || value > 1000000) {
+      throw BuildingException(
+        message: 'Check the reservation fee.',
+        code: BuildingErrorCode.invalidInput,
+      );
+    }
+    return value;
   }
 
   void _validate(dynamic request) {

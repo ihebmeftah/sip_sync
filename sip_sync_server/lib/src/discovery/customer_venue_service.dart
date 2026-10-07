@@ -3,6 +3,7 @@ import 'package:serverpod/serverpod.dart';
 import '../core/page_window.dart';
 import '../generated/protocol.dart';
 import '../packs/pack_expiry.dart';
+import '../reservations/reservation_service.dart';
 
 /// Customer-facing venue page and menu. Hides owner, staff, and stock.
 class CustomerVenueService {
@@ -78,12 +79,17 @@ class CustomerVenueService {
     );
     final names = {for (final row in categories) row.id!.uuid: row.name};
     final ingredients = await _ingredientNames(session, articles);
-    final freeTables = await _freeTables(session, buildingId);
+    final tables = await _tablePreviews(session, buildingId);
+    final freeTables = [
+      for (final table in tables.previews)
+        if (!tables.occupied.contains(table.id)) table,
+    ];
     return CustomerVenueDetail(
       venue: _card(building),
       currencyCode: building.currencyCode,
       availableTableCount: freeTables.length,
       availableTables: freeTables,
+      bookableTables: tables.previews,
       categories: [
         for (final row in rankedCategories)
           CustomerCategoryPreview(
@@ -108,6 +114,8 @@ class CustomerVenueService {
           ),
       ],
       customerOrdering: building.pack?.customerOrdering == true,
+      reservationsEnabled: building.pack?.reservations == true,
+      reservationFee: building.reservationFee,
     );
   }
 
@@ -395,11 +403,9 @@ LIMIT @limit OFFSET @offset
     );
   }
 
-  /// Active tables with no order in progress, lowest number first.
-  Future<List<CustomerTablePreview>> _freeTables(
-    Session session,
-    UuidValue buildingId,
-  ) async {
+  /// Active tables, lowest number first, plus which ones have an open order.
+  Future<({List<CustomerTablePreview> previews, Set<UuidValue> occupied})>
+  _tablePreviews(Session session, UuidValue buildingId) async {
     final tables = await VenueTable.db.find(
       session,
       where: (t) => t.buildingId.equals(buildingId) & t.isActive.equals(true),
@@ -416,15 +422,22 @@ LIMIT @limit OFFSET @offset
       for (final order in open)
         if (order.venueTableId != null) order.venueTableId!,
     };
-    return [
-      for (final table in tables)
-        if (!occupied.contains(table.id))
+    final signals = await ReservationService().signalsForBuilding(
+      session,
+      buildingId,
+    );
+    return (
+      occupied: occupied,
+      previews: [
+        for (final table in tables)
           CustomerTablePreview(
             id: table.id!,
             number: table.number,
             maxSeats: table.maxSeats,
+            reservationPhase: signals[table.id]?.phase ?? ReservationPhase.none,
           ),
-    ];
+      ],
+    );
   }
 
   /// Recipe names only. Stock and quantities stay on the ops menu.

@@ -485,6 +485,20 @@ class AppLocalizationsEn extends AppLocalizations {
       'The owner may add access profiles beyond Waiter, Gerant, and Barista.';
 
   @override
+  String get capReservations => 'Reservations';
+
+  @override
+  String get capReservationsHint =>
+      'Staff and customers can book tables. A daily cap still applies when it is set.';
+
+  @override
+  String get capMaxReservations => 'Reservations per day';
+
+  @override
+  String get capMaxReservationsHint =>
+      'Leave empty for no daily cap. Counts non-cancelled bookings whose start falls on one UTC date.';
+
+  @override
   String packPriceMonth(String price) {
     return '$price TND / month';
   }
@@ -565,6 +579,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get errorPackFeatureQr => 'This plan does not include table QR codes.';
+
+  @override
+  String get errorPackFeatureReservations =>
+      'This plan does not include reservations.';
+
+  @override
+  String get errorPackLimitReservations =>
+      'This plan has reached its reservation limit for the day.';
 
   @override
   String get errorPackPaidActive =>

@@ -26,6 +26,8 @@ import 'package:sip_sync_client/src/protocol/menu/dtos/menu_article_view.dart'
     as _i8rrzffs;
 import 'package:sip_sync_client/src/protocol/packs/dtos/pack_public_view.dart'
     as _ir1kads3;
+import 'package:sip_sync_client/src/protocol/reservations/dtos/reservation_view.dart'
+    as _ixub33vy;
 import 'package:sip_sync_client/src/protocol/tables/dtos/venue_table_view.dart'
     as _ihz72ioq;
 import 'auth/dtos/account_error_code.dart' as _ipvvun4w;
@@ -138,6 +140,14 @@ import 'packs/dtos/pack_page.dart' as _i5b0y4d5;
 import 'packs/dtos/pack_public_view.dart' as _iprelrqf;
 import 'packs/dtos/pack_update.dart' as _icf9vjmf;
 import 'packs/dtos/pack_view.dart' as _ix8hsdo0;
+import 'reservations/dtos/customer_reservation_create.dart' as _i8w5m1f8;
+import 'reservations/dtos/reservation_create.dart' as _iy7p1gx0;
+import 'reservations/dtos/reservation_customer_match.dart' as _i8125fsw;
+import 'reservations/dtos/reservation_error_code.dart' as _ik5ecx68;
+import 'reservations/dtos/reservation_exception.dart' as _iog9n1vh;
+import 'reservations/dtos/reservation_view.dart' as _ircxdpx7;
+import 'reservations/reservation_phase.dart' as _ij54j0d7;
+import 'reservations/reservation_status.dart' as _igxvw6d4;
 import 'stats/dtos/platform_stats.dart' as _igzxiay6;
 import 'stats/dtos/public_pack_usage.dart' as _icz9v6v9;
 import 'tables/dtos/table_floor_status.dart' as _i64byz7d;
@@ -257,6 +267,14 @@ export 'packs/dtos/pack_page.dart';
 export 'packs/dtos/pack_public_view.dart';
 export 'packs/dtos/pack_update.dart';
 export 'packs/dtos/pack_view.dart';
+export 'reservations/dtos/customer_reservation_create.dart';
+export 'reservations/dtos/reservation_create.dart';
+export 'reservations/dtos/reservation_customer_match.dart';
+export 'reservations/dtos/reservation_error_code.dart';
+export 'reservations/dtos/reservation_exception.dart';
+export 'reservations/dtos/reservation_view.dart';
+export 'reservations/reservation_phase.dart';
+export 'reservations/reservation_status.dart';
 export 'stats/dtos/platform_stats.dart';
 export 'stats/dtos/public_pack_usage.dart';
 export 'tables/dtos/table_floor_status.dart';
@@ -631,6 +649,30 @@ class Protocol extends _isc.SerializationManager {
     }
     if (t == _ix8hsdo0.PackView) {
       return _ix8hsdo0.PackView.fromJson(data) as T;
+    }
+    if (t == _i8w5m1f8.CustomerReservationCreate) {
+      return _i8w5m1f8.CustomerReservationCreate.fromJson(data) as T;
+    }
+    if (t == _iy7p1gx0.ReservationCreate) {
+      return _iy7p1gx0.ReservationCreate.fromJson(data) as T;
+    }
+    if (t == _i8125fsw.ReservationCustomerMatch) {
+      return _i8125fsw.ReservationCustomerMatch.fromJson(data) as T;
+    }
+    if (t == _ik5ecx68.ReservationErrorCode) {
+      return _ik5ecx68.ReservationErrorCode.fromJson(data) as T;
+    }
+    if (t == _iog9n1vh.ReservationException) {
+      return _iog9n1vh.ReservationException.fromJson(data) as T;
+    }
+    if (t == _ircxdpx7.ReservationView) {
+      return _ircxdpx7.ReservationView.fromJson(data) as T;
+    }
+    if (t == _ij54j0d7.ReservationPhase) {
+      return _ij54j0d7.ReservationPhase.fromJson(data) as T;
+    }
+    if (t == _igxvw6d4.ReservationStatus) {
+      return _igxvw6d4.ReservationStatus.fromJson(data) as T;
     }
     if (t == _igzxiay6.PlatformStats) {
       return _igzxiay6.PlatformStats.fromJson(data) as T;
@@ -1158,6 +1200,46 @@ class Protocol extends _isc.SerializationManager {
     if (t == _isc.getType<_ix8hsdo0.PackView?>()) {
       return (data != null ? _ix8hsdo0.PackView.fromJson(data) : null) as T;
     }
+    if (t == _isc.getType<_i8w5m1f8.CustomerReservationCreate?>()) {
+      return (data != null
+              ? _i8w5m1f8.CustomerReservationCreate.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _isc.getType<_iy7p1gx0.ReservationCreate?>()) {
+      return (data != null ? _iy7p1gx0.ReservationCreate.fromJson(data) : null)
+          as T;
+    }
+    if (t == _isc.getType<_i8125fsw.ReservationCustomerMatch?>()) {
+      return (data != null
+              ? _i8125fsw.ReservationCustomerMatch.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _isc.getType<_ik5ecx68.ReservationErrorCode?>()) {
+      return (data != null
+              ? _ik5ecx68.ReservationErrorCode.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _isc.getType<_iog9n1vh.ReservationException?>()) {
+      return (data != null
+              ? _iog9n1vh.ReservationException.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _isc.getType<_ircxdpx7.ReservationView?>()) {
+      return (data != null ? _ircxdpx7.ReservationView.fromJson(data) : null)
+          as T;
+    }
+    if (t == _isc.getType<_ij54j0d7.ReservationPhase?>()) {
+      return (data != null ? _ij54j0d7.ReservationPhase.fromJson(data) : null)
+          as T;
+    }
+    if (t == _isc.getType<_igxvw6d4.ReservationStatus?>()) {
+      return (data != null ? _igxvw6d4.ReservationStatus.fromJson(data) : null)
+          as T;
+    }
     if (t == _isc.getType<_igzxiay6.PlatformStats?>()) {
       return (data != null ? _igzxiay6.PlatformStats.fromJson(data) : null)
           as T;
@@ -1337,6 +1419,9 @@ class Protocol extends _isc.SerializationManager {
               .toList()
           as T;
     }
+    if (t == List<int>) {
+      return (data as List).map((e) => deserialize<int>(e)).toList() as T;
+    }
     if (t == List<_icz9v6v9.PublicPackUsage>) {
       return (data as List)
               .map((e) => deserialize<_icz9v6v9.PublicPackUsage>(e))
@@ -1370,6 +1455,12 @@ class Protocol extends _isc.SerializationManager {
     if (t == List<_ir1kads3.PackPublicView>) {
       return (data as List)
               .map((e) => deserialize<_ir1kads3.PackPublicView>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_ixub33vy.ReservationView>) {
+      return (data as List)
+              .map((e) => deserialize<_ixub33vy.ReservationView>(e))
               .toList()
           as T;
     }
@@ -1500,6 +1591,14 @@ class Protocol extends _isc.SerializationManager {
       _iprelrqf.PackPublicView => 'PackPublicView',
       _icf9vjmf.PackUpdate => 'PackUpdate',
       _ix8hsdo0.PackView => 'PackView',
+      _i8w5m1f8.CustomerReservationCreate => 'CustomerReservationCreate',
+      _iy7p1gx0.ReservationCreate => 'ReservationCreate',
+      _i8125fsw.ReservationCustomerMatch => 'ReservationCustomerMatch',
+      _ik5ecx68.ReservationErrorCode => 'ReservationErrorCode',
+      _iog9n1vh.ReservationException => 'ReservationException',
+      _ircxdpx7.ReservationView => 'ReservationView',
+      _ij54j0d7.ReservationPhase => 'ReservationPhase',
+      _igxvw6d4.ReservationStatus => 'ReservationStatus',
       _igzxiay6.PlatformStats => 'PlatformStats',
       _icz9v6v9.PublicPackUsage => 'PublicPackUsage',
       _i64byz7d.TableFloorStatus => 'TableFloorStatus',
@@ -1743,6 +1842,22 @@ class Protocol extends _isc.SerializationManager {
         return 'PackUpdate';
       case _ix8hsdo0.PackView():
         return 'PackView';
+      case _i8w5m1f8.CustomerReservationCreate():
+        return 'CustomerReservationCreate';
+      case _iy7p1gx0.ReservationCreate():
+        return 'ReservationCreate';
+      case _i8125fsw.ReservationCustomerMatch():
+        return 'ReservationCustomerMatch';
+      case _ik5ecx68.ReservationErrorCode():
+        return 'ReservationErrorCode';
+      case _iog9n1vh.ReservationException():
+        return 'ReservationException';
+      case _ircxdpx7.ReservationView():
+        return 'ReservationView';
+      case _ij54j0d7.ReservationPhase():
+        return 'ReservationPhase';
+      case _igxvw6d4.ReservationStatus():
+        return 'ReservationStatus';
       case _igzxiay6.PlatformStats():
         return 'PlatformStats';
       case _icz9v6v9.PublicPackUsage():
@@ -2112,6 +2227,30 @@ class Protocol extends _isc.SerializationManager {
     }
     if (dataClassName == 'PackView') {
       return deserialize<_ix8hsdo0.PackView>(data['data']);
+    }
+    if (dataClassName == 'CustomerReservationCreate') {
+      return deserialize<_i8w5m1f8.CustomerReservationCreate>(data['data']);
+    }
+    if (dataClassName == 'ReservationCreate') {
+      return deserialize<_iy7p1gx0.ReservationCreate>(data['data']);
+    }
+    if (dataClassName == 'ReservationCustomerMatch') {
+      return deserialize<_i8125fsw.ReservationCustomerMatch>(data['data']);
+    }
+    if (dataClassName == 'ReservationErrorCode') {
+      return deserialize<_ik5ecx68.ReservationErrorCode>(data['data']);
+    }
+    if (dataClassName == 'ReservationException') {
+      return deserialize<_iog9n1vh.ReservationException>(data['data']);
+    }
+    if (dataClassName == 'ReservationView') {
+      return deserialize<_ircxdpx7.ReservationView>(data['data']);
+    }
+    if (dataClassName == 'ReservationPhase') {
+      return deserialize<_ij54j0d7.ReservationPhase>(data['data']);
+    }
+    if (dataClassName == 'ReservationStatus') {
+      return deserialize<_igxvw6d4.ReservationStatus>(data['data']);
     }
     if (dataClassName == 'PlatformStats') {
       return deserialize<_igzxiay6.PlatformStats>(data['data']);

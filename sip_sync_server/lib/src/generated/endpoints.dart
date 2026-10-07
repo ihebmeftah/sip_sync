@@ -79,6 +79,10 @@ import 'package:sip_sync_server/src/generated/packs/dtos/pack_create.dart'
     as _iijils8v;
 import 'package:sip_sync_server/src/generated/packs/dtos/pack_update.dart'
     as _imymid9b;
+import 'package:sip_sync_server/src/generated/reservations/dtos/customer_reservation_create.dart'
+    as _inffg52b;
+import 'package:sip_sync_server/src/generated/reservations/dtos/reservation_create.dart'
+    as _ir3eraa7;
 import 'package:sip_sync_server/src/generated/tables/dtos/table_list_filter.dart'
     as _i2br6vxf;
 import 'package:sip_sync_server/src/generated/tables/dtos/venue_table_create.dart'
@@ -102,6 +106,7 @@ import '../menu/menu_category_endpoint.dart' as _i1h28rjj;
 import '../orders/customer_order_endpoint.dart' as _i3ulyznx;
 import '../orders/order_endpoint.dart' as _iuf1spo6;
 import '../packs/pack_endpoint.dart' as _i9krzab0;
+import '../reservations/reservation_endpoint.dart' as _iag5jdtl;
 import '../stats/platform_stats_endpoint.dart' as _i586lkkn;
 import '../tables/venue_table_endpoint.dart' as _ira8yrq4;
 
@@ -209,6 +214,12 @@ class Endpoints extends _is.EndpointDispatch {
         ..initialize(
           server,
           'pack',
+          null,
+        ),
+      'reservation': _iag5jdtl.ReservationEndpoint()
+        ..initialize(
+          server,
+          'reservation',
           null,
         ),
       'platformStats': _i586lkkn.PlatformStatsEndpoint()
@@ -2088,6 +2099,161 @@ class Endpoints extends _is.EndpointDispatch {
                 session,
                 params['id'],
               ),
+        ),
+      },
+    );
+    connectors['reservation'] = _is.EndpointConnector(
+      name: 'reservation',
+      endpoint: endpoints['reservation']!,
+      methodConnectors: {
+        'listForDay': _is.MethodConnector(
+          name: 'listForDay',
+          params: {
+            'buildingId': _is.ParameterDescription(
+              name: 'buildingId',
+              type: _is.getType<_is.UuidValue>(),
+              nullable: false,
+            ),
+            'day': _is.ParameterDescription(
+              name: 'day',
+              type: _is.getType<DateTime>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['reservation'] as _iag5jdtl.ReservationEndpoint)
+                      .listForDay(
+                        session,
+                        params['buildingId'],
+                        params['day'],
+                      ),
+        ),
+        'listMine': _is.MethodConnector(
+          name: 'listMine',
+          params: {},
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['reservation'] as _iag5jdtl.ReservationEndpoint)
+                      .listMine(session),
+        ),
+        'create': _is.MethodConnector(
+          name: 'create',
+          params: {
+            'request': _is.ParameterDescription(
+              name: 'request',
+              type: _is.getType<_ir3eraa7.ReservationCreate>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['reservation'] as _iag5jdtl.ReservationEndpoint)
+                      .create(
+                        session,
+                        params['request'],
+                      ),
+        ),
+        'createForCustomer': _is.MethodConnector(
+          name: 'createForCustomer',
+          params: {
+            'request': _is.ParameterDescription(
+              name: 'request',
+              type: _is.getType<_inffg52b.CustomerReservationCreate>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['reservation'] as _iag5jdtl.ReservationEndpoint)
+                      .createForCustomer(
+                        session,
+                        params['request'],
+                      ),
+        ),
+        'findCustomer': _is.MethodConnector(
+          name: 'findCustomer',
+          params: {
+            'buildingId': _is.ParameterDescription(
+              name: 'buildingId',
+              type: _is.getType<_is.UuidValue>(),
+              nullable: false,
+            ),
+            'phone': _is.ParameterDescription(
+              name: 'phone',
+              type: _is.getType<String>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['reservation'] as _iag5jdtl.ReservationEndpoint)
+                      .findCustomer(
+                        session,
+                        params['buildingId'],
+                        params['phone'],
+                      ),
+        ),
+        'cancel': _is.MethodConnector(
+          name: 'cancel',
+          params: {
+            'id': _is.ParameterDescription(
+              name: 'id',
+              type: _is.getType<_is.UuidValue>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['reservation'] as _iag5jdtl.ReservationEndpoint)
+                      .cancel(
+                        session,
+                        params['id'],
+                      ),
+        ),
+        'confirmByTable': _is.MethodConnector(
+          name: 'confirmByTable',
+          params: {
+            'buildingId': _is.ParameterDescription(
+              name: 'buildingId',
+              type: _is.getType<_is.UuidValue>(),
+              nullable: false,
+            ),
+            'tableId': _is.ParameterDescription(
+              name: 'tableId',
+              type: _is.getType<_is.UuidValue>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['reservation'] as _iag5jdtl.ReservationEndpoint)
+                      .confirmByTable(
+                        session,
+                        params['buildingId'],
+                        params['tableId'],
+                      ),
         ),
       },
     );

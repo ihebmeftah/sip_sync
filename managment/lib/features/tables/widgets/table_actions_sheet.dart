@@ -124,6 +124,12 @@ class _TableActionsBodyState extends ConsumerState<_TableActionsBody> {
     }
     final multiOrder =
         ref.read(buildingSelectionProvider)?.tableMultiOrder ?? false;
+    if (widget.table.reservationPhase == ReservationPhase.holding) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.reservationHeldOrder)));
+      return;
+    }
     if (!multiOrder && widget.table.status == TableFloorStatus.occupied) {
       ScaffoldMessenger.of(
         context,
@@ -158,11 +164,24 @@ class _TableActionsBodyState extends ConsumerState<_TableActionsBody> {
     OrderCreateArticlesRoute(buildingId: widget.buildingId).go(context);
   }
 
+  String _reservedLabel(AppLocalizations l10n) {
+    final guest = widget.table.reservationGuest;
+    final phase = switch (widget.table.reservationPhase) {
+      ReservationPhase.holding => l10n.reservationHolding,
+      ReservationPhase.soon => l10n.reservationSoon,
+      ReservationPhase.none => l10n.tableStatusReserved,
+    };
+    if (guest == null || guest.isEmpty) {
+      return phase;
+    }
+    return '$phase · $guest';
+  }
+
   String _statusLabel(AppLocalizations l10n) {
     return switch (widget.table.status) {
       TableFloorStatus.available => l10n.tableStatusAvailable,
       TableFloorStatus.occupied => l10n.tableStatusOccupied,
-      TableFloorStatus.reserved => l10n.tableStatusReserved,
+      TableFloorStatus.reserved => _reservedLabel(l10n),
     };
   }
 
@@ -181,6 +200,7 @@ class _TableActionsBodyState extends ConsumerState<_TableActionsBody> {
     final canCreate =
         (isOwner || access.canCreateOrders) &&
         widget.table.isActive &&
+        widget.table.reservationPhase != ReservationPhase.holding &&
         (multiOrder || widget.table.status != TableFloorStatus.occupied);
 
     return Padding(

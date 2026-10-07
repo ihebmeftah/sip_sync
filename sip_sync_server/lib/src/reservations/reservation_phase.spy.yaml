@@ -1,0 +1,7 @@
+### What the floor should say about a table's next booking. Not stored.
+enum: ReservationPhase
+serialized: byName
+values:
+  - none
+  - soon
+  - holding

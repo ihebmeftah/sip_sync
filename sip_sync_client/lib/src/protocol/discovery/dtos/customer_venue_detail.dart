@@ -25,9 +25,12 @@ abstract class CustomerVenueDetail
     required this.currencyCode,
     required this.availableTableCount,
     required this.availableTables,
+    required this.bookableTables,
     required this.categories,
     required this.articles,
     required this.customerOrdering,
+    required this.reservationsEnabled,
+    required this.reservationFee,
   });
 
   factory CustomerVenueDetail({
@@ -35,9 +38,12 @@ abstract class CustomerVenueDetail
     required String currencyCode,
     required int availableTableCount,
     required List<_iwd58pyr.CustomerTablePreview> availableTables,
+    required List<_iwd58pyr.CustomerTablePreview> bookableTables,
     required List<_irq7e2mv.CustomerCategoryPreview> categories,
     required List<_iy9yvlrm.CustomerArticlePreview> articles,
     required bool customerOrdering,
+    required bool reservationsEnabled,
+    required double reservationFee,
   }) = _CustomerVenueDetailImpl;
 
   factory CustomerVenueDetail.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -51,6 +57,10 @@ abstract class CustomerVenueDetail
           .deserialize<List<_iwd58pyr.CustomerTablePreview>>(
             jsonSerialization['availableTables'],
           ),
+      bookableTables: _iozg9o5r.Protocol()
+          .deserialize<List<_iwd58pyr.CustomerTablePreview>>(
+            jsonSerialization['bookableTables'],
+          ),
       categories: _iozg9o5r.Protocol()
           .deserialize<List<_irq7e2mv.CustomerCategoryPreview>>(
             jsonSerialization['categories'],
@@ -62,6 +72,10 @@ abstract class CustomerVenueDetail
       customerOrdering: _isc.BoolJsonExtension.fromJson(
         jsonSerialization['customerOrdering'],
       ),
+      reservationsEnabled: _isc.BoolJsonExtension.fromJson(
+        jsonSerialization['reservationsEnabled'],
+      ),
+      reservationFee: (jsonSerialization['reservationFee'] as num).toDouble(),
     );
   }
 
@@ -75,6 +89,9 @@ abstract class CustomerVenueDetail
   /// Those free tables, lowest number first.
   List<_iwd58pyr.CustomerTablePreview> availableTables;
 
+  /// Every active table, so a later booking can include one that is busy now.
+  List<_iwd58pyr.CustomerTablePreview> bookableTables;
+
   /// Up to five categories, busiest first. Creation order when nothing was ordered.
   List<_irq7e2mv.CustomerCategoryPreview> categories;
 
@@ -84,6 +101,12 @@ abstract class CustomerVenueDetail
   /// False when the venue pack does not include customer-app orders.
   bool customerOrdering;
 
+  /// False when the venue pack does not include reservations.
+  bool reservationsEnabled;
+
+  /// Building default, in [currencyCode].
+  double reservationFee;
+
   /// Returns a shallow copy of this [CustomerVenueDetail]
   /// with some or all fields replaced by the given arguments.
   @_isc.useResult
@@ -92,9 +115,12 @@ abstract class CustomerVenueDetail
     String? currencyCode,
     int? availableTableCount,
     List<_iwd58pyr.CustomerTablePreview>? availableTables,
+    List<_iwd58pyr.CustomerTablePreview>? bookableTables,
     List<_irq7e2mv.CustomerCategoryPreview>? categories,
     List<_iy9yvlrm.CustomerArticlePreview>? articles,
     bool? customerOrdering,
+    bool? reservationsEnabled,
+    double? reservationFee,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -104,9 +130,12 @@ abstract class CustomerVenueDetail
       'currencyCode': currencyCode,
       'availableTableCount': availableTableCount,
       'availableTables': availableTables.toJson(valueToJson: (v) => v.toJson()),
+      'bookableTables': bookableTables.toJson(valueToJson: (v) => v.toJson()),
       'categories': categories.toJson(valueToJson: (v) => v.toJson()),
       'articles': articles.toJson(valueToJson: (v) => v.toJson()),
       'customerOrdering': customerOrdering,
+      'reservationsEnabled': reservationsEnabled,
+      'reservationFee': reservationFee,
     };
   }
 
@@ -120,11 +149,16 @@ abstract class CustomerVenueDetail
       'availableTables': availableTables.toJson(
         valueToJson: (v) => v.toJsonForProtocol(),
       ),
+      'bookableTables': bookableTables.toJson(
+        valueToJson: (v) => v.toJsonForProtocol(),
+      ),
       'categories': categories.toJson(
         valueToJson: (v) => v.toJsonForProtocol(),
       ),
       'articles': articles.toJson(valueToJson: (v) => v.toJsonForProtocol()),
       'customerOrdering': customerOrdering,
+      'reservationsEnabled': reservationsEnabled,
+      'reservationFee': reservationFee,
     };
   }
 
@@ -140,17 +174,23 @@ class _CustomerVenueDetailImpl extends CustomerVenueDetail {
     required String currencyCode,
     required int availableTableCount,
     required List<_iwd58pyr.CustomerTablePreview> availableTables,
+    required List<_iwd58pyr.CustomerTablePreview> bookableTables,
     required List<_irq7e2mv.CustomerCategoryPreview> categories,
     required List<_iy9yvlrm.CustomerArticlePreview> articles,
     required bool customerOrdering,
+    required bool reservationsEnabled,
+    required double reservationFee,
   }) : super._(
          venue: venue,
          currencyCode: currencyCode,
          availableTableCount: availableTableCount,
          availableTables: availableTables,
+         bookableTables: bookableTables,
          categories: categories,
          articles: articles,
          customerOrdering: customerOrdering,
+         reservationsEnabled: reservationsEnabled,
+         reservationFee: reservationFee,
        );
 
   /// Returns a shallow copy of this [CustomerVenueDetail]
@@ -162,9 +202,12 @@ class _CustomerVenueDetailImpl extends CustomerVenueDetail {
     String? currencyCode,
     int? availableTableCount,
     List<_iwd58pyr.CustomerTablePreview>? availableTables,
+    List<_iwd58pyr.CustomerTablePreview>? bookableTables,
     List<_irq7e2mv.CustomerCategoryPreview>? categories,
     List<_iy9yvlrm.CustomerArticlePreview>? articles,
     bool? customerOrdering,
+    bool? reservationsEnabled,
+    double? reservationFee,
   }) {
     return CustomerVenueDetail(
       venue: venue ?? this.venue.copyWith(),
@@ -173,10 +216,15 @@ class _CustomerVenueDetailImpl extends CustomerVenueDetail {
       availableTables:
           availableTables ??
           this.availableTables.map((e0) => e0.copyWith()).toList(),
+      bookableTables:
+          bookableTables ??
+          this.bookableTables.map((e0) => e0.copyWith()).toList(),
       categories:
           categories ?? this.categories.map((e0) => e0.copyWith()).toList(),
       articles: articles ?? this.articles.map((e0) => e0.copyWith()).toList(),
       customerOrdering: customerOrdering ?? this.customerOrdering,
+      reservationsEnabled: reservationsEnabled ?? this.reservationsEnabled,
+      reservationFee: reservationFee ?? this.reservationFee,
     );
   }
 }

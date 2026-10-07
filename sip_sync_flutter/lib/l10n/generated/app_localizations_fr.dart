@@ -543,6 +543,69 @@ class AppLocalizationsFr extends AppLocalizations {
   String get errorPackFeatureQr => 'Ce pack n\'inclut pas les QR de table.';
 
   @override
+  String get reserveTable => 'Réserver une table';
+
+  @override
+  String get signInToReserve => 'Connectez-vous pour réserver';
+
+  @override
+  String get reservationBook => 'Réserver';
+
+  @override
+  String get reservationMine => 'Mes réservations';
+
+  @override
+  String get reservationEmpty => 'Vous n\'avez pas de réservation à venir.';
+
+  @override
+  String get reservationDate => 'Date';
+
+  @override
+  String get reservationStart => 'Début';
+
+  @override
+  String get reservationEnd => 'Fin';
+
+  @override
+  String get reservationCancel => 'Annuler la réservation';
+
+  @override
+  String get reservationSoon => 'Bientôt';
+
+  @override
+  String get reservationHolding => 'En attente de confirmation du lieu';
+
+  @override
+  String get reservationHeldOrder =>
+      'Cette table est réservée jusqu\'à ce que le lieu confirme l\'arrivée.';
+
+  @override
+  String get reservationWindow =>
+      'Une réservation dure entre 30 minutes et 8 heures, et elle doit commencer plus tard.';
+
+  @override
+  String get reservationSelectTables => 'Choisissez au moins une table.';
+
+  @override
+  String get errorPackFeatureReservations =>
+      'Ce pack n\'inclut pas les réservations.';
+
+  @override
+  String get errorPackLimitReservations =>
+      'Ce pack a atteint sa limite de réservations pour la journée.';
+
+  @override
+  String get errorOrderReservationHeld =>
+      'Cette table est réservée jusqu\'à confirmation de l\'arrivée.';
+
+  @override
+  String get errorReservationOverlap =>
+      'Une table est déjà réservée à cette heure.';
+
+  @override
+  String get errorReservationNotFound => 'Aucune réservation ne correspond.';
+
+  @override
   String get errorPackPaidActive => 'Ce lieu a déjà un pack payant.';
 
   @override

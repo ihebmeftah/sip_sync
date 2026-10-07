@@ -36,6 +36,7 @@ class _AccessProfileFormViewState extends ConsumerState<AccessProfileFormView> {
   late bool _preparation;
   late bool _serving;
   late bool _consultAllOrders;
+  late bool _reservations;
   var _saving = false;
   var _deleting = false;
   String? _errorKey;
@@ -53,6 +54,7 @@ class _AccessProfileFormViewState extends ConsumerState<AccessProfileFormView> {
     _preparation = existing?.preparation ?? false;
     _serving = existing?.serving ?? false;
     _consultAllOrders = existing?.consultAllOrders ?? false;
+    _reservations = existing?.reservations ?? false;
   }
 
   @override
@@ -83,6 +85,7 @@ class _AccessProfileFormViewState extends ConsumerState<AccessProfileFormView> {
           preparation: _preparation,
           serving: _serving,
           consultAllOrders: _consultAllOrders,
+          reservations: _reservations,
         );
       } else {
         await vm.createProfile(
@@ -93,6 +96,7 @@ class _AccessProfileFormViewState extends ConsumerState<AccessProfileFormView> {
           preparation: _preparation,
           serving: _serving,
           consultAllOrders: _consultAllOrders,
+          reservations: _reservations,
         );
       }
       if (!mounted) return;
@@ -229,6 +233,13 @@ class _AccessProfileFormViewState extends ConsumerState<AccessProfileFormView> {
                         subtitle: Text(l10n.accessConsultAllOrdersHint),
                         value: _consultAllOrders,
                         onChanged: (v) => setState(() => _consultAllOrders = v),
+                      ),
+                      SwitchListTile(
+                        contentPadding: EdgeInsets.zero,
+                        title: Text(l10n.accessReservations),
+                        subtitle: Text(l10n.accessReservationsHint),
+                        value: _reservations,
+                        onChanged: (v) => setState(() => _reservations = v),
                       ),
                       if (_errorKey != null)
                         AppErrorBanner(message: lookupError(l10n, _errorKey!)),

@@ -6,6 +6,7 @@ import 'package:sip_sync_client/sip_sync_client.dart';
 import '../../features/auth/view_models/auth_view_model.dart';
 import '../../features/orders/view_models/order_draft_view_model.dart';
 import '../../l10n/generated/app_localizations.dart';
+import '../access/floor_access.dart';
 import '../di/app_providers.dart';
 import '../di/building_session.dart';
 import '../di/service_locator.dart';
@@ -394,6 +395,7 @@ class OpsSideBar extends ConsumerWidget {
     final store = ref.watch(appSessionStoreProvider);
     final isOwner = store.isOwner;
     final isEmployee = store.isEmployee;
+    final canReserve = FloorAccess.fromSession(store).canManageReservations;
     final firstName = store.owner?.firstName ?? store.employee?.firstName ?? '';
     final lastName = store.owner?.lastName ?? store.employee?.lastName ?? '';
     final subtitle = isOwner
@@ -560,6 +562,20 @@ class OpsSideBar extends ConsumerWidget {
                       onTap: () =>
                           TablesRoute(buildingId: buildingId).go(context),
                     ),
+                    if (canReserve)
+                      _NavTile(
+                        icon: Icons.event_available_outlined,
+                        label: l10n.navReservations,
+                        upgradeLocked: selected?.pack.reservations == false,
+                        selected: location.contains('/reservations'),
+                        onTap: () {
+                          if (selected?.pack.reservations == false) {
+                            showPackCatalog(context, closeDrawer: inDrawer);
+                            return;
+                          }
+                          ReservationsRoute(buildingId: buildingId).go(context);
+                        },
+                      ),
                     if (isEmployee)
                       _NavTile(
                         icon: Icons.qr_code_scanner_outlined,

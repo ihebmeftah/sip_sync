@@ -153,6 +153,14 @@ import 'package:sip_sync_client/src/protocol/packs/dtos/pack_update.dart'
     as _i8gbceh6;
 import 'package:sip_sync_client/src/protocol/packs/dtos/pack_view.dart'
     as _ihy1alcs;
+import 'package:sip_sync_client/src/protocol/reservations/dtos/customer_reservation_create.dart'
+    as _iwv7rt7o;
+import 'package:sip_sync_client/src/protocol/reservations/dtos/reservation_create.dart'
+    as _iq3meyhi;
+import 'package:sip_sync_client/src/protocol/reservations/dtos/reservation_customer_match.dart'
+    as _io69v53p;
+import 'package:sip_sync_client/src/protocol/reservations/dtos/reservation_view.dart'
+    as _ixub33vy;
 import 'package:sip_sync_client/src/protocol/stats/dtos/platform_stats.dart'
     as _i6db8rp3;
 import 'package:sip_sync_client/src/protocol/tables/dtos/table_list_filter.dart'
@@ -1182,6 +1190,88 @@ class EndpointPack extends _isc.EndpointRef {
       );
 }
 
+/// Reservations for a venue. Staff, and customers booking themselves.
+/// {@category Endpoint}
+class EndpointReservation extends _isc.EndpointRef {
+  EndpointReservation(_isc.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'reservation';
+
+  /// Bookings whose start falls on the UTC date of [day].
+  _ida.Future<List<_ixub33vy.ReservationView>> listForDay(
+    _isc.UuidValue buildingId,
+    DateTime day,
+  ) => caller.callServerEndpoint<List<_ixub33vy.ReservationView>>(
+    'reservation',
+    'listForDay',
+    {
+      'buildingId': buildingId,
+      'day': day,
+    },
+  );
+
+  /// The signed-in customer's upcoming bookings.
+  _ida.Future<List<_ixub33vy.ReservationView>> listMine() =>
+      caller.callServerEndpoint<List<_ixub33vy.ReservationView>>(
+        'reservation',
+        'listMine',
+        {},
+      );
+
+  /// Owner or employee with the reservations flag.
+  _ida.Future<_ixub33vy.ReservationView> create(
+    _iq3meyhi.ReservationCreate request,
+  ) => caller.callServerEndpoint<_ixub33vy.ReservationView>(
+    'reservation',
+    'create',
+    {'request': request},
+  );
+
+  /// Customer books for their own account.
+  _ida.Future<_ixub33vy.ReservationView> createForCustomer(
+    _iwv7rt7o.CustomerReservationCreate request,
+  ) => caller.callServerEndpoint<_ixub33vy.ReservationView>(
+    'reservation',
+    'createForCustomer',
+    {'request': request},
+  );
+
+  /// Exact phone match so staff can attach an account instead of typing a guest.
+  _ida.Future<_io69v53p.ReservationCustomerMatch> findCustomer(
+    _isc.UuidValue buildingId,
+    String phone,
+  ) => caller.callServerEndpoint<_io69v53p.ReservationCustomerMatch>(
+    'reservation',
+    'findCustomer',
+    {
+      'buildingId': buildingId,
+      'phone': phone,
+    },
+  );
+
+  /// Cancels a booked reservation.
+  _ida.Future<_ixub33vy.ReservationView> cancel(_isc.UuidValue id) =>
+      caller.callServerEndpoint<_ixub33vy.ReservationView>(
+        'reservation',
+        'cancel',
+        {'id': id},
+      );
+
+  /// Scan confirmation: the holding booking on [tableId] becomes arrived.
+  _ida.Future<_ixub33vy.ReservationView> confirmByTable(
+    _isc.UuidValue buildingId,
+    _isc.UuidValue tableId,
+  ) => caller.callServerEndpoint<_ixub33vy.ReservationView>(
+    'reservation',
+    'confirmByTable',
+    {
+      'buildingId': buildingId,
+      'tableId': tableId,
+    },
+  );
+}
+
 /// Platform totals for the backoffice. Super admin only.
 /// {@category Endpoint}
 class EndpointPlatformStats extends _isc.EndpointRef {
@@ -1296,6 +1386,7 @@ class Client extends _isc.ServerpodClientShared {
     customerOrder = EndpointCustomerOrder(this);
     order = EndpointOrder(this);
     pack = EndpointPack(this);
+    reservation = EndpointReservation(this);
     platformStats = EndpointPlatformStats(this);
     venueTable = EndpointVenueTable(this);
     modules = Modules(this);
@@ -1335,6 +1426,8 @@ class Client extends _isc.ServerpodClientShared {
 
   late final EndpointPack pack;
 
+  late final EndpointReservation reservation;
+
   late final EndpointPlatformStats platformStats;
 
   late final EndpointVenueTable venueTable;
@@ -1360,6 +1453,7 @@ class Client extends _isc.ServerpodClientShared {
     'customerOrder': customerOrder,
     'order': order,
     'pack': pack,
+    'reservation': reservation,
     'platformStats': platformStats,
     'venueTable': venueTable,
   };

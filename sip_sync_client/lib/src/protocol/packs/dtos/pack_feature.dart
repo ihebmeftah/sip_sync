@@ -25,7 +25,8 @@ enum PackFeature implements _isc.SerializableModel {
   tableMultiOrder,
   strictMode,
   customAccessProfiles,
-  tableQr;
+  tableQr,
+  reservations;
 
   static PackFeature fromJson(String name) {
     switch (name) {
@@ -53,6 +54,8 @@ enum PackFeature implements _isc.SerializableModel {
         return PackFeature.customAccessProfiles;
       case 'tableQr':
         return PackFeature.tableQr;
+      case 'reservations':
+        return PackFeature.reservations;
       default:
         throw ArgumentError(
           'Value "$name" cannot be converted to "PackFeature"',

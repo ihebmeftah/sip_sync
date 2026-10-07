@@ -13,3 +13,5 @@ values:
   - appendNotAllowed
   ### Employee access profile does not allow this action.
   - permissionDenied
+  ### A reservation has started and staff have not confirmed arrival.
+  - reservationHeld

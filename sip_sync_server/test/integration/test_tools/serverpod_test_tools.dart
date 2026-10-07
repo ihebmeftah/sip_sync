@@ -151,6 +151,14 @@ import 'package:sip_sync_server/src/generated/packs/dtos/pack_update.dart'
     as _imymid9b;
 import 'package:sip_sync_server/src/generated/packs/dtos/pack_view.dart'
     as _i1rdqyf4;
+import 'package:sip_sync_server/src/generated/reservations/dtos/customer_reservation_create.dart'
+    as _inffg52b;
+import 'package:sip_sync_server/src/generated/reservations/dtos/reservation_create.dart'
+    as _ir3eraa7;
+import 'package:sip_sync_server/src/generated/reservations/dtos/reservation_customer_match.dart'
+    as _ifes9d76;
+import 'package:sip_sync_server/src/generated/reservations/dtos/reservation_view.dart'
+    as _ixji9mob;
 import 'package:sip_sync_server/src/generated/stats/dtos/platform_stats.dart'
     as _ii13vz4n;
 import 'package:sip_sync_server/src/generated/tables/dtos/table_list_filter.dart'
@@ -328,6 +336,8 @@ class TestEndpoints {
 
   late final _PackEndpoint pack;
 
+  late final _ReservationEndpoint reservation;
+
   late final _PlatformStatsEndpoint platformStats;
 
   late final _VenueTableEndpoint venueTable;
@@ -405,6 +415,10 @@ class _InternalTestEndpoints extends TestEndpoints
       serializationManager,
     );
     pack = _PackEndpoint(
+      endpoints,
+      serializationManager,
+    );
+    reservation = _ReservationEndpoint(
       endpoints,
       serializationManager,
     );
@@ -3263,6 +3277,245 @@ class _PackEndpoint {
                   _localCallContext.arguments,
                 )
                 as _ida.Future<void>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+}
+
+class _ReservationEndpoint {
+  _ReservationEndpoint(
+    this._endpointDispatch,
+    this._serializationManager,
+  );
+
+  final _is.EndpointDispatch _endpointDispatch;
+
+  final _is.SerializationManager _serializationManager;
+
+  _ida.Future<List<_ixji9mob.ReservationView>> listForDay(
+    _ist.TestSessionBuilder sessionBuilder,
+    _is.UuidValue buildingId,
+    DateTime day,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'reservation',
+            method: 'listForDay',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'reservation',
+          methodName: 'listForDay',
+          parameters: _ist.testObjectToJson({
+            'buildingId': buildingId,
+            'day': day,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<List<_ixji9mob.ReservationView>>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<List<_ixji9mob.ReservationView>> listMine(
+    _ist.TestSessionBuilder sessionBuilder,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'reservation',
+            method: 'listMine',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'reservation',
+          methodName: 'listMine',
+          parameters: _ist.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<List<_ixji9mob.ReservationView>>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<_ixji9mob.ReservationView> create(
+    _ist.TestSessionBuilder sessionBuilder,
+    _ir3eraa7.ReservationCreate request,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'reservation',
+            method: 'create',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'reservation',
+          methodName: 'create',
+          parameters: _ist.testObjectToJson({'request': request}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_ixji9mob.ReservationView>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<_ixji9mob.ReservationView> createForCustomer(
+    _ist.TestSessionBuilder sessionBuilder,
+    _inffg52b.CustomerReservationCreate request,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'reservation',
+            method: 'createForCustomer',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'reservation',
+          methodName: 'createForCustomer',
+          parameters: _ist.testObjectToJson({'request': request}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_ixji9mob.ReservationView>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<_ifes9d76.ReservationCustomerMatch> findCustomer(
+    _ist.TestSessionBuilder sessionBuilder,
+    _is.UuidValue buildingId,
+    String phone,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'reservation',
+            method: 'findCustomer',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'reservation',
+          methodName: 'findCustomer',
+          parameters: _ist.testObjectToJson({
+            'buildingId': buildingId,
+            'phone': phone,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_ifes9d76.ReservationCustomerMatch>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<_ixji9mob.ReservationView> cancel(
+    _ist.TestSessionBuilder sessionBuilder,
+    _is.UuidValue id,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'reservation',
+            method: 'cancel',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'reservation',
+          methodName: 'cancel',
+          parameters: _ist.testObjectToJson({'id': id}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_ixji9mob.ReservationView>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<_ixji9mob.ReservationView> confirmByTable(
+    _ist.TestSessionBuilder sessionBuilder,
+    _is.UuidValue buildingId,
+    _is.UuidValue tableId,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'reservation',
+            method: 'confirmByTable',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'reservation',
+          methodName: 'confirmByTable',
+          parameters: _ist.testObjectToJson({
+            'buildingId': buildingId,
+            'tableId': tableId,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_ixji9mob.ReservationView>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();

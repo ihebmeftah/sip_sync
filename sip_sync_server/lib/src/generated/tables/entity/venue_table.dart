@@ -15,6 +15,7 @@ import 'package:serverpod/serverpod.dart' as _is;
 import 'package:sip_sync_server/src/generated/protocol.dart' as _iaib1p48;
 import '../../buildings/entity/building.dart' as _iaohraio;
 import '../../orders/entity/venue_order.dart' as _iwamn8sj;
+import '../../reservations/entity/table_reservation.dart' as _i6tkokf9;
 
 /// A physical dining table in a venue. Floor status is computed, not stored.
 abstract class VenueTable
@@ -28,6 +29,7 @@ abstract class VenueTable
     bool? isActive,
     DateTime? createdAt,
     this.orders,
+    this.reservationLinks,
   }) : isActive = isActive ?? true,
        createdAt = createdAt ?? DateTime.now();
 
@@ -40,6 +42,7 @@ abstract class VenueTable
     bool? isActive,
     DateTime? createdAt,
     List<_iwamn8sj.VenueOrder>? orders,
+    List<_i6tkokf9.TableReservation>? reservationLinks,
   }) = _VenueTableImpl;
 
   factory VenueTable.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -68,6 +71,11 @@ abstract class VenueTable
           : _iaib1p48.Protocol().deserialize<List<_iwamn8sj.VenueOrder>>(
               jsonSerialization['orders'],
             ),
+      reservationLinks: jsonSerialization['reservationLinks'] == null
+          ? null
+          : _iaib1p48.Protocol().deserialize<List<_i6tkokf9.TableReservation>>(
+              jsonSerialization['reservationLinks'],
+            ),
     );
   }
 
@@ -92,6 +100,8 @@ abstract class VenueTable
 
   List<_iwamn8sj.VenueOrder>? orders;
 
+  List<_i6tkokf9.TableReservation>? reservationLinks;
+
   @override
   _is.Table<_is.UuidValue?> get table => t;
 
@@ -107,6 +117,7 @@ abstract class VenueTable
     bool? isActive,
     DateTime? createdAt,
     List<_iwamn8sj.VenueOrder>? orders,
+    List<_i6tkokf9.TableReservation>? reservationLinks,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -121,6 +132,10 @@ abstract class VenueTable
       'createdAt': createdAt.toJson(),
       if (orders != null)
         'orders': orders?.toJson(valueToJson: (v) => v.toJson()),
+      if (reservationLinks != null)
+        'reservationLinks': reservationLinks?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
     };
   }
 
@@ -132,10 +147,12 @@ abstract class VenueTable
   static VenueTableInclude include({
     _iaohraio.BuildingInclude? building,
     _iwamn8sj.VenueOrderIncludeList? orders,
+    _i6tkokf9.TableReservationIncludeList? reservationLinks,
   }) {
     return VenueTableInclude._(
       building: building,
       orders: orders,
+      reservationLinks: reservationLinks,
     );
   }
 
@@ -175,6 +192,7 @@ class _VenueTableImpl extends VenueTable {
     bool? isActive,
     DateTime? createdAt,
     List<_iwamn8sj.VenueOrder>? orders,
+    List<_i6tkokf9.TableReservation>? reservationLinks,
   }) : super._(
          id: id,
          buildingId: buildingId,
@@ -184,6 +202,7 @@ class _VenueTableImpl extends VenueTable {
          isActive: isActive,
          createdAt: createdAt,
          orders: orders,
+         reservationLinks: reservationLinks,
        );
 
   /// Returns a shallow copy of this [VenueTable]
@@ -199,6 +218,7 @@ class _VenueTableImpl extends VenueTable {
     bool? isActive,
     DateTime? createdAt,
     Object? orders = _Undefined,
+    Object? reservationLinks = _Undefined,
   }) {
     return VenueTable(
       id: id is _is.UuidValue? ? id : this.id,
@@ -213,6 +233,9 @@ class _VenueTableImpl extends VenueTable {
       orders: orders is List<_iwamn8sj.VenueOrder>?
           ? orders
           : this.orders?.map((e0) => e0.copyWith()).toList(),
+      reservationLinks: reservationLinks is List<_i6tkokf9.TableReservation>?
+          ? reservationLinks
+          : this.reservationLinks?.map((e0) => e0.copyWith()).toList(),
     );
   }
 }
@@ -293,6 +316,10 @@ class VenueTableTable extends _is.Table<_is.UuidValue?> {
 
   _is.ManyRelation<_iwamn8sj.VenueOrderTable>? _orders;
 
+  _i6tkokf9.TableReservationTable? ___reservationLinks;
+
+  _is.ManyRelation<_i6tkokf9.TableReservationTable>? _reservationLinks;
+
   _iaohraio.BuildingTable get building {
     if (_building != null) return _building!;
     _building = _is.createRelationTable(
@@ -319,6 +346,19 @@ class VenueTableTable extends _is.Table<_is.UuidValue?> {
     return ___orders!;
   }
 
+  _i6tkokf9.TableReservationTable get __reservationLinks {
+    if (___reservationLinks != null) return ___reservationLinks!;
+    ___reservationLinks = _is.createRelationTable(
+      relationFieldName: '__reservationLinks',
+      field: VenueTable.t.id,
+      foreignField: _i6tkokf9.TableReservation.t.venueTableId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i6tkokf9.TableReservationTable(tableRelation: foreignTableRelation),
+    );
+    return ___reservationLinks!;
+  }
+
   _is.ManyRelation<_iwamn8sj.VenueOrderTable> get orders {
     if (_orders != null) return _orders!;
     var relationTable = _is.createRelationTable(
@@ -336,6 +376,25 @@ class VenueTableTable extends _is.Table<_is.UuidValue?> {
       ),
     );
     return _orders!;
+  }
+
+  _is.ManyRelation<_i6tkokf9.TableReservationTable> get reservationLinks {
+    if (_reservationLinks != null) return _reservationLinks!;
+    var relationTable = _is.createRelationTable(
+      relationFieldName: 'reservationLinks',
+      field: VenueTable.t.id,
+      foreignField: _i6tkokf9.TableReservation.t.venueTableId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _i6tkokf9.TableReservationTable(tableRelation: foreignTableRelation),
+    );
+    _reservationLinks = _is.ManyRelation<_i6tkokf9.TableReservationTable>(
+      tableWithRelations: relationTable,
+      table: _i6tkokf9.TableReservationTable(
+        tableRelation: relationTable.tableRelation!.lastRelation,
+      ),
+    );
+    return _reservationLinks!;
   }
 
   @override
@@ -356,6 +415,9 @@ class VenueTableTable extends _is.Table<_is.UuidValue?> {
     if (relationField == 'orders') {
       return __orders;
     }
+    if (relationField == 'reservationLinks') {
+      return __reservationLinks;
+    }
     return null;
   }
 }
@@ -364,19 +426,24 @@ class VenueTableInclude extends _is.IncludeObject {
   VenueTableInclude._({
     _iaohraio.BuildingInclude? building,
     _iwamn8sj.VenueOrderIncludeList? orders,
+    _i6tkokf9.TableReservationIncludeList? reservationLinks,
   }) {
     _building = building;
     _orders = orders;
+    _reservationLinks = reservationLinks;
   }
 
   _iaohraio.BuildingInclude? _building;
 
   _iwamn8sj.VenueOrderIncludeList? _orders;
 
+  _i6tkokf9.TableReservationIncludeList? _reservationLinks;
+
   @override
   Map<String, _is.Include?> get includes => {
     'building': _building,
     'orders': _orders,
+    'reservationLinks': _reservationLinks,
   };
 
   @override
@@ -838,6 +905,31 @@ class VenueTableAttachRepository {
       transaction: transaction,
     );
   }
+
+  /// Creates a relation between this [VenueTable] and the given [TableReservation]s
+  /// by setting each [TableReservation]'s foreign key `venueTableId` to refer to this [VenueTable].
+  Future<void> reservationLinks(
+    _is.DatabaseSession session,
+    VenueTable venueTable,
+    List<_i6tkokf9.TableReservation> tableReservation, {
+    _is.Transaction? transaction,
+  }) async {
+    if (tableReservation.any((e) => e.id == null)) {
+      throw ArgumentError.notNull('tableReservation.id');
+    }
+    if (venueTable.id == null) {
+      throw ArgumentError.notNull('venueTable.id');
+    }
+
+    var $tableReservation = tableReservation
+        .map((e) => e.copyWith(venueTableId: venueTable.id))
+        .toList();
+    await session.db.update<_i6tkokf9.TableReservation>(
+      $tableReservation,
+      columns: [_i6tkokf9.TableReservation.t.venueTableId],
+      transaction: transaction,
+    );
+  }
 }
 
 class VenueTableAttachRowRepository {
@@ -885,6 +977,31 @@ class VenueTableAttachRowRepository {
     await session.db.updateRow<_iwamn8sj.VenueOrder>(
       $venueOrder,
       columns: [_iwamn8sj.VenueOrder.t.venueTableId],
+      transaction: transaction,
+    );
+  }
+
+  /// Creates a relation between this [VenueTable] and the given [TableReservation]
+  /// by setting the [TableReservation]'s foreign key `venueTableId` to refer to this [VenueTable].
+  Future<void> reservationLinks(
+    _is.DatabaseSession session,
+    VenueTable venueTable,
+    _i6tkokf9.TableReservation tableReservation, {
+    _is.Transaction? transaction,
+  }) async {
+    if (tableReservation.id == null) {
+      throw ArgumentError.notNull('tableReservation.id');
+    }
+    if (venueTable.id == null) {
+      throw ArgumentError.notNull('venueTable.id');
+    }
+
+    var $tableReservation = tableReservation.copyWith(
+      venueTableId: venueTable.id,
+    );
+    await session.db.updateRow<_i6tkokf9.TableReservation>(
+      $tableReservation,
+      columns: [_i6tkokf9.TableReservation.t.venueTableId],
       transaction: transaction,
     );
   }

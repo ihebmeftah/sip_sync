@@ -33,6 +33,7 @@ class _PackFormDialogState extends ConsumerState<PackFormDialog> {
   late final TextEditingController _categories;
   late final TextEditingController _articles;
   late final TextEditingController _ingredients;
+  late final TextEditingController _reservationsPerDay;
   late bool _public;
   late bool _enabled;
   late bool _discovery;
@@ -43,6 +44,7 @@ class _PackFormDialogState extends ConsumerState<PackFormDialog> {
   late bool _multiOrder;
   late bool _strict;
   late bool _customAccess;
+  late bool _reservations;
   String? _errorKey;
   final _fieldErrors = <String, String>{};
   bool _saving = false;
@@ -73,6 +75,9 @@ class _PackFormDialogState extends ConsumerState<PackFormDialog> {
     _categories = TextEditingController(text: _limit(caps?.maxCategories));
     _articles = TextEditingController(text: _limit(caps?.maxArticles));
     _ingredients = TextEditingController(text: _limit(caps?.maxIngredients));
+    _reservationsPerDay = TextEditingController(
+      text: _limit(caps?.maxReservationsPerDay),
+    );
     _public = pack?.isPublic ?? false;
     _enabled = pack?.isEnabled ?? true;
     _discovery = caps?.customerDiscovery ?? true;
@@ -83,6 +88,7 @@ class _PackFormDialogState extends ConsumerState<PackFormDialog> {
     _multiOrder = caps?.tableMultiOrder ?? false;
     _strict = caps?.strictMode ?? false;
     _customAccess = caps?.customAccessProfiles ?? false;
+    _reservations = caps?.reservations ?? false;
   }
 
   String _limit(int? value) => value == null ? '' : '$value';
@@ -100,6 +106,7 @@ class _PackFormDialogState extends ConsumerState<PackFormDialog> {
     _categories.dispose();
     _articles.dispose();
     _ingredients.dispose();
+    _reservationsPerDay.dispose();
     super.dispose();
   }
 
@@ -249,6 +256,15 @@ class _PackFormDialogState extends ConsumerState<PackFormDialog> {
             error: _fieldErrors['ingredients'],
             onChanged: (_) => _clearField('ingredients'),
           ),
+          AppTextField(
+            controller: _reservationsPerDay,
+            label: l10n.capMaxReservations,
+            hint: l10n.capMaxReservationsHint,
+            keyboardType: TextInputType.number,
+            textInputAction: TextInputAction.next,
+            error: _fieldErrors['reservations'],
+            onChanged: (_) => _clearField('reservations'),
+          ),
           Text(l10n.packCapabilities, style: theme.textTheme.small),
           const SizedBox(height: AppSpacing.sm),
           _Flag(
@@ -299,6 +315,12 @@ class _PackFormDialogState extends ConsumerState<PackFormDialog> {
             value: _customAccess,
             onChanged: (value) => setState(() => _customAccess = value),
           ),
+          _Flag(
+            label: l10n.capReservations,
+            hint: l10n.capReservationsHint,
+            value: _reservations,
+            onChanged: (value) => setState(() => _reservations = value),
+          ),
         ],
       ),
     );
@@ -324,6 +346,7 @@ class _PackFormDialogState extends ConsumerState<PackFormDialog> {
     final categories = tryParseLimit(_categories.text);
     final articles = tryParseLimit(_articles.text);
     final ingredients = tryParseLimit(_ingredients.text);
+    final reservationsPerDay = tryParseLimit(_reservationsPerDay.text);
     final errors = <String, String>{};
     if (!_editing) {
       final codeError = FormValidators.packCode(l10n, code);
@@ -362,6 +385,9 @@ class _PackFormDialogState extends ConsumerState<PackFormDialog> {
     if (ingredients.invalid) {
       errors['ingredients'] = l10n.validationPackLimit;
     }
+    if (reservationsPerDay.invalid) {
+      errors['reservations'] = l10n.validationPackLimit;
+    }
     if (errors.isNotEmpty) {
       setState(() {
         _fieldErrors
@@ -388,6 +414,8 @@ class _PackFormDialogState extends ConsumerState<PackFormDialog> {
       tableMultiOrder: _multiOrder,
       strictMode: _strict,
       customAccessProfiles: _customAccess,
+      reservations: _reservations,
+      maxReservationsPerDay: reservationsPerDay.value,
     );
 
     setState(() {

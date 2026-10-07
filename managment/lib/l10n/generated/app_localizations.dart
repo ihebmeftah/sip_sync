@@ -2764,6 +2764,240 @@ abstract class AppLocalizations {
   /// **'This plan does not include table QR codes.'**
   String get errorPackFeatureQr;
 
+  /// No description provided for @navReservations.
+  ///
+  /// In en, this message translates to:
+  /// **'Reservations'**
+  String get navReservations;
+
+  /// No description provided for @reservationsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reservations'**
+  String get reservationsTitle;
+
+  /// No description provided for @reservationNew.
+  ///
+  /// In en, this message translates to:
+  /// **'New reservation'**
+  String get reservationNew;
+
+  /// No description provided for @reservationPreviousDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous day'**
+  String get reservationPreviousDay;
+
+  /// No description provided for @reservationNextDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Next day'**
+  String get reservationNextDay;
+
+  /// No description provided for @reservationEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No reservations this day.'**
+  String get reservationEmpty;
+
+  /// No description provided for @reservationGuestName.
+  ///
+  /// In en, this message translates to:
+  /// **'Guest name'**
+  String get reservationGuestName;
+
+  /// No description provided for @reservationGuestPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone'**
+  String get reservationGuestPhone;
+
+  /// No description provided for @reservationPaidAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount paid'**
+  String get reservationPaidAmount;
+
+  /// No description provided for @reservationPaidInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter an amount from 0 up to 1000000.'**
+  String get reservationPaidInvalid;
+
+  /// No description provided for @reservationFee.
+  ///
+  /// In en, this message translates to:
+  /// **'Reservation fee'**
+  String get reservationFee;
+
+  /// No description provided for @reservationFeeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Prefills the amount on a staff booking, in the venue currency.'**
+  String get reservationFeeHint;
+
+  /// No description provided for @reservationDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get reservationDate;
+
+  /// No description provided for @reservationStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Start'**
+  String get reservationStart;
+
+  /// No description provided for @reservationEnd.
+  ///
+  /// In en, this message translates to:
+  /// **'End'**
+  String get reservationEnd;
+
+  /// No description provided for @reservationTables.
+  ///
+  /// In en, this message translates to:
+  /// **'Tables'**
+  String get reservationTables;
+
+  /// No description provided for @reservationFindCustomer.
+  ///
+  /// In en, this message translates to:
+  /// **'Find customer'**
+  String get reservationFindCustomer;
+
+  /// No description provided for @reservationGuestInstead.
+  ///
+  /// In en, this message translates to:
+  /// **'Type a guest instead of an account'**
+  String get reservationGuestInstead;
+
+  /// No description provided for @reservationCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel reservation'**
+  String get reservationCancel;
+
+  /// No description provided for @reservationCancelConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel this reservation?'**
+  String get reservationCancelConfirm;
+
+  /// No description provided for @reservationStatusBooked.
+  ///
+  /// In en, this message translates to:
+  /// **'Booked'**
+  String get reservationStatusBooked;
+
+  /// No description provided for @reservationStatusArrived.
+  ///
+  /// In en, this message translates to:
+  /// **'Arrived'**
+  String get reservationStatusArrived;
+
+  /// No description provided for @reservationStatusCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled'**
+  String get reservationStatusCancelled;
+
+  /// No description provided for @reservationStatusNoShow.
+  ///
+  /// In en, this message translates to:
+  /// **'No-show'**
+  String get reservationStatusNoShow;
+
+  /// No description provided for @reservationSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Starting soon'**
+  String get reservationSoon;
+
+  /// No description provided for @reservationHolding.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for arrival'**
+  String get reservationHolding;
+
+  /// No description provided for @reservationHeldOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'This table is reserved. Scan it to confirm arrival before taking an order.'**
+  String get reservationHeldOrder;
+
+  /// No description provided for @reservationScanNeedsAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Only someone with reservation access can confirm this table.'**
+  String get reservationScanNeedsAccess;
+
+  /// No description provided for @reservationWindow.
+  ///
+  /// In en, this message translates to:
+  /// **'A reservation lasts between 30 minutes and 8 hours, and it must still be open.'**
+  String get reservationWindow;
+
+  /// No description provided for @reservationSelectTables.
+  ///
+  /// In en, this message translates to:
+  /// **'Select at least one table.'**
+  String get reservationSelectTables;
+
+  /// No description provided for @accessReservations.
+  ///
+  /// In en, this message translates to:
+  /// **'Reservations'**
+  String get accessReservations;
+
+  /// No description provided for @accessReservationsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Create, cancel, and confirm reservations.'**
+  String get accessReservationsHint;
+
+  /// No description provided for @errorPackFeatureReservations.
+  ///
+  /// In en, this message translates to:
+  /// **'This plan does not include reservations.'**
+  String get errorPackFeatureReservations;
+
+  /// No description provided for @errorPackLimitReservations.
+  ///
+  /// In en, this message translates to:
+  /// **'This plan has reached its reservation limit for the day.'**
+  String get errorPackLimitReservations;
+
+  /// No description provided for @errorOrderReservationHeld.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm the reservation before taking an order.'**
+  String get errorOrderReservationHeld;
+
+  /// No description provided for @errorReservationOverlap.
+  ///
+  /// In en, this message translates to:
+  /// **'A table is already reserved for that time.'**
+  String get errorReservationOverlap;
+
+  /// No description provided for @errorReservationNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No customer or reservation matches that.'**
+  String get errorReservationNotFound;
+
+  /// No description provided for @packCapReservations.
+  ///
+  /// In en, this message translates to:
+  /// **'Reservations'**
+  String get packCapReservations;
+
+  /// No description provided for @packCapReservationsPerDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Reservations / day'**
+  String get packCapReservationsPerDay;
+
   /// No description provided for @errorPackPaidActive.
   ///
   /// In en, this message translates to:

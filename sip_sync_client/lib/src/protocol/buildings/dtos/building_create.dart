@@ -34,9 +34,11 @@ abstract class BuildingCreate
     bool? allowAppendingItemsToOrder,
     bool? strictMode,
     required this.strictModeSteps,
+    double? reservationFee,
   }) : tableMultiOrder = tableMultiOrder ?? false,
        allowAppendingItemsToOrder = allowAppendingItemsToOrder ?? true,
-       strictMode = strictMode ?? false;
+       strictMode = strictMode ?? false,
+       reservationFee = reservationFee ?? 0.0;
 
   factory BuildingCreate({
     required String name,
@@ -56,6 +58,7 @@ abstract class BuildingCreate
     bool? allowAppendingItemsToOrder,
     bool? strictMode,
     required List<_ik04yv2w.StrictModeStep> strictModeSteps,
+    double? reservationFee,
   }) = _BuildingCreateImpl;
 
   factory BuildingCreate.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -93,6 +96,7 @@ abstract class BuildingCreate
           .deserialize<List<_ik04yv2w.StrictModeStep>>(
             jsonSerialization['strictModeSteps'],
           ),
+      reservationFee: (jsonSerialization['reservationFee'] as num?)?.toDouble(),
     );
   }
 
@@ -130,6 +134,8 @@ abstract class BuildingCreate
 
   List<_ik04yv2w.StrictModeStep> strictModeSteps;
 
+  double reservationFee;
+
   /// Returns a shallow copy of this [BuildingCreate]
   /// with some or all fields replaced by the given arguments.
   @_isc.useResult
@@ -151,6 +157,7 @@ abstract class BuildingCreate
     bool? allowAppendingItemsToOrder,
     bool? strictMode,
     List<_ik04yv2w.StrictModeStep>? strictModeSteps,
+    double? reservationFee,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -173,6 +180,7 @@ abstract class BuildingCreate
       'allowAppendingItemsToOrder': allowAppendingItemsToOrder,
       'strictMode': strictMode,
       'strictModeSteps': strictModeSteps.toJson(valueToJson: (v) => v.toJson()),
+      'reservationFee': reservationFee,
     };
   }
 
@@ -199,6 +207,7 @@ abstract class BuildingCreate
       'strictModeSteps': strictModeSteps.toJson(
         valueToJson: (v) => v.toJsonForProtocol(),
       ),
+      'reservationFee': reservationFee,
     };
   }
 
@@ -229,6 +238,7 @@ class _BuildingCreateImpl extends BuildingCreate {
     bool? allowAppendingItemsToOrder,
     bool? strictMode,
     required List<_ik04yv2w.StrictModeStep> strictModeSteps,
+    double? reservationFee,
   }) : super._(
          name: name,
          type: type,
@@ -247,6 +257,7 @@ class _BuildingCreateImpl extends BuildingCreate {
          allowAppendingItemsToOrder: allowAppendingItemsToOrder,
          strictMode: strictMode,
          strictModeSteps: strictModeSteps,
+         reservationFee: reservationFee,
        );
 
   /// Returns a shallow copy of this [BuildingCreate]
@@ -271,6 +282,7 @@ class _BuildingCreateImpl extends BuildingCreate {
     bool? allowAppendingItemsToOrder,
     bool? strictMode,
     List<_ik04yv2w.StrictModeStep>? strictModeSteps,
+    double? reservationFee,
   }) {
     return BuildingCreate(
       name: name ?? this.name,
@@ -293,6 +305,7 @@ class _BuildingCreateImpl extends BuildingCreate {
       strictModeSteps:
           strictModeSteps ??
           this.strictModeSteps.map((e0) => e0.copyWith()).toList(),
+      reservationFee: reservationFee ?? this.reservationFee,
     );
   }
 }

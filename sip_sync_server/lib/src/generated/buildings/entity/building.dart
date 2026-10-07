@@ -24,6 +24,7 @@ import '../../orders/entity/venue_order.dart' as _iwamn8sj;
 import '../../packs/dtos/pack_billing_period.dart' as _iohcjejn;
 import '../../packs/entity/building_pack_assignment.dart' as _iq3bhcsv;
 import '../../packs/entity/pack.dart' as _iqwmqtub;
+import '../../reservations/entity/reservation.dart' as _iq51mm5o;
 import '../../tables/entity/venue_table.dart' as _ilcfc7kr;
 
 /// A café, restaurant, lounge, bar, or custom venue owned by one owner.
@@ -52,6 +53,7 @@ abstract class Building
     bool? allowAppendingItemsToOrder,
     bool? strictMode,
     required this.strictModeSteps,
+    double? reservationFee,
     DateTime? createdAt,
     this.employees,
     this.accessProfiles,
@@ -60,6 +62,7 @@ abstract class Building
     this.menuArticles,
     this.ingredients,
     this.orders,
+    this.reservations,
     this.packAssignments,
     required this.packId,
     this.pack,
@@ -69,6 +72,7 @@ abstract class Building
        tableMultiOrder = tableMultiOrder ?? false,
        allowAppendingItemsToOrder = allowAppendingItemsToOrder ?? true,
        strictMode = strictMode ?? false,
+       reservationFee = reservationFee ?? 0.0,
        createdAt = createdAt ?? DateTime.now();
 
   factory Building({
@@ -94,6 +98,7 @@ abstract class Building
     bool? allowAppendingItemsToOrder,
     bool? strictMode,
     required List<_ik04yv2w.StrictModeStep> strictModeSteps,
+    double? reservationFee,
     DateTime? createdAt,
     List<_ie30fksv.Employee>? employees,
     List<_i5dpfzds.EmployeeAccess>? accessProfiles,
@@ -102,6 +107,7 @@ abstract class Building
     List<_is7gdyz6.MenuArticle>? menuArticles,
     List<_ixki5cxr.Ingredient>? ingredients,
     List<_iwamn8sj.VenueOrder>? orders,
+    List<_iq51mm5o.Reservation>? reservations,
     List<_iq3bhcsv.BuildingPackAssignment>? packAssignments,
     required _is.UuidValue packId,
     _iqwmqtub.Pack? pack,
@@ -157,6 +163,7 @@ abstract class Building
           .deserialize<List<_ik04yv2w.StrictModeStep>>(
             jsonSerialization['strictModeSteps'],
           ),
+      reservationFee: (jsonSerialization['reservationFee'] as num?)?.toDouble(),
       createdAt: jsonSerialization['createdAt'] == null
           ? null
           : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
@@ -194,6 +201,11 @@ abstract class Building
           ? null
           : _iaib1p48.Protocol().deserialize<List<_iwamn8sj.VenueOrder>>(
               jsonSerialization['orders'],
+            ),
+      reservations: jsonSerialization['reservations'] == null
+          ? null
+          : _iaib1p48.Protocol().deserialize<List<_iq51mm5o.Reservation>>(
+              jsonSerialization['reservations'],
             ),
       packAssignments: jsonSerialization['packAssignments'] == null
           ? null
@@ -280,6 +292,9 @@ abstract class Building
   /// Fixed pipeline steps (picked → … → payed); enable/disable only, no reorder.
   List<_ik04yv2w.StrictModeStep> strictModeSteps;
 
+  /// Default amount collected for a reservation, in [currencyCode].
+  double reservationFee;
+
   DateTime createdAt;
 
   List<_ie30fksv.Employee>? employees;
@@ -295,6 +310,8 @@ abstract class Building
   List<_ixki5cxr.Ingredient>? ingredients;
 
   List<_iwamn8sj.VenueOrder>? orders;
+
+  List<_iq51mm5o.Reservation>? reservations;
 
   /// Every plan this venue has been on, including the open row.
   List<_iq3bhcsv.BuildingPackAssignment>? packAssignments;
@@ -339,6 +356,7 @@ abstract class Building
     bool? allowAppendingItemsToOrder,
     bool? strictMode,
     List<_ik04yv2w.StrictModeStep>? strictModeSteps,
+    double? reservationFee,
     DateTime? createdAt,
     List<_ie30fksv.Employee>? employees,
     List<_i5dpfzds.EmployeeAccess>? accessProfiles,
@@ -347,6 +365,7 @@ abstract class Building
     List<_is7gdyz6.MenuArticle>? menuArticles,
     List<_ixki5cxr.Ingredient>? ingredients,
     List<_iwamn8sj.VenueOrder>? orders,
+    List<_iq51mm5o.Reservation>? reservations,
     List<_iq3bhcsv.BuildingPackAssignment>? packAssignments,
     _is.UuidValue? packId,
     _iqwmqtub.Pack? pack,
@@ -379,6 +398,7 @@ abstract class Building
       'allowAppendingItemsToOrder': allowAppendingItemsToOrder,
       'strictMode': strictMode,
       'strictModeSteps': strictModeSteps.toJson(valueToJson: (v) => v.toJson()),
+      'reservationFee': reservationFee,
       'createdAt': createdAt.toJson(),
       if (employees != null)
         'employees': employees?.toJson(valueToJson: (v) => v.toJson()),
@@ -398,6 +418,8 @@ abstract class Building
         'ingredients': ingredients?.toJson(valueToJson: (v) => v.toJson()),
       if (orders != null)
         'orders': orders?.toJson(valueToJson: (v) => v.toJson()),
+      if (reservations != null)
+        'reservations': reservations?.toJson(valueToJson: (v) => v.toJson()),
       if (packAssignments != null)
         'packAssignments': packAssignments?.toJson(
           valueToJson: (v) => v.toJson(),
@@ -424,6 +446,7 @@ abstract class Building
     _is7gdyz6.MenuArticleIncludeList? menuArticles,
     _ixki5cxr.IngredientIncludeList? ingredients,
     _iwamn8sj.VenueOrderIncludeList? orders,
+    _iq51mm5o.ReservationIncludeList? reservations,
     _iq3bhcsv.BuildingPackAssignmentIncludeList? packAssignments,
     _iqwmqtub.PackInclude? pack,
   }) {
@@ -436,6 +459,7 @@ abstract class Building
       menuArticles: menuArticles,
       ingredients: ingredients,
       orders: orders,
+      reservations: reservations,
       packAssignments: packAssignments,
       pack: pack,
     );
@@ -491,6 +515,7 @@ class _BuildingImpl extends Building {
     bool? allowAppendingItemsToOrder,
     bool? strictMode,
     required List<_ik04yv2w.StrictModeStep> strictModeSteps,
+    double? reservationFee,
     DateTime? createdAt,
     List<_ie30fksv.Employee>? employees,
     List<_i5dpfzds.EmployeeAccess>? accessProfiles,
@@ -499,6 +524,7 @@ class _BuildingImpl extends Building {
     List<_is7gdyz6.MenuArticle>? menuArticles,
     List<_ixki5cxr.Ingredient>? ingredients,
     List<_iwamn8sj.VenueOrder>? orders,
+    List<_iq51mm5o.Reservation>? reservations,
     List<_iq3bhcsv.BuildingPackAssignment>? packAssignments,
     required _is.UuidValue packId,
     _iqwmqtub.Pack? pack,
@@ -527,6 +553,7 @@ class _BuildingImpl extends Building {
          allowAppendingItemsToOrder: allowAppendingItemsToOrder,
          strictMode: strictMode,
          strictModeSteps: strictModeSteps,
+         reservationFee: reservationFee,
          createdAt: createdAt,
          employees: employees,
          accessProfiles: accessProfiles,
@@ -535,6 +562,7 @@ class _BuildingImpl extends Building {
          menuArticles: menuArticles,
          ingredients: ingredients,
          orders: orders,
+         reservations: reservations,
          packAssignments: packAssignments,
          packId: packId,
          pack: pack,
@@ -569,6 +597,7 @@ class _BuildingImpl extends Building {
     bool? allowAppendingItemsToOrder,
     bool? strictMode,
     List<_ik04yv2w.StrictModeStep>? strictModeSteps,
+    double? reservationFee,
     DateTime? createdAt,
     Object? employees = _Undefined,
     Object? accessProfiles = _Undefined,
@@ -577,6 +606,7 @@ class _BuildingImpl extends Building {
     Object? menuArticles = _Undefined,
     Object? ingredients = _Undefined,
     Object? orders = _Undefined,
+    Object? reservations = _Undefined,
     Object? packAssignments = _Undefined,
     _is.UuidValue? packId,
     Object? pack = _Undefined,
@@ -609,6 +639,7 @@ class _BuildingImpl extends Building {
       strictModeSteps:
           strictModeSteps ??
           this.strictModeSteps.map((e0) => e0.copyWith()).toList(),
+      reservationFee: reservationFee ?? this.reservationFee,
       createdAt: createdAt ?? this.createdAt,
       employees: employees is List<_ie30fksv.Employee>?
           ? employees
@@ -631,6 +662,9 @@ class _BuildingImpl extends Building {
       orders: orders is List<_iwamn8sj.VenueOrder>?
           ? orders
           : this.orders?.map((e0) => e0.copyWith()).toList(),
+      reservations: reservations is List<_iq51mm5o.Reservation>?
+          ? reservations
+          : this.reservations?.map((e0) => e0.copyWith()).toList(),
       packAssignments:
           packAssignments is List<_iq3bhcsv.BuildingPackAssignment>?
           ? packAssignments
@@ -757,6 +791,12 @@ class BuildingUpdateTable extends _is.UpdateTable<BuildingTable> {
     value,
   );
 
+  _is.ColumnValue<double, double> reservationFee(double value) =>
+      _is.ColumnValue(
+        table.reservationFee,
+        value,
+      );
+
   _is.ColumnValue<DateTime, DateTime> createdAt(DateTime value) =>
       _is.ColumnValue(
         table.createdAt,
@@ -866,6 +906,11 @@ class BuildingTable extends _is.Table<_is.UuidValue?> {
       'strictModeSteps',
       this,
     );
+    reservationFee = _is.ColumnDouble(
+      'reservationFee',
+      this,
+      hasDefault: true,
+    );
     createdAt = _is.ColumnDateTime(
       'createdAt',
       this,
@@ -941,6 +986,9 @@ class BuildingTable extends _is.Table<_is.UuidValue?> {
   late final _is.ColumnSerializable<List<_ik04yv2w.StrictModeStep>>
   strictModeSteps;
 
+  /// Default amount collected for a reservation, in [currencyCode].
+  late final _is.ColumnDouble reservationFee;
+
   late final _is.ColumnDateTime createdAt;
 
   _ie30fksv.EmployeeTable? ___employees;
@@ -970,6 +1018,10 @@ class BuildingTable extends _is.Table<_is.UuidValue?> {
   _iwamn8sj.VenueOrderTable? ___orders;
 
   _is.ManyRelation<_iwamn8sj.VenueOrderTable>? _orders;
+
+  _iq51mm5o.ReservationTable? ___reservations;
+
+  _is.ManyRelation<_iq51mm5o.ReservationTable>? _reservations;
 
   /// Every plan this venue has been on, including the open row.
   _iq3bhcsv.BuildingPackAssignmentTable? ___packAssignments;
@@ -1090,6 +1142,19 @@ class BuildingTable extends _is.Table<_is.UuidValue?> {
           _iwamn8sj.VenueOrderTable(tableRelation: foreignTableRelation),
     );
     return ___orders!;
+  }
+
+  _iq51mm5o.ReservationTable get __reservations {
+    if (___reservations != null) return ___reservations!;
+    ___reservations = _is.createRelationTable(
+      relationFieldName: '__reservations',
+      field: Building.t.id,
+      foreignField: _iq51mm5o.Reservation.t.buildingId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _iq51mm5o.ReservationTable(tableRelation: foreignTableRelation),
+    );
+    return ___reservations!;
   }
 
   _iq3bhcsv.BuildingPackAssignmentTable get __packAssignments {
@@ -1253,6 +1318,25 @@ class BuildingTable extends _is.Table<_is.UuidValue?> {
     return _orders!;
   }
 
+  _is.ManyRelation<_iq51mm5o.ReservationTable> get reservations {
+    if (_reservations != null) return _reservations!;
+    var relationTable = _is.createRelationTable(
+      relationFieldName: 'reservations',
+      field: Building.t.id,
+      foreignField: _iq51mm5o.Reservation.t.buildingId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) =>
+          _iq51mm5o.ReservationTable(tableRelation: foreignTableRelation),
+    );
+    _reservations = _is.ManyRelation<_iq51mm5o.ReservationTable>(
+      tableWithRelations: relationTable,
+      table: _iq51mm5o.ReservationTable(
+        tableRelation: relationTable.tableRelation!.lastRelation,
+      ),
+    );
+    return _reservations!;
+  }
+
   _is.ManyRelation<_iq3bhcsv.BuildingPackAssignmentTable> get packAssignments {
     if (_packAssignments != null) return _packAssignments!;
     var relationTable = _is.createRelationTable(
@@ -1297,6 +1381,7 @@ class BuildingTable extends _is.Table<_is.UuidValue?> {
     allowAppendingItemsToOrder,
     strictMode,
     strictModeSteps,
+    reservationFee,
     createdAt,
     packId,
     packBillingPeriod,
@@ -1329,6 +1414,9 @@ class BuildingTable extends _is.Table<_is.UuidValue?> {
     if (relationField == 'orders') {
       return __orders;
     }
+    if (relationField == 'reservations') {
+      return __reservations;
+    }
     if (relationField == 'packAssignments') {
       return __packAssignments;
     }
@@ -1349,6 +1437,7 @@ class BuildingInclude extends _is.IncludeObject {
     _is7gdyz6.MenuArticleIncludeList? menuArticles,
     _ixki5cxr.IngredientIncludeList? ingredients,
     _iwamn8sj.VenueOrderIncludeList? orders,
+    _iq51mm5o.ReservationIncludeList? reservations,
     _iq3bhcsv.BuildingPackAssignmentIncludeList? packAssignments,
     _iqwmqtub.PackInclude? pack,
   }) {
@@ -1360,6 +1449,7 @@ class BuildingInclude extends _is.IncludeObject {
     _menuArticles = menuArticles;
     _ingredients = ingredients;
     _orders = orders;
+    _reservations = reservations;
     _packAssignments = packAssignments;
     _pack = pack;
   }
@@ -1380,6 +1470,8 @@ class BuildingInclude extends _is.IncludeObject {
 
   _iwamn8sj.VenueOrderIncludeList? _orders;
 
+  _iq51mm5o.ReservationIncludeList? _reservations;
+
   _iq3bhcsv.BuildingPackAssignmentIncludeList? _packAssignments;
 
   _iqwmqtub.PackInclude? _pack;
@@ -1394,6 +1486,7 @@ class BuildingInclude extends _is.IncludeObject {
     'menuArticles': _menuArticles,
     'ingredients': _ingredients,
     'orders': _orders,
+    'reservations': _reservations,
     'packAssignments': _packAssignments,
     'pack': _pack,
   };
@@ -2004,6 +2097,31 @@ class BuildingAttachRepository {
     );
   }
 
+  /// Creates a relation between this [Building] and the given [Reservation]s
+  /// by setting each [Reservation]'s foreign key `buildingId` to refer to this [Building].
+  Future<void> reservations(
+    _is.DatabaseSession session,
+    Building building,
+    List<_iq51mm5o.Reservation> reservation, {
+    _is.Transaction? transaction,
+  }) async {
+    if (reservation.any((e) => e.id == null)) {
+      throw ArgumentError.notNull('reservation.id');
+    }
+    if (building.id == null) {
+      throw ArgumentError.notNull('building.id');
+    }
+
+    var $reservation = reservation
+        .map((e) => e.copyWith(buildingId: building.id))
+        .toList();
+    await session.db.update<_iq51mm5o.Reservation>(
+      $reservation,
+      columns: [_iq51mm5o.Reservation.t.buildingId],
+      transaction: transaction,
+    );
+  }
+
   /// Creates a relation between this [Building] and the given [BuildingPackAssignment]s
   /// by setting each [BuildingPackAssignment]'s foreign key `buildingId` to refer to this [Building].
   Future<void> packAssignments(
@@ -2236,6 +2354,29 @@ class BuildingAttachRowRepository {
     await session.db.updateRow<_iwamn8sj.VenueOrder>(
       $venueOrder,
       columns: [_iwamn8sj.VenueOrder.t.buildingId],
+      transaction: transaction,
+    );
+  }
+
+  /// Creates a relation between this [Building] and the given [Reservation]
+  /// by setting the [Reservation]'s foreign key `buildingId` to refer to this [Building].
+  Future<void> reservations(
+    _is.DatabaseSession session,
+    Building building,
+    _iq51mm5o.Reservation reservation, {
+    _is.Transaction? transaction,
+  }) async {
+    if (reservation.id == null) {
+      throw ArgumentError.notNull('reservation.id');
+    }
+    if (building.id == null) {
+      throw ArgumentError.notNull('building.id');
+    }
+
+    var $reservation = reservation.copyWith(buildingId: building.id);
+    await session.db.updateRow<_iq51mm5o.Reservation>(
+      $reservation,
+      columns: [_iq51mm5o.Reservation.t.buildingId],
       transaction: transaction,
     );
   }

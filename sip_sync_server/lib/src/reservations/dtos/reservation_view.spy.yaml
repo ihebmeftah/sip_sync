@@ -1,0 +1,14 @@
+class: ReservationView
+fields:
+  id: UuidValue
+  buildingId: UuidValue
+  startsAt: DateTime
+  endsAt: DateTime
+  status: ReservationStatus
+  tableIds: List<UuidValue>
+  tableNumbers: List<int>
+  customerId: UuidValue?
+  guestName: String
+  guestPhone: String?
+  paidAmount: double
+  createdByType: ActorType
