@@ -40,6 +40,18 @@ class ReservationsViewModel extends _$ReservationsViewModel {
     state = await AsyncValue.guard(_load);
   }
 
+  /// Accepts a customer request. The table is assigned afterwards.
+  Future<void> confirm(UuidValue id) async {
+    await ref.read(reservationRepositoryProvider).confirm(id);
+    await refresh();
+  }
+
+  /// Attaches tables to a confirmed reservation.
+  Future<void> assignTables(UuidValue id, List<UuidValue> tableIds) async {
+    await ref.read(reservationRepositoryProvider).assignTables(id, tableIds);
+    await refresh();
+  }
+
   Future<void> cancel(UuidValue id) async {
     await ref.read(reservationRepositoryProvider).cancel(id);
     await refresh();

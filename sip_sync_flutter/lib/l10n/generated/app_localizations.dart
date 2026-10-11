@@ -679,8 +679,20 @@ abstract class AppLocalizations {
   /// No description provided for @openOrderNote.
   ///
   /// In en, this message translates to:
-  /// **'Order in progress'**
+  /// **'The kitchen has your order'**
   String get openOrderNote;
+
+  /// No description provided for @openOrderLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow each dish, right up to the moment you pay.'**
+  String get openOrderLead;
+
+  /// No description provided for @openOrderDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Details'**
+  String get openOrderDetails;
 
   /// No description provided for @itemStatusPicked.
   ///
@@ -862,6 +874,12 @@ abstract class AppLocalizations {
   /// **'Scan is unavailable while your order is open.'**
   String get scanDisabled;
 
+  /// No description provided for @orderKeepsYouHere.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay this order before returning to the map.'**
+  String get orderKeepsYouHere;
+
   /// No description provided for @seatCount.
   ///
   /// In en, this message translates to:
@@ -979,19 +997,19 @@ abstract class AppLocalizations {
   /// No description provided for @reserveTable.
   ///
   /// In en, this message translates to:
-  /// **'Reserve a table'**
+  /// **'Request a reservation'**
   String get reserveTable;
 
   /// No description provided for @signInToReserve.
   ///
   /// In en, this message translates to:
-  /// **'Sign in to reserve a table'**
+  /// **'Sign in to request a reservation'**
   String get signInToReserve;
 
   /// No description provided for @reservationBook.
   ///
   /// In en, this message translates to:
-  /// **'Book'**
+  /// **'Request'**
   String get reservationBook;
 
   /// No description provided for @reservationMine.
@@ -1030,6 +1048,48 @@ abstract class AppLocalizations {
   /// **'Cancel reservation'**
   String get reservationCancel;
 
+  /// No description provided for @reservationStatusRequested.
+  ///
+  /// In en, this message translates to:
+  /// **'Requested'**
+  String get reservationStatusRequested;
+
+  /// No description provided for @reservationStatusConfirmed.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirmed'**
+  String get reservationStatusConfirmed;
+
+  /// No description provided for @reservationStatusArrived.
+  ///
+  /// In en, this message translates to:
+  /// **'Arrived'**
+  String get reservationStatusArrived;
+
+  /// No description provided for @reservationStatusCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled'**
+  String get reservationStatusCancelled;
+
+  /// No description provided for @reservationStatusNoShow.
+  ///
+  /// In en, this message translates to:
+  /// **'No-show'**
+  String get reservationStatusNoShow;
+
+  /// No description provided for @reservationAwaitingConfirmation.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for the venue to confirm'**
+  String get reservationAwaitingConfirmation;
+
+  /// No description provided for @reservationAwaitingTable.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirmed. The venue will assign a table.'**
+  String get reservationAwaitingTable;
+
   /// No description provided for @reservationSoon.
   ///
   /// In en, this message translates to:
@@ -1051,14 +1111,8 @@ abstract class AppLocalizations {
   /// No description provided for @reservationWindow.
   ///
   /// In en, this message translates to:
-  /// **'A reservation lasts between 30 minutes and 8 hours, and it must start in the future.'**
+  /// **'Pick a start time in the future.'**
   String get reservationWindow;
-
-  /// No description provided for @reservationSelectTables.
-  ///
-  /// In en, this message translates to:
-  /// **'Select at least one table.'**
-  String get reservationSelectTables;
 
   /// No description provided for @errorPackFeatureReservations.
   ///
@@ -1125,6 +1179,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Loading more…'**
   String get loadingMore;
+
+  /// No description provided for @venueOverview.
+  ///
+  /// In en, this message translates to:
+  /// **'Overview'**
+  String get venueOverview;
+
+  /// No description provided for @venueScan.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan'**
+  String get venueScan;
+
+  /// No description provided for @venueProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile'**
+  String get venueProfile;
+
+  /// No description provided for @notifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get notifications;
+
+  /// No description provided for @notificationsReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing new right now.'**
+  String get notificationsReady;
+
+  /// No description provided for @profileTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile'**
+  String get profileTitle;
+
+  /// No description provided for @profileReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Your profile is ready.'**
+  String get profileReady;
+
+  /// No description provided for @reserveNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Reserve now'**
+  String get reserveNow;
+
+  /// No description provided for @ordersThisVenue.
+  ///
+  /// In en, this message translates to:
+  /// **'This venue'**
+  String get ordersThisVenue;
+
+  /// No description provided for @emptyVenueOrders.
+  ///
+  /// In en, this message translates to:
+  /// **'No orders at this venue in this period.'**
+  String get emptyVenueOrders;
 }
 
 class _AppLocalizationsDelegate

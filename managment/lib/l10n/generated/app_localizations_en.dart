@@ -1551,7 +1551,23 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reservationCancelConfirm => 'Cancel this reservation?';
 
   @override
-  String get reservationStatusBooked => 'Booked';
+  String get reservationConfirm => 'Confirm';
+
+  @override
+  String get reservationAssignTable => 'Assign table';
+
+  @override
+  String get reservationNoTable => 'No table yet';
+
+  @override
+  String get reservationCreateHint =>
+      'This reservation is confirmed. Assign a table from the list.';
+
+  @override
+  String get reservationStatusRequested => 'Requested';
+
+  @override
+  String get reservationStatusConfirmed => 'Confirmed';
 
   @override
   String get reservationStatusArrived => 'Arrived';
@@ -1577,8 +1593,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'Only someone with reservation access can confirm this table.';
 
   @override
-  String get reservationWindow =>
-      'A reservation lasts between 30 minutes and 8 hours, and it must still be open.';
+  String get reservationWindow => 'Pick a start that has not already ended.';
+
+  @override
+  String get reservationSearchHint => 'Name or phone';
+
+  @override
+  String get reservationSearchEmpty => 'No customers match.';
 
   @override
   String get reservationSelectTables => 'Select at least one table.';
@@ -1588,7 +1609,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get accessReservationsHint =>
-      'Create, cancel, and confirm reservations.';
+      'Create, confirm, cancel, and assign tables for reservations.';
 
   @override
   String get errorPackFeatureReservations =>

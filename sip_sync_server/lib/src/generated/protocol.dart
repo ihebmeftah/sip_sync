@@ -27,6 +27,8 @@ import 'package:sip_sync_server/src/generated/menu/dtos/menu_article_view.dart'
     as _iftzx4at;
 import 'package:sip_sync_server/src/generated/packs/dtos/pack_public_view.dart'
     as _itvm5eqz;
+import 'package:sip_sync_server/src/generated/reservations/dtos/reservation_customer_match.dart'
+    as _ifes9d76;
 import 'package:sip_sync_server/src/generated/reservations/dtos/reservation_view.dart'
     as _ixji9mob;
 import 'package:sip_sync_server/src/generated/tables/dtos/venue_table_view.dart'
@@ -4163,6 +4165,16 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == List<_ixji9mob.ReservationView>) {
       return (data as List)
               .map((e) => deserialize<_ixji9mob.ReservationView>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_is.UuidValue>) {
+      return (data as List).map((e) => deserialize<_is.UuidValue>(e)).toList()
+          as T;
+    }
+    if (t == List<_ifes9d76.ReservationCustomerMatch>) {
+      return (data as List)
+              .map((e) => deserialize<_ifes9d76.ReservationCustomerMatch>(e))
               .toList()
           as T;
     }

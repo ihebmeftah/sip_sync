@@ -12,7 +12,7 @@ fields:
   preparation: bool, default=false
   serving: bool, default=false
   consultAllOrders: bool, default=false
-  ### Create, cancel, and confirm reservations for this building.
+  ### Create, confirm, cancel, and assign tables for reservations in this building.
   reservations: bool, default=false
   createdAt: DateTime, defaultModel=now
   employees: List<Employee>?, relation(name=access_employees)

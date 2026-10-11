@@ -37,8 +37,8 @@ dependencies:
   intl: any
   sip_sync_client:
     path: ../sip_sync_client
-  serverpod_flutter: 4.0.3
-  serverpod_auth_idp_flutter: 4.0.3
+  serverpod_flutter: 4.0.4
+  serverpod_auth_idp_flutter: 4.0.4
   shared_preferences: ^2.5.5
   flutter_map: ^8.3.2
   latlong2: ^0.10.1

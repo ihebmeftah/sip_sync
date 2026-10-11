@@ -13,7 +13,7 @@ import '../../../l10n/generated/app_localizations.dart';
 import '../view_models/customer_reservations_view_model.dart';
 import '../view_models/venue_detail_view_model.dart';
 
-/// Customer booking for one venue, plus their upcoming rows.
+/// Customer request for one venue, plus their upcoming rows.
 class VenueReserveView extends ConsumerStatefulWidget {
   const VenueReserveView({super.key, required this.buildingId});
 
@@ -24,21 +24,19 @@ class VenueReserveView extends ConsumerStatefulWidget {
 }
 
 class _VenueReserveViewState extends ConsumerState<VenueReserveView> {
-  final _selected = <UuidValue>{};
-  DateTime _date = DateTime.now();
-  TimeOfDay _start = TimeOfDay.now();
-  TimeOfDay _end = TimeOfDay.now();
-  var _saving = false;
-  String? _errorKey;
+  var _composerShown = false;
 
   @override
   void initState() {
     super.initState();
-    final start = DateTime.now().add(const Duration(hours: 2));
-    _date = DateTime(start.year, start.month, start.day);
-    _start = TimeOfDay(hour: start.hour, minute: 0);
-    final end = start.add(const Duration(hours: 1));
-    _end = TimeOfDay(hour: end.hour, minute: 0);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+      ref
+          .read(venueDetailViewModelProvider(widget.buildingId))
+          .whenData(_presentComposer);
+    });
   }
 
   @override
@@ -47,6 +45,9 @@ class _VenueReserveViewState extends ConsumerState<VenueReserveView> {
     final signedIn = ref.watch(appSessionStoreProvider).isSignedIn;
     final detail = ref.watch(venueDetailViewModelProvider(widget.buildingId));
     final mine = ref.watch(myReservationsProvider);
+    ref.listen(venueDetailViewModelProvider(widget.buildingId), (_, next) {
+      next.whenData(_presentComposer);
+    });
 
     return Scaffold(
       body: SafeArea(
@@ -77,60 +78,12 @@ class _VenueReserveViewState extends ConsumerState<VenueReserveView> {
                       if (!page.reservationsEnabled) {
                         return Text(l10n.errorPackFeatureReservations);
                       }
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Wrap(
-                            spacing: AppSpacing.sm,
-                            children: [
-                              for (final table in page.bookableTables)
-                                FilterChip(
-                                  label: Text(l10n.tableNumber(table.number)),
-                                  selected: _selected.contains(table.id),
-                                  onSelected: (selected) {
-                                    setState(() {
-                                      if (selected) {
-                                        _selected.add(table.id);
-                                      } else {
-                                        _selected.remove(table.id);
-                                      }
-                                    });
-                                  },
-                                ),
-                            ],
-                          ),
-                          ListTile(
-                            contentPadding: EdgeInsets.zero,
-                            title: Text(l10n.reservationDate),
-                            subtitle: Text(
-                              MaterialLocalizations.of(
-                                context,
-                              ).formatMediumDate(_date),
-                            ),
-                            onTap: _pickDate,
-                          ),
-                          ListTile(
-                            contentPadding: EdgeInsets.zero,
-                            title: Text(l10n.reservationStart),
-                            subtitle: Text(_start.format(context)),
-                            onTap: () => _pickTime(start: true),
-                          ),
-                          ListTile(
-                            contentPadding: EdgeInsets.zero,
-                            title: Text(l10n.reservationEnd),
-                            subtitle: Text(_end.format(context)),
-                            onTap: () => _pickTime(start: false),
-                          ),
-                          if (_errorKey != null)
-                            AppErrorBanner(
-                              message: lookupError(l10n, _errorKey!),
-                            ),
-                          AppFilledButton(
-                            label: l10n.reservationBook,
-                            busy: _saving,
-                            onPressed: _saving ? null : () => _submit(page),
-                          ),
-                        ],
+                      return AppFilledButton(
+                        label: l10n.reservationBook,
+                        onPressed: () => showReserveRequestDialog(
+                          context,
+                          buildingId: page.venue.id,
+                        ),
                       );
                     },
                   ),
@@ -161,10 +114,10 @@ class _VenueReserveViewState extends ConsumerState<VenueReserveView> {
                             title: Text(
                               '${_clock(row.startsAt)} – ${_clock(row.endsAt)}',
                             ),
-                            subtitle: Text(
-                              row.tableNumbers.join(', '),
-                            ),
-                            trailing: row.status == ReservationStatus.booked
+                            subtitle: Text(_summary(l10n, row)),
+                            trailing:
+                                row.status == ReservationStatus.requested ||
+                                    row.status == ReservationStatus.confirmed
                                 ? TextButton(
                                     onPressed: () => _cancel(row.id),
                                     child: Text(l10n.reservationCancel),
@@ -174,6 +127,157 @@ class _VenueReserveViewState extends ConsumerState<VenueReserveView> {
                       ],
                     );
                   },
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _presentComposer(CustomerVenueDetail page) {
+    if (_composerShown || !mounted) {
+      return;
+    }
+    if (!ref.read(appSessionStoreProvider).isSignedIn) {
+      return;
+    }
+    if (!page.reservationsEnabled) {
+      return;
+    }
+    _composerShown = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+      showReserveRequestDialog(context, buildingId: page.venue.id);
+    });
+  }
+
+  Future<void> _cancel(UuidValue id) async {
+    try {
+      await ref.read(myReservationsProvider.notifier).cancel(id);
+    } catch (error) {
+      if (mounted) {
+        showMappedError(context, error);
+      }
+    }
+  }
+
+  String _summary(AppLocalizations l10n, ReservationView row) {
+    final status = switch (row.status) {
+      ReservationStatus.requested => l10n.reservationAwaitingConfirmation,
+      ReservationStatus.confirmed when row.tableNumbers.isEmpty =>
+        l10n.reservationAwaitingTable,
+      ReservationStatus.confirmed =>
+        '${l10n.reservationStatusConfirmed} · ${row.tableNumbers.join(', ')}',
+      ReservationStatus.arrived =>
+        '${l10n.reservationStatusArrived} · ${row.tableNumbers.join(', ')}',
+      ReservationStatus.cancelled => l10n.reservationStatusCancelled,
+      ReservationStatus.noShow => l10n.reservationStatusNoShow,
+    };
+    return status;
+  }
+
+  String _clock(DateTime value) {
+    final local = value.toLocal();
+    final hour = local.hour.toString().padLeft(2, '0');
+    final minute = local.minute.toString().padLeft(2, '0');
+    return '$hour:$minute';
+  }
+}
+
+/// Asks for a date and a start, then sends the reservation request.
+///
+/// The server sets the end two hours after the start. Nothing is sent until
+/// the customer confirms.
+Future<void> showReserveRequestDialog(
+  BuildContext context, {
+  required UuidValue buildingId,
+}) {
+  return showDialog<void>(
+    context: context,
+    builder: (context) => _ReserveRequestDialog(buildingId: buildingId),
+  );
+}
+
+class _ReserveRequestDialog extends ConsumerStatefulWidget {
+  const _ReserveRequestDialog({required this.buildingId});
+
+  final UuidValue buildingId;
+
+  @override
+  ConsumerState<_ReserveRequestDialog> createState() =>
+      _ReserveRequestDialogState();
+}
+
+class _ReserveRequestDialogState extends ConsumerState<_ReserveRequestDialog> {
+  late DateTime _date;
+  late TimeOfDay _start;
+  var _saving = false;
+  String? _errorKey;
+
+  @override
+  void initState() {
+    super.initState();
+    final start = DateTime.now().add(const Duration(hours: 2));
+    _date = DateTime(start.year, start.month, start.day);
+    _start = TimeOfDay(hour: start.hour, minute: 0);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return PopScope(
+      canPop: !_saving,
+      child: Dialog(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: AppBreakpoints.formMax),
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacing.lg),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  l10n.reserveTable,
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                const SizedBox(height: AppSpacing.md),
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: Text(l10n.reservationDate),
+                  subtitle: Text(
+                    MaterialLocalizations.of(context).formatMediumDate(_date),
+                  ),
+                  onTap: _saving ? null : _pickDate,
+                ),
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: Text(l10n.reservationStart),
+                  subtitle: Text(_start.format(context)),
+                  onTap: _saving ? null : _pickTime,
+                ),
+                if (_errorKey != null)
+                  AppErrorBanner(message: lookupError(l10n, _errorKey!)),
+                const SizedBox(height: AppSpacing.md),
+                Row(
+                  children: [
+                    TextButton(
+                      onPressed: _saving
+                          ? null
+                          : () => Navigator.of(context).pop(),
+                      child: Text(l10n.close),
+                    ),
+                    const Spacer(),
+                    AppFilledButton(
+                      label: l10n.reservationBook,
+                      expand: false,
+                      busy: _saving,
+                      onPressed: _saving ? null : _submit,
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -205,35 +309,17 @@ class _VenueReserveViewState extends ConsumerState<VenueReserveView> {
     }
   }
 
-  Future<void> _pickTime({required bool start}) async {
-    final picked = await showTimePicker(
-      context: context,
-      initialTime: start ? _start : _end,
-    );
+  Future<void> _pickTime() async {
+    final picked = await showTimePicker(context: context, initialTime: _start);
     if (picked == null) {
       return;
     }
-    setState(() {
-      if (start) {
-        _start = picked;
-      } else {
-        _end = picked;
-      }
-    });
+    setState(() => _start = picked);
   }
 
-  Future<void> _submit(CustomerVenueDetail page) async {
-    if (_selected.isEmpty) {
-      setState(() => _errorKey = 'reservationSelectTables');
-      return;
-    }
+  Future<void> _submit() async {
     final start = _combine(_start);
-    final end = _combine(_end);
-    final length = end.difference(start);
-    if (!start.isAfter(DateTime.now()) ||
-        !end.isAfter(start) ||
-        length < const Duration(minutes: 30) ||
-        length > const Duration(hours: 8)) {
+    if (!start.isAfter(DateTime.now())) {
       setState(() => _errorKey = 'reservationWindow');
       return;
     }
@@ -246,15 +332,13 @@ class _VenueReserveViewState extends ConsumerState<VenueReserveView> {
           .read(customerReservationRepositoryProvider)
           .create(
             CustomerReservationCreate(
-              buildingId: page.venue.id,
-              tableIds: _selected.toList(),
+              buildingId: widget.buildingId,
               startsAt: start.toUtc(),
-              endsAt: end.toUtc(),
             ),
           );
       ref.invalidate(myReservationsProvider);
       if (mounted) {
-        setState(() => _selected.clear());
+        Navigator.of(context).pop();
       }
     } catch (error) {
       if (mounted) {
@@ -266,22 +350,5 @@ class _VenueReserveViewState extends ConsumerState<VenueReserveView> {
         setState(() => _saving = false);
       }
     }
-  }
-
-  Future<void> _cancel(UuidValue id) async {
-    try {
-      await ref.read(myReservationsProvider.notifier).cancel(id);
-    } catch (error) {
-      if (mounted) {
-        showMappedError(context, error);
-      }
-    }
-  }
-
-  String _clock(DateTime value) {
-    final local = value.toLocal();
-    final hour = local.hour.toString().padLeft(2, '0');
-    final minute = local.minute.toString().padLeft(2, '0');
-    return '$hour:$minute';
   }
 }

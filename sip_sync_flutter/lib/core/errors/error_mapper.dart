@@ -137,7 +137,6 @@ String lookupError(dynamic l10n, String key) {
     'errorReservationOverlap' => l10n.errorReservationOverlap,
     'errorReservationNotFound' => l10n.errorReservationNotFound,
     'reservationWindow' => l10n.reservationWindow,
-    'reservationSelectTables' => l10n.reservationSelectTables,
     'errorPackPaidActive' => l10n.errorPackPaidActive,
     _ => l10n.errorGeneric,
   };

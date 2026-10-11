@@ -13,7 +13,7 @@ class MyReservations extends _$MyReservations {
     return ref.watch(customerReservationRepositoryProvider).listMine();
   }
 
-  /// Drops a future booked row the customer owns.
+  /// Drops a future request or confirmed reservation the customer owns.
   Future<void> cancel(UuidValue id) async {
     await ref.read(customerReservationRepositoryProvider).cancel(id);
     ref.invalidateSelf();

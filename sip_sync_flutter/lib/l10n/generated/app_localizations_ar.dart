@@ -354,7 +354,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get orderStatusCancelled => 'ملغى';
 
   @override
-  String get openOrderNote => 'طلب قيد التنفيذ';
+  String get openOrderNote => 'المطبخ يحضّر طلبك';
+
+  @override
+  String get openOrderLead => 'تابع كل طبق حتى لحظة الدفع.';
+
+  @override
+  String get openOrderDetails => 'التفاصيل';
 
   @override
   String get itemStatusPicked => 'في المطبخ';
@@ -468,6 +474,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get scanDisabled => 'المسح غير متاح أثناء وجود طلب قيد التنفيذ.';
 
   @override
+  String get orderKeepsYouHere => 'ادفع هذا الطلب قبل العودة إلى الخريطة.';
+
+  @override
   String seatCount(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
@@ -541,13 +550,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get errorPackFeatureQr => 'هذه الباقة لا تشمل رموز QR للطاولات.';
 
   @override
-  String get reserveTable => 'احجز طاولة';
+  String get reserveTable => 'اطلب حجزاً';
 
   @override
-  String get signInToReserve => 'سجّل الدخول للحجز';
+  String get signInToReserve => 'سجّل الدخول لطلب حجز';
 
   @override
-  String get reservationBook => 'احجز';
+  String get reservationBook => 'اطلب';
 
   @override
   String get reservationMine => 'حجوزاتي';
@@ -568,6 +577,27 @@ class AppLocalizationsAr extends AppLocalizations {
   String get reservationCancel => 'إلغاء الحجز';
 
   @override
+  String get reservationStatusRequested => 'طلب';
+
+  @override
+  String get reservationStatusConfirmed => 'مؤكد';
+
+  @override
+  String get reservationStatusArrived => 'وصل';
+
+  @override
+  String get reservationStatusCancelled => 'ملغى';
+
+  @override
+  String get reservationStatusNoShow => 'لم يحضر';
+
+  @override
+  String get reservationAwaitingConfirmation => 'بانتظار تأكيد المكان';
+
+  @override
+  String get reservationAwaitingTable => 'مؤكد. سيعيّن المكان طاولة.';
+
+  @override
   String get reservationSoon => 'يبدأ قريباً';
 
   @override
@@ -578,11 +608,7 @@ class AppLocalizationsAr extends AppLocalizations {
       'هذه الطاولة محجوزة إلى أن يؤكد المكان وصول الضيوف.';
 
   @override
-  String get reservationWindow =>
-      'يدوم الحجز بين 30 دقيقة و8 ساعات، ويجب أن يبدأ لاحقاً.';
-
-  @override
-  String get reservationSelectTables => 'اختر طاولة واحدة على الأقل.';
+  String get reservationWindow => 'اختر وقت بداية لاحقاً.';
 
   @override
   String get errorPackFeatureReservations => 'هذه الباقة لا تشمل الحجوزات.';
@@ -621,4 +647,34 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get loadingMore => 'جارٍ تحميل المزيد…';
+
+  @override
+  String get venueOverview => 'نظرة عامة';
+
+  @override
+  String get venueScan => 'مسح';
+
+  @override
+  String get venueProfile => 'الملف';
+
+  @override
+  String get notifications => 'الإشعارات';
+
+  @override
+  String get notificationsReady => 'لا جديد الآن.';
+
+  @override
+  String get profileTitle => 'الملف';
+
+  @override
+  String get profileReady => 'ملفك جاهز.';
+
+  @override
+  String get reserveNow => 'احجز الآن';
+
+  @override
+  String get ordersThisVenue => 'هذا المكان';
+
+  @override
+  String get emptyVenueOrders => 'لا طلبات في هذا المكان خلال هذه الفترة.';
 }

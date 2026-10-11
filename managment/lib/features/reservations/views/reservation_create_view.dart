@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sip_sync_client/sip_sync_client.dart';
@@ -6,17 +8,14 @@ import '../../../core/di/app_providers.dart';
 import '../../../core/errors/app_notice.dart';
 import '../../../core/errors/error_mapper.dart';
 import '../../../core/errors/form_validators.dart';
-import '../../../core/phone/phone_numbers.dart';
 import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
-import '../../../core/widgets/app_loader.dart';
 import '../../../core/widgets/app_phone_field.dart';
 import '../../../l10n/generated/app_localizations.dart';
-import '../../tables/view_models/tables_view_model.dart';
 import '../view_models/reservations_view_model.dart';
 
-/// Staff booking: tables, a window, a guest or a customer, and the amount paid.
+/// Staff booking. It is confirmed on save and still needs a table.
 class ReservationCreateView extends ConsumerStatefulWidget {
   const ReservationCreateView({super.key, required this.buildingId});
 
@@ -31,17 +30,24 @@ class _ReservationCreateViewState extends ConsumerState<ReservationCreateView> {
   final _formKey = GlobalKey<FormState>();
   final _guestName = TextEditingController();
   final _paid = TextEditingController();
-  final _selected = <UuidValue>{};
+  final _search = TextEditingController();
+  final _customerFocus = FocusNode();
+  final _customerLink = LayerLink();
+  final _customerMenu = OverlayPortalController();
   DateTime _date = DateTime.now();
   TimeOfDay _start = TimeOfDay.now();
-  TimeOfDay _end = TimeOfDay.now();
   var _guest = true;
   var _phone = '';
   var _saving = false;
   var _lookingUp = false;
+  var _searched = false;
+  var _applyingCustomer = false;
   String? _errorKey;
   ReservationCustomerMatch? _customer;
+  List<ReservationCustomerMatch> _matches = [];
+  Timer? _searchTimer;
   var _seededFee = false;
+  var _customerFieldWidth = 360.0;
 
   @override
   void initState() {
@@ -49,14 +55,17 @@ class _ReservationCreateViewState extends ConsumerState<ReservationCreateView> {
     final start = DateTime.now().add(const Duration(hours: 1));
     _date = DateTime(start.year, start.month, start.day);
     _start = TimeOfDay(hour: start.hour, minute: 0);
-    final end = start.add(const Duration(hours: 1));
-    _end = TimeOfDay(hour: end.hour, minute: 0);
+    _customerFocus.addListener(_onCustomerFocus);
   }
 
   @override
   void dispose() {
+    _searchTimer?.cancel();
+    _customerFocus.removeListener(_onCustomerFocus);
+    _customerFocus.dispose();
     _guestName.dispose();
     _paid.dispose();
+    _search.dispose();
     super.dispose();
   }
 
@@ -68,8 +77,6 @@ class _ReservationCreateViewState extends ConsumerState<ReservationCreateView> {
       _seededFee = true;
       _paid.text = _money(building.reservationFee);
     }
-    final tables = ref.watch(tablesViewModelProvider(widget.buildingId));
-
     return ColoredBox(
       color: Theme.of(context).scaffoldBackgroundColor,
       child: Align(
@@ -85,32 +92,8 @@ class _ReservationCreateViewState extends ConsumerState<ReservationCreateView> {
                   l10n.reservationNew,
                   style: Theme.of(context).textTheme.headlineSmall,
                 ),
-                const SizedBox(height: AppSpacing.lg),
-                tables.when(
-                  loading: () => const AppScreenLoader(compact: true),
-                  error: (error, _) => AppErrorBanner(
-                    message: lookupError(l10n, mapError(error).l10nKey),
-                  ),
-                  data: (rows) => Wrap(
-                    spacing: AppSpacing.sm,
-                    children: [
-                      for (final table in rows.where((row) => row.isActive))
-                        FilterChip(
-                          label: Text('${table.number}'),
-                          selected: _selected.contains(table.id),
-                          onSelected: (selected) {
-                            setState(() {
-                              if (selected) {
-                                _selected.add(table.id);
-                              } else {
-                                _selected.remove(table.id);
-                              }
-                            });
-                          },
-                        ),
-                    ],
-                  ),
-                ),
+                const SizedBox(height: AppSpacing.sm),
+                Text(l10n.reservationCreateHint),
                 const SizedBox(height: AppSpacing.md),
                 ListTile(
                   contentPadding: EdgeInsets.zero,
@@ -124,22 +107,21 @@ class _ReservationCreateViewState extends ConsumerState<ReservationCreateView> {
                   contentPadding: EdgeInsets.zero,
                   title: Text(l10n.reservationStart),
                   subtitle: Text(_start.format(context)),
-                  onTap: () => _pickTime(start: true),
-                ),
-                ListTile(
-                  contentPadding: EdgeInsets.zero,
-                  title: Text(l10n.reservationEnd),
-                  subtitle: Text(_end.format(context)),
-                  onTap: () => _pickTime(start: false),
+                  onTap: _pickTime,
                 ),
                 SwitchListTile(
                   contentPadding: EdgeInsets.zero,
                   title: Text(l10n.reservationGuestInstead),
                   value: _guest,
-                  onChanged: (value) => setState(() {
-                    _guest = value;
-                    _errorKey = null;
-                  }),
+                  onChanged: (value) {
+                    _searchTimer?.cancel();
+                    _customerMenu.hide();
+                    setState(() {
+                      _guest = value;
+                      _errorKey = null;
+                      _lookingUp = false;
+                    });
+                  },
                 ),
                 if (_guest) ...[
                   AppTextField(
@@ -155,18 +137,7 @@ class _ReservationCreateViewState extends ConsumerState<ReservationCreateView> {
                     onChanged: (value) => setState(() => _phone = value),
                   ),
                 ] else ...[
-                  AppPhoneField(
-                    value: _phone,
-                    label: l10n.reservationGuestPhone,
-                    onChanged: (value) => setState(() => _phone = value),
-                  ),
-                  AppFilledButton(
-                    label: l10n.reservationFindCustomer,
-                    busy: _lookingUp,
-                    onPressed: _lookingUp ? null : _findCustomer,
-                  ),
-                  if (_customer != null)
-                    Text('${_customer!.firstName} ${_customer!.lastName}'),
+                  _customerDropdown(l10n),
                 ],
                 AppTextField(
                   controller: _paid,
@@ -212,53 +183,211 @@ class _ReservationCreateViewState extends ConsumerState<ReservationCreateView> {
     }
   }
 
-  Future<void> _pickTime({required bool start}) async {
-    final picked = await showTimePicker(
-      context: context,
-      initialTime: start ? _start : _end,
-    );
+  Future<void> _pickTime() async {
+    final picked = await showTimePicker(context: context, initialTime: _start);
     if (picked == null) {
       return;
     }
-    setState(() {
-      if (start) {
-        _start = picked;
-      } else {
-        _end = picked;
+    setState(() => _start = picked);
+  }
+
+  Widget _customerDropdown(AppLocalizations l10n) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AppSpacing.lg),
+      child: OverlayPortal(
+        controller: _customerMenu,
+        overlayChildBuilder: (context) => _customerMenuPanel(l10n),
+        child: CompositedTransformTarget(
+          link: _customerLink,
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              _customerFieldWidth = constraints.maxWidth;
+              return TextFormField(
+                controller: _search,
+                focusNode: _customerFocus,
+                textInputAction: TextInputAction.search,
+                onChanged: _onSearchChanged,
+                decoration: InputDecoration(
+                  labelText: l10n.reservationSearchHint,
+                  helperText: _customer?.phoneNumber,
+                  suffixIcon: _customer == null
+                      ? const Icon(Icons.arrow_drop_down)
+                      : IconButton(
+                          onPressed: _clearCustomer,
+                          icon: const Icon(Icons.close),
+                        ),
+                ),
+              );
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _customerMenuPanel(AppLocalizations l10n) {
+    return CompositedTransformFollower(
+      link: _customerLink,
+      targetAnchor: Alignment.bottomLeft,
+      followerAnchor: Alignment.topLeft,
+      showWhenUnlinked: false,
+      offset: const Offset(0, 4),
+      child: Align(
+        alignment: AlignmentDirectional.topStart,
+        child: SizedBox(
+          width: _customerFieldWidth,
+          child: Material(
+            elevation: 8,
+            borderRadius: BorderRadius.circular(12),
+            clipBehavior: Clip.antiAlias,
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxHeight: 280),
+              child: _lookingUp
+                  ? const SizedBox(
+                      height: 72,
+                      child: Center(
+                        child: SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        ),
+                      ),
+                    )
+                  : _matches.isEmpty
+                  ? Padding(
+                      padding: const EdgeInsets.all(AppSpacing.lg),
+                      child: Text(l10n.reservationSearchEmpty),
+                    )
+                  : ListView(
+                      padding: EdgeInsets.zero,
+                      shrinkWrap: true,
+                      children: [
+                        for (final match in _matches)
+                          GestureDetector(
+                            onTapDown: (_) => _selectCustomer(match),
+                            child: ListTile(
+                              title: Text(
+                                '${match.firstName} ${match.lastName}',
+                              ),
+                              subtitle: Text(match.phoneNumber),
+                            ),
+                          ),
+                      ],
+                    ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _onCustomerFocus() {
+    if (_customerFocus.hasFocus) {
+      _showCustomerMenu();
+      return;
+    }
+    Future<void>.delayed(const Duration(milliseconds: 200), () {
+      if (mounted && !_customerFocus.hasFocus) {
+        _customerMenu.hide();
       }
     });
+  }
+
+  void _showCustomerMenu() {
+    if (_guest || !_customerFocus.hasFocus) {
+      return;
+    }
+    if (_lookingUp || _searched) {
+      _customerMenu.show();
+    }
+  }
+
+  void _clearCustomer() {
+    _searchTimer?.cancel();
+    _search.clear();
+    setState(() {
+      _customer = null;
+      _matches = [];
+      _searched = false;
+      _lookingUp = false;
+    });
+    _customerMenu.hide();
+    _customerFocus.requestFocus();
+  }
+
+  void _selectCustomer(ReservationCustomerMatch match) {
+    _applyingCustomer = true;
+    _search.text = '${match.firstName} ${match.lastName}';
+    _search.selection = TextSelection.collapsed(offset: _search.text.length);
+    _applyingCustomer = false;
+    _searchTimer?.cancel();
+    setState(() {
+      _customer = match;
+      _matches = [];
+      _searched = false;
+      _lookingUp = false;
+      _errorKey = null;
+    });
+    _customerMenu.hide();
+    _customerFocus.unfocus();
+  }
+
+  void _onSearchChanged(String value) {
+    if (_applyingCustomer) {
+      return;
+    }
+    _searchTimer?.cancel();
+    setState(() {
+      _customer = null;
+      _matches = [];
+      _searched = false;
+      _lookingUp = false;
+      _errorKey = null;
+    });
+    _customerMenu.hide();
+    final query = value.trim();
+    if (query.length < 2) {
+      return;
+    }
+    _searchTimer = Timer(
+      const Duration(seconds: 1),
+      () => _searchCustomers(query),
+    );
+  }
+
+  Future<void> _searchCustomers(String query) async {
+    setState(() {
+      _lookingUp = true;
+      _searched = false;
+      _errorKey = null;
+    });
+    _showCustomerMenu();
+    try {
+      final rows = await ref
+          .read(reservationRepositoryProvider)
+          .searchCustomers(UuidValue.fromString(widget.buildingId), query);
+      if (!mounted || _search.text.trim() != query) {
+        return;
+      }
+      setState(() {
+        _matches = rows;
+        _searched = true;
+        _lookingUp = false;
+      });
+      _showCustomerMenu();
+    } catch (error) {
+      if (mounted && _search.text.trim() == query) {
+        setState(() {
+          _errorKey = captureError(context, error);
+          _lookingUp = false;
+        });
+        _customerMenu.hide();
+      }
+    }
   }
 
   DateTime _combine(TimeOfDay time) {
     return DateTime(_date.year, _date.month, _date.day, time.hour, time.minute);
-  }
-
-  Future<void> _findCustomer() async {
-    if (!PhoneNumbers.isValid(_phone)) {
-      setState(() => _errorKey = 'errorInvalidInput');
-      return;
-    }
-    setState(() {
-      _lookingUp = true;
-      _errorKey = null;
-    });
-    try {
-      final match = await ref
-          .read(reservationRepositoryProvider)
-          .findCustomer(UuidValue.fromString(widget.buildingId), _phone);
-      if (!mounted) {
-        return;
-      }
-      setState(() => _customer = match);
-    } catch (error) {
-      if (mounted) {
-        setState(() => _errorKey = captureError(context, error));
-      }
-    } finally {
-      if (mounted) {
-        setState(() => _lookingUp = false);
-      }
-    }
   }
 
   Future<void> _submit() async {
@@ -266,17 +395,8 @@ class _ReservationCreateViewState extends ConsumerState<ReservationCreateView> {
     if (!(_formKey.currentState?.validate() ?? false)) {
       return;
     }
-    if (_selected.isEmpty) {
-      setState(() => _errorKey = 'reservationSelectTables');
-      return;
-    }
     final start = _combine(_start);
-    final end = _combine(_end);
-    final length = end.difference(start);
-    if (!end.isAfter(start) ||
-        length < const Duration(minutes: 30) ||
-        length > const Duration(hours: 8) ||
-        !end.isAfter(DateTime.now())) {
+    if (!start.add(const Duration(hours: 2)).isAfter(DateTime.now())) {
       setState(() => _errorKey = 'reservationWindow');
       return;
     }
@@ -300,9 +420,7 @@ class _ReservationCreateViewState extends ConsumerState<ReservationCreateView> {
           .create(
             ReservationCreate(
               buildingId: UuidValue.fromString(widget.buildingId),
-              tableIds: _selected.toList(),
               startsAt: start.toUtc(),
-              endsAt: end.toUtc(),
               customerId: _guest ? null : _customer!.id,
               guestName: _guest ? _guestName.text.trim() : null,
               guestPhone: _guest && _phone.trim().isNotEmpty ? _phone : null,

@@ -2884,11 +2884,41 @@ abstract class AppLocalizations {
   /// **'Cancel this reservation?'**
   String get reservationCancelConfirm;
 
-  /// No description provided for @reservationStatusBooked.
+  /// No description provided for @reservationConfirm.
   ///
   /// In en, this message translates to:
-  /// **'Booked'**
-  String get reservationStatusBooked;
+  /// **'Confirm'**
+  String get reservationConfirm;
+
+  /// No description provided for @reservationAssignTable.
+  ///
+  /// In en, this message translates to:
+  /// **'Assign table'**
+  String get reservationAssignTable;
+
+  /// No description provided for @reservationNoTable.
+  ///
+  /// In en, this message translates to:
+  /// **'No table yet'**
+  String get reservationNoTable;
+
+  /// No description provided for @reservationCreateHint.
+  ///
+  /// In en, this message translates to:
+  /// **'This reservation is confirmed. Assign a table from the list.'**
+  String get reservationCreateHint;
+
+  /// No description provided for @reservationStatusRequested.
+  ///
+  /// In en, this message translates to:
+  /// **'Requested'**
+  String get reservationStatusRequested;
+
+  /// No description provided for @reservationStatusConfirmed.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirmed'**
+  String get reservationStatusConfirmed;
 
   /// No description provided for @reservationStatusArrived.
   ///
@@ -2935,8 +2965,20 @@ abstract class AppLocalizations {
   /// No description provided for @reservationWindow.
   ///
   /// In en, this message translates to:
-  /// **'A reservation lasts between 30 minutes and 8 hours, and it must still be open.'**
+  /// **'Pick a start that has not already ended.'**
   String get reservationWindow;
+
+  /// No description provided for @reservationSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Name or phone'**
+  String get reservationSearchHint;
+
+  /// No description provided for @reservationSearchEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No customers match.'**
+  String get reservationSearchEmpty;
 
   /// No description provided for @reservationSelectTables.
   ///
@@ -2953,7 +2995,7 @@ abstract class AppLocalizations {
   /// No description provided for @accessReservationsHint.
   ///
   /// In en, this message translates to:
-  /// **'Create, cancel, and confirm reservations.'**
+  /// **'Create, confirm, cancel, and assign tables for reservations.'**
   String get accessReservationsHint;
 
   /// No description provided for @errorPackFeatureReservations.

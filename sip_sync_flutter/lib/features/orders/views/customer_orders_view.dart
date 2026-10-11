@@ -8,6 +8,7 @@ import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
 import '../../../core/widgets/app_loader.dart';
+import '../../../core/widgets/page_band.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../venue/menu_price.dart';
 import '../../venue/view_models/customer_order_view_model.dart';
@@ -29,22 +30,24 @@ class OrderHistoryView extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Align(
-              alignment: AlignmentDirectional.centerStart,
-              child: Padding(
-                padding: const EdgeInsetsDirectional.only(
-                  start: AppSpacing.sm,
-                ),
-                child: Row(
-                  children: [
-                    const VenueBackButton(),
-                    if (open != null)
-                      TextButton(
-                        onPressed: () =>
-                            VenueRoute(id: open.buildingId.uuid).go(context),
-                        child: Text(l10n.currentOrder),
-                      ),
-                  ],
+            PageBand(
+              child: Align(
+                alignment: AlignmentDirectional.centerStart,
+                child: Padding(
+                  padding: const EdgeInsetsDirectional.only(
+                    start: AppSpacing.sm,
+                  ),
+                  child: Row(
+                    children: [
+                      const VenueBackButton(),
+                      if (open != null)
+                        TextButton(
+                          onPressed: () =>
+                              VenueRoute(id: open.buildingId.uuid).go(context),
+                          child: Text(l10n.currentOrder),
+                        ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -56,17 +59,44 @@ class OrderHistoryView extends ConsumerWidget {
   }
 }
 
-/// Orders this customer passed, across venues, for the selected period.
-class CustomerOrdersView extends ConsumerWidget {
-  const CustomerOrdersView({super.key});
+/// Orders this customer passed. [buildingId] adds a control for this visit only.
+class CustomerOrdersView extends ConsumerStatefulWidget {
+  const CustomerOrdersView({super.key, this.buildingId});
+
+  /// Venue of the current visit. Null on the standalone history screen.
+  final String? buildingId;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<CustomerOrdersView> createState() => _CustomerOrdersViewState();
+}
+
+class _CustomerOrdersViewState extends ConsumerState<CustomerOrdersView> {
+  var _onlyThisVenue = false;
+
+  void _pullThisVenue(CustomerOrderBoard? board) {
+    final buildingId = widget.buildingId;
+    if (!_onlyThisVenue || buildingId == null || board == null) {
+      return;
+    }
+    if (board.loadingMore || board.moreErrorKey != null || !board.hasMore) {
+      return;
+    }
+    final matches = board.orders.where(
+      (order) => order.buildingId.uuid == buildingId,
+    );
+    if (matches.isEmpty) {
+      ref.read(customerOrdersProvider.notifier).loadMore();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final text = Theme.of(context).textTheme;
     final scheme = Theme.of(context).colorScheme;
     final filter = ref.watch(orderHistoryFilterControllerProvider);
     final orders = ref.watch(customerOrdersProvider);
+    final buildingId = widget.buildingId;
     return Align(
       alignment: Alignment.topCenter,
       child: ConstrainedBox(
@@ -97,6 +127,15 @@ class CustomerOrdersView extends ConsumerWidget {
                       ),
                       const SizedBox(width: AppSpacing.sm),
                     ],
+                    if (buildingId != null)
+                      FilterChip(
+                        label: Text(l10n.ordersThisVenue),
+                        selected: _onlyThisVenue,
+                        onSelected: (selected) {
+                          setState(() => _onlyThisVenue = selected);
+                          _pullThisVenue(orders.asData?.value);
+                        },
+                      ),
                   ],
                 ),
               ),
@@ -116,10 +155,27 @@ class CustomerOrdersView extends ConsumerWidget {
                     ],
                   ),
                   data: (board) {
-                    final rows = board.orders;
+                    final rows = _onlyThisVenue && buildingId != null
+                        ? [
+                            for (final row in board.orders)
+                              if (row.buildingId.uuid == buildingId) row,
+                          ]
+                        : board.orders;
+                    if (_onlyThisVenue) {
+                      WidgetsBinding.instance.addPostFrameCallback(
+                        (_) => _pullThisVenue(board),
+                      );
+                    }
                     if (rows.isEmpty) {
+                      if (_onlyThisVenue &&
+                          board.hasMore &&
+                          board.moreErrorKey == null) {
+                        return const AppScreenLoader();
+                      }
                       return Text(
-                        l10n.emptyOrders,
+                        _onlyThisVenue
+                            ? l10n.emptyVenueOrders
+                            : l10n.emptyOrders,
                         style: text.bodyLarge?.copyWith(
                           color: scheme.onSurfaceVariant,
                         ),
@@ -163,6 +219,18 @@ class CustomerOrdersView extends ConsumerWidget {
         ),
       ),
     );
+  }
+}
+
+/// Orders for the venue the customer is visiting, with a this-venue filter.
+class VenueOrdersPane extends StatelessWidget {
+  const VenueOrdersPane({super.key, required this.buildingId});
+
+  final String buildingId;
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomerOrdersView(buildingId: buildingId);
   }
 }
 

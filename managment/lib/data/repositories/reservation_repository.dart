@@ -15,6 +15,23 @@ class ReservationRepository {
     return _client.reservation.create(request);
   }
 
+  /// Accepts a customer request. A table is assigned separately.
+  Future<ReservationView> confirm(UuidValue id) =>
+      _client.reservation.confirm(id);
+
+  /// Replaces the tables on a confirmed reservation.
+  Future<ReservationView> assignTables(UuidValue id, List<UuidValue> tableIds) {
+    return _client.reservation.assignTables(id, tableIds);
+  }
+
+  /// Customers whose name or phone contains [query]. At most 20.
+  Future<List<ReservationCustomerMatch>> searchCustomers(
+    UuidValue buildingId,
+    String query,
+  ) {
+    return _client.reservation.searchCustomers(buildingId, query);
+  }
+
   /// Exact phone match so staff can attach an account.
   Future<ReservationCustomerMatch> findCustomer(
     UuidValue buildingId,

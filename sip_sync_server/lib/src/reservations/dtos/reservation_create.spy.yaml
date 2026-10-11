@@ -1,10 +1,11 @@
-### Staff booking. Either [customerId] or [guestName] identifies the guest.
+### Staff booking. Created already confirmed, with no table until one is assigned.
+### Either [customerId] or [guestName] identifies the guest.
 class: ReservationCreate
 fields:
   buildingId: UuidValue
-  tableIds: List<UuidValue>
   startsAt: DateTime
-  endsAt: DateTime
+  ### Omitted ends are two hours after [startsAt].
+  endsAt: DateTime?
   customerId: UuidValue?
   guestName: String?
   guestPhone: String?

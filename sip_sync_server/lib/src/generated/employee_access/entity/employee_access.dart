@@ -131,7 +131,7 @@ abstract class EmployeeAccess
 
   bool consultAllOrders;
 
-  /// Create, cancel, and confirm reservations for this building.
+  /// Create, confirm, cancel, and assign tables for reservations in this building.
   bool reservations;
 
   DateTime createdAt;
@@ -423,7 +423,7 @@ class EmployeeAccessTable extends _is.Table<_is.UuidValue?> {
 
   late final _is.ColumnBool consultAllOrders;
 
-  /// Create, cancel, and confirm reservations for this building.
+  /// Create, confirm, cancel, and assign tables for reservations in this building.
   late final _is.ColumnBool reservations;
 
   late final _is.ColumnDateTime createdAt;

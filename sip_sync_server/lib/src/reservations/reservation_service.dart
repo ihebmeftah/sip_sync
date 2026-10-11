@@ -9,7 +9,10 @@ import '../packs/pack_gate.dart';
 /// How long before the start the floor calls a booking "soon".
 const reservationSoonWindow = Duration(minutes: 30);
 
-/// Bookings for a venue: staff, customer, and the hold that blocks orders.
+/// Length applied when a booking only names a start.
+const reservationSeatLength = Duration(hours: 2);
+
+/// Reservations: a customer request, a staff confirmation, then a table.
 class ReservationService {
   /// Bookings whose start falls on the UTC date of [day].
   Future<List<ReservationView>> listForDay(
@@ -18,6 +21,7 @@ class ReservationService {
     DateTime day,
   ) async {
     await _requireStaff(session, buildingId);
+    await _prepare(session);
     await settleNoShows(session, buildingId);
     final range = _utcDay(day);
     final rows = await Reservation.db.find(
@@ -36,16 +40,20 @@ class ReservationService {
     return rows.map(_view).toList();
   }
 
-  /// Upcoming bookings for the signed-in customer.
+  /// Upcoming requests and bookings for the signed-in customer.
   Future<List<ReservationView>> listMine(Session session) async {
     final ctx = _requireCustomer(session);
+    await _prepare(session);
+    await _settleForCustomer(session, ctx.actorId);
     final now = DateTime.now().toUtc();
     final rows = await Reservation.db.find(
       session,
       where: (t) =>
           t.customerId.equals(ctx.actorId) &
           (t.endsAt > now) &
-          t.status.equals(ReservationStatus.booked),
+          (t.status.equals(ReservationStatus.requested) |
+              t.status.equals(ReservationStatus.confirmed) |
+              t.status.equals(ReservationStatus.arrived)),
       include: Reservation.include(
         links: TableReservation.includeList(
           include: TableReservation.include(venueTable: VenueTable.include()),
@@ -56,34 +64,37 @@ class ReservationService {
     return rows.map(_view).toList();
   }
 
-  /// Staff booking. [customerId] or a typed guest name is required.
+  /// Staff booking. Stored as confirmed, with no table until [assignTables].
   Future<ReservationView> create(
     Session session,
     ReservationCreate request,
   ) async {
     final ctx = await _requireStaff(session, request.buildingId);
+    await _prepare(session);
     final guest = await _guestForStaff(session, request);
     return _insert(
       session,
       buildingId: request.buildingId,
-      tableIds: request.tableIds,
       startsAt: request.startsAt,
-      endsAt: request.endsAt,
+      endsAt: request.endsAt ?? request.startsAt.add(reservationSeatLength),
       customerId: guest.customerId,
       guestName: guest.name,
       guestPhone: guest.phone,
       paidAmount: request.paidAmount,
+      status: ReservationStatus.confirmed,
       createdBy: ctx,
+      confirmedById: ctx.actorId,
       customerMustBeFuture: false,
     );
   }
 
-  /// Customer books for their own account. Nothing is recorded as paid.
+  /// Customer asks for a time. Staff confirm it before a table can be assigned.
   Future<ReservationView> createForCustomer(
     Session session,
     CustomerReservationCreate request,
   ) async {
     final ctx = _requireCustomer(session);
+    await _prepare(session);
     final customer = await Customer.db.findById(session, ctx.actorId);
     if (customer == null) {
       throw ReservationException(
@@ -94,14 +105,15 @@ class ReservationService {
     return _insert(
       session,
       buildingId: request.buildingId,
-      tableIds: request.tableIds,
       startsAt: request.startsAt,
-      endsAt: request.endsAt,
+      endsAt: request.endsAt ?? request.startsAt.add(reservationSeatLength),
       customerId: customer.id,
       guestName: '${customer.firstName} ${customer.lastName}'.trim(),
       guestPhone: customer.phoneNumber,
       paidAmount: 0,
+      status: ReservationStatus.requested,
       createdBy: ctx,
+      confirmedById: null,
       customerMustBeFuture: true,
     );
   }
@@ -137,11 +149,149 @@ class ReservationService {
     );
   }
 
-  /// Cancels a booked reservation. Customers can cancel only their own future one.
-  Future<ReservationView> cancel(Session session, UuidValue id) async {
+  /// Customers whose name or phone contains [query]. Empty when [query] is too short.
+  Future<List<ReservationCustomerMatch>> searchCustomers(
+    Session session,
+    UuidValue buildingId,
+    String query,
+  ) async {
+    await _requireStaff(session, buildingId);
+    final text = query.trim();
+    if (text.length < 2 || text.length > 80) {
+      return [];
+    }
+    final pattern = '%${_escapeLike(text)}%';
+    final parts = text
+        .split(RegExp(r'\s+'))
+        .where((part) => part.isNotEmpty)
+        .toList();
+    final first = parts.length >= 2 ? '%${_escapeLike(parts.first)}%' : null;
+    final rest = parts.length >= 2
+        ? '%${_escapeLike(parts.sublist(1).join(' '))}%'
+        : null;
+    final rows = await Customer.db.find(
+      session,
+      where: (t) {
+        var match =
+            t.firstName.ilike(pattern) |
+            t.lastName.ilike(pattern) |
+            t.phoneNumber.ilike(pattern);
+        if (first != null && rest != null) {
+          match =
+              match |
+              (t.firstName.ilike(first) & t.lastName.ilike(rest)) |
+              (t.lastName.ilike(first) & t.firstName.ilike(rest));
+        }
+        return match;
+      },
+      orderBy: (t) => t.firstName,
+      limit: 20,
+    );
+    return [
+      for (final customer in rows)
+        if (customer.id != null)
+          ReservationCustomerMatch(
+            id: customer.id!,
+            firstName: customer.firstName,
+            lastName: customer.lastName,
+            phoneNumber: customer.phoneNumber,
+          ),
+    ];
+  }
+
+  String _escapeLike(String value) {
+    return value
+        .replaceAll(r'\', r'\\')
+        .replaceAll('%', r'\%')
+        .replaceAll('_', r'\_');
+  }
+
+  /// Accepts a customer request. The table is assigned afterwards.
+  Future<ReservationView> confirm(Session session, UuidValue id) async {
+    await _prepare(session);
     final ctx = AuthGuard.requireAny(session);
     final row = await _load(session, id);
-    if (row.status != ReservationStatus.booked) {
+    await _requireStaff(session, row.buildingId);
+    await settleNoShows(session, row.buildingId);
+    final current = await _load(session, id);
+    if (current.status != ReservationStatus.requested) {
+      throw ReservationException(
+        message: 'Only a request can be confirmed.',
+        code: ReservationErrorCode.invalidInput,
+      );
+    }
+    await Reservation.db.updateRow(
+      session,
+      current.copyWith(
+        status: ReservationStatus.confirmed,
+        confirmedAt: DateTime.now().toUtc(),
+        confirmedById: ctx.actorId,
+      ),
+    );
+    return _view(await _load(session, id));
+  }
+
+  /// Attaches active tables to a confirmed reservation. Replaces any previous set.
+  Future<ReservationView> assignTables(
+    Session session,
+    UuidValue id,
+    List<UuidValue> tableIds,
+  ) async {
+    await _prepare(session);
+    final row = await _load(session, id);
+    await _requireStaff(session, row.buildingId);
+    if (row.status != ReservationStatus.confirmed) {
+      throw ReservationException(
+        message: 'Assign a table only after the reservation is confirmed.',
+        code: ReservationErrorCode.invalidInput,
+      );
+    }
+    final tables = await _tables(session, row.buildingId, tableIds);
+    await settleNoShows(session, row.buildingId);
+    final current = await _load(session, id);
+    if (current.status != ReservationStatus.confirmed) {
+      throw ReservationException(
+        message: 'This reservation can no longer take a table.',
+        code: ReservationErrorCode.invalidInput,
+      );
+    }
+    await _assertNoOverlap(
+      session,
+      tables.map((table) => table.id!).toList(),
+      current.startsAt.toUtc(),
+      current.endsAt.toUtc(),
+      exceptReservationId: current.id,
+    );
+    await session.db.transaction((transaction) async {
+      await TableReservation.db.deleteWhere(
+        session,
+        where: (t) => t.reservationId.equals(current.id!),
+        transaction: transaction,
+      );
+      await TableReservation.db.insert(
+        session,
+        [
+          for (final table in tables)
+            TableReservation(
+              reservationId: current.id!,
+              venueTableId: table.id!,
+            ),
+        ],
+        transaction: transaction,
+      );
+    });
+    return _view(await _load(session, id));
+  }
+
+  /// Cancels a request or a confirmed reservation that has not arrived.
+  ///
+  /// Customers can cancel only their own future one.
+  Future<ReservationView> cancel(Session session, UuidValue id) async {
+    await _prepare(session);
+    final ctx = AuthGuard.requireAny(session);
+    final row = await _load(session, id);
+    if (row.status != ReservationStatus.requested &&
+        row.status != ReservationStatus.confirmed) {
       throw ReservationException(
         message: 'This reservation can no longer be cancelled.',
         code: ReservationErrorCode.invalidInput,
@@ -171,7 +321,8 @@ class ReservationService {
     UuidValue buildingId,
     UuidValue tableId,
   ) async {
-    final ctx = await _requireStaff(session, buildingId);
+    await _requireStaff(session, buildingId);
+    await _prepare(session);
     await settleNoShows(session, buildingId);
     final holding = await _holdingForTable(session, tableId);
     if (holding == null || holding.buildingId != buildingId) {
@@ -182,32 +333,9 @@ class ReservationService {
     }
     final updated = await Reservation.db.updateRow(
       session,
-      holding.copyWith(
-        status: ReservationStatus.arrived,
-        confirmedAt: DateTime.now().toUtc(),
-        confirmedById: ctx.actorId,
-      ),
+      holding.copyWith(status: ReservationStatus.arrived),
     );
     return _view(await _load(session, updated.id!));
-  }
-
-  /// Refuses a new order while a booking on [tableId] is waiting for arrival.
-  Future<void> assertTableOpenForOrders(
-    Session session,
-    UuidValue tableId,
-  ) async {
-    final table = await VenueTable.db.findById(session, tableId);
-    if (table == null) {
-      return;
-    }
-    await settleNoShows(session, table.buildingId);
-    final holding = await _holdingForTable(session, tableId);
-    if (holding != null) {
-      throw OrderException(
-        message: 'Confirm the reservation before taking an order.',
-        code: OrderErrorCode.reservationHeld,
-      );
-    }
   }
 
   /// Phase and guest for each table that should show a booking on the floor.
@@ -215,6 +343,7 @@ class ReservationService {
     Session session,
     UuidValue buildingId,
   ) async {
+    await _prepare(session);
     await settleNoShows(session, buildingId);
     final now = DateTime.now().toUtc();
     final horizon = now.add(reservationSoonWindow);
@@ -222,7 +351,7 @@ class ReservationService {
       session,
       where: (t) =>
           t.buildingId.equals(buildingId) &
-          t.status.equals(ReservationStatus.booked) &
+          t.status.equals(ReservationStatus.confirmed) &
           (t.endsAt > now) &
           (t.startsAt <= horizon),
       include: Reservation.include(
@@ -251,35 +380,66 @@ class ReservationService {
     return signals;
   }
 
-  /// Turns ended `booked` rows into `noShow` so the table can take orders again.
+  /// Turns ended confirmed rows into `noShow`, and unanswered requests into
+  /// `cancelled`, so a table can take orders again and the daily cap frees up.
   Future<void> settleNoShows(Session session, UuidValue buildingId) async {
+    await _prepare(session);
     final now = DateTime.now().toUtc();
     final due = await Reservation.db.find(
       session,
       where: (t) =>
           t.buildingId.equals(buildingId) &
-          t.status.equals(ReservationStatus.booked) &
-          (t.endsAt <= now),
+          (t.endsAt <= now) &
+          (t.status.equals(ReservationStatus.confirmed) |
+              t.status.equals(ReservationStatus.requested)),
     );
     for (final row in due) {
-      await Reservation.db.updateRow(
-        session,
-        row.copyWith(status: ReservationStatus.noShow),
-      );
+      final next = row.status == ReservationStatus.requested
+          ? ReservationStatus.cancelled
+          : ReservationStatus.noShow;
+      await Reservation.db.updateRow(session, row.copyWith(status: next));
+    }
+  }
+
+  /// Older builds stored an accepted booking as `booked`. Rewrite those rows
+  /// before the ORM reads them, because that value is no longer a status.
+  Future<void> _prepare(Session session) async {
+    await session.db.unsafeQuery('''
+UPDATE "reservation"
+SET "status" = 'confirmed',
+    "confirmedAt" = COALESCE("confirmedAt", "createdAt"),
+    "confirmedById" = COALESCE("confirmedById", "createdById")
+WHERE "status" = 'booked'
+RETURNING "id"
+''');
+  }
+
+  Future<void> _settleForCustomer(Session session, UuidValue customerId) async {
+    final buildings = await Reservation.db.find(
+      session,
+      where: (t) =>
+          t.customerId.equals(customerId) &
+          (t.status.equals(ReservationStatus.requested) |
+              t.status.equals(ReservationStatus.confirmed)),
+    );
+    final ids = buildings.map((row) => row.buildingId).toSet();
+    for (final buildingId in ids) {
+      await settleNoShows(session, buildingId);
     }
   }
 
   Future<ReservationView> _insert(
     Session session, {
     required UuidValue buildingId,
-    required List<UuidValue> tableIds,
     required DateTime startsAt,
     required DateTime endsAt,
     required UuidValue? customerId,
     required String guestName,
     required String? guestPhone,
     required double paidAmount,
+    required ReservationStatus status,
     required AuthContext createdBy,
+    required UuidValue? confirmedById,
     required bool customerMustBeFuture,
   }) async {
     final pack = await PackGate.ofBuilding(session, buildingId);
@@ -288,14 +448,7 @@ class ReservationService {
     final end = endsAt.toUtc();
     _validateWindow(start, end, customerMustBeFuture: customerMustBeFuture);
     _validatePaid(paidAmount);
-    final tables = await _tables(session, buildingId, tableIds);
     await settleNoShows(session, buildingId);
-    await _assertNoOverlap(
-      session,
-      tables.map((t) => t.id!).toList(),
-      start,
-      end,
-    );
     final range = _utcDay(start);
     final count = await Reservation.db.count(
       session,
@@ -311,36 +464,24 @@ class ReservationService {
       adding: 1,
       feature: PackFeature.reservations,
     );
-    final row = await session.db.transaction((transaction) async {
-      final inserted = await Reservation.db.insertRow(
-        session,
-        Reservation(
-          buildingId: buildingId,
-          startsAt: start,
-          endsAt: end,
-          customerId: customerId,
-          guestName: guestName,
-          guestPhone: guestPhone,
-          paidAmount: paidAmount,
-          status: ReservationStatus.booked,
-          createdByType: createdBy.actorType,
-          createdById: createdBy.actorId,
-        ),
-        transaction: transaction,
-      );
-      await TableReservation.db.insert(
-        session,
-        [
-          for (final table in tables)
-            TableReservation(
-              reservationId: inserted.id!,
-              venueTableId: table.id!,
-            ),
-        ],
-        transaction: transaction,
-      );
-      return inserted;
-    });
+    final now = DateTime.now().toUtc();
+    final row = await Reservation.db.insertRow(
+      session,
+      Reservation(
+        buildingId: buildingId,
+        startsAt: start,
+        endsAt: end,
+        customerId: customerId,
+        guestName: guestName,
+        guestPhone: guestPhone,
+        paidAmount: paidAmount,
+        status: status,
+        createdByType: createdBy.actorType,
+        createdById: createdBy.actorId,
+        confirmedAt: status == ReservationStatus.confirmed ? now : null,
+        confirmedById: confirmedById,
+      ),
+    );
     return _view(await _load(session, row.id!));
   }
 
@@ -383,6 +524,8 @@ class ReservationService {
     return (name: name, phone: phone, customerId: null);
   }
 
+  /// Length and future-start only. The building's opening and closing
+  /// times do not limit when a reservation may start or end.
   void _validateWindow(
     DateTime start,
     DateTime end, {
@@ -451,8 +594,9 @@ class ReservationService {
     Session session,
     List<UuidValue> tableIds,
     DateTime start,
-    DateTime end,
-  ) async {
+    DateTime end, {
+    UuidValue? exceptReservationId,
+  }) async {
     final links = await TableReservation.db.find(
       session,
       where: (t) => t.venueTableId.inSet(tableIds.toSet()),
@@ -460,10 +604,10 @@ class ReservationService {
     );
     for (final link in links) {
       final other = link.reservation;
-      if (other == null) {
+      if (other == null || other.id == exceptReservationId) {
         continue;
       }
-      if (other.status != ReservationStatus.booked &&
+      if (other.status != ReservationStatus.confirmed &&
           other.status != ReservationStatus.arrived) {
         continue;
       }
@@ -491,7 +635,7 @@ class ReservationService {
     );
     for (final link in links) {
       final row = link.reservation;
-      if (row == null || row.status != ReservationStatus.booked) {
+      if (row == null || row.status != ReservationStatus.confirmed) {
         continue;
       }
       if (!row.startsAt.toUtc().isAfter(now) &&
@@ -570,7 +714,10 @@ class ReservationService {
   }
 
   ReservationPhase _phase(Reservation row, DateTime now) {
-    if (row.status != ReservationStatus.booked) {
+    if (row.status != ReservationStatus.confirmed) {
+      return ReservationPhase.none;
+    }
+    if (row.links == null || row.links!.isEmpty) {
       return ReservationPhase.none;
     }
     final start = row.startsAt.toUtc();

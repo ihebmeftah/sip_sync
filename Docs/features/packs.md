@@ -68,7 +68,7 @@ The owner banner names the current pack, says a change goes through the support 
 
 ## Demo data
 
-A fresh development database seeds 50 owners in Tunisia and 50 in Germany (Marburg, Kirchhain, Kassel, Frankfurt, and nearby cities). Each owner has one venue, a menu, ingredients, and a rotating pack (`free`, `counter`, `floor`, `house`, `group`). Paid packs are monthly or yearly with a future `packExpiresAt`. Sign in with `owner.tn.01@sipsync.dev` through `owner.de.50@sipsync.dev`, password `password1`.
+A fresh development database seeds 30 owners, one real venue each, all on the free pack: Sousse, Tunis, Hammamet, Stockholm, Marburg, Frankfurt, and Gießen. Each venue has ten categories and five to ten articles per category, inserted directly so the customer map can show a full menu. The free plan still rejects further category and article creates (caps 4 and 20). Sign in with `owner.tn.01@sipsync.dev` through `owner.tn.14@sipsync.dev`, `owner.se.01@sipsync.dev` through `owner.se.06@sipsync.dev`, and `owner.de.01@sipsync.dev` through `owner.de.10@sipsync.dev`, password `password1`.
 
 ## Realtime
 

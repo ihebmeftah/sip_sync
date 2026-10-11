@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sip_sync_client/sip_sync_client.dart';
 
 import '../../../core/errors/error_mapper.dart';
 import '../../../core/routing/app_routes.dart';
@@ -7,6 +8,7 @@ import '../../../core/theme/app_icons.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
 import '../../../core/widgets/app_loader.dart';
+import '../../../core/widgets/page_band.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../auth/view_models/auth_view_model.dart';
 import '../../discover/venue_distance.dart';
@@ -27,6 +29,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
   final _address = TextEditingController();
   final _searchKey = GlobalKey();
   var _suppressQuery = false;
+  var _leavingForOrder = false;
 
   @override
   void dispose() {
@@ -38,6 +41,17 @@ class _HomeViewState extends ConsumerState<HomeView> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final open = ref.watch(openCustomerOrderProvider).asData?.value;
+    final unpaid = open != null && open.status == OrderStatus.progress;
+    if (unpaid && !_leavingForOrder) {
+      _leavingForOrder = true;
+      final buildingId = open.buildingId.uuid;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) {
+          return;
+        }
+        VenueRoute(id: buildingId).go(context);
+      });
+    }
 
     ref.listen(discoverViewModelProvider, (previous, next) {
       final place = next.place;
@@ -99,29 +113,22 @@ class _HomeViewState extends ConsumerState<HomeView> {
           },
         ),
       ),
-      bottomNavigationBar: Material(
-        color: Theme.of(context).colorScheme.surface,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(
-            AppSpacing.lg,
-            AppSpacing.sm,
-            AppSpacing.lg,
-            AppSpacing.md,
-          ),
-          child: Align(
-            alignment: Alignment.topCenter,
-            heightFactor: 1,
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(
-                maxWidth: AppBreakpoints.pageMax,
-              ),
-              child: AppFilledButton(
-                label: l10n.scanTable,
-                icon: AppIcons.qrScan,
-                onPressed: open == null
-                    ? () => const TableScanRoute().go(context)
-                    : null,
-              ),
+      bottomNavigationBar: PageBand(
+        child: Material(
+          color: Theme.of(context).colorScheme.surface,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.lg,
+              AppSpacing.sm,
+              AppSpacing.lg,
+              AppSpacing.md,
+            ),
+            child: AppFilledButton(
+              label: l10n.scanTable,
+              icon: AppIcons.qrScan,
+              onPressed: open == null
+                  ? () => const TableScanRoute().go(context)
+                  : null,
             ),
           ),
         ),

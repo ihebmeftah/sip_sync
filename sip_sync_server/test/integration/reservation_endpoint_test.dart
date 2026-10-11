@@ -99,7 +99,6 @@ void main() {
 
     ReservationCreate booking({
       required UuidValue buildingId,
-      required UuidValue tableId,
       required DateTime start,
       String guestName = 'Ada',
       double paidAmount = 15,
@@ -107,7 +106,6 @@ void main() {
     }) {
       return ReservationCreate(
         buildingId: buildingId,
-        tableIds: [tableId],
         startsAt: start,
         endsAt: start.add(length),
         guestName: guestName,
@@ -127,11 +125,7 @@ void main() {
       await expectLater(
         endpoints.reservation.create(
           setup.ownerSession,
-          booking(
-            buildingId: setup.building.id,
-            tableId: setup.tables.first.id,
-            start: start,
-          ),
+          booking(buildingId: setup.building.id, start: start),
         ),
         throwsA(
           isA<PackException>().having(
@@ -155,16 +149,19 @@ void main() {
         final start = DateTime.now().toUtc().add(const Duration(minutes: 10));
         final created = await endpoints.reservation.create(
           setup.ownerSession,
-          booking(
-            buildingId: setup.building.id,
-            tableId: setup.tables.first.id,
-            start: start,
-          ),
+          booking(buildingId: setup.building.id, start: start),
         );
-        expect(created.status, ReservationStatus.booked);
+        expect(created.status, ReservationStatus.confirmed);
         expect(created.guestName, 'Ada');
         expect(created.paidAmount, 15);
-        expect(created.tableNumbers, [setup.tables.first.number]);
+        expect(created.tableNumbers, isEmpty);
+
+        final assigned = await endpoints.reservation.assignTables(
+          setup.ownerSession,
+          created.id,
+          [setup.tables.first.id],
+        );
+        expect(assigned.tableNumbers, [setup.tables.first.number]);
 
         final listed = await endpoints.reservation.listForDay(
           setup.ownerSession,
@@ -195,15 +192,19 @@ void main() {
         );
         expect(order.status, OrderStatus.progress);
 
+        final other = await endpoints.reservation.create(
+          setup.ownerSession,
+          booking(
+            buildingId: setup.building.id,
+            start: start.add(const Duration(minutes: 15)),
+            guestName: 'Bea',
+          ),
+        );
         await expectLater(
-          endpoints.reservation.create(
+          endpoints.reservation.assignTables(
             setup.ownerSession,
-            booking(
-              buildingId: setup.building.id,
-              tableId: setup.tables.first.id,
-              start: start.add(const Duration(minutes: 15)),
-              guestName: 'Bea',
-            ),
+            other.id,
+            [setup.tables.first.id],
           ),
           throwsA(
             isA<ReservationException>().having(
@@ -217,7 +218,7 @@ void main() {
     );
 
     test(
-      'a started booking blocks orders until staff scan confirms arrival',
+      'a started booking still accepts an order',
       () async {
         final setup = await openHouse(
           tag: 'hold',
@@ -228,39 +229,15 @@ void main() {
         final start = DateTime.now().toUtc().subtract(
           const Duration(minutes: 5),
         );
-        await endpoints.reservation.create(
+        final created = await endpoints.reservation.create(
           setup.ownerSession,
-          booking(
-            buildingId: setup.building.id,
-            tableId: setup.tables.first.id,
-            start: start,
-          ),
+          booking(buildingId: setup.building.id, start: start),
         );
-        await expectLater(
-          endpoints.order.create(
-            setup.ownerSession,
-            OrderCreate(
-              buildingId: setup.building.id,
-              venueTableId: setup.tables.first.id,
-              items: [OrderItemCreateLine(articleId: setup.article.id)],
-            ),
-          ),
-          throwsA(
-            isA<OrderException>().having(
-              (error) => error.code,
-              'code',
-              OrderErrorCode.reservationHeld,
-            ),
-          ),
-        );
-
-        final confirmed = await endpoints.reservation.confirmByTable(
+        await endpoints.reservation.assignTables(
           setup.ownerSession,
-          setup.building.id,
-          setup.tables.first.id,
+          created.id,
+          [setup.tables.first.id],
         );
-        expect(confirmed.status, ReservationStatus.arrived);
-
         final order = await endpoints.order.create(
           setup.ownerSession,
           OrderCreate(
@@ -302,14 +279,42 @@ void main() {
         customerSession,
         CustomerReservationCreate(
           buildingId: setup.building.id,
-          tableIds: [setup.tables.last.id],
           startsAt: start,
           endsAt: start.add(const Duration(hours: 1)),
         ),
       );
+      expect(created.status, ReservationStatus.requested);
+      expect(created.tableNumbers, isEmpty);
       expect(created.paidAmount, 0);
       expect(created.guestName, 'Guest Book');
       expect(created.customerId, auth.customer!.id);
+
+      await expectLater(
+        endpoints.reservation.assignTables(
+          setup.ownerSession,
+          created.id,
+          [setup.tables.last.id],
+        ),
+        throwsA(
+          isA<ReservationException>().having(
+            (error) => error.code,
+            'code',
+            ReservationErrorCode.invalidInput,
+          ),
+        ),
+      );
+
+      final confirmed = await endpoints.reservation.confirm(
+        setup.ownerSession,
+        created.id,
+      );
+      expect(confirmed.status, ReservationStatus.confirmed);
+      final seated = await endpoints.reservation.assignTables(
+        setup.ownerSession,
+        created.id,
+        [setup.tables.last.id],
+      );
+      expect(seated.tableNumbers, [setup.tables.last.number]);
 
       await expectLater(
         endpoints.reservation.confirmByTable(
@@ -370,11 +375,7 @@ void main() {
       await expectLater(
         endpoints.reservation.create(
           staffSession,
-          booking(
-            buildingId: setup.building.id,
-            tableId: setup.tables.first.id,
-            start: start,
-          ),
+          booking(buildingId: setup.building.id, start: start),
         ),
         throwsA(
           isA<ReservationException>().having(
@@ -408,7 +409,6 @@ void main() {
             setup.ownerSession,
             booking(
               buildingId: setup.building.id,
-              tableId: setup.tables.first.id,
               start: start,
               guestName: 'Guest $index',
               length: const Duration(minutes: 30),
@@ -420,7 +420,6 @@ void main() {
             setup.ownerSession,
             booking(
               buildingId: setup.building.id,
-              tableId: setup.tables.last.id,
               start: origin,
               guestName: 'Extra',
               length: const Duration(minutes: 30),
@@ -458,5 +457,83 @@ void main() {
         );
       },
     );
+
+    test('a booking without an end lasts two hours', () async {
+      final setup = await openHouse(
+        tag: 'length',
+        pack: 'floor',
+        ownerPhone: '+21622111008',
+        venuePhone: '+21671111018',
+      );
+      final start = DateTime.now().toUtc().add(const Duration(hours: 5));
+      final created = await endpoints.reservation.create(
+        setup.ownerSession,
+        ReservationCreate(
+          buildingId: setup.building.id,
+          startsAt: start,
+          guestName: 'Ada',
+          guestPhone: '+21620000001',
+          paidAmount: 15,
+        ),
+      );
+      expect(
+        created.endsAt.toUtc().difference(created.startsAt.toUtc()),
+        const Duration(hours: 2),
+      );
+    });
+
+    test('staff search returns customers by name', () async {
+      final setup = await openHouse(
+        tag: 'seek',
+        pack: 'floor',
+        ownerPhone: '+21622111009',
+        venuePhone: '+21671111019',
+      );
+      await endpoints.customerAuth.register(
+        sessionBuilder,
+        EmailRegisterCreate(
+          email: 'noura-seek@example.com',
+          password: 'password1',
+          phoneNumber: '+21624440001',
+          firstName: 'Noura',
+          lastName: 'Seek',
+        ),
+      );
+      final matches = await endpoints.reservation.searchCustomers(
+        setup.ownerSession,
+        setup.building.id,
+        'Nou',
+      );
+      expect(matches.map((row) => row.firstName), contains('Noura'));
+
+      final tooShort = await endpoints.reservation.searchCustomers(
+        setup.ownerSession,
+        setup.building.id,
+        'N',
+      );
+      expect(tooShort, isEmpty);
+    });
+
+    test('a booking outside opening and closing hours is accepted', () async {
+      final setup = await openHouse(
+        tag: 'hours',
+        pack: 'floor',
+        ownerPhone: '+21622111007',
+        venuePhone: '+21671111017',
+      );
+      final tomorrow = DateTime.now().toUtc().add(const Duration(days: 1));
+      final start = DateTime.utc(
+        tomorrow.year,
+        tomorrow.month,
+        tomorrow.day,
+        6,
+      );
+      final created = await endpoints.reservation.create(
+        setup.ownerSession,
+        booking(buildingId: setup.building.id, start: start),
+      );
+      expect(created.status, ReservationStatus.confirmed);
+      expect(created.startsAt.toUtc(), start);
+    });
   });
 }

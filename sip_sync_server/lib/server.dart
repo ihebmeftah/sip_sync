@@ -9,6 +9,7 @@ import 'src/cache_busting.dart';
 import 'src/generated/serverpod.dart';
 import 'src/packs/pack_catalog.dart';
 import 'src/packs/pack_expiry.dart';
+import 'src/seed/dev_seed.dart';
 import 'src/web/routes/app_config_route.dart';
 
 /// One sweep timer for the process. Replaced if the isolate starts again.
@@ -78,7 +79,7 @@ void run(List<String> args) async {
     await SuperAdminAuthEndpoint().ensureDefaultAdmin(session);
     await PackCatalog.ensure(session);
     await PackExpiry.revertDue(session);
-//    await DevSeed.ensureDemoData(session);
+ await DevSeed.ensureDemoData(session);
   });
   _watchPackExpiry(pod);
 }

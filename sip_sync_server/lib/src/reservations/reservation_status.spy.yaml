@@ -1,8 +1,11 @@
-### Lifecycle of a table booking.
+### Lifecycle of a reservation.
 enum: ReservationStatus
 serialized: byName
 values:
-  - booked
+  ### Customer asked for a time. No table yet.
+  - requested
+  ### Accepted by staff, or created by staff. A table may still be missing.
+  - confirmed
   - arrived
   - cancelled
   - noShow

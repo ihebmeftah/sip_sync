@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sip_sync_client/sip_sync_client.dart';
 import 'package:sip_sync_flutter/core/di/app_providers.dart';
+import 'package:sip_sync_flutter/core/theme/app_icons.dart';
 import 'package:sip_sync_flutter/data/repositories/customer_discovery_repository.dart';
 import 'package:sip_sync_flutter/features/venue/view_models/customer_order_view_model.dart';
 import 'package:sip_sync_flutter/features/venue/view_models/seated_table_view_model.dart';
@@ -46,7 +47,7 @@ void main() {
     expect(find.text('House Menu'), findsOneWidget);
     expect(find.text('3 tables free'), findsOneWidget);
     expect(find.text('Table 2'), findsOneWidget);
-    expect(find.text('Scan table'), findsOneWidget);
+    expect(find.text('Scan table'), findsNothing);
     await tester.scrollUntilVisible(
       find.text('01 Course with a long name'),
       200,
@@ -72,6 +73,13 @@ void main() {
     );
     expect(find.text('5.50 TND'), findsOneWidget);
     expect(find.text('Mint . Lemon'), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.text('Reserve now'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    expect(find.text('Take your place now'), findsNothing);
+    expect(find.text('Reserve now'), findsOneWidget);
 
     await tester.tap(find.text('Menu'));
     await tester.pumpAndSettle();
@@ -171,7 +179,7 @@ void main() {
       ),
     );
     await tester.pumpAndSettle();
-    expect(find.text('Scan table'), findsOneWidget);
+    expect(find.text('3 tables free'), findsOneWidget);
 
     container
         .read(seatedTableProvider.notifier)
@@ -189,11 +197,11 @@ void main() {
     await tester.pump(const Duration(milliseconds: 50));
 
     expect(find.text("You're at table 2"), findsOneWidget);
-    expect(find.text('Change table'), findsOneWidget);
     expect(
       find.text("Table changed. You're now at table 2."),
       findsOneWidget,
     );
+    expect(find.text('Reserve now'), findsOneWidget);
   });
 
   testWidgets('an open order is shown and scan is disabled', (tester) async {
@@ -221,19 +229,24 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('Order in progress'), findsOneWidget);
-    expect(find.text('6.50 TND'), findsOneWidget);
+    expect(find.text('The kitchen has your order'), findsOneWidget);
+    expect(
+      find.text('Follow each dish, right up to the moment you pay.'),
+      findsOneWidget,
+    );
+    expect(find.text('6.50 TND'), findsWidgets);
     expect(find.text('Mint tea'), findsNothing);
-    expect(find.text('Current order'), findsOneWidget);
-    expect(find.text('Order history'), findsOneWidget);
+    expect(find.text('Details'), findsOneWidget);
+    expect(find.text('Current order'), findsNothing);
+    expect(find.text('Order history'), findsNothing);
+    expect(find.text('Take your place now'), findsNothing);
+    expect(find.byTooltip('Back'), findsNothing);
+    await tester.tap(find.byIcon(AppIcons.qrScan));
+    await tester.pump();
     expect(
       find.text('Scan is unavailable while your order is open.'),
       findsOneWidget,
     );
-    final scan = tester.widget<FilledButton>(
-      find.widgetWithText(FilledButton, 'Scan table'),
-    );
-    expect(scan.onPressed, isNull);
   });
 }
 

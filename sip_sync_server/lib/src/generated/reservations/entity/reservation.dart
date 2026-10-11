@@ -19,7 +19,8 @@ import '../../buildings/entity/building.dart' as _iaohraio;
 import '../../reservations/entity/table_reservation.dart' as _i6tkokf9;
 import '../../reservations/reservation_status.dart' as _isnodepe;
 
-/// A booking for one or more tables in a venue.
+/// A reservation request or confirmed booking for a venue.
+/// Tables are linked after staff confirm it, or after staff create it.
 abstract class Reservation
     implements _is.TableRow<_is.UuidValue?>, _is.ProtocolSerialization {
   Reservation._({

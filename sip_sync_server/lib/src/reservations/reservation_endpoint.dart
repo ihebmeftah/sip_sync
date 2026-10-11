@@ -25,16 +25,43 @@ class ReservationEndpoint extends Endpoint {
   }
 
   /// Owner or employee with the reservations flag.
+  ///
+  /// The row is confirmed immediately and still needs a table.
   Future<ReservationView> create(Session session, ReservationCreate request) {
     return _reservations.create(session, request);
   }
 
-  /// Customer books for their own account.
+  /// Customer asks for a time. Staff confirm it before a table is assigned.
   Future<ReservationView> createForCustomer(
     Session session,
     CustomerReservationCreate request,
   ) {
     return _reservations.createForCustomer(session, request);
+  }
+
+  /// Accepts a customer request. Does not assign a table.
+  Future<ReservationView> confirm(Session session, UuidValue id) {
+    return _reservations.confirm(session, id);
+  }
+
+  /// Attaches tables to a confirmed reservation.
+  Future<ReservationView> assignTables(
+    Session session,
+    UuidValue id,
+    List<UuidValue> tableIds,
+  ) {
+    return _reservations.assignTables(session, id, tableIds);
+  }
+
+  /// Name or phone search for a staff booking. At most 20 rows.
+  ///
+  /// A query shorter than two characters returns an empty list.
+  Future<List<ReservationCustomerMatch>> searchCustomers(
+    Session session,
+    UuidValue buildingId,
+    String query,
+  ) {
+    return _reservations.searchCustomers(session, buildingId, query);
   }
 
   /// Exact phone match so staff can attach an account instead of typing a guest.
@@ -46,7 +73,7 @@ class ReservationEndpoint extends Endpoint {
     return _reservations.findCustomer(session, buildingId, phone);
   }
 
-  /// Cancels a booked reservation.
+  /// Cancels a request or a confirmed reservation that has not arrived.
   Future<ReservationView> cancel(Session session, UuidValue id) {
     return _reservations.cancel(session, id);
   }

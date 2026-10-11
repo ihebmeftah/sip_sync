@@ -103,6 +103,9 @@ reservation:
   - listMine:
   - create:
   - createForCustomer:
+  - confirm:
+  - assignTables:
+  - searchCustomers:
   - findCustomer:
   - cancel:
   - confirmByTable:

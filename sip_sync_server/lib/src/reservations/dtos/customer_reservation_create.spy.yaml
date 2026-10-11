@@ -1,7 +1,7 @@
-### Customer booking. The signed-in customer is the guest.
+### Customer request. The signed-in customer is the guest. No table is chosen.
 class: CustomerReservationCreate
 fields:
   buildingId: UuidValue
-  tableIds: List<UuidValue>
   startsAt: DateTime
-  endsAt: DateTime
+  ### Omitted ends are two hours after [startsAt].
+  endsAt: DateTime?

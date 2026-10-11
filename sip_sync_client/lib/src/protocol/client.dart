@@ -1220,6 +1220,8 @@ class EndpointReservation extends _isc.EndpointRef {
       );
 
   /// Owner or employee with the reservations flag.
+  ///
+  /// The row is confirmed immediately and still needs a table.
   _ida.Future<_ixub33vy.ReservationView> create(
     _iq3meyhi.ReservationCreate request,
   ) => caller.callServerEndpoint<_ixub33vy.ReservationView>(
@@ -1228,13 +1230,49 @@ class EndpointReservation extends _isc.EndpointRef {
     {'request': request},
   );
 
-  /// Customer books for their own account.
+  /// Customer asks for a time. Staff confirm it before a table is assigned.
   _ida.Future<_ixub33vy.ReservationView> createForCustomer(
     _iwv7rt7o.CustomerReservationCreate request,
   ) => caller.callServerEndpoint<_ixub33vy.ReservationView>(
     'reservation',
     'createForCustomer',
     {'request': request},
+  );
+
+  /// Accepts a customer request. Does not assign a table.
+  _ida.Future<_ixub33vy.ReservationView> confirm(_isc.UuidValue id) =>
+      caller.callServerEndpoint<_ixub33vy.ReservationView>(
+        'reservation',
+        'confirm',
+        {'id': id},
+      );
+
+  /// Attaches tables to a confirmed reservation.
+  _ida.Future<_ixub33vy.ReservationView> assignTables(
+    _isc.UuidValue id,
+    List<_isc.UuidValue> tableIds,
+  ) => caller.callServerEndpoint<_ixub33vy.ReservationView>(
+    'reservation',
+    'assignTables',
+    {
+      'id': id,
+      'tableIds': tableIds,
+    },
+  );
+
+  /// Name or phone search for a staff booking. At most 20 rows.
+  ///
+  /// A query shorter than two characters returns an empty list.
+  _ida.Future<List<_io69v53p.ReservationCustomerMatch>> searchCustomers(
+    _isc.UuidValue buildingId,
+    String query,
+  ) => caller.callServerEndpoint<List<_io69v53p.ReservationCustomerMatch>>(
+    'reservation',
+    'searchCustomers',
+    {
+      'buildingId': buildingId,
+      'query': query,
+    },
   );
 
   /// Exact phone match so staff can attach an account instead of typing a guest.
@@ -1250,7 +1288,7 @@ class EndpointReservation extends _isc.EndpointRef {
     },
   );
 
-  /// Cancels a booked reservation.
+  /// Cancels a request or a confirmed reservation that has not arrived.
   _ida.Future<_ixub33vy.ReservationView> cancel(_isc.UuidValue id) =>
       caller.callServerEndpoint<_ixub33vy.ReservationView>(
         'reservation',

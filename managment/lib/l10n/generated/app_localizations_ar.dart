@@ -1517,7 +1517,22 @@ class AppLocalizationsAr extends AppLocalizations {
   String get reservationCancelConfirm => 'إلغاء هذا الحجز؟';
 
   @override
-  String get reservationStatusBooked => 'محجوز';
+  String get reservationConfirm => 'تأكيد';
+
+  @override
+  String get reservationAssignTable => 'تعيين طاولة';
+
+  @override
+  String get reservationNoTable => 'لا طاولة بعد';
+
+  @override
+  String get reservationCreateHint => 'هذا الحجز مؤكد. عيّن طاولة من القائمة.';
+
+  @override
+  String get reservationStatusRequested => 'طلب';
+
+  @override
+  String get reservationStatusConfirmed => 'مؤكد';
 
   @override
   String get reservationStatusArrived => 'وصل';
@@ -1543,8 +1558,13 @@ class AppLocalizationsAr extends AppLocalizations {
       'وحده من لديه صلاحية الحجوزات يمكنه تأكيد هذه الطاولة.';
 
   @override
-  String get reservationWindow =>
-      'يدوم الحجز بين 30 دقيقة و8 ساعات، ويجب أن يكون ما زال مفتوحاً.';
+  String get reservationWindow => 'اختر بداية لم تنتهِ بعد.';
+
+  @override
+  String get reservationSearchHint => 'الاسم أو الهاتف';
+
+  @override
+  String get reservationSearchEmpty => 'لا يوجد زبائن مطابقون.';
 
   @override
   String get reservationSelectTables => 'اختر طاولة واحدة على الأقل.';
@@ -1553,7 +1573,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get accessReservations => 'الحجوزات';
 
   @override
-  String get accessReservationsHint => 'إنشاء الحجوزات وإلغاؤها وتأكيدها.';
+  String get accessReservationsHint =>
+      'إنشاء الحجوزات وتأكيدها وإلغاؤها وتعيين طاولاتها.';
 
   @override
   String get errorPackFeatureReservations => 'هذه الباقة لا تشمل الحجوزات.';

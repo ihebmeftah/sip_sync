@@ -1,4 +1,5 @@
-### A booking for one or more tables in a venue.
+### A reservation request or confirmed booking for a venue.
+### Tables are linked after staff confirm it, or after staff create it.
 class: Reservation
 table: reservation
 serverOnly: true

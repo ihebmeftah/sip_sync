@@ -9,22 +9,29 @@ import '../../../core/theme/app_icons.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/paging/list_paging.dart';
 import '../../../core/widgets/app_controls.dart';
+import '../../../core/widgets/page_band.dart';
 import '../../../core/widgets/app_loader.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../menu_price.dart';
 import '../view_models/order_cart_view_model.dart';
-import '../view_models/seated_table_view_model.dart';
-import '../view_models/venue_detail_view_model.dart';
 import '../view_models/venue_menu_view_model.dart';
 import '../widgets/menu_image_slot.dart';
 import '../widgets/venue_chrome.dart';
 
 /// Full menu: a sticky category rail and one flowing section per category.
 class VenueMenuView extends ConsumerStatefulWidget {
-  const VenueMenuView({super.key, required this.buildingId, this.venueName});
+  const VenueMenuView({
+    super.key,
+    required this.buildingId,
+    this.venueName,
+    this.embedded = false,
+  });
 
   final String buildingId;
   final String? venueName;
+
+  /// True when the visit bar already provides back and navigation.
+  final bool embedded;
 
   @override
   ConsumerState<VenueMenuView> createState() => _VenueMenuViewState();
@@ -111,37 +118,40 @@ class _VenueMenuViewState extends ConsumerState<VenueMenuView> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final menu = ref.watch(venueMenuViewModelProvider(widget.buildingId));
-    return Scaffold(
-      body: SafeArea(
-        child: menu.when(
-          loading: () => const AppScreenLoader(),
-          error: (error, _) => _MenuMessage(
-            message: lookupError(l10n, mapError(error).l10nKey),
-            onRetry: () =>
-                ref.invalidate(venueMenuViewModelProvider(widget.buildingId)),
-          ),
-          data: (page) {
-            _ensureKeys(page.categories.length);
-            return _MenuBody(
-              buildingId: widget.buildingId,
-              venueName: widget.venueName,
-              menu: page,
-              selected: _selected,
-              sectionKeys: _sectionKeys,
-              onSelect: (index) {
-                _scrollTo(index);
-              },
-              onScroll: _followScroll,
-            );
-          },
-        ),
+    final body = menu.when(
+      loading: () => const AppScreenLoader(),
+      error: (error, _) => _MenuMessage(
+        embedded: widget.embedded,
+        message: lookupError(l10n, mapError(error).l10nKey),
+        onRetry: () =>
+            ref.invalidate(venueMenuViewModelProvider(widget.buildingId)),
       ),
+      data: (page) {
+        _ensureKeys(page.categories.length);
+        return _MenuBody(
+          embedded: widget.embedded,
+          buildingId: widget.buildingId,
+          venueName: widget.venueName,
+          menu: page,
+          selected: _selected,
+          sectionKeys: _sectionKeys,
+          onSelect: (index) {
+            _scrollTo(index);
+          },
+          onScroll: _followScroll,
+        );
+      },
     );
+    if (widget.embedded) {
+      return body;
+    }
+    return Scaffold(body: SafeArea(child: body));
   }
 }
 
 class _MenuBody extends ConsumerWidget {
   const _MenuBody({
+    required this.embedded,
     required this.buildingId,
     required this.venueName,
     required this.menu,
@@ -151,6 +161,7 @@ class _MenuBody extends ConsumerWidget {
     required this.onScroll,
   });
 
+  final bool embedded;
   final String buildingId;
   final String? venueName;
   final VenueMenuState menu;
@@ -165,19 +176,6 @@ class _MenuBody extends ConsumerWidget {
     final text = Theme.of(context).textTheme;
     final scheme = Theme.of(context).colorScheme;
     final cart = ref.watch(orderCartProvider(buildingId));
-    final seated = ref.watch(seatedTableProvider)?.table;
-    final detail = ref
-        .watch(venueDetailViewModelProvider(buildingId))
-        .asData
-        ?.value;
-    final held =
-        seated != null &&
-        detail != null &&
-        detail.bookableTables.any(
-          (table) =>
-              table.id == seated.tableId &&
-              table.reservationPhase == ReservationPhase.holding,
-        );
     final title = (venueName == null || venueName!.trim().isEmpty)
         ? l10n.menu
         : venueName!.trim();
@@ -185,10 +183,11 @@ class _MenuBody extends ConsumerWidget {
     if (menu.categories.isEmpty) {
       return Column(
         children: [
-          const Align(
-            alignment: AlignmentDirectional.centerStart,
-            child: VenueBackButton(),
-          ),
+          if (!embedded)
+            const Align(
+              alignment: AlignmentDirectional.centerStart,
+              child: VenueBackButton(),
+            ),
           const Spacer(),
           Icon(AppIcons.menuBook, size: 56, color: scheme.primary),
           const SizedBox(height: AppSpacing.lg),
@@ -225,23 +224,8 @@ class _MenuBody extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const VenueBackButton(),
-                      if (held)
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(
-                            AppSpacing.md,
-                            0,
-                            AppSpacing.md,
-                            AppSpacing.md,
-                          ),
-                          child: Text(
-                            l10n.reservationHeldOrder,
-                            style: text.bodyMedium?.copyWith(
-                              color: scheme.error,
-                            ),
-                          ),
-                        )
-                      else if (!menu.customerOrdering)
+                      if (!embedded) const VenueBackButton(),
+                      if (!menu.customerOrdering)
                         Padding(
                           padding: const EdgeInsets.fromLTRB(
                             AppSpacing.md,
@@ -332,7 +316,7 @@ class _MenuBody extends ConsumerWidget {
     return Column(
       children: [
         Expanded(child: menuScroll),
-        if (cart.isNotEmpty && menu.customerOrdering && !held)
+        if (cart.isNotEmpty && menu.customerOrdering)
           _CartBar(
             buildingId: buildingId,
             venueName: title,
@@ -364,39 +348,41 @@ class _CartBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final text = Theme.of(context).textTheme;
-    return Material(
-      color: AppColors.paper,
-      elevation: 8,
-      child: SafeArea(
-        top: false,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(
-            AppSpacing.lg,
-            AppSpacing.md,
-            AppSpacing.lg,
-            AppSpacing.md,
-          ),
-          child: Row(
-            children: [
-              Expanded(
-                child: Text(
-                  l10n.cartSummary(units, total),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: text.titleMedium,
+    return PageBand(
+      child: Material(
+        color: AppColors.paper,
+        elevation: 8,
+        child: SafeArea(
+          top: false,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.lg,
+              AppSpacing.md,
+              AppSpacing.lg,
+              AppSpacing.md,
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    l10n.cartSummary(units, total),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: text.titleMedium,
+                  ),
                 ),
-              ),
-              const SizedBox(width: AppSpacing.md),
-              AppFilledButton(
-                expand: false,
-                label: l10n.passOrder,
-                onPressed: () => OrderReviewRoute(
-                  id: buildingId,
-                  venueName: venueName,
-                  currencyCode: currencyCode,
-                ).push(context),
-              ),
-            ],
+                const SizedBox(width: AppSpacing.md),
+                AppFilledButton(
+                  expand: false,
+                  label: l10n.passOrder,
+                  onPressed: () => OrderReviewRoute(
+                    id: buildingId,
+                    venueName: venueName,
+                    currencyCode: currencyCode,
+                  ).push(context),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -760,8 +746,13 @@ class _QtyButton extends StatelessWidget {
 }
 
 class _MenuMessage extends StatelessWidget {
-  const _MenuMessage({required this.message, required this.onRetry});
+  const _MenuMessage({
+    required this.embedded,
+    required this.message,
+    required this.onRetry,
+  });
 
+  final bool embedded;
   final String message;
   final VoidCallback onRetry;
 
@@ -772,10 +763,11 @@ class _MenuMessage extends StatelessWidget {
       padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(
         children: [
-          const Align(
-            alignment: AlignmentDirectional.centerStart,
-            child: VenueBackButton(),
-          ),
+          if (!embedded)
+            const Align(
+              alignment: AlignmentDirectional.centerStart,
+              child: VenueBackButton(),
+            ),
           const Spacer(),
           AppErrorBanner(message: message),
           AppTonalButton(label: l10n.retry, onPressed: onRetry),

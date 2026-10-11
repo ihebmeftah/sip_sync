@@ -348,7 +348,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get orderStatusCancelled => 'Cancelled';
 
   @override
-  String get openOrderNote => 'Order in progress';
+  String get openOrderNote => 'The kitchen has your order';
+
+  @override
+  String get openOrderLead =>
+      'Follow each dish, right up to the moment you pay.';
+
+  @override
+  String get openOrderDetails => 'Details';
 
   @override
   String get itemStatusPicked => 'In the kitchen';
@@ -461,6 +468,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get scanDisabled => 'Scan is unavailable while your order is open.';
 
   @override
+  String get orderKeepsYouHere => 'Pay this order before returning to the map.';
+
+  @override
   String seatCount(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
@@ -536,13 +546,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get errorPackFeatureQr => 'This plan does not include table QR codes.';
 
   @override
-  String get reserveTable => 'Reserve a table';
+  String get reserveTable => 'Request a reservation';
 
   @override
-  String get signInToReserve => 'Sign in to reserve a table';
+  String get signInToReserve => 'Sign in to request a reservation';
 
   @override
-  String get reservationBook => 'Book';
+  String get reservationBook => 'Request';
 
   @override
   String get reservationMine => 'My reservations';
@@ -563,6 +573,29 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reservationCancel => 'Cancel reservation';
 
   @override
+  String get reservationStatusRequested => 'Requested';
+
+  @override
+  String get reservationStatusConfirmed => 'Confirmed';
+
+  @override
+  String get reservationStatusArrived => 'Arrived';
+
+  @override
+  String get reservationStatusCancelled => 'Cancelled';
+
+  @override
+  String get reservationStatusNoShow => 'No-show';
+
+  @override
+  String get reservationAwaitingConfirmation =>
+      'Waiting for the venue to confirm';
+
+  @override
+  String get reservationAwaitingTable =>
+      'Confirmed. The venue will assign a table.';
+
+  @override
   String get reservationSoon => 'Starting soon';
 
   @override
@@ -573,11 +606,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'This table is reserved until the venue confirms the guests have arrived.';
 
   @override
-  String get reservationWindow =>
-      'A reservation lasts between 30 minutes and 8 hours, and it must start in the future.';
-
-  @override
-  String get reservationSelectTables => 'Select at least one table.';
+  String get reservationWindow => 'Pick a start time in the future.';
 
   @override
   String get errorPackFeatureReservations =>
@@ -618,4 +647,34 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get loadingMore => 'Loading more…';
+
+  @override
+  String get venueOverview => 'Overview';
+
+  @override
+  String get venueScan => 'Scan';
+
+  @override
+  String get venueProfile => 'Profile';
+
+  @override
+  String get notifications => 'Notifications';
+
+  @override
+  String get notificationsReady => 'Nothing new right now.';
+
+  @override
+  String get profileTitle => 'Profile';
+
+  @override
+  String get profileReady => 'Your profile is ready.';
+
+  @override
+  String get reserveNow => 'Reserve now';
+
+  @override
+  String get ordersThisVenue => 'This venue';
+
+  @override
+  String get emptyVenueOrders => 'No orders at this venue in this period.';
 }

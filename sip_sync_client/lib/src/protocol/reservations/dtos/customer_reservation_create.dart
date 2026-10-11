@@ -11,23 +11,20 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _isc;
-import 'package:sip_sync_client/src/protocol/protocol.dart' as _iozg9o5r;
 
-/// Customer booking. The signed-in customer is the guest.
+/// Customer request. The signed-in customer is the guest. No table is chosen.
 abstract class CustomerReservationCreate
     implements _isc.SerializableModel, _isc.ProtocolSerialization {
   CustomerReservationCreate._({
     required this.buildingId,
-    required this.tableIds,
     required this.startsAt,
-    required this.endsAt,
+    this.endsAt,
   });
 
   factory CustomerReservationCreate({
     required _isc.UuidValue buildingId,
-    required List<_isc.UuidValue> tableIds,
     required DateTime startsAt,
-    required DateTime endsAt,
+    DateTime? endsAt,
   }) = _CustomerReservationCreateImpl;
 
   factory CustomerReservationCreate.fromJson(
@@ -37,30 +34,27 @@ abstract class CustomerReservationCreate
       buildingId: _isc.UuidValueJsonExtension.fromJson(
         jsonSerialization['buildingId'],
       ),
-      tableIds: _iozg9o5r.Protocol().deserialize<List<_isc.UuidValue>>(
-        jsonSerialization['tableIds'],
-      ),
       startsAt: _isc.DateTimeJsonExtension.fromJson(
         jsonSerialization['startsAt'],
       ),
-      endsAt: _isc.DateTimeJsonExtension.fromJson(jsonSerialization['endsAt']),
+      endsAt: jsonSerialization['endsAt'] == null
+          ? null
+          : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['endsAt']),
     );
   }
 
   _isc.UuidValue buildingId;
 
-  List<_isc.UuidValue> tableIds;
-
   DateTime startsAt;
 
-  DateTime endsAt;
+  /// Omitted ends are two hours after [startsAt].
+  DateTime? endsAt;
 
   /// Returns a shallow copy of this [CustomerReservationCreate]
   /// with some or all fields replaced by the given arguments.
   @_isc.useResult
   CustomerReservationCreate copyWith({
     _isc.UuidValue? buildingId,
-    List<_isc.UuidValue>? tableIds,
     DateTime? startsAt,
     DateTime? endsAt,
   });
@@ -69,9 +63,8 @@ abstract class CustomerReservationCreate
     return {
       '__className__': 'CustomerReservationCreate',
       'buildingId': buildingId.toJson(),
-      'tableIds': tableIds.toJson(valueToJson: (v) => v.toJson()),
       'startsAt': startsAt.toJson(),
-      'endsAt': endsAt.toJson(),
+      if (endsAt != null) 'endsAt': endsAt?.toJson(),
     };
   }
 
@@ -80,9 +73,8 @@ abstract class CustomerReservationCreate
     return {
       '__className__': 'CustomerReservationCreate',
       'buildingId': buildingId.toJson(),
-      'tableIds': tableIds.toJson(valueToJson: (v) => v.toJson()),
       'startsAt': startsAt.toJson(),
-      'endsAt': endsAt.toJson(),
+      if (endsAt != null) 'endsAt': endsAt?.toJson(),
     };
   }
 
@@ -92,15 +84,15 @@ abstract class CustomerReservationCreate
   }
 }
 
+class _Undefined {}
+
 class _CustomerReservationCreateImpl extends CustomerReservationCreate {
   _CustomerReservationCreateImpl({
     required _isc.UuidValue buildingId,
-    required List<_isc.UuidValue> tableIds,
     required DateTime startsAt,
-    required DateTime endsAt,
+    DateTime? endsAt,
   }) : super._(
          buildingId: buildingId,
-         tableIds: tableIds,
          startsAt: startsAt,
          endsAt: endsAt,
        );
@@ -111,15 +103,13 @@ class _CustomerReservationCreateImpl extends CustomerReservationCreate {
   @override
   CustomerReservationCreate copyWith({
     _isc.UuidValue? buildingId,
-    List<_isc.UuidValue>? tableIds,
     DateTime? startsAt,
-    DateTime? endsAt,
+    Object? endsAt = _Undefined,
   }) {
     return CustomerReservationCreate(
       buildingId: buildingId ?? this.buildingId,
-      tableIds: tableIds ?? this.tableIds.map((e0) => e0).toList(),
       startsAt: startsAt ?? this.startsAt,
-      endsAt: endsAt ?? this.endsAt,
+      endsAt: endsAt is DateTime? ? endsAt : this.endsAt,
     );
   }
 }

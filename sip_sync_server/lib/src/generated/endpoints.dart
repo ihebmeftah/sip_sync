@@ -2183,6 +2183,78 @@ class Endpoints extends _is.EndpointDispatch {
                         params['request'],
                       ),
         ),
+        'confirm': _is.MethodConnector(
+          name: 'confirm',
+          params: {
+            'id': _is.ParameterDescription(
+              name: 'id',
+              type: _is.getType<_is.UuidValue>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['reservation'] as _iag5jdtl.ReservationEndpoint)
+                      .confirm(
+                        session,
+                        params['id'],
+                      ),
+        ),
+        'assignTables': _is.MethodConnector(
+          name: 'assignTables',
+          params: {
+            'id': _is.ParameterDescription(
+              name: 'id',
+              type: _is.getType<_is.UuidValue>(),
+              nullable: false,
+            ),
+            'tableIds': _is.ParameterDescription(
+              name: 'tableIds',
+              type: _is.getType<List<_is.UuidValue>>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['reservation'] as _iag5jdtl.ReservationEndpoint)
+                      .assignTables(
+                        session,
+                        params['id'],
+                        params['tableIds'],
+                      ),
+        ),
+        'searchCustomers': _is.MethodConnector(
+          name: 'searchCustomers',
+          params: {
+            'buildingId': _is.ParameterDescription(
+              name: 'buildingId',
+              type: _is.getType<_is.UuidValue>(),
+              nullable: false,
+            ),
+            'query': _is.ParameterDescription(
+              name: 'query',
+              type: _is.getType<String>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['reservation'] as _iag5jdtl.ReservationEndpoint)
+                      .searchCustomers(
+                        session,
+                        params['buildingId'],
+                        params['query'],
+                      ),
+        ),
         'findCustomer': _is.MethodConnector(
           name: 'findCustomer',
           params: {

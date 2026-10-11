@@ -32,6 +32,7 @@ abstract final class AppIcons {
   static const pin = Symbols.location_on_rounded;
   static const nearMe = Symbols.near_me_rounded;
   static const back = Symbols.arrow_back_rounded;
+  static const forward = Symbols.arrow_forward_rounded;
   static const menuBook = Symbols.menu_book_rounded;
   static const table = Symbols.table_restaurant_rounded;
   static const image = Symbols.image_rounded;
@@ -41,4 +42,5 @@ abstract final class AppIcons {
   static const remove = Symbols.remove_rounded;
   static const explore = Symbols.explore_rounded;
   static const receipt = Symbols.receipt_long_rounded;
+  static const notifications = Symbols.notifications_rounded;
 }

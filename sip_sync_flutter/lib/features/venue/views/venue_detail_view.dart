@@ -8,48 +8,184 @@ import '../../../core/theme/app_icons.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
 import '../../../core/widgets/app_loader.dart';
+import '../../../core/widgets/page_band.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../discover/venue_distance.dart';
 import '../../home/widgets/venue_card.dart';
-import '../../auth/view_models/auth_view_model.dart';
+import '../../orders/views/customer_orders_view.dart';
 import '../menu_price.dart';
 import '../view_models/customer_order_view_model.dart';
 import '../view_models/seated_table_view_model.dart';
 import '../view_models/venue_detail_view_model.dart';
 import '../widgets/menu_image_slot.dart';
 import '../widgets/venue_chrome.dart';
+import '../widgets/venue_visit_bar.dart';
+import 'venue_menu_view.dart';
+import 'venue_notices_view.dart';
+import 'venue_profile_view.dart';
 
-/// Free tables and a short preview of what this house serves.
-class VenueDetailView extends ConsumerWidget {
+/// A venue visit: overview, menu, scan, orders, and profile on one bar.
+class VenueDetailView extends ConsumerStatefulWidget {
   const VenueDetailView({super.key, required this.buildingId});
 
   final String buildingId;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<VenueDetailView> createState() => _VenueDetailViewState();
+}
+
+class _VenueDetailViewState extends ConsumerState<VenueDetailView> {
+  var _tab = VenueVisitTab.overview;
+  var _notices = false;
+
+  void _select(VenueVisitTab tab) {
+    setState(() {
+      _tab = tab;
+      _notices = false;
+    });
+  }
+
+  void _openScan() {
     final l10n = AppLocalizations.of(context)!;
-    final detail = ref.watch(venueDetailViewModelProvider(buildingId));
-    return Scaffold(
-      body: SafeArea(
-        child: detail.when(
-          loading: () => const AppScreenLoader(),
-          error: (error, _) => _VenueMessage(
-            message: lookupError(l10n, mapError(error).l10nKey),
-            onRetry: () =>
-                ref.invalidate(venueDetailViewModelProvider(buildingId)),
-          ),
-          data: (page) => _DetailBody(buildingId: buildingId, page: page),
+    final open = ref.read(openCustomerOrderProvider).asData?.value;
+    final openHere = open != null && open.buildingId.uuid == widget.buildingId;
+    if (openHere) {
+      final messenger = ScaffoldMessenger.of(context);
+      messenger.hideCurrentSnackBar();
+      messenger.showSnackBar(SnackBar(content: Text(l10n.scanDisabled)));
+      return;
+    }
+    TableScanRoute(
+      changing: true,
+      buildingId: widget.buildingId,
+    ).push(context);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final detail = ref.watch(venueDetailViewModelProvider(widget.buildingId));
+    final venueName = detail.asData?.value.venue.name;
+    final open = ref.watch(openCustomerOrderProvider).asData?.value;
+    final stay =
+        open != null &&
+        open.status == OrderStatus.progress &&
+        open.buildingId.uuid == widget.buildingId;
+    return PopScope(
+      canPop: !stay,
+      onPopInvokedWithResult: (didPop, _) {
+        if (didPop || !stay) {
+          return;
+        }
+        final messenger = ScaffoldMessenger.of(context);
+        messenger.hideCurrentSnackBar();
+        messenger.showSnackBar(
+          SnackBar(content: Text(l10n.orderKeepsYouHere)),
+        );
+      },
+      child: Scaffold(
+        body: Column(
+          children: [
+            SafeArea(
+              bottom: false,
+              child: PageBand(
+                child: _VisitHeader(
+                  noticesOpen: _notices,
+                  showBack: !stay,
+                  onNotices: () => setState(() => _notices = !_notices),
+                ),
+              ),
+            ),
+            Expanded(
+              child: _notices
+                  ? const VenueNoticesView()
+                  : switch (_tab) {
+                      VenueVisitTab.overview => detail.when(
+                        loading: () => const AppScreenLoader(),
+                        error: (error, _) => _VenueMessage(
+                          message: lookupError(l10n, mapError(error).l10nKey),
+                          onRetry: () => ref.invalidate(
+                            venueDetailViewModelProvider(widget.buildingId),
+                          ),
+                        ),
+                        data: (page) => _DetailBody(
+                          buildingId: widget.buildingId,
+                          page: page,
+                          onOpenMenu: () => _select(VenueVisitTab.menu),
+                        ),
+                      ),
+                      VenueVisitTab.menu => VenueMenuView(
+                        buildingId: widget.buildingId,
+                        venueName: venueName,
+                        embedded: true,
+                      ),
+                      VenueVisitTab.orders => VenueOrdersPane(
+                        buildingId: widget.buildingId,
+                      ),
+                      VenueVisitTab.profile => const VenueProfileView(),
+                    },
+            ),
+            PageBand(
+              child: VenueVisitBar(
+                tab: _tab,
+                onSelect: _select,
+                onScan: _openScan,
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 }
 
+class _VisitHeader extends StatelessWidget {
+  const _VisitHeader({
+    required this.noticesOpen,
+    required this.showBack,
+    required this.onNotices,
+  });
+
+  final bool noticesOpen;
+  final bool showBack;
+  final VoidCallback onNotices;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final scheme = Theme.of(context).colorScheme;
+    return Padding(
+      padding: const EdgeInsetsDirectional.only(end: AppSpacing.xs),
+      child: Row(
+        children: [
+          if (showBack) const VenueBackButton(),
+          const LocaleMenuButton(),
+          const Spacer(),
+          IconButton(
+            tooltip: l10n.notifications,
+            onPressed: onNotices,
+            isSelected: noticesOpen,
+            icon: Icon(
+              AppIcons.notifications,
+              color: noticesOpen ? scheme.primary : null,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _DetailBody extends ConsumerStatefulWidget {
-  const _DetailBody({required this.buildingId, required this.page});
+  const _DetailBody({
+    required this.buildingId,
+    required this.page,
+    required this.onOpenMenu,
+  });
 
   final String buildingId;
   final CustomerVenueDetail page;
+  final VoidCallback onOpenMenu;
 
   @override
   ConsumerState<_DetailBody> createState() => _DetailBodyState();
@@ -117,19 +253,7 @@ class _DetailBodyState extends ConsumerState<_DetailBody> {
         : null;
     final open = ref.watch(openCustomerOrderProvider).asData?.value;
     final openHere = open != null && open.buildingId.uuid == widget.buildingId;
-    void openMenu() {
-      VenueMenuRoute(
-        id: widget.buildingId,
-        venueName: venue.name,
-      ).go(context);
-    }
-
-    void openScan() {
-      TableScanRoute(
-        changing: true,
-        buildingId: widget.buildingId,
-      ).push(context);
-    }
+    void openMenu() => widget.onOpenMenu();
 
     return Column(
       children: [
@@ -152,69 +276,89 @@ class _DetailBodyState extends ConsumerState<_DetailBody> {
                     sliver: SliverList(
                       delegate: SliverChildListDelegate([
                         Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const VenueBackButton(),
-                            if (openHere) ...[
-                              const LocaleMenuButton(),
-                              IconButton(
-                                tooltip: l10n.signOut,
-                                onPressed: () => ref
-                                    .read(authViewModelProvider.notifier)
-                                    .signOut(),
-                                icon: const Icon(AppIcons.logout),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        venueTypeIcon(venue.type),
+                                        color: scheme.primary,
+                                      ),
+                                      const SizedBox(width: AppSpacing.sm),
+                                      Flexible(
+                                        child: Text(
+                                          venueTypeLabel(l10n, venue.type),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: text.labelLarge?.copyWith(
+                                            color: scheme.primary,
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: AppSpacing.md),
+                                  Text(
+                                    venue.name,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: text.displaySmall,
+                                  ),
+                                  const SizedBox(height: AppSpacing.md),
+                                  _MetaLine(
+                                    icon: AppIcons.place,
+                                    label: venue.address,
+                                  ),
+                                  const SizedBox(height: AppSpacing.sm),
+                                  _MetaLine(
+                                    icon: AppIcons.schedule,
+                                    label: l10n.hoursRange(
+                                      formatClock(venue.openingMinutes),
+                                      formatClock(venue.closingMinutes),
+                                    ),
+                                  ),
+                                  const SizedBox(height: AppSpacing.sm),
+                                  _MetaLine(
+                                    icon: AppIcons.phone,
+                                    label: venue.phoneNumber,
+                                  ),
+                                ],
                               ),
-                            ],
-                            const Spacer(),
-                            Icon(
-                              venueTypeIcon(venue.type),
-                              color: scheme.primary,
                             ),
-                            const SizedBox(width: AppSpacing.sm),
-                            Flexible(
-                              child: Text(
-                                venueTypeLabel(l10n, venue.type),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: text.labelLarge?.copyWith(
-                                  color: scheme.primary,
-                                  fontWeight: FontWeight.w700,
-                                ),
+                            const SizedBox(width: AppSpacing.md),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  _TablesBand(
+                                    tables: widget.page.availableTables,
+                                    seated: seated,
+                                  ),
+                                  const SizedBox(height: AppSpacing.md),
+                                  AppTonalButton(
+                                    label: l10n.reserveNow,
+                                    icon: AppIcons.table,
+                                    onPressed: () => VenueReserveRoute(
+                                      id: widget.buildingId,
+                                    ).go(context),
+                                  ),
+                                ],
                               ),
                             ),
                           ],
-                        ),
-                        const SizedBox(height: AppSpacing.md),
-                        Text(
-                          venue.name,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: text.displaySmall,
-                        ),
-                        const SizedBox(height: AppSpacing.md),
-                        _MetaLine(icon: AppIcons.place, label: venue.address),
-                        const SizedBox(height: AppSpacing.sm),
-                        _MetaLine(
-                          icon: AppIcons.schedule,
-                          label: l10n.hoursRange(
-                            formatClock(venue.openingMinutes),
-                            formatClock(venue.closingMinutes),
-                          ),
-                        ),
-                        const SizedBox(height: AppSpacing.sm),
-                        _MetaLine(
-                          icon: AppIcons.phone,
-                          label: venue.phoneNumber,
                         ),
                         const SizedBox(height: AppSpacing.xl),
                         if (openHere) ...[
                           _OpenOrderBand(order: open),
                           const SizedBox(height: AppSpacing.xl),
                         ],
-                        _TablesBand(
-                          tables: widget.page.availableTables,
-                          seated: seated,
-                          onScan: openHere ? null : openScan,
-                        ),
                         const SizedBox(height: AppSpacing.xl),
                         Text(l10n.previewCategories, style: text.headlineSmall),
                         const SizedBox(height: AppSpacing.md),
@@ -286,55 +430,17 @@ class _DetailBodyState extends ConsumerState<_DetailBody> {
                               },
                             ),
                           ),
+                        const SizedBox(height: AppSpacing.xl),
+                        if (!widget.page.customerOrdering)
+                          Text(
+                            l10n.orderingUnavailable,
+                            textAlign: TextAlign.center,
+                            style: text.bodyMedium?.copyWith(
+                              color: scheme.error,
+                            ),
+                          ),
                       ]),
                     ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(
-            AppSpacing.lg,
-            AppSpacing.sm,
-            AppSpacing.lg,
-            AppSpacing.lg,
-          ),
-          child: Align(
-            alignment: Alignment.topCenter,
-            heightFactor: 1,
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(
-                maxWidth: AppBreakpoints.pageMax,
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (!widget.page.customerOrdering) ...[
-                    Text(
-                      l10n.orderingUnavailable,
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.error,
-                      ),
-                    ),
-                    const SizedBox(height: AppSpacing.sm),
-                  ],
-                  if (widget.page.reservationsEnabled) ...[
-                    AppFilledButton(
-                      label: l10n.reserveTable,
-                      icon: AppIcons.table,
-                      onPressed: () => VenueReserveRoute(
-                        id: widget.buildingId,
-                      ).go(context),
-                    ),
-                    const SizedBox(height: AppSpacing.sm),
-                  ],
-                  AppFilledButton(
-                    label: l10n.menu,
-                    icon: AppIcons.menuBook,
-                    onPressed: openMenu,
                   ),
                 ],
               ),
@@ -362,14 +468,19 @@ class _OpenOrderBand extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppRadii.lg),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.lg),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+        padding: const EdgeInsetsDirectional.fromSTEB(
+          AppSpacing.lg,
+          AppSpacing.md,
+          AppSpacing.sm,
+          AppSpacing.md,
+        ),
+        child: Row(
           children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
                     l10n.openOrderNote,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
@@ -378,37 +489,41 @@ class _OpenOrderBand extends StatelessWidget {
                       fontWeight: FontWeight.w700,
                     ),
                   ),
-                ),
-                const SizedBox(width: AppSpacing.md),
-                Text(
-                  formatMenuPrice(order.totalAmount, order.currencyCode),
-                  style: text.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w700,
+                  const SizedBox(height: AppSpacing.xs),
+                  Text(
+                    l10n.openOrderLead,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: text.bodyMedium?.copyWith(
+                      color: scheme.onSurfaceVariant,
+                    ),
                   ),
-                ),
-              ],
+                  const SizedBox(height: AppSpacing.sm),
+                  Text(
+                    formatMenuPrice(order.totalAmount, order.currencyCode),
+                    style: text.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ],
+              ),
             ),
-            const SizedBox(height: AppSpacing.lg),
-            Row(
-              children: [
-                Expanded(
-                  child: AppFilledButton(
-                    label: l10n.currentOrder,
-                    icon: AppIcons.receipt,
-                    onPressed: () => CustomerOrderRoute(
-                      id: order.buildingId.uuid,
-                      orderId: order.id.uuid,
-                    ).push(context),
+            TextButton(
+              onPressed: () => CustomerOrderRoute(
+                id: order.buildingId.uuid,
+                orderId: order.id.uuid,
+              ).push(context),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(l10n.openOrderDetails),
+                  const SizedBox(width: AppSpacing.xs),
+                  Transform.flip(
+                    flipX: Directionality.of(context) == TextDirection.rtl,
+                    child: const Icon(AppIcons.forward, size: 18),
                   ),
-                ),
-                const SizedBox(width: AppSpacing.sm),
-                Expanded(
-                  child: AppTonalButton(
-                    label: l10n.orderHistory,
-                    onPressed: () => const OrderHistoryRoute().push(context),
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ],
         ),
@@ -418,15 +533,10 @@ class _OpenOrderBand extends StatelessWidget {
 }
 
 class _TablesBand extends StatelessWidget {
-  const _TablesBand({
-    required this.tables,
-    required this.seated,
-    required this.onScan,
-  });
+  const _TablesBand({required this.tables, required this.seated});
 
   final List<CustomerTablePreview> tables;
   final CustomerSeatedTable? seated;
-  final VoidCallback? onScan;
 
   @override
   Widget build(BuildContext context) {
@@ -442,6 +552,7 @@ class _TablesBand extends StatelessWidget {
         padding: const EdgeInsets.all(AppSpacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
           children: [
             Row(
               children: [
@@ -489,19 +600,6 @@ class _TablesBand extends StatelessWidget {
                 ],
               ),
             ],
-            const SizedBox(height: AppSpacing.lg),
-            AppTonalButton(
-              label: seated == null ? l10n.scanTable : l10n.changeTable,
-              icon: AppIcons.qrScan,
-              onPressed: onScan,
-            ),
-            if (onScan == null) ...[
-              const SizedBox(height: AppSpacing.sm),
-              Text(
-                l10n.scanDisabled,
-                style: text.bodySmall?.copyWith(color: AppColors.moss),
-              ),
-            ],
           ],
         ),
       ),
@@ -533,24 +631,39 @@ class _TableChip extends StatelessWidget {
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  l10n.tableNumber(table.number),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: text.labelLarge?.copyWith(
-                    color: foreground,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                if (yours) ...[
-                  const SizedBox(width: AppSpacing.xs),
-                  Icon(AppIcons.check, size: 16, color: foreground),
-                ],
-              ],
+            LayoutBuilder(
+              builder: (context, constraints) {
+                final iconSpace = yours ? 16 + AppSpacing.xs : 0.0;
+                final textMax = constraints.maxWidth.isFinite
+                    ? (constraints.maxWidth - iconSpace).clamp(
+                        0.0,
+                        constraints.maxWidth,
+                      )
+                    : double.infinity;
+                return Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ConstrainedBox(
+                      constraints: BoxConstraints(maxWidth: textMax),
+                      child: Text(
+                        l10n.tableNumber(table.number),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: text.labelLarge?.copyWith(
+                          color: foreground,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                    if (yours) ...[
+                      const SizedBox(width: AppSpacing.xs),
+                      Icon(AppIcons.check, size: 16, color: foreground),
+                    ],
+                  ],
+                );
+              },
             ),
             Text(
               l10n.seatCount(table.maxSeats),
@@ -765,10 +878,6 @@ class _VenueMessage extends StatelessWidget {
       padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(
         children: [
-          const Align(
-            alignment: AlignmentDirectional.centerStart,
-            child: VenueBackButton(),
-          ),
           const Spacer(),
           AppErrorBanner(message: message),
           AppTonalButton(label: l10n.retry, onPressed: onRetry),

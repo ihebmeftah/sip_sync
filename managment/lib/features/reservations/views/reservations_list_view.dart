@@ -13,6 +13,7 @@ import '../../../core/widgets/app_loader.dart';
 import '../../../core/widgets/pack_locked_action.dart';
 import '../../../core/widgets/refresh_on_appear.dart';
 import '../../../l10n/generated/app_localizations.dart';
+import '../../tables/view_models/tables_view_model.dart';
 import '../view_models/reservations_view_model.dart';
 
 /// Bookings for one UTC day, with a way to add one when the pack allows it.
@@ -49,6 +50,10 @@ class _ReservationsListViewState extends ConsumerState<ReservationsListView> {
     final access = FloorAccess.fromSession(ref.watch(appSessionStoreProvider));
     final packOn = building?.pack.reservations == true;
     final cap = building?.pack.maxReservationsPerDay;
+    final tables = ref.watch(tablesViewModelProvider(widget.buildingId));
+    final activeTables =
+        tables.asData?.value.where((row) => row.isActive).toList() ??
+        const <VenueTableView>[];
     final items = day.asData?.value.items ?? const <ReservationView>[];
     final showingToday = _isToday(day.asData?.value.day);
     final usedToday = items
@@ -130,8 +135,19 @@ class _ReservationsListViewState extends ConsumerState<ReservationsListView> {
               for (final row in value.items)
                 _ReservationCard(
                   row: row,
+                  onConfirm:
+                      row.status == ReservationStatus.requested &&
+                          access.canManageReservations
+                      ? () => _confirm(row)
+                      : null,
+                  onAssign:
+                      row.status == ReservationStatus.confirmed &&
+                          access.canManageReservations
+                      ? () => _assign(row, activeTables)
+                      : null,
                   onCancel:
-                      row.status == ReservationStatus.booked &&
+                      (row.status == ReservationStatus.requested ||
+                              row.status == ReservationStatus.confirmed) &&
                           access.canManageReservations
                       ? () => _cancel(row)
                       : null,
@@ -148,6 +164,38 @@ class _ReservationsListViewState extends ConsumerState<ReservationsListView> {
     }
     final now = DateTime.now();
     return day.year == now.year && day.month == now.month && day.day == now.day;
+  }
+
+  Future<void> _confirm(ReservationView row) async {
+    try {
+      await ref
+          .read(reservationsViewModelProvider(widget.buildingId).notifier)
+          .confirm(row.id);
+    } catch (error) {
+      if (mounted) {
+        captureError(context, error);
+      }
+    }
+  }
+
+  Future<void> _assign(ReservationView row, List<VenueTableView> tables) async {
+    final selected = await showDialog<List<UuidValue>>(
+      context: context,
+      builder: (context) =>
+          _AssignTablesDialog(tables: tables, initial: row.tableIds.toSet()),
+    );
+    if (selected == null || !mounted) {
+      return;
+    }
+    try {
+      await ref
+          .read(reservationsViewModelProvider(widget.buildingId).notifier)
+          .assignTables(row.id, selected);
+    } catch (error) {
+      if (mounted) {
+        captureError(context, error);
+      }
+    }
   }
 
   Future<void> _cancel(ReservationView row) async {
@@ -185,16 +233,25 @@ class _ReservationsListViewState extends ConsumerState<ReservationsListView> {
 }
 
 class _ReservationCard extends StatelessWidget {
-  const _ReservationCard({required this.row, required this.onCancel});
+  const _ReservationCard({
+    required this.row,
+    required this.onConfirm,
+    required this.onAssign,
+    required this.onCancel,
+  });
 
   final ReservationView row;
+  final VoidCallback? onConfirm;
+  final VoidCallback? onAssign;
   final VoidCallback? onCancel;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final text = Theme.of(context).textTheme;
-    final tables = row.tableNumbers.join(', ');
+    final tables = row.tableNumbers.isEmpty
+        ? l10n.reservationNoTable
+        : '${l10n.reservationTables} ${row.tableNumbers.join(', ')}';
     return Card(
       margin: const EdgeInsets.only(bottom: AppSpacing.md),
       child: Padding(
@@ -204,19 +261,29 @@ class _ReservationCard extends StatelessWidget {
           children: [
             Text(row.guestName, style: text.titleMedium),
             const SizedBox(height: AppSpacing.xs),
-            Text(
-              '${_clock(row.startsAt)} – ${_clock(row.endsAt)} · ${l10n.reservationTables} $tables',
-            ),
+            Text('${_clock(row.startsAt)} – ${_clock(row.endsAt)} · $tables'),
             if (row.guestPhone != null) Text(row.guestPhone!),
             Text('${_status(l10n, row.status)} · ${row.paidAmount} '),
-            if (onCancel != null)
-              Align(
-                alignment: AlignmentDirectional.centerEnd,
-                child: TextButton(
-                  onPressed: onCancel,
-                  child: Text(l10n.reservationCancel),
-                ),
-              ),
+            Wrap(
+              spacing: AppSpacing.sm,
+              children: [
+                if (onConfirm != null)
+                  TextButton(
+                    onPressed: onConfirm,
+                    child: Text(l10n.reservationConfirm),
+                  ),
+                if (onAssign != null)
+                  TextButton(
+                    onPressed: onAssign,
+                    child: Text(l10n.reservationAssignTable),
+                  ),
+                if (onCancel != null)
+                  TextButton(
+                    onPressed: onCancel,
+                    child: Text(l10n.reservationCancel),
+                  ),
+              ],
+            ),
           ],
         ),
       ),
@@ -232,10 +299,82 @@ class _ReservationCard extends StatelessWidget {
 
   String _status(AppLocalizations l10n, ReservationStatus status) {
     return switch (status) {
-      ReservationStatus.booked => l10n.reservationStatusBooked,
+      ReservationStatus.requested => l10n.reservationStatusRequested,
+      ReservationStatus.confirmed => l10n.reservationStatusConfirmed,
       ReservationStatus.arrived => l10n.reservationStatusArrived,
       ReservationStatus.cancelled => l10n.reservationStatusCancelled,
       ReservationStatus.noShow => l10n.reservationStatusNoShow,
     };
+  }
+}
+
+/// Picks the tables for a confirmed reservation. Empty selection stays on screen.
+class _AssignTablesDialog extends StatefulWidget {
+  const _AssignTablesDialog({required this.tables, required this.initial});
+
+  final List<VenueTableView> tables;
+  final Set<UuidValue> initial;
+
+  @override
+  State<_AssignTablesDialog> createState() => _AssignTablesDialogState();
+}
+
+class _AssignTablesDialogState extends State<_AssignTablesDialog> {
+  late final Set<UuidValue> _selected = {...widget.initial};
+  var _showError = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return AlertDialog(
+      title: Text(l10n.reservationAssignTable),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Wrap(
+            spacing: AppSpacing.sm,
+            children: [
+              for (final table in widget.tables)
+                FilterChip(
+                  label: Text('${table.number}'),
+                  selected: _selected.contains(table.id),
+                  onSelected: (selected) {
+                    setState(() {
+                      _showError = false;
+                      if (selected) {
+                        _selected.add(table.id);
+                      } else {
+                        _selected.remove(table.id);
+                      }
+                    });
+                  },
+                ),
+            ],
+          ),
+          if (_showError)
+            Padding(
+              padding: const EdgeInsets.only(top: AppSpacing.sm),
+              child: AppErrorBanner(message: l10n.reservationSelectTables),
+            ),
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: Text(l10n.close),
+        ),
+        FilledButton(
+          onPressed: () {
+            if (_selected.isEmpty) {
+              setState(() => _showError = true);
+              return;
+            }
+            Navigator.of(context).pop(_selected.toList());
+          },
+          child: Text(l10n.reservationAssignTable),
+        ),
+      ],
+    );
   }
 }

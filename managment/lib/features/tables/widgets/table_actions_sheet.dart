@@ -124,12 +124,6 @@ class _TableActionsBodyState extends ConsumerState<_TableActionsBody> {
     }
     final multiOrder =
         ref.read(buildingSelectionProvider)?.tableMultiOrder ?? false;
-    if (widget.table.reservationPhase == ReservationPhase.holding) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.reservationHeldOrder)));
-      return;
-    }
     if (!multiOrder && widget.table.status == TableFloorStatus.occupied) {
       ScaffoldMessenger.of(
         context,
@@ -200,7 +194,6 @@ class _TableActionsBodyState extends ConsumerState<_TableActionsBody> {
     final canCreate =
         (isOwner || access.canCreateOrders) &&
         widget.table.isActive &&
-        widget.table.reservationPhase != ReservationPhase.holding &&
         (multiOrder || widget.table.status != TableFloorStatus.occupied);
 
     return Padding(

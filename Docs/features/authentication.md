@@ -42,17 +42,9 @@ Phone numbers for owners, employees, customers, and venues are stored in **E.164
 
 ## Local demo seed
 
-On development server boot, if `owner1@sipsync.dev` is missing, [DevSeed](../../sip_sync_server/lib/src/seed/dev_seed.dart) creates five owners (idempotent). Every password is `password1`. Venues sit around Greater Tunis so the customer map can rank them.
+On development server boot, if `owner.tn.01@sipsync.dev` is missing, [DevSeed](../../sip_sync_server/lib/src/seed/dev_seed.dart) creates 30 owners (idempotent). Every password is `password1`. Each owner has one real venue on the free pack: four in Sousse, six in Tunis, four in Hammamet, six in Stockholm, three in Marburg, four in Frankfurt, and three in Gießen. Sign in with `owner.tn.01` through `owner.tn.14`, `owner.se.01` through `owner.se.06`, and `owner.de.01` through `owner.de.10` at `@sipsync.dev`. `owner.tn.01` is Restaurant Café Seles in the Sousse medina.
 
-| Email | Building |
-| --- | --- |
-| `owner1@sipsync.dev` | Olive Café (Tunis) and Olive Café Carthage — coffee, pastries, breakfast |
-| `owner2@sipsync.dev` | Harbor Lounge, La Marsa — cocktails and snacks |
-| `owner3@sipsync.dev` | Dar El Medina — grills, salads, desserts |
-| `owner4@sipsync.dev` | Lac Social, Berges du Lac — drinks and bar bites |
-| `owner5@sipsync.dev` | Café des Nattes, Sidi Bou Said — tea and sweets |
-
-Each venue has categories, articles, ingredient stock, recipes, and tables.
+Each venue has ten menu categories, five to ten articles in each, ingredient stock, recipes, and tables.
 
 Wipe `.serverpod/development/pgdata` then `serverpod start` to reset and re-seed.
 

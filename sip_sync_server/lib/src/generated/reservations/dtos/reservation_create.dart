@@ -11,16 +11,15 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _is;
-import 'package:sip_sync_server/src/generated/protocol.dart' as _iaib1p48;
 
-/// Staff booking. Either [customerId] or [guestName] identifies the guest.
+/// Staff booking. Created already confirmed, with no table until one is assigned.
+/// Either [customerId] or [guestName] identifies the guest.
 abstract class ReservationCreate
     implements _is.SerializableModel, _is.ProtocolSerialization {
   ReservationCreate._({
     required this.buildingId,
-    required this.tableIds,
     required this.startsAt,
-    required this.endsAt,
+    this.endsAt,
     this.customerId,
     this.guestName,
     this.guestPhone,
@@ -29,9 +28,8 @@ abstract class ReservationCreate
 
   factory ReservationCreate({
     required _is.UuidValue buildingId,
-    required List<_is.UuidValue> tableIds,
     required DateTime startsAt,
-    required DateTime endsAt,
+    DateTime? endsAt,
     _is.UuidValue? customerId,
     String? guestName,
     String? guestPhone,
@@ -43,13 +41,12 @@ abstract class ReservationCreate
       buildingId: _is.UuidValueJsonExtension.fromJson(
         jsonSerialization['buildingId'],
       ),
-      tableIds: _iaib1p48.Protocol().deserialize<List<_is.UuidValue>>(
-        jsonSerialization['tableIds'],
-      ),
       startsAt: _is.DateTimeJsonExtension.fromJson(
         jsonSerialization['startsAt'],
       ),
-      endsAt: _is.DateTimeJsonExtension.fromJson(jsonSerialization['endsAt']),
+      endsAt: jsonSerialization['endsAt'] == null
+          ? null
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['endsAt']),
       customerId: jsonSerialization['customerId'] == null
           ? null
           : _is.UuidValueJsonExtension.fromJson(
@@ -63,11 +60,10 @@ abstract class ReservationCreate
 
   _is.UuidValue buildingId;
 
-  List<_is.UuidValue> tableIds;
-
   DateTime startsAt;
 
-  DateTime endsAt;
+  /// Omitted ends are two hours after [startsAt].
+  DateTime? endsAt;
 
   _is.UuidValue? customerId;
 
@@ -82,7 +78,6 @@ abstract class ReservationCreate
   @_is.useResult
   ReservationCreate copyWith({
     _is.UuidValue? buildingId,
-    List<_is.UuidValue>? tableIds,
     DateTime? startsAt,
     DateTime? endsAt,
     _is.UuidValue? customerId,
@@ -95,9 +90,8 @@ abstract class ReservationCreate
     return {
       '__className__': 'ReservationCreate',
       'buildingId': buildingId.toJson(),
-      'tableIds': tableIds.toJson(valueToJson: (v) => v.toJson()),
       'startsAt': startsAt.toJson(),
-      'endsAt': endsAt.toJson(),
+      if (endsAt != null) 'endsAt': endsAt?.toJson(),
       if (customerId != null) 'customerId': customerId?.toJson(),
       if (guestName != null) 'guestName': guestName,
       if (guestPhone != null) 'guestPhone': guestPhone,
@@ -110,9 +104,8 @@ abstract class ReservationCreate
     return {
       '__className__': 'ReservationCreate',
       'buildingId': buildingId.toJson(),
-      'tableIds': tableIds.toJson(valueToJson: (v) => v.toJson()),
       'startsAt': startsAt.toJson(),
-      'endsAt': endsAt.toJson(),
+      if (endsAt != null) 'endsAt': endsAt?.toJson(),
       if (customerId != null) 'customerId': customerId?.toJson(),
       if (guestName != null) 'guestName': guestName,
       if (guestPhone != null) 'guestPhone': guestPhone,
@@ -131,16 +124,14 @@ class _Undefined {}
 class _ReservationCreateImpl extends ReservationCreate {
   _ReservationCreateImpl({
     required _is.UuidValue buildingId,
-    required List<_is.UuidValue> tableIds,
     required DateTime startsAt,
-    required DateTime endsAt,
+    DateTime? endsAt,
     _is.UuidValue? customerId,
     String? guestName,
     String? guestPhone,
     required double paidAmount,
   }) : super._(
          buildingId: buildingId,
-         tableIds: tableIds,
          startsAt: startsAt,
          endsAt: endsAt,
          customerId: customerId,
@@ -155,9 +146,8 @@ class _ReservationCreateImpl extends ReservationCreate {
   @override
   ReservationCreate copyWith({
     _is.UuidValue? buildingId,
-    List<_is.UuidValue>? tableIds,
     DateTime? startsAt,
-    DateTime? endsAt,
+    Object? endsAt = _Undefined,
     Object? customerId = _Undefined,
     Object? guestName = _Undefined,
     Object? guestPhone = _Undefined,
@@ -165,9 +155,8 @@ class _ReservationCreateImpl extends ReservationCreate {
   }) {
     return ReservationCreate(
       buildingId: buildingId ?? this.buildingId,
-      tableIds: tableIds ?? this.tableIds.map((e0) => e0).toList(),
       startsAt: startsAt ?? this.startsAt,
-      endsAt: endsAt ?? this.endsAt,
+      endsAt: endsAt is DateTime? ? endsAt : this.endsAt,
       customerId: customerId is _is.UuidValue? ? customerId : this.customerId,
       guestName: guestName is String? ? guestName : this.guestName,
       guestPhone: guestPhone is String? ? guestPhone : this.guestPhone,

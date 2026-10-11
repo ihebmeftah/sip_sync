@@ -8,23 +8,26 @@ Status: shipped
 
 ## Actors and permissions
 
-- **Owner** — create, list, cancel, and confirm a reservation for their venue. Always allowed when the pack includes reservations.
-- **Employee** — the same actions when their access profile has `reservations`. Scan-to-confirm uses that flag. Order creation alone does not confirm a reservation.
-- **Customer** — books for themselves when the pack includes reservations. A customer scan does not confirm arrival.
-- **Super admin** — turns the capability and the daily cap on or off in the pack form.
+- **Owner** — create, list, confirm, cancel, and assign tables. Always allowed when the pack includes reservations.
+- **Employee** — the same actions when their access profile has `reservations`. Gerant is seeded on. Waiter and Barista stay off. An order does not require a scan to confirm arrival.
+- **Customer** — requests a time for themselves when the pack includes reservations. They do not pick a table, and they cannot confirm the request. A customer scan does not confirm arrival. They can cancel their own future request or confirmed reservation.
+- **Super admin** — turns the capability and the daily cap on or off in the pack form. They do not create reservations.
 
 Route guards are UX only. The endpoint checks the actor and the pack.
 
 ## Flow
 
 1. The building stores a reservation fee in the venue currency. It defaults to 0 and prefills the paid amount on a staff booking.
-2. Staff pick one or more active tables, a start, an end, and either an existing customer (looked up by phone) or a guest name and phone. The paid amount can differ from the building fee.
-3. A customer books the same tables and times for their own account. The paid amount is stored as 0.
-4. A pack with reservations off rejects the create. `maxReservationsPerDay` counts non-cancelled reservations whose start falls on that UTC date. Null means no cap.
-5. Overlapping bookings on the same table are rejected while the other row is `booked` or `arrived`.
-6. From 30 minutes before the start, the floor marks the table reserved and names the guest. Ordering still works.
-7. At the start, ordering on those tables is refused until an owner or an employee with `reservations` scans one of the tables. That scan sets the reservation to `arrived`, and orders are allowed again.
-8. If the end passes while the row is still `booked`, it becomes `noShow` and the tables unlock. Staff can cancel a `booked` row before then. A customer can cancel their own future `booked` row.
+2. A customer taps **Reserve now**. A dialog asks for the date and the start, then confirm sends the request for their own account. The booking lasts two hours from that start. Opening and closing times do not limit it. The row is `requested`, the paid amount is 0, and no table is attached. The same dialog opens again from the request screen, which lists this venue's upcoming reservations.
+3. An owner or an employee with `reservations` confirms that request (`confirmed`) or cancels it. Confirmation does not choose a table.
+4. After it is `confirmed`, the same staff assign one or more active tables. Overlap is checked at assignment, against other `confirmed` or `arrived` rows on those tables. Assigning again replaces the previous tables.
+5. Staff can also create a reservation from the management app. That row is stored as `confirmed` immediately (the guest is an existing customer, or a typed name and phone). The customer control is a searchable dropdown: after typing stops for one second it shows up to 20 matches on name or phone, and choosing a row fills the field. A query shorter than two characters is not searched. It still needs a table. The paid amount can differ from the building fee. The same two-hour length applies when no end is sent.
+6. A pack with reservations off rejects the create. `maxReservationsPerDay` counts non-cancelled reservations whose start falls on that UTC date. Null means no cap. A request whose end has passed is cancelled, so it stops counting.
+7. From 30 minutes before the start, a confirmed reservation that already has a table marks that table reserved and names the guest. Ordering still works.
+8. At the start, the table stays marked reserved and names the guest, and orders are allowed. A scan does not have to confirm arrival first. A confirmed reservation with no table does not hold the floor.
+9. If the end passes while the row is still `confirmed`, it becomes `noShow` and any tables unlock. Staff can cancel a `requested` or `confirmed` row before arrival.
+
+Rows saved by the previous flow as `booked` are rewritten to `confirmed` the next time reservations are read, keeping their tables.
 
 ## Data
 
@@ -32,11 +35,11 @@ Route guards are UX only. The endpoint checks the actor and the pack.
 - `pack.reservations` / `pack.maxReservationsPerDay` — switch and daily cap.
 - `employee_access.reservations` — staff permission. Gerant is seeded on. Waiter and Barista stay off.
 - `reservation` — times, guest name and phone, optional customer, paid amount, status, who created it, who confirmed it.
-- `table_reservation` — tables on that reservation. The model is `TableReservation` so it does not collide with Serverpod's query class for `Reservation`.
+- `table_reservation` — tables on that reservation, empty until staff assign them. The model is `TableReservation` so it does not collide with Serverpod's query class for `Reservation`.
 - `ReservationCreate` / `CustomerReservationCreate` / `ReservationView` / `ReservationCustomerMatch`.
-- `ReservationException` / `ReservationErrorCode` — `invalidInput`, `notAuthorized`, `notFound`, `overlap`. Pack failures stay `PackException`. A held table on order create is `OrderErrorCode.reservationHeld`.
+- `ReservationException` / `ReservationErrorCode` — `invalidInput`, `notAuthorized`, `notFound`, `overlap`. Pack failures stay `PackException`.
 - `VenueTableView` carries `reservationPhase` (`none`, `soon`, `holding`), the guest name, and the start, so the floor can warn without a second call.
-- `CustomerVenueDetail.reservationsEnabled` and `reservationFee` tell the customer app whether booking is open. `bookableTables` lists every active table, including one that is busy right now.
+- `CustomerVenueDetail.reservationsEnabled` and `reservationFee` tell the customer app whether requests are open.
 
 Seeded caps: free off, counter 8/day, floor 30/day, house and group on with no cap. Existing databases get those values from the migration that adds the columns. Later pack edits are left alone.
 
