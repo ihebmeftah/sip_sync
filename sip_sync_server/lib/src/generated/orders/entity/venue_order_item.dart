@@ -15,6 +15,7 @@ import 'package:serverpod/serverpod.dart' as _is;
 import 'package:sip_sync_server/src/generated/protocol.dart' as _iaib1p48;
 import '../../auth/dtos/actor_type.dart' as _i6ch5qy5;
 import '../../menu/entity/menu_article.dart' as _is7gdyz6;
+import '../../orders/dtos/order_cancellation_reason.dart' as _i9x1n0bn;
 import '../../orders/dtos/order_item_status.dart' as _iw3cmuga;
 import '../../orders/entity/venue_order.dart' as _iwamn8sj;
 
@@ -48,6 +49,7 @@ abstract class VenueOrderItem
     this.servedAt,
     this.paidAt,
     this.cancelledAt,
+    this.cancellationReason,
   }) : createdAt = createdAt ?? DateTime.now(),
        updatedAt = updatedAt ?? DateTime.now();
 
@@ -78,6 +80,7 @@ abstract class VenueOrderItem
     DateTime? servedAt,
     DateTime? paidAt,
     DateTime? cancelledAt,
+    _i9x1n0bn.OrderCancellationReason? cancellationReason,
   }) = _VenueOrderItemImpl;
 
   factory VenueOrderItem.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -182,6 +185,11 @@ abstract class VenueOrderItem
           : _is.DateTimeJsonExtension.fromJson(
               jsonSerialization['cancelledAt'],
             ),
+      cancellationReason: jsonSerialization['cancellationReason'] == null
+          ? null
+          : _i9x1n0bn.OrderCancellationReason.fromJson(
+              (jsonSerialization['cancellationReason'] as String),
+            ),
     );
   }
 
@@ -242,6 +250,9 @@ abstract class VenueOrderItem
 
   DateTime? cancelledAt;
 
+  /// Why this line was cancelled. Null until it is cancelled.
+  _i9x1n0bn.OrderCancellationReason? cancellationReason;
+
   @override
   _is.Table<_is.UuidValue?> get table => t;
 
@@ -275,6 +286,7 @@ abstract class VenueOrderItem
     DateTime? servedAt,
     DateTime? paidAt,
     DateTime? cancelledAt,
+    _i9x1n0bn.OrderCancellationReason? cancellationReason,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -306,6 +318,8 @@ abstract class VenueOrderItem
       if (servedAt != null) 'servedAt': servedAt?.toJson(),
       if (paidAt != null) 'paidAt': paidAt?.toJson(),
       if (cancelledAt != null) 'cancelledAt': cancelledAt?.toJson(),
+      if (cancellationReason != null)
+        'cancellationReason': cancellationReason?.toJson(),
     };
   }
 
@@ -378,6 +392,7 @@ class _VenueOrderItemImpl extends VenueOrderItem {
     DateTime? servedAt,
     DateTime? paidAt,
     DateTime? cancelledAt,
+    _i9x1n0bn.OrderCancellationReason? cancellationReason,
   }) : super._(
          id: id,
          orderId: orderId,
@@ -405,6 +420,7 @@ class _VenueOrderItemImpl extends VenueOrderItem {
          servedAt: servedAt,
          paidAt: paidAt,
          cancelledAt: cancelledAt,
+         cancellationReason: cancellationReason,
        );
 
   /// Returns a shallow copy of this [VenueOrderItem]
@@ -438,6 +454,7 @@ class _VenueOrderItemImpl extends VenueOrderItem {
     Object? servedAt = _Undefined,
     Object? paidAt = _Undefined,
     Object? cancelledAt = _Undefined,
+    Object? cancellationReason = _Undefined,
   }) {
     return VenueOrderItem(
       id: id is _is.UuidValue? ? id : this.id,
@@ -484,6 +501,10 @@ class _VenueOrderItemImpl extends VenueOrderItem {
       servedAt: servedAt is DateTime? ? servedAt : this.servedAt,
       paidAt: paidAt is DateTime? ? paidAt : this.paidAt,
       cancelledAt: cancelledAt is DateTime? ? cancelledAt : this.cancelledAt,
+      cancellationReason:
+          cancellationReason is _i9x1n0bn.OrderCancellationReason?
+          ? cancellationReason
+          : this.cancellationReason,
     );
   }
 }
@@ -640,6 +661,16 @@ class VenueOrderItemUpdateTable extends _is.UpdateTable<VenueOrderItemTable> {
         table.cancelledAt,
         value,
       );
+
+  _is.ColumnValue<
+    _i9x1n0bn.OrderCancellationReason,
+    _i9x1n0bn.OrderCancellationReason
+  >
+  cancellationReason(_i9x1n0bn.OrderCancellationReason? value) =>
+      _is.ColumnValue(
+        table.cancellationReason,
+        value,
+      );
 }
 
 class VenueOrderItemTable extends _is.Table<_is.UuidValue?> {
@@ -745,6 +776,11 @@ class VenueOrderItemTable extends _is.Table<_is.UuidValue?> {
       'cancelledAt',
       this,
     );
+    cancellationReason = _is.ColumnEnum(
+      'cancellationReason',
+      this,
+      _is.EnumSerialization.byName,
+    );
   }
 
   late final VenueOrderItemUpdateTable updateTable;
@@ -799,6 +835,10 @@ class VenueOrderItemTable extends _is.Table<_is.UuidValue?> {
 
   late final _is.ColumnDateTime cancelledAt;
 
+  /// Why this line was cancelled. Null until it is cancelled.
+  late final _is.ColumnEnum<_i9x1n0bn.OrderCancellationReason>
+  cancellationReason;
+
   _iwamn8sj.VenueOrderTable get order {
     if (_order != null) return _order!;
     _order = _is.createRelationTable(
@@ -851,6 +891,7 @@ class VenueOrderItemTable extends _is.Table<_is.UuidValue?> {
     servedAt,
     paidAt,
     cancelledAt,
+    cancellationReason,
   ];
 
   @override

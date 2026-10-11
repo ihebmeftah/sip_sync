@@ -17,6 +17,8 @@ fields:
   cancelledByType: ActorType?
   cancelledById: UuidValue?
   cancelledAt: DateTime?
+  ### Why the whole order was cancelled. Null until it is cancelled.
+  cancellationReason: OrderCancellationReason?
   createdAt: DateTime, defaultModel=now
   updatedAt: DateTime, defaultModel=now
   items: List<VenueOrderItem>?, relation(name=order_items)

@@ -14,6 +14,7 @@ import '../../venue/menu_price.dart';
 import '../../venue/view_models/customer_order_view_model.dart';
 import '../../venue/widgets/venue_chrome.dart';
 import '../../../core/paging/list_paging.dart';
+import '../order_cancellation_label.dart';
 import '../order_history_range.dart';
 import '../view_models/customer_orders_view_model.dart';
 
@@ -302,6 +303,15 @@ class _OrderCard extends StatelessWidget {
               ),
               const SizedBox(height: AppSpacing.sm),
               _StatusChip(status: row.status),
+              if (row.cancellationReason != null) ...[
+                const SizedBox(height: AppSpacing.xs),
+                Text(
+                  orderCancellationReasonLabel(l10n, row.cancellationReason!),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: text.bodySmall?.copyWith(color: AppColors.rose),
+                ),
+              ],
             ],
           ),
         ),

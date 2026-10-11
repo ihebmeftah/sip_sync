@@ -45,6 +45,8 @@ Failure mapError(Object error) {
       OrderErrorCode.appendNotAllowed => 'errorAppendNotAllowed',
       OrderErrorCode.permissionDenied => 'errorNotAuthorized',
       OrderErrorCode.reservationHeld => 'errorOrderReservationHeld',
+      OrderErrorCode.customerOrderingDisabled =>
+        'errorCustomerOrderingDisabled',
     });
   }
   if (error is ReservationException) {
@@ -53,6 +55,7 @@ Failure mapError(Object error) {
       ReservationErrorCode.notAuthorized => 'errorNotAuthorized',
       ReservationErrorCode.notFound => 'errorReservationNotFound',
       ReservationErrorCode.overlap => 'errorReservationOverlap',
+      ReservationErrorCode.disabled => 'errorReservationsDisabled',
     });
   }
   if (error is PlaceException) {
@@ -134,6 +137,8 @@ String lookupError(dynamic l10n, String key) {
     'errorPackFeatureReservations' => l10n.errorPackFeatureReservations,
     'errorPackLimitReservations' => l10n.errorPackLimitReservations,
     'errorOrderReservationHeld' => l10n.errorOrderReservationHeld,
+    'errorCustomerOrderingDisabled' => l10n.errorCustomerOrderingDisabled,
+    'errorReservationsDisabled' => l10n.errorReservationsDisabled,
     'errorReservationOverlap' => l10n.errorReservationOverlap,
     'errorReservationNotFound' => l10n.errorReservationNotFound,
     'reservationWindow' => l10n.reservationWindow,

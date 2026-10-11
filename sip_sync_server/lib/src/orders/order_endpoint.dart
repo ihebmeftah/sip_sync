@@ -56,8 +56,13 @@ class OrderEndpoint extends Endpoint {
     return _orders.updateItemStatus(session, request);
   }
 
-  /// Cancels an open order.
-  Future<OrderView> cancel(Session session, UuidValue orderId) {
-    return _orders.cancel(session, orderId);
+  /// Cancels an open order. [reason] is stored on the order and on each
+  /// line that was still open.
+  Future<OrderView> cancel(
+    Session session,
+    UuidValue orderId,
+    OrderCancellationReason reason,
+  ) {
+    return _orders.cancel(session, orderId, reason);
   }
 }

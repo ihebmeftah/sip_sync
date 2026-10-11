@@ -16,7 +16,10 @@ enum ReservationErrorCode implements _is.SerializableModel {
   invalidInput,
   notAuthorized,
   notFound,
-  overlap;
+  overlap,
+
+  /// Venue turned off reservations.
+  disabled;
 
   static ReservationErrorCode fromJson(String name) {
     switch (name) {
@@ -28,6 +31,8 @@ enum ReservationErrorCode implements _is.SerializableModel {
         return ReservationErrorCode.notFound;
       case 'overlap':
         return ReservationErrorCode.overlap;
+      case 'disabled':
+        return ReservationErrorCode.disabled;
       default:
         throw ArgumentError(
           'Value "$name" cannot be converted to "ReservationErrorCode"',

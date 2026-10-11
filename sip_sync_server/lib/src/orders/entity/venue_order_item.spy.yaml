@@ -27,6 +27,8 @@ fields:
   servedAt: DateTime?
   paidAt: DateTime?
   cancelledAt: DateTime?
+  ### Why this line was cancelled. Null until it is cancelled.
+  cancellationReason: OrderCancellationReason?
 indexes:
   venue_order_item_order_idx:
     fields: orderId

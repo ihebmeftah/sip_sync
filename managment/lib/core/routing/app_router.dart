@@ -53,6 +53,9 @@ GoRouter appRouter(Ref ref) {
         if (homeId != null && buildingId != homeId.uuid) {
           return employeeHome;
         }
+        if (store.isEmployee && location.contains('/configuration')) {
+          return employeeHome;
+        }
       }
       if (signedIn && !onAuth && !onBuildings && !onOps) {
         return employeeHome ?? const BuildingsRoute().location;

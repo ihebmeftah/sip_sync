@@ -13,6 +13,7 @@
 import 'package:serverpod/serverpod.dart' as _is;
 import 'package:sip_sync_server/src/generated/protocol.dart' as _iaib1p48;
 import '../../orders/dtos/customer_order_line.dart' as _iz4mz5d5;
+import '../../orders/dtos/order_cancellation_reason.dart' as _i9x1n0bn;
 import '../../orders/dtos/order_status.dart' as _iij1ihnv;
 
 /// Receipt a customer may see for an order they placed.
@@ -25,6 +26,7 @@ abstract class CustomerOrderView
     required this.tableNumber,
     required this.currencyCode,
     required this.status,
+    this.cancellationReason,
     required this.lines,
     required this.totalAmount,
   });
@@ -36,6 +38,7 @@ abstract class CustomerOrderView
     required int tableNumber,
     required String currencyCode,
     required _iij1ihnv.OrderStatus status,
+    _i9x1n0bn.OrderCancellationReason? cancellationReason,
     required List<_iz4mz5d5.CustomerOrderLine> lines,
     required double totalAmount,
   }) = _CustomerOrderViewImpl;
@@ -52,6 +55,11 @@ abstract class CustomerOrderView
       status: _iij1ihnv.OrderStatus.fromJson(
         (jsonSerialization['status'] as String),
       ),
+      cancellationReason: jsonSerialization['cancellationReason'] == null
+          ? null
+          : _i9x1n0bn.OrderCancellationReason.fromJson(
+              (jsonSerialization['cancellationReason'] as String),
+            ),
       lines: _iaib1p48.Protocol()
           .deserialize<List<_iz4mz5d5.CustomerOrderLine>>(
             jsonSerialization['lines'],
@@ -72,6 +80,9 @@ abstract class CustomerOrderView
 
   _iij1ihnv.OrderStatus status;
 
+  /// Set when the venue cancelled the whole order.
+  _i9x1n0bn.OrderCancellationReason? cancellationReason;
+
   List<_iz4mz5d5.CustomerOrderLine> lines;
 
   double totalAmount;
@@ -86,6 +97,7 @@ abstract class CustomerOrderView
     int? tableNumber,
     String? currencyCode,
     _iij1ihnv.OrderStatus? status,
+    _i9x1n0bn.OrderCancellationReason? cancellationReason,
     List<_iz4mz5d5.CustomerOrderLine>? lines,
     double? totalAmount,
   });
@@ -99,6 +111,8 @@ abstract class CustomerOrderView
       'tableNumber': tableNumber,
       'currencyCode': currencyCode,
       'status': status.toJson(),
+      if (cancellationReason != null)
+        'cancellationReason': cancellationReason?.toJson(),
       'lines': lines.toJson(valueToJson: (v) => v.toJson()),
       'totalAmount': totalAmount,
     };
@@ -114,6 +128,8 @@ abstract class CustomerOrderView
       'tableNumber': tableNumber,
       'currencyCode': currencyCode,
       'status': status.toJson(),
+      if (cancellationReason != null)
+        'cancellationReason': cancellationReason?.toJson(),
       'lines': lines.toJson(valueToJson: (v) => v.toJsonForProtocol()),
       'totalAmount': totalAmount,
     };
@@ -125,6 +141,8 @@ abstract class CustomerOrderView
   }
 }
 
+class _Undefined {}
+
 class _CustomerOrderViewImpl extends CustomerOrderView {
   _CustomerOrderViewImpl({
     required _is.UuidValue id,
@@ -133,6 +151,7 @@ class _CustomerOrderViewImpl extends CustomerOrderView {
     required int tableNumber,
     required String currencyCode,
     required _iij1ihnv.OrderStatus status,
+    _i9x1n0bn.OrderCancellationReason? cancellationReason,
     required List<_iz4mz5d5.CustomerOrderLine> lines,
     required double totalAmount,
   }) : super._(
@@ -142,6 +161,7 @@ class _CustomerOrderViewImpl extends CustomerOrderView {
          tableNumber: tableNumber,
          currencyCode: currencyCode,
          status: status,
+         cancellationReason: cancellationReason,
          lines: lines,
          totalAmount: totalAmount,
        );
@@ -157,6 +177,7 @@ class _CustomerOrderViewImpl extends CustomerOrderView {
     int? tableNumber,
     String? currencyCode,
     _iij1ihnv.OrderStatus? status,
+    Object? cancellationReason = _Undefined,
     List<_iz4mz5d5.CustomerOrderLine>? lines,
     double? totalAmount,
   }) {
@@ -167,6 +188,10 @@ class _CustomerOrderViewImpl extends CustomerOrderView {
       tableNumber: tableNumber ?? this.tableNumber,
       currencyCode: currencyCode ?? this.currencyCode,
       status: status ?? this.status,
+      cancellationReason:
+          cancellationReason is _i9x1n0bn.OrderCancellationReason?
+          ? cancellationReason
+          : this.cancellationReason,
       lines: lines ?? this.lines.map((e0) => e0.copyWith()).toList(),
       totalAmount: totalAmount ?? this.totalAmount,
     );

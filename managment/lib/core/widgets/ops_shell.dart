@@ -578,6 +578,15 @@ class OpsSideBar extends ConsumerWidget {
                           ReservationsRoute(buildingId: buildingId).go(context);
                         },
                       ),
+                    if (isOwner)
+                      _NavTile(
+                        icon: Icons.tune_outlined,
+                        label: l10n.navConfiguration,
+                        selected: location.endsWith('/configuration'),
+                        onTap: () => BuildingConfigurationRoute(
+                          buildingId: buildingId,
+                        ).go(context),
+                      ),
                     if (isEmployee)
                       _NavTile(
                         icon: Icons.qr_code_scanner_outlined,

@@ -208,7 +208,15 @@ void main() {
         64,
       );
 
-      await endpoints.order.cancel(setup.ownerSession, created.id);
+      final cancelled = await endpoints.order.cancel(
+        setup.ownerSession,
+        created.id,
+        OrderCancellationReason.ingredientOutOfStock,
+      );
+      expect(
+        cancelled.cancellationReason,
+        OrderCancellationReason.ingredientOutOfStock,
+      );
 
       final afterCancel = (await endpoints.ingredient.list(
         setup.ownerSession,
@@ -259,6 +267,108 @@ void main() {
         ),
       );
     });
+
+    test(
+      'names an out-of-stock ingredient and allows the order when configured',
+      () async {
+        final setup = await setupFixture();
+        final beans = await endpoints.ingredient.create(
+          setup.ownerSession,
+          IngredientCreate(
+            buildingId: setup.building.id,
+            name: 'Scarce beans',
+            unit: UnitsType.gram,
+            currentStock: 0,
+            thresholdStock: 5,
+          ),
+        );
+        await endpoints.articleComposition.create(
+          setup.ownerSession,
+          ArticleCompositionCreate(
+            articleId: setup.article.id,
+            ingredientId: beans.id,
+            quantity: 18,
+          ),
+        );
+
+        final listed = await endpoints.menuArticle.list(
+          setup.ownerSession,
+          setup.building.id,
+        );
+        expect(
+          listed
+              .firstWhere((row) => row.id == setup.article.id)
+              .outOfStockIngredientNames,
+          ['Scarce beans'],
+        );
+
+        final building = setup.building;
+        Future<void> save({required bool allowOutOfStockOrders}) {
+          return endpoints.building.update(
+            setup.ownerSession,
+            BuildingUpdate(
+              id: building.id,
+              name: building.name,
+              type: building.type,
+              address: building.address,
+              latitude: building.latitude,
+              longitude: building.longitude,
+              openingMinutes: building.openingMinutes,
+              closingMinutes: building.closingMinutes,
+              currencyCode: building.currencyCode,
+              phoneNumber: building.phoneNumber,
+              whatsapp: building.whatsapp,
+              instagram: building.instagram,
+              facebook: building.facebook,
+              otherLinks: building.otherLinks,
+              tableMultiOrder: building.tableMultiOrder,
+              allowAppendingItemsToOrder: building.allowAppendingItemsToOrder,
+              strictMode: building.strictMode,
+              strictModeSteps: building.strictModeSteps,
+              reservationFee: building.reservationFee,
+              allowOutOfStockOrders: allowOutOfStockOrders,
+            ),
+          );
+        }
+
+        await expectLater(
+          endpoints.order.create(
+            setup.ownerSession,
+            OrderCreate(
+              buildingId: building.id,
+              venueTableId: setup.table.id,
+              items: [OrderItemCreateLine(articleId: setup.article.id)],
+            ),
+          ),
+          throwsA(
+            isA<OrderException>().having(
+              (e) => e.code,
+              'code',
+              OrderErrorCode.insufficientStock,
+            ),
+          ),
+        );
+
+        await save(allowOutOfStockOrders: true);
+        final created = await endpoints.order.create(
+          setup.ownerSession,
+          OrderCreate(
+            buildingId: building.id,
+            venueTableId: setup.table.id,
+            items: [OrderItemCreateLine(articleId: setup.article.id)],
+          ),
+        );
+        expect(created.items, hasLength(1));
+        final after = (await endpoints.ingredient.list(
+          setup.ownerSession,
+          building.id,
+        )).items;
+        expect(
+          after.firstWhere((row) => row.id == beans.id).currentStock,
+          0,
+        );
+      },
+    );
 
     test(
       'blocks second order on occupied table when multi-order is off',

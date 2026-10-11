@@ -49,6 +49,7 @@ class _ReservationsListViewState extends ConsumerState<ReservationsListView> {
     final building = ref.watch(buildingSelectionProvider);
     final access = FloorAccess.fromSession(ref.watch(appSessionStoreProvider));
     final packOn = building?.pack.reservations == true;
+    final venueReservations = building?.reservationsEnabled ?? true;
     final cap = building?.pack.maxReservationsPerDay;
     final tables = ref.watch(tablesViewModelProvider(widget.buildingId));
     final activeTables =
@@ -85,7 +86,7 @@ class _ReservationsListViewState extends ConsumerState<ReservationsListView> {
                 locked: !packOn || capped,
                 child: AppFilledButton(
                   label: l10n.reservationNew,
-                  onPressed: packOn && !capped
+                  onPressed: packOn && venueReservations && !capped
                       ? () => ReservationCreateRoute(
                           buildingId: widget.buildingId,
                         ).go(context)

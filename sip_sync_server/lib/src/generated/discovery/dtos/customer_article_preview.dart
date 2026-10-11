@@ -24,6 +24,7 @@ abstract class CustomerArticlePreview
     this.description,
     required this.price,
     required this.ingredientNames,
+    required this.outOfStockIngredientNames,
   });
 
   factory CustomerArticlePreview({
@@ -34,6 +35,7 @@ abstract class CustomerArticlePreview
     String? description,
     required double price,
     required List<String> ingredientNames,
+    required List<String> outOfStockIngredientNames,
   }) = _CustomerArticlePreviewImpl;
 
   factory CustomerArticlePreview.fromJson(
@@ -51,6 +53,9 @@ abstract class CustomerArticlePreview
       ingredientNames: _iaib1p48.Protocol().deserialize<List<String>>(
         jsonSerialization['ingredientNames'],
       ),
+      outOfStockIngredientNames: _iaib1p48.Protocol().deserialize<List<String>>(
+        jsonSerialization['outOfStockIngredientNames'],
+      ),
     );
   }
 
@@ -66,8 +71,11 @@ abstract class CustomerArticlePreview
 
   double price;
 
-  /// Ingredient names in recipe order. No quantities or stock.
+  /// Ingredient names in recipe order. No quantities or stock levels.
   List<String> ingredientNames;
+
+  /// Recipe ingredients that cannot cover one more unit. Names only.
+  List<String> outOfStockIngredientNames;
 
   /// Returns a shallow copy of this [CustomerArticlePreview]
   /// with some or all fields replaced by the given arguments.
@@ -80,6 +88,7 @@ abstract class CustomerArticlePreview
     String? description,
     double? price,
     List<String>? ingredientNames,
+    List<String>? outOfStockIngredientNames,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -92,6 +101,7 @@ abstract class CustomerArticlePreview
       if (description != null) 'description': description,
       'price': price,
       'ingredientNames': ingredientNames.toJson(),
+      'outOfStockIngredientNames': outOfStockIngredientNames.toJson(),
     };
   }
 
@@ -106,6 +116,7 @@ abstract class CustomerArticlePreview
       if (description != null) 'description': description,
       'price': price,
       'ingredientNames': ingredientNames.toJson(),
+      'outOfStockIngredientNames': outOfStockIngredientNames.toJson(),
     };
   }
 
@@ -126,6 +137,7 @@ class _CustomerArticlePreviewImpl extends CustomerArticlePreview {
     String? description,
     required double price,
     required List<String> ingredientNames,
+    required List<String> outOfStockIngredientNames,
   }) : super._(
          id: id,
          categoryId: categoryId,
@@ -134,6 +146,7 @@ class _CustomerArticlePreviewImpl extends CustomerArticlePreview {
          description: description,
          price: price,
          ingredientNames: ingredientNames,
+         outOfStockIngredientNames: outOfStockIngredientNames,
        );
 
   /// Returns a shallow copy of this [CustomerArticlePreview]
@@ -148,6 +161,7 @@ class _CustomerArticlePreviewImpl extends CustomerArticlePreview {
     Object? description = _Undefined,
     double? price,
     List<String>? ingredientNames,
+    List<String>? outOfStockIngredientNames,
   }) {
     return CustomerArticlePreview(
       id: id ?? this.id,
@@ -158,6 +172,9 @@ class _CustomerArticlePreviewImpl extends CustomerArticlePreview {
       price: price ?? this.price,
       ingredientNames:
           ingredientNames ?? this.ingredientNames.map((e0) => e0).toList(),
+      outOfStockIngredientNames:
+          outOfStockIngredientNames ??
+          this.outOfStockIngredientNames.map((e0) => e0).toList(),
     );
   }
 }

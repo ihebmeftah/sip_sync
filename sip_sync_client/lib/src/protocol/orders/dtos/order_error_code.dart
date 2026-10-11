@@ -31,7 +31,10 @@ enum OrderErrorCode implements _isc.SerializableModel {
   permissionDenied,
 
   /// A reservation has started and staff have not confirmed arrival.
-  reservationHeld;
+  reservationHeld,
+
+  /// Venue turned off customer-app ordering.
+  customerOrderingDisabled;
 
   static OrderErrorCode fromJson(String name) {
     switch (name) {
@@ -53,6 +56,8 @@ enum OrderErrorCode implements _isc.SerializableModel {
         return OrderErrorCode.permissionDenied;
       case 'reservationHeld':
         return OrderErrorCode.reservationHeld;
+      case 'customerOrderingDisabled':
+        return OrderErrorCode.customerOrderingDisabled;
       default:
         throw ArgumentError(
           'Value "$name" cannot be converted to "OrderErrorCode"',

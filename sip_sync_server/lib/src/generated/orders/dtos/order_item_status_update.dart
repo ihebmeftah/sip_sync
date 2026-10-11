@@ -11,6 +11,7 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _is;
+import '../../orders/dtos/order_cancellation_reason.dart' as _i9x1n0bn;
 import '../../orders/dtos/order_item_status.dart' as _iw3cmuga;
 
 abstract class OrderItemStatusUpdate
@@ -18,11 +19,13 @@ abstract class OrderItemStatusUpdate
   OrderItemStatusUpdate._({
     required this.id,
     required this.status,
+    this.cancellationReason,
   });
 
   factory OrderItemStatusUpdate({
     required _is.UuidValue id,
     required _iw3cmuga.OrderItemStatus status,
+    _i9x1n0bn.OrderCancellationReason? cancellationReason,
   }) = _OrderItemStatusUpdateImpl;
 
   factory OrderItemStatusUpdate.fromJson(
@@ -33,6 +36,11 @@ abstract class OrderItemStatusUpdate
       status: _iw3cmuga.OrderItemStatus.fromJson(
         (jsonSerialization['status'] as String),
       ),
+      cancellationReason: jsonSerialization['cancellationReason'] == null
+          ? null
+          : _i9x1n0bn.OrderCancellationReason.fromJson(
+              (jsonSerialization['cancellationReason'] as String),
+            ),
     );
   }
 
@@ -40,12 +48,16 @@ abstract class OrderItemStatusUpdate
 
   _iw3cmuga.OrderItemStatus status;
 
+  /// Required when [status] is cancelled.
+  _i9x1n0bn.OrderCancellationReason? cancellationReason;
+
   /// Returns a shallow copy of this [OrderItemStatusUpdate]
   /// with some or all fields replaced by the given arguments.
   @_is.useResult
   OrderItemStatusUpdate copyWith({
     _is.UuidValue? id,
     _iw3cmuga.OrderItemStatus? status,
+    _i9x1n0bn.OrderCancellationReason? cancellationReason,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -53,6 +65,8 @@ abstract class OrderItemStatusUpdate
       '__className__': 'OrderItemStatusUpdate',
       'id': id.toJson(),
       'status': status.toJson(),
+      if (cancellationReason != null)
+        'cancellationReason': cancellationReason?.toJson(),
     };
   }
 
@@ -62,6 +76,8 @@ abstract class OrderItemStatusUpdate
       '__className__': 'OrderItemStatusUpdate',
       'id': id.toJson(),
       'status': status.toJson(),
+      if (cancellationReason != null)
+        'cancellationReason': cancellationReason?.toJson(),
     };
   }
 
@@ -71,13 +87,17 @@ abstract class OrderItemStatusUpdate
   }
 }
 
+class _Undefined {}
+
 class _OrderItemStatusUpdateImpl extends OrderItemStatusUpdate {
   _OrderItemStatusUpdateImpl({
     required _is.UuidValue id,
     required _iw3cmuga.OrderItemStatus status,
+    _i9x1n0bn.OrderCancellationReason? cancellationReason,
   }) : super._(
          id: id,
          status: status,
+         cancellationReason: cancellationReason,
        );
 
   /// Returns a shallow copy of this [OrderItemStatusUpdate]
@@ -87,10 +107,15 @@ class _OrderItemStatusUpdateImpl extends OrderItemStatusUpdate {
   OrderItemStatusUpdate copyWith({
     _is.UuidValue? id,
     _iw3cmuga.OrderItemStatus? status,
+    Object? cancellationReason = _Undefined,
   }) {
     return OrderItemStatusUpdate(
       id: id ?? this.id,
       status: status ?? this.status,
+      cancellationReason:
+          cancellationReason is _i9x1n0bn.OrderCancellationReason?
+          ? cancellationReason
+          : this.cancellationReason,
     );
   }
 }

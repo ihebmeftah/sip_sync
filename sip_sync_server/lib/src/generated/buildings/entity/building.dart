@@ -54,6 +54,9 @@ abstract class Building
     bool? strictMode,
     required this.strictModeSteps,
     double? reservationFee,
+    bool? customerOrderingEnabled,
+    bool? reservationsEnabled,
+    bool? allowOutOfStockOrders,
     DateTime? createdAt,
     this.employees,
     this.accessProfiles,
@@ -73,6 +76,9 @@ abstract class Building
        allowAppendingItemsToOrder = allowAppendingItemsToOrder ?? true,
        strictMode = strictMode ?? false,
        reservationFee = reservationFee ?? 0.0,
+       customerOrderingEnabled = customerOrderingEnabled ?? true,
+       reservationsEnabled = reservationsEnabled ?? true,
+       allowOutOfStockOrders = allowOutOfStockOrders ?? false,
        createdAt = createdAt ?? DateTime.now();
 
   factory Building({
@@ -99,6 +105,9 @@ abstract class Building
     bool? strictMode,
     required List<_ik04yv2w.StrictModeStep> strictModeSteps,
     double? reservationFee,
+    bool? customerOrderingEnabled,
+    bool? reservationsEnabled,
+    bool? allowOutOfStockOrders,
     DateTime? createdAt,
     List<_ie30fksv.Employee>? employees,
     List<_i5dpfzds.EmployeeAccess>? accessProfiles,
@@ -164,6 +173,22 @@ abstract class Building
             jsonSerialization['strictModeSteps'],
           ),
       reservationFee: (jsonSerialization['reservationFee'] as num?)?.toDouble(),
+      customerOrderingEnabled:
+          jsonSerialization['customerOrderingEnabled'] == null
+          ? null
+          : _is.BoolJsonExtension.fromJson(
+              jsonSerialization['customerOrderingEnabled'],
+            ),
+      reservationsEnabled: jsonSerialization['reservationsEnabled'] == null
+          ? null
+          : _is.BoolJsonExtension.fromJson(
+              jsonSerialization['reservationsEnabled'],
+            ),
+      allowOutOfStockOrders: jsonSerialization['allowOutOfStockOrders'] == null
+          ? null
+          : _is.BoolJsonExtension.fromJson(
+              jsonSerialization['allowOutOfStockOrders'],
+            ),
       createdAt: jsonSerialization['createdAt'] == null
           ? null
           : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
@@ -295,6 +320,15 @@ abstract class Building
   /// Default amount collected for a reservation, in [currencyCode].
   double reservationFee;
 
+  /// When false, customers cannot place or append orders even if the pack includes ordering.
+  bool customerOrderingEnabled;
+
+  /// When false, reservations cannot be created even if the pack includes them.
+  bool reservationsEnabled;
+
+  /// When true, an order may be placed even if a recipe ingredient would go below zero.
+  bool allowOutOfStockOrders;
+
   DateTime createdAt;
 
   List<_ie30fksv.Employee>? employees;
@@ -357,6 +391,9 @@ abstract class Building
     bool? strictMode,
     List<_ik04yv2w.StrictModeStep>? strictModeSteps,
     double? reservationFee,
+    bool? customerOrderingEnabled,
+    bool? reservationsEnabled,
+    bool? allowOutOfStockOrders,
     DateTime? createdAt,
     List<_ie30fksv.Employee>? employees,
     List<_i5dpfzds.EmployeeAccess>? accessProfiles,
@@ -399,6 +436,9 @@ abstract class Building
       'strictMode': strictMode,
       'strictModeSteps': strictModeSteps.toJson(valueToJson: (v) => v.toJson()),
       'reservationFee': reservationFee,
+      'customerOrderingEnabled': customerOrderingEnabled,
+      'reservationsEnabled': reservationsEnabled,
+      'allowOutOfStockOrders': allowOutOfStockOrders,
       'createdAt': createdAt.toJson(),
       if (employees != null)
         'employees': employees?.toJson(valueToJson: (v) => v.toJson()),
@@ -516,6 +556,9 @@ class _BuildingImpl extends Building {
     bool? strictMode,
     required List<_ik04yv2w.StrictModeStep> strictModeSteps,
     double? reservationFee,
+    bool? customerOrderingEnabled,
+    bool? reservationsEnabled,
+    bool? allowOutOfStockOrders,
     DateTime? createdAt,
     List<_ie30fksv.Employee>? employees,
     List<_i5dpfzds.EmployeeAccess>? accessProfiles,
@@ -554,6 +597,9 @@ class _BuildingImpl extends Building {
          strictMode: strictMode,
          strictModeSteps: strictModeSteps,
          reservationFee: reservationFee,
+         customerOrderingEnabled: customerOrderingEnabled,
+         reservationsEnabled: reservationsEnabled,
+         allowOutOfStockOrders: allowOutOfStockOrders,
          createdAt: createdAt,
          employees: employees,
          accessProfiles: accessProfiles,
@@ -598,6 +644,9 @@ class _BuildingImpl extends Building {
     bool? strictMode,
     List<_ik04yv2w.StrictModeStep>? strictModeSteps,
     double? reservationFee,
+    bool? customerOrderingEnabled,
+    bool? reservationsEnabled,
+    bool? allowOutOfStockOrders,
     DateTime? createdAt,
     Object? employees = _Undefined,
     Object? accessProfiles = _Undefined,
@@ -640,6 +689,11 @@ class _BuildingImpl extends Building {
           strictModeSteps ??
           this.strictModeSteps.map((e0) => e0.copyWith()).toList(),
       reservationFee: reservationFee ?? this.reservationFee,
+      customerOrderingEnabled:
+          customerOrderingEnabled ?? this.customerOrderingEnabled,
+      reservationsEnabled: reservationsEnabled ?? this.reservationsEnabled,
+      allowOutOfStockOrders:
+          allowOutOfStockOrders ?? this.allowOutOfStockOrders,
       createdAt: createdAt ?? this.createdAt,
       employees: employees is List<_ie30fksv.Employee>?
           ? employees
@@ -797,6 +851,24 @@ class BuildingUpdateTable extends _is.UpdateTable<BuildingTable> {
         value,
       );
 
+  _is.ColumnValue<bool, bool> customerOrderingEnabled(bool value) =>
+      _is.ColumnValue(
+        table.customerOrderingEnabled,
+        value,
+      );
+
+  _is.ColumnValue<bool, bool> reservationsEnabled(bool value) =>
+      _is.ColumnValue(
+        table.reservationsEnabled,
+        value,
+      );
+
+  _is.ColumnValue<bool, bool> allowOutOfStockOrders(bool value) =>
+      _is.ColumnValue(
+        table.allowOutOfStockOrders,
+        value,
+      );
+
   _is.ColumnValue<DateTime, DateTime> createdAt(DateTime value) =>
       _is.ColumnValue(
         table.createdAt,
@@ -911,6 +983,21 @@ class BuildingTable extends _is.Table<_is.UuidValue?> {
       this,
       hasDefault: true,
     );
+    customerOrderingEnabled = _is.ColumnBool(
+      'customerOrderingEnabled',
+      this,
+      hasDefault: true,
+    );
+    reservationsEnabled = _is.ColumnBool(
+      'reservationsEnabled',
+      this,
+      hasDefault: true,
+    );
+    allowOutOfStockOrders = _is.ColumnBool(
+      'allowOutOfStockOrders',
+      this,
+      hasDefault: true,
+    );
     createdAt = _is.ColumnDateTime(
       'createdAt',
       this,
@@ -988,6 +1075,15 @@ class BuildingTable extends _is.Table<_is.UuidValue?> {
 
   /// Default amount collected for a reservation, in [currencyCode].
   late final _is.ColumnDouble reservationFee;
+
+  /// When false, customers cannot place or append orders even if the pack includes ordering.
+  late final _is.ColumnBool customerOrderingEnabled;
+
+  /// When false, reservations cannot be created even if the pack includes them.
+  late final _is.ColumnBool reservationsEnabled;
+
+  /// When true, an order may be placed even if a recipe ingredient would go below zero.
+  late final _is.ColumnBool allowOutOfStockOrders;
 
   late final _is.ColumnDateTime createdAt;
 
@@ -1382,6 +1478,9 @@ class BuildingTable extends _is.Table<_is.UuidValue?> {
     strictMode,
     strictModeSteps,
     reservationFee,
+    customerOrderingEnabled,
+    reservationsEnabled,
+    allowOutOfStockOrders,
     createdAt,
     packId,
     packBillingPeriod,

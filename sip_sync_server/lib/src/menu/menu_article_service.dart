@@ -3,6 +3,7 @@ import 'package:serverpod/serverpod.dart';
 import '../auth/auth_guard.dart';
 import '../generated/protocol.dart';
 import '../packs/pack_gate.dart';
+import 'article_stock.dart';
 
 /// Building-scoped menu article CRUD.
 class MenuArticleService {
@@ -18,12 +19,18 @@ class MenuArticleService {
       orderBy: (t) => t.name,
       include: MenuArticle.include(category: MenuCategory.include()),
     );
-    final counts = await _compositionCounts(
-      session,
-      rows.map((r) => r.id!).toSet(),
-    );
+    final ids = rows.map((r) => r.id!).toSet();
+    final counts = await _compositionCounts(session, ids);
+    final stock = await recipeStockByArticle(session, ids);
     return rows
-        .map((row) => _view(row, compositionLineCount: counts[row.id!] ?? 0))
+        .map(
+          (row) => _view(
+            row,
+            compositionLineCount: counts[row.id!] ?? 0,
+            outOfStockIngredientNames:
+                stock[row.id!]?.outOfStockIngredientNames ?? const [],
+          ),
+        )
         .toList();
   }
 
@@ -74,6 +81,7 @@ class MenuArticleService {
       description: row.description,
       price: row.price,
       compositionLineCount: 0,
+      outOfStockIngredientNames: const [],
     );
   }
 
@@ -119,6 +127,7 @@ class MenuArticleService {
       session,
       where: (t) => t.articleId.equals(updated.id!),
     );
+    final stock = await recipeStockByArticle(session, {updated.id!});
     return MenuArticleView(
       id: updated.id!,
       buildingId: updated.buildingId,
@@ -128,6 +137,8 @@ class MenuArticleService {
       description: updated.description,
       price: updated.price,
       compositionLineCount: lineCount,
+      outOfStockIngredientNames:
+          stock[updated.id!]?.outOfStockIngredientNames ?? const [],
     );
   }
 
@@ -152,6 +163,7 @@ class MenuArticleService {
   MenuArticleView _view(
     MenuArticle row, {
     required int compositionLineCount,
+    required List<String> outOfStockIngredientNames,
   }) => MenuArticleView(
     id: row.id!,
     buildingId: row.buildingId,
@@ -161,6 +173,7 @@ class MenuArticleService {
     description: row.description,
     price: row.price,
     compositionLineCount: compositionLineCount,
+    outOfStockIngredientNames: outOfStockIngredientNames,
   );
 
   String _validateName(String raw) {

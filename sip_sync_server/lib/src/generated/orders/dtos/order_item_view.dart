@@ -13,6 +13,7 @@
 import 'package:serverpod/serverpod.dart' as _is;
 import 'package:sip_sync_server/src/generated/protocol.dart' as _iaib1p48;
 import '../../orders/dtos/order_actor_view.dart' as _i1wfgxvh;
+import '../../orders/dtos/order_cancellation_reason.dart' as _i9x1n0bn;
 import '../../orders/dtos/order_item_status.dart' as _iw3cmuga;
 
 abstract class OrderItemView
@@ -36,6 +37,7 @@ abstract class OrderItemView
     this.servedAt,
     this.paidAt,
     this.cancelledAt,
+    this.cancellationReason,
   });
 
   factory OrderItemView({
@@ -57,6 +59,7 @@ abstract class OrderItemView
     DateTime? servedAt,
     DateTime? paidAt,
     DateTime? cancelledAt,
+    _i9x1n0bn.OrderCancellationReason? cancellationReason,
   }) = _OrderItemViewImpl;
 
   factory OrderItemView.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -123,6 +126,11 @@ abstract class OrderItemView
           : _is.DateTimeJsonExtension.fromJson(
               jsonSerialization['cancelledAt'],
             ),
+      cancellationReason: jsonSerialization['cancellationReason'] == null
+          ? null
+          : _i9x1n0bn.OrderCancellationReason.fromJson(
+              (jsonSerialization['cancellationReason'] as String),
+            ),
     );
   }
 
@@ -162,6 +170,8 @@ abstract class OrderItemView
 
   DateTime? cancelledAt;
 
+  _i9x1n0bn.OrderCancellationReason? cancellationReason;
+
   /// Returns a shallow copy of this [OrderItemView]
   /// with some or all fields replaced by the given arguments.
   @_is.useResult
@@ -184,6 +194,7 @@ abstract class OrderItemView
     DateTime? servedAt,
     DateTime? paidAt,
     DateTime? cancelledAt,
+    _i9x1n0bn.OrderCancellationReason? cancellationReason,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -207,6 +218,8 @@ abstract class OrderItemView
       if (servedAt != null) 'servedAt': servedAt?.toJson(),
       if (paidAt != null) 'paidAt': paidAt?.toJson(),
       if (cancelledAt != null) 'cancelledAt': cancelledAt?.toJson(),
+      if (cancellationReason != null)
+        'cancellationReason': cancellationReason?.toJson(),
     };
   }
 
@@ -232,6 +245,8 @@ abstract class OrderItemView
       if (servedAt != null) 'servedAt': servedAt?.toJson(),
       if (paidAt != null) 'paidAt': paidAt?.toJson(),
       if (cancelledAt != null) 'cancelledAt': cancelledAt?.toJson(),
+      if (cancellationReason != null)
+        'cancellationReason': cancellationReason?.toJson(),
     };
   }
 
@@ -263,6 +278,7 @@ class _OrderItemViewImpl extends OrderItemView {
     DateTime? servedAt,
     DateTime? paidAt,
     DateTime? cancelledAt,
+    _i9x1n0bn.OrderCancellationReason? cancellationReason,
   }) : super._(
          id: id,
          orderId: orderId,
@@ -282,6 +298,7 @@ class _OrderItemViewImpl extends OrderItemView {
          servedAt: servedAt,
          paidAt: paidAt,
          cancelledAt: cancelledAt,
+         cancellationReason: cancellationReason,
        );
 
   /// Returns a shallow copy of this [OrderItemView]
@@ -307,6 +324,7 @@ class _OrderItemViewImpl extends OrderItemView {
     Object? servedAt = _Undefined,
     Object? paidAt = _Undefined,
     Object? cancelledAt = _Undefined,
+    Object? cancellationReason = _Undefined,
   }) {
     return OrderItemView(
       id: id ?? this.id,
@@ -339,6 +357,10 @@ class _OrderItemViewImpl extends OrderItemView {
       servedAt: servedAt is DateTime? ? servedAt : this.servedAt,
       paidAt: paidAt is DateTime? ? paidAt : this.paidAt,
       cancelledAt: cancelledAt is DateTime? ? cancelledAt : this.cancelledAt,
+      cancellationReason:
+          cancellationReason is _i9x1n0bn.OrderCancellationReason?
+          ? cancellationReason
+          : this.cancellationReason,
     );
   }
 }

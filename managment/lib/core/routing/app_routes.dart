@@ -6,6 +6,7 @@ import '../../core/widgets/ops_shell.dart';
 import '../../features/auth/views/forgot_password_view.dart';
 import '../../features/auth/views/register_view.dart';
 import '../../features/auth/views/sign_in_view.dart';
+import '../../features/buildings/views/building_configuration_view.dart';
 import '../../features/buildings/views/building_form_view.dart';
 import '../../features/buildings/views/buildings_list_view.dart';
 import '../../features/dashboard/views/dashboard_view.dart';
@@ -122,6 +123,10 @@ class BuildingEditRoute extends GoRouteData with $BuildingEditRoute {
       name: 'dashboard',
     ),
     TypedGoRoute<ProfileRoute>(path: '/b/:buildingId/profile', name: 'profile'),
+    TypedGoRoute<BuildingConfigurationRoute>(
+      path: '/b/:buildingId/configuration',
+      name: 'buildingConfiguration',
+    ),
     // Sibling routes (not nested) so each screen replaces the shell child
     // instead of stacking under the list with no visible navigator slot.
     TypedGoRoute<EmployeesRoute>(
@@ -228,6 +233,18 @@ class OpsShellRoute extends ShellRouteData {
   Widget builder(BuildContext context, GoRouterState state, Widget navigator) {
     final buildingId = state.pathParameters['buildingId'];
     return OpsShell(buildingId: buildingId, child: navigator);
+  }
+}
+
+class BuildingConfigurationRoute extends GoRouteData
+    with $BuildingConfigurationRoute {
+  const BuildingConfigurationRoute({required this.buildingId});
+
+  final String buildingId;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return BuildingConfigurationView(buildingId: buildingId);
   }
 }
 

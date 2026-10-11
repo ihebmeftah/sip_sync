@@ -88,6 +88,9 @@ class BuildingFormViewModel extends _$BuildingFormViewModel {
     required bool strictMode,
     required List<StrictModeStep> strictModeSteps,
     required double reservationFee,
+    required bool customerOrderingEnabled,
+    required bool reservationsEnabled,
+    required bool allowOutOfStockOrders,
   }) async {
     try {
       final existing = state.asData?.value;
@@ -114,6 +117,9 @@ class BuildingFormViewModel extends _$BuildingFormViewModel {
               strictMode: strictMode,
               strictModeSteps: strictModeSteps,
               reservationFee: reservationFee,
+              customerOrderingEnabled: customerOrderingEnabled,
+              reservationsEnabled: reservationsEnabled,
+              allowOutOfStockOrders: allowOutOfStockOrders,
             );
       } else {
         saved = await ref
@@ -138,6 +144,9 @@ class BuildingFormViewModel extends _$BuildingFormViewModel {
               strictMode: strictMode,
               strictModeSteps: strictModeSteps,
               reservationFee: reservationFee,
+              customerOrderingEnabled: customerOrderingEnabled,
+              reservationsEnabled: reservationsEnabled,
+              allowOutOfStockOrders: allowOutOfStockOrders,
             );
       }
       getIt<BuildingSession>().upsert(saved);
@@ -147,5 +156,54 @@ class BuildingFormViewModel extends _$BuildingFormViewModel {
       state = AsyncError(error, StackTrace.current);
       return null;
     }
+  }
+
+  /// Writes only the venue switches. Identity fields stay as last loaded.
+  ///
+  /// A failure is rethrown so the form keeps the loaded venue and can retry.
+  Future<BuildingView> saveConfiguration({
+    required bool tableMultiOrder,
+    required bool allowAppendingItemsToOrder,
+    required bool strictMode,
+    required List<StrictModeStep> strictModeSteps,
+    required double reservationFee,
+    required bool customerOrderingEnabled,
+    required bool reservationsEnabled,
+    required bool allowOutOfStockOrders,
+  }) async {
+    final existing = state.asData?.value;
+    if (existing == null) {
+      throw StateError('Venue configuration is not loaded.');
+    }
+    final saved = await ref
+        .read(buildingRepositoryProvider)
+        .update(
+          id: existing.id,
+          name: existing.name,
+          type: existing.type,
+          address: existing.address,
+          latitude: existing.latitude,
+          longitude: existing.longitude,
+          openingMinutes: existing.openingMinutes,
+          closingMinutes: existing.closingMinutes,
+          currencyCode: existing.currencyCode,
+          phoneNumber: existing.phoneNumber,
+          whatsapp: existing.whatsapp,
+          instagram: existing.instagram,
+          facebook: existing.facebook,
+          otherLinks: existing.otherLinks,
+          tableMultiOrder: tableMultiOrder,
+          allowAppendingItemsToOrder: allowAppendingItemsToOrder,
+          strictMode: strictMode,
+          strictModeSteps: strictModeSteps,
+          reservationFee: reservationFee,
+          customerOrderingEnabled: customerOrderingEnabled,
+          reservationsEnabled: reservationsEnabled,
+          allowOutOfStockOrders: allowOutOfStockOrders,
+        );
+    getIt<BuildingSession>().upsert(saved);
+    state = AsyncData(saved);
+    await ref.read(buildingsViewModelProvider.notifier).refresh();
+    return saved;
   }
 }

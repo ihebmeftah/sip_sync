@@ -12,6 +12,8 @@ class VenueMenuState {
   const VenueMenuState({
     required this.currencyCode,
     required this.customerOrdering,
+    required this.orderingClosedByVenue,
+    required this.allowOutOfStockOrders,
     required this.categories,
     required this.articles,
     required this.totalArticles,
@@ -21,6 +23,10 @@ class VenueMenuState {
 
   final String currencyCode;
   final bool customerOrdering;
+
+  /// Pack includes ordering, and the venue has turned it off.
+  final bool orderingClosedByVenue;
+  final bool allowOutOfStockOrders;
   final List<CustomerCategoryPreview> categories;
   final List<CustomerArticlePreview> articles;
   final int totalArticles;
@@ -67,6 +73,8 @@ class VenueMenuState {
     return VenueMenuState(
       currencyCode: currencyCode,
       customerOrdering: customerOrdering,
+      orderingClosedByVenue: orderingClosedByVenue,
+      allowOutOfStockOrders: allowOutOfStockOrders,
       categories: categories,
       articles: articles ?? this.articles,
       totalArticles: totalArticles ?? this.totalArticles,
@@ -96,6 +104,8 @@ class VenueMenuState {
     return VenueMenuState(
       currencyCode: page.currencyCode,
       customerOrdering: page.customerOrdering,
+      orderingClosedByVenue: page.orderingClosedByVenue,
+      allowOutOfStockOrders: page.allowOutOfStockOrders,
       categories: categories,
       articles: articles,
       totalArticles: total,

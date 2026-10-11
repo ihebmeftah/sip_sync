@@ -15,6 +15,7 @@ import 'package:serverpod/serverpod.dart' as _is;
 import 'package:sip_sync_server/src/generated/protocol.dart' as _iaib1p48;
 import '../../auth/dtos/actor_type.dart' as _i6ch5qy5;
 import '../../buildings/entity/building.dart' as _iaohraio;
+import '../../orders/dtos/order_cancellation_reason.dart' as _i9x1n0bn;
 import '../../orders/dtos/order_status.dart' as _iij1ihnv;
 import '../../orders/entity/venue_order_item.dart' as _io4d4iis;
 import '../../tables/entity/venue_table.dart' as _ilcfc7kr;
@@ -38,6 +39,7 @@ abstract class VenueOrder
     this.cancelledByType,
     this.cancelledById,
     this.cancelledAt,
+    this.cancellationReason,
     DateTime? createdAt,
     DateTime? updatedAt,
     this.items,
@@ -60,6 +62,7 @@ abstract class VenueOrder
     _i6ch5qy5.ActorType? cancelledByType,
     _is.UuidValue? cancelledById,
     DateTime? cancelledAt,
+    _i9x1n0bn.OrderCancellationReason? cancellationReason,
     DateTime? createdAt,
     DateTime? updatedAt,
     List<_io4d4iis.VenueOrderItem>? items,
@@ -126,6 +129,11 @@ abstract class VenueOrder
           : _is.DateTimeJsonExtension.fromJson(
               jsonSerialization['cancelledAt'],
             ),
+      cancellationReason: jsonSerialization['cancellationReason'] == null
+          ? null
+          : _i9x1n0bn.OrderCancellationReason.fromJson(
+              (jsonSerialization['cancellationReason'] as String),
+            ),
       createdAt: jsonSerialization['createdAt'] == null
           ? null
           : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
@@ -175,6 +183,9 @@ abstract class VenueOrder
 
   DateTime? cancelledAt;
 
+  /// Why the whole order was cancelled. Null until it is cancelled.
+  _i9x1n0bn.OrderCancellationReason? cancellationReason;
+
   DateTime createdAt;
 
   DateTime updatedAt;
@@ -203,6 +214,7 @@ abstract class VenueOrder
     _i6ch5qy5.ActorType? cancelledByType,
     _is.UuidValue? cancelledById,
     DateTime? cancelledAt,
+    _i9x1n0bn.OrderCancellationReason? cancellationReason,
     DateTime? createdAt,
     DateTime? updatedAt,
     List<_io4d4iis.VenueOrderItem>? items,
@@ -226,6 +238,8 @@ abstract class VenueOrder
       if (cancelledByType != null) 'cancelledByType': cancelledByType?.toJson(),
       if (cancelledById != null) 'cancelledById': cancelledById?.toJson(),
       if (cancelledAt != null) 'cancelledAt': cancelledAt?.toJson(),
+      if (cancellationReason != null)
+        'cancellationReason': cancellationReason?.toJson(),
       'createdAt': createdAt.toJson(),
       'updatedAt': updatedAt.toJson(),
       if (items != null) 'items': items?.toJson(valueToJson: (v) => v.toJson()),
@@ -292,6 +306,7 @@ class _VenueOrderImpl extends VenueOrder {
     _i6ch5qy5.ActorType? cancelledByType,
     _is.UuidValue? cancelledById,
     DateTime? cancelledAt,
+    _i9x1n0bn.OrderCancellationReason? cancellationReason,
     DateTime? createdAt,
     DateTime? updatedAt,
     List<_io4d4iis.VenueOrderItem>? items,
@@ -311,6 +326,7 @@ class _VenueOrderImpl extends VenueOrder {
          cancelledByType: cancelledByType,
          cancelledById: cancelledById,
          cancelledAt: cancelledAt,
+         cancellationReason: cancellationReason,
          createdAt: createdAt,
          updatedAt: updatedAt,
          items: items,
@@ -336,6 +352,7 @@ class _VenueOrderImpl extends VenueOrder {
     Object? cancelledByType = _Undefined,
     Object? cancelledById = _Undefined,
     Object? cancelledAt = _Undefined,
+    Object? cancellationReason = _Undefined,
     DateTime? createdAt,
     DateTime? updatedAt,
     Object? items = _Undefined,
@@ -370,6 +387,10 @@ class _VenueOrderImpl extends VenueOrder {
           ? cancelledById
           : this.cancelledById,
       cancelledAt: cancelledAt is DateTime? ? cancelledAt : this.cancelledAt,
+      cancellationReason:
+          cancellationReason is _i9x1n0bn.OrderCancellationReason?
+          ? cancellationReason
+          : this.cancellationReason,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       items: items is List<_io4d4iis.VenueOrderItem>?
@@ -462,6 +483,16 @@ class VenueOrderUpdateTable extends _is.UpdateTable<VenueOrderTable> {
         value,
       );
 
+  _is.ColumnValue<
+    _i9x1n0bn.OrderCancellationReason,
+    _i9x1n0bn.OrderCancellationReason
+  >
+  cancellationReason(_i9x1n0bn.OrderCancellationReason? value) =>
+      _is.ColumnValue(
+        table.cancellationReason,
+        value,
+      );
+
   _is.ColumnValue<DateTime, DateTime> createdAt(DateTime value) =>
       _is.ColumnValue(
         table.createdAt,
@@ -530,6 +561,11 @@ class VenueOrderTable extends _is.Table<_is.UuidValue?> {
       'cancelledAt',
       this,
     );
+    cancellationReason = _is.ColumnEnum(
+      'cancellationReason',
+      this,
+      _is.EnumSerialization.byName,
+    );
     createdAt = _is.ColumnDateTime(
       'createdAt',
       this,
@@ -569,6 +605,10 @@ class VenueOrderTable extends _is.Table<_is.UuidValue?> {
   late final _is.ColumnUuid cancelledById;
 
   late final _is.ColumnDateTime cancelledAt;
+
+  /// Why the whole order was cancelled. Null until it is cancelled.
+  late final _is.ColumnEnum<_i9x1n0bn.OrderCancellationReason>
+  cancellationReason;
 
   late final _is.ColumnDateTime createdAt;
 
@@ -651,6 +691,7 @@ class VenueOrderTable extends _is.Table<_is.UuidValue?> {
     cancelledByType,
     cancelledById,
     cancelledAt,
+    cancellationReason,
     createdAt,
     updatedAt,
   ];

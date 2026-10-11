@@ -29,9 +29,12 @@ abstract class CustomerVenueDetail
     required this.categories,
     required this.articles,
     required this.customerOrdering,
+    required this.orderingClosedByVenue,
     required this.reservationsEnabled,
+    required this.reservationsClosedByVenue,
+    bool? allowOutOfStockOrders,
     required this.reservationFee,
-  });
+  }) : allowOutOfStockOrders = allowOutOfStockOrders ?? false;
 
   factory CustomerVenueDetail({
     required _iw16ezvu.CustomerVenueCard venue,
@@ -42,7 +45,10 @@ abstract class CustomerVenueDetail
     required List<_irq7e2mv.CustomerCategoryPreview> categories,
     required List<_iy9yvlrm.CustomerArticlePreview> articles,
     required bool customerOrdering,
+    required bool orderingClosedByVenue,
     required bool reservationsEnabled,
+    required bool reservationsClosedByVenue,
+    bool? allowOutOfStockOrders,
     required double reservationFee,
   }) = _CustomerVenueDetailImpl;
 
@@ -72,9 +78,20 @@ abstract class CustomerVenueDetail
       customerOrdering: _is.BoolJsonExtension.fromJson(
         jsonSerialization['customerOrdering'],
       ),
+      orderingClosedByVenue: _is.BoolJsonExtension.fromJson(
+        jsonSerialization['orderingClosedByVenue'],
+      ),
       reservationsEnabled: _is.BoolJsonExtension.fromJson(
         jsonSerialization['reservationsEnabled'],
       ),
+      reservationsClosedByVenue: _is.BoolJsonExtension.fromJson(
+        jsonSerialization['reservationsClosedByVenue'],
+      ),
+      allowOutOfStockOrders: jsonSerialization['allowOutOfStockOrders'] == null
+          ? null
+          : _is.BoolJsonExtension.fromJson(
+              jsonSerialization['allowOutOfStockOrders'],
+            ),
       reservationFee: (jsonSerialization['reservationFee'] as num).toDouble(),
     );
   }
@@ -98,11 +115,20 @@ abstract class CustomerVenueDetail
   /// Up to five articles, busiest first. Creation order when nothing was ordered.
   List<_iy9yvlrm.CustomerArticlePreview> articles;
 
-  /// False when the venue pack does not include customer-app orders.
+  /// False when the pack or the venue has customer-app orders turned off.
   bool customerOrdering;
 
-  /// False when the venue pack does not include reservations.
+  /// True only when the pack includes ordering and the venue has turned it off.
+  bool orderingClosedByVenue;
+
+  /// False when the pack or the venue has reservations turned off.
   bool reservationsEnabled;
+
+  /// True only when the pack includes reservations and the venue has turned them off.
+  bool reservationsClosedByVenue;
+
+  /// When true, a dish can still be added if a recipe ingredient cannot cover one unit.
+  bool allowOutOfStockOrders;
 
   /// Building default, in [currencyCode].
   double reservationFee;
@@ -119,7 +145,10 @@ abstract class CustomerVenueDetail
     List<_irq7e2mv.CustomerCategoryPreview>? categories,
     List<_iy9yvlrm.CustomerArticlePreview>? articles,
     bool? customerOrdering,
+    bool? orderingClosedByVenue,
     bool? reservationsEnabled,
+    bool? reservationsClosedByVenue,
+    bool? allowOutOfStockOrders,
     double? reservationFee,
   });
   @override
@@ -134,7 +163,10 @@ abstract class CustomerVenueDetail
       'categories': categories.toJson(valueToJson: (v) => v.toJson()),
       'articles': articles.toJson(valueToJson: (v) => v.toJson()),
       'customerOrdering': customerOrdering,
+      'orderingClosedByVenue': orderingClosedByVenue,
       'reservationsEnabled': reservationsEnabled,
+      'reservationsClosedByVenue': reservationsClosedByVenue,
+      'allowOutOfStockOrders': allowOutOfStockOrders,
       'reservationFee': reservationFee,
     };
   }
@@ -157,7 +189,10 @@ abstract class CustomerVenueDetail
       ),
       'articles': articles.toJson(valueToJson: (v) => v.toJsonForProtocol()),
       'customerOrdering': customerOrdering,
+      'orderingClosedByVenue': orderingClosedByVenue,
       'reservationsEnabled': reservationsEnabled,
+      'reservationsClosedByVenue': reservationsClosedByVenue,
+      'allowOutOfStockOrders': allowOutOfStockOrders,
       'reservationFee': reservationFee,
     };
   }
@@ -178,7 +213,10 @@ class _CustomerVenueDetailImpl extends CustomerVenueDetail {
     required List<_irq7e2mv.CustomerCategoryPreview> categories,
     required List<_iy9yvlrm.CustomerArticlePreview> articles,
     required bool customerOrdering,
+    required bool orderingClosedByVenue,
     required bool reservationsEnabled,
+    required bool reservationsClosedByVenue,
+    bool? allowOutOfStockOrders,
     required double reservationFee,
   }) : super._(
          venue: venue,
@@ -189,7 +227,10 @@ class _CustomerVenueDetailImpl extends CustomerVenueDetail {
          categories: categories,
          articles: articles,
          customerOrdering: customerOrdering,
+         orderingClosedByVenue: orderingClosedByVenue,
          reservationsEnabled: reservationsEnabled,
+         reservationsClosedByVenue: reservationsClosedByVenue,
+         allowOutOfStockOrders: allowOutOfStockOrders,
          reservationFee: reservationFee,
        );
 
@@ -206,7 +247,10 @@ class _CustomerVenueDetailImpl extends CustomerVenueDetail {
     List<_irq7e2mv.CustomerCategoryPreview>? categories,
     List<_iy9yvlrm.CustomerArticlePreview>? articles,
     bool? customerOrdering,
+    bool? orderingClosedByVenue,
     bool? reservationsEnabled,
+    bool? reservationsClosedByVenue,
+    bool? allowOutOfStockOrders,
     double? reservationFee,
   }) {
     return CustomerVenueDetail(
@@ -223,7 +267,13 @@ class _CustomerVenueDetailImpl extends CustomerVenueDetail {
           categories ?? this.categories.map((e0) => e0.copyWith()).toList(),
       articles: articles ?? this.articles.map((e0) => e0.copyWith()).toList(),
       customerOrdering: customerOrdering ?? this.customerOrdering,
+      orderingClosedByVenue:
+          orderingClosedByVenue ?? this.orderingClosedByVenue,
       reservationsEnabled: reservationsEnabled ?? this.reservationsEnabled,
+      reservationsClosedByVenue:
+          reservationsClosedByVenue ?? this.reservationsClosedByVenue,
+      allowOutOfStockOrders:
+          allowOutOfStockOrders ?? this.allowOutOfStockOrders,
       reservationFee: reservationFee ?? this.reservationFee,
     );
   }

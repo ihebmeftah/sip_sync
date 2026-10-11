@@ -210,6 +210,12 @@ RouteBase get $opsShellRoute => ShellRouteData.$route(
       factory: $ProfileRoute._fromState,
     ),
     GoRouteData.$route(
+      path: '/b/:buildingId/configuration',
+      name: 'buildingConfiguration',
+      hasOverriddenOnExit: false,
+      factory: $BuildingConfigurationRoute._fromState,
+    ),
+    GoRouteData.$route(
       path: '/b/:buildingId/employees',
       name: 'employees',
       hasOverriddenOnExit: false,
@@ -406,6 +412,33 @@ mixin $ProfileRoute on GoRouteData {
   @override
   String get location => GoRouteData.$location(
     '/b/${Uri.encodeComponent(_self.buildingId)}/profile',
+  );
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+mixin $BuildingConfigurationRoute on GoRouteData {
+  static BuildingConfigurationRoute _fromState(GoRouterState state) =>
+      BuildingConfigurationRoute(
+        buildingId: state.pathParameters['buildingId']!,
+      );
+
+  BuildingConfigurationRoute get _self => this as BuildingConfigurationRoute;
+
+  @override
+  String get location => GoRouteData.$location(
+    '/b/${Uri.encodeComponent(_self.buildingId)}/configuration',
   );
 
   @override

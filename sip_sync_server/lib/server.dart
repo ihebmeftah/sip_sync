@@ -79,7 +79,7 @@ void run(List<String> args) async {
     await SuperAdminAuthEndpoint().ensureDefaultAdmin(session);
     await PackCatalog.ensure(session);
     await PackExpiry.revertDue(session);
- await DevSeed.ensureDemoData(session);
+    await DevSeed.ensureDemoData(session);
   });
   _watchPackExpiry(pod);
 }

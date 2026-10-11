@@ -8,6 +8,7 @@ import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../view_models/orders_view_model.dart';
+import 'cancellation_reason_dialog.dart';
 import 'order_status_labels.dart';
 
 /// View / advance a single order’s lines.
@@ -72,6 +73,8 @@ class _OrderDetailDialogState extends ConsumerState<_OrderDetailDialog> {
   }
 
   Future<void> _cancelLine(OrderItemView item) async {
+    final reason = await showCancellationReasonDialog(context);
+    if (reason == null || !mounted) return;
     setState(() {
       _busy = true;
       _errorKey = null;
@@ -79,7 +82,11 @@ class _OrderDetailDialogState extends ConsumerState<_OrderDetailDialog> {
     try {
       await ref
           .read(ordersViewModelProvider(widget.buildingId).notifier)
-          .updateItemStatus(id: item.id, status: OrderItemStatus.cancelled);
+          .updateItemStatus(
+            id: item.id,
+            status: OrderItemStatus.cancelled,
+            cancellationReason: reason,
+          );
     } catch (error) {
       if (!mounted) {
         return;
@@ -93,25 +100,8 @@ class _OrderDetailDialogState extends ConsumerState<_OrderDetailDialog> {
   }
 
   Future<void> _cancelOrder(OrderView order) async {
-    final l10n = AppLocalizations.of(context)!;
-    final ok = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.cancelOrder),
-        content: Text(l10n.cancelOrderConfirm),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text(l10n.close),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: Text(l10n.cancelOrder),
-          ),
-        ],
-      ),
-    );
-    if (ok != true || !mounted) {
+    final reason = await showCancellationReasonDialog(context);
+    if (reason == null || !mounted) {
       return;
     }
     setState(() {
@@ -121,7 +111,7 @@ class _OrderDetailDialogState extends ConsumerState<_OrderDetailDialog> {
     try {
       await ref
           .read(ordersViewModelProvider(widget.buildingId).notifier)
-          .cancelOrder(order.id);
+          .cancelOrder(order.id, reason);
       if (!mounted) return;
       setState(() => _busy = false);
     } catch (error) {
@@ -190,8 +180,18 @@ class _OrderDetailDialogState extends ConsumerState<_OrderDetailDialog> {
                             ListTile(
                               contentPadding: EdgeInsets.zero,
                               title: Text(item.articleName),
-                              subtitle: Text(
-                                orderItemStatusLabel(l10n, item.status),
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(orderItemStatusLabel(l10n, item.status)),
+                                  if (item.cancellationReason != null)
+                                    Text(
+                                      orderCancellationReasonLabel(
+                                        l10n,
+                                        item.cancellationReason!,
+                                      ),
+                                    ),
+                                ],
                               ),
                               trailing:
                                   order.status == OrderStatus.progress &&

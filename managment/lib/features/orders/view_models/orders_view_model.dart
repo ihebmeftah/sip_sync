@@ -157,10 +157,15 @@ class OrdersViewModel extends _$OrdersViewModel {
   Future<OrderView> updateItemStatus({
     required UuidValue id,
     required OrderItemStatus status,
+    OrderCancellationReason? cancellationReason,
   }) async {
     final saved = await ref
         .read(orderRepositoryProvider)
-        .updateItemStatus(id: id, status: status);
+        .updateItemStatus(
+          id: id,
+          status: status,
+          cancellationReason: cancellationReason,
+        );
     if (saved.status == OrderStatus.payed ||
         saved.status == OrderStatus.cancelled) {
       await refresh();
@@ -171,8 +176,13 @@ class OrdersViewModel extends _$OrdersViewModel {
     return saved;
   }
 
-  Future<OrderView> cancelOrder(UuidValue orderId) async {
-    final saved = await ref.read(orderRepositoryProvider).cancel(orderId);
+  Future<OrderView> cancelOrder(
+    UuidValue orderId,
+    OrderCancellationReason reason,
+  ) async {
+    final saved = await ref
+        .read(orderRepositoryProvider)
+        .cancel(orderId, reason);
     await refresh();
     await _refreshTables();
     return saved;

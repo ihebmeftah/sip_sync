@@ -131,6 +131,8 @@ import 'package:sip_sync_client/src/protocol/orders/dtos/customer_order_view.dar
     as _iiy8950w;
 import 'package:sip_sync_client/src/protocol/orders/dtos/order_add_items.dart'
     as _ie4jvepd;
+import 'package:sip_sync_client/src/protocol/orders/dtos/order_cancellation_reason.dart'
+    as _iejvkmho;
 import 'package:sip_sync_client/src/protocol/orders/dtos/order_create.dart'
     as _i0prt93r;
 import 'package:sip_sync_client/src/protocol/orders/dtos/order_item_status_update.dart'
@@ -1125,13 +1127,19 @@ class EndpointOrder extends _isc.EndpointRef {
     {'request': request},
   );
 
-  /// Cancels an open order.
-  _ida.Future<_i5f9osh7.OrderView> cancel(_isc.UuidValue orderId) =>
-      caller.callServerEndpoint<_i5f9osh7.OrderView>(
-        'order',
-        'cancel',
-        {'orderId': orderId},
-      );
+  /// Cancels an open order. [reason] is stored on the order and on each
+  /// line that was still open.
+  _ida.Future<_i5f9osh7.OrderView> cancel(
+    _isc.UuidValue orderId,
+    _iejvkmho.OrderCancellationReason reason,
+  ) => caller.callServerEndpoint<_i5f9osh7.OrderView>(
+    'order',
+    'cancel',
+    {
+      'orderId': orderId,
+      'reason': reason,
+    },
+  );
 }
 
 /// Catalog of commercial packs. Writes are super-admin only.

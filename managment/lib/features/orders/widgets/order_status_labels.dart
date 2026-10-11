@@ -137,6 +137,17 @@ class OrderItemStatusChip extends StatelessWidget {
   }
 }
 
+String orderCancellationReasonLabel(
+  AppLocalizations l10n,
+  OrderCancellationReason reason,
+) {
+  return switch (reason) {
+    OrderCancellationReason.ingredientOutOfStock => l10n.cancelReasonOutOfStock,
+    OrderCancellationReason.closingSoon => l10n.cancelReasonClosingSoon,
+    OrderCancellationReason.workBreakdown => l10n.cancelReasonWorkBreakdown,
+  };
+}
+
 class _StatusChip extends StatelessWidget {
   const _StatusChip({
     required this.label,

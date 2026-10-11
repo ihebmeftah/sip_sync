@@ -114,6 +114,52 @@ void main() {
       );
     }
 
+    test('venue switch turns off reservations', () async {
+      final setup = await openHouse(
+        tag: 'res-off',
+        pack: 'house',
+        ownerPhone: '+21622111991',
+        venuePhone: '+21671111991',
+      );
+      final building = setup.building;
+      await endpoints.building.update(
+        setup.ownerSession,
+        BuildingUpdate(
+          id: building.id,
+          name: building.name,
+          type: building.type,
+          address: building.address,
+          latitude: building.latitude,
+          longitude: building.longitude,
+          openingMinutes: building.openingMinutes,
+          closingMinutes: building.closingMinutes,
+          currencyCode: building.currencyCode,
+          phoneNumber: building.phoneNumber,
+          otherLinks: building.otherLinks,
+          tableMultiOrder: building.tableMultiOrder,
+          allowAppendingItemsToOrder: building.allowAppendingItemsToOrder,
+          strictMode: building.strictMode,
+          strictModeSteps: building.strictModeSteps,
+          reservationFee: building.reservationFee,
+          reservationsEnabled: false,
+        ),
+      );
+      final start = DateTime.now().toUtc().add(const Duration(hours: 3));
+      await expectLater(
+        endpoints.reservation.create(
+          setup.ownerSession,
+          booking(buildingId: building.id, start: start),
+        ),
+        throwsA(
+          isA<ReservationException>().having(
+            (error) => error.code,
+            'code',
+            ReservationErrorCode.disabled,
+          ),
+        ),
+      );
+    });
+
     test('free pack rejects a booking', () async {
       final setup = await openHouse(
         tag: 'free',

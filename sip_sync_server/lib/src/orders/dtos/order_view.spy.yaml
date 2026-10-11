@@ -12,6 +12,7 @@ fields:
   lastPaidAt: DateTime?
   cancelledBy: OrderActorView?
   cancelledAt: DateTime?
+  cancellationReason: OrderCancellationReason?
   createdAt: DateTime
   updatedAt: DateTime
   items: List<OrderItemView>

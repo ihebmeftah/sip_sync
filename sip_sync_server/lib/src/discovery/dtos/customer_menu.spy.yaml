@@ -4,8 +4,12 @@ fields:
   currencyCode: String
   ### Categories touched by this window, including truly empty ones.
   sections: List<CustomerMenuSection>
-  ### False when the venue pack does not include customer-app orders.
+  ### False when the pack or the venue has customer-app orders turned off.
   customerOrdering: bool
+  ### True only when the pack includes ordering and the venue has turned it off.
+  orderingClosedByVenue: bool
+  ### When true, a dish can still be added if a recipe ingredient cannot cover one unit.
+  allowOutOfStockOrders: bool, default=false
   ### Every category in catalog order. Article counts, no dishes.
   categories: List<CustomerCategoryPreview>
   ### Dishes in this window, catalog order.

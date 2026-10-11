@@ -15,3 +15,5 @@ values:
   - permissionDenied
   ### A reservation has started and staff have not confirmed arrival.
   - reservationHeld
+  ### Venue turned off customer-app ordering.
+  - customerOrderingDisabled

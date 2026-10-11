@@ -40,6 +40,9 @@ abstract class BuildingView
     required this.strictMode,
     required this.strictModeSteps,
     required this.reservationFee,
+    required this.customerOrderingEnabled,
+    required this.reservationsEnabled,
+    required this.allowOutOfStockOrders,
     required this.employeeIds,
     required this.pack,
   });
@@ -67,6 +70,9 @@ abstract class BuildingView
     required bool strictMode,
     required List<_ik04yv2w.StrictModeStep> strictModeSteps,
     required double reservationFee,
+    required bool customerOrderingEnabled,
+    required bool reservationsEnabled,
+    required bool allowOutOfStockOrders,
     required List<_is.UuidValue> employeeIds,
     required _i1961zho.BuildingPackView pack,
   }) = _BuildingViewImpl;
@@ -108,6 +114,15 @@ abstract class BuildingView
             jsonSerialization['strictModeSteps'],
           ),
       reservationFee: (jsonSerialization['reservationFee'] as num).toDouble(),
+      customerOrderingEnabled: _is.BoolJsonExtension.fromJson(
+        jsonSerialization['customerOrderingEnabled'],
+      ),
+      reservationsEnabled: _is.BoolJsonExtension.fromJson(
+        jsonSerialization['reservationsEnabled'],
+      ),
+      allowOutOfStockOrders: _is.BoolJsonExtension.fromJson(
+        jsonSerialization['allowOutOfStockOrders'],
+      ),
       employeeIds: _iaib1p48.Protocol().deserialize<List<_is.UuidValue>>(
         jsonSerialization['employeeIds'],
       ),
@@ -161,6 +176,12 @@ abstract class BuildingView
 
   double reservationFee;
 
+  bool customerOrderingEnabled;
+
+  bool reservationsEnabled;
+
+  bool allowOutOfStockOrders;
+
   List<_is.UuidValue> employeeIds;
 
   _i1961zho.BuildingPackView pack;
@@ -191,6 +212,9 @@ abstract class BuildingView
     bool? strictMode,
     List<_ik04yv2w.StrictModeStep>? strictModeSteps,
     double? reservationFee,
+    bool? customerOrderingEnabled,
+    bool? reservationsEnabled,
+    bool? allowOutOfStockOrders,
     List<_is.UuidValue>? employeeIds,
     _i1961zho.BuildingPackView? pack,
   });
@@ -220,6 +244,9 @@ abstract class BuildingView
       'strictMode': strictMode,
       'strictModeSteps': strictModeSteps.toJson(valueToJson: (v) => v.toJson()),
       'reservationFee': reservationFee,
+      'customerOrderingEnabled': customerOrderingEnabled,
+      'reservationsEnabled': reservationsEnabled,
+      'allowOutOfStockOrders': allowOutOfStockOrders,
       'employeeIds': employeeIds.toJson(valueToJson: (v) => v.toJson()),
       'pack': pack.toJson(),
     };
@@ -253,6 +280,9 @@ abstract class BuildingView
         valueToJson: (v) => v.toJsonForProtocol(),
       ),
       'reservationFee': reservationFee,
+      'customerOrderingEnabled': customerOrderingEnabled,
+      'reservationsEnabled': reservationsEnabled,
+      'allowOutOfStockOrders': allowOutOfStockOrders,
       'employeeIds': employeeIds.toJson(valueToJson: (v) => v.toJson()),
       'pack': pack.toJsonForProtocol(),
     };
@@ -290,6 +320,9 @@ class _BuildingViewImpl extends BuildingView {
     required bool strictMode,
     required List<_ik04yv2w.StrictModeStep> strictModeSteps,
     required double reservationFee,
+    required bool customerOrderingEnabled,
+    required bool reservationsEnabled,
+    required bool allowOutOfStockOrders,
     required List<_is.UuidValue> employeeIds,
     required _i1961zho.BuildingPackView pack,
   }) : super._(
@@ -315,6 +348,9 @@ class _BuildingViewImpl extends BuildingView {
          strictMode: strictMode,
          strictModeSteps: strictModeSteps,
          reservationFee: reservationFee,
+         customerOrderingEnabled: customerOrderingEnabled,
+         reservationsEnabled: reservationsEnabled,
+         allowOutOfStockOrders: allowOutOfStockOrders,
          employeeIds: employeeIds,
          pack: pack,
        );
@@ -346,6 +382,9 @@ class _BuildingViewImpl extends BuildingView {
     bool? strictMode,
     List<_ik04yv2w.StrictModeStep>? strictModeSteps,
     double? reservationFee,
+    bool? customerOrderingEnabled,
+    bool? reservationsEnabled,
+    bool? allowOutOfStockOrders,
     List<_is.UuidValue>? employeeIds,
     _i1961zho.BuildingPackView? pack,
   }) {
@@ -375,6 +414,11 @@ class _BuildingViewImpl extends BuildingView {
           strictModeSteps ??
           this.strictModeSteps.map((e0) => e0.copyWith()).toList(),
       reservationFee: reservationFee ?? this.reservationFee,
+      customerOrderingEnabled:
+          customerOrderingEnabled ?? this.customerOrderingEnabled,
+      reservationsEnabled: reservationsEnabled ?? this.reservationsEnabled,
+      allowOutOfStockOrders:
+          allowOutOfStockOrders ?? this.allowOutOfStockOrders,
       employeeIds: employeeIds ?? this.employeeIds.map((e0) => e0).toList(),
       pack: pack ?? this.pack.copyWith(),
     );

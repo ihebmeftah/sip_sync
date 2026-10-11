@@ -11,6 +11,7 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _is;
+import 'package:sip_sync_server/src/generated/protocol.dart' as _iaib1p48;
 
 abstract class MenuArticleView
     implements _is.SerializableModel, _is.ProtocolSerialization {
@@ -23,6 +24,7 @@ abstract class MenuArticleView
     this.description,
     required this.price,
     required this.compositionLineCount,
+    required this.outOfStockIngredientNames,
   });
 
   factory MenuArticleView({
@@ -34,6 +36,7 @@ abstract class MenuArticleView
     String? description,
     required double price,
     required int compositionLineCount,
+    required List<String> outOfStockIngredientNames,
   }) = _MenuArticleViewImpl;
 
   factory MenuArticleView.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -50,6 +53,9 @@ abstract class MenuArticleView
       description: jsonSerialization['description'] as String?,
       price: (jsonSerialization['price'] as num).toDouble(),
       compositionLineCount: jsonSerialization['compositionLineCount'] as int,
+      outOfStockIngredientNames: _iaib1p48.Protocol().deserialize<List<String>>(
+        jsonSerialization['outOfStockIngredientNames'],
+      ),
     );
   }
 
@@ -70,6 +76,9 @@ abstract class MenuArticleView
   /// Number of recipe lines; 0 means no composition yet (allowed).
   int compositionLineCount;
 
+  /// Recipe ingredients that cannot cover one more unit.
+  List<String> outOfStockIngredientNames;
+
   /// Returns a shallow copy of this [MenuArticleView]
   /// with some or all fields replaced by the given arguments.
   @_is.useResult
@@ -82,6 +91,7 @@ abstract class MenuArticleView
     String? description,
     double? price,
     int? compositionLineCount,
+    List<String>? outOfStockIngredientNames,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -95,6 +105,7 @@ abstract class MenuArticleView
       if (description != null) 'description': description,
       'price': price,
       'compositionLineCount': compositionLineCount,
+      'outOfStockIngredientNames': outOfStockIngredientNames.toJson(),
     };
   }
 
@@ -110,6 +121,7 @@ abstract class MenuArticleView
       if (description != null) 'description': description,
       'price': price,
       'compositionLineCount': compositionLineCount,
+      'outOfStockIngredientNames': outOfStockIngredientNames.toJson(),
     };
   }
 
@@ -131,6 +143,7 @@ class _MenuArticleViewImpl extends MenuArticleView {
     String? description,
     required double price,
     required int compositionLineCount,
+    required List<String> outOfStockIngredientNames,
   }) : super._(
          id: id,
          buildingId: buildingId,
@@ -140,6 +153,7 @@ class _MenuArticleViewImpl extends MenuArticleView {
          description: description,
          price: price,
          compositionLineCount: compositionLineCount,
+         outOfStockIngredientNames: outOfStockIngredientNames,
        );
 
   /// Returns a shallow copy of this [MenuArticleView]
@@ -155,6 +169,7 @@ class _MenuArticleViewImpl extends MenuArticleView {
     Object? description = _Undefined,
     double? price,
     int? compositionLineCount,
+    List<String>? outOfStockIngredientNames,
   }) {
     return MenuArticleView(
       id: id ?? this.id,
@@ -165,6 +180,9 @@ class _MenuArticleViewImpl extends MenuArticleView {
       description: description is String? ? description : this.description,
       price: price ?? this.price,
       compositionLineCount: compositionLineCount ?? this.compositionLineCount,
+      outOfStockIngredientNames:
+          outOfStockIngredientNames ??
+          this.outOfStockIngredientNames.map((e0) => e0).toList(),
     );
   }
 }

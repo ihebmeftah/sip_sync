@@ -129,6 +129,8 @@ import 'package:sip_sync_server/src/generated/orders/dtos/customer_order_view.da
     as _i43y7jrp;
 import 'package:sip_sync_server/src/generated/orders/dtos/order_add_items.dart'
     as _im5ws0jm;
+import 'package:sip_sync_server/src/generated/orders/dtos/order_cancellation_reason.dart'
+    as _i8a0aty0;
 import 'package:sip_sync_server/src/generated/orders/dtos/order_create.dart'
     as _i5j23umo;
 import 'package:sip_sync_server/src/generated/orders/dtos/order_item_status_update.dart'
@@ -3087,6 +3089,7 @@ class _OrderEndpoint {
   _ida.Future<_i6r0fe4s.OrderView> cancel(
     _ist.TestSessionBuilder sessionBuilder,
     _is.UuidValue orderId,
+    _i8a0aty0.OrderCancellationReason reason,
   ) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -3099,7 +3102,10 @@ class _OrderEndpoint {
           createSessionCallback: (_) => _localUniqueSession,
           endpointPath: 'order',
           methodName: 'cancel',
-          parameters: _ist.testObjectToJson({'orderId': orderId}),
+          parameters: _ist.testObjectToJson({
+            'orderId': orderId,
+            'reason': reason,
+          }),
           serializationManager: _serializationManager,
         );
         var _localReturnValue =

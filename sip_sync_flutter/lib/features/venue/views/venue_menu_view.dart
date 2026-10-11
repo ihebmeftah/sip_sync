@@ -225,7 +225,7 @@ class _MenuBody extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       if (!embedded) const VenueBackButton(),
-                      if (!menu.customerOrdering)
+                      if (!menu.customerOrdering && !menu.orderingClosedByVenue)
                         Padding(
                           padding: const EdgeInsets.fromLTRB(
                             AppSpacing.md,
@@ -316,13 +316,15 @@ class _MenuBody extends ConsumerWidget {
     return Column(
       children: [
         Expanded(child: menuScroll),
-        if (cart.isNotEmpty && menu.customerOrdering)
+        if (cart.isNotEmpty &&
+            (menu.customerOrdering || menu.orderingClosedByVenue))
           _CartBar(
             buildingId: buildingId,
             venueName: title,
             currencyCode: menu.currencyCode,
             units: cartUnits(cart),
             total: formatMenuPrice(cartTotal(cart), menu.currencyCode),
+            canPass: menu.customerOrdering,
           ),
       ],
     );
@@ -336,6 +338,7 @@ class _CartBar extends StatelessWidget {
     required this.currencyCode,
     required this.units,
     required this.total,
+    required this.canPass,
   });
 
   final String buildingId;
@@ -343,6 +346,7 @@ class _CartBar extends StatelessWidget {
   final String currencyCode;
   final int units;
   final String total;
+  final bool canPass;
 
   @override
   Widget build(BuildContext context) {
@@ -375,11 +379,13 @@ class _CartBar extends StatelessWidget {
                 AppFilledButton(
                   expand: false,
                   label: l10n.passOrder,
-                  onPressed: () => OrderReviewRoute(
-                    id: buildingId,
-                    venueName: venueName,
-                    currencyCode: currencyCode,
-                  ).push(context),
+                  onPressed: canPass
+                      ? () => OrderReviewRoute(
+                          id: buildingId,
+                          venueName: venueName,
+                          currencyCode: currencyCode,
+                        ).push(context)
+                      : null,
                 ),
               ],
             ),
@@ -571,6 +577,28 @@ class _ArticleRow extends ConsumerWidget {
   final CustomerArticlePreview article;
   final String currencyCode;
 
+  bool _addBlocked(WidgetRef ref) {
+    if (article.outOfStockIngredientNames.isEmpty) {
+      return false;
+    }
+    final allow = ref
+        .watch(venueMenuViewModelProvider(buildingId))
+        .asData
+        ?.value
+        .allowOutOfStockOrders;
+    return allow != true;
+  }
+
+  /// The pack includes ordering and the venue has turned it off.
+  bool _venueClosed(WidgetRef ref) {
+    return ref
+            .watch(venueMenuViewModelProvider(buildingId))
+            .asData
+            ?.value
+            .orderingClosedByVenue ==
+        true;
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
@@ -602,7 +630,7 @@ class _ArticleRow extends ConsumerWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(AppSpacing.lg),
                   child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       const MenuImageSlot(size: 64),
                       const SizedBox(width: AppSpacing.md),
@@ -639,77 +667,78 @@ class _ArticleRow extends ConsumerWidget {
                                 ),
                               ),
                             ],
-                            const SizedBox(height: AppSpacing.sm),
-                            Row(
-                              children: [
-                                DecoratedBox(
-                                  decoration: BoxDecoration(
-                                    color: scheme.primaryContainer,
-                                    borderRadius: BorderRadius.circular(999),
-                                  ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: AppSpacing.md,
-                                      vertical: AppSpacing.sm,
-                                    ),
-                                    child: Text(
-                                      formatMenuPrice(
-                                        article.price,
-                                        currencyCode,
-                                      ),
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: text.labelLarge?.copyWith(
-                                        color: scheme.onPrimaryContainer,
-                                        fontWeight: FontWeight.w700,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                const Spacer(),
-                                if (quantity > 0) ...[
-                                  _QtyButton(
-                                    tooltip: l10n.removeArticle,
-                                    icon: AppIcons.remove,
-                                    onPressed: () =>
-                                        cart.remove(article.id.uuid),
-                                  ),
-                                  SizedBox(
-                                    width: 28,
-                                    child: Text(
-                                      '$quantity',
-                                      textAlign: TextAlign.center,
-                                      style: text.titleMedium,
-                                    ),
-                                  ),
-                                ],
-                                _QtyButton(
-                                  tooltip: l10n.addArticle,
-                                  icon: AppIcons.add,
-                                  onPressed: () {
-                                    final ordering = ref
-                                        .read(
-                                          venueMenuViewModelProvider(
-                                            buildingId,
-                                          ),
-                                        )
-                                        .asData
-                                        ?.value
-                                        .customerOrdering;
-                                    if (ordering == false) {
-                                      showAppSnackBar(
-                                        context,
-                                        l10n.errorPackFeatureOrdering,
-                                      );
-                                      return;
-                                    }
-                                    cart.add(article);
-                                  },
-                                ),
-                              ],
-                            ),
                           ],
                         ),
+                      ),
+                      const SizedBox(width: AppSpacing.lg),
+
+                      Column(
+                        children: [
+                          DecoratedBox(
+                            decoration: BoxDecoration(
+                              color: scheme.primaryContainer,
+                              borderRadius: BorderRadius.circular(999),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: AppSpacing.md,
+                                vertical: AppSpacing.sm,
+                              ),
+                              child: Text(
+                                formatMenuPrice(article.price, currencyCode),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: text.labelLarge?.copyWith(
+                                  color: scheme.onPrimaryContainer,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: AppSpacing.sm),
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              _QtyButton(
+                                tooltip: l10n.addArticle,
+                                icon: AppIcons.add,
+                                onPressed: _addBlocked(ref) || _venueClosed(ref)
+                                    ? null
+                                    : () {
+                                        final ordering = ref
+                                            .read(
+                                              venueMenuViewModelProvider(
+                                                buildingId,
+                                              ),
+                                            )
+                                            .asData
+                                            ?.value
+                                            .customerOrdering;
+                                        if (ordering == false) {
+                                          showAppSnackBar(
+                                            context,
+                                            l10n.errorPackFeatureOrdering,
+                                          );
+                                          return;
+                                        }
+                                        cart.add(article);
+                                      },
+                              ),
+                              if (quantity > 0) ...[
+                                Text(
+                                  '$quantity',
+                                  textAlign: TextAlign.center,
+                                  style: text.titleMedium,
+                                ),
+                                _QtyButton(
+                                  tooltip: l10n.removeArticle,
+                                  icon: AppIcons.remove,
+                                  onPressed: () => cart.remove(article.id.uuid),
+                                ),
+                              ],
+                            ],
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -732,7 +761,7 @@ class _QtyButton extends StatelessWidget {
 
   final String tooltip;
   final IconData icon;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
 
   @override
   Widget build(BuildContext context) {

@@ -132,6 +132,7 @@ import 'orders/dtos/customer_order_summary.dart' as _ipj20c5x;
 import 'orders/dtos/customer_order_view.dart' as _iw1gx7eb;
 import 'orders/dtos/order_actor_view.dart' as _ic5jn53k;
 import 'orders/dtos/order_add_items.dart' as _iqdnv1pi;
+import 'orders/dtos/order_cancellation_reason.dart' as _iwctrinv;
 import 'orders/dtos/order_create.dart' as _iwmhqcsn;
 import 'orders/dtos/order_error_code.dart' as _iepprhv5;
 import 'orders/dtos/order_exception.dart' as _iumotmt8;
@@ -278,6 +279,7 @@ export 'orders/dtos/customer_order_summary.dart';
 export 'orders/dtos/customer_order_view.dart';
 export 'orders/dtos/order_actor_view.dart';
 export 'orders/dtos/order_add_items.dart';
+export 'orders/dtos/order_cancellation_reason.dart';
 export 'orders/dtos/order_create.dart';
 export 'orders/dtos/order_error_code.dart';
 export 'orders/dtos/order_exception.dart';
@@ -679,6 +681,27 @@ class Protocol extends _is.DatabaseSerializationManager {
           isNullable: false,
           dartType: 'double',
           columnDefault: '0',
+        ),
+        _isp.ColumnDefinition(
+          name: 'customerOrderingEnabled',
+          columnType: _isp.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'true',
+        ),
+        _isp.ColumnDefinition(
+          name: 'reservationsEnabled',
+          columnType: _isp.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'true',
+        ),
+        _isp.ColumnDefinition(
+          name: 'allowOutOfStockOrders',
+          columnType: _isp.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'false',
         ),
         _isp.ColumnDefinition(
           name: 'createdAt',
@@ -2280,6 +2303,12 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'DateTime?',
         ),
         _isp.ColumnDefinition(
+          name: 'cancellationReason',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'protocol:OrderCancellationReason?',
+        ),
+        _isp.ColumnDefinition(
           name: 'createdAt',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: false,
@@ -2528,6 +2557,12 @@ class Protocol extends _is.DatabaseSerializationManager {
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: true,
           dartType: 'DateTime?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'cancellationReason',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'protocol:OrderCancellationReason?',
         ),
       ],
       foreignKeys: [
@@ -3014,6 +3049,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     if (t == _iqdnv1pi.OrderAddItems) {
       return _iqdnv1pi.OrderAddItems.fromJson(data) as T;
+    }
+    if (t == _iwctrinv.OrderCancellationReason) {
+      return _iwctrinv.OrderCancellationReason.fromJson(data) as T;
     }
     if (t == _iwmhqcsn.OrderCreate) {
       return _iwmhqcsn.OrderCreate.fromJson(data) as T;
@@ -3601,6 +3639,12 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     if (t == _is.getType<_iqdnv1pi.OrderAddItems?>()) {
       return (data != null ? _iqdnv1pi.OrderAddItems.fromJson(data) : null)
+          as T;
+    }
+    if (t == _is.getType<_iwctrinv.OrderCancellationReason?>()) {
+      return (data != null
+              ? _iwctrinv.OrderCancellationReason.fromJson(data)
+              : null)
           as T;
     }
     if (t == _is.getType<_iwmhqcsn.OrderCreate?>()) {
@@ -4297,6 +4341,7 @@ class Protocol extends _is.DatabaseSerializationManager {
       _iw1gx7eb.CustomerOrderView => 'CustomerOrderView',
       _ic5jn53k.OrderActorView => 'OrderActorView',
       _iqdnv1pi.OrderAddItems => 'OrderAddItems',
+      _iwctrinv.OrderCancellationReason => 'OrderCancellationReason',
       _iwmhqcsn.OrderCreate => 'OrderCreate',
       _iepprhv5.OrderErrorCode => 'OrderErrorCode',
       _iumotmt8.OrderException => 'OrderException',
@@ -4556,6 +4601,8 @@ class Protocol extends _is.DatabaseSerializationManager {
         return 'OrderActorView';
       case _iqdnv1pi.OrderAddItems():
         return 'OrderAddItems';
+      case _iwctrinv.OrderCancellationReason():
+        return 'OrderCancellationReason';
       case _iwmhqcsn.OrderCreate():
         return 'OrderCreate';
       case _iepprhv5.OrderErrorCode():
@@ -4972,6 +5019,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     if (dataClassName == 'OrderAddItems') {
       return deserialize<_iqdnv1pi.OrderAddItems>(data['data']);
+    }
+    if (dataClassName == 'OrderCancellationReason') {
+      return deserialize<_iwctrinv.OrderCancellationReason>(data['data']);
     }
     if (dataClassName == 'OrderCreate') {
       return deserialize<_iwmhqcsn.OrderCreate>(data['data']);

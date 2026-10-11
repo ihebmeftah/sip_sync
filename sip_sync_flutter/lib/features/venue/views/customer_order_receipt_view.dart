@@ -9,6 +9,7 @@ import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
 import '../../../core/widgets/app_loader.dart';
 import '../../../l10n/generated/app_localizations.dart';
+import '../../orders/order_cancellation_label.dart';
 import '../menu_price.dart';
 import '../view_models/customer_order_view_model.dart';
 
@@ -95,6 +96,16 @@ class CustomerOrderReceiptView extends ConsumerWidget {
                     ),
                     const SizedBox(height: AppSpacing.xs),
                     Text(l10n.orderRef(page.ref), style: text.displaySmall),
+                    if (page.cancellationReason != null) ...[
+                      const SizedBox(height: AppSpacing.sm),
+                      Text(
+                        orderCancellationReasonLabel(
+                          l10n,
+                          page.cancellationReason!,
+                        ),
+                        style: text.bodyLarge?.copyWith(color: AppColors.rose),
+                      ),
+                    ],
                     const SizedBox(height: AppSpacing.lg),
                     DecoratedBox(
                       decoration: BoxDecoration(
@@ -135,6 +146,18 @@ class CustomerOrderReceiptView extends ConsumerWidget {
                                 ),
                                 const SizedBox(height: AppSpacing.xs),
                                 _ItemStatus(status: line.status),
+                                if (line.cancellationReason != null) ...[
+                                  const SizedBox(height: AppSpacing.xs),
+                                  Text(
+                                    orderCancellationReasonLabel(
+                                      l10n,
+                                      line.cancellationReason!,
+                                    ),
+                                    style: text.bodySmall?.copyWith(
+                                      color: AppColors.rose,
+                                    ),
+                                  ),
+                                ],
                               ],
                             ),
                           ),

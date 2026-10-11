@@ -99,6 +99,9 @@
   "orderStatusProgress": "قيد التنفيذ",
   "orderStatusPayed": "مدفوع",
   "orderStatusCancelled": "ملغى",
+  "cancelReasonOutOfStock": "نفد مكوّن",
+  "cancelReasonClosingSoon": "وقت الإغلاق يقترب",
+  "cancelReasonWorkBreakdown": "عطل في العمل، حاول لاحقاً",
   "openOrderNote": "المطبخ يحضّر طلبك",
   "openOrderLead": "تابع كل طبق حتى لحظة الدفع.",
   "openOrderDetails": "التفاصيل",
@@ -121,6 +124,10 @@
     "placeholders": { "number": { "type": "int" } }
   },
   "addArticle": "إضافة",
+  "articleOutOfStock": "نفد المخزون: {names}",
+  "@articleOutOfStock": {
+    "placeholders": { "names": { "type": "String" } }
+  },
   "removeArticle": "إزالة",
   "passOrder": "إرسال الطلب",
   "yourOrder": "طلبك",
@@ -196,6 +203,8 @@
   "errorPackFeatureReservations": "هذه الباقة لا تشمل الحجوزات.",
   "errorPackLimitReservations": "بلغت هذه الباقة حد الحجوزات لهذا اليوم.",
   "errorOrderReservationHeld": "هذه الطاولة محجوزة إلى أن يؤكد المكان الوصول.",
+  "errorCustomerOrderingDisabled": "هذا المكان أوقف الطلبات.",
+  "errorReservationsDisabled": "هذا المكان أوقف الحجوزات.",
   "errorReservationOverlap": "طاولة محجوزة بالفعل في هذا الوقت.",
   "errorReservationNotFound": "لا يوجد حجز مطابق.",
   "errorPackPaidActive": "هذا المكان على باقة مدفوعة.",

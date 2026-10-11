@@ -348,6 +348,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get orderStatusCancelled => 'Cancelled';
 
   @override
+  String get cancelReasonOutOfStock => 'Ingredient is out of stock';
+
+  @override
+  String get cancelReasonClosingSoon => 'Closing time is coming';
+
+  @override
+  String get cancelReasonWorkBreakdown => 'Breakdown at work, try later';
+
+  @override
   String get openOrderNote => 'The kitchen has your order';
 
   @override
@@ -400,6 +409,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get addArticle => 'Add';
+
+  @override
+  String articleOutOfStock(String names) {
+    return 'Out of stock: $names';
+  }
 
   @override
   String get removeArticle => 'Remove';
@@ -619,6 +633,14 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get errorOrderReservationHeld =>
       'This table is reserved until the venue confirms arrival.';
+
+  @override
+  String get errorCustomerOrderingDisabled =>
+      'This venue has turned off ordering.';
+
+  @override
+  String get errorReservationsDisabled =>
+      'This venue has turned off reservations.';
 
   @override
   String get errorReservationOverlap =>

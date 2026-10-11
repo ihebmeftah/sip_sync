@@ -75,6 +75,12 @@ class _VenueReserveViewState extends ConsumerState<VenueReserveView> {
                       message: lookupError(l10n, mapError(error).l10nKey),
                     ),
                     data: (page) {
+                      if (page.reservationsClosedByVenue) {
+                        return AppFilledButton(
+                          label: l10n.reservationBook,
+                          onPressed: null,
+                        );
+                      }
                       if (!page.reservationsEnabled) {
                         return Text(l10n.errorPackFeatureReservations);
                       }
@@ -143,7 +149,7 @@ class _VenueReserveViewState extends ConsumerState<VenueReserveView> {
     if (!ref.read(appSessionStoreProvider).isSignedIn) {
       return;
     }
-    if (!page.reservationsEnabled) {
+    if (!page.reservationsEnabled || page.reservationsClosedByVenue) {
       return;
     }
     _composerShown = true;

@@ -305,6 +305,47 @@ class AppLocalizationsAr extends AppLocalizations {
   String get navTables => 'الطاولات';
 
   @override
+  String get navConfiguration => 'الإعدادات';
+
+  @override
+  String get configurationTitle => 'إعدادات المكان';
+
+  @override
+  String get configurationHint => 'هذه المفاتيح تخص هذا المكان فقط.';
+
+  @override
+  String get configurationSaved => 'تم حفظ الإعدادات.';
+
+  @override
+  String get saveConfiguration => 'حفظ الإعدادات';
+
+  @override
+  String get buildingCustomerOrdering => 'طلبات الزبائن';
+
+  @override
+  String get buildingCustomerOrderingHint =>
+      'عند التفعيل يمكن للزبائن الطلب من التطبيق. يجب أن تشمل الباقة طلبات الزبائن.';
+
+  @override
+  String get buildingReservations => 'الحجوزات';
+
+  @override
+  String get buildingReservationsHint =>
+      'عند التفعيل يمكن إنشاء الحجوزات. يجب أن تشمل الباقة الحجوزات.';
+
+  @override
+  String get buildingAllowOutOfStockOrders => 'السماح بالطلب عند نفاد مكوّن';
+
+  @override
+  String get buildingAllowOutOfStockOrdersHint =>
+      'عند التفعيل يمكن تمرير الطلب حتى لو لم يكف مخزون مكوّن لطبق واحد إضافي. عند الإيقاف يُرفض الطلب ويُعطّل الإضافة في تطبيق الزبون.';
+
+  @override
+  String orderIngredientOutOfStock(String names) {
+    return 'نفد المخزون: $names';
+  }
+
+  @override
   String helloScreen(String screen) {
     return 'مرحباً، $screen';
   }
@@ -1159,6 +1200,21 @@ class AppLocalizationsAr extends AppLocalizations {
   String get cancelOrderConfirm => 'إلغاء هذا الطلب والبنود المفتوحة؟';
 
   @override
+  String get cancelReasonTitle => 'سبب الإلغاء';
+
+  @override
+  String get cancelReasonConfirm => 'إلغاء';
+
+  @override
+  String get cancelReasonOutOfStock => 'نفد مكوّن';
+
+  @override
+  String get cancelReasonClosingSoon => 'وقت الإغلاق يقترب';
+
+  @override
+  String get cancelReasonWorkBreakdown => 'عطل في العمل، حاول لاحقاً';
+
+  @override
   String get cancelOrderItem => 'إلغاء الصنف';
 
   @override
@@ -1585,6 +1641,12 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get errorOrderReservationHeld => 'أكّد الحجز قبل أخذ الطلب.';
+
+  @override
+  String get errorCustomerOrderingDisabled => 'هذا المكان أوقف طلبات الزبائن.';
+
+  @override
+  String get errorReservationsDisabled => 'هذا المكان أوقف الحجوزات.';
 
   @override
   String get errorReservationOverlap => 'طاولة محجوزة بالفعل في هذا الوقت.';

@@ -676,6 +676,24 @@ abstract class AppLocalizations {
   /// **'Cancelled'**
   String get orderStatusCancelled;
 
+  /// No description provided for @cancelReasonOutOfStock.
+  ///
+  /// In en, this message translates to:
+  /// **'Ingredient is out of stock'**
+  String get cancelReasonOutOfStock;
+
+  /// No description provided for @cancelReasonClosingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Closing time is coming'**
+  String get cancelReasonClosingSoon;
+
+  /// No description provided for @cancelReasonWorkBreakdown.
+  ///
+  /// In en, this message translates to:
+  /// **'Breakdown at work, try later'**
+  String get cancelReasonWorkBreakdown;
+
   /// No description provided for @openOrderNote.
   ///
   /// In en, this message translates to:
@@ -771,6 +789,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Add'**
   String get addArticle;
+
+  /// No description provided for @articleOutOfStock.
+  ///
+  /// In en, this message translates to:
+  /// **'Out of stock: {names}'**
+  String articleOutOfStock(String names);
 
   /// No description provided for @removeArticle.
   ///
@@ -1131,6 +1155,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'This table is reserved until the venue confirms arrival.'**
   String get errorOrderReservationHeld;
+
+  /// No description provided for @errorCustomerOrderingDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'This venue has turned off ordering.'**
+  String get errorCustomerOrderingDisabled;
+
+  /// No description provided for @errorReservationsDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'This venue has turned off reservations.'**
+  String get errorReservationsDisabled;
 
   /// No description provided for @errorReservationOverlap.
   ///

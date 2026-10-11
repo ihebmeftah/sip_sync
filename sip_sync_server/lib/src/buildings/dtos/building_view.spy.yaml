@@ -22,5 +22,8 @@ fields:
   strictMode: bool
   strictModeSteps: List<StrictModeStep>
   reservationFee: double
+  customerOrderingEnabled: bool
+  reservationsEnabled: bool
+  allowOutOfStockOrders: bool
   employeeIds: List<UuidValue>
   pack: BuildingPackView

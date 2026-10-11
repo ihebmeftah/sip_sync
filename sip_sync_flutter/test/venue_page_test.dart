@@ -348,10 +348,13 @@ class _Repo extends CustomerDiscoveryRepository {
             ingredientNames: n == 1
                 ? const ['Mint', 'Lemon']
                 : const <String>[],
+            outOfStockIngredientNames: const [],
           ),
       ],
       customerOrdering: true,
+      orderingClosedByVenue: false,
       reservationsEnabled: false,
+      reservationsClosedByVenue: false,
       reservationFee: 0,
     );
   }
@@ -389,11 +392,13 @@ class _Repo extends CustomerDiscoveryRepository {
                             'A longer description for the dish that sits on two lines',
                         price: 12.5,
                         ingredientNames: const [],
+                        outOfStockIngredientNames: const [],
                       ),
                   ],
           ),
       ],
       customerOrdering: true,
+      orderingClosedByVenue: false,
       categories: const [],
       articles: const [],
       totalArticles: 0,

@@ -22,7 +22,7 @@ Route guards are UX only. The endpoint checks the actor and the pack.
 3. An owner or an employee with `reservations` confirms that request (`confirmed`) or cancels it. Confirmation does not choose a table.
 4. After it is `confirmed`, the same staff assign one or more active tables. Overlap is checked at assignment, against other `confirmed` or `arrived` rows on those tables. Assigning again replaces the previous tables.
 5. Staff can also create a reservation from the management app. That row is stored as `confirmed` immediately (the guest is an existing customer, or a typed name and phone). The customer control is a searchable dropdown: after typing stops for one second it shows up to 20 matches on name or phone, and choosing a row fills the field. A query shorter than two characters is not searched. It still needs a table. The paid amount can differ from the building fee. The same two-hour length applies when no end is sent.
-6. A pack with reservations off rejects the create. `maxReservationsPerDay` counts non-cancelled reservations whose start falls on that UTC date. Null means no cap. A request whose end has passed is cancelled, so it stops counting.
+6. A pack with reservations off rejects the create. The venue switch `reservationsEnabled` does the same (`ReservationErrorCode.disabled`) even when the pack includes reservations. `maxReservationsPerDay` counts non-cancelled reservations whose start falls on that UTC date. Null means no cap. A request whose end has passed is cancelled, so it stops counting.
 7. From 30 minutes before the start, a confirmed reservation that already has a table marks that table reserved and names the guest. Ordering still works.
 8. At the start, the table stays marked reserved and names the guest, and orders are allowed. A scan does not have to confirm arrival first. A confirmed reservation with no table does not hold the floor.
 9. If the end passes while the row is still `confirmed`, it becomes `noShow` and any tables unlock. Staff can cancel a `requested` or `confirmed` row before arrival.
@@ -39,7 +39,7 @@ Rows saved by the previous flow as `booked` are rewritten to `confirmed` the nex
 - `ReservationCreate` / `CustomerReservationCreate` / `ReservationView` / `ReservationCustomerMatch`.
 - `ReservationException` / `ReservationErrorCode` — `invalidInput`, `notAuthorized`, `notFound`, `overlap`. Pack failures stay `PackException`.
 - `VenueTableView` carries `reservationPhase` (`none`, `soon`, `holding`), the guest name, and the start, so the floor can warn without a second call.
-- `CustomerVenueDetail.reservationsEnabled` and `reservationFee` tell the customer app whether requests are open.
+- `CustomerVenueDetail.reservationsEnabled` is true only when the pack includes reservations and the venue switch is on. `reservationsClosedByVenue` is true only when the pack includes them and the venue switch is off; the customer app then disables **Reserve now** instead of showing the plan message. `reservationFee` is the building default.
 
 Seeded caps: free off, counter 8/day, floor 30/day, house and group on with no cap. Existing databases get those values from the migration that adds the columns. Later pack edits are left alone.
 

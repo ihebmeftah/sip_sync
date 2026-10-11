@@ -295,6 +295,20 @@ class _OrderCreateArticlesViewState
                                         color: scheme.primary,
                                       ),
                                     ),
+                                    if (article
+                                        .outOfStockIngredientNames
+                                        .isNotEmpty) ...[
+                                      const SizedBox(height: 2),
+                                      Text(
+                                        l10n.orderIngredientOutOfStock(
+                                          article.outOfStockIngredientNames
+                                              .join(', '),
+                                        ),
+                                        style: text.bodySmall?.copyWith(
+                                          color: scheme.error,
+                                        ),
+                                      ),
+                                    ],
                                   ],
                                 ),
                               ),

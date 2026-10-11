@@ -35,10 +35,16 @@ abstract class BuildingCreate
     bool? strictMode,
     required this.strictModeSteps,
     double? reservationFee,
+    bool? customerOrderingEnabled,
+    bool? reservationsEnabled,
+    bool? allowOutOfStockOrders,
   }) : tableMultiOrder = tableMultiOrder ?? false,
        allowAppendingItemsToOrder = allowAppendingItemsToOrder ?? true,
        strictMode = strictMode ?? false,
-       reservationFee = reservationFee ?? 0.0;
+       reservationFee = reservationFee ?? 0.0,
+       customerOrderingEnabled = customerOrderingEnabled ?? true,
+       reservationsEnabled = reservationsEnabled ?? true,
+       allowOutOfStockOrders = allowOutOfStockOrders ?? false;
 
   factory BuildingCreate({
     required String name,
@@ -59,6 +65,9 @@ abstract class BuildingCreate
     bool? strictMode,
     required List<_ik04yv2w.StrictModeStep> strictModeSteps,
     double? reservationFee,
+    bool? customerOrderingEnabled,
+    bool? reservationsEnabled,
+    bool? allowOutOfStockOrders,
   }) = _BuildingCreateImpl;
 
   factory BuildingCreate.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -97,6 +106,22 @@ abstract class BuildingCreate
             jsonSerialization['strictModeSteps'],
           ),
       reservationFee: (jsonSerialization['reservationFee'] as num?)?.toDouble(),
+      customerOrderingEnabled:
+          jsonSerialization['customerOrderingEnabled'] == null
+          ? null
+          : _is.BoolJsonExtension.fromJson(
+              jsonSerialization['customerOrderingEnabled'],
+            ),
+      reservationsEnabled: jsonSerialization['reservationsEnabled'] == null
+          ? null
+          : _is.BoolJsonExtension.fromJson(
+              jsonSerialization['reservationsEnabled'],
+            ),
+      allowOutOfStockOrders: jsonSerialization['allowOutOfStockOrders'] == null
+          ? null
+          : _is.BoolJsonExtension.fromJson(
+              jsonSerialization['allowOutOfStockOrders'],
+            ),
     );
   }
 
@@ -136,6 +161,15 @@ abstract class BuildingCreate
 
   double reservationFee;
 
+  /// When false, customers cannot place or append orders.
+  bool customerOrderingEnabled;
+
+  /// When false, reservations cannot be created.
+  bool reservationsEnabled;
+
+  /// When true, an order may be placed even if a recipe ingredient would go below zero.
+  bool allowOutOfStockOrders;
+
   /// Returns a shallow copy of this [BuildingCreate]
   /// with some or all fields replaced by the given arguments.
   @_is.useResult
@@ -158,6 +192,9 @@ abstract class BuildingCreate
     bool? strictMode,
     List<_ik04yv2w.StrictModeStep>? strictModeSteps,
     double? reservationFee,
+    bool? customerOrderingEnabled,
+    bool? reservationsEnabled,
+    bool? allowOutOfStockOrders,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -181,6 +218,9 @@ abstract class BuildingCreate
       'strictMode': strictMode,
       'strictModeSteps': strictModeSteps.toJson(valueToJson: (v) => v.toJson()),
       'reservationFee': reservationFee,
+      'customerOrderingEnabled': customerOrderingEnabled,
+      'reservationsEnabled': reservationsEnabled,
+      'allowOutOfStockOrders': allowOutOfStockOrders,
     };
   }
 
@@ -208,6 +248,9 @@ abstract class BuildingCreate
         valueToJson: (v) => v.toJsonForProtocol(),
       ),
       'reservationFee': reservationFee,
+      'customerOrderingEnabled': customerOrderingEnabled,
+      'reservationsEnabled': reservationsEnabled,
+      'allowOutOfStockOrders': allowOutOfStockOrders,
     };
   }
 
@@ -239,6 +282,9 @@ class _BuildingCreateImpl extends BuildingCreate {
     bool? strictMode,
     required List<_ik04yv2w.StrictModeStep> strictModeSteps,
     double? reservationFee,
+    bool? customerOrderingEnabled,
+    bool? reservationsEnabled,
+    bool? allowOutOfStockOrders,
   }) : super._(
          name: name,
          type: type,
@@ -258,6 +304,9 @@ class _BuildingCreateImpl extends BuildingCreate {
          strictMode: strictMode,
          strictModeSteps: strictModeSteps,
          reservationFee: reservationFee,
+         customerOrderingEnabled: customerOrderingEnabled,
+         reservationsEnabled: reservationsEnabled,
+         allowOutOfStockOrders: allowOutOfStockOrders,
        );
 
   /// Returns a shallow copy of this [BuildingCreate]
@@ -283,6 +332,9 @@ class _BuildingCreateImpl extends BuildingCreate {
     bool? strictMode,
     List<_ik04yv2w.StrictModeStep>? strictModeSteps,
     double? reservationFee,
+    bool? customerOrderingEnabled,
+    bool? reservationsEnabled,
+    bool? allowOutOfStockOrders,
   }) {
     return BuildingCreate(
       name: name ?? this.name,
@@ -306,6 +358,11 @@ class _BuildingCreateImpl extends BuildingCreate {
           strictModeSteps ??
           this.strictModeSteps.map((e0) => e0.copyWith()).toList(),
       reservationFee: reservationFee ?? this.reservationFee,
+      customerOrderingEnabled:
+          customerOrderingEnabled ?? this.customerOrderingEnabled,
+      reservationsEnabled: reservationsEnabled ?? this.reservationsEnabled,
+      allowOutOfStockOrders:
+          allowOutOfStockOrders ?? this.allowOutOfStockOrders,
     );
   }
 }

@@ -172,6 +172,7 @@ class OrderService {
       pack.customerOrdering,
       PackFeature.customerOrdering,
     );
+    await _assertCustomerOrderingEnabled(session, request.buildingId);
     final lines = _customerLines(request.items);
     final table = await _requireActiveTable(
       session,
@@ -262,6 +263,7 @@ class OrderService {
               tableNumber: row.venueTable?.number ?? 0,
               currencyCode: row.building?.currencyCode ?? '',
               status: row.status,
+              cancellationReason: row.cancellationReason,
               itemCount: row.items?.length ?? 0,
               totalAmount: (row.items ?? const <VenueOrderItem>[]).fold<double>(
                 0,
@@ -362,6 +364,12 @@ class OrderService {
       throw OrderException(
         message: 'Building not found.',
         code: OrderErrorCode.notFound,
+      );
+    }
+    if (!building.customerOrderingEnabled) {
+      throw OrderException(
+        message: 'This venue has turned off customer ordering.',
+        code: OrderErrorCode.customerOrderingDisabled,
       );
     }
     if (!building.allowAppendingItemsToOrder) {
@@ -511,10 +519,18 @@ class OrderService {
           paidAt: now,
         );
       case OrderItemStatus.cancelled:
+        final reason = request.cancellationReason;
+        if (reason == null) {
+          throw OrderException(
+            message: 'Choose a cancellation reason.',
+            code: OrderErrorCode.invalidInput,
+          );
+        }
         next = next.copyWith(
           cancelledByType: ctx.actorType,
           cancelledById: ctx.actorId,
           cancelledAt: now,
+          cancellationReason: reason,
         );
       case OrderItemStatus.progress:
         break;
@@ -550,7 +566,14 @@ class OrderService {
   }
 
   /// Cancels an open order and all non-payed lines.
-  Future<OrderView> cancel(Session session, UuidValue orderId) async {
+  ///
+  /// [reason] is kept on the order and copied onto each line cancelled here.
+  /// A line that was already cancelled keeps its own reason.
+  Future<OrderView> cancel(
+    Session session,
+    UuidValue orderId,
+    OrderCancellationReason reason,
+  ) async {
     final ctx = AuthGuard.requireAny(session);
     _requireFloorActor(ctx);
     final order = await _loadOrder(session, orderId);
@@ -577,6 +600,7 @@ class OrderService {
           cancelledByType: ctx.actorType,
           cancelledById: ctx.actorId,
           cancelledAt: now,
+          cancellationReason: reason,
           updatedAt: now,
         ),
       );
@@ -594,6 +618,7 @@ class OrderService {
         cancelledByType: ctx.actorType,
         cancelledById: ctx.actorId,
         cancelledAt: now,
+        cancellationReason: reason,
         updatedAt: now,
       ),
     );
@@ -672,6 +697,9 @@ class OrderService {
     }
     if (totals.isEmpty) return;
 
+    final building = await Building.db.findById(session, buildingId);
+    final allowOutOfStock = building?.allowOutOfStockOrders == true;
+
     for (final entry in totals.entries) {
       final ingredient = await Ingredient.db.findById(session, entry.key);
       if (ingredient == null || ingredient.buildingId != buildingId) {
@@ -681,16 +709,34 @@ class OrderService {
         );
       }
       final delta = deduct ? -entry.value : entry.value;
-      final next = ingredient.currentStock + delta;
+      var next = ingredient.currentStock + delta;
       if (deduct && next < 0) {
-        throw OrderException(
-          message: 'Insufficient stock for ${ingredient.name}.',
-          code: OrderErrorCode.insufficientStock,
-        );
+        if (!allowOutOfStock) {
+          throw OrderException(
+            message: 'Insufficient stock for ${ingredient.name}.',
+            code: OrderErrorCode.insufficientStock,
+          );
+        }
+        // The venue allows the order. Stock stays at zero instead of going negative.
+        next = 0;
       }
       await Ingredient.db.updateRow(
         session,
         ingredient.copyWith(currentStock: next),
+      );
+    }
+  }
+
+  /// The pack can include customer ordering while the venue has it turned off.
+  Future<void> _assertCustomerOrderingEnabled(
+    Session session,
+    UuidValue buildingId,
+  ) async {
+    final building = await Building.db.findById(session, buildingId);
+    if (building == null || !building.customerOrderingEnabled) {
+      throw OrderException(
+        message: 'This venue has turned off customer ordering.',
+        code: OrderErrorCode.customerOrderingDisabled,
       );
     }
   }
@@ -740,6 +786,7 @@ class OrderService {
           name: item.articleName,
           unitPrice: item.unitPrice,
           status: item.status,
+          cancellationReason: item.cancellationReason,
         ),
     ];
     final total = lines.fold<double>(0, (sum, line) => sum + line.unitPrice);
@@ -750,6 +797,7 @@ class OrderService {
       tableNumber: order.venueTable?.number ?? 0,
       currencyCode: currencyCode,
       status: order.status,
+      cancellationReason: order.cancellationReason,
       lines: lines,
       totalAmount: total,
     );
@@ -944,6 +992,7 @@ class OrderService {
         names: names,
       ),
       cancelledAt: row.cancelledAt,
+      cancellationReason: row.cancellationReason,
       createdAt: row.createdAt,
       updatedAt: row.updatedAt,
       items: items,
@@ -997,6 +1046,7 @@ class OrderService {
     servedAt: row.servedAt,
     paidAt: row.paidAt,
     cancelledAt: row.cancelledAt,
+    cancellationReason: row.cancellationReason,
   );
 
   OrderActorView? _actorView({

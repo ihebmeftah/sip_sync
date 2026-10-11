@@ -70,11 +70,17 @@ class OrderRepository {
   Future<OrderView> updateItemStatus({
     required UuidValue id,
     required OrderItemStatus status,
+    OrderCancellationReason? cancellationReason,
   }) {
     return _client.order.updateItemStatus(
-      OrderItemStatusUpdate(id: id, status: status),
+      OrderItemStatusUpdate(
+        id: id,
+        status: status,
+        cancellationReason: cancellationReason,
+      ),
     );
   }
 
-  Future<OrderView> cancel(UuidValue orderId) => _client.order.cancel(orderId);
+  Future<OrderView> cancel(UuidValue orderId, OrderCancellationReason reason) =>
+      _client.order.cancel(orderId, reason);
 }

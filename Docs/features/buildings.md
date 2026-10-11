@@ -18,7 +18,7 @@ Status: in progress
 
 1. Owner signs in → `/buildings` (list + add), no ops sidebar. The owner list is 20 venues per page. An employee sees only their venue.
 2. Employee signs in → dashboard for their `buildingId`.
-3. Create/update: name, type, address, lat/long, hours, currency, **phone** (E.164 with country dial code), WhatsApp / Instagram / Facebook / other links, and **Multiple orders per table** (`tableMultiOrder`). No employee picker. The server sets the venue on the **free** pack.
+3. Create/update: name, type, address, lat/long, hours, currency, **phone** (E.164 with country dial code), WhatsApp / Instagram / Facebook / other links. No employee picker. The server sets the venue on the **free** pack. Order, reservation, and stock switches are saved later from Configuration.
 4. Server derives `countryCode` (ISO 3166-1 alpha-2, e.g. `TN` from `+216…`) and `countryName` (English common name, e.g. Tunisia) from the venue phone via [`sealed_countries`](https://pub.dev/packages/sealed_countries) and stores both. A blank name on an older row is filled from the code the next time that venue is read, and again on boot. Currency codes are validated against ISO 4217 fiat list from the same ecosystem.
 5. Owner opens a row → `/b/:buildingId/dashboard`. Staff listed via `building.listEmployees`.
 6. Ops shell hydrates the current venue with `building.get(buildingId)` whenever `/b/:buildingId/...` is opened and the in-memory [BuildingSession] has no details (e.g. browser refresh or employee login, which only selects the id) so currency, flags, and the pack stay available. A banner under the shell names the pack and says a change goes through the support team. Auth does **not** call `building.get` itself.
@@ -37,6 +37,11 @@ Status: in progress
 | `allowAppendingItemsToOrder` | `true` | When **false**, staff cannot append articles to an open order (UI disables Add articles; server rejects `addItems`). |
 | `strictMode` | `false` | When **true**, order lines must advance through enabled `strictModeSteps` in rank order. When **false**, staff may jump to **payed**. |
 | `strictModeSteps` | picked→ready→served→payed (all on) | Fixed ranks; UI only toggles `enabled` (no reorder). Disabled steps are skipped when computing the next status. |
+| `customerOrderingEnabled` | `true` | When **false**, customers cannot place or append orders even if the pack includes customer ordering. The customer app keeps **+** and **Pass order** visible and disables them. |
+| `reservationsEnabled` | `true` | When **false**, nobody can create a reservation even if the pack includes reservations. Existing rows stay visible. The customer app keeps **Reserve now** visible and disables it. |
+| `allowOutOfStockOrders` | `false` | When **true**, an order may be placed even if a recipe ingredient cannot cover it; stock stops at zero. When **false**, that order is rejected and the customer app disables add for that dish. |
+
+Owners edit these switches on **Configuration** in the operations sidebar (`/b/:buildingId/configuration`). Creating or editing the venue profile does not change them. A switch the pack does not include stays locked off. Employees cannot open the page.
 
 ## Data
 

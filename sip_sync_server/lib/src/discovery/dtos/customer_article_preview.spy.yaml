@@ -7,5 +7,7 @@ fields:
   name: String
   description: String?
   price: double
-  ### Ingredient names in recipe order. No quantities or stock.
+  ### Ingredient names in recipe order. No quantities or stock levels.
   ingredientNames: List<String>
+  ### Recipe ingredients that cannot cover one more unit. Names only.
+  outOfStockIngredientNames: List<String>

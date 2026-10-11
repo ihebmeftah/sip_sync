@@ -256,7 +256,23 @@ void main() {
             items: [CustomerOrderItem(articleId: article.id)],
           ),
         );
-        await endpoints.order.cancel(ownerSession, placed.id);
+        await endpoints.order.cancel(
+          ownerSession,
+          placed.id,
+          OrderCancellationReason.closingSoon,
+        );
+        final cancelled = await endpoints.customerOrder.get(
+          customerSession,
+          placed.id,
+        );
+        expect(
+          cancelled.cancellationReason,
+          OrderCancellationReason.closingSoon,
+        );
+        expect(
+          cancelled.lines.single.cancellationReason,
+          OrderCancellationReason.closingSoon,
+        );
         expect(await endpoints.customerOrder.current(customerSession), isNull);
         await expectLater(
           endpoints.customerOrder.append(
@@ -540,6 +556,90 @@ void main() {
             (error) => error.code,
             'code',
             AccountErrorCode.notAuthorized,
+          ),
+        ),
+      );
+    });
+
+    test('venue switch turns off customer ordering', () async {
+      final ownerSession = await _owner(
+        sessionBuilder,
+        endpoints,
+        'order-off',
+        '+21622112021',
+      );
+      final building = await endpoints.building.create(
+        ownerSession,
+        _building('Quiet House', '+21671112021'),
+      );
+      await PackCatalog.assignCode(
+        sessionBuilder.build(),
+        building.id,
+        'floor',
+      );
+      final category = await endpoints.menuCategory.create(
+        ownerSession,
+        MenuCategoryCreate(buildingId: building.id, name: 'Plates'),
+      );
+      final article = await endpoints.menuArticle.create(
+        ownerSession,
+        MenuArticleCreate(
+          buildingId: building.id,
+          categoryId: category.id,
+          name: 'Water',
+          price: 2,
+        ),
+      );
+      final tables = await endpoints.venueTable.create(
+        ownerSession,
+        VenueTableCreate(
+          buildingId: building.id,
+          count: 1,
+          maxSeats: 2,
+          isActive: true,
+        ),
+      );
+      await endpoints.building.update(
+        ownerSession,
+        BuildingUpdate(
+          id: building.id,
+          name: building.name,
+          type: building.type,
+          address: building.address,
+          latitude: building.latitude,
+          longitude: building.longitude,
+          openingMinutes: building.openingMinutes,
+          closingMinutes: building.closingMinutes,
+          currencyCode: building.currencyCode,
+          phoneNumber: building.phoneNumber,
+          otherLinks: building.otherLinks,
+          tableMultiOrder: building.tableMultiOrder,
+          allowAppendingItemsToOrder: building.allowAppendingItemsToOrder,
+          strictMode: building.strictMode,
+          strictModeSteps: building.strictModeSteps,
+          customerOrderingEnabled: false,
+        ),
+      );
+      final customerSession = await _customer(
+        sessionBuilder,
+        endpoints,
+        'order-off',
+        '+21622112022',
+      );
+      await expectLater(
+        endpoints.customerOrder.place(
+          customerSession,
+          CustomerOrderPlace(
+            buildingId: building.id,
+            tableId: tables.single.id,
+            items: [CustomerOrderItem(articleId: article.id)],
+          ),
+        ),
+        throwsA(
+          isA<OrderException>().having(
+            (error) => error.code,
+            'code',
+            OrderErrorCode.customerOrderingDisabled,
           ),
         ),
       );

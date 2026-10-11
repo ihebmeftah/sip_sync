@@ -10,13 +10,11 @@ import '../../../core/errors/form_validators.dart';
 import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
-import '../../../core/widgets/pack_locked_action.dart';
 import '../../../core/widgets/app_loader.dart';
 import '../../../core/widgets/app_phone_field.dart';
 import '../../../core/phone/phone_numbers.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../orders/widgets/order_item_workflow.dart';
-import '../../orders/widgets/order_status_labels.dart';
 import '../venue_location.dart';
 import '../view_models/buildings_view_model.dart';
 
@@ -43,7 +41,6 @@ class _BuildingFormViewState extends ConsumerState<BuildingFormView> {
   final _instagram = TextEditingController();
   final _facebook = TextEditingController();
   final _otherLinks = TextEditingController();
-  final _reservationFee = TextEditingController(text: '0');
   TimeOfDay _opens = const TimeOfDay(hour: 8, minute: 0);
   TimeOfDay _closes = const TimeOfDay(hour: 23, minute: 0);
   String _type = 'cafe';
@@ -58,17 +55,14 @@ class _BuildingFormViewState extends ConsumerState<BuildingFormView> {
   var _allowAppendingItemsToOrder = true;
   var _strictMode = false;
   List<StrictModeStep> _strictModeSteps = defaultStrictModeSteps();
+  var _reservationFee = 0.0;
+  var _customerOrderingEnabled = true;
+  var _reservationsEnabled = true;
+  var _allowOutOfStockOrders = false;
   String? _locationErrorKey;
   final _locationPicker = VenueLocationPicker();
 
   String get _id => widget.buildingId ?? '';
-
-  String _money(double value) {
-    if (value == value.roundToDouble()) {
-      return value.round().toString();
-    }
-    return value.toString();
-  }
 
   bool get _isEdit => _id.isNotEmpty;
 
@@ -90,7 +84,6 @@ class _BuildingFormViewState extends ConsumerState<BuildingFormView> {
     _instagram.dispose();
     _facebook.dispose();
     _otherLinks.dispose();
-    _reservationFee.dispose();
     super.dispose();
   }
 
@@ -120,9 +113,12 @@ class _BuildingFormViewState extends ConsumerState<BuildingFormView> {
     );
     _tableMultiOrder = building.tableMultiOrder;
     _allowAppendingItemsToOrder = building.allowAppendingItemsToOrder;
-    _reservationFee.text = _money(building.reservationFee);
+    _reservationFee = building.reservationFee;
     _strictMode = building.strictMode;
     _strictModeSteps = normalizeStrictModeSteps(building.strictModeSteps);
+    _customerOrderingEnabled = building.customerOrderingEnabled;
+    _reservationsEnabled = building.reservationsEnabled;
+    _allowOutOfStockOrders = building.allowOutOfStockOrders;
     _syncTimeFields();
     if (_predefinedTypes.contains(building.type)) {
       _type = building.type;
@@ -198,7 +194,6 @@ class _BuildingFormViewState extends ConsumerState<BuildingFormView> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final async = ref.watch(buildingFormViewModelProvider(_id));
-    final pack = async.asData?.value?.pack;
     async.whenData((building) {
       if (building != null) {
         _fill(building);
@@ -387,25 +382,6 @@ class _BuildingFormViewState extends ConsumerState<BuildingFormView> {
                           }
                         },
                       ),
-                      AppTextField(
-                        controller: _reservationFee,
-                        label: l10n.reservationFee,
-                        helperText: l10n.reservationFeeHint,
-                        keyboardType: const TextInputType.numberWithOptions(
-                          decimal: true,
-                        ),
-                        validator: (value) {
-                          final parsed = double.tryParse(
-                            (value ?? '').trim().replaceAll(',', '.'),
-                          );
-                          if (parsed == null ||
-                              parsed < 0 ||
-                              parsed > 1000000) {
-                            return l10n.reservationPaidInvalid;
-                          }
-                          return null;
-                        },
-                      ),
                       AppPhoneField(
                         label: l10n.buildingPhone,
                         value: _phoneNumber,
@@ -450,71 +426,6 @@ class _BuildingFormViewState extends ConsumerState<BuildingFormView> {
                           return null;
                         },
                       ),
-                      PackLockedSwitch(
-                        locked:
-                            pack != null &&
-                            !pack.tableMultiOrder &&
-                            !_tableMultiOrder,
-                        title: l10n.buildingTableMultiOrder,
-                        subtitle: l10n.buildingTableMultiOrderHint,
-                        value: _tableMultiOrder,
-                        onChanged: (value) =>
-                            setState(() => _tableMultiOrder = value),
-                      ),
-                      PackLockedSwitch(
-                        locked:
-                            pack != null &&
-                            !pack.allowAppendingItems &&
-                            !_allowAppendingItemsToOrder,
-                        title: l10n.buildingAllowAppendingItems,
-                        subtitle: l10n.buildingAllowAppendingItemsHint,
-                        value: _allowAppendingItemsToOrder,
-                        onChanged: (value) =>
-                            setState(() => _allowAppendingItemsToOrder = value),
-                      ),
-                      PackLockedSwitch(
-                        locked:
-                            pack != null && !pack.strictMode && !_strictMode,
-                        title: l10n.buildingStrictMode,
-                        subtitle: l10n.buildingStrictModeHint,
-                        value: _strictMode,
-                        onChanged: (value) =>
-                            setState(() => _strictMode = value),
-                      ),
-                      Text(
-                        l10n.buildingStrictModeStepsTitle,
-                        style: Theme.of(context).textTheme.titleSmall,
-                      ),
-                      const SizedBox(height: AppSpacing.xs),
-                      Text(
-                        l10n.buildingStrictModeStepsHint,
-                        style: Theme.of(context).textTheme.bodySmall,
-                      ),
-                      const SizedBox(height: AppSpacing.sm),
-                      for (final step in _strictModeSteps)
-                        SwitchListTile(
-                          contentPadding: EdgeInsets.zero,
-                          title: Text(orderItemStatusLabel(l10n, step.status)),
-                          subtitle: Text(
-                            l10n.buildingStrictModeStepRank(step.rank),
-                          ),
-                          value: step.enabled,
-                          onChanged: (enabled) {
-                            setState(() {
-                              _strictModeSteps = [
-                                for (final s in _strictModeSteps)
-                                  if (s.status == step.status)
-                                    StrictModeStep(
-                                      rank: s.rank,
-                                      status: s.status,
-                                      enabled: enabled,
-                                    )
-                                  else
-                                    s,
-                              ];
-                            });
-                          },
-                        ),
                       if (async.hasError)
                         AppErrorBanner(
                           message: lookupError(
@@ -559,12 +470,11 @@ class _BuildingFormViewState extends ConsumerState<BuildingFormView> {
                                     _allowAppendingItemsToOrder,
                                 strictMode: _strictMode,
                                 strictModeSteps: _strictModeSteps,
-                                reservationFee: double.parse(
-                                  _reservationFee.text.trim().replaceAll(
-                                    ',',
-                                    '.',
-                                  ),
-                                ),
+                                reservationFee: _reservationFee,
+                                customerOrderingEnabled:
+                                    _customerOrderingEnabled,
+                                reservationsEnabled: _reservationsEnabled,
+                                allowOutOfStockOrders: _allowOutOfStockOrders,
                               );
                           if (!context.mounted) {
                             return;

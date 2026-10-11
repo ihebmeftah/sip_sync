@@ -7,3 +7,5 @@ fields:
   unitPrice: double
   ## Kitchen and payment state of this unit.
   status: OrderItemStatus
+  ### Set when this unit was cancelled.
+  cancellationReason: OrderCancellationReason?

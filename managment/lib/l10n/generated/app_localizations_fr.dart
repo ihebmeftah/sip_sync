@@ -317,6 +317,48 @@ class AppLocalizationsFr extends AppLocalizations {
   String get navTables => 'Tables';
 
   @override
+  String get navConfiguration => 'Configuration';
+
+  @override
+  String get configurationTitle => 'Configuration du lieu';
+
+  @override
+  String get configurationHint => 'Ces réglages concernent uniquement ce lieu.';
+
+  @override
+  String get configurationSaved => 'Configuration enregistrée.';
+
+  @override
+  String get saveConfiguration => 'Enregistrer';
+
+  @override
+  String get buildingCustomerOrdering => 'Commandes clients';
+
+  @override
+  String get buildingCustomerOrderingHint =>
+      'Activé, les clients peuvent commander depuis l\'application. Le forfait doit inclure les commandes clients.';
+
+  @override
+  String get buildingReservations => 'Réservations';
+
+  @override
+  String get buildingReservationsHint =>
+      'Activé, les clients et l\'équipe peuvent créer des réservations. Le forfait doit inclure les réservations.';
+
+  @override
+  String get buildingAllowOutOfStockOrders =>
+      'Autoriser la commande si un ingrédient est en rupture';
+
+  @override
+  String get buildingAllowOutOfStockOrdersHint =>
+      'Activé, une commande peut passer même si un ingrédient ne couvre pas un plat de plus. Désactivé, ce plat ne peut pas être ajouté dans l\'application client et la commande est refusée.';
+
+  @override
+  String orderIngredientOutOfStock(String names) {
+    return 'En rupture : $names';
+  }
+
+  @override
   String helloScreen(String screen) {
     return 'Bonjour, $screen';
   }
@@ -1204,6 +1246,22 @@ class AppLocalizationsFr extends AppLocalizations {
       'Annuler cette commande et les lignes ouvertes ?';
 
   @override
+  String get cancelReasonTitle => 'Pourquoi annuler ?';
+
+  @override
+  String get cancelReasonConfirm => 'Annuler';
+
+  @override
+  String get cancelReasonOutOfStock => 'Ingrédient en rupture de stock';
+
+  @override
+  String get cancelReasonClosingSoon => 'L\'heure de fermeture approche';
+
+  @override
+  String get cancelReasonWorkBreakdown =>
+      'Panne au travail, réessayez plus tard';
+
+  @override
   String get cancelOrderItem => 'Annuler l’article';
 
   @override
@@ -1649,6 +1707,14 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get errorOrderReservationHeld =>
       'Confirmez la réservation avant de prendre une commande.';
+
+  @override
+  String get errorCustomerOrderingDisabled =>
+      'Ce lieu a désactivé les commandes clients.';
+
+  @override
+  String get errorReservationsDisabled =>
+      'Ce lieu a désactivé les réservations.';
 
   @override
   String get errorReservationOverlap =>

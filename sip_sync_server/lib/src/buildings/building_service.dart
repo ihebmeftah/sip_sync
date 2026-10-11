@@ -228,6 +228,9 @@ ORDER BY COUNT(*) DESC, "countryName" ASC
           strictMode: request.strictMode,
           strictModeSteps: normalizeStrictModeSteps(request.strictModeSteps),
           reservationFee: _fee(request.reservationFee),
+          customerOrderingEnabled: request.customerOrderingEnabled,
+          reservationsEnabled: request.reservationsEnabled,
+          allowOutOfStockOrders: request.allowOutOfStockOrders,
         ),
         transaction: transaction,
       );
@@ -303,6 +306,9 @@ ORDER BY COUNT(*) DESC, "countryName" ASC
         strictMode: request.strictMode,
         strictModeSteps: normalizeStrictModeSteps(request.strictModeSteps),
         reservationFee: _fee(request.reservationFee),
+        customerOrderingEnabled: request.customerOrderingEnabled,
+        reservationsEnabled: request.reservationsEnabled,
+        allowOutOfStockOrders: request.allowOutOfStockOrders,
       ),
     );
     return _view(session, updated);
@@ -425,6 +431,9 @@ ORDER BY COUNT(*) DESC, "countryName" ASC
       strictMode: current.strictMode,
       strictModeSteps: normalizeStrictModeSteps(current.strictModeSteps),
       reservationFee: current.reservationFee,
+      customerOrderingEnabled: current.customerOrderingEnabled,
+      reservationsEnabled: current.reservationsEnabled,
+      allowOutOfStockOrders: current.allowOutOfStockOrders,
       employeeIds: staff.map((s) => s.id!).toList(),
       pack: PackGate.summary(pack),
     );

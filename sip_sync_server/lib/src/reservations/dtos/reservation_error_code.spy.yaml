@@ -5,3 +5,5 @@ values:
   - notAuthorized
   - notFound
   - overlap
+  ### Venue turned off reservations.
+  - disabled

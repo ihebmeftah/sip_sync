@@ -37,6 +37,12 @@ fields:
   strictModeSteps: List<StrictModeStep>
   ### Default amount collected for a reservation, in [currencyCode].
   reservationFee: double, default=0
+  ### When false, customers cannot place or append orders even if the pack includes ordering.
+  customerOrderingEnabled: bool, default=true
+  ### When false, reservations cannot be created even if the pack includes them.
+  reservationsEnabled: bool, default=true
+  ### When true, an order may be placed even if a recipe ingredient would go below zero.
+  allowOutOfStockOrders: bool, default=false
   createdAt: DateTime, defaultModel=now
   employees: List<Employee>?, relation(name=building_employees)
   accessProfiles: List<EmployeeAccess>?, relation(name=building_access_profiles)

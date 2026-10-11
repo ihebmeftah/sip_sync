@@ -354,6 +354,15 @@ class AppLocalizationsAr extends AppLocalizations {
   String get orderStatusCancelled => 'ملغى';
 
   @override
+  String get cancelReasonOutOfStock => 'نفد مكوّن';
+
+  @override
+  String get cancelReasonClosingSoon => 'وقت الإغلاق يقترب';
+
+  @override
+  String get cancelReasonWorkBreakdown => 'عطل في العمل، حاول لاحقاً';
+
+  @override
   String get openOrderNote => 'المطبخ يحضّر طلبك';
 
   @override
@@ -405,6 +414,11 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get addArticle => 'إضافة';
+
+  @override
+  String articleOutOfStock(String names) {
+    return 'نفد المخزون: $names';
+  }
 
   @override
   String get removeArticle => 'إزالة';
@@ -620,6 +634,12 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get errorOrderReservationHeld =>
       'هذه الطاولة محجوزة إلى أن يؤكد المكان الوصول.';
+
+  @override
+  String get errorCustomerOrderingDisabled => 'هذا المكان أوقف الطلبات.';
+
+  @override
+  String get errorReservationsDisabled => 'هذا المكان أوقف الحجوزات.';
 
   @override
   String get errorReservationOverlap => 'طاولة محجوزة بالفعل في هذا الوقت.';

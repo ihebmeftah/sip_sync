@@ -1,0 +1,7 @@
+### Why staff cancelled an order or one of its lines.
+enum: OrderCancellationReason
+serialized: byName
+values:
+  - ingredientOutOfStock
+  - closingSoon
+  - workBreakdown

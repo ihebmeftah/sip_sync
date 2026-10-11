@@ -67,6 +67,8 @@ import 'package:sip_sync_server/src/generated/orders/dtos/customer_order_place.d
     as _iyljqgq2;
 import 'package:sip_sync_server/src/generated/orders/dtos/order_add_items.dart'
     as _im5ws0jm;
+import 'package:sip_sync_server/src/generated/orders/dtos/order_cancellation_reason.dart'
+    as _i8a0aty0;
 import 'package:sip_sync_server/src/generated/orders/dtos/order_create.dart'
     as _i5j23umo;
 import 'package:sip_sync_server/src/generated/orders/dtos/order_item_status_update.dart'
@@ -1996,6 +1998,11 @@ class Endpoints extends _is.EndpointDispatch {
               type: _is.getType<_is.UuidValue>(),
               nullable: false,
             ),
+            'reason': _is.ParameterDescription(
+              name: 'reason',
+              type: _is.getType<_i8a0aty0.OrderCancellationReason>(),
+              nullable: false,
+            ),
           },
           call:
               (
@@ -2004,6 +2011,7 @@ class Endpoints extends _is.EndpointDispatch {
               ) async => (endpoints['order'] as _iuf1spo6.OrderEndpoint).cancel(
                 session,
                 params['orderId'],
+                params['reason'],
               ),
         ),
       },

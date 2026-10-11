@@ -444,6 +444,13 @@ RETURNING "id"
   }) async {
     final pack = await PackGate.ofBuilding(session, buildingId);
     PackGate.requireFeature(pack.reservations, PackFeature.reservations);
+    final building = await Building.db.findById(session, buildingId);
+    if (building == null || !building.reservationsEnabled) {
+      throw ReservationException(
+        message: 'This venue has turned off reservations.',
+        code: ReservationErrorCode.disabled,
+      );
+    }
     final start = startsAt.toUtc();
     final end = endsAt.toUtc();
     _validateWindow(start, end, customerMustBeFuture: customerMustBeFuture);

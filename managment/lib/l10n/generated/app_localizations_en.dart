@@ -311,6 +311,48 @@ class AppLocalizationsEn extends AppLocalizations {
   String get navTables => 'Tables';
 
   @override
+  String get navConfiguration => 'Configuration';
+
+  @override
+  String get configurationTitle => 'Venue configuration';
+
+  @override
+  String get configurationHint => 'These switches apply only to this venue.';
+
+  @override
+  String get configurationSaved => 'Configuration saved.';
+
+  @override
+  String get saveConfiguration => 'Save configuration';
+
+  @override
+  String get buildingCustomerOrdering => 'Customer ordering';
+
+  @override
+  String get buildingCustomerOrderingHint =>
+      'When on, customers can place orders from the app. The plan must include customer ordering.';
+
+  @override
+  String get buildingReservations => 'Reservations';
+
+  @override
+  String get buildingReservationsHint =>
+      'When on, customers and staff can create reservations. The plan must include reservations.';
+
+  @override
+  String get buildingAllowOutOfStockOrders =>
+      'Allow orders when an ingredient is out of stock';
+
+  @override
+  String get buildingAllowOutOfStockOrdersHint =>
+      'When on, an order can be placed even if a recipe ingredient cannot cover one more dish. When off, that dish cannot be added in the customer app and the order is rejected.';
+
+  @override
+  String orderIngredientOutOfStock(String names) {
+    return 'Out of stock: $names';
+  }
+
+  @override
   String helloScreen(String screen) {
     return 'Hello, $screen';
   }
@@ -1183,6 +1225,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cancelOrderConfirm => 'Cancel this order and open lines?';
 
   @override
+  String get cancelReasonTitle => 'Why cancel?';
+
+  @override
+  String get cancelReasonConfirm => 'Cancel';
+
+  @override
+  String get cancelReasonOutOfStock => 'Ingredient is out of stock';
+
+  @override
+  String get cancelReasonClosingSoon => 'Closing time is coming';
+
+  @override
+  String get cancelReasonWorkBreakdown => 'Breakdown at work, try later';
+
+  @override
   String get cancelOrderItem => 'Cancel item';
 
   @override
@@ -1622,6 +1679,14 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get errorOrderReservationHeld =>
       'Confirm the reservation before taking an order.';
+
+  @override
+  String get errorCustomerOrderingDisabled =>
+      'This venue has turned off customer ordering.';
+
+  @override
+  String get errorReservationsDisabled =>
+      'This venue has turned off reservations.';
 
   @override
   String get errorReservationOverlap =>

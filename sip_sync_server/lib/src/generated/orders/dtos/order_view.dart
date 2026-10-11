@@ -13,6 +13,7 @@
 import 'package:serverpod/serverpod.dart' as _is;
 import 'package:sip_sync_server/src/generated/protocol.dart' as _iaib1p48;
 import '../../orders/dtos/order_actor_view.dart' as _i1wfgxvh;
+import '../../orders/dtos/order_cancellation_reason.dart' as _i9x1n0bn;
 import '../../orders/dtos/order_item_view.dart' as _i5ik7hbb;
 import '../../orders/dtos/order_status.dart' as _iij1ihnv;
 
@@ -30,6 +31,7 @@ abstract class OrderView
     this.lastPaidAt,
     this.cancelledBy,
     this.cancelledAt,
+    this.cancellationReason,
     required this.createdAt,
     required this.updatedAt,
     required this.items,
@@ -48,6 +50,7 @@ abstract class OrderView
     DateTime? lastPaidAt,
     _i1wfgxvh.OrderActorView? cancelledBy,
     DateTime? cancelledAt,
+    _i9x1n0bn.OrderCancellationReason? cancellationReason,
     required DateTime createdAt,
     required DateTime updatedAt,
     required List<_i5ik7hbb.OrderItemView> items,
@@ -91,6 +94,11 @@ abstract class OrderView
           : _is.DateTimeJsonExtension.fromJson(
               jsonSerialization['cancelledAt'],
             ),
+      cancellationReason: jsonSerialization['cancellationReason'] == null
+          ? null
+          : _i9x1n0bn.OrderCancellationReason.fromJson(
+              (jsonSerialization['cancellationReason'] as String),
+            ),
       createdAt: _is.DateTimeJsonExtension.fromJson(
         jsonSerialization['createdAt'],
       ),
@@ -126,6 +134,8 @@ abstract class OrderView
 
   DateTime? cancelledAt;
 
+  _i9x1n0bn.OrderCancellationReason? cancellationReason;
+
   DateTime createdAt;
 
   DateTime updatedAt;
@@ -149,6 +159,7 @@ abstract class OrderView
     DateTime? lastPaidAt,
     _i1wfgxvh.OrderActorView? cancelledBy,
     DateTime? cancelledAt,
+    _i9x1n0bn.OrderCancellationReason? cancellationReason,
     DateTime? createdAt,
     DateTime? updatedAt,
     List<_i5ik7hbb.OrderItemView>? items,
@@ -169,6 +180,8 @@ abstract class OrderView
       if (lastPaidAt != null) 'lastPaidAt': lastPaidAt?.toJson(),
       if (cancelledBy != null) 'cancelledBy': cancelledBy?.toJson(),
       if (cancelledAt != null) 'cancelledAt': cancelledAt?.toJson(),
+      if (cancellationReason != null)
+        'cancellationReason': cancellationReason?.toJson(),
       'createdAt': createdAt.toJson(),
       'updatedAt': updatedAt.toJson(),
       'items': items.toJson(valueToJson: (v) => v.toJson()),
@@ -191,6 +204,8 @@ abstract class OrderView
       if (lastPaidAt != null) 'lastPaidAt': lastPaidAt?.toJson(),
       if (cancelledBy != null) 'cancelledBy': cancelledBy?.toJsonForProtocol(),
       if (cancelledAt != null) 'cancelledAt': cancelledAt?.toJson(),
+      if (cancellationReason != null)
+        'cancellationReason': cancellationReason?.toJson(),
       'createdAt': createdAt.toJson(),
       'updatedAt': updatedAt.toJson(),
       'items': items.toJson(valueToJson: (v) => v.toJsonForProtocol()),
@@ -219,6 +234,7 @@ class _OrderViewImpl extends OrderView {
     DateTime? lastPaidAt,
     _i1wfgxvh.OrderActorView? cancelledBy,
     DateTime? cancelledAt,
+    _i9x1n0bn.OrderCancellationReason? cancellationReason,
     required DateTime createdAt,
     required DateTime updatedAt,
     required List<_i5ik7hbb.OrderItemView> items,
@@ -235,6 +251,7 @@ class _OrderViewImpl extends OrderView {
          lastPaidAt: lastPaidAt,
          cancelledBy: cancelledBy,
          cancelledAt: cancelledAt,
+         cancellationReason: cancellationReason,
          createdAt: createdAt,
          updatedAt: updatedAt,
          items: items,
@@ -257,6 +274,7 @@ class _OrderViewImpl extends OrderView {
     Object? lastPaidAt = _Undefined,
     Object? cancelledBy = _Undefined,
     Object? cancelledAt = _Undefined,
+    Object? cancellationReason = _Undefined,
     DateTime? createdAt,
     DateTime? updatedAt,
     List<_i5ik7hbb.OrderItemView>? items,
@@ -280,6 +298,10 @@ class _OrderViewImpl extends OrderView {
           ? cancelledBy
           : this.cancelledBy?.copyWith(),
       cancelledAt: cancelledAt is DateTime? ? cancelledAt : this.cancelledAt,
+      cancellationReason:
+          cancellationReason is _i9x1n0bn.OrderCancellationReason?
+          ? cancellationReason
+          : this.cancellationReason,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       items: items ?? this.items.map((e0) => e0.copyWith()).toList(),

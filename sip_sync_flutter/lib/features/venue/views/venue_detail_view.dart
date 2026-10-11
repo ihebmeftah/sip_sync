@@ -345,9 +345,12 @@ class _DetailBodyState extends ConsumerState<_DetailBody> {
                                   AppTonalButton(
                                     label: l10n.reserveNow,
                                     icon: AppIcons.table,
-                                    onPressed: () => VenueReserveRoute(
-                                      id: widget.buildingId,
-                                    ).go(context),
+                                    onPressed:
+                                        widget.page.reservationsClosedByVenue
+                                        ? null
+                                        : () => VenueReserveRoute(
+                                            id: widget.buildingId,
+                                          ).go(context),
                                   ),
                                 ],
                               ),
@@ -431,7 +434,8 @@ class _DetailBodyState extends ConsumerState<_DetailBody> {
                             ),
                           ),
                         const SizedBox(height: AppSpacing.xl),
-                        if (!widget.page.customerOrdering)
+                        if (!widget.page.customerOrdering &&
+                            !widget.page.orderingClosedByVenue)
                           Text(
                             l10n.orderingUnavailable,
                             textAlign: TextAlign.center,

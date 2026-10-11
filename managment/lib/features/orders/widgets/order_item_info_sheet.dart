@@ -115,6 +115,14 @@ Future<void> showOrderItemInfoDialog(
                   label: l10n.orderFieldCancelledBy,
                   value: formatOrderActor(l10n, item.cancelledBy!),
                 ),
+              if (item.cancellationReason != null)
+                _InfoRow(
+                  label: l10n.cancelReasonTitle,
+                  value: orderCancellationReasonLabel(
+                    l10n,
+                    item.cancellationReason!,
+                  ),
+                ),
               const SizedBox(height: AppSpacing.lg),
               Align(
                 alignment: Alignment.centerRight,
@@ -209,6 +217,14 @@ Future<void> showOrderInfoDialog(
                 _InfoRow(
                   label: l10n.orderFieldCancelledBy,
                   value: formatOrderActor(l10n, order.cancelledBy!),
+                ),
+              if (order.cancellationReason != null)
+                _InfoRow(
+                  label: l10n.cancelReasonTitle,
+                  value: orderCancellationReasonLabel(
+                    l10n,
+                    order.cancellationReason!,
+                  ),
                 ),
               const SizedBox(height: AppSpacing.lg),
               Align(

@@ -99,6 +99,9 @@
   "orderStatusProgress": "En cours",
   "orderStatusPayed": "Payée",
   "orderStatusCancelled": "Annulée",
+  "cancelReasonOutOfStock": "Ingrédient en rupture de stock",
+  "cancelReasonClosingSoon": "L'heure de fermeture approche",
+  "cancelReasonWorkBreakdown": "Panne au travail, réessayez plus tard",
   "openOrderNote": "La cuisine a votre commande",
   "openOrderLead": "Suivez chaque plat, jusqu'au moment de régler.",
   "openOrderDetails": "Détails",
@@ -121,6 +124,10 @@
     "placeholders": { "number": { "type": "int" } }
   },
   "addArticle": "Ajouter",
+  "articleOutOfStock": "En rupture : {names}",
+  "@articleOutOfStock": {
+    "placeholders": { "names": { "type": "String" } }
+  },
   "removeArticle": "Retirer",
   "passOrder": "Passer la commande",
   "yourOrder": "Votre commande",
@@ -196,6 +203,8 @@
   "errorPackFeatureReservations": "Ce pack n'inclut pas les réservations.",
   "errorPackLimitReservations": "Ce pack a atteint sa limite de réservations pour la journée.",
   "errorOrderReservationHeld": "Cette table est réservée jusqu'à confirmation de l'arrivée.",
+  "errorCustomerOrderingDisabled": "Ce lieu a désactivé les commandes.",
+  "errorReservationsDisabled": "Ce lieu a désactivé les réservations.",
   "errorReservationOverlap": "Une table est déjà réservée à cette heure.",
   "errorReservationNotFound": "Aucune réservation ne correspond.",
   "errorPackPaidActive": "Ce lieu a déjà un pack payant.",

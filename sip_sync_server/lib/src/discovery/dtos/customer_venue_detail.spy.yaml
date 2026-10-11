@@ -13,9 +13,15 @@ fields:
   categories: List<CustomerCategoryPreview>
   ### Up to five articles, busiest first. Creation order when nothing was ordered.
   articles: List<CustomerArticlePreview>
-  ### False when the venue pack does not include customer-app orders.
+  ### False when the pack or the venue has customer-app orders turned off.
   customerOrdering: bool
-  ### False when the venue pack does not include reservations.
+  ### True only when the pack includes ordering and the venue has turned it off.
+  orderingClosedByVenue: bool
+  ### False when the pack or the venue has reservations turned off.
   reservationsEnabled: bool
+  ### True only when the pack includes reservations and the venue has turned them off.
+  reservationsClosedByVenue: bool
+  ### When true, a dish can still be added if a recipe ingredient cannot cover one unit.
+  allowOutOfStockOrders: bool, default=false
   ### Building default, in [currencyCode].
   reservationFee: double

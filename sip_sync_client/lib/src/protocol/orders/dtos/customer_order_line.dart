@@ -11,6 +11,7 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _isc;
+import '../../orders/dtos/order_cancellation_reason.dart' as _i9x1n0bn;
 import '../../orders/dtos/order_item_status.dart' as _iw3cmuga;
 
 /// One unit on a customer receipt. The same article can appear more than once.
@@ -22,6 +23,7 @@ abstract class CustomerOrderLine
     required this.name,
     required this.unitPrice,
     required this.status,
+    this.cancellationReason,
   });
 
   factory CustomerOrderLine({
@@ -30,6 +32,7 @@ abstract class CustomerOrderLine
     required String name,
     required double unitPrice,
     required _iw3cmuga.OrderItemStatus status,
+    _i9x1n0bn.OrderCancellationReason? cancellationReason,
   }) = _CustomerOrderLineImpl;
 
   factory CustomerOrderLine.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -43,6 +46,11 @@ abstract class CustomerOrderLine
       status: _iw3cmuga.OrderItemStatus.fromJson(
         (jsonSerialization['status'] as String),
       ),
+      cancellationReason: jsonSerialization['cancellationReason'] == null
+          ? null
+          : _i9x1n0bn.OrderCancellationReason.fromJson(
+              (jsonSerialization['cancellationReason'] as String),
+            ),
     );
   }
 
@@ -56,6 +64,9 @@ abstract class CustomerOrderLine
 
   _iw3cmuga.OrderItemStatus status;
 
+  /// Set when this unit was cancelled.
+  _i9x1n0bn.OrderCancellationReason? cancellationReason;
+
   /// Returns a shallow copy of this [CustomerOrderLine]
   /// with some or all fields replaced by the given arguments.
   @_isc.useResult
@@ -65,6 +76,7 @@ abstract class CustomerOrderLine
     String? name,
     double? unitPrice,
     _iw3cmuga.OrderItemStatus? status,
+    _i9x1n0bn.OrderCancellationReason? cancellationReason,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -75,6 +87,8 @@ abstract class CustomerOrderLine
       'name': name,
       'unitPrice': unitPrice,
       'status': status.toJson(),
+      if (cancellationReason != null)
+        'cancellationReason': cancellationReason?.toJson(),
     };
   }
 
@@ -87,6 +101,8 @@ abstract class CustomerOrderLine
       'name': name,
       'unitPrice': unitPrice,
       'status': status.toJson(),
+      if (cancellationReason != null)
+        'cancellationReason': cancellationReason?.toJson(),
     };
   }
 
@@ -96,6 +112,8 @@ abstract class CustomerOrderLine
   }
 }
 
+class _Undefined {}
+
 class _CustomerOrderLineImpl extends CustomerOrderLine {
   _CustomerOrderLineImpl({
     required _isc.UuidValue id,
@@ -103,12 +121,14 @@ class _CustomerOrderLineImpl extends CustomerOrderLine {
     required String name,
     required double unitPrice,
     required _iw3cmuga.OrderItemStatus status,
+    _i9x1n0bn.OrderCancellationReason? cancellationReason,
   }) : super._(
          id: id,
          articleId: articleId,
          name: name,
          unitPrice: unitPrice,
          status: status,
+         cancellationReason: cancellationReason,
        );
 
   /// Returns a shallow copy of this [CustomerOrderLine]
@@ -121,6 +141,7 @@ class _CustomerOrderLineImpl extends CustomerOrderLine {
     String? name,
     double? unitPrice,
     _iw3cmuga.OrderItemStatus? status,
+    Object? cancellationReason = _Undefined,
   }) {
     return CustomerOrderLine(
       id: id ?? this.id,
@@ -128,6 +149,10 @@ class _CustomerOrderLineImpl extends CustomerOrderLine {
       name: name ?? this.name,
       unitPrice: unitPrice ?? this.unitPrice,
       status: status ?? this.status,
+      cancellationReason:
+          cancellationReason is _i9x1n0bn.OrderCancellationReason?
+          ? cancellationReason
+          : this.cancellationReason,
     );
   }
 }

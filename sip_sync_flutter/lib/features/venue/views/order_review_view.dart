@@ -12,6 +12,7 @@ import '../menu_price.dart';
 import '../view_models/customer_order_view_model.dart';
 import '../view_models/order_cart_view_model.dart';
 import '../view_models/seated_table_view_model.dart';
+import '../view_models/venue_menu_view_model.dart';
 import '../widgets/venue_chrome.dart';
 
 /// Selected dishes, the scanned table, and the action that sends the order.
@@ -33,6 +34,13 @@ class OrderReviewView extends ConsumerWidget {
     final text = Theme.of(context).textTheme;
     final scheme = Theme.of(context).colorScheme;
     final cart = ref.watch(orderCartProvider(buildingId));
+    final orderingClosed =
+        ref
+            .watch(venueMenuViewModelProvider(buildingId))
+            .asData
+            ?.value
+            .orderingClosedByVenue ==
+        true;
     final passing = ref.watch(orderPassProvider(buildingId)).isLoading;
     final notice = ref.watch(seatedTableProvider);
     final seated = notice != null && notice.table.buildingId.uuid == buildingId
@@ -187,7 +195,9 @@ class OrderReviewView extends ConsumerWidget {
                           label: appending ? l10n.addToOrder : l10n.passOrder,
                           icon: AppIcons.check,
                           busy: passing || openAsync.isLoading,
-                          onPressed: cart.isEmpty ? null : () => passOrder(),
+                          onPressed: cart.isEmpty || orderingClosed
+                              ? null
+                              : () => passOrder(),
                         ),
                     ],
                   ),

@@ -664,6 +664,78 @@ abstract class AppLocalizations {
   /// **'Tables'**
   String get navTables;
 
+  /// No description provided for @navConfiguration.
+  ///
+  /// In en, this message translates to:
+  /// **'Configuration'**
+  String get navConfiguration;
+
+  /// No description provided for @configurationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Venue configuration'**
+  String get configurationTitle;
+
+  /// No description provided for @configurationHint.
+  ///
+  /// In en, this message translates to:
+  /// **'These switches apply only to this venue.'**
+  String get configurationHint;
+
+  /// No description provided for @configurationSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Configuration saved.'**
+  String get configurationSaved;
+
+  /// No description provided for @saveConfiguration.
+  ///
+  /// In en, this message translates to:
+  /// **'Save configuration'**
+  String get saveConfiguration;
+
+  /// No description provided for @buildingCustomerOrdering.
+  ///
+  /// In en, this message translates to:
+  /// **'Customer ordering'**
+  String get buildingCustomerOrdering;
+
+  /// No description provided for @buildingCustomerOrderingHint.
+  ///
+  /// In en, this message translates to:
+  /// **'When on, customers can place orders from the app. The plan must include customer ordering.'**
+  String get buildingCustomerOrderingHint;
+
+  /// No description provided for @buildingReservations.
+  ///
+  /// In en, this message translates to:
+  /// **'Reservations'**
+  String get buildingReservations;
+
+  /// No description provided for @buildingReservationsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'When on, customers and staff can create reservations. The plan must include reservations.'**
+  String get buildingReservationsHint;
+
+  /// No description provided for @buildingAllowOutOfStockOrders.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow orders when an ingredient is out of stock'**
+  String get buildingAllowOutOfStockOrders;
+
+  /// No description provided for @buildingAllowOutOfStockOrdersHint.
+  ///
+  /// In en, this message translates to:
+  /// **'When on, an order can be placed even if a recipe ingredient cannot cover one more dish. When off, that dish cannot be added in the customer app and the order is rejected.'**
+  String get buildingAllowOutOfStockOrdersHint;
+
+  /// No description provided for @orderIngredientOutOfStock.
+  ///
+  /// In en, this message translates to:
+  /// **'Out of stock: {names}'**
+  String orderIngredientOutOfStock(String names);
+
   /// No description provided for @helloScreen.
   ///
   /// In en, this message translates to:
@@ -2218,6 +2290,36 @@ abstract class AppLocalizations {
   /// **'Cancel this order and open lines?'**
   String get cancelOrderConfirm;
 
+  /// No description provided for @cancelReasonTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Why cancel?'**
+  String get cancelReasonTitle;
+
+  /// No description provided for @cancelReasonConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancelReasonConfirm;
+
+  /// No description provided for @cancelReasonOutOfStock.
+  ///
+  /// In en, this message translates to:
+  /// **'Ingredient is out of stock'**
+  String get cancelReasonOutOfStock;
+
+  /// No description provided for @cancelReasonClosingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Closing time is coming'**
+  String get cancelReasonClosingSoon;
+
+  /// No description provided for @cancelReasonWorkBreakdown.
+  ///
+  /// In en, this message translates to:
+  /// **'Breakdown at work, try later'**
+  String get cancelReasonWorkBreakdown;
+
   /// No description provided for @cancelOrderItem.
   ///
   /// In en, this message translates to:
@@ -3015,6 +3117,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Confirm the reservation before taking an order.'**
   String get errorOrderReservationHeld;
+
+  /// No description provided for @errorCustomerOrderingDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'This venue has turned off customer ordering.'**
+  String get errorCustomerOrderingDisabled;
+
+  /// No description provided for @errorReservationsDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'This venue has turned off reservations.'**
+  String get errorReservationsDisabled;
 
   /// No description provided for @errorReservationOverlap.
   ///

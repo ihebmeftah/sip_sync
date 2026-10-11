@@ -23,17 +23,21 @@ abstract class CustomerMenu
     required this.currencyCode,
     required this.sections,
     required this.customerOrdering,
+    required this.orderingClosedByVenue,
+    bool? allowOutOfStockOrders,
     required this.categories,
     required this.articles,
     required this.totalArticles,
     required this.limit,
     required this.offset,
-  });
+  }) : allowOutOfStockOrders = allowOutOfStockOrders ?? false;
 
   factory CustomerMenu({
     required String currencyCode,
     required List<_i5wjhh7t.CustomerMenuSection> sections,
     required bool customerOrdering,
+    required bool orderingClosedByVenue,
+    bool? allowOutOfStockOrders,
     required List<_irq7e2mv.CustomerCategoryPreview> categories,
     required List<_iy9yvlrm.CustomerArticlePreview> articles,
     required int totalArticles,
@@ -51,6 +55,14 @@ abstract class CustomerMenu
       customerOrdering: _is.BoolJsonExtension.fromJson(
         jsonSerialization['customerOrdering'],
       ),
+      orderingClosedByVenue: _is.BoolJsonExtension.fromJson(
+        jsonSerialization['orderingClosedByVenue'],
+      ),
+      allowOutOfStockOrders: jsonSerialization['allowOutOfStockOrders'] == null
+          ? null
+          : _is.BoolJsonExtension.fromJson(
+              jsonSerialization['allowOutOfStockOrders'],
+            ),
       categories: _iaib1p48.Protocol()
           .deserialize<List<_irq7e2mv.CustomerCategoryPreview>>(
             jsonSerialization['categories'],
@@ -70,8 +82,14 @@ abstract class CustomerMenu
   /// Categories touched by this window, including truly empty ones.
   List<_i5wjhh7t.CustomerMenuSection> sections;
 
-  /// False when the venue pack does not include customer-app orders.
+  /// False when the pack or the venue has customer-app orders turned off.
   bool customerOrdering;
+
+  /// True only when the pack includes ordering and the venue has turned it off.
+  bool orderingClosedByVenue;
+
+  /// When true, a dish can still be added if a recipe ingredient cannot cover one unit.
+  bool allowOutOfStockOrders;
 
   /// Every category in catalog order. Article counts, no dishes.
   List<_irq7e2mv.CustomerCategoryPreview> categories;
@@ -92,6 +110,8 @@ abstract class CustomerMenu
     String? currencyCode,
     List<_i5wjhh7t.CustomerMenuSection>? sections,
     bool? customerOrdering,
+    bool? orderingClosedByVenue,
+    bool? allowOutOfStockOrders,
     List<_irq7e2mv.CustomerCategoryPreview>? categories,
     List<_iy9yvlrm.CustomerArticlePreview>? articles,
     int? totalArticles,
@@ -105,6 +125,8 @@ abstract class CustomerMenu
       'currencyCode': currencyCode,
       'sections': sections.toJson(valueToJson: (v) => v.toJson()),
       'customerOrdering': customerOrdering,
+      'orderingClosedByVenue': orderingClosedByVenue,
+      'allowOutOfStockOrders': allowOutOfStockOrders,
       'categories': categories.toJson(valueToJson: (v) => v.toJson()),
       'articles': articles.toJson(valueToJson: (v) => v.toJson()),
       'totalArticles': totalArticles,
@@ -120,6 +142,8 @@ abstract class CustomerMenu
       'currencyCode': currencyCode,
       'sections': sections.toJson(valueToJson: (v) => v.toJsonForProtocol()),
       'customerOrdering': customerOrdering,
+      'orderingClosedByVenue': orderingClosedByVenue,
+      'allowOutOfStockOrders': allowOutOfStockOrders,
       'categories': categories.toJson(
         valueToJson: (v) => v.toJsonForProtocol(),
       ),
@@ -141,6 +165,8 @@ class _CustomerMenuImpl extends CustomerMenu {
     required String currencyCode,
     required List<_i5wjhh7t.CustomerMenuSection> sections,
     required bool customerOrdering,
+    required bool orderingClosedByVenue,
+    bool? allowOutOfStockOrders,
     required List<_irq7e2mv.CustomerCategoryPreview> categories,
     required List<_iy9yvlrm.CustomerArticlePreview> articles,
     required int totalArticles,
@@ -150,6 +176,8 @@ class _CustomerMenuImpl extends CustomerMenu {
          currencyCode: currencyCode,
          sections: sections,
          customerOrdering: customerOrdering,
+         orderingClosedByVenue: orderingClosedByVenue,
+         allowOutOfStockOrders: allowOutOfStockOrders,
          categories: categories,
          articles: articles,
          totalArticles: totalArticles,
@@ -165,6 +193,8 @@ class _CustomerMenuImpl extends CustomerMenu {
     String? currencyCode,
     List<_i5wjhh7t.CustomerMenuSection>? sections,
     bool? customerOrdering,
+    bool? orderingClosedByVenue,
+    bool? allowOutOfStockOrders,
     List<_irq7e2mv.CustomerCategoryPreview>? categories,
     List<_iy9yvlrm.CustomerArticlePreview>? articles,
     int? totalArticles,
@@ -175,6 +205,10 @@ class _CustomerMenuImpl extends CustomerMenu {
       currencyCode: currencyCode ?? this.currencyCode,
       sections: sections ?? this.sections.map((e0) => e0.copyWith()).toList(),
       customerOrdering: customerOrdering ?? this.customerOrdering,
+      orderingClosedByVenue:
+          orderingClosedByVenue ?? this.orderingClosedByVenue,
+      allowOutOfStockOrders:
+          allowOutOfStockOrders ?? this.allowOutOfStockOrders,
       categories:
           categories ?? this.categories.map((e0) => e0.copyWith()).toList(),
       articles: articles ?? this.articles.map((e0) => e0.copyWith()).toList(),

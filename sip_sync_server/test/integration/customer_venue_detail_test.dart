@@ -232,6 +232,113 @@ void main() {
       },
     );
 
+    test(
+      'menu names an ingredient that cannot cover one more dish',
+      () async {
+        final ownerSession = await _owner(
+          sessionBuilder,
+          endpoints,
+          'detail-stock',
+          '+21622111031',
+        );
+        final building = await endpoints.building.create(
+          ownerSession,
+          _building('Stock House', '+21671111031'),
+        );
+        await PackCatalog.assignCode(
+          sessionBuilder.build(),
+          building.id,
+          'floor',
+        );
+        final category = await endpoints.menuCategory.create(
+          ownerSession,
+          MenuCategoryCreate(buildingId: building.id, name: 'Tea'),
+        );
+        final article = await endpoints.menuArticle.create(
+          ownerSession,
+          MenuArticleCreate(
+            buildingId: building.id,
+            categoryId: category.id,
+            name: 'Mint tea',
+            price: 4,
+          ),
+        );
+        final mint = await endpoints.ingredient.create(
+          ownerSession,
+          IngredientCreate(
+            buildingId: building.id,
+            name: 'Mint',
+            unit: UnitsType.bunch,
+            currentStock: 0,
+            thresholdStock: 1,
+          ),
+        );
+        await endpoints.articleComposition.create(
+          ownerSession,
+          ArticleCompositionCreate(
+            articleId: article.id,
+            ingredientId: mint.id,
+            quantity: 1,
+          ),
+        );
+        final customerSession = await _customer(
+          sessionBuilder,
+          endpoints,
+          'detail-stock',
+          '+21622111032',
+        );
+        final menu = await endpoints.customerVenue.menu(
+          customerSession,
+          building.id,
+        );
+        expect(menu.allowOutOfStockOrders, isFalse);
+        expect(menu.customerOrdering, isTrue);
+        expect(menu.orderingClosedByVenue, isFalse);
+        expect(menu.articles.single.ingredientNames, ['Mint']);
+        expect(menu.articles.single.outOfStockIngredientNames, ['Mint']);
+
+        await endpoints.building.update(
+          ownerSession,
+          BuildingUpdate(
+            id: building.id,
+            name: building.name,
+            type: building.type,
+            address: building.address,
+            latitude: building.latitude,
+            longitude: building.longitude,
+            openingMinutes: building.openingMinutes,
+            closingMinutes: building.closingMinutes,
+            currencyCode: building.currencyCode,
+            phoneNumber: building.phoneNumber,
+            otherLinks: building.otherLinks,
+            tableMultiOrder: building.tableMultiOrder,
+            allowAppendingItemsToOrder: building.allowAppendingItemsToOrder,
+            strictMode: building.strictMode,
+            strictModeSteps: building.strictModeSteps,
+            customerOrderingEnabled: false,
+            reservationsEnabled: false,
+            allowOutOfStockOrders: true,
+          ),
+        );
+        final after = await endpoints.customerVenue.menu(
+          customerSession,
+          building.id,
+        );
+        expect(after.customerOrdering, isFalse);
+        expect(after.orderingClosedByVenue, isTrue);
+        expect(after.allowOutOfStockOrders, isTrue);
+        final page = await endpoints.customerVenue.detail(
+          customerSession,
+          building.id,
+        );
+        expect(page.customerOrdering, isFalse);
+        expect(page.orderingClosedByVenue, isTrue);
+        expect(page.reservationsEnabled, isFalse);
+        expect(page.reservationsClosedByVenue, isTrue);
+        expect(page.allowOutOfStockOrders, isTrue);
+      },
+    );
+
     test('when the venue is missing then detail is not found', () async {
       final customerSession = await _customer(
         sessionBuilder,

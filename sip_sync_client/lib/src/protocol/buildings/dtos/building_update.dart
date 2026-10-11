@@ -36,7 +36,13 @@ abstract class BuildingUpdate
     required this.strictMode,
     required this.strictModeSteps,
     double? reservationFee,
-  }) : reservationFee = reservationFee ?? 0.0;
+    bool? customerOrderingEnabled,
+    bool? reservationsEnabled,
+    bool? allowOutOfStockOrders,
+  }) : reservationFee = reservationFee ?? 0.0,
+       customerOrderingEnabled = customerOrderingEnabled ?? true,
+       reservationsEnabled = reservationsEnabled ?? true,
+       allowOutOfStockOrders = allowOutOfStockOrders ?? false;
 
   factory BuildingUpdate({
     required _isc.UuidValue id,
@@ -58,6 +64,9 @@ abstract class BuildingUpdate
     required bool strictMode,
     required List<_ik04yv2w.StrictModeStep> strictModeSteps,
     double? reservationFee,
+    bool? customerOrderingEnabled,
+    bool? reservationsEnabled,
+    bool? allowOutOfStockOrders,
   }) = _BuildingUpdateImpl;
 
   factory BuildingUpdate.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -92,6 +101,22 @@ abstract class BuildingUpdate
             jsonSerialization['strictModeSteps'],
           ),
       reservationFee: (jsonSerialization['reservationFee'] as num?)?.toDouble(),
+      customerOrderingEnabled:
+          jsonSerialization['customerOrderingEnabled'] == null
+          ? null
+          : _isc.BoolJsonExtension.fromJson(
+              jsonSerialization['customerOrderingEnabled'],
+            ),
+      reservationsEnabled: jsonSerialization['reservationsEnabled'] == null
+          ? null
+          : _isc.BoolJsonExtension.fromJson(
+              jsonSerialization['reservationsEnabled'],
+            ),
+      allowOutOfStockOrders: jsonSerialization['allowOutOfStockOrders'] == null
+          ? null
+          : _isc.BoolJsonExtension.fromJson(
+              jsonSerialization['allowOutOfStockOrders'],
+            ),
     );
   }
 
@@ -133,6 +158,15 @@ abstract class BuildingUpdate
 
   double reservationFee;
 
+  /// When false, customers cannot place or append orders.
+  bool customerOrderingEnabled;
+
+  /// When false, reservations cannot be created.
+  bool reservationsEnabled;
+
+  /// When true, an order may be placed even if a recipe ingredient would go below zero.
+  bool allowOutOfStockOrders;
+
   /// Returns a shallow copy of this [BuildingUpdate]
   /// with some or all fields replaced by the given arguments.
   @_isc.useResult
@@ -156,6 +190,9 @@ abstract class BuildingUpdate
     bool? strictMode,
     List<_ik04yv2w.StrictModeStep>? strictModeSteps,
     double? reservationFee,
+    bool? customerOrderingEnabled,
+    bool? reservationsEnabled,
+    bool? allowOutOfStockOrders,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -180,6 +217,9 @@ abstract class BuildingUpdate
       'strictMode': strictMode,
       'strictModeSteps': strictModeSteps.toJson(valueToJson: (v) => v.toJson()),
       'reservationFee': reservationFee,
+      'customerOrderingEnabled': customerOrderingEnabled,
+      'reservationsEnabled': reservationsEnabled,
+      'allowOutOfStockOrders': allowOutOfStockOrders,
     };
   }
 
@@ -208,6 +248,9 @@ abstract class BuildingUpdate
         valueToJson: (v) => v.toJsonForProtocol(),
       ),
       'reservationFee': reservationFee,
+      'customerOrderingEnabled': customerOrderingEnabled,
+      'reservationsEnabled': reservationsEnabled,
+      'allowOutOfStockOrders': allowOutOfStockOrders,
     };
   }
 
@@ -240,6 +283,9 @@ class _BuildingUpdateImpl extends BuildingUpdate {
     required bool strictMode,
     required List<_ik04yv2w.StrictModeStep> strictModeSteps,
     double? reservationFee,
+    bool? customerOrderingEnabled,
+    bool? reservationsEnabled,
+    bool? allowOutOfStockOrders,
   }) : super._(
          id: id,
          name: name,
@@ -260,6 +306,9 @@ class _BuildingUpdateImpl extends BuildingUpdate {
          strictMode: strictMode,
          strictModeSteps: strictModeSteps,
          reservationFee: reservationFee,
+         customerOrderingEnabled: customerOrderingEnabled,
+         reservationsEnabled: reservationsEnabled,
+         allowOutOfStockOrders: allowOutOfStockOrders,
        );
 
   /// Returns a shallow copy of this [BuildingUpdate]
@@ -286,6 +335,9 @@ class _BuildingUpdateImpl extends BuildingUpdate {
     bool? strictMode,
     List<_ik04yv2w.StrictModeStep>? strictModeSteps,
     double? reservationFee,
+    bool? customerOrderingEnabled,
+    bool? reservationsEnabled,
+    bool? allowOutOfStockOrders,
   }) {
     return BuildingUpdate(
       id: id ?? this.id,
@@ -310,6 +362,11 @@ class _BuildingUpdateImpl extends BuildingUpdate {
           strictModeSteps ??
           this.strictModeSteps.map((e0) => e0.copyWith()).toList(),
       reservationFee: reservationFee ?? this.reservationFee,
+      customerOrderingEnabled:
+          customerOrderingEnabled ?? this.customerOrderingEnabled,
+      reservationsEnabled: reservationsEnabled ?? this.reservationsEnabled,
+      allowOutOfStockOrders:
+          allowOutOfStockOrders ?? this.allowOutOfStockOrders,
     );
   }
 }

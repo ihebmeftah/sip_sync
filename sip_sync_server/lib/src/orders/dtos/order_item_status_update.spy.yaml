@@ -2,3 +2,5 @@ class: OrderItemStatusUpdate
 fields:
   id: UuidValue
   status: OrderItemStatus
+  ### Required when [status] is cancelled.
+  cancellationReason: OrderCancellationReason?

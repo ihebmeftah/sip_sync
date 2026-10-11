@@ -8,6 +8,8 @@ fields:
   tableNumber: int
   currencyCode: String
   status: OrderStatus
+  ### Set when the venue cancelled the whole order.
+  cancellationReason: OrderCancellationReason?
   itemCount: int
   totalAmount: double
   createdAt: DateTime

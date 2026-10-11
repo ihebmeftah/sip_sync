@@ -125,6 +125,9 @@
   "orderStatusProgress": "In progress",
   "orderStatusPayed": "Paid",
   "orderStatusCancelled": "Cancelled",
+  "cancelReasonOutOfStock": "Ingredient is out of stock",
+  "cancelReasonClosingSoon": "Closing time is coming",
+  "cancelReasonWorkBreakdown": "Breakdown at work, try later",
   "openOrderNote": "The kitchen has your order",
   "openOrderLead": "Follow each dish, right up to the moment you pay.",
   "openOrderDetails": "Details",
@@ -147,6 +150,10 @@
     "placeholders": { "number": { "type": "int" } }
   },
   "addArticle": "Add",
+  "articleOutOfStock": "Out of stock: {names}",
+  "@articleOutOfStock": {
+    "placeholders": { "names": { "type": "String" } }
+  },
   "removeArticle": "Remove",
   "passOrder": "Pass order",
   "yourOrder": "Your order",
@@ -225,6 +232,8 @@
   "errorPackFeatureReservations": "This plan does not include reservations.",
   "errorPackLimitReservations": "This plan has reached its reservation limit for the day.",
   "errorOrderReservationHeld": "This table is reserved until the venue confirms arrival.",
+  "errorCustomerOrderingDisabled": "This venue has turned off ordering.",
+  "errorReservationsDisabled": "This venue has turned off reservations.",
   "errorReservationOverlap": "A table is already reserved for that time.",
   "errorReservationNotFound": "No reservation matches that.",
   "errorPackPaidActive": "This venue already has a paid plan.",

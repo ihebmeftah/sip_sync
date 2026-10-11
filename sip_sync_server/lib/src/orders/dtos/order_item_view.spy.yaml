@@ -18,3 +18,4 @@ fields:
   servedAt: DateTime?
   paidAt: DateTime?
   cancelledAt: DateTime?
+  cancellationReason: OrderCancellationReason?

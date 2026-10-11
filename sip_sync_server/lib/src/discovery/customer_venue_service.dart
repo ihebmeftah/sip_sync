@@ -2,6 +2,7 @@ import 'package:serverpod/serverpod.dart';
 
 import '../core/page_window.dart';
 import '../generated/protocol.dart';
+import '../menu/article_stock.dart';
 import '../packs/pack_expiry.dart';
 import '../reservations/reservation_service.dart';
 
@@ -78,7 +79,10 @@ class CustomerVenueService {
       name: (row) => row.name,
     );
     final names = {for (final row in categories) row.id!.uuid: row.name};
-    final ingredients = await _ingredientNames(session, articles);
+    final ingredients = await recipeStockByArticle(
+      session,
+      {for (final row in articles) row.id!},
+    );
     final tables = await _tablePreviews(session, buildingId);
     final freeTables = [
       for (final table in tables.previews)
@@ -110,11 +114,16 @@ class CustomerVenueService {
             name: row.name,
             description: row.description,
             price: row.price,
-            ingredientNames: ingredients[row.id!.uuid] ?? const [],
+            ingredientNames: ingredients[row.id!]?.ingredientNames ?? const [],
+            outOfStockIngredientNames:
+                ingredients[row.id!]?.outOfStockIngredientNames ?? const [],
           ),
       ],
-      customerOrdering: building.pack?.customerOrdering == true,
-      reservationsEnabled: building.pack?.reservations == true,
+      customerOrdering: _customerOrderingOpen(building),
+      orderingClosedByVenue: _orderingClosedByVenue(building),
+      reservationsEnabled: _reservationsOpen(building),
+      reservationsClosedByVenue: _reservationsClosedByVenue(building),
+      allowOutOfStockOrders: building.allowOutOfStockOrders,
       reservationFee: building.reservationFee,
     );
   }
@@ -136,7 +145,10 @@ class CustomerVenueService {
     );
     final articleIds = await _articlePageIds(session, buildingId, window);
     final articles = await _articlesByIds(session, articleIds);
-    final ingredients = await _ingredientNames(session, articles);
+    final ingredients = await recipeStockByArticle(
+      session,
+      {for (final row in articles) row.id!},
+    );
     final names = {for (final row in categories) row.id!.uuid: row.name};
     final previews = [
       for (final row in articles)
@@ -147,7 +159,9 @@ class CustomerVenueService {
           name: row.name,
           description: row.description,
           price: row.price,
-          ingredientNames: ingredients[row.id!.uuid] ?? const [],
+          ingredientNames: ingredients[row.id!]?.ingredientNames ?? const [],
+          outOfStockIngredientNames:
+              ingredients[row.id!]?.outOfStockIngredientNames ?? const [],
         ),
     ];
     final byCategory = <String, List<CustomerArticlePreview>>{};
@@ -177,7 +191,9 @@ class CustomerVenueService {
               articles: byCategory[category.id.uuid] ?? const [],
             ),
       ],
-      customerOrdering: building.pack?.customerOrdering == true,
+      customerOrdering: _customerOrderingOpen(building),
+      orderingClosedByVenue: _orderingClosedByVenue(building),
+      allowOutOfStockOrders: building.allowOutOfStockOrders,
       categories: index,
       articles: previews,
       totalArticles: totalArticles,
@@ -440,33 +456,26 @@ LIMIT @limit OFFSET @offset
     );
   }
 
-  /// Recipe names only. Stock and quantities stay on the ops menu.
-  Future<Map<String, List<String>>> _ingredientNames(
-    Session session,
-    List<MenuArticle> articles,
-  ) async {
-    final articleIds = {
-      for (final article in articles)
-        if (article.id != null) article.id!,
-    };
-    if (articleIds.isEmpty) {
-      return {};
-    }
-    final lines = await ArticleComposition.db.find(
-      session,
-      where: (t) => t.articleId.inSet(articleIds),
-      include: ArticleComposition.include(ingredient: Ingredient.include()),
-      orderBy: (t) => t.createdAt,
-    );
-    final names = <String, List<String>>{};
-    for (final line in lines) {
-      final name = line.ingredient?.name.trim();
-      if (name == null || name.isEmpty) {
-        continue;
-      }
-      names.putIfAbsent(line.articleId.uuid, () => []).add(name);
-    }
-    return names;
+  /// Pack capability and the venue switch must both be on.
+  bool _customerOrderingOpen(Building building) {
+    return building.pack?.customerOrdering == true &&
+        building.customerOrderingEnabled;
+  }
+
+  /// Pack capability and the venue switch must both be on.
+  bool _reservationsOpen(Building building) {
+    return building.pack?.reservations == true && building.reservationsEnabled;
+  }
+
+  /// The pack still includes ordering; the venue turned the switch off.
+  bool _orderingClosedByVenue(Building building) {
+    return building.pack?.customerOrdering == true &&
+        !building.customerOrderingEnabled;
+  }
+
+  /// The pack still includes reservations; the venue turned the switch off.
+  bool _reservationsClosedByVenue(Building building) {
+    return building.pack?.reservations == true && !building.reservationsEnabled;
   }
 
   Future<({Map<String, int> articleCounts, Map<String, int> categoryCounts})>

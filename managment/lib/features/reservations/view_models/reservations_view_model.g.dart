@@ -54,7 +54,7 @@ final class ReservationsViewModelProvider
 }
 
 String _$reservationsViewModelHash() =>
-    r'60e31d4a51b76a38f9c13d22d1c4f2e9857bc588';
+    r'f93f929f9098d3a7c2f73745174e10c4a32f2761';
 
 /// Staff list of reservations. The server enforces who may open it.
 

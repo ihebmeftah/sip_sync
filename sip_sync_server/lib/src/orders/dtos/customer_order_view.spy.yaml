@@ -8,5 +8,7 @@ fields:
   tableNumber: int
   currencyCode: String
   status: OrderStatus
+  ### Set when the venue cancelled the whole order.
+  cancellationReason: OrderCancellationReason?
   lines: List<CustomerOrderLine>
   totalAmount: double

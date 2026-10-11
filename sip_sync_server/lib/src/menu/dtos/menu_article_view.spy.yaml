@@ -9,3 +9,5 @@ fields:
   price: double
   ### Number of recipe lines; 0 means no composition yet (allowed).
   compositionLineCount: int
+  ### Recipe ingredients that cannot cover one more unit.
+  outOfStockIngredientNames: List<String>

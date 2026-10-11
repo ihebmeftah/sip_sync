@@ -11,6 +11,7 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _is;
+import '../../orders/dtos/order_cancellation_reason.dart' as _i9x1n0bn;
 import '../../orders/dtos/order_status.dart' as _iij1ihnv;
 
 /// One of the signed-in customer's orders, without the dish lines.
@@ -24,6 +25,7 @@ abstract class CustomerOrderSummary
     required this.tableNumber,
     required this.currencyCode,
     required this.status,
+    this.cancellationReason,
     required this.itemCount,
     required this.totalAmount,
     required this.createdAt,
@@ -37,6 +39,7 @@ abstract class CustomerOrderSummary
     required int tableNumber,
     required String currencyCode,
     required _iij1ihnv.OrderStatus status,
+    _i9x1n0bn.OrderCancellationReason? cancellationReason,
     required int itemCount,
     required double totalAmount,
     required DateTime createdAt,
@@ -57,6 +60,11 @@ abstract class CustomerOrderSummary
       status: _iij1ihnv.OrderStatus.fromJson(
         (jsonSerialization['status'] as String),
       ),
+      cancellationReason: jsonSerialization['cancellationReason'] == null
+          ? null
+          : _i9x1n0bn.OrderCancellationReason.fromJson(
+              (jsonSerialization['cancellationReason'] as String),
+            ),
       itemCount: jsonSerialization['itemCount'] as int,
       totalAmount: (jsonSerialization['totalAmount'] as num).toDouble(),
       createdAt: _is.DateTimeJsonExtension.fromJson(
@@ -79,6 +87,9 @@ abstract class CustomerOrderSummary
 
   _iij1ihnv.OrderStatus status;
 
+  /// Set when the venue cancelled the whole order.
+  _i9x1n0bn.OrderCancellationReason? cancellationReason;
+
   int itemCount;
 
   double totalAmount;
@@ -96,6 +107,7 @@ abstract class CustomerOrderSummary
     int? tableNumber,
     String? currencyCode,
     _iij1ihnv.OrderStatus? status,
+    _i9x1n0bn.OrderCancellationReason? cancellationReason,
     int? itemCount,
     double? totalAmount,
     DateTime? createdAt,
@@ -111,6 +123,8 @@ abstract class CustomerOrderSummary
       'tableNumber': tableNumber,
       'currencyCode': currencyCode,
       'status': status.toJson(),
+      if (cancellationReason != null)
+        'cancellationReason': cancellationReason?.toJson(),
       'itemCount': itemCount,
       'totalAmount': totalAmount,
       'createdAt': createdAt.toJson(),
@@ -128,6 +142,8 @@ abstract class CustomerOrderSummary
       'tableNumber': tableNumber,
       'currencyCode': currencyCode,
       'status': status.toJson(),
+      if (cancellationReason != null)
+        'cancellationReason': cancellationReason?.toJson(),
       'itemCount': itemCount,
       'totalAmount': totalAmount,
       'createdAt': createdAt.toJson(),
@@ -140,6 +156,8 @@ abstract class CustomerOrderSummary
   }
 }
 
+class _Undefined {}
+
 class _CustomerOrderSummaryImpl extends CustomerOrderSummary {
   _CustomerOrderSummaryImpl({
     required _is.UuidValue id,
@@ -149,6 +167,7 @@ class _CustomerOrderSummaryImpl extends CustomerOrderSummary {
     required int tableNumber,
     required String currencyCode,
     required _iij1ihnv.OrderStatus status,
+    _i9x1n0bn.OrderCancellationReason? cancellationReason,
     required int itemCount,
     required double totalAmount,
     required DateTime createdAt,
@@ -160,6 +179,7 @@ class _CustomerOrderSummaryImpl extends CustomerOrderSummary {
          tableNumber: tableNumber,
          currencyCode: currencyCode,
          status: status,
+         cancellationReason: cancellationReason,
          itemCount: itemCount,
          totalAmount: totalAmount,
          createdAt: createdAt,
@@ -177,6 +197,7 @@ class _CustomerOrderSummaryImpl extends CustomerOrderSummary {
     int? tableNumber,
     String? currencyCode,
     _iij1ihnv.OrderStatus? status,
+    Object? cancellationReason = _Undefined,
     int? itemCount,
     double? totalAmount,
     DateTime? createdAt,
@@ -189,6 +210,10 @@ class _CustomerOrderSummaryImpl extends CustomerOrderSummary {
       tableNumber: tableNumber ?? this.tableNumber,
       currencyCode: currencyCode ?? this.currencyCode,
       status: status ?? this.status,
+      cancellationReason:
+          cancellationReason is _i9x1n0bn.OrderCancellationReason?
+          ? cancellationReason
+          : this.cancellationReason,
       itemCount: itemCount ?? this.itemCount,
       totalAmount: totalAmount ?? this.totalAmount,
       createdAt: createdAt ?? this.createdAt,

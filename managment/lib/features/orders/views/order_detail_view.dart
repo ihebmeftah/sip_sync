@@ -13,6 +13,7 @@ import '../../../core/widgets/app_loader.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../view_models/order_draft_view_model.dart';
 import '../view_models/orders_view_model.dart';
+import '../widgets/cancellation_reason_dialog.dart';
 import '../widgets/order_item_info_sheet.dart';
 import '../widgets/order_item_workflow.dart';
 import '../widgets/order_status_labels.dart';
@@ -64,8 +65,9 @@ class _OrderDetailViewState extends ConsumerState<OrderDetailView> {
 
   Future<void> _setItemStatus(
     OrderItemView item,
-    OrderItemStatus status,
-  ) async {
+    OrderItemStatus status, {
+    OrderCancellationReason? reason,
+  }) async {
     setState(() {
       _busyItemId = item.id;
       _errorKey = null;
@@ -73,7 +75,11 @@ class _OrderDetailViewState extends ConsumerState<OrderDetailView> {
     try {
       await ref
           .read(ordersViewModelProvider(widget.buildingId).notifier)
-          .updateItemStatus(id: item.id, status: status);
+          .updateItemStatus(
+            id: item.id,
+            status: status,
+            cancellationReason: reason,
+          );
     } catch (error) {
       if (!mounted) return;
       setState(() => _errorKey = captureError(context, error));
@@ -84,7 +90,9 @@ class _OrderDetailViewState extends ConsumerState<OrderDetailView> {
 
   Future<void> _cancelLine(OrderItemView item) async {
     if (_busyItemId != null) return;
-    await _setItemStatus(item, OrderItemStatus.cancelled);
+    final reason = await showCancellationReasonDialog(context);
+    if (reason == null || !mounted) return;
+    await _setItemStatus(item, OrderItemStatus.cancelled, reason: reason);
   }
 
   void _addArticles(OrderView order) {
@@ -100,29 +108,8 @@ class _OrderDetailViewState extends ConsumerState<OrderDetailView> {
   }
 
   Future<void> _cancelOrder(OrderView order) async {
-    final l10n = AppLocalizations.of(context)!;
-    final ok = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.cancelOrder),
-        content: Text(l10n.cancelOrderConfirm),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text(l10n.close),
-          ),
-          FilledButton(
-            style: FilledButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.error,
-              foregroundColor: Theme.of(context).colorScheme.onError,
-            ),
-            onPressed: () => Navigator.of(context).pop(true),
-            child: Text(l10n.cancelOrder),
-          ),
-        ],
-      ),
-    );
-    if (ok != true || !mounted) return;
+    final reason = await showCancellationReasonDialog(context);
+    if (reason == null || !mounted) return;
     setState(() {
       _cancellingOrder = true;
       _errorKey = null;
@@ -130,7 +117,7 @@ class _OrderDetailViewState extends ConsumerState<OrderDetailView> {
     try {
       await ref
           .read(ordersViewModelProvider(widget.buildingId).notifier)
-          .cancelOrder(order.id);
+          .cancelOrder(order.id, reason);
       if (!mounted) return;
       setState(() => _cancellingOrder = false);
     } catch (error) {
@@ -402,6 +389,11 @@ class _OrderHeaderCard extends StatelessWidget {
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
+            if (order.cancellationReason != null)
+              Text(
+                orderCancellationReasonLabel(l10n, order.cancellationReason!),
+                style: text.bodySmall?.copyWith(color: scheme.error),
+              ),
           ],
           if (onAddArticles != null || onCancelOrder != null) ...[
             const SizedBox(height: AppSpacing.md),
@@ -532,11 +524,24 @@ class _OrderItemCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Expanded(
-                  child: Text(
-                    item.articleName,
-                    style: text.titleSmall,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        item.articleName,
+                        style: text.titleSmall,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      if (item.cancellationReason != null)
+                        Text(
+                          orderCancellationReasonLabel(
+                            l10n,
+                            item.cancellationReason!,
+                          ),
+                          style: text.bodySmall?.copyWith(color: scheme.error),
+                        ),
+                    ],
                   ),
                 ),
                 const SizedBox(width: AppSpacing.sm),

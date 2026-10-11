@@ -18,3 +18,9 @@ fields:
   strictMode: bool, defaultModel=false
   strictModeSteps: List<StrictModeStep>
   reservationFee: double, defaultModel=0
+  ### When false, customers cannot place or append orders.
+  customerOrderingEnabled: bool, defaultModel=true
+  ### When false, reservations cannot be created.
+  reservationsEnabled: bool, defaultModel=true
+  ### When true, an order may be placed even if a recipe ingredient would go below zero.
+  allowOutOfStockOrders: bool, defaultModel=false
