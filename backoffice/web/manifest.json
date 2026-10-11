@@ -1,11 +1,11 @@
 {
-    "name": "backoffice",
-    "short_name": "backoffice",
+    "name": "Sip Sync Console",
+    "short_name": "Sip Sync Console",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#18181B",
+    "theme_color": "#18181B",
+    "description": "Operators, tenants, and the platform admin.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

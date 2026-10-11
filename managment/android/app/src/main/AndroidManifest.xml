@@ -4,7 +4,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-feature android:name="android.hardware.camera" android:required="false" />
     <application
-        android:label="managment"
+        android:label="Sip Sync Ops"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:usesCleartextTraffic="true">

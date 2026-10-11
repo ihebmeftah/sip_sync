@@ -84,7 +84,15 @@ class _MobileBar extends StatelessWidget {
                 ),
               ),
               Expanded(
-                child: Text(l10n.appTitle, style: theme.textTheme.large),
+                child: Align(
+                  alignment: AlignmentDirectional.centerStart,
+                  child: Image.asset(
+                    'assets/branding/logo.png',
+                    height: 28,
+                    fit: BoxFit.contain,
+                    semanticLabel: l10n.appTitle,
+                  ),
+                ),
               ),
               const LocaleMenuButton(),
             ],
@@ -254,42 +262,17 @@ class _Brand extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = ShadTheme.of(context);
     final l10n = AppLocalizations.of(context)!;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm),
-      child: Row(
-        children: [
-          DecoratedBox(
-            decoration: BoxDecoration(
-              color: theme.colorScheme.primary,
-              borderRadius: BorderRadius.circular(AppRadii.sm),
-            ),
-            child: SizedBox(
-              width: 32,
-              height: 32,
-              child: Center(
-                child: Text(
-                  'S',
-                  style: theme.textTheme.small.copyWith(
-                    color: theme.colorScheme.primaryForeground,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(width: AppSpacing.md),
-          Expanded(
-            child: Text(
-              l10n.appTitle,
-              maxLines: 2,
-              style: theme.textTheme.small.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-        ],
+      child: Align(
+        alignment: AlignmentDirectional.centerStart,
+        child: Image.asset(
+          'assets/branding/logo.png',
+          height: 36,
+          fit: BoxFit.contain,
+          semanticLabel: l10n.appTitle,
+        ),
       ),
     );
   }

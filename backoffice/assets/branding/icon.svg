@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <rect width="1024" height="1024" fill="#18181B"/>
+  <g transform="translate(512 532) scale(0.9) translate(-512 -532)">
+    
+      <g transform="translate(512 690) scale(0.78) translate(-512 -690)">
+    <path fill="#F4F4F5" d="
+    M 318 500
+    H 668
+    C 724 500 758 538 758 596
+    V 678
+    C 758 808 646 860 512 860
+    C 378 860 266 808 266 678
+    V 596
+    C 266 538 300 500 318 500
+    Z"/>
+    <path d="M 736 584 C 858 584 858 778 736 778" fill="none" stroke="#F4F4F5" stroke-width="54" stroke-linecap="round"/>
+    <path d="M 340 586 H 710" fill="none" stroke="#18181B" stroke-width="20" stroke-linecap="round"/></g>
+      
+      <circle cx="512" cy="676" r="330" fill="none" stroke="#F4F4F5" stroke-width="26"/>
+  </g>
+</svg>

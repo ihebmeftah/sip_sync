@@ -1,5 +1,4 @@
 import 'dart:math' as math;
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
@@ -126,34 +125,12 @@ class _HeroPanel extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(999),
-                      child: BackdropFilter(
-                        filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
-                        child: DecoratedBox(
-                          decoration: BoxDecoration(
-                            color: scheme.surfaceContainerLowest.withValues(
-                              alpha: 0.82,
-                            ),
-                            borderRadius: BorderRadius.circular(999),
-                            border: Border.all(color: scheme.outlineVariant),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: AppSpacing.lg,
-                              vertical: AppSpacing.sm,
-                            ),
-                            child: Text(
-                              l10n.appTitle,
-                              style: text.labelLarge?.copyWith(
-                                color: scheme.primary,
-                                letterSpacing: 1.2,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
+                    Image.asset(
+                      'assets/branding/logo.png',
+                      height: expanded ? 52 : 40,
+                      fit: BoxFit.contain,
+                      alignment: AlignmentDirectional.centerStart,
+                      semanticLabel: l10n.appTitle,
                     ),
                     const SizedBox(height: AppSpacing.lg),
                     Text(

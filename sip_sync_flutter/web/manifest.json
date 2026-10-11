@@ -1,11 +1,11 @@
 {
-    "name": "sip_sync_flutter",
-    "short_name": "sip_sync_flutter",
+    "name": "Sip Sync",
+    "short_name": "Sip Sync",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#C45C38",
+    "theme_color": "#C45C38",
+    "description": "Tables, tastes, and a seat that knows your name.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

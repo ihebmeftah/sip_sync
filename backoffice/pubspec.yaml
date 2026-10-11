@@ -45,3 +45,4 @@ flutter:
   generate: true
   assets:
     - assets/config.json
+    - assets/branding/logo.png

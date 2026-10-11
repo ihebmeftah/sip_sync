@@ -428,10 +428,12 @@ class OpsSideBar extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      l10n.appTitle,
-                      style: Theme.of(context).textTheme.headlineSmall
-                          ?.copyWith(color: scheme.onSurface),
+                    Image.asset(
+                      'assets/branding/logo.png',
+                      height: 40,
+                      fit: BoxFit.contain,
+                      alignment: AlignmentDirectional.centerStart,
+                      semanticLabel: l10n.appTitle,
                     ),
                     const SizedBox(height: AppSpacing.xs),
                     Text(

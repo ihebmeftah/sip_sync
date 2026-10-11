@@ -1,5 +1,4 @@
 import 'dart:math' as math;
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
@@ -132,34 +131,12 @@ class _HeroPanel extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(AppRadii.sm),
-                          child: BackdropFilter(
-                            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                            child: DecoratedBox(
-                              decoration: BoxDecoration(
-                                color: scheme.primary.withValues(alpha: 0.14),
-                                borderRadius: BorderRadius.circular(
-                                  AppRadii.sm,
-                                ),
-                              ),
-                              child: Padding(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: tight
-                                      ? AppSpacing.md
-                                      : AppSpacing.lg,
-                                  vertical: AppSpacing.sm,
-                                ),
-                                child: Text(
-                                  l10n.appTitle,
-                                  style: text.labelLarge?.copyWith(
-                                    color: scheme.primary,
-                                    letterSpacing: 1.6,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
+                        Image.asset(
+                          'assets/branding/logo.png',
+                          height: expanded ? 56 : (tight ? 36 : 44),
+                          fit: BoxFit.contain,
+                          alignment: AlignmentDirectional.centerStart,
+                          semanticLabel: l10n.appTitle,
                         ),
                         SizedBox(height: tight ? AppSpacing.sm : AppSpacing.lg),
                         Text(

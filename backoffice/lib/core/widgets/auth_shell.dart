@@ -90,32 +90,15 @@ class _BrandMark extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = ShadTheme.of(context);
     final l10n = AppLocalizations.of(context)!;
-    return Row(
-      children: [
-        DecoratedBox(
-          decoration: BoxDecoration(
-            color: theme.colorScheme.primary,
-            borderRadius: BorderRadius.circular(AppRadii.sm),
-          ),
-          child: SizedBox(
-            width: 36,
-            height: 36,
-            child: Center(
-              child: Text(
-                'S',
-                style: theme.textTheme.large.copyWith(
-                  color: theme.colorScheme.primaryForeground,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-          ),
-        ),
-        const SizedBox(width: AppSpacing.md),
-        Flexible(child: Text(l10n.appTitle, style: theme.textTheme.large)),
-      ],
+    return Align(
+      alignment: AlignmentDirectional.centerStart,
+      child: Image.asset(
+        'assets/branding/logo.png',
+        height: 44,
+        fit: BoxFit.contain,
+        semanticLabel: l10n.appTitle,
+      ),
     );
   }
 }
