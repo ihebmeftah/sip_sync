@@ -190,18 +190,6 @@ abstract class AppLocalizations {
   /// **'Nothing new right now.'**
   String get notificationsReady;
 
-  /// No description provided for @notificationThisBuilding.
-  ///
-  /// In en, this message translates to:
-  /// **'This building'**
-  String get notificationThisBuilding;
-
-  /// No description provided for @notificationAllBuildings.
-  ///
-  /// In en, this message translates to:
-  /// **'All buildings'**
-  String get notificationAllBuildings;
-
   /// No description provided for @notificationThisMonth.
   ///
   /// In en, this message translates to:

@@ -16,8 +16,6 @@
   "signOut": "Sign out",
   "notifications": "Notifications",
   "notificationsReady": "Nothing new right now.",
-  "notificationThisBuilding": "This building",
-  "notificationAllBuildings": "All buildings",
   "notificationThisMonth": "This month",
   "notificationUnreadOnly": "Unread",
   "notificationMarkAllRead": "Mark all as read",

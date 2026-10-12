@@ -10,9 +10,8 @@ part 'notification_inbox_view_model.g.dart';
 
 /// Alerts loaded for the signed-in owner or employee.
 ///
-/// [unread] is every venue, so the bell stays accurate when the list is
-/// limited to one building. [appliedBuildingId] is the venue this screen
-/// opened on.
+/// [unread] is the open venue only: the owner's current building, or the
+/// building the employee works in. [appliedBuildingId] is that venue.
 class NotificationInboxState {
   const NotificationInboxState({
     required this.items,
@@ -20,7 +19,6 @@ class NotificationInboxState {
     required this.unread,
     this.loadingMore = false,
     this.markingAll = false,
-    this.thisBuilding = false,
     this.currentMonth = false,
     this.unreadOnly = false,
     this.appliedBuildingId,
@@ -31,11 +29,10 @@ class NotificationInboxState {
   final int unread;
   final bool loadingMore;
   final bool markingAll;
-  final bool thisBuilding;
   final bool currentMonth;
   final bool unreadOnly;
 
-  /// Venue the screen last focused. Null until that screen opens.
+  /// Venue the shell last focused. Null until a building is open.
   final String? appliedBuildingId;
 
   bool get hasMore => items.length < total;
@@ -46,7 +43,6 @@ class NotificationInboxState {
     int? unread,
     bool? loadingMore,
     bool? markingAll,
-    bool? thisBuilding,
     bool? currentMonth,
     bool? unreadOnly,
     String? appliedBuildingId,
@@ -57,7 +53,6 @@ class NotificationInboxState {
       unread: unread ?? this.unread,
       loadingMore: loadingMore ?? this.loadingMore,
       markingAll: markingAll ?? this.markingAll,
-      thisBuilding: thisBuilding ?? this.thisBuilding,
       currentMonth: currentMonth ?? this.currentMonth,
       unreadOnly: unreadOnly ?? this.unreadOnly,
       appliedBuildingId: appliedBuildingId ?? this.appliedBuildingId,
@@ -70,7 +65,6 @@ class NotificationInboxState {
 class NotificationInbox extends _$NotificationInbox {
   StreamSubscription<AppNotificationView>? _live;
   UuidValue? _buildingId;
-  var _thisBuilding = false;
   var _currentMonth = false;
   var _unreadOnly = false;
   var _focused = false;
@@ -79,53 +73,35 @@ class NotificationInbox extends _$NotificationInbox {
   Future<NotificationInboxState> build() async {
     final signedIn = ref.watch(appSessionStoreProvider).isSignedIn;
     _buildingId = null;
-    _thisBuilding = false;
     _currentMonth = false;
     _unreadOnly = false;
     _focused = false;
     if (!signedIn) {
       return const NotificationInboxState(items: [], total: 0, unread: 0);
     }
-    final unread = await ref.read(notificationRepositoryProvider).unreadCount();
     await _listen();
     if (_focused && _buildingId != null) {
-      final page = await _page(offset: 0);
-      final freshUnread = await ref
-          .read(notificationRepositoryProvider)
-          .unreadCount();
-      return _stamp(
-        NotificationInboxState(
-          items: page.items,
-          total: page.total,
-          unread: freshUnread,
-        ),
-      );
+      return _load();
     }
-    return NotificationInboxState(items: [], total: 0, unread: unread);
+    return const NotificationInboxState(items: [], total: 0, unread: 0);
   }
 
-  /// Opens the list on [id]: this building, every month, read and unread.
+  /// Keeps the bell and the list on [id].
   ///
-  /// If the inbox is still loading the badge, that load applies this focus
+  /// Owners pass the venue they have open. Employees pass the building they
+  /// work in. If the inbox is still loading, that load applies this focus
   /// when it finishes so the two requests do not overwrite each other.
   Future<void> focusBuilding(UuidValue id) async {
+    final changed = !_focused || _buildingId != id;
     _buildingId = id;
-    _thisBuilding = true;
-    _currentMonth = false;
-    _unreadOnly = false;
     _focused = true;
     if (state.isLoading) {
       return;
     }
-    await refresh();
-  }
-
-  /// [value] keeps the focused building. False shows every venue.
-  Future<void> setThisBuilding(bool value) async {
-    if (_thisBuilding == value) {
+    final applied = state.asData?.value.appliedBuildingId;
+    if (!changed && !state.hasError && applied == id.uuid) {
       return;
     }
-    _thisBuilding = value;
     await refresh();
   }
 
@@ -151,17 +127,26 @@ class NotificationInbox extends _$NotificationInbox {
     if (!ref.read(appSessionStoreProvider).isSignedIn) {
       return;
     }
+    state = AsyncData(_stamp(await _load()));
+  }
+
+  Future<NotificationInboxState> _load() async {
     final page = await _page(offset: 0);
-    final unread = await ref.read(notificationRepositoryProvider).unreadCount();
-    state = AsyncData(
-      _stamp(
-        NotificationInboxState(
-          items: page.items,
-          total: page.total,
-          unread: unread,
-        ),
-      ),
+    final unread = await _unreadInBuilding();
+    return NotificationInboxState(
+      items: page.items,
+      total: page.total,
+      unread: unread,
     );
+  }
+
+  /// Unread rows for the focused venue, ignoring the month chip.
+  Future<int> _unreadInBuilding() async {
+    final id = _buildingId;
+    if (id == null) {
+      return 0;
+    }
+    return ref.read(notificationRepositoryProvider).unreadCount(buildingId: id);
   }
 
   Future<void> loadMore() async {
@@ -211,10 +196,11 @@ class NotificationInbox extends _$NotificationInbox {
     );
   }
 
-  /// Marks unread rows in the current venue and month scope.
+  /// Marks unread rows in the open venue and the current month scope.
   Future<void> markAllRead() async {
     final current = state.asData?.value;
-    if (current == null || current.markingAll) {
+    final buildingId = _buildingId;
+    if (current == null || current.markingAll || buildingId == null) {
       return;
     }
     state = AsyncData(current.copyWith(markingAll: true));
@@ -223,7 +209,7 @@ class NotificationInbox extends _$NotificationInbox {
       await ref
           .read(notificationRepositoryProvider)
           .markAllRead(
-            buildingId: _thisBuilding ? _buildingId : null,
+            buildingId: buildingId,
             createdFrom: month?.$1,
             createdTo: month?.$2,
           );
@@ -239,7 +225,7 @@ class NotificationInbox extends _$NotificationInbox {
     return ref
         .read(notificationRepositoryProvider)
         .list(
-          buildingId: _thisBuilding ? _buildingId : null,
+          buildingId: _buildingId,
           createdFrom: month?.$1,
           createdTo: month?.$2,
           unreadOnly: _unreadOnly,
@@ -262,7 +248,10 @@ class NotificationInbox extends _$NotificationInbox {
 
   void _onLive(AppNotificationView view) {
     final current = state.asData?.value;
-    if (current == null || current.items.any((row) => row.id == view.id)) {
+    if (current == null ||
+        _buildingId == null ||
+        view.buildingId != _buildingId ||
+        current.items.any((row) => row.id == view.id)) {
       return;
     }
     final shown = _matches(view);
@@ -276,9 +265,7 @@ class NotificationInbox extends _$NotificationInbox {
   }
 
   bool _matches(AppNotificationView view) {
-    if (_thisBuilding &&
-        _buildingId != null &&
-        view.buildingId != _buildingId) {
+    if (_buildingId == null || view.buildingId != _buildingId) {
       return false;
     }
     if (_unreadOnly && view.read) {
@@ -296,7 +283,6 @@ class NotificationInbox extends _$NotificationInbox {
 
   NotificationInboxState _stamp(NotificationInboxState value) {
     return value.copyWith(
-      thisBuilding: _thisBuilding,
       currentMonth: _currentMonth,
       unreadOnly: _unreadOnly,
       appliedBuildingId: _buildingId?.uuid,

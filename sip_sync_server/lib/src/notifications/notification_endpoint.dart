@@ -13,9 +13,9 @@ class NotificationEndpoint extends Endpoint {
 
   /// Newest alerts for the signed-in actor. [limit] defaults to 20.
   ///
-  /// [buildingId] keeps one venue. [createdFrom] and [createdTo] are an
-  /// inclusive-exclusive window of at most 32 days. [unreadOnly] drops rows
-  /// that were already opened.
+  /// [buildingId] keeps one venue. An employee is limited to the building they
+  /// work in. [createdFrom] and [createdTo] are an inclusive-exclusive window
+  /// of at most 32 days. [unreadOnly] drops rows that were already opened.
   Future<AppNotificationPage> list(
     Session session, {
     UuidValue? buildingId,
@@ -37,8 +37,11 @@ class NotificationEndpoint extends Endpoint {
   }
 
   /// How many of this actor's alerts are still unread.
-  Future<int> unreadCount(Session session) {
-    return _notifications.unreadCount(session);
+  ///
+  /// [buildingId] keeps one venue. An employee is counted only in the building
+  /// they work in.
+  Future<int> unreadCount(Session session, {UuidValue? buildingId}) {
+    return _notifications.unreadCount(session, buildingId: buildingId);
   }
 
   /// Marks one alert read. Another actor's id is not found.

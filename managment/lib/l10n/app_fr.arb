@@ -15,8 +15,6 @@
   "signOut": "Déconnexion",
   "notifications": "Notifications",
   "notificationsReady": "Rien de nouveau pour le moment.",
-  "notificationThisBuilding": "Ce bâtiment",
-  "notificationAllBuildings": "Tous les bâtiments",
   "notificationThisMonth": "Ce mois-ci",
   "notificationUnreadOnly": "Non lues",
   "notificationMarkAllRead": "Tout marquer comme lu",

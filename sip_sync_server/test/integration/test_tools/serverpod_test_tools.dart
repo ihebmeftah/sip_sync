@@ -2801,7 +2801,10 @@ class _NotificationEndpoint {
     });
   }
 
-  _ida.Future<int> unreadCount(_ist.TestSessionBuilder sessionBuilder) async {
+  _ida.Future<int> unreadCount(
+    _ist.TestSessionBuilder sessionBuilder, {
+    _is.UuidValue? buildingId,
+  }) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
           (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
@@ -2813,7 +2816,7 @@ class _NotificationEndpoint {
           createSessionCallback: (_) => _localUniqueSession,
           endpointPath: 'notification',
           methodName: 'unreadCount',
-          parameters: _ist.testObjectToJson({}),
+          parameters: _ist.testObjectToJson({'buildingId': buildingId}),
           serializationManager: _serializationManager,
         );
         var _localReturnValue =

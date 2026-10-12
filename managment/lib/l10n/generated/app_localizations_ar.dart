@@ -55,12 +55,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get notificationsReady => 'لا جديد الآن.';
 
   @override
-  String get notificationThisBuilding => 'هذا المبنى';
-
-  @override
-  String get notificationAllBuildings => 'كل المباني';
-
-  @override
   String get notificationThisMonth => 'هذا الشهر';
 
   @override

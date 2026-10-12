@@ -1000,9 +1000,9 @@ class EndpointNotification extends _isc.EndpointRef {
 
   /// Newest alerts for the signed-in actor. [limit] defaults to 20.
   ///
-  /// [buildingId] keeps one venue. [createdFrom] and [createdTo] are an
-  /// inclusive-exclusive window of at most 32 days. [unreadOnly] drops rows
-  /// that were already opened.
+  /// [buildingId] keeps one venue. An employee is limited to the building they
+  /// work in. [createdFrom] and [createdTo] are an inclusive-exclusive window
+  /// of at most 32 days. [unreadOnly] drops rows that were already opened.
   _ida.Future<_i2s51i9o.AppNotificationPage> list({
     _isc.UuidValue? buildingId,
     DateTime? createdFrom,
@@ -1024,11 +1024,15 @@ class EndpointNotification extends _isc.EndpointRef {
   );
 
   /// How many of this actor's alerts are still unread.
-  _ida.Future<int> unreadCount() => caller.callServerEndpoint<int>(
-    'notification',
-    'unreadCount',
-    {},
-  );
+  ///
+  /// [buildingId] keeps one venue. An employee is counted only in the building
+  /// they work in.
+  _ida.Future<int> unreadCount({_isc.UuidValue? buildingId}) =>
+      caller.callServerEndpoint<int>(
+        'notification',
+        'unreadCount',
+        {'buildingId': buildingId},
+      );
 
   /// Marks one alert read. Another actor's id is not found.
   _ida.Future<_iel5g2r9.AppNotificationView> markRead(_isc.UuidValue id) =>

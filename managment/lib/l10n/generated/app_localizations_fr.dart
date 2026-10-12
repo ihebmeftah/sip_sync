@@ -56,12 +56,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get notificationsReady => 'Rien de nouveau pour le moment.';
 
   @override
-  String get notificationThisBuilding => 'Ce bâtiment';
-
-  @override
-  String get notificationAllBuildings => 'Tous les bâtiments';
-
-  @override
   String get notificationThisMonth => 'Ce mois-ci';
 
   @override

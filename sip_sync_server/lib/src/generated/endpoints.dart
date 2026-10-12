@@ -1813,14 +1813,23 @@ class Endpoints extends _is.EndpointDispatch {
         ),
         'unreadCount': _is.MethodConnector(
           name: 'unreadCount',
-          params: {},
+          params: {
+            'buildingId': _is.ParameterDescription(
+              name: 'buildingId',
+              type: _is.getType<_is.UuidValue?>(),
+              nullable: true,
+            ),
+          },
           call:
               (
                 _is.Session session,
                 Map<String, dynamic> params,
               ) async =>
                   (endpoints['notification'] as _ibyw8x7k.NotificationEndpoint)
-                      .unreadCount(session),
+                      .unreadCount(
+                        session,
+                        buildingId: params['buildingId'],
+                      ),
         ),
         'markRead': _is.MethodConnector(
           name: 'markRead',

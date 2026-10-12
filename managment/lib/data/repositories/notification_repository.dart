@@ -25,7 +25,11 @@ class NotificationRepository {
     );
   }
 
-  Future<int> unreadCount() => _client.notification.unreadCount();
+  /// Unread alerts. [buildingId] keeps one venue: the open house for an owner,
+  /// or the workplace for an employee.
+  Future<int> unreadCount({UuidValue? buildingId}) {
+    return _client.notification.unreadCount(buildingId: buildingId);
+  }
 
   Future<AppNotificationView> markRead(UuidValue id) {
     return _client.notification.markRead(id);

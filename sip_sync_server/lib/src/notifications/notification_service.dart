@@ -134,9 +134,10 @@ class NotificationService {
 
   /// Newest alerts for the signed-in actor.
   ///
-  /// [buildingId] limits the page to one venue. [createdFrom] and [createdTo]
-  /// are both omitted or both set, and the window is at most 32 days.
-  /// [unreadOnly] keeps rows that have not been opened.
+  /// [buildingId] limits the page to one venue. An employee is always limited
+  /// to the building they work in; another id is not authorized. [createdFrom]
+  /// and [createdTo] are both omitted or both set, and the window is at most
+  /// 32 days. [unreadOnly] keeps rows that have not been opened.
   Future<AppNotificationPage> list(
     Session session, {
     UuidValue? buildingId,
@@ -147,12 +148,13 @@ class NotificationService {
     int? offset,
   }) async {
     final ctx = _actor(session);
+    final venueId = await _venueLimit(session, ctx, buildingId);
     _checkWindow(createdFrom, createdTo);
     final window = PageWindow.from(limit: limit, offset: offset);
     Expression where(AppNotificationTable t) => _scope(
       t,
       ctx,
-      buildingId: buildingId,
+      buildingId: venueId,
       createdFrom: createdFrom,
       createdTo: createdTo,
       unreadOnly: unreadOnly ?? false,
@@ -174,14 +176,20 @@ class NotificationService {
   }
 
   /// Alerts this actor has not opened.
-  Future<int> unreadCount(Session session) async {
+  ///
+  /// An employee is counted only in the building they work in. An owner or
+  /// customer is counted across every venue unless the client passes one.
+  Future<int> unreadCount(Session session, {UuidValue? buildingId}) async {
     final ctx = _actor(session);
+    final venueId = await _venueLimit(session, ctx, buildingId);
     return AppNotification.db.count(
       session,
-      where: (t) =>
-          t.recipientType.equals(ctx.actorType) &
-          t.recipientId.equals(ctx.actorId) &
-          t.readAt.equals(null),
+      where: (t) => _scope(
+        t,
+        ctx,
+        buildingId: venueId,
+        unreadOnly: true,
+      ),
     );
   }
 
@@ -193,12 +201,13 @@ class NotificationService {
     DateTime? createdTo,
   }) async {
     final ctx = _actor(session);
+    final venueId = await _venueLimit(session, ctx, buildingId);
     _checkWindow(createdFrom, createdTo);
     final now = DateTime.now().toUtc();
     Expression where(AppNotificationTable t) => _scope(
       t,
       ctx,
-      buildingId: buildingId,
+      buildingId: venueId,
       createdFrom: createdFrom,
       createdTo: createdTo,
       unreadOnly: true,
@@ -289,6 +298,35 @@ class NotificationService {
   }
 
   AuthContext _actor(Session session) => AuthGuard.requireAny(session);
+
+  /// Employees only read the building they work in.
+  ///
+  /// Omitting [buildingId] selects that workplace. A different id is rejected.
+  /// Owners and customers keep the id they sent, including null for every
+  /// venue they already receive.
+  Future<UuidValue?> _venueLimit(
+    Session session,
+    AuthContext ctx,
+    UuidValue? buildingId,
+  ) async {
+    if (ctx.actorType != ActorType.employee) {
+      return buildingId;
+    }
+    final employee = await Employee.db.findById(session, ctx.actorId);
+    if (employee == null) {
+      throw NotificationException(
+        message: 'Notification not found.',
+        code: NotificationErrorCode.notFound,
+      );
+    }
+    if (buildingId != null && buildingId != employee.buildingId) {
+      throw NotificationException(
+        message: 'Not allowed for this building.',
+        code: NotificationErrorCode.notAuthorized,
+      );
+    }
+    return employee.buildingId;
+  }
 
   /// Both bounds or neither. A month is the longest window the apps send.
   void _checkWindow(DateTime? from, DateTime? to) {

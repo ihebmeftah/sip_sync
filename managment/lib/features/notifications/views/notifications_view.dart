@@ -15,8 +15,8 @@ import '../view_models/notification_inbox_view_model.dart';
 
 /// Stored alerts for the signed-in owner or employee.
 ///
-/// Opens on [buildingId]. The chips can widen that to every building, this
-/// month, or unread rows.
+/// Stays on [buildingId]: the venue the owner has open, or the building the
+/// employee works in. The chips can limit that to this month or unread rows.
 class NotificationsView extends ConsumerStatefulWidget {
   const NotificationsView({super.key, required this.buildingId});
 
@@ -91,11 +91,6 @@ class _NotificationsViewState extends ConsumerState<NotificationsView> {
                 children: [
                   _Filters(
                     page: page,
-                    onThisBuilding: (value) => _run(
-                      () => ref
-                          .read(notificationInboxProvider.notifier)
-                          .setThisBuilding(value),
-                    ),
                     onMonth: (value) => _run(
                       () => ref
                           .read(notificationInboxProvider.notifier)
@@ -239,14 +234,12 @@ class _NotificationsViewState extends ConsumerState<NotificationsView> {
 class _Filters extends StatelessWidget {
   const _Filters({
     required this.page,
-    required this.onThisBuilding,
     required this.onMonth,
     required this.onUnread,
     required this.onMarkAll,
   });
 
   final NotificationInboxState page;
-  final ValueChanged<bool> onThisBuilding;
   final ValueChanged<bool> onMonth;
   final ValueChanged<bool> onUnread;
   final VoidCallback? onMarkAll;
@@ -268,18 +261,6 @@ class _Filters extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             child: Row(
               children: [
-                AppFilterChip(
-                  label: l10n.notificationThisBuilding,
-                  selected: page.thisBuilding,
-                  onSelected: (_) => onThisBuilding(true),
-                ),
-                const SizedBox(width: AppSpacing.sm),
-                AppFilterChip(
-                  label: l10n.notificationAllBuildings,
-                  selected: !page.thisBuilding,
-                  onSelected: (_) => onThisBuilding(false),
-                ),
-                const SizedBox(width: AppSpacing.sm),
                 AppFilterChip(
                   label: l10n.notificationThisMonth,
                   selected: page.currentMonth,

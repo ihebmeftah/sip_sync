@@ -65,6 +65,7 @@ class _OpsShellState extends ConsumerState<OpsShell> {
   void initState() {
     super.initState();
     _syncBuilding();
+    _scopeNotifications();
   }
 
   @override
@@ -72,7 +73,25 @@ class _OpsShellState extends ConsumerState<OpsShell> {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.buildingId != widget.buildingId) {
       _syncBuilding();
+      _scopeNotifications();
     }
+  }
+
+  /// Bell and inbox follow the open venue. For an employee that id is the
+  /// building they work in; the router does not let them open another.
+  void _scopeNotifications() {
+    final raw = widget.buildingId;
+    if (raw == null || raw.isEmpty) {
+      return;
+    }
+    final id = UuidValue.fromString(raw);
+    Future<void>(() async {
+      try {
+        await ref.read(notificationInboxProvider.notifier).focusBuilding(id);
+      } catch (_) {
+        // The notifications screen surfaces the failure when it opens.
+      }
+    });
   }
 
   /// Keeps [BuildingSession] aligned with `/b/:buildingId/...`.
@@ -277,7 +296,18 @@ class _OpsShellState extends ConsumerState<OpsShell> {
             body: Row(
               children: [
                 OpsSideBar(buildingId: buildingId),
-                Expanded(child: _withPackBanner(widget.child)),
+                Expanded(
+                  child: Column(
+                    children: [
+                      AppBar(
+                        automaticallyImplyLeading: false,
+                        title: Text(l10n.appTitle),
+                        actions: [_NotificationButton(buildingId: buildingId)],
+                      ),
+                      Expanded(child: _withPackBanner(widget.child)),
+                    ],
+                  ),
+                ),
               ],
             ),
           );
@@ -294,7 +324,7 @@ class _OpsShellState extends ConsumerState<OpsShell> {
               ? null
               : AppBar(
                   title: Text(l10n.appTitle),
-                  actions: const [_ThemeToggle(), LocaleMenuButton()],
+                  actions: [_NotificationButton(buildingId: buildingId)],
                 ),
           drawer: immersiveOrderScreen
               ? null
@@ -404,8 +434,6 @@ class OpsSideBar extends ConsumerWidget {
         : (store.employee?.username ?? '');
     final selected = ref.watch(buildingSelectionProvider);
     final location = GoRouterState.of(context).uri.path;
-    final unread =
-        ref.watch(notificationInboxProvider).asData?.value.unread ?? 0;
     final productsOpen =
         location.contains('/products/') ||
         location.endsWith('/products/articles') ||
@@ -615,63 +643,23 @@ class OpsSideBar extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       if (!inDrawer)
-                        Row(
-                          children: [
-                            const _ThemeToggle(),
-                            const LocaleMenuButton(),
-                            const Spacer(),
-                            IconButton(
-                              tooltip: l10n.notifications,
-                              onPressed: () => NotificationsRoute(
-                                buildingId: buildingId,
-                              ).go(context),
-                              icon: Badge(
-                                isLabelVisible: unread > 0,
-                                label: Text(unread > 99 ? '99+' : '$unread'),
-                                child: Icon(
-                                  Icons.notifications_outlined,
-                                  color: location.endsWith('/notifications')
-                                      ? scheme.primary
-                                      : scheme.onSurface,
-                                ),
-                              ),
-                            ),
-                            IconButton(
-                              tooltip: l10n.signOut,
-                              onPressed: () => ref
-                                  .read(authViewModelProvider.notifier)
-                                  .signOut(),
-                              icon: Icon(Icons.logout, color: scheme.onSurface),
-                            ),
-                          ],
-                        ),
-                      if (inDrawer) ...[
-                        ListTile(
-                          leading: Badge(
-                            isLabelVisible: unread > 0,
-                            label: Text(unread > 99 ? '99+' : '$unread'),
-                            child: Icon(
-                              Icons.notifications_outlined,
-                              color: location.endsWith('/notifications')
-                                  ? scheme.primary
-                                  : scheme.onSurface,
-                            ),
+                        Align(
+                          alignment: AlignmentDirectional.centerStart,
+                          child: IconButton(
+                            tooltip: l10n.signOut,
+                            onPressed: () => ref
+                                .read(authViewModelProvider.notifier)
+                                .signOut(),
+                            icon: Icon(Icons.logout, color: scheme.onSurface),
                           ),
-                          title: Text(
-                            l10n.notifications,
-                            style: TextStyle(
-                              color: location.endsWith('/notifications')
-                                  ? scheme.primary
-                                  : scheme.onSurface,
-                            ),
-                          ),
-                          onTap: () => NotificationsRoute(
-                            buildingId: buildingId,
-                          ).go(context),
                         ),
+                      if (inDrawer)
                         Material(
                           type: MaterialType.transparency,
                           child: ListTile(
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: AppSpacing.sm,
+                            ),
                             leading: Icon(
                               Icons.logout,
                               color: scheme.onSurface,
@@ -685,7 +673,6 @@ class OpsSideBar extends ConsumerWidget {
                                 .signOut(),
                           ),
                         ),
-                      ],
                       const SizedBox(height: AppSpacing.sm),
                       Material(
                         color: scheme.onSurface.withValues(alpha: 0.08),
@@ -719,6 +706,7 @@ class OpsSideBar extends ConsumerWidget {
                           ),
                         ),
                       ),
+                      const _AppearanceControls(),
                     ],
                   ),
                 ),
@@ -804,26 +792,73 @@ class _NavTile extends StatelessWidget {
   }
 }
 
-class _ThemeToggle extends ConsumerWidget {
-  const _ThemeToggle();
+/// Bell for the open venue. Lives in the app bar, not the drawer.
+class _NotificationButton extends ConsumerWidget {
+  const _NotificationButton({required this.buildingId});
+
+  final String buildingId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
-    final mode = ref.watch(themeControllerProvider);
-    final dark = Theme.of(context).brightness == Brightness.dark;
+    final scheme = Theme.of(context).colorScheme;
+    final location = GoRouterState.of(context).uri.path;
+    final unread =
+        ref.watch(notificationInboxProvider).asData?.value.unread ?? 0;
+    final open = location.endsWith('/notifications');
     return IconButton(
-      tooltip: dark ? l10n.themeLight : l10n.themeDark,
-      onPressed: () {
-        ref
-            .read(themeControllerProvider.notifier)
-            .setMode(dark ? ThemeMode.light : ThemeMode.dark);
-      },
-      icon: Icon(
-        mode == ThemeMode.dark || dark
-            ? Icons.light_mode_outlined
-            : Icons.dark_mode_outlined,
+      tooltip: l10n.notifications,
+      onPressed: () => NotificationsRoute(buildingId: buildingId).go(context),
+      icon: Badge(
+        isLabelVisible: unread > 0,
+        label: Text(unread > 99 ? '99+' : '$unread'),
+        child: Icon(
+          Icons.notifications_outlined,
+          color: open ? scheme.primary : null,
+        ),
       ),
+    );
+  }
+}
+
+/// Dark-mode switch and language, pinned to the drawer and rail footer.
+class _AppearanceControls extends ConsumerWidget {
+  const _AppearanceControls();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
+    final scheme = Theme.of(context).colorScheme;
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    final tilePadding = const EdgeInsets.symmetric(horizontal: AppSpacing.sm);
+    return Column(
+      children: [
+        ListTile(
+          contentPadding: tilePadding,
+          leading: Icon(
+            dark ? Icons.dark_mode_outlined : Icons.light_mode_outlined,
+            color: scheme.onSurface,
+          ),
+          title: Text(
+            dark ? l10n.themeDark : l10n.themeLight,
+            style: TextStyle(color: scheme.onSurface),
+          ),
+          trailing: Switch(
+            value: dark,
+            onChanged: (enabled) {
+              ref
+                  .read(themeControllerProvider.notifier)
+                  .setMode(enabled ? ThemeMode.dark : ThemeMode.light);
+            },
+          ),
+        ),
+        ListTile(
+          contentPadding: tilePadding,
+          leading: Icon(Icons.language, color: scheme.onSurface),
+          title: Text(l10n.language, style: TextStyle(color: scheme.onSurface)),
+          trailing: const LocaleMenuButton(),
+        ),
+      ],
     );
   }
 }
