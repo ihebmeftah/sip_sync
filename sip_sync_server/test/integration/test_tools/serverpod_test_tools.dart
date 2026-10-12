@@ -119,6 +119,10 @@ import 'package:sip_sync_server/src/generated/menu/dtos/menu_category_update.dar
     as _i8wyftia;
 import 'package:sip_sync_server/src/generated/menu/dtos/menu_category_view.dart'
     as _i87rh1jz;
+import 'package:sip_sync_server/src/generated/notifications/dtos/app_notification_page.dart'
+    as _i4le15mi;
+import 'package:sip_sync_server/src/generated/notifications/dtos/app_notification_view.dart'
+    as _iaxje4zj;
 import 'package:sip_sync_server/src/generated/orders/dtos/customer_order_append.dart'
     as _ixtfjwlp;
 import 'package:sip_sync_server/src/generated/orders/dtos/customer_order_page.dart'
@@ -332,6 +336,8 @@ class TestEndpoints {
 
   late final _MenuCategoryEndpoint menuCategory;
 
+  late final _NotificationEndpoint notification;
+
   late final _CustomerOrderEndpoint customerOrder;
 
   late final _OrderEndpoint order;
@@ -405,6 +411,10 @@ class _InternalTestEndpoints extends TestEndpoints
       serializationManager,
     );
     menuCategory = _MenuCategoryEndpoint(
+      endpoints,
+      serializationManager,
+    );
+    notification = _NotificationEndpoint(
       endpoints,
       serializationManager,
     );
@@ -2735,6 +2745,188 @@ class _MenuCategoryEndpoint {
         await _localUniqueSession.close();
       }
     });
+  }
+}
+
+class _NotificationEndpoint {
+  _NotificationEndpoint(
+    this._endpointDispatch,
+    this._serializationManager,
+  );
+
+  final _is.EndpointDispatch _endpointDispatch;
+
+  final _is.SerializationManager _serializationManager;
+
+  _ida.Future<_i4le15mi.AppNotificationPage> list(
+    _ist.TestSessionBuilder sessionBuilder, {
+    _is.UuidValue? buildingId,
+    DateTime? createdFrom,
+    DateTime? createdTo,
+    bool? unreadOnly,
+    int? limit,
+    int? offset,
+  }) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'notification',
+            method: 'list',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'notification',
+          methodName: 'list',
+          parameters: _ist.testObjectToJson({
+            'buildingId': buildingId,
+            'createdFrom': createdFrom,
+            'createdTo': createdTo,
+            'unreadOnly': unreadOnly,
+            'limit': limit,
+            'offset': offset,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_i4le15mi.AppNotificationPage>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<int> unreadCount(_ist.TestSessionBuilder sessionBuilder) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'notification',
+            method: 'unreadCount',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'notification',
+          methodName: 'unreadCount',
+          parameters: _ist.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<int>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<_iaxje4zj.AppNotificationView> markRead(
+    _ist.TestSessionBuilder sessionBuilder,
+    _is.UuidValue id,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'notification',
+            method: 'markRead',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'notification',
+          methodName: 'markRead',
+          parameters: _ist.testObjectToJson({'id': id}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_iaxje4zj.AppNotificationView>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<int> markAllRead(
+    _ist.TestSessionBuilder sessionBuilder, {
+    _is.UuidValue? buildingId,
+    DateTime? createdFrom,
+    DateTime? createdTo,
+  }) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'notification',
+            method: 'markAllRead',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'notification',
+          methodName: 'markAllRead',
+          parameters: _ist.testObjectToJson({
+            'buildingId': buildingId,
+            'createdFrom': createdFrom,
+            'createdTo': createdTo,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<int>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Stream<_iaxje4zj.AppNotificationView> watch(
+    _ist.TestSessionBuilder sessionBuilder,
+  ) {
+    var _localTestStreamManager =
+        _ist.TestStreamManager<_iaxje4zj.AppNotificationView>();
+    _ist.callStreamFunctionAndHandleExceptions(
+      () async {
+        var _localUniqueSession =
+            (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+              endpoint: 'notification',
+              method: 'watch',
+            );
+        var _localCallContext = await _endpointDispatch
+            .getMethodStreamCallContext(
+              createSessionCallback: (_) => _localUniqueSession,
+              endpointPath: 'notification',
+              methodName: 'watch',
+              arguments: {},
+              requestedInputStreams: [],
+              serializationManager: _serializationManager,
+            );
+        await _localTestStreamManager.callStreamMethod(
+          _localCallContext,
+          _localUniqueSession,
+          {},
+        );
+      },
+      _localTestStreamManager.outputStreamController,
+    );
+    return _localTestStreamManager.outputStreamController.stream;
   }
 }
 

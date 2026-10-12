@@ -694,6 +694,46 @@ class AppLocalizationsFr extends AppLocalizations {
   String get notificationsReady => 'Rien de nouveau pour le moment.';
 
   @override
+  String get notificationThisVenue => 'Ce lieu';
+
+  @override
+  String get notificationThisMonth => 'Ce mois-ci';
+
+  @override
+  String get notificationUnreadOnly => 'Non lues';
+
+  @override
+  String get notificationMarkAllRead => 'Tout marquer comme lu';
+
+  @override
+  String notificationLineStatus(String article, String status) {
+    return '$article est maintenant $status';
+  }
+
+  @override
+  String notificationLineCancelled(String article, String reason) {
+    return '$article a été annulé. $reason';
+  }
+
+  @override
+  String notificationOrderStatus(int ref, String status) {
+    return 'La commande $ref est maintenant $status';
+  }
+
+  @override
+  String notificationOrderCancelled(int ref, String reason) {
+    return 'La commande $ref a été annulée. $reason';
+  }
+
+  @override
+  String get notificationReservationAccepted =>
+      'Votre réservation a été acceptée';
+
+  @override
+  String get notificationReservationCancelled =>
+      'Votre réservation a été annulée';
+
+  @override
   String get profileTitle => 'Profil';
 
   @override

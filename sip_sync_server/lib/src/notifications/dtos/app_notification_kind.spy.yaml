@@ -1,0 +1,7 @@
+### Which record [AppNotificationView.subjectId] opens.
+enum: AppNotificationKind
+serialized: byName
+values:
+  - orderItem
+  - order
+  - reservation

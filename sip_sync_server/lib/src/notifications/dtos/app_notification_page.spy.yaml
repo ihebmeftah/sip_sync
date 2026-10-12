@@ -1,0 +1,7 @@
+### One page of [AppNotificationView], newest first.
+class: AppNotificationPage
+fields:
+  items: List<AppNotificationView>
+  total: int
+  limit: int
+  offset: int

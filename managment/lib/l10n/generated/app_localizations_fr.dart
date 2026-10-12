@@ -50,6 +50,35 @@ class AppLocalizationsFr extends AppLocalizations {
   String get signOut => 'Déconnexion';
 
   @override
+  String get notifications => 'Notifications';
+
+  @override
+  String get notificationsReady => 'Rien de nouveau pour le moment.';
+
+  @override
+  String get notificationThisBuilding => 'Ce bâtiment';
+
+  @override
+  String get notificationAllBuildings => 'Tous les bâtiments';
+
+  @override
+  String get notificationThisMonth => 'Ce mois-ci';
+
+  @override
+  String get notificationUnreadOnly => 'Non lues';
+
+  @override
+  String get notificationMarkAllRead => 'Tout marquer comme lu';
+
+  @override
+  String get notificationReservationAccepted =>
+      'Une réservation a été acceptée';
+
+  @override
+  String get notificationReservationCancelled =>
+      'Une réservation a été annulée';
+
+  @override
   String get email => 'E-mail';
 
   @override

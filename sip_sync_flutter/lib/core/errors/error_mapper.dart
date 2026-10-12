@@ -3,6 +3,13 @@ import 'package:sip_sync_client/sip_sync_client.dart';
 import 'failure.dart';
 
 Failure mapError(Object error) {
+  if (error is NotificationException) {
+    return Failure(switch (error.code) {
+      NotificationErrorCode.invalidInput => 'errorInvalidInput',
+      NotificationErrorCode.notFound => 'errorNotFound',
+      NotificationErrorCode.notAuthorized => 'errorNotAuthorized',
+    });
+  }
   if (error is AccountException) {
     return Failure(switch (error.code) {
       AccountErrorCode.invalidInput => 'errorInvalidInput',

@@ -1,0 +1,28 @@
+### One stored alert. [subjectId] is the order, reservation, or later management record that a tap opens.
+class: AppNotification
+table: app_notification
+serverOnly: true
+fields:
+  id: UuidValue?, defaultPersist=random_v7
+  recipientType: ActorType
+  recipientId: UuidValue
+  buildingId: UuidValue
+  venueName: String
+  ### Order id, reservation id, or a later management record.
+  subjectId: UuidValue
+  kind: AppNotificationKind
+  orderItemId: UuidValue?
+  orderRef: int?
+  articleName: String?
+  itemStatus: OrderItemStatus?
+  orderStatus: OrderStatus?
+  reservationStatus: ReservationStatus?
+  cancellationReason: OrderCancellationReason?
+  ### Null until the recipient opens this alert.
+  readAt: DateTime?
+  createdAt: DateTime, defaultModel=now
+indexes:
+  app_notification_recipient_created_idx:
+    fields: recipientType, recipientId, createdAt
+  app_notification_recipient_read_idx:
+    fields: recipientType, recipientId, readAt

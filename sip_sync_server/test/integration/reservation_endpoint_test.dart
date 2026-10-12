@@ -355,6 +355,15 @@ void main() {
         created.id,
       );
       expect(confirmed.status, ReservationStatus.confirmed);
+      final accepted = await endpoints.notification.list(customerSession);
+      expect(accepted.total, 1);
+      expect(accepted.items.single.kind, AppNotificationKind.reservation);
+      expect(
+        accepted.items.single.reservationStatus,
+        ReservationStatus.confirmed,
+      );
+      expect(accepted.items.single.subjectId, created.id);
+      expect(await endpoints.notification.unreadCount(setup.ownerSession), 0);
       final seated = await endpoints.reservation.assignTables(
         setup.ownerSession,
         created.id,
@@ -376,6 +385,16 @@ void main() {
         created.id,
       );
       expect(cancelled.status, ReservationStatus.cancelled);
+      final ownerNotes = await endpoints.notification.list(setup.ownerSession);
+      expect(ownerNotes.total, 1);
+      expect(
+        ownerNotes.items.single.reservationStatus,
+        ReservationStatus.cancelled,
+      );
+      expect(
+        (await endpoints.notification.list(customerSession)).total,
+        1,
+      );
     });
 
     test('employee without the flag cannot book', () async {

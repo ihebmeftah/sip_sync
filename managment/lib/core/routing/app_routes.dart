@@ -18,6 +18,7 @@ import '../../features/employees/views/employee_form_view.dart';
 import '../../features/employees/views/employees_list_view.dart';
 import '../../features/orders/views/order_create_articles_view.dart';
 import '../../features/orders/views/order_detail_view.dart';
+import '../../features/notifications/views/notifications_view.dart';
 import '../../features/orders/views/orders_list_view.dart';
 import '../../features/products/views/article_composition_view.dart'
     show ArticleCompositionFormView;
@@ -170,6 +171,10 @@ class BuildingEditRoute extends GoRouteData with $BuildingEditRoute {
     TypedGoRoute<ReservationsRoute>(
       path: '/b/:buildingId/reservations',
       name: 'reservations',
+    ),
+    TypedGoRoute<NotificationsRoute>(
+      path: '/b/:buildingId/notifications',
+      name: 'notifications',
     ),
     TypedGoRoute<ReservationCreateRoute>(
       path: '/b/:buildingId/reservations/new',
@@ -363,6 +368,17 @@ class PosRoute extends GoRouteData with $PosRoute {
   @override
   Widget build(BuildContext context, GoRouterState state) {
     return OrdersListView(buildingId: buildingId);
+  }
+}
+
+class NotificationsRoute extends GoRouteData with $NotificationsRoute {
+  const NotificationsRoute({required this.buildingId});
+
+  final String buildingId;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return NotificationsView(buildingId: buildingId);
   }
 }
 

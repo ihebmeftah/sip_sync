@@ -50,7 +50,7 @@ final class OrdersViewModelProvider
   }
 }
 
-String _$ordersViewModelHash() => r'ed607f821e60ec1bdc76f78bb6f624f4be0fc32b';
+String _$ordersViewModelHash() => r'573ba5075e9839c972a63c1f72b4c96944f62c91';
 
 final class OrdersViewModelFamily extends $Family
     with

@@ -686,6 +686,45 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notificationsReady => 'Nothing new right now.';
 
   @override
+  String get notificationThisVenue => 'This venue';
+
+  @override
+  String get notificationThisMonth => 'This month';
+
+  @override
+  String get notificationUnreadOnly => 'Unread';
+
+  @override
+  String get notificationMarkAllRead => 'Mark all as read';
+
+  @override
+  String notificationLineStatus(String article, String status) {
+    return '$article is now $status';
+  }
+
+  @override
+  String notificationLineCancelled(String article, String reason) {
+    return '$article was cancelled. $reason';
+  }
+
+  @override
+  String notificationOrderStatus(int ref, String status) {
+    return 'Order $ref is now $status';
+  }
+
+  @override
+  String notificationOrderCancelled(int ref, String reason) {
+    return 'Order $ref was cancelled. $reason';
+  }
+
+  @override
+  String get notificationReservationAccepted => 'Your reservation was accepted';
+
+  @override
+  String get notificationReservationCancelled =>
+      'Your reservation was cancelled';
+
+  @override
   String get profileTitle => 'Profile';
 
   @override

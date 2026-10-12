@@ -288,6 +288,12 @@ RouteBase get $opsShellRoute => ShellRouteData.$route(
       factory: $ReservationsRoute._fromState,
     ),
     GoRouteData.$route(
+      path: '/b/:buildingId/notifications',
+      name: 'notifications',
+      hasOverriddenOnExit: false,
+      factory: $NotificationsRoute._fromState,
+    ),
+    GoRouteData.$route(
       path: '/b/:buildingId/reservations/new',
       name: 'reservationCreate',
       hasOverriddenOnExit: false,
@@ -748,6 +754,31 @@ mixin $ReservationsRoute on GoRouteData {
   @override
   String get location => GoRouteData.$location(
     '/b/${Uri.encodeComponent(_self.buildingId)}/reservations',
+  );
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+mixin $NotificationsRoute on GoRouteData {
+  static NotificationsRoute _fromState(GoRouterState state) =>
+      NotificationsRoute(buildingId: state.pathParameters['buildingId']!);
+
+  NotificationsRoute get _self => this as NotificationsRoute;
+
+  @override
+  String get location => GoRouteData.$location(
+    '/b/${Uri.encodeComponent(_self.buildingId)}/notifications',
   );
 
   @override

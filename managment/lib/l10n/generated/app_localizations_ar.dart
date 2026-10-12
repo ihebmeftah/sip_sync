@@ -49,6 +49,33 @@ class AppLocalizationsAr extends AppLocalizations {
   String get signOut => 'تسجيل الخروج';
 
   @override
+  String get notifications => 'الإشعارات';
+
+  @override
+  String get notificationsReady => 'لا جديد الآن.';
+
+  @override
+  String get notificationThisBuilding => 'هذا المبنى';
+
+  @override
+  String get notificationAllBuildings => 'كل المباني';
+
+  @override
+  String get notificationThisMonth => 'هذا الشهر';
+
+  @override
+  String get notificationUnreadOnly => 'غير المقروء';
+
+  @override
+  String get notificationMarkAllRead => 'تعليم الكل كمقروء';
+
+  @override
+  String get notificationReservationAccepted => 'تم قبول حجز';
+
+  @override
+  String get notificationReservationCancelled => 'تم إلغاء حجز';
+
+  @override
   String get email => 'البريد الإلكتروني';
 
   @override

@@ -79,6 +79,12 @@ menuCategory:
   - list:
   - create:
   - update:
+notification:
+  - list:
+  - unreadCount:
+  - markRead:
+  - markAllRead:
+  - watch:
 customerOrder:
   - place:
   - list:

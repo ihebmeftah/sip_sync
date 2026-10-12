@@ -1,0 +1,193 @@
+{
+  "__className__": "serverpod.DatabaseMigration",
+  "actions": [
+    {
+      "__className__": "serverpod.DatabaseMigrationAction",
+      "type": "createTable",
+      "createTable": {
+        "__className__": "serverpod.TableDefinition",
+        "name": "app_notification",
+        "dartName": "AppNotification",
+        "module": "sip_sync",
+        "schema": "public",
+        "columns": [
+          {
+            "__className__": "serverpod.ColumnDefinition",
+            "name": "id",
+            "fieldName": "id",
+            "columnType": 7,
+            "isNullable": false,
+            "columnDefault": "random_v7",
+            "dartType": "UuidValue?"
+          },
+          {
+            "__className__": "serverpod.ColumnDefinition",
+            "name": "recipientType",
+            "fieldName": "recipientType",
+            "columnType": 0,
+            "isNullable": false,
+            "dartType": "protocol:ActorType"
+          },
+          {
+            "__className__": "serverpod.ColumnDefinition",
+            "name": "recipientId",
+            "fieldName": "recipientId",
+            "columnType": 7,
+            "isNullable": false,
+            "dartType": "UuidValue"
+          },
+          {
+            "__className__": "serverpod.ColumnDefinition",
+            "name": "buildingId",
+            "fieldName": "buildingId",
+            "columnType": 7,
+            "isNullable": false,
+            "dartType": "UuidValue"
+          },
+          {
+            "__className__": "serverpod.ColumnDefinition",
+            "name": "venueName",
+            "fieldName": "venueName",
+            "columnType": 0,
+            "isNullable": false,
+            "dartType": "String"
+          },
+          {
+            "__className__": "serverpod.ColumnDefinition",
+            "name": "orderId",
+            "fieldName": "orderId",
+            "columnType": 7,
+            "isNullable": false,
+            "dartType": "UuidValue"
+          },
+          {
+            "__className__": "serverpod.ColumnDefinition",
+            "name": "orderItemId",
+            "fieldName": "orderItemId",
+            "columnType": 7,
+            "isNullable": true,
+            "dartType": "UuidValue?"
+          },
+          {
+            "__className__": "serverpod.ColumnDefinition",
+            "name": "orderRef",
+            "fieldName": "orderRef",
+            "columnType": 6,
+            "isNullable": false,
+            "dartType": "int"
+          },
+          {
+            "__className__": "serverpod.ColumnDefinition",
+            "name": "articleName",
+            "fieldName": "articleName",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "String?"
+          },
+          {
+            "__className__": "serverpod.ColumnDefinition",
+            "name": "kind",
+            "fieldName": "kind",
+            "columnType": 0,
+            "isNullable": false,
+            "dartType": "protocol:AppNotificationKind"
+          },
+          {
+            "__className__": "serverpod.ColumnDefinition",
+            "name": "itemStatus",
+            "fieldName": "itemStatus",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "protocol:OrderItemStatus?"
+          },
+          {
+            "__className__": "serverpod.ColumnDefinition",
+            "name": "orderStatus",
+            "fieldName": "orderStatus",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "protocol:OrderStatus?"
+          },
+          {
+            "__className__": "serverpod.ColumnDefinition",
+            "name": "cancellationReason",
+            "fieldName": "cancellationReason",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "protocol:OrderCancellationReason?"
+          },
+          {
+            "__className__": "serverpod.ColumnDefinition",
+            "name": "readAt",
+            "fieldName": "readAt",
+            "columnType": 4,
+            "isNullable": true,
+            "dartType": "DateTime?"
+          },
+          {
+            "__className__": "serverpod.ColumnDefinition",
+            "name": "createdAt",
+            "fieldName": "createdAt",
+            "columnType": 4,
+            "isNullable": false,
+            "dartType": "DateTime"
+          }
+        ],
+        "foreignKeys": [],
+        "indexes": [
+          {
+            "__className__": "serverpod.IndexDefinition",
+            "indexName": "app_notification_recipient_created_idx",
+            "elements": [
+              {
+                "__className__": "serverpod.IndexElementDefinition",
+                "type": 0,
+                "definition": "recipientType"
+              },
+              {
+                "__className__": "serverpod.IndexElementDefinition",
+                "type": 0,
+                "definition": "recipientId"
+              },
+              {
+                "__className__": "serverpod.IndexElementDefinition",
+                "type": 0,
+                "definition": "createdAt"
+              }
+            ],
+            "type": "btree",
+            "isUnique": false,
+            "isPrimary": false
+          },
+          {
+            "__className__": "serverpod.IndexDefinition",
+            "indexName": "app_notification_recipient_read_idx",
+            "elements": [
+              {
+                "__className__": "serverpod.IndexElementDefinition",
+                "type": 0,
+                "definition": "recipientType"
+              },
+              {
+                "__className__": "serverpod.IndexElementDefinition",
+                "type": 0,
+                "definition": "recipientId"
+              },
+              {
+                "__className__": "serverpod.IndexElementDefinition",
+                "type": 0,
+                "definition": "readAt"
+              }
+            ],
+            "type": "btree",
+            "isUnique": false,
+            "isPrimary": false
+          }
+        ],
+        "managed": true
+      }
+    }
+  ],
+  "warnings": [],
+  "migrationApiVersion": 1
+}

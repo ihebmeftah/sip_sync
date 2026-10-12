@@ -24,6 +24,6 @@ Product and feature documentation for Sip Sync. Update these pages when behavior
 | Order management | in progress | [orders](features/orders.md) |
 | Cash register | planned | [cash-register](features/cash-register.md) |
 | Statistics & analytics | in progress | [statistics](features/statistics.md) |
-| Real-time notifications | planned | [notifications](features/notifications.md) |
+| Real-time notifications | in progress | [notifications](features/notifications.md) |
 | Packs | in progress | [packs](features/packs.md) |
 | Reservations | shipped | [reservations](features/reservations.md) |

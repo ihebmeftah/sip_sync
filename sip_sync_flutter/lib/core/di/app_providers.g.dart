@@ -245,6 +245,54 @@ final class CustomerReservationRepositoryProvider
 String _$customerReservationRepositoryHash() =>
     r'c31622172a262e666e063546d2cfc106c43d76d2';
 
+@ProviderFor(notificationRepository)
+const notificationRepositoryProvider = NotificationRepositoryProvider._();
+
+final class NotificationRepositoryProvider
+    extends
+        $FunctionalProvider<
+          NotificationRepository,
+          NotificationRepository,
+          NotificationRepository
+        >
+    with $Provider<NotificationRepository> {
+  const NotificationRepositoryProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'notificationRepositoryProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$notificationRepositoryHash();
+
+  @$internal
+  @override
+  $ProviderElement<NotificationRepository> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  NotificationRepository create(Ref ref) {
+    return notificationRepository(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(NotificationRepository value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<NotificationRepository>(value),
+    );
+  }
+}
+
+String _$notificationRepositoryHash() =>
+    r'1de6b71af2c529868ddafae293383a067e1281e6';
+
 @ProviderFor(appSessionStore)
 const appSessionStoreProvider = AppSessionStoreProvider._();
 

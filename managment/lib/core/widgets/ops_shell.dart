@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:sip_sync_client/sip_sync_client.dart';
 
 import '../../features/auth/view_models/auth_view_model.dart';
+import '../../features/notifications/view_models/notification_inbox_view_model.dart';
 import '../../features/orders/view_models/order_draft_view_model.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../access/floor_access.dart';
@@ -403,6 +404,8 @@ class OpsSideBar extends ConsumerWidget {
         : (store.employee?.username ?? '');
     final selected = ref.watch(buildingSelectionProvider);
     final location = GoRouterState.of(context).uri.path;
+    final unread =
+        ref.watch(notificationInboxProvider).asData?.value.unread ?? 0;
     final productsOpen =
         location.contains('/products/') ||
         location.endsWith('/products/articles') ||
@@ -618,6 +621,22 @@ class OpsSideBar extends ConsumerWidget {
                             const LocaleMenuButton(),
                             const Spacer(),
                             IconButton(
+                              tooltip: l10n.notifications,
+                              onPressed: () => NotificationsRoute(
+                                buildingId: buildingId,
+                              ).go(context),
+                              icon: Badge(
+                                isLabelVisible: unread > 0,
+                                label: Text(unread > 99 ? '99+' : '$unread'),
+                                child: Icon(
+                                  Icons.notifications_outlined,
+                                  color: location.endsWith('/notifications')
+                                      ? scheme.primary
+                                      : scheme.onSurface,
+                                ),
+                              ),
+                            ),
+                            IconButton(
                               tooltip: l10n.signOut,
                               onPressed: () => ref
                                   .read(authViewModelProvider.notifier)
@@ -626,7 +645,30 @@ class OpsSideBar extends ConsumerWidget {
                             ),
                           ],
                         ),
-                      if (inDrawer)
+                      if (inDrawer) ...[
+                        ListTile(
+                          leading: Badge(
+                            isLabelVisible: unread > 0,
+                            label: Text(unread > 99 ? '99+' : '$unread'),
+                            child: Icon(
+                              Icons.notifications_outlined,
+                              color: location.endsWith('/notifications')
+                                  ? scheme.primary
+                                  : scheme.onSurface,
+                            ),
+                          ),
+                          title: Text(
+                            l10n.notifications,
+                            style: TextStyle(
+                              color: location.endsWith('/notifications')
+                                  ? scheme.primary
+                                  : scheme.onSurface,
+                            ),
+                          ),
+                          onTap: () => NotificationsRoute(
+                            buildingId: buildingId,
+                          ).go(context),
+                        ),
                         Material(
                           type: MaterialType.transparency,
                           child: ListTile(
@@ -643,6 +685,7 @@ class OpsSideBar extends ConsumerWidget {
                                 .signOut(),
                           ),
                         ),
+                      ],
                       const SizedBox(height: AppSpacing.sm),
                       Material(
                         color: scheme.onSurface.withValues(alpha: 0.08),

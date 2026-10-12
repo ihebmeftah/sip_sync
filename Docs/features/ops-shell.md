@@ -12,7 +12,7 @@ Status: in progress
    - **Owner** → `/buildings` (gate, no sidebar)
    - **Employee** → `/b/:buildingId/dashboard` (ops shell)
 2. Owner picks a venue → ops shell under `/b/:buildingId/...`
-3. **Wide**: rail with dashboard, employees, products (**categories**, articles, ingredients), **Orders**, **tables**, **reservations** (when the access profile allows it), and **Configuration** (owners only). Profile opens from the bottom account tile. **Buildings** link for owners only. A destination the venue pack turns off (ingredients when inventory is off, table scan when table QR is off) stays in the rail, dimmed, with an Upgrade badge. Tapping it opens the public plan catalog. Configuration only updates the venue switches.
+3. **Wide**: rail with dashboard, employees, products (**categories**, articles, ingredients), **Orders**, **tables**, **reservations** (when the access profile allows it), and **Configuration** (owners only). Profile opens from the bottom account tile. **Buildings** link for owners only. A destination the venue pack turns off (ingredients when inventory is off, table scan when table QR is off) stays in the rail, dimmed, with an Upgrade badge. Tapping it opens the public plan catalog. Configuration only updates the venue switches. A bell in the sidebar footer opens this venue's alerts. Its badge is the unread count.
 4. **Compact (mobile)**:
    - **Owner**: bottom nav **Dashboard** | **Tables** | **Orders**; other destinations in the drawer. **New order** FAB (table pick / cancel).
    - **Employee**: bottom nav **Tables** | **Scan** | **Orders** (no Dashboard). No FAB — start orders by tapping a table or scanning its QR. Home is Tables.
@@ -21,4 +21,4 @@ Status: in progress
 
 ## Realtime
 
-None.
+The sidebar bell listens for new alerts. See [notifications](notifications.md).

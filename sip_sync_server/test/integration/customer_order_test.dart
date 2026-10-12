@@ -644,6 +644,179 @@ void main() {
         ),
       );
     });
+
+    test(
+      'status and cancellation are stored for the customer and can be marked read',
+      () async {
+        final ownerSession = await _owner(
+          sessionBuilder,
+          endpoints,
+          'order-note',
+          '+21622112031',
+        );
+        final building = await endpoints.building.create(
+          ownerSession,
+          _building('Notice House', '+21671112031'),
+        );
+        await PackCatalog.assignCode(
+          sessionBuilder.build(),
+          building.id,
+          'floor',
+        );
+        final category = await endpoints.menuCategory.create(
+          ownerSession,
+          MenuCategoryCreate(buildingId: building.id, name: 'Tea'),
+        );
+        final article = await endpoints.menuArticle.create(
+          ownerSession,
+          MenuArticleCreate(
+            buildingId: building.id,
+            categoryId: category.id,
+            name: 'Mint tea',
+            price: 4,
+          ),
+        );
+        final tables = await endpoints.venueTable.create(
+          ownerSession,
+          VenueTableCreate(
+            buildingId: building.id,
+            count: 1,
+            maxSeats: 2,
+            isActive: true,
+          ),
+        );
+        final customerSession = await _customer(
+          sessionBuilder,
+          endpoints,
+          'order-note',
+          '+21622112032',
+        );
+        final otherSession = await _customer(
+          sessionBuilder,
+          endpoints,
+          'order-note-other',
+          '+21622112033',
+        );
+        final placed = await endpoints.customerOrder.place(
+          customerSession,
+          CustomerOrderPlace(
+            buildingId: building.id,
+            tableId: tables.single.id,
+            items: [CustomerOrderItem(articleId: article.id)],
+          ),
+        );
+        expect(await endpoints.notification.unreadCount(customerSession), 0);
+
+        final updates = endpoints.notification.watch(customerSession);
+        final pending = updates.first;
+        await endpoints.order.updateItemStatus(
+          ownerSession,
+          OrderItemStatusUpdate(
+            id: placed.lines.single.id,
+            status: OrderItemStatus.picked,
+          ),
+        );
+        final live = await pending.timeout(const Duration(seconds: 5));
+        expect(live.kind, AppNotificationKind.orderItem);
+        expect(live.itemStatus, OrderItemStatus.picked);
+        expect(live.read, isFalse);
+        expect(live.subjectId, placed.id);
+
+        final page = await endpoints.notification.list(customerSession);
+        expect(page.total, 1);
+        expect(page.items.single.articleName, 'Mint tea');
+        expect(await endpoints.notification.unreadCount(customerSession), 1);
+        expect(
+          (await endpoints.notification.list(
+            customerSession,
+            buildingId: building.id,
+            unreadOnly: true,
+          )).total,
+          1,
+        );
+        expect(
+          (await endpoints.notification.list(
+            customerSession,
+            buildingId: UuidValue.fromString(
+              '01990000-0000-7000-8000-0000000000aa',
+            ),
+          )).total,
+          0,
+        );
+        final monthStart = DateTime.utc(
+          DateTime.now().toUtc().year,
+          DateTime.now().toUtc().month,
+        );
+        expect(
+          (await endpoints.notification.list(
+            customerSession,
+            createdFrom: monthStart,
+            createdTo: DateTime.utc(monthStart.year, monthStart.month + 1),
+          )).total,
+          1,
+        );
+        await expectLater(
+          endpoints.notification.list(
+            customerSession,
+            createdFrom: DateTime.utc(2026, 3, 1),
+            createdTo: DateTime.utc(2026, 1, 1),
+          ),
+          throwsA(
+            isA<NotificationException>().having(
+              (error) => error.code,
+              'code',
+              NotificationErrorCode.invalidInput,
+            ),
+          ),
+        );
+        expect(
+          (await endpoints.notification.list(otherSession)).items,
+          isEmpty,
+        );
+
+        final read = await endpoints.notification.markRead(
+          customerSession,
+          page.items.single.id,
+        );
+        expect(read.read, isTrue);
+        expect(await endpoints.notification.unreadCount(customerSession), 0);
+        await expectLater(
+          endpoints.notification.markRead(otherSession, page.items.single.id),
+          throwsA(
+            isA<NotificationException>().having(
+              (error) => error.code,
+              'code',
+              NotificationErrorCode.notFound,
+            ),
+          ),
+        );
+
+        await endpoints.order.cancel(
+          ownerSession,
+          placed.id,
+          OrderCancellationReason.closingSoon,
+        );
+        final afterCancel = await endpoints.notification.list(customerSession);
+        final cancelled = afterCancel.items.firstWhere(
+          (row) => row.kind == AppNotificationKind.order,
+        );
+        expect(cancelled.orderStatus, OrderStatus.cancelled);
+        expect(
+          cancelled.cancellationReason,
+          OrderCancellationReason.closingSoon,
+        );
+        expect(await endpoints.notification.unreadCount(customerSession), 1);
+        expect(
+          await endpoints.notification.markAllRead(
+            customerSession,
+            buildingId: building.id,
+          ),
+          1,
+        );
+        expect(await endpoints.notification.unreadCount(customerSession), 0);
+        expect(await endpoints.notification.markAllRead(otherSession), 0);
+      },
+    );
   });
 }
 

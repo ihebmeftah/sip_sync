@@ -105,6 +105,7 @@ import '../menu/article_composition_endpoint.dart' as _iavtsxat;
 import '../menu/ingredient_endpoint.dart' as _i7cjtizz;
 import '../menu/menu_article_endpoint.dart' as _iefktwfq;
 import '../menu/menu_category_endpoint.dart' as _i1h28rjj;
+import '../notifications/notification_endpoint.dart' as _ibyw8x7k;
 import '../orders/customer_order_endpoint.dart' as _i3ulyznx;
 import '../orders/order_endpoint.dart' as _iuf1spo6;
 import '../packs/pack_endpoint.dart' as _i9krzab0;
@@ -198,6 +199,12 @@ class Endpoints extends _is.EndpointDispatch {
         ..initialize(
           server,
           'menuCategory',
+          null,
+        ),
+      'notification': _ibyw8x7k.NotificationEndpoint()
+        ..initialize(
+          server,
+          'notification',
           null,
         ),
       'customerOrder': _i3ulyznx.CustomerOrderEndpoint()
@@ -1747,6 +1754,138 @@ class Endpoints extends _is.EndpointDispatch {
                         session,
                         params['request'],
                       ),
+        ),
+      },
+    );
+    connectors['notification'] = _is.EndpointConnector(
+      name: 'notification',
+      endpoint: endpoints['notification']!,
+      methodConnectors: {
+        'list': _is.MethodConnector(
+          name: 'list',
+          params: {
+            'buildingId': _is.ParameterDescription(
+              name: 'buildingId',
+              type: _is.getType<_is.UuidValue?>(),
+              nullable: true,
+            ),
+            'createdFrom': _is.ParameterDescription(
+              name: 'createdFrom',
+              type: _is.getType<DateTime?>(),
+              nullable: true,
+            ),
+            'createdTo': _is.ParameterDescription(
+              name: 'createdTo',
+              type: _is.getType<DateTime?>(),
+              nullable: true,
+            ),
+            'unreadOnly': _is.ParameterDescription(
+              name: 'unreadOnly',
+              type: _is.getType<bool?>(),
+              nullable: true,
+            ),
+            'limit': _is.ParameterDescription(
+              name: 'limit',
+              type: _is.getType<int?>(),
+              nullable: true,
+            ),
+            'offset': _is.ParameterDescription(
+              name: 'offset',
+              type: _is.getType<int?>(),
+              nullable: true,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['notification'] as _ibyw8x7k.NotificationEndpoint)
+                      .list(
+                        session,
+                        buildingId: params['buildingId'],
+                        createdFrom: params['createdFrom'],
+                        createdTo: params['createdTo'],
+                        unreadOnly: params['unreadOnly'],
+                        limit: params['limit'],
+                        offset: params['offset'],
+                      ),
+        ),
+        'unreadCount': _is.MethodConnector(
+          name: 'unreadCount',
+          params: {},
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['notification'] as _ibyw8x7k.NotificationEndpoint)
+                      .unreadCount(session),
+        ),
+        'markRead': _is.MethodConnector(
+          name: 'markRead',
+          params: {
+            'id': _is.ParameterDescription(
+              name: 'id',
+              type: _is.getType<_is.UuidValue>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['notification'] as _ibyw8x7k.NotificationEndpoint)
+                      .markRead(
+                        session,
+                        params['id'],
+                      ),
+        ),
+        'markAllRead': _is.MethodConnector(
+          name: 'markAllRead',
+          params: {
+            'buildingId': _is.ParameterDescription(
+              name: 'buildingId',
+              type: _is.getType<_is.UuidValue?>(),
+              nullable: true,
+            ),
+            'createdFrom': _is.ParameterDescription(
+              name: 'createdFrom',
+              type: _is.getType<DateTime?>(),
+              nullable: true,
+            ),
+            'createdTo': _is.ParameterDescription(
+              name: 'createdTo',
+              type: _is.getType<DateTime?>(),
+              nullable: true,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['notification'] as _ibyw8x7k.NotificationEndpoint)
+                      .markAllRead(
+                        session,
+                        buildingId: params['buildingId'],
+                        createdFrom: params['createdFrom'],
+                        createdTo: params['createdTo'],
+                      ),
+        ),
+        'watch': _is.MethodStreamConnector(
+          name: 'watch',
+          params: {},
+          streamParams: {},
+          returnType: _is.MethodStreamReturnType.streamType,
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+                Map<String, Stream> streamParams,
+              ) => (endpoints['notification'] as _ibyw8x7k.NotificationEndpoint)
+                  .watch(session),
         ),
       },
     );

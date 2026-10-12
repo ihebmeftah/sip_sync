@@ -1,0 +1,19 @@
+### One alert the signed-in actor may see. No other recipient's rows are returned.
+class: AppNotificationView
+fields:
+  id: UuidValue
+  buildingId: UuidValue
+  venueName: String
+  ### Order id, reservation id, or a later management record. The app opens it from [kind].
+  subjectId: UuidValue
+  kind: AppNotificationKind
+  orderItemId: UuidValue?
+  orderRef: int?
+  articleName: String?
+  itemStatus: OrderItemStatus?
+  orderStatus: OrderStatus?
+  reservationStatus: ReservationStatus?
+  cancellationReason: OrderCancellationReason?
+  ### False until [NotificationEndpoint.markRead].
+  read: bool
+  createdAt: DateTime

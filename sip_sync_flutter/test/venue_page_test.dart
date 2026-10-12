@@ -9,6 +9,7 @@ import 'package:sip_sync_flutter/core/theme/app_icons.dart';
 import 'package:sip_sync_flutter/data/repositories/customer_discovery_repository.dart';
 import 'package:sip_sync_flutter/features/venue/view_models/customer_order_view_model.dart';
 import 'package:sip_sync_flutter/features/venue/view_models/seated_table_view_model.dart';
+import 'package:sip_sync_flutter/features/notifications/view_models/notification_inbox_view_model.dart';
 import 'package:sip_sync_flutter/features/venue/views/venue_detail_view.dart';
 import 'package:sip_sync_flutter/features/venue/views/venue_menu_view.dart';
 import 'package:sip_sync_flutter/l10n/generated/app_localizations.dart';
@@ -148,6 +149,7 @@ void main() {
       overrides: [
         customerDiscoveryRepositoryProvider.overrideWith((ref) => _Repo()),
         openCustomerOrderProvider.overrideWith((ref) async => null),
+        notificationInboxProvider.overrideWith(_QuietInbox.new),
       ],
     );
     addTearDown(container.dispose);
@@ -213,6 +215,7 @@ void main() {
         overrides: [
           customerDiscoveryRepositoryProvider.overrideWith((ref) => _Repo()),
           openCustomerOrderProvider.overrideWith((ref) async => _openOrder()),
+          notificationInboxProvider.overrideWith(_QuietInbox.new),
         ],
         child: MaterialApp(
           locale: const Locale('en'),
@@ -250,11 +253,19 @@ void main() {
   });
 }
 
+class _QuietInbox extends NotificationInbox {
+  @override
+  Future<NotificationInboxState> build() async {
+    return const NotificationInboxState(items: [], total: 0, unread: 0);
+  }
+}
+
 Widget _app(GoRouter router) {
   return ProviderScope(
     overrides: [
       customerDiscoveryRepositoryProvider.overrideWith((ref) => _Repo()),
       openCustomerOrderProvider.overrideWith((ref) async => null),
+      notificationInboxProvider.overrideWith(_QuietInbox.new),
     ],
     child: MaterialApp.router(
       locale: const Locale('en'),

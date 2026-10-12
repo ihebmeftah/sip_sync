@@ -178,6 +178,60 @@ abstract class AppLocalizations {
   /// **'Sign out'**
   String get signOut;
 
+  /// No description provided for @notifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get notifications;
+
+  /// No description provided for @notificationsReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing new right now.'**
+  String get notificationsReady;
+
+  /// No description provided for @notificationThisBuilding.
+  ///
+  /// In en, this message translates to:
+  /// **'This building'**
+  String get notificationThisBuilding;
+
+  /// No description provided for @notificationAllBuildings.
+  ///
+  /// In en, this message translates to:
+  /// **'All buildings'**
+  String get notificationAllBuildings;
+
+  /// No description provided for @notificationThisMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'This month'**
+  String get notificationThisMonth;
+
+  /// No description provided for @notificationUnreadOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Unread'**
+  String get notificationUnreadOnly;
+
+  /// No description provided for @notificationMarkAllRead.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark all as read'**
+  String get notificationMarkAllRead;
+
+  /// No description provided for @notificationReservationAccepted.
+  ///
+  /// In en, this message translates to:
+  /// **'A reservation was accepted'**
+  String get notificationReservationAccepted;
+
+  /// No description provided for @notificationReservationCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'A reservation was cancelled'**
+  String get notificationReservationCancelled;
+
   /// No description provided for @email.
   ///
   /// In en, this message translates to:

@@ -5,6 +5,7 @@ import '../../data/repositories/customer_auth_repository.dart';
 import '../../data/repositories/customer_discovery_repository.dart';
 import '../../data/repositories/customer_order_repository.dart';
 import '../../data/repositories/customer_reservation_repository.dart';
+import '../../data/repositories/notification_repository.dart';
 import 'app_session_store.dart';
 import 'service_locator.dart';
 
@@ -28,6 +29,10 @@ CustomerOrderRepository customerOrderRepository(Ref ref) =>
 @Riverpod(keepAlive: true)
 CustomerReservationRepository customerReservationRepository(Ref ref) =>
     getIt<CustomerReservationRepository>();
+
+@Riverpod(keepAlive: true)
+NotificationRepository notificationRepository(Ref ref) =>
+    getIt<NotificationRepository>();
 
 @Riverpod(keepAlive: true)
 AppSessionStore appSessionStore(Ref ref) {

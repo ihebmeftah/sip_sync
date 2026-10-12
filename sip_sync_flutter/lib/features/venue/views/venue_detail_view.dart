@@ -14,6 +14,7 @@ import '../../discover/venue_distance.dart';
 import '../../home/widgets/venue_card.dart';
 import '../../orders/views/customer_orders_view.dart';
 import '../menu_price.dart';
+import '../../notifications/view_models/notification_inbox_view_model.dart';
 import '../view_models/customer_order_view_model.dart';
 import '../view_models/seated_table_view_model.dart';
 import '../view_models/venue_detail_view_model.dart';
@@ -67,6 +68,8 @@ class _VenueDetailViewState extends ConsumerState<VenueDetailView> {
     final detail = ref.watch(venueDetailViewModelProvider(widget.buildingId));
     final venueName = detail.asData?.value.venue.name;
     final open = ref.watch(openCustomerOrderProvider).asData?.value;
+    final unread =
+        ref.watch(notificationInboxProvider).asData?.value.unread ?? 0;
     final stay =
         open != null &&
         open.status == OrderStatus.progress &&
@@ -91,6 +94,7 @@ class _VenueDetailViewState extends ConsumerState<VenueDetailView> {
               child: PageBand(
                 child: _VisitHeader(
                   noticesOpen: _notices,
+                  unread: unread,
                   showBack: !stay,
                   onNotices: () => setState(() => _notices = !_notices),
                 ),
@@ -98,7 +102,7 @@ class _VenueDetailViewState extends ConsumerState<VenueDetailView> {
             ),
             Expanded(
               child: _notices
-                  ? const VenueNoticesView()
+                  ? VenueNoticesView(buildingId: widget.buildingId)
                   : switch (_tab) {
                       VenueVisitTab.overview => detail.when(
                         loading: () => const AppScreenLoader(),
@@ -142,11 +146,13 @@ class _VenueDetailViewState extends ConsumerState<VenueDetailView> {
 class _VisitHeader extends StatelessWidget {
   const _VisitHeader({
     required this.noticesOpen,
+    required this.unread,
     required this.showBack,
     required this.onNotices,
   });
 
   final bool noticesOpen;
+  final int unread;
   final bool showBack;
   final VoidCallback onNotices;
 
@@ -165,9 +171,13 @@ class _VisitHeader extends StatelessWidget {
             tooltip: l10n.notifications,
             onPressed: onNotices,
             isSelected: noticesOpen,
-            icon: Icon(
-              AppIcons.notifications,
-              color: noticesOpen ? scheme.primary : null,
+            icon: Badge(
+              isLabelVisible: unread > 0,
+              label: Text(unread > 99 ? '99+' : '$unread'),
+              child: Icon(
+                AppIcons.notifications,
+                color: noticesOpen ? scheme.primary : null,
+              ),
             ),
           ),
         ],

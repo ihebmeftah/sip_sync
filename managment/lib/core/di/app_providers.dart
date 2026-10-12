@@ -11,6 +11,7 @@ import '../../data/repositories/menu_category_repository.dart';
 import '../../data/repositories/order_repository.dart';
 import '../../data/repositories/owner_auth_repository.dart';
 import '../../data/repositories/pack_repository.dart';
+import '../../data/repositories/notification_repository.dart';
 import '../../data/repositories/reservation_repository.dart';
 import '../../data/repositories/venue_table_repository.dart';
 import 'app_session_store.dart';
@@ -65,6 +66,10 @@ PackRepository packRepository(Ref ref) => getIt<PackRepository>();
 @Riverpod(keepAlive: true)
 ReservationRepository reservationRepository(Ref ref) =>
     getIt<ReservationRepository>();
+
+@Riverpod(keepAlive: true)
+NotificationRepository notificationRepository(Ref ref) =>
+    getIt<NotificationRepository>();
 
 /// Enabled public plans. The owner compares them; support still changes the venue.
 @riverpod

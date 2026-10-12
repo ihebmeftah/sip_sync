@@ -253,6 +253,40 @@
   "venueProfile": "Profile",
   "notifications": "Notifications",
   "notificationsReady": "Nothing new right now.",
+  "notificationThisVenue": "This venue",
+  "notificationThisMonth": "This month",
+  "notificationUnreadOnly": "Unread",
+  "notificationMarkAllRead": "Mark all as read",
+  "notificationLineStatus": "{article} is now {status}",
+  "@notificationLineStatus": {
+    "placeholders": {
+      "article": { "type": "String" },
+      "status": { "type": "String" }
+    }
+  },
+  "notificationLineCancelled": "{article} was cancelled. {reason}",
+  "@notificationLineCancelled": {
+    "placeholders": {
+      "article": { "type": "String" },
+      "reason": { "type": "String" }
+    }
+  },
+  "notificationOrderStatus": "Order {ref} is now {status}",
+  "@notificationOrderStatus": {
+    "placeholders": {
+      "ref": { "type": "int" },
+      "status": { "type": "String" }
+    }
+  },
+  "notificationOrderCancelled": "Order {ref} was cancelled. {reason}",
+  "@notificationOrderCancelled": {
+    "placeholders": {
+      "ref": { "type": "int" },
+      "reason": { "type": "String" }
+    }
+  },
+  "notificationReservationAccepted": "Your reservation was accepted",
+  "notificationReservationCancelled": "Your reservation was cancelled",
   "profileTitle": "Profile",
   "profileReady": "Your profile is ready.",
   "reserveNow": "Reserve now",

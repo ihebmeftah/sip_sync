@@ -123,6 +123,12 @@ import 'menu/entity/article_composition.dart' as _i3yk9qsn;
 import 'menu/entity/ingredient.dart' as _idxha5j7;
 import 'menu/entity/menu_article.dart' as _iowcl7dy;
 import 'menu/entity/menu_category.dart' as _iiovp1sp;
+import 'notifications/dtos/app_notification_kind.dart' as _i9dekkgn;
+import 'notifications/dtos/app_notification_page.dart' as _ija5hfle;
+import 'notifications/dtos/app_notification_view.dart' as _i9qqazvn;
+import 'notifications/dtos/notification_error_code.dart' as _iyh8oqag;
+import 'notifications/dtos/notification_exception.dart' as _ijg4tb97;
+import 'notifications/entity/app_notification.dart' as _ifmwmay7;
 import 'orders/dtos/customer_order_append.dart' as _iq3ckjf2;
 import 'orders/dtos/customer_order_item.dart' as _i8sd1sxe;
 import 'orders/dtos/customer_order_line.dart' as _ibdj4rsl;
@@ -270,6 +276,12 @@ export 'menu/entity/article_composition.dart';
 export 'menu/entity/ingredient.dart';
 export 'menu/entity/menu_article.dart';
 export 'menu/entity/menu_category.dart';
+export 'notifications/dtos/app_notification_kind.dart';
+export 'notifications/dtos/app_notification_page.dart';
+export 'notifications/dtos/app_notification_view.dart';
+export 'notifications/dtos/notification_error_code.dart';
+export 'notifications/dtos/notification_exception.dart';
+export 'notifications/entity/app_notification.dart';
 export 'orders/dtos/customer_order_append.dart';
 export 'orders/dtos/customer_order_item.dart';
 export 'orders/dtos/customer_order_line.dart';
@@ -336,6 +348,157 @@ class Protocol extends _is.DatabaseSerializationManager {
   static final Protocol _instance = Protocol._().._registerHostProtocols();
 
   static List<_isp.TableDefinition> get targetTableDefinitions => [
+    _isp.TableDefinition(
+      name: 'app_notification',
+      dartName: 'AppNotification',
+      schema: 'public',
+      module: 'sip_sync',
+      columns: [
+        _isp.ColumnDefinition(
+          name: 'id',
+          columnType: _isp.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue?',
+          columnDefault: 'random_v7',
+        ),
+        _isp.ColumnDefinition(
+          name: 'recipientType',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'protocol:ActorType',
+        ),
+        _isp.ColumnDefinition(
+          name: 'recipientId',
+          columnType: _isp.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue',
+        ),
+        _isp.ColumnDefinition(
+          name: 'buildingId',
+          columnType: _isp.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue',
+        ),
+        _isp.ColumnDefinition(
+          name: 'venueName',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _isp.ColumnDefinition(
+          name: 'subjectId',
+          columnType: _isp.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue',
+        ),
+        _isp.ColumnDefinition(
+          name: 'kind',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'protocol:AppNotificationKind',
+        ),
+        _isp.ColumnDefinition(
+          name: 'orderItemId',
+          columnType: _isp.ColumnType.uuid,
+          isNullable: true,
+          dartType: 'UuidValue?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'orderRef',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: true,
+          dartType: 'int?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'articleName',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'itemStatus',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'protocol:OrderItemStatus?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'orderStatus',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'protocol:OrderStatus?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'reservationStatus',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'protocol:ReservationStatus?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'cancellationReason',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'protocol:OrderCancellationReason?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'readAt',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: true,
+          dartType: 'DateTime?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'createdAt',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+        ),
+      ],
+      foreignKeys: [],
+      indexes: [
+        _isp.IndexDefinition(
+          indexName: 'app_notification_recipient_created_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'recipientType',
+            ),
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'recipientId',
+            ),
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'createdAt',
+            ),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+        _isp.IndexDefinition(
+          indexName: 'app_notification_recipient_read_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'recipientType',
+            ),
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'recipientId',
+            ),
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'readAt',
+            ),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
     _isp.TableDefinition(
       name: 'article_composition',
       dartName: 'ArticleComposition',
@@ -3023,6 +3186,24 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == _iiovp1sp.MenuCategory) {
       return _iiovp1sp.MenuCategory.fromJson(data) as T;
     }
+    if (t == _i9dekkgn.AppNotificationKind) {
+      return _i9dekkgn.AppNotificationKind.fromJson(data) as T;
+    }
+    if (t == _ija5hfle.AppNotificationPage) {
+      return _ija5hfle.AppNotificationPage.fromJson(data) as T;
+    }
+    if (t == _i9qqazvn.AppNotificationView) {
+      return _i9qqazvn.AppNotificationView.fromJson(data) as T;
+    }
+    if (t == _iyh8oqag.NotificationErrorCode) {
+      return _iyh8oqag.NotificationErrorCode.fromJson(data) as T;
+    }
+    if (t == _ijg4tb97.NotificationException) {
+      return _ijg4tb97.NotificationException.fromJson(data) as T;
+    }
+    if (t == _ifmwmay7.AppNotification) {
+      return _ifmwmay7.AppNotification.fromJson(data) as T;
+    }
     if (t == _iq3ckjf2.CustomerOrderAppend) {
       return _iq3ckjf2.CustomerOrderAppend.fromJson(data) as T;
     }
@@ -3601,6 +3782,40 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == _is.getType<_iiovp1sp.MenuCategory?>()) {
       return (data != null ? _iiovp1sp.MenuCategory.fromJson(data) : null) as T;
     }
+    if (t == _is.getType<_i9dekkgn.AppNotificationKind?>()) {
+      return (data != null
+              ? _i9dekkgn.AppNotificationKind.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_ija5hfle.AppNotificationPage?>()) {
+      return (data != null
+              ? _ija5hfle.AppNotificationPage.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_i9qqazvn.AppNotificationView?>()) {
+      return (data != null
+              ? _i9qqazvn.AppNotificationView.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_iyh8oqag.NotificationErrorCode?>()) {
+      return (data != null
+              ? _iyh8oqag.NotificationErrorCode.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_ijg4tb97.NotificationException?>()) {
+      return (data != null
+              ? _ijg4tb97.NotificationException.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_ifmwmay7.AppNotification?>()) {
+      return (data != null ? _ifmwmay7.AppNotification.fromJson(data) : null)
+          as T;
+    }
     if (t == _is.getType<_iq3ckjf2.CustomerOrderAppend?>()) {
       return (data != null
               ? _iq3ckjf2.CustomerOrderAppend.fromJson(data)
@@ -4111,6 +4326,12 @@ class Protocol extends _is.DatabaseSerializationManager {
               : null)
           as T;
     }
+    if (t == List<_i9qqazvn.AppNotificationView>) {
+      return (data as List)
+              .map((e) => deserialize<_i9qqazvn.AppNotificationView>(e))
+              .toList()
+          as T;
+    }
     if (t == List<_i8sd1sxe.CustomerOrderItem>) {
       return (data as List)
               .map((e) => deserialize<_i8sd1sxe.CustomerOrderItem>(e))
@@ -4332,6 +4553,12 @@ class Protocol extends _is.DatabaseSerializationManager {
       _idxha5j7.Ingredient => 'Ingredient',
       _iowcl7dy.MenuArticle => 'MenuArticle',
       _iiovp1sp.MenuCategory => 'MenuCategory',
+      _i9dekkgn.AppNotificationKind => 'AppNotificationKind',
+      _ija5hfle.AppNotificationPage => 'AppNotificationPage',
+      _i9qqazvn.AppNotificationView => 'AppNotificationView',
+      _iyh8oqag.NotificationErrorCode => 'NotificationErrorCode',
+      _ijg4tb97.NotificationException => 'NotificationException',
+      _ifmwmay7.AppNotification => 'AppNotification',
       _iq3ckjf2.CustomerOrderAppend => 'CustomerOrderAppend',
       _i8sd1sxe.CustomerOrderItem => 'CustomerOrderItem',
       _ibdj4rsl.CustomerOrderLine => 'CustomerOrderLine',
@@ -4583,6 +4810,18 @@ class Protocol extends _is.DatabaseSerializationManager {
         return 'MenuArticle';
       case _iiovp1sp.MenuCategory():
         return 'MenuCategory';
+      case _i9dekkgn.AppNotificationKind():
+        return 'AppNotificationKind';
+      case _ija5hfle.AppNotificationPage():
+        return 'AppNotificationPage';
+      case _i9qqazvn.AppNotificationView():
+        return 'AppNotificationView';
+      case _iyh8oqag.NotificationErrorCode():
+        return 'NotificationErrorCode';
+      case _ijg4tb97.NotificationException():
+        return 'NotificationException';
+      case _ifmwmay7.AppNotification():
+        return 'AppNotification';
       case _iq3ckjf2.CustomerOrderAppend():
         return 'CustomerOrderAppend';
       case _i8sd1sxe.CustomerOrderItem():
@@ -4993,6 +5232,24 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (dataClassName == 'MenuCategory') {
       return deserialize<_iiovp1sp.MenuCategory>(data['data']);
     }
+    if (dataClassName == 'AppNotificationKind') {
+      return deserialize<_i9dekkgn.AppNotificationKind>(data['data']);
+    }
+    if (dataClassName == 'AppNotificationPage') {
+      return deserialize<_ija5hfle.AppNotificationPage>(data['data']);
+    }
+    if (dataClassName == 'AppNotificationView') {
+      return deserialize<_i9qqazvn.AppNotificationView>(data['data']);
+    }
+    if (dataClassName == 'NotificationErrorCode') {
+      return deserialize<_iyh8oqag.NotificationErrorCode>(data['data']);
+    }
+    if (dataClassName == 'NotificationException') {
+      return deserialize<_ijg4tb97.NotificationException>(data['data']);
+    }
+    if (dataClassName == 'AppNotification') {
+      return deserialize<_ifmwmay7.AppNotification>(data['data']);
+    }
     if (dataClassName == 'CustomerOrderAppend') {
       return deserialize<_iq3ckjf2.CustomerOrderAppend>(data['data']);
     }
@@ -5229,6 +5486,8 @@ class Protocol extends _is.DatabaseSerializationManager {
         return _iowcl7dy.MenuArticle.t;
       case _iiovp1sp.MenuCategory:
         return _iiovp1sp.MenuCategory.t;
+      case _ifmwmay7.AppNotification:
+        return _ifmwmay7.AppNotification.t;
       case _ihouontj.VenueOrder:
         return _ihouontj.VenueOrder.t;
       case _ixvoqikw.VenueOrderItem:

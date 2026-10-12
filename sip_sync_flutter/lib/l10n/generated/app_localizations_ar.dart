@@ -684,6 +684,44 @@ class AppLocalizationsAr extends AppLocalizations {
   String get notificationsReady => 'لا جديد الآن.';
 
   @override
+  String get notificationThisVenue => 'هذا المكان';
+
+  @override
+  String get notificationThisMonth => 'هذا الشهر';
+
+  @override
+  String get notificationUnreadOnly => 'غير المقروء';
+
+  @override
+  String get notificationMarkAllRead => 'تعليم الكل كمقروء';
+
+  @override
+  String notificationLineStatus(String article, String status) {
+    return '$article أصبح $status';
+  }
+
+  @override
+  String notificationLineCancelled(String article, String reason) {
+    return 'أُلغي $article. $reason';
+  }
+
+  @override
+  String notificationOrderStatus(int ref, String status) {
+    return 'الطلب $ref أصبح $status';
+  }
+
+  @override
+  String notificationOrderCancelled(int ref, String reason) {
+    return 'أُلغي الطلب $ref. $reason';
+  }
+
+  @override
+  String get notificationReservationAccepted => 'تم قبول حجزك';
+
+  @override
+  String get notificationReservationCancelled => 'تم إلغاء حجزك';
+
+  @override
   String get profileTitle => 'الملف';
 
   @override

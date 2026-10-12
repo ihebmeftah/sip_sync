@@ -110,6 +110,11 @@ import 'menu/dtos/menu_category_page.dart' as _imphhgkl;
 import 'menu/dtos/menu_category_update.dart' as _iu0xgttg;
 import 'menu/dtos/menu_category_view.dart' as _igs74mgr;
 import 'menu/dtos/units_type.dart' as _ipcoxh71;
+import 'notifications/dtos/app_notification_kind.dart' as _i9dekkgn;
+import 'notifications/dtos/app_notification_page.dart' as _ija5hfle;
+import 'notifications/dtos/app_notification_view.dart' as _i9qqazvn;
+import 'notifications/dtos/notification_error_code.dart' as _iyh8oqag;
+import 'notifications/dtos/notification_exception.dart' as _ijg4tb97;
 import 'orders/dtos/customer_order_append.dart' as _iq3ckjf2;
 import 'orders/dtos/customer_order_item.dart' as _i8sd1sxe;
 import 'orders/dtos/customer_order_line.dart' as _ibdj4rsl;
@@ -238,6 +243,11 @@ export 'menu/dtos/menu_category_page.dart';
 export 'menu/dtos/menu_category_update.dart';
 export 'menu/dtos/menu_category_view.dart';
 export 'menu/dtos/units_type.dart';
+export 'notifications/dtos/app_notification_kind.dart';
+export 'notifications/dtos/app_notification_page.dart';
+export 'notifications/dtos/app_notification_view.dart';
+export 'notifications/dtos/notification_error_code.dart';
+export 'notifications/dtos/notification_exception.dart';
 export 'orders/dtos/customer_order_append.dart';
 export 'orders/dtos/customer_order_item.dart';
 export 'orders/dtos/customer_order_line.dart';
@@ -557,6 +567,21 @@ class Protocol extends _isc.SerializationManager {
     }
     if (t == _ipcoxh71.UnitsType) {
       return _ipcoxh71.UnitsType.fromJson(data) as T;
+    }
+    if (t == _i9dekkgn.AppNotificationKind) {
+      return _i9dekkgn.AppNotificationKind.fromJson(data) as T;
+    }
+    if (t == _ija5hfle.AppNotificationPage) {
+      return _ija5hfle.AppNotificationPage.fromJson(data) as T;
+    }
+    if (t == _i9qqazvn.AppNotificationView) {
+      return _i9qqazvn.AppNotificationView.fromJson(data) as T;
+    }
+    if (t == _iyh8oqag.NotificationErrorCode) {
+      return _iyh8oqag.NotificationErrorCode.fromJson(data) as T;
+    }
+    if (t == _ijg4tb97.NotificationException) {
+      return _ijg4tb97.NotificationException.fromJson(data) as T;
     }
     if (t == _iq3ckjf2.CustomerOrderAppend) {
       return _iq3ckjf2.CustomerOrderAppend.fromJson(data) as T;
@@ -1076,6 +1101,36 @@ class Protocol extends _isc.SerializationManager {
     if (t == _isc.getType<_ipcoxh71.UnitsType?>()) {
       return (data != null ? _ipcoxh71.UnitsType.fromJson(data) : null) as T;
     }
+    if (t == _isc.getType<_i9dekkgn.AppNotificationKind?>()) {
+      return (data != null
+              ? _i9dekkgn.AppNotificationKind.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _isc.getType<_ija5hfle.AppNotificationPage?>()) {
+      return (data != null
+              ? _ija5hfle.AppNotificationPage.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _isc.getType<_i9qqazvn.AppNotificationView?>()) {
+      return (data != null
+              ? _i9qqazvn.AppNotificationView.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _isc.getType<_iyh8oqag.NotificationErrorCode?>()) {
+      return (data != null
+              ? _iyh8oqag.NotificationErrorCode.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _isc.getType<_ijg4tb97.NotificationException?>()) {
+      return (data != null
+              ? _ijg4tb97.NotificationException.fromJson(data)
+              : null)
+          as T;
+    }
     if (t == _isc.getType<_iq3ckjf2.CustomerOrderAppend?>()) {
       return (data != null
               ? _iq3ckjf2.CustomerOrderAppend.fromJson(data)
@@ -1390,6 +1445,12 @@ class Protocol extends _isc.SerializationManager {
               .toList()
           as T;
     }
+    if (t == List<_i9qqazvn.AppNotificationView>) {
+      return (data as List)
+              .map((e) => deserialize<_i9qqazvn.AppNotificationView>(e))
+              .toList()
+          as T;
+    }
     if (t == List<_i8sd1sxe.CustomerOrderItem>) {
       return (data as List)
               .map((e) => deserialize<_i8sd1sxe.CustomerOrderItem>(e))
@@ -1582,6 +1643,11 @@ class Protocol extends _isc.SerializationManager {
       _iu0xgttg.MenuCategoryUpdate => 'MenuCategoryUpdate',
       _igs74mgr.MenuCategoryView => 'MenuCategoryView',
       _ipcoxh71.UnitsType => 'UnitsType',
+      _i9dekkgn.AppNotificationKind => 'AppNotificationKind',
+      _ija5hfle.AppNotificationPage => 'AppNotificationPage',
+      _i9qqazvn.AppNotificationView => 'AppNotificationView',
+      _iyh8oqag.NotificationErrorCode => 'NotificationErrorCode',
+      _ijg4tb97.NotificationException => 'NotificationException',
       _iq3ckjf2.CustomerOrderAppend => 'CustomerOrderAppend',
       _i8sd1sxe.CustomerOrderItem => 'CustomerOrderItem',
       _ibdj4rsl.CustomerOrderLine => 'CustomerOrderLine',
@@ -1802,6 +1868,16 @@ class Protocol extends _isc.SerializationManager {
         return 'MenuCategoryView';
       case _ipcoxh71.UnitsType():
         return 'UnitsType';
+      case _i9dekkgn.AppNotificationKind():
+        return 'AppNotificationKind';
+      case _ija5hfle.AppNotificationPage():
+        return 'AppNotificationPage';
+      case _i9qqazvn.AppNotificationView():
+        return 'AppNotificationView';
+      case _iyh8oqag.NotificationErrorCode():
+        return 'NotificationErrorCode';
+      case _ijg4tb97.NotificationException():
+        return 'NotificationException';
       case _iq3ckjf2.CustomerOrderAppend():
         return 'CustomerOrderAppend';
       case _i8sd1sxe.CustomerOrderItem():
@@ -2157,6 +2233,21 @@ class Protocol extends _isc.SerializationManager {
     }
     if (dataClassName == 'UnitsType') {
       return deserialize<_ipcoxh71.UnitsType>(data['data']);
+    }
+    if (dataClassName == 'AppNotificationKind') {
+      return deserialize<_i9dekkgn.AppNotificationKind>(data['data']);
+    }
+    if (dataClassName == 'AppNotificationPage') {
+      return deserialize<_ija5hfle.AppNotificationPage>(data['data']);
+    }
+    if (dataClassName == 'AppNotificationView') {
+      return deserialize<_i9qqazvn.AppNotificationView>(data['data']);
+    }
+    if (dataClassName == 'NotificationErrorCode') {
+      return deserialize<_iyh8oqag.NotificationErrorCode>(data['data']);
+    }
+    if (dataClassName == 'NotificationException') {
+      return deserialize<_ijg4tb97.NotificationException>(data['data']);
     }
     if (dataClassName == 'CustomerOrderAppend') {
       return deserialize<_iq3ckjf2.CustomerOrderAppend>(data['data']);

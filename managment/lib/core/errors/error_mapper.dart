@@ -79,6 +79,13 @@ Failure mapError(Object error) {
         'errorCompositionIngredientTaken',
     });
   }
+  if (error is NotificationException) {
+    return Failure(switch (error.code) {
+      NotificationErrorCode.invalidInput => 'errorInvalidInput',
+      NotificationErrorCode.notFound => 'errorNotFound',
+      NotificationErrorCode.notAuthorized => 'errorNotAuthorized',
+    });
+  }
   if (error is OrderException) {
     return Failure(switch (error.code) {
       OrderErrorCode.invalidInput => 'errorInvalidInput',

@@ -12,6 +12,7 @@ import '../../../core/widgets/app_loader.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../view_models/customer_reservations_view_model.dart';
 import '../view_models/venue_detail_view_model.dart';
+import '../widgets/venue_chrome.dart';
 
 /// Customer request for one venue, plus their upcoming rows.
 class VenueReserveView extends ConsumerStatefulWidget {
@@ -24,33 +25,21 @@ class VenueReserveView extends ConsumerStatefulWidget {
 }
 
 class _VenueReserveViewState extends ConsumerState<VenueReserveView> {
-  var _composerShown = false;
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) {
-        return;
-      }
-      ref
-          .read(venueDetailViewModelProvider(widget.buildingId))
-          .whenData(_presentComposer);
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final signedIn = ref.watch(appSessionStoreProvider).isSignedIn;
     final detail = ref.watch(venueDetailViewModelProvider(widget.buildingId));
     final mine = ref.watch(myReservationsProvider);
-    ref.listen(venueDetailViewModelProvider(widget.buildingId), (_, next) {
-      next.whenData(_presentComposer);
-    });
 
     return Scaffold(
+      appBar: AppBar(
+        leading: const VenueBackButton(),
+        title: Text(l10n.reserveTable),
+        actions: const [LocaleMenuButton()],
+      ),
       body: SafeArea(
+        top: false,
         child: Align(
           alignment: Alignment.topCenter,
           child: ConstrainedBox(
@@ -58,11 +47,6 @@ class _VenueReserveViewState extends ConsumerState<VenueReserveView> {
             child: ListView(
               padding: const EdgeInsets.all(AppSpacing.lg),
               children: [
-                Text(
-                  l10n.reserveTable,
-                  style: Theme.of(context).textTheme.headlineSmall,
-                ),
-                const SizedBox(height: AppSpacing.lg),
                 if (!signedIn)
                   AppFilledButton(
                     label: l10n.signInToReserve,
@@ -140,25 +124,6 @@ class _VenueReserveViewState extends ConsumerState<VenueReserveView> {
         ),
       ),
     );
-  }
-
-  void _presentComposer(CustomerVenueDetail page) {
-    if (_composerShown || !mounted) {
-      return;
-    }
-    if (!ref.read(appSessionStoreProvider).isSignedIn) {
-      return;
-    }
-    if (!page.reservationsEnabled || page.reservationsClosedByVenue) {
-      return;
-    }
-    _composerShown = true;
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) {
-        return;
-      }
-      showReserveRequestDialog(context, buildingId: page.venue.id);
-    });
   }
 
   Future<void> _cancel(UuidValue id) async {

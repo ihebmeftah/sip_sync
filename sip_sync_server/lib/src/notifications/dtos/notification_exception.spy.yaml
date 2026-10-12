@@ -1,0 +1,4 @@
+exception: NotificationException
+fields:
+  message: String
+  code: NotificationErrorCode

@@ -4,6 +4,7 @@ import '../auth/auth_context.dart';
 import '../auth/auth_guard.dart';
 import '../core/phone_numbers.dart';
 import '../generated/protocol.dart';
+import '../notifications/notification_service.dart';
 import '../packs/pack_gate.dart';
 
 /// How long before the start the floor calls a booking "soon".
@@ -14,6 +15,8 @@ const reservationSeatLength = Duration(hours: 2);
 
 /// Reservations: a customer request, a staff confirmation, then a table.
 class ReservationService {
+  final _notifications = NotificationService();
+
   /// Bookings whose start falls on the UTC date of [day].
   Future<List<ReservationView>> listForDay(
     Session session,
@@ -228,7 +231,15 @@ class ReservationService {
         confirmedById: ctx.actorId,
       ),
     );
-    return _view(await _load(session, id));
+    final saved = await _load(session, id);
+    await _notifications.recordReservationChange(
+      session,
+      reservation: saved,
+      status: ReservationStatus.confirmed,
+      actorType: ctx.actorType,
+      actorId: ctx.actorId,
+    );
+    return _view(saved);
   }
 
   /// Attaches active tables to a confirmed reservation. Replaces any previous set.
@@ -312,7 +323,15 @@ class ReservationService {
       session,
       row.copyWith(status: ReservationStatus.cancelled),
     );
-    return _view(await _load(session, id));
+    final saved = await _load(session, id);
+    await _notifications.recordReservationChange(
+      session,
+      reservation: saved,
+      status: ReservationStatus.cancelled,
+      actorType: ctx.actorType,
+      actorId: ctx.actorId,
+    );
+    return _view(saved);
   }
 
   /// Scan confirmation. Marks the holding booking on [tableId] as arrived.
@@ -397,7 +416,17 @@ class ReservationService {
       final next = row.status == ReservationStatus.requested
           ? ReservationStatus.cancelled
           : ReservationStatus.noShow;
-      await Reservation.db.updateRow(session, row.copyWith(status: next));
+      final saved = await Reservation.db.updateRow(
+        session,
+        row.copyWith(status: next),
+      );
+      if (next == ReservationStatus.cancelled) {
+        await _notifications.recordReservationChange(
+          session,
+          reservation: saved,
+          status: ReservationStatus.cancelled,
+        );
+      }
     }
   }
 
@@ -489,7 +518,17 @@ RETURNING "id"
         confirmedById: confirmedById,
       ),
     );
-    return _view(await _load(session, row.id!));
+    final saved = await _load(session, row.id!);
+    if (status == ReservationStatus.confirmed) {
+      await _notifications.recordReservationChange(
+        session,
+        reservation: saved,
+        status: ReservationStatus.confirmed,
+        actorType: createdBy.actorType,
+        actorId: createdBy.actorId,
+      );
+    }
+    return _view(saved);
   }
 
   Future<({String name, String? phone, UuidValue? customerId})> _guestForStaff(

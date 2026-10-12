@@ -121,6 +121,10 @@ import 'package:sip_sync_client/src/protocol/menu/dtos/menu_category_update.dart
     as _ifcginy4;
 import 'package:sip_sync_client/src/protocol/menu/dtos/menu_category_view.dart'
     as _i6z5knea;
+import 'package:sip_sync_client/src/protocol/notifications/dtos/app_notification_page.dart'
+    as _i2s51i9o;
+import 'package:sip_sync_client/src/protocol/notifications/dtos/app_notification_view.dart'
+    as _iel5g2r9;
 import 'package:sip_sync_client/src/protocol/orders/dtos/customer_order_append.dart'
     as _izdy5w2j;
 import 'package:sip_sync_client/src/protocol/orders/dtos/customer_order_page.dart'
@@ -985,6 +989,85 @@ class EndpointMenuCategory extends _isc.EndpointRef {
   );
 }
 
+/// Stored alerts for the signed-in actor. Rows are written by the server
+/// when an order changes; this endpoint only reads and marks them read.
+/// {@category Endpoint}
+class EndpointNotification extends _isc.EndpointRef {
+  EndpointNotification(_isc.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'notification';
+
+  /// Newest alerts for the signed-in actor. [limit] defaults to 20.
+  ///
+  /// [buildingId] keeps one venue. [createdFrom] and [createdTo] are an
+  /// inclusive-exclusive window of at most 32 days. [unreadOnly] drops rows
+  /// that were already opened.
+  _ida.Future<_i2s51i9o.AppNotificationPage> list({
+    _isc.UuidValue? buildingId,
+    DateTime? createdFrom,
+    DateTime? createdTo,
+    bool? unreadOnly,
+    int? limit,
+    int? offset,
+  }) => caller.callServerEndpoint<_i2s51i9o.AppNotificationPage>(
+    'notification',
+    'list',
+    {
+      'buildingId': buildingId,
+      'createdFrom': createdFrom,
+      'createdTo': createdTo,
+      'unreadOnly': unreadOnly,
+      'limit': limit,
+      'offset': offset,
+    },
+  );
+
+  /// How many of this actor's alerts are still unread.
+  _ida.Future<int> unreadCount() => caller.callServerEndpoint<int>(
+    'notification',
+    'unreadCount',
+    {},
+  );
+
+  /// Marks one alert read. Another actor's id is not found.
+  _ida.Future<_iel5g2r9.AppNotificationView> markRead(_isc.UuidValue id) =>
+      caller.callServerEndpoint<_iel5g2r9.AppNotificationView>(
+        'notification',
+        'markRead',
+        {'id': id},
+      );
+
+  /// Marks this actor's unread alerts read. [buildingId] and the date window
+  /// use the same limits as [list]. Returns how many rows changed.
+  _ida.Future<int> markAllRead({
+    _isc.UuidValue? buildingId,
+    DateTime? createdFrom,
+    DateTime? createdTo,
+  }) => caller.callServerEndpoint<int>(
+    'notification',
+    'markAllRead',
+    {
+      'buildingId': buildingId,
+      'createdFrom': createdFrom,
+      'createdTo': createdTo,
+    },
+  );
+
+  /// Each new alert for this actor, after the call starts. Use [list] for
+  /// history. The channel is the signed-in actor, not a client argument.
+  _ida.Stream<_iel5g2r9.AppNotificationView> watch() =>
+      caller.callStreamingServerEndpoint<
+        _ida.Stream<_iel5g2r9.AppNotificationView>,
+        _iel5g2r9.AppNotificationView
+      >(
+        'notification',
+        'watch',
+        {},
+        {},
+      );
+}
+
 /// Customer orders. Staff status changes stay on [OrderEndpoint].
 /// {@category Endpoint}
 class EndpointCustomerOrder extends _isc.EndpointRef {
@@ -1429,6 +1512,7 @@ class Client extends _isc.ServerpodClientShared {
     ingredient = EndpointIngredient(this);
     menuArticle = EndpointMenuArticle(this);
     menuCategory = EndpointMenuCategory(this);
+    notification = EndpointNotification(this);
     customerOrder = EndpointCustomerOrder(this);
     order = EndpointOrder(this);
     pack = EndpointPack(this);
@@ -1466,6 +1550,8 @@ class Client extends _isc.ServerpodClientShared {
 
   late final EndpointMenuCategory menuCategory;
 
+  late final EndpointNotification notification;
+
   late final EndpointCustomerOrder customerOrder;
 
   late final EndpointOrder order;
@@ -1496,6 +1582,7 @@ class Client extends _isc.ServerpodClientShared {
     'ingredient': ingredient,
     'menuArticle': menuArticle,
     'menuCategory': menuCategory,
+    'notification': notification,
     'customerOrder': customerOrder,
     'order': order,
     'pack': pack,

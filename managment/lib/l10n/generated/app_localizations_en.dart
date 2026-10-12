@@ -49,6 +49,33 @@ class AppLocalizationsEn extends AppLocalizations {
   String get signOut => 'Sign out';
 
   @override
+  String get notifications => 'Notifications';
+
+  @override
+  String get notificationsReady => 'Nothing new right now.';
+
+  @override
+  String get notificationThisBuilding => 'This building';
+
+  @override
+  String get notificationAllBuildings => 'All buildings';
+
+  @override
+  String get notificationThisMonth => 'This month';
+
+  @override
+  String get notificationUnreadOnly => 'Unread';
+
+  @override
+  String get notificationMarkAllRead => 'Mark all as read';
+
+  @override
+  String get notificationReservationAccepted => 'A reservation was accepted';
+
+  @override
+  String get notificationReservationCancelled => 'A reservation was cancelled';
+
+  @override
   String get email => 'Email';
 
   @override

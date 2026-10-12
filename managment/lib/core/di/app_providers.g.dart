@@ -613,6 +613,54 @@ final class ReservationRepositoryProvider
 String _$reservationRepositoryHash() =>
     r'd4d1c69704e8443d2312c5ca9f90d1b933980c6e';
 
+@ProviderFor(notificationRepository)
+const notificationRepositoryProvider = NotificationRepositoryProvider._();
+
+final class NotificationRepositoryProvider
+    extends
+        $FunctionalProvider<
+          NotificationRepository,
+          NotificationRepository,
+          NotificationRepository
+        >
+    with $Provider<NotificationRepository> {
+  const NotificationRepositoryProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'notificationRepositoryProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$notificationRepositoryHash();
+
+  @$internal
+  @override
+  $ProviderElement<NotificationRepository> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  NotificationRepository create(Ref ref) {
+    return notificationRepository(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(NotificationRepository value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<NotificationRepository>(value),
+    );
+  }
+}
+
+String _$notificationRepositoryHash() =>
+    r'1de6b71af2c529868ddafae293383a067e1281e6';
+
 /// Enabled public plans. The owner compares them; support still changes the venue.
 
 @ProviderFor(publicPacks)

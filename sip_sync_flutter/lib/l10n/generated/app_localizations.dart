@@ -1246,6 +1246,66 @@ abstract class AppLocalizations {
   /// **'Nothing new right now.'**
   String get notificationsReady;
 
+  /// No description provided for @notificationThisVenue.
+  ///
+  /// In en, this message translates to:
+  /// **'This venue'**
+  String get notificationThisVenue;
+
+  /// No description provided for @notificationThisMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'This month'**
+  String get notificationThisMonth;
+
+  /// No description provided for @notificationUnreadOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Unread'**
+  String get notificationUnreadOnly;
+
+  /// No description provided for @notificationMarkAllRead.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark all as read'**
+  String get notificationMarkAllRead;
+
+  /// No description provided for @notificationLineStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'{article} is now {status}'**
+  String notificationLineStatus(String article, String status);
+
+  /// No description provided for @notificationLineCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'{article} was cancelled. {reason}'**
+  String notificationLineCancelled(String article, String reason);
+
+  /// No description provided for @notificationOrderStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Order {ref} is now {status}'**
+  String notificationOrderStatus(int ref, String status);
+
+  /// No description provided for @notificationOrderCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Order {ref} was cancelled. {reason}'**
+  String notificationOrderCancelled(int ref, String reason);
+
+  /// No description provided for @notificationReservationAccepted.
+  ///
+  /// In en, this message translates to:
+  /// **'Your reservation was accepted'**
+  String get notificationReservationAccepted;
+
+  /// No description provided for @notificationReservationCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Your reservation was cancelled'**
+  String get notificationReservationCancelled;
+
   /// No description provided for @profileTitle.
   ///
   /// In en, this message translates to:

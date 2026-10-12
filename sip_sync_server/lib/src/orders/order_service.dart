@@ -5,10 +5,13 @@ import '../auth/auth_guard.dart';
 import '../buildings/strict_mode.dart';
 import '../core/page_window.dart';
 import '../generated/protocol.dart';
+import '../notifications/notification_service.dart';
 import '../packs/pack_gate.dart';
 
 /// Create / list / status updates for building orders.
 class OrderService {
+  final _notifications = NotificationService();
+
   /// Lists orders for a building sorted by [VenueOrder.createdAt] newest first.
   ///
   /// Optional [status] and [venueTableId] filter in the database, including
@@ -558,10 +561,17 @@ class OrderService {
       session,
       where: (t) => t.orderId.equals(order.id!),
     );
-    orderUpdate = orderUpdate.copyWith(
-      status: _deriveOrderStatus(order.status, refreshedItems),
-    );
+    final nextOrderStatus = _deriveOrderStatus(order.status, refreshedItems);
+    orderUpdate = orderUpdate.copyWith(status: nextOrderStatus);
     await VenueOrder.db.updateRow(session, orderUpdate);
+    await _notifications.recordItemChange(
+      session,
+      order: order,
+      item: next,
+      venueName: building.name,
+      previousOrderStatus: order.status,
+      nextOrderStatus: nextOrderStatus,
+    );
     return get(session, order.id!);
   }
 
@@ -622,6 +632,15 @@ class OrderService {
         updatedAt: now,
       ),
     );
+    final building = await Building.db.findById(session, order.buildingId);
+    if (building != null) {
+      await _notifications.recordOrderCancelled(
+        session,
+        order: order,
+        venueName: building.name,
+        reason: reason,
+      );
+    }
     return get(session, order.id!);
   }
 
