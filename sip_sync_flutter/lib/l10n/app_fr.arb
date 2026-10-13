@@ -102,6 +102,7 @@
   "cancelReasonOutOfStock": "Ingrédient en rupture de stock",
   "cancelReasonClosingSoon": "L'heure de fermeture approche",
   "cancelReasonWorkBreakdown": "Panne au travail, réessayez plus tard",
+  "cancelReasonCustomerRequest": "Annulé à la demande du client",
   "openOrderNote": "La cuisine a votre commande",
   "openOrderLead": "Suivez chaque plat, jusqu'au moment de régler.",
   "openOrderDetails": "Détails",

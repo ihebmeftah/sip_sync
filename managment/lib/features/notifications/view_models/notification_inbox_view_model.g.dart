@@ -36,7 +36,7 @@ final class NotificationInboxProvider
   NotificationInbox create() => NotificationInbox();
 }
 
-String _$notificationInboxHash() => r'4d930dd7a4904196a2e68f47fbaadc1295f17896';
+String _$notificationInboxHash() => r'f2eaf7e38f7bd07d901bcbc49ae480cb39754df8';
 
 /// Badge count plus the list. A live stream inserts new rows.
 

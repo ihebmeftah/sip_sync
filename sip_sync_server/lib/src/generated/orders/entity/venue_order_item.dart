@@ -33,8 +33,6 @@ abstract class VenueOrderItem
     required this.status,
     this.addedByType,
     this.addedById,
-    this.passedByType,
-    this.passedById,
     this.preparedByType,
     this.preparedById,
     this.servedByType,
@@ -64,8 +62,6 @@ abstract class VenueOrderItem
     required _iw3cmuga.OrderItemStatus status,
     _i6ch5qy5.ActorType? addedByType,
     _is.UuidValue? addedById,
-    _i6ch5qy5.ActorType? passedByType,
-    _is.UuidValue? passedById,
     _i6ch5qy5.ActorType? preparedByType,
     _is.UuidValue? preparedById,
     _i6ch5qy5.ActorType? servedByType,
@@ -117,16 +113,6 @@ abstract class VenueOrderItem
       addedById: jsonSerialization['addedById'] == null
           ? null
           : _is.UuidValueJsonExtension.fromJson(jsonSerialization['addedById']),
-      passedByType: jsonSerialization['passedByType'] == null
-          ? null
-          : _i6ch5qy5.ActorType.fromJson(
-              (jsonSerialization['passedByType'] as String),
-            ),
-      passedById: jsonSerialization['passedById'] == null
-          ? null
-          : _is.UuidValueJsonExtension.fromJson(
-              jsonSerialization['passedById'],
-            ),
       preparedByType: jsonSerialization['preparedByType'] == null
           ? null
           : _i6ch5qy5.ActorType.fromJson(
@@ -214,14 +200,12 @@ abstract class VenueOrderItem
 
   _iw3cmuga.OrderItemStatus status;
 
+  /// Who created the line (customer, owner, or employee). Not the kitchen.
   _i6ch5qy5.ActorType? addedByType;
 
   _is.UuidValue? addedById;
 
-  _i6ch5qy5.ActorType? passedByType;
-
-  _is.UuidValue? passedById;
-
+  /// Kitchen staff with preparation access. Set on picked and again on ready.
   _i6ch5qy5.ActorType? preparedByType;
 
   _is.UuidValue? preparedById;
@@ -270,8 +254,6 @@ abstract class VenueOrderItem
     _iw3cmuga.OrderItemStatus? status,
     _i6ch5qy5.ActorType? addedByType,
     _is.UuidValue? addedById,
-    _i6ch5qy5.ActorType? passedByType,
-    _is.UuidValue? passedById,
     _i6ch5qy5.ActorType? preparedByType,
     _is.UuidValue? preparedById,
     _i6ch5qy5.ActorType? servedByType,
@@ -302,8 +284,6 @@ abstract class VenueOrderItem
       'status': status.toJson(),
       if (addedByType != null) 'addedByType': addedByType?.toJson(),
       if (addedById != null) 'addedById': addedById?.toJson(),
-      if (passedByType != null) 'passedByType': passedByType?.toJson(),
-      if (passedById != null) 'passedById': passedById?.toJson(),
       if (preparedByType != null) 'preparedByType': preparedByType?.toJson(),
       if (preparedById != null) 'preparedById': preparedById?.toJson(),
       if (servedByType != null) 'servedByType': servedByType?.toJson(),
@@ -376,8 +356,6 @@ class _VenueOrderItemImpl extends VenueOrderItem {
     required _iw3cmuga.OrderItemStatus status,
     _i6ch5qy5.ActorType? addedByType,
     _is.UuidValue? addedById,
-    _i6ch5qy5.ActorType? passedByType,
-    _is.UuidValue? passedById,
     _i6ch5qy5.ActorType? preparedByType,
     _is.UuidValue? preparedById,
     _i6ch5qy5.ActorType? servedByType,
@@ -404,8 +382,6 @@ class _VenueOrderItemImpl extends VenueOrderItem {
          status: status,
          addedByType: addedByType,
          addedById: addedById,
-         passedByType: passedByType,
-         passedById: passedById,
          preparedByType: preparedByType,
          preparedById: preparedById,
          servedByType: servedByType,
@@ -438,8 +414,6 @@ class _VenueOrderItemImpl extends VenueOrderItem {
     _iw3cmuga.OrderItemStatus? status,
     Object? addedByType = _Undefined,
     Object? addedById = _Undefined,
-    Object? passedByType = _Undefined,
-    Object? passedById = _Undefined,
     Object? preparedByType = _Undefined,
     Object? preparedById = _Undefined,
     Object? servedByType = _Undefined,
@@ -471,10 +445,6 @@ class _VenueOrderItemImpl extends VenueOrderItem {
           ? addedByType
           : this.addedByType,
       addedById: addedById is _is.UuidValue? ? addedById : this.addedById,
-      passedByType: passedByType is _i6ch5qy5.ActorType?
-          ? passedByType
-          : this.passedByType,
-      passedById: passedById is _is.UuidValue? ? passedById : this.passedById,
       preparedByType: preparedByType is _i6ch5qy5.ActorType?
           ? preparedByType
           : this.preparedByType,
@@ -553,20 +523,6 @@ class VenueOrderItemUpdateTable extends _is.UpdateTable<VenueOrderItemTable> {
     _is.UuidValue? value,
   ) => _is.ColumnValue(
     table.addedById,
-    value,
-  );
-
-  _is.ColumnValue<_i6ch5qy5.ActorType, _i6ch5qy5.ActorType> passedByType(
-    _i6ch5qy5.ActorType? value,
-  ) => _is.ColumnValue(
-    table.passedByType,
-    value,
-  );
-
-  _is.ColumnValue<_is.UuidValue, _is.UuidValue> passedById(
-    _is.UuidValue? value,
-  ) => _is.ColumnValue(
-    table.passedById,
     value,
   );
 
@@ -707,15 +663,6 @@ class VenueOrderItemTable extends _is.Table<_is.UuidValue?> {
       'addedById',
       this,
     );
-    passedByType = _is.ColumnEnum(
-      'passedByType',
-      this,
-      _is.EnumSerialization.byName,
-    );
-    passedById = _is.ColumnUuid(
-      'passedById',
-      this,
-    );
     preparedByType = _is.ColumnEnum(
       'preparedByType',
       this,
@@ -799,14 +746,12 @@ class VenueOrderItemTable extends _is.Table<_is.UuidValue?> {
 
   late final _is.ColumnEnum<_iw3cmuga.OrderItemStatus> status;
 
+  /// Who created the line (customer, owner, or employee). Not the kitchen.
   late final _is.ColumnEnum<_i6ch5qy5.ActorType> addedByType;
 
   late final _is.ColumnUuid addedById;
 
-  late final _is.ColumnEnum<_i6ch5qy5.ActorType> passedByType;
-
-  late final _is.ColumnUuid passedById;
-
+  /// Kitchen staff with preparation access. Set on picked and again on ready.
   late final _is.ColumnEnum<_i6ch5qy5.ActorType> preparedByType;
 
   late final _is.ColumnUuid preparedById;
@@ -875,8 +820,6 @@ class VenueOrderItemTable extends _is.Table<_is.UuidValue?> {
     status,
     addedByType,
     addedById,
-    passedByType,
-    passedById,
     preparedByType,
     preparedById,
     servedByType,

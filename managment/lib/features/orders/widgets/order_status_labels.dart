@@ -145,6 +145,7 @@ String orderCancellationReasonLabel(
     OrderCancellationReason.ingredientOutOfStock => l10n.cancelReasonOutOfStock,
     OrderCancellationReason.closingSoon => l10n.cancelReasonClosingSoon,
     OrderCancellationReason.workBreakdown => l10n.cancelReasonWorkBreakdown,
+    OrderCancellationReason.customerRequest => l10n.cancelReasonCustomerRequest,
   };
 }
 

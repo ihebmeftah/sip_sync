@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:serverpod/serverpod.dart';
 
 import '../auth/auth_context.dart';
@@ -11,6 +13,14 @@ import '../packs/pack_gate.dart';
 /// Create / list / status updates for building orders.
 class OrderService {
   final _notifications = NotificationService();
+
+  /// Channel for one building's floor board. Not derived from the client.
+  static String boardChannel(UuidValue buildingId) =>
+      'order-board:${buildingId.uuid}';
+
+  /// Channel for one customer's open visit. Keyed by the customer actor id.
+  static String customerOrderChannel(UuidValue customerId) =>
+      'customer-order:${customerId.uuid}';
 
   /// Lists orders for a building sorted by [VenueOrder.createdAt] newest first.
   ///
@@ -42,15 +52,7 @@ class OrderService {
           filter = filter & t.venueTableId.equals(venueTableId);
         }
         if (restricted) {
-          filter =
-              filter &
-              ((t.launchedByType.equals(ctx.actorType) &
-                      t.launchedById.equals(ctx.actorId)) |
-                  t.items.any(
-                    (item) =>
-                        item.addedByType.equals(ctx.actorType) &
-                        item.addedById.equals(ctx.actorId),
-                  ));
+          filter = filter & _employeeParticipated(t, ctx);
         }
         return filter;
       },
@@ -75,15 +77,7 @@ class OrderService {
           filter = filter & t.venueTableId.equals(venueTableId);
         }
         if (restricted) {
-          filter =
-              filter &
-              ((t.launchedByType.equals(ctx.actorType) &
-                      t.launchedById.equals(ctx.actorId)) |
-                  t.items.any(
-                    (item) =>
-                        item.addedByType.equals(ctx.actorType) &
-                        item.addedById.equals(ctx.actorId),
-                  ));
+          filter = filter & _employeeParticipated(t, ctx);
         }
         return filter;
       },
@@ -103,7 +97,7 @@ class OrderService {
     await _requireBuildingAccess(session, row.buildingId);
     final ctx = AuthGuard.requireAny(session);
     final access = await _requireEmployeeAccessIfNeeded(session, ctx);
-    if (!_canConsultOrder(row, ctx, access)) {
+    if (!await _canReadOrder(session, row, ctx, access)) {
       throw OrderException(
         message: 'Not allowed to view this order.',
         code: OrderErrorCode.permissionDenied,
@@ -157,8 +151,21 @@ class OrderService {
         updatedAt: now,
       ),
     );
-    await _insertResolvedLines(session, order, articles, now, ctx);
-    return get(session, order.id!);
+    final itemIds = await _insertResolvedLines(
+      session,
+      order,
+      articles,
+      now,
+      ctx,
+    );
+    final view = await get(session, order.id!);
+    await _publishBoard(
+      session,
+      kind: OrderBoardEventKind.orderOpened,
+      order: view,
+      itemIds: itemIds,
+    );
+    return view;
   }
 
   /// Customer places an order at an active table they scanned.
@@ -213,7 +220,20 @@ class OrderService {
         updatedAt: now,
       ),
     );
-    await _insertResolvedLines(session, order, articles, now, ctx);
+    final itemIds = await _insertResolvedLines(
+      session,
+      order,
+      articles,
+      now,
+      ctx,
+    );
+    await _publishBoard(
+      session,
+      kind: OrderBoardEventKind.orderOpened,
+      order: await _boardView(session, order.id!),
+      itemIds: itemIds,
+    );
+    await _publishCustomerOrder(session, order.id!);
     return getForCustomer(session, order.id!);
   }
 
@@ -331,6 +351,32 @@ class OrderService {
     return _customerView(row, row.building?.currencyCode ?? '');
   }
 
+  /// Live visit for the signed-in customer.
+  ///
+  /// The first event is [currentForCustomer]. Later events are staff
+  /// changes on an order this customer launched, including the paid or
+  /// cancelled receipt so the visit can unlock.
+  Stream<CustomerOrderLive> watchCurrentForCustomer(Session session) async* {
+    final ctx = _requireCustomer(session);
+    final live = session.messages.createStream<CustomerOrderLive>(
+      customerOrderChannel(ctx.actorId),
+    );
+    final queue = StreamController<CustomerOrderLive>();
+    final subscription = live.listen(
+      queue.add,
+      onError: queue.addError,
+      onDone: queue.close,
+    );
+    try {
+      final open = await currentForCustomer(session);
+      yield CustomerOrderLive(open: open, changed: open);
+      yield* queue.stream;
+    } finally {
+      await subscription.cancel();
+      await queue.close();
+    }
+  }
+
   /// Adds units to an order this customer still has open.
   Future<CustomerOrderView> appendForCustomer(
     Session session,
@@ -390,11 +436,24 @@ class OrderService {
       deduct: true,
     );
     final now = DateTime.now().toUtc();
-    await _insertResolvedLines(session, order, articles, now, ctx);
+    final itemIds = await _insertResolvedLines(
+      session,
+      order,
+      articles,
+      now,
+      ctx,
+    );
     await VenueOrder.db.updateRow(
       session,
       order.copyWith(updatedAt: now),
     );
+    await _publishBoard(
+      session,
+      kind: OrderBoardEventKind.itemsAdded,
+      order: await _boardView(session, order.id!),
+      itemIds: itemIds,
+    );
+    await _publishCustomerOrder(session, order.id!);
     return getForCustomer(session, order.id!);
   }
 
@@ -441,7 +500,7 @@ class OrderService {
       articleIds: articles.map((a) => a.id!).toList(),
       deduct: true,
     );
-    await _insertResolvedLines(
+    final itemIds = await _insertResolvedLines(
       session,
       order,
       articles,
@@ -452,7 +511,15 @@ class OrderService {
       session,
       order.copyWith(updatedAt: DateTime.now().toUtc()),
     );
-    return get(session, order.id!);
+    final view = await get(session, order.id!);
+    await _publishBoard(
+      session,
+      kind: OrderBoardEventKind.itemsAdded,
+      order: view,
+      itemIds: itemIds,
+    );
+    await _publishCustomerOrder(session, order.id!);
+    return view;
   }
 
   /// Advances or cancels one line; sets attribution timestamps.
@@ -472,6 +539,7 @@ class OrderService {
     final order = await _loadOrder(session, item.orderId);
     await _requireBuildingAccess(session, order.buildingId);
     await _requireStatusFlag(session, ctx, request.status);
+    await _assertServiceAttribution(session, ctx, order, item, request.status);
     if (order.status == OrderStatus.cancelled) {
       throw OrderException(
         message: 'Order is cancelled.',
@@ -493,27 +561,36 @@ class OrderService {
     );
 
     final now = DateTime.now().toUtc();
+    // Stamp the person who made this step, and drop any later stamps so the
+    // chain matches the steps that actually happened.
     var next = item.copyWith(
       status: request.status,
       updatedAt: now,
     );
     switch (request.status) {
       case OrderItemStatus.picked:
-        next = next.copyWith(
-          passedByType: ctx.actorType,
-          passedById: ctx.actorId,
-        );
       case OrderItemStatus.ready:
+        // One kitchen actor: the employee with preparation access.
+        // Picked records them; ready records them again and sets the time.
         next = next.copyWith(
           preparedByType: ctx.actorType,
           preparedById: ctx.actorId,
-          preparedAt: now,
+          preparedAt: request.status == OrderItemStatus.ready ? now : null,
+          servedByType: null,
+          servedById: null,
+          servedAt: null,
+          paidToType: null,
+          paidToId: null,
+          paidAt: null,
         );
       case OrderItemStatus.served:
         next = next.copyWith(
           servedByType: ctx.actorType,
           servedById: ctx.actorId,
           servedAt: now,
+          paidToType: null,
+          paidToId: null,
+          paidAt: null,
         );
       case OrderItemStatus.payed:
         next = next.copyWith(
@@ -572,7 +649,17 @@ class OrderService {
       previousOrderStatus: order.status,
       nextOrderStatus: nextOrderStatus,
     );
-    return get(session, order.id!);
+    // Do not use [get]: kitchen and service staff may update a line they
+    // cannot consult. The write already passed the status flag.
+    final view = await _boardView(session, order.id!);
+    await _publishBoard(
+      session,
+      kind: OrderBoardEventKind.changed,
+      order: view,
+      itemIds: [request.id],
+    );
+    await _publishCustomerOrder(session, order.id!);
+    return view;
   }
 
   /// Cancels an open order and all non-payed lines.
@@ -641,7 +728,15 @@ class OrderService {
         reason: reason,
       );
     }
-    return get(session, order.id!);
+    // The person who cancelled may not be allowed to consult the ticket.
+    final view = await _boardView(session, order.id!);
+    await _publishBoard(
+      session,
+      kind: OrderBoardEventKind.changed,
+      order: view,
+    );
+    await _publishCustomerOrder(session, order.id!);
+    return view;
   }
 
   Future<List<MenuArticle>> _resolveArticles(
@@ -663,15 +758,16 @@ class OrderService {
     return articles;
   }
 
-  Future<void> _insertResolvedLines(
+  Future<List<UuidValue>> _insertResolvedLines(
     Session session,
     VenueOrder order,
     List<MenuArticle> articles,
     DateTime now,
     AuthContext ctx,
   ) async {
+    final ids = <UuidValue>[];
     for (final article in articles) {
-      await VenueOrderItem.db.insertRow(
+      final row = await VenueOrderItem.db.insertRow(
         session,
         VenueOrderItem(
           orderId: order.id!,
@@ -685,7 +781,227 @@ class OrderService {
           updatedAt: now,
         ),
       );
+      final id = row.id;
+      if (id != null) {
+        ids.add(id);
+      }
     }
+    return ids;
+  }
+
+  /// Open tickets for the floor board, then each create, append, and move.
+  ///
+  /// Preparation sees lines waiting to be picked or readied. Serving and
+  /// payment see the step they can record. History is not replayed after [synced].
+  Stream<OrderBoardEvent> watchBoard(
+    Session session,
+    UuidValue buildingId,
+  ) async* {
+    await _requireBuildingAccess(session, buildingId);
+    final ctx = AuthGuard.requireAny(session);
+    final access = await _requireEmployeeAccessIfNeeded(session, ctx);
+    final building = await Building.db.findById(session, buildingId);
+    final steps = normalizeStrictModeSteps(building?.strictModeSteps);
+    final live = session.messages.createStream<OrderBoardEvent>(
+      boardChannel(buildingId),
+    );
+    final queue = StreamController<OrderBoardEvent>();
+    final subscription = live.listen(
+      queue.add,
+      onError: queue.addError,
+      onDone: queue.close,
+    );
+    try {
+      final open = await _openBoardOrders(session, buildingId);
+      for (final order in open) {
+        if (!_canSeeBoard(order, ctx, access, steps)) {
+          continue;
+        }
+        yield OrderBoardEvent(
+          kind: OrderBoardEventKind.snapshot,
+          order: order,
+          itemIds: const [],
+        );
+      }
+      yield OrderBoardEvent(
+        kind: OrderBoardEventKind.synced,
+        itemIds: const [],
+      );
+      await for (final event in queue.stream) {
+        final order = event.order;
+        if (order != null &&
+            !_shouldDeliverBoardEvent(event.kind, order, ctx, access, steps)) {
+          continue;
+        }
+        yield event;
+      }
+    } finally {
+      await subscription.cancel();
+      if (!queue.isClosed) {
+        await queue.close();
+      }
+    }
+  }
+
+  /// Open tickets for the board, without the consult-all list filter.
+  ///
+  /// Kitchen staff must see progress lines they did not launch. [_canSeeBoard]
+  /// keeps each role to the step they can act on.
+  Future<List<OrderView>> _openBoardOrders(
+    Session session,
+    UuidValue buildingId,
+  ) async {
+    final rows = await VenueOrder.db.find(
+      session,
+      where: (t) =>
+          t.buildingId.equals(buildingId) &
+          t.status.equals(OrderStatus.progress),
+      orderBy: (t) => t.createdAt.desc(),
+      limit: 300,
+      include: VenueOrder.include(
+        venueTable: VenueTable.include(),
+        items: VenueOrderItem.includeList(orderBy: (t) => t.createdAt),
+      ),
+    );
+    final names = await _actorNameCache(session, rows);
+    return [for (final row in rows) _view(row, names)];
+  }
+
+  Future<OrderView> _boardView(Session session, UuidValue orderId) async {
+    final row = await _loadOrder(session, orderId);
+    final names = await _actorNameCache(session, [row]);
+    return _view(row, names);
+  }
+
+  Future<void> _publishBoard(
+    Session session, {
+    required OrderBoardEventKind kind,
+    required OrderView order,
+    List<UuidValue> itemIds = const [],
+  }) {
+    return session.messages.postMessage(
+      boardChannel(order.buildingId),
+      OrderBoardEvent(kind: kind, order: order, itemIds: itemIds),
+    );
+  }
+
+  /// Tells the customer who launched [orderId] that the receipt changed.
+  ///
+  /// Staff-opened tickets are ignored. A paid or cancelled order is sent
+  /// as [CustomerOrderLive.changed] with an empty [CustomerOrderLive.open]
+  /// so the visit unlocks while the receipt still shows the final status.
+  Future<void> _publishCustomerOrder(Session session, UuidValue orderId) async {
+    final order = await _loadOrder(session, orderId);
+    if (order.launchedByType != ActorType.customer) {
+      return;
+    }
+    final customerId = order.launchedById;
+    final building = await Building.db.findById(session, order.buildingId);
+    final receipt = _customerView(order, building?.currencyCode ?? '');
+    final open = order.status == OrderStatus.progress ? receipt : null;
+    await session.messages.postMessage(
+      customerOrderChannel(customerId),
+      CustomerOrderLive(open: open, changed: receipt),
+    );
+  }
+
+  /// Kitchen and service staff may open a ticket that is on their board.
+  Future<bool> _canReadOrder(
+    Session session,
+    VenueOrder row,
+    AuthContext ctx,
+    EmployeeAccess? access,
+  ) async {
+    if (_canConsultOrder(row, ctx, access)) {
+      return true;
+    }
+    final building = await Building.db.findById(session, row.buildingId);
+    final steps = normalizeStrictModeSteps(building?.strictModeSteps);
+    final names = await _actorNameCache(session, [row]);
+    return _canSeeBoard(_view(row, names), ctx, access, steps);
+  }
+
+  /// Live moves are delivered to preparation and serving even after the line
+  /// leaves their column, so the other screen drops or shows it without a refresh.
+  bool _shouldDeliverBoardEvent(
+    OrderBoardEventKind kind,
+    OrderView order,
+    AuthContext ctx,
+    EmployeeAccess? access,
+    List<StrictModeStep> steps,
+  ) {
+    if (_canSeeBoard(order, ctx, access, steps)) {
+      return true;
+    }
+    if (kind != OrderBoardEventKind.changed || access == null) {
+      return false;
+    }
+    return access.preparation || access.serving;
+  }
+
+  /// Preparation sees lines waiting to be picked or readied. Serving sees
+  /// lines waiting to be served. Payment sees the pay step on tickets they
+  /// placed, unless a customer opened the line.
+  bool _canSeeBoard(
+    OrderView order,
+    AuthContext ctx,
+    EmployeeAccess? access,
+    List<StrictModeStep> steps,
+  ) {
+    if (access == null || access.consultAllOrders) {
+      return true;
+    }
+    for (final item in order.items) {
+      if (item.status == OrderItemStatus.payed ||
+          item.status == OrderItemStatus.cancelled) {
+        continue;
+      }
+      final next = nextEnabledStrictStatus(item.status, steps);
+      if (access.preparation &&
+          (next == OrderItemStatus.picked || next == OrderItemStatus.ready)) {
+        return true;
+      }
+      if (access.serving && next == OrderItemStatus.served) {
+        return true;
+      }
+      if (access.orderPayment &&
+          next == OrderItemStatus.payed &&
+          _canRecordServiceView(order, item, ctx, access)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  bool _canRecordServiceView(
+    OrderView order,
+    OrderItemView item,
+    AuthContext ctx,
+    EmployeeAccess? access,
+  ) {
+    if (ctx.actorType != ActorType.employee) {
+      return true;
+    }
+    if (access == null || access.consultAllOrders) {
+      return true;
+    }
+    if (order.launchedBy.type == ctx.actorType &&
+        order.launchedBy.id == ctx.actorId) {
+      return true;
+    }
+    final addedBy = item.addedBy;
+    if (addedBy != null &&
+        addedBy.type == ctx.actorType &&
+        addedBy.id == ctx.actorId) {
+      return true;
+    }
+    final staffPlaced =
+        order.launchedBy.type == ActorType.owner ||
+        order.launchedBy.type == ActorType.employee ||
+        (addedBy != null &&
+            (addedBy.type == ActorType.owner ||
+                addedBy.type == ActorType.employee));
+    return !staffPlaced;
   }
 
   /// Applies composition quantities to [Ingredient.currentStock] for each article unit.
@@ -905,15 +1221,12 @@ class OrderService {
     }
 
     if (!strictMode) {
-      final linear = switch (from) {
-        OrderItemStatus.progress => OrderItemStatus.picked,
-        OrderItemStatus.picked => OrderItemStatus.ready,
-        OrderItemStatus.ready => OrderItemStatus.served,
-        OrderItemStatus.served => OrderItemStatus.payed,
-        OrderItemStatus.payed || OrderItemStatus.cancelled => null,
-      };
-      // Non-strict: one step forward, or jump straight to payed.
-      if (to == linear || to == OrderItemStatus.payed) {
+      final next = nextEnabledStrictStatus(from, steps);
+      final payedEnabled = steps.any(
+        (step) => step.enabled && step.status == OrderItemStatus.payed,
+      );
+      // Open workflow: the next enabled venue step, or a jump to payed.
+      if (to == next || (to == OrderItemStatus.payed && payedEnabled)) {
         return;
       }
       throw OrderException(
@@ -1034,11 +1347,6 @@ class OrderService {
       id: row.addedById,
       names: names,
     ),
-    passedBy: _actorView(
-      type: row.passedByType,
-      id: row.passedById,
-      names: names,
-    ),
     preparedBy: _actorView(
       type: row.preparedByType,
       id: row.preparedById,
@@ -1120,7 +1428,6 @@ class OrderService {
       collect(row.cancelledByType, row.cancelledById);
       for (final item in row.items ?? const <VenueOrderItem>[]) {
         collect(item.addedByType, item.addedById);
-        collect(item.passedByType, item.passedById);
         collect(item.preparedByType, item.preparedById);
         collect(item.servedByType, item.servedById);
         collect(item.paidToType, item.paidToId);
@@ -1264,6 +1571,48 @@ class OrderService {
     }
   }
 
+  /// Payed on a staff ticket belongs to whoever placed that line.
+  ///
+  /// Served is any employee with serving access. A customer-opened line has
+  /// no staff owner, so any employee with payment access may record payed.
+  Future<void> _assertServiceAttribution(
+    Session session,
+    AuthContext ctx,
+    VenueOrder order,
+    VenueOrderItem item,
+    OrderItemStatus status,
+  ) async {
+    if (status != OrderItemStatus.payed) {
+      return;
+    }
+    if (ctx.actorType != ActorType.employee) {
+      return;
+    }
+    final access = await _requireEmployeeAccessIfNeeded(session, ctx);
+    if (access == null || access.consultAllOrders) {
+      return;
+    }
+    if (order.launchedByType == ctx.actorType &&
+        order.launchedById == ctx.actorId) {
+      return;
+    }
+    if (item.addedByType == ctx.actorType && item.addedById == ctx.actorId) {
+      return;
+    }
+    final staffPlaced =
+        order.launchedByType == ActorType.owner ||
+        order.launchedByType == ActorType.employee ||
+        item.addedByType == ActorType.owner ||
+        item.addedByType == ActorType.employee;
+    if (!staffPlaced) {
+      return;
+    }
+    throw OrderException(
+      message: 'Only the staff member who placed this line can record it.',
+      code: OrderErrorCode.permissionDenied,
+    );
+  }
+
   Future<void> _requireStatusFlag(
     Session session,
     AuthContext ctx,
@@ -1272,6 +1621,7 @@ class OrderService {
     switch (status) {
       case OrderItemStatus.picked:
       case OrderItemStatus.ready:
+        // Only preparation access (or the owner) may pick or mark ready.
         await _requireFlag(session, ctx, (a) => a.preparation);
       case OrderItemStatus.served:
         await _requireFlag(session, ctx, (a) => a.serving);
@@ -1284,8 +1634,36 @@ class OrderService {
     }
   }
 
-  /// Employee without [EmployeeAccess.consultAllOrders] sees orders they launched
-  /// or lines they added.
+  /// Orders an employee may open when they cannot consult every ticket.
+  ///
+  /// Includes tickets they launched and lines they added, prepared, served,
+  /// recorded payment for, or cancelled.
+  Expression _employeeParticipated(VenueOrderTable t, AuthContext ctx) {
+    final type = ctx.actorType;
+    final id = ctx.actorId;
+    return (t.launchedByType.equals(type) & t.launchedById.equals(id)) |
+        (t.cancelledByType.equals(type) & t.cancelledById.equals(id)) |
+        t.items.any(
+          (item) => item.addedByType.equals(type) & item.addedById.equals(id),
+        ) |
+        t.items.any(
+          (item) =>
+              item.preparedByType.equals(type) & item.preparedById.equals(id),
+        ) |
+        t.items.any(
+          (item) => item.servedByType.equals(type) & item.servedById.equals(id),
+        ) |
+        t.items.any(
+          (item) => item.paidToType.equals(type) & item.paidToId.equals(id),
+        ) |
+        t.items.any(
+          (item) =>
+              item.cancelledByType.equals(type) & item.cancelledById.equals(id),
+        );
+  }
+
+  /// Employee without [EmployeeAccess.consultAllOrders] sees orders they
+  /// launched or lines they added, prepared, served, were paid on, or cancelled.
   bool _canConsultOrder(
     VenueOrder row,
     AuthContext ctx,
@@ -1294,12 +1672,18 @@ class OrderService {
     if (access == null || access.consultAllOrders) {
       return true;
     }
-    if (row.launchedByType == ctx.actorType &&
-        row.launchedById == ctx.actorId) {
+    bool matches(ActorType? actorType, UuidValue? actorId) =>
+        actorType == ctx.actorType && actorId == ctx.actorId;
+    if (matches(row.launchedByType, row.launchedById) ||
+        matches(row.cancelledByType, row.cancelledById)) {
       return true;
     }
     for (final item in row.items ?? const <VenueOrderItem>[]) {
-      if (item.addedByType == ctx.actorType && item.addedById == ctx.actorId) {
+      if (matches(item.addedByType, item.addedById) ||
+          matches(item.preparedByType, item.preparedById) ||
+          matches(item.servedByType, item.servedById) ||
+          matches(item.paidToType, item.paidToId) ||
+          matches(item.cancelledByType, item.cancelledById)) {
         return true;
       }
     }

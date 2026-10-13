@@ -56,6 +56,16 @@ class OrderEndpoint extends Endpoint {
     return _orders.updateItemStatus(session, request);
   }
 
+  /// Live floor board for [buildingId].
+  ///
+  /// Sends one snapshot per open ticket, then [OrderBoardEventKind.synced],
+  /// then each new ticket, appended line, and status change. An employee who
+  /// cannot consult every order only receives tickets they launched or lines
+  /// they added.
+  Stream<OrderBoardEvent> watchBoard(Session session, UuidValue buildingId) {
+    return _orders.watchBoard(session, buildingId);
+  }
+
   /// Cancels an open order. [reason] is stored on the order and on each
   /// line that was still open.
   Future<OrderView> cancel(

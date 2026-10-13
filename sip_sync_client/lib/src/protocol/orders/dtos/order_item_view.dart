@@ -26,7 +26,6 @@ abstract class OrderItemView
     required this.unitPrice,
     required this.status,
     this.addedBy,
-    this.passedBy,
     this.preparedBy,
     this.servedBy,
     this.paidTo,
@@ -48,7 +47,6 @@ abstract class OrderItemView
     required double unitPrice,
     required _iw3cmuga.OrderItemStatus status,
     _i1wfgxvh.OrderActorView? addedBy,
-    _i1wfgxvh.OrderActorView? passedBy,
     _i1wfgxvh.OrderActorView? preparedBy,
     _i1wfgxvh.OrderActorView? servedBy,
     _i1wfgxvh.OrderActorView? paidTo,
@@ -80,11 +78,6 @@ abstract class OrderItemView
           ? null
           : _iozg9o5r.Protocol().deserialize<_i1wfgxvh.OrderActorView>(
               jsonSerialization['addedBy'],
-            ),
-      passedBy: jsonSerialization['passedBy'] == null
-          ? null
-          : _iozg9o5r.Protocol().deserialize<_i1wfgxvh.OrderActorView>(
-              jsonSerialization['passedBy'],
             ),
       preparedBy: jsonSerialization['preparedBy'] == null
           ? null
@@ -148,10 +141,10 @@ abstract class OrderItemView
 
   _iw3cmuga.OrderItemStatus status;
 
+  /// Who created the line.
   _i1wfgxvh.OrderActorView? addedBy;
 
-  _i1wfgxvh.OrderActorView? passedBy;
-
+  /// Kitchen staff who picked the line or marked it ready.
   _i1wfgxvh.OrderActorView? preparedBy;
 
   _i1wfgxvh.OrderActorView? servedBy;
@@ -185,7 +178,6 @@ abstract class OrderItemView
     double? unitPrice,
     _iw3cmuga.OrderItemStatus? status,
     _i1wfgxvh.OrderActorView? addedBy,
-    _i1wfgxvh.OrderActorView? passedBy,
     _i1wfgxvh.OrderActorView? preparedBy,
     _i1wfgxvh.OrderActorView? servedBy,
     _i1wfgxvh.OrderActorView? paidTo,
@@ -209,7 +201,6 @@ abstract class OrderItemView
       'unitPrice': unitPrice,
       'status': status.toJson(),
       if (addedBy != null) 'addedBy': addedBy?.toJson(),
-      if (passedBy != null) 'passedBy': passedBy?.toJson(),
       if (preparedBy != null) 'preparedBy': preparedBy?.toJson(),
       if (servedBy != null) 'servedBy': servedBy?.toJson(),
       if (paidTo != null) 'paidTo': paidTo?.toJson(),
@@ -236,7 +227,6 @@ abstract class OrderItemView
       'unitPrice': unitPrice,
       'status': status.toJson(),
       if (addedBy != null) 'addedBy': addedBy?.toJsonForProtocol(),
-      if (passedBy != null) 'passedBy': passedBy?.toJsonForProtocol(),
       if (preparedBy != null) 'preparedBy': preparedBy?.toJsonForProtocol(),
       if (servedBy != null) 'servedBy': servedBy?.toJsonForProtocol(),
       if (paidTo != null) 'paidTo': paidTo?.toJsonForProtocol(),
@@ -269,7 +259,6 @@ class _OrderItemViewImpl extends OrderItemView {
     required double unitPrice,
     required _iw3cmuga.OrderItemStatus status,
     _i1wfgxvh.OrderActorView? addedBy,
-    _i1wfgxvh.OrderActorView? passedBy,
     _i1wfgxvh.OrderActorView? preparedBy,
     _i1wfgxvh.OrderActorView? servedBy,
     _i1wfgxvh.OrderActorView? paidTo,
@@ -289,7 +278,6 @@ class _OrderItemViewImpl extends OrderItemView {
          unitPrice: unitPrice,
          status: status,
          addedBy: addedBy,
-         passedBy: passedBy,
          preparedBy: preparedBy,
          servedBy: servedBy,
          paidTo: paidTo,
@@ -315,7 +303,6 @@ class _OrderItemViewImpl extends OrderItemView {
     double? unitPrice,
     _iw3cmuga.OrderItemStatus? status,
     Object? addedBy = _Undefined,
-    Object? passedBy = _Undefined,
     Object? preparedBy = _Undefined,
     Object? servedBy = _Undefined,
     Object? paidTo = _Undefined,
@@ -338,9 +325,6 @@ class _OrderItemViewImpl extends OrderItemView {
       addedBy: addedBy is _i1wfgxvh.OrderActorView?
           ? addedBy
           : this.addedBy?.copyWith(),
-      passedBy: passedBy is _i1wfgxvh.OrderActorView?
-          ? passedBy
-          : this.passedBy?.copyWith(),
       preparedBy: preparedBy is _i1wfgxvh.OrderActorView?
           ? preparedBy
           : this.preparedBy?.copyWith(),

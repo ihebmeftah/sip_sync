@@ -19,7 +19,7 @@ import '../../features/employees/views/employees_list_view.dart';
 import '../../features/orders/views/order_create_articles_view.dart';
 import '../../features/orders/views/order_detail_view.dart';
 import '../../features/notifications/views/notifications_view.dart';
-import '../../features/orders/views/orders_list_view.dart';
+import '../../features/orders/views/orders_page.dart';
 import '../../features/products/views/article_composition_view.dart'
     show ArticleCompositionFormView;
 import '../../features/products/views/article_form_view.dart';
@@ -367,7 +367,7 @@ class PosRoute extends GoRouteData with $PosRoute {
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return OrdersListView(buildingId: buildingId);
+    return OrdersPage(buildingId: buildingId);
   }
 }
 
@@ -411,7 +411,7 @@ class OrdersRoute extends GoRouteData with $OrdersRoute {
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return OrdersListView(buildingId: buildingId);
+    return OrdersPage(buildingId: buildingId);
   }
 }
 

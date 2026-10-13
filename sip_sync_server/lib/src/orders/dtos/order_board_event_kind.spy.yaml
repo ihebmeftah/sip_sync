@@ -1,0 +1,14 @@
+### Why a floor-board event was sent.
+enum: OrderBoardEventKind
+serialized: byName
+values:
+  ### One open order already on the floor when the stream starts.
+  - snapshot
+  ### Snapshots are finished. Later events are live.
+  - synced
+  ### A ticket was just created.
+  - orderOpened
+  ### Lines were appended to a ticket that already existed.
+  - itemsAdded
+  ### A line moved, or the ticket was cancelled or paid.
+  - changed

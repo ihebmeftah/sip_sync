@@ -694,6 +694,12 @@ abstract class AppLocalizations {
   /// **'Breakdown at work, try later'**
   String get cancelReasonWorkBreakdown;
 
+  /// No description provided for @cancelReasonCustomerRequest.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled at the customer\'s request'**
+  String get cancelReasonCustomerRequest;
+
   /// No description provided for @openOrderNote.
   ///
   /// In en, this message translates to:

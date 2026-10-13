@@ -1096,6 +1096,40 @@ class AppLocalizationsAr extends AppLocalizations {
   String get ordersHint => 'أنشئ الطلبات وتقدّم حالة المطبخ وسجّل الدفع.';
 
   @override
+  String get orderBoardHint =>
+      'اسحب الصنف، أو اضغط مطولاً واسحب الطاولة إلى العمود التالي.';
+
+  @override
+  String get orderBoardCancel => 'ملغى';
+
+  @override
+  String get orderBoardCancelHint => 'اختر أصنافاً أو الطلب كاملاً، ثم أكّد.';
+
+  @override
+  String get orderBoardCancelConfirm => 'تأكيد';
+
+  @override
+  String get orderBoardEmpty => 'لا تذاكر مفتوحة على الصالة.';
+
+  @override
+  String get orderBoardColumnEmpty => 'لا شيء هنا';
+
+  @override
+  String get orderBoardNewOrder => 'طلب جديد';
+
+  @override
+  String get orderBoardItemAdded => 'مضاف';
+
+  @override
+  String get orderBoardNoTable => 'بدون طاولة';
+
+  @override
+  String get orderViewItems => 'أصناف الطلب';
+
+  @override
+  String get orderViewList => 'قائمة الطلبات';
+
+  @override
   String get ordersEmpty => 'لا توجد طلبات بعد. اضغط طلب جديد للبدء.';
 
   @override
@@ -1236,6 +1270,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get cancelReasonWorkBreakdown => 'عطل في العمل، حاول لاحقاً';
 
   @override
+  String get cancelReasonCustomerRequest => 'أُلغي بناءً على طلب الزبون';
+
+  @override
   String get cancelOrderItem => 'إلغاء الصنف';
 
   @override
@@ -1263,9 +1300,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String orderFieldPaidAtLabel(String when) {
     return 'دُفع $when';
   }
-
-  @override
-  String get orderFieldPassedBy => 'مرّره';
 
   @override
   String get orderFieldPreparedBy => 'أعدّه';
@@ -1338,7 +1372,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get orderItemStatusPicked => 'مأخوذ';
 
   @override
-  String get orderItemStatusReady => 'جاهز';
+  String get orderItemStatusReady => 'مُحضَّر';
 
   @override
   String get orderItemStatusServed => 'مقدَّم';

@@ -4,6 +4,7 @@ import 'package:sip_sync_client/sip_sync_client.dart';
 
 import '../../../core/theme/app_tokens.dart';
 import '../../../l10n/generated/app_localizations.dart';
+import 'order_item_workflow.dart';
 import 'order_status_labels.dart';
 
 String formatOrderMoney(double amount, String currency) {
@@ -20,11 +21,23 @@ String formatOrderDateTime(BuildContext context, DateTime value) {
   return DateFormat.yMMMd(locale).add_Hm().format(local);
 }
 
+DateTime? _timeForStatus(OrderItemView item, OrderItemStatus status) {
+  return switch (status) {
+    OrderItemStatus.progress => item.createdAt,
+    OrderItemStatus.picked => null,
+    OrderItemStatus.ready => item.preparedAt,
+    OrderItemStatus.served => item.servedAt,
+    OrderItemStatus.payed => item.paidAt,
+    OrderItemStatus.cancelled => item.cancelledAt,
+  };
+}
+
 /// Bottom sheet / dialog with full attribution and timestamps for one line.
 Future<void> showOrderItemInfoDialog(
   BuildContext context, {
   required OrderItemView item,
   required String currency,
+  required List<StrictModeStep> steps,
 }) {
   final l10n = AppLocalizations.of(context)!;
   return showModalBottomSheet<void>(
@@ -63,57 +76,32 @@ Future<void> showOrderItemInfoDialog(
               ),
               const SizedBox(height: AppSpacing.lg),
               _InfoRow(
-                label: l10n.orderFieldCreatedAt,
-                value: formatOrderDateTime(context, item.createdAt),
-              ),
-              _InfoRow(
                 label: l10n.orderFieldUpdatedAt,
                 value: formatOrderDateTime(context, item.updatedAt),
               ),
-              if (item.preparedAt != null)
+              for (final status in [
+                OrderItemStatus.progress,
+                for (final step in normalizeStrictModeSteps(steps))
+                  if (step.enabled) step.status,
+              ])
+                if (actorForItemStatus(item, status) case final actor?)
+                  _InfoRow(
+                    label: orderItemStatusLabel(l10n, status),
+                    value: [
+                      formatOrderActor(l10n, actor),
+                      if (_timeForStatus(item, status) case final at?)
+                        formatOrderDateTime(context, at),
+                    ].join(' · '),
+                  ),
+              if (item.cancelledBy != null || item.cancelledAt != null)
                 _InfoRow(
-                  label: l10n.orderFieldPreparedAt,
-                  value: formatOrderDateTime(context, item.preparedAt!),
-                ),
-              if (item.servedAt != null)
-                _InfoRow(
-                  label: l10n.orderFieldServedAt,
-                  value: formatOrderDateTime(context, item.servedAt!),
-                ),
-              if (item.paidAt != null)
-                _InfoRow(
-                  label: l10n.orderFieldPaidAt,
-                  value: formatOrderDateTime(context, item.paidAt!),
-                ),
-              if (item.cancelledAt != null)
-                _InfoRow(
-                  label: l10n.orderFieldCancelledAt,
-                  value: formatOrderDateTime(context, item.cancelledAt!),
-                ),
-              if (item.passedBy != null)
-                _InfoRow(
-                  label: l10n.orderFieldPassedBy,
-                  value: formatOrderActor(l10n, item.passedBy!),
-                ),
-              if (item.preparedBy != null)
-                _InfoRow(
-                  label: l10n.orderFieldPreparedBy,
-                  value: formatOrderActor(l10n, item.preparedBy!),
-                ),
-              if (item.servedBy != null)
-                _InfoRow(
-                  label: l10n.orderFieldServedBy,
-                  value: formatOrderActor(l10n, item.servedBy!),
-                ),
-              if (item.paidTo != null)
-                _InfoRow(
-                  label: l10n.orderFieldPaidTo,
-                  value: formatOrderActor(l10n, item.paidTo!),
-                ),
-              if (item.cancelledBy != null)
-                _InfoRow(
-                  label: l10n.orderFieldCancelledBy,
-                  value: formatOrderActor(l10n, item.cancelledBy!),
+                  label: orderItemStatusLabel(l10n, OrderItemStatus.cancelled),
+                  value: [
+                    if (item.cancelledBy != null)
+                      formatOrderActor(l10n, item.cancelledBy!),
+                    if (item.cancelledAt != null)
+                      formatOrderDateTime(context, item.cancelledAt!),
+                  ].join(' · '),
                 ),
               if (item.cancellationReason != null)
                 _InfoRow(

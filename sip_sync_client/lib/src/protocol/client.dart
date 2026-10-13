@@ -127,6 +127,8 @@ import 'package:sip_sync_client/src/protocol/notifications/dtos/app_notification
     as _iel5g2r9;
 import 'package:sip_sync_client/src/protocol/orders/dtos/customer_order_append.dart'
     as _izdy5w2j;
+import 'package:sip_sync_client/src/protocol/orders/dtos/customer_order_live.dart'
+    as _ix4m0p54;
 import 'package:sip_sync_client/src/protocol/orders/dtos/customer_order_page.dart'
     as _iwuqnthl;
 import 'package:sip_sync_client/src/protocol/orders/dtos/customer_order_place.dart'
@@ -135,6 +137,8 @@ import 'package:sip_sync_client/src/protocol/orders/dtos/customer_order_view.dar
     as _iiy8950w;
 import 'package:sip_sync_client/src/protocol/orders/dtos/order_add_items.dart'
     as _ie4jvepd;
+import 'package:sip_sync_client/src/protocol/orders/dtos/order_board_event.dart'
+    as _ij1hdavm;
 import 'package:sip_sync_client/src/protocol/orders/dtos/order_cancellation_reason.dart'
     as _iejvkmho;
 import 'package:sip_sync_client/src/protocol/orders/dtos/order_create.dart'
@@ -1136,6 +1140,22 @@ class EndpointCustomerOrder extends _isc.EndpointRef {
         {},
       );
 
+  /// Live visit for the signed-in customer.
+  ///
+  /// The first event is the current in-progress order (or empty). Later
+  /// events follow staff status changes, payment, and cancellation on an
+  /// order this customer launched. Another customer's ticket is never sent.
+  _ida.Stream<_ix4m0p54.CustomerOrderLive> watchCurrent() =>
+      caller.callStreamingServerEndpoint<
+        _ida.Stream<_ix4m0p54.CustomerOrderLive>,
+        _ix4m0p54.CustomerOrderLive
+      >(
+        'customerOrder',
+        'watchCurrent',
+        {},
+        {},
+      );
+
   /// Adds dishes to this customer's open order.
   ///
   /// The order must still be in progress, and the venue must allow
@@ -1213,6 +1233,25 @@ class EndpointOrder extends _isc.EndpointRef {
     'updateItemStatus',
     {'request': request},
   );
+
+  /// Live floor board for [buildingId].
+  ///
+  /// Sends one snapshot per open ticket, then [OrderBoardEventKind.synced],
+  /// then each new ticket, appended line, and status change. An employee who
+  /// cannot consult every order only receives tickets they launched or lines
+  /// they added.
+  _ida.Stream<_ij1hdavm.OrderBoardEvent> watchBoard(
+    _isc.UuidValue buildingId,
+  ) =>
+      caller.callStreamingServerEndpoint<
+        _ida.Stream<_ij1hdavm.OrderBoardEvent>,
+        _ij1hdavm.OrderBoardEvent
+      >(
+        'order',
+        'watchBoard',
+        {'buildingId': buildingId},
+        {},
+      );
 
   /// Cancels an open order. [reason] is stored on the order and on each
   /// line that was still open.

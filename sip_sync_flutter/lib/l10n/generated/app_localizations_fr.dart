@@ -363,6 +363,9 @@ class AppLocalizationsFr extends AppLocalizations {
       'Panne au travail, réessayez plus tard';
 
   @override
+  String get cancelReasonCustomerRequest => 'Annulé à la demande du client';
+
+  @override
   String get openOrderNote => 'La cuisine a votre commande';
 
   @override

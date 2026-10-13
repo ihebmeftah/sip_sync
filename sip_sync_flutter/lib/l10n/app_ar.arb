@@ -102,6 +102,7 @@
   "cancelReasonOutOfStock": "نفد مكوّن",
   "cancelReasonClosingSoon": "وقت الإغلاق يقترب",
   "cancelReasonWorkBreakdown": "عطل في العمل، حاول لاحقاً",
+  "cancelReasonCustomerRequest": "أُلغي بناءً على طلب الزبون",
   "openOrderNote": "المطبخ يحضّر طلبك",
   "openOrderLead": "تابع كل طبق حتى لحظة الدفع.",
   "openOrderDetails": "التفاصيل",

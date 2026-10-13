@@ -6,8 +6,9 @@ fields:
   articleName: String
   unitPrice: double
   status: OrderItemStatus
+  ### Who created the line.
   addedBy: OrderActorView?
-  passedBy: OrderActorView?
+  ### Kitchen staff who picked the line or marked it ready.
   preparedBy: OrderActorView?
   servedBy: OrderActorView?
   paidTo: OrderActorView?

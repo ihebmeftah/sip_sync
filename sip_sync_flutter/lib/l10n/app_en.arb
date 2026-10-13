@@ -128,6 +128,7 @@
   "cancelReasonOutOfStock": "Ingredient is out of stock",
   "cancelReasonClosingSoon": "Closing time is coming",
   "cancelReasonWorkBreakdown": "Breakdown at work, try later",
+  "cancelReasonCustomerRequest": "Cancelled at the customer's request",
   "openOrderNote": "The kitchen has your order",
   "openOrderLead": "Follow each dish, right up to the moment you pay.",
   "openOrderDetails": "Details",

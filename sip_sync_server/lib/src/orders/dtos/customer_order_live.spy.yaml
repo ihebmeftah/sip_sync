@@ -1,0 +1,7 @@
+### Pushed to the customer who launched an order when that ticket changes.
+class: CustomerOrderLive
+fields:
+  ### Newest in-progress visit. Empty once that visit is paid or cancelled.
+  open: CustomerOrderView?
+  ### Receipt that just changed, including a paid or cancelled order.
+  changed: CustomerOrderView?

@@ -59,6 +59,15 @@ class CustomerOrderEndpoint extends Endpoint {
     return _orders.currentForCustomer(session);
   }
 
+  /// Live visit for the signed-in customer.
+  ///
+  /// The first event is the current in-progress order (or empty). Later
+  /// events follow staff status changes, payment, and cancellation on an
+  /// order this customer launched. Another customer's ticket is never sent.
+  Stream<CustomerOrderLive> watchCurrent(Session session) {
+    return _orders.watchCurrentForCustomer(session);
+  }
+
   /// Adds dishes to this customer's open order.
   ///
   /// The order must still be in progress, and the venue must allow

@@ -26,7 +26,7 @@ void main() {
     final container = ProviderContainer(
       overrides: [
         customerDiscoveryRepositoryProvider.overrideWith((ref) => _Repo()),
-        openCustomerOrderProvider.overrideWith((ref) async => null),
+        openCustomerOrderProvider.overrideWith(_NoOpenOrder.new),
       ],
     );
     addTearDown(container.dispose);
@@ -103,6 +103,11 @@ void main() {
     expect(find.text("You're at table 2"), findsOneWidget);
     expect(find.text('Pass order'), findsWidgets);
   });
+}
+
+class _NoOpenOrder extends OpenCustomerOrder {
+  @override
+  Future<CustomerOrderView?> build() async => null;
 }
 
 class _Repo extends CustomerDiscoveryRepository {

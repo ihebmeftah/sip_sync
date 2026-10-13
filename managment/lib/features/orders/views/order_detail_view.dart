@@ -12,6 +12,7 @@ import '../../../core/widgets/app_controls.dart';
 import '../../../core/widgets/app_loader.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../view_models/order_draft_view_model.dart';
+import '../view_models/order_kitchen_board_view_model.dart';
 import '../view_models/orders_view_model.dart';
 import '../widgets/cancellation_reason_dialog.dart';
 import '../widgets/order_item_info_sheet.dart';
@@ -135,7 +136,14 @@ class _OrderDetailViewState extends ConsumerState<OrderDetailView> {
     final text = Theme.of(context).textTheme;
     final currency = ref.watch(buildingSelectionProvider)?.currencyCode ?? '';
     final async = ref.watch(ordersViewModelProvider(widget.buildingId));
-    final order = _current(async.asData?.value.orders ?? const []);
+    final onBoard = ref
+        .watch(orderKitchenBoardProvider(widget.buildingId))
+        .asData
+        ?.value
+        .orders
+        .where((row) => row.id.uuid == widget.orderId)
+        .firstOrNull;
+    final order = onBoard ?? _current(async.asData?.value.orders ?? const []);
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -231,6 +239,7 @@ class _OrderDetailViewState extends ConsumerState<OrderDetailView> {
                   for (final item in order.items)
                     _OrderItemCard(
                       key: ValueKey(item.id.uuid),
+                      order: order,
                       item: item,
                       currency: currency,
                       orderOpen: order.status == OrderStatus.progress,
@@ -239,6 +248,14 @@ class _OrderDetailViewState extends ConsumerState<OrderDetailView> {
                       floorAccess: FloorAccess.fromSession(
                         ref.watch(appSessionStoreProvider),
                       ),
+                      isOwner: ref.watch(appSessionStoreProvider).isOwner,
+                      seesAll:
+                          ref.watch(appSessionStoreProvider).isOwner ||
+                          FloorAccess.fromSession(
+                            ref.watch(appSessionStoreProvider),
+                          ).canConsultAll,
+                      actorType: ref.watch(appSessionStoreProvider).actorType,
+                      actorId: ref.watch(appSessionStoreProvider).actorId,
                       strictMode:
                           ref.watch(buildingSelectionProvider)?.strictMode ??
                           false,
@@ -252,6 +269,9 @@ class _OrderDetailViewState extends ConsumerState<OrderDetailView> {
                         context,
                         item: item,
                         currency: currency,
+                        steps: normalizeStrictModeSteps(
+                          ref.read(buildingSelectionProvider)?.strictModeSteps,
+                        ),
                       ),
                     ),
                   if (_errorKey != null) ...[
@@ -450,12 +470,17 @@ class _OrderHeaderCard extends StatelessWidget {
 class _OrderItemCard extends StatelessWidget {
   const _OrderItemCard({
     super.key,
+    required this.order,
     required this.item,
     required this.currency,
     required this.orderOpen,
     required this.busy,
     required this.actionsLocked,
     required this.floorAccess,
+    required this.isOwner,
+    required this.seesAll,
+    required this.actorType,
+    required this.actorId,
     required this.strictMode,
     required this.strictModeSteps,
     required this.onAdvance,
@@ -464,34 +489,23 @@ class _OrderItemCard extends StatelessWidget {
     required this.onInfo,
   });
 
+  final OrderView order;
   final OrderItemView item;
   final String currency;
   final bool orderOpen;
   final bool busy;
   final bool actionsLocked;
   final FloorAccess floorAccess;
+  final bool isOwner;
+  final bool seesAll;
+  final ActorType? actorType;
+  final UuidValue? actorId;
   final bool strictMode;
   final List<StrictModeStep> strictModeSteps;
   final VoidCallback onAdvance;
   final VoidCallback onPay;
   final VoidCallback onCancel;
   final VoidCallback onInfo;
-
-  bool _allowedFor(OrderItemStatus status) {
-    switch (status) {
-      case OrderItemStatus.picked:
-      case OrderItemStatus.ready:
-        return floorAccess.canPrepare;
-      case OrderItemStatus.served:
-        return floorAccess.canServe;
-      case OrderItemStatus.payed:
-        return floorAccess.canPay;
-      case OrderItemStatus.cancelled:
-        return floorAccess.canCancel;
-      case OrderItemStatus.progress:
-        return true;
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -504,14 +518,37 @@ class _OrderItemCard extends StatelessWidget {
       steps: strictModeSteps,
     );
     final showPay =
-        canJumpToPayed(item.status, strictMode: strictMode) &&
-        next != OrderItemStatus.payed &&
-        floorAccess.canPay;
+        canJumpToPayed(
+          item.status,
+          strictMode: strictMode,
+          steps: strictModeSteps,
+        ) &&
+        canAdvanceWorkflowItem(
+          order: order,
+          item: item,
+          next: OrderItemStatus.payed,
+          access: floorAccess,
+          isOwner: isOwner,
+          seesAll: seesAll,
+          actorType: actorType,
+          actorId: actorId,
+        );
     final canAct =
         orderOpen &&
         item.status != OrderItemStatus.payed &&
         item.status != OrderItemStatus.cancelled;
-    final showAdvance = canAct && next != null && _allowedFor(next);
+    final showAdvance =
+        canAct &&
+        canAdvanceWorkflowItem(
+          order: order,
+          item: item,
+          next: next,
+          access: floorAccess,
+          isOwner: isOwner,
+          seesAll: seesAll,
+          actorType: actorType,
+          actorId: actorId,
+        );
     final showCancel = canAct && floorAccess.canCancel;
 
     return Padding(
@@ -600,7 +637,7 @@ class _OrderItemCard extends StatelessWidget {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Text(
-                                orderItemStatusLabel(l10n, next),
+                                orderItemStatusLabel(l10n, next!),
                                 style: text.labelMedium?.copyWith(
                                   color: scheme.onSecondaryContainer,
                                   fontWeight: FontWeight.w600,

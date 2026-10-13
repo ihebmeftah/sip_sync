@@ -16,7 +16,8 @@ import 'package:serverpod/serverpod.dart' as _is;
 enum OrderCancellationReason implements _is.SerializableModel {
   ingredientOutOfStock,
   closingSoon,
-  workBreakdown;
+  workBreakdown,
+  customerRequest;
 
   static OrderCancellationReason fromJson(String name) {
     switch (name) {
@@ -26,6 +27,8 @@ enum OrderCancellationReason implements _is.SerializableModel {
         return OrderCancellationReason.closingSoon;
       case 'workBreakdown':
         return OrderCancellationReason.workBreakdown;
+      case 'customerRequest':
+        return OrderCancellationReason.customerRequest;
       default:
         throw ArgumentError(
           'Value "$name" cannot be converted to "OrderCancellationReason"',

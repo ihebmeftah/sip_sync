@@ -118,12 +118,15 @@ import 'notifications/dtos/notification_exception.dart' as _ijg4tb97;
 import 'orders/dtos/customer_order_append.dart' as _iq3ckjf2;
 import 'orders/dtos/customer_order_item.dart' as _i8sd1sxe;
 import 'orders/dtos/customer_order_line.dart' as _ibdj4rsl;
+import 'orders/dtos/customer_order_live.dart' as _icbofyty;
 import 'orders/dtos/customer_order_page.dart' as _i19z85bh;
 import 'orders/dtos/customer_order_place.dart' as _ilng8y1i;
 import 'orders/dtos/customer_order_summary.dart' as _ipj20c5x;
 import 'orders/dtos/customer_order_view.dart' as _iw1gx7eb;
 import 'orders/dtos/order_actor_view.dart' as _ic5jn53k;
 import 'orders/dtos/order_add_items.dart' as _iqdnv1pi;
+import 'orders/dtos/order_board_event.dart' as _i0e52r5d;
+import 'orders/dtos/order_board_event_kind.dart' as _iavokc7u;
 import 'orders/dtos/order_cancellation_reason.dart' as _iwctrinv;
 import 'orders/dtos/order_create.dart' as _iwmhqcsn;
 import 'orders/dtos/order_error_code.dart' as _iepprhv5;
@@ -251,12 +254,15 @@ export 'notifications/dtos/notification_exception.dart';
 export 'orders/dtos/customer_order_append.dart';
 export 'orders/dtos/customer_order_item.dart';
 export 'orders/dtos/customer_order_line.dart';
+export 'orders/dtos/customer_order_live.dart';
 export 'orders/dtos/customer_order_page.dart';
 export 'orders/dtos/customer_order_place.dart';
 export 'orders/dtos/customer_order_summary.dart';
 export 'orders/dtos/customer_order_view.dart';
 export 'orders/dtos/order_actor_view.dart';
 export 'orders/dtos/order_add_items.dart';
+export 'orders/dtos/order_board_event.dart';
+export 'orders/dtos/order_board_event_kind.dart';
 export 'orders/dtos/order_cancellation_reason.dart';
 export 'orders/dtos/order_create.dart';
 export 'orders/dtos/order_error_code.dart';
@@ -592,6 +598,9 @@ class Protocol extends _isc.SerializationManager {
     if (t == _ibdj4rsl.CustomerOrderLine) {
       return _ibdj4rsl.CustomerOrderLine.fromJson(data) as T;
     }
+    if (t == _icbofyty.CustomerOrderLive) {
+      return _icbofyty.CustomerOrderLive.fromJson(data) as T;
+    }
     if (t == _i19z85bh.CustomerOrderPage) {
       return _i19z85bh.CustomerOrderPage.fromJson(data) as T;
     }
@@ -609,6 +618,12 @@ class Protocol extends _isc.SerializationManager {
     }
     if (t == _iqdnv1pi.OrderAddItems) {
       return _iqdnv1pi.OrderAddItems.fromJson(data) as T;
+    }
+    if (t == _i0e52r5d.OrderBoardEvent) {
+      return _i0e52r5d.OrderBoardEvent.fromJson(data) as T;
+    }
+    if (t == _iavokc7u.OrderBoardEventKind) {
+      return _iavokc7u.OrderBoardEventKind.fromJson(data) as T;
     }
     if (t == _iwctrinv.OrderCancellationReason) {
       return _iwctrinv.OrderCancellationReason.fromJson(data) as T;
@@ -1145,6 +1160,10 @@ class Protocol extends _isc.SerializationManager {
       return (data != null ? _ibdj4rsl.CustomerOrderLine.fromJson(data) : null)
           as T;
     }
+    if (t == _isc.getType<_icbofyty.CustomerOrderLive?>()) {
+      return (data != null ? _icbofyty.CustomerOrderLive.fromJson(data) : null)
+          as T;
+    }
     if (t == _isc.getType<_i19z85bh.CustomerOrderPage?>()) {
       return (data != null ? _i19z85bh.CustomerOrderPage.fromJson(data) : null)
           as T;
@@ -1169,6 +1188,16 @@ class Protocol extends _isc.SerializationManager {
     }
     if (t == _isc.getType<_iqdnv1pi.OrderAddItems?>()) {
       return (data != null ? _iqdnv1pi.OrderAddItems.fromJson(data) : null)
+          as T;
+    }
+    if (t == _isc.getType<_i0e52r5d.OrderBoardEvent?>()) {
+      return (data != null ? _i0e52r5d.OrderBoardEvent.fromJson(data) : null)
+          as T;
+    }
+    if (t == _isc.getType<_iavokc7u.OrderBoardEventKind?>()) {
+      return (data != null
+              ? _iavokc7u.OrderBoardEventKind.fromJson(data)
+              : null)
           as T;
     }
     if (t == _isc.getType<_iwctrinv.OrderCancellationReason?>()) {
@@ -1651,12 +1680,15 @@ class Protocol extends _isc.SerializationManager {
       _iq3ckjf2.CustomerOrderAppend => 'CustomerOrderAppend',
       _i8sd1sxe.CustomerOrderItem => 'CustomerOrderItem',
       _ibdj4rsl.CustomerOrderLine => 'CustomerOrderLine',
+      _icbofyty.CustomerOrderLive => 'CustomerOrderLive',
       _i19z85bh.CustomerOrderPage => 'CustomerOrderPage',
       _ilng8y1i.CustomerOrderPlace => 'CustomerOrderPlace',
       _ipj20c5x.CustomerOrderSummary => 'CustomerOrderSummary',
       _iw1gx7eb.CustomerOrderView => 'CustomerOrderView',
       _ic5jn53k.OrderActorView => 'OrderActorView',
       _iqdnv1pi.OrderAddItems => 'OrderAddItems',
+      _i0e52r5d.OrderBoardEvent => 'OrderBoardEvent',
+      _iavokc7u.OrderBoardEventKind => 'OrderBoardEventKind',
       _iwctrinv.OrderCancellationReason => 'OrderCancellationReason',
       _iwmhqcsn.OrderCreate => 'OrderCreate',
       _iepprhv5.OrderErrorCode => 'OrderErrorCode',
@@ -1884,6 +1916,8 @@ class Protocol extends _isc.SerializationManager {
         return 'CustomerOrderItem';
       case _ibdj4rsl.CustomerOrderLine():
         return 'CustomerOrderLine';
+      case _icbofyty.CustomerOrderLive():
+        return 'CustomerOrderLive';
       case _i19z85bh.CustomerOrderPage():
         return 'CustomerOrderPage';
       case _ilng8y1i.CustomerOrderPlace():
@@ -1896,6 +1930,10 @@ class Protocol extends _isc.SerializationManager {
         return 'OrderActorView';
       case _iqdnv1pi.OrderAddItems():
         return 'OrderAddItems';
+      case _i0e52r5d.OrderBoardEvent():
+        return 'OrderBoardEvent';
+      case _iavokc7u.OrderBoardEventKind():
+        return 'OrderBoardEventKind';
       case _iwctrinv.OrderCancellationReason():
         return 'OrderCancellationReason';
       case _iwmhqcsn.OrderCreate():
@@ -2258,6 +2296,9 @@ class Protocol extends _isc.SerializationManager {
     if (dataClassName == 'CustomerOrderLine') {
       return deserialize<_ibdj4rsl.CustomerOrderLine>(data['data']);
     }
+    if (dataClassName == 'CustomerOrderLive') {
+      return deserialize<_icbofyty.CustomerOrderLive>(data['data']);
+    }
     if (dataClassName == 'CustomerOrderPage') {
       return deserialize<_i19z85bh.CustomerOrderPage>(data['data']);
     }
@@ -2275,6 +2316,12 @@ class Protocol extends _isc.SerializationManager {
     }
     if (dataClassName == 'OrderAddItems') {
       return deserialize<_iqdnv1pi.OrderAddItems>(data['data']);
+    }
+    if (dataClassName == 'OrderBoardEvent') {
+      return deserialize<_i0e52r5d.OrderBoardEvent>(data['data']);
+    }
+    if (dataClassName == 'OrderBoardEventKind') {
+      return deserialize<_iavokc7u.OrderBoardEventKind>(data['data']);
     }
     if (dataClassName == 'OrderCancellationReason') {
       return deserialize<_iwctrinv.OrderCancellationReason>(data['data']);

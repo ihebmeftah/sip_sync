@@ -107,31 +107,31 @@ abstract class _$OrderPass extends $AsyncNotifier<void> {
   }
 }
 
-/// The customer's open order, if one is still in progress.
+/// The customer's open order, kept live while they are signed in.
+///
+/// Staff status changes, payment, and cancellation arrive on the same
+/// stream, so the visit unlocks without a refresh.
 
-@ProviderFor(openCustomerOrder)
+@ProviderFor(OpenCustomerOrder)
 const openCustomerOrderProvider = OpenCustomerOrderProvider._();
 
-/// The customer's open order, if one is still in progress.
-
+/// The customer's open order, kept live while they are signed in.
+///
+/// Staff status changes, payment, and cancellation arrive on the same
+/// stream, so the visit unlocks without a refresh.
 final class OpenCustomerOrderProvider
-    extends
-        $FunctionalProvider<
-          AsyncValue<CustomerOrderView?>,
-          CustomerOrderView?,
-          FutureOr<CustomerOrderView?>
-        >
-    with
-        $FutureModifier<CustomerOrderView?>,
-        $FutureProvider<CustomerOrderView?> {
-  /// The customer's open order, if one is still in progress.
+    extends $AsyncNotifierProvider<OpenCustomerOrder, CustomerOrderView?> {
+  /// The customer's open order, kept live while they are signed in.
+  ///
+  /// Staff status changes, payment, and cancellation arrive on the same
+  /// stream, so the visit unlocks without a refresh.
   const OpenCustomerOrderProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
         name: r'openCustomerOrderProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -141,17 +141,35 @@ final class OpenCustomerOrderProvider
 
   @$internal
   @override
-  $FutureProviderElement<CustomerOrderView?> $createElement(
-    $ProviderPointer pointer,
-  ) => $FutureProviderElement(pointer);
-
-  @override
-  FutureOr<CustomerOrderView?> create(Ref ref) {
-    return openCustomerOrder(ref);
-  }
+  OpenCustomerOrder create() => OpenCustomerOrder();
 }
 
-String _$openCustomerOrderHash() => r'1552602e25eb259603f2c95021cb6f981269ea19';
+String _$openCustomerOrderHash() => r'e6c1c16684c652c24c0dd67025e01ef8330e615b';
+
+/// The customer's open order, kept live while they are signed in.
+///
+/// Staff status changes, payment, and cancellation arrive on the same
+/// stream, so the visit unlocks without a refresh.
+
+abstract class _$OpenCustomerOrder extends $AsyncNotifier<CustomerOrderView?> {
+  FutureOr<CustomerOrderView?> build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final created = build();
+    final ref =
+        this.ref as $Ref<AsyncValue<CustomerOrderView?>, CustomerOrderView?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<AsyncValue<CustomerOrderView?>, CustomerOrderView?>,
+              AsyncValue<CustomerOrderView?>,
+              Object?,
+              Object?
+            >;
+    element.handleValue(ref, created);
+  }
+}
 
 /// The receipt for an order this customer placed.
 
@@ -199,7 +217,7 @@ final class CustomerOrderDetailProvider
 }
 
 String _$customerOrderDetailHash() =>
-    r'85924683cc5e30e717b4ba750c0830782fd50dc0';
+    r'21378aafa720ff8612cbe5c8f61787cccb801cb4';
 
 /// The receipt for an order this customer placed.
 

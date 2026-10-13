@@ -357,6 +357,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cancelReasonWorkBreakdown => 'Breakdown at work, try later';
 
   @override
+  String get cancelReasonCustomerRequest =>
+      'Cancelled at the customer\'s request';
+
+  @override
   String get openOrderNote => 'The kitchen has your order';
 
   @override

@@ -39,7 +39,7 @@ final class NotificationInboxProvider
   NotificationInbox create() => NotificationInbox();
 }
 
-String _$notificationInboxHash() => r'd84764e456f5d8c991cabd5436475dede0989339';
+String _$notificationInboxHash() => r'a10395c388c30bd9ac426033dd636db647b2376e';
 
 /// The signed-in customer's alerts. A live stream inserts new rows and
 /// raises [NotificationInboxState.unread] for the badge.

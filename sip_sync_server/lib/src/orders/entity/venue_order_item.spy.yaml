@@ -9,10 +9,10 @@ fields:
   articleName: String
   unitPrice: double
   status: OrderItemStatus
+  ### Who created the line (customer, owner, or employee). Not the kitchen.
   addedByType: ActorType?
   addedById: UuidValue?
-  passedByType: ActorType?
-  passedById: UuidValue?
+  ### Kitchen staff with preparation access. Set on picked and again on ready.
   preparedByType: ActorType?
   preparedById: UuidValue?
   servedByType: ActorType?

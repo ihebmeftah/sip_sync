@@ -1,0 +1,8 @@
+### One update for the management floor board.
+class: OrderBoardEvent
+fields:
+  kind: OrderBoardEventKind
+  ## Null only for [OrderBoardEventKind.synced].
+  order: OrderView?
+  ## Lines that just arrived. Empty for snapshots and status changes.
+  itemIds: List<UuidValue>

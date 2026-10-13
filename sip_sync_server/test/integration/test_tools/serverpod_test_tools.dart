@@ -125,6 +125,8 @@ import 'package:sip_sync_server/src/generated/notifications/dtos/app_notificatio
     as _iaxje4zj;
 import 'package:sip_sync_server/src/generated/orders/dtos/customer_order_append.dart'
     as _ixtfjwlp;
+import 'package:sip_sync_server/src/generated/orders/dtos/customer_order_live.dart'
+    as _ilzrudib;
 import 'package:sip_sync_server/src/generated/orders/dtos/customer_order_page.dart'
     as _i4o0sgti;
 import 'package:sip_sync_server/src/generated/orders/dtos/customer_order_place.dart'
@@ -133,6 +135,8 @@ import 'package:sip_sync_server/src/generated/orders/dtos/customer_order_view.da
     as _i43y7jrp;
 import 'package:sip_sync_server/src/generated/orders/dtos/order_add_items.dart'
     as _im5ws0jm;
+import 'package:sip_sync_server/src/generated/orders/dtos/order_board_event.dart'
+    as _i1h8de5w;
 import 'package:sip_sync_server/src/generated/orders/dtos/order_cancellation_reason.dart'
     as _i8a0aty0;
 import 'package:sip_sync_server/src/generated/orders/dtos/order_create.dart'
@@ -3074,6 +3078,38 @@ class _CustomerOrderEndpoint {
     });
   }
 
+  _ida.Stream<_ilzrudib.CustomerOrderLive> watchCurrent(
+    _ist.TestSessionBuilder sessionBuilder,
+  ) {
+    var _localTestStreamManager =
+        _ist.TestStreamManager<_ilzrudib.CustomerOrderLive>();
+    _ist.callStreamFunctionAndHandleExceptions(
+      () async {
+        var _localUniqueSession =
+            (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+              endpoint: 'customerOrder',
+              method: 'watchCurrent',
+            );
+        var _localCallContext = await _endpointDispatch
+            .getMethodStreamCallContext(
+              createSessionCallback: (_) => _localUniqueSession,
+              endpointPath: 'customerOrder',
+              methodName: 'watchCurrent',
+              arguments: {},
+              requestedInputStreams: [],
+              serializationManager: _serializationManager,
+            );
+        await _localTestStreamManager.callStreamMethod(
+          _localCallContext,
+          _localUniqueSession,
+          {},
+        );
+      },
+      _localTestStreamManager.outputStreamController,
+    );
+    return _localTestStreamManager.outputStreamController.stream;
+  }
+
   _ida.Future<_i43y7jrp.CustomerOrderView> append(
     _ist.TestSessionBuilder sessionBuilder,
     _ixtfjwlp.CustomerOrderAppend request,
@@ -3279,6 +3315,39 @@ class _OrderEndpoint {
         await _localUniqueSession.close();
       }
     });
+  }
+
+  _ida.Stream<_i1h8de5w.OrderBoardEvent> watchBoard(
+    _ist.TestSessionBuilder sessionBuilder,
+    _is.UuidValue buildingId,
+  ) {
+    var _localTestStreamManager =
+        _ist.TestStreamManager<_i1h8de5w.OrderBoardEvent>();
+    _ist.callStreamFunctionAndHandleExceptions(
+      () async {
+        var _localUniqueSession =
+            (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+              endpoint: 'order',
+              method: 'watchBoard',
+            );
+        var _localCallContext = await _endpointDispatch
+            .getMethodStreamCallContext(
+              createSessionCallback: (_) => _localUniqueSession,
+              endpointPath: 'order',
+              methodName: 'watchBoard',
+              arguments: {'buildingId': buildingId},
+              requestedInputStreams: [],
+              serializationManager: _serializationManager,
+            );
+        await _localTestStreamManager.callStreamMethod(
+          _localCallContext,
+          _localUniqueSession,
+          {},
+        );
+      },
+      _localTestStreamManager.outputStreamController,
+    );
+    return _localTestStreamManager.outputStreamController.stream;
   }
 
   _ida.Future<_i6r0fe4s.OrderView> cancel(

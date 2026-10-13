@@ -14,6 +14,7 @@ import '../../../l10n/generated/app_localizations.dart';
 import '../view_models/orders_view_model.dart';
 import '../widgets/order_item_info_sheet.dart';
 import '../widgets/order_status_labels.dart';
+import '../widgets/order_view_switch.dart';
 
 /// Order board for the building (new order FAB lives on [OpsShell]).
 class OrdersListView extends ConsumerStatefulWidget {
@@ -73,7 +74,14 @@ class _OrdersListViewState extends ConsumerState<OrdersListView> {
                 96,
               ),
               children: [
-                Text(l10n.navOrders, style: text.headlineSmall),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(l10n.navOrders, style: text.headlineSmall),
+                    ),
+                    const OrderViewSwitch(),
+                  ],
+                ),
                 const SizedBox(height: AppSpacing.xs),
                 Text(l10n.ordersHint, style: text.bodyMedium),
                 const SizedBox(height: AppSpacing.lg),

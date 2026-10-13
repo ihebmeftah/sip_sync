@@ -90,6 +90,7 @@ customerOrder:
   - list:
   - get:
   - current:
+  - watchCurrent:
   - append:
 order:
   - list:
@@ -97,6 +98,7 @@ order:
   - create:
   - addItems:
   - updateItemStatus:
+  - watchBoard:
   - cancel:
 pack:
   - list:

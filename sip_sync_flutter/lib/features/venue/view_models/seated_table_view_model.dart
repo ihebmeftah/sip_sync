@@ -27,6 +27,11 @@ class SeatedTable extends _$SeatedTable {
     state = SeatedTableNotice(table: table, announce: announce);
   }
 
+  /// Forgets the scanned table. The next order needs a new scan.
+  void leave() {
+    state = null;
+  }
+
   /// Drops the one-shot snackbar flag after it has been shown.
   void clearAnnouncement() {
     final current = state;

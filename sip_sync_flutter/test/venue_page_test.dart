@@ -148,7 +148,7 @@ void main() {
     final container = ProviderContainer(
       overrides: [
         customerDiscoveryRepositoryProvider.overrideWith((ref) => _Repo()),
-        openCustomerOrderProvider.overrideWith((ref) async => null),
+        openCustomerOrderProvider.overrideWith(_NoOpenOrder.new),
         notificationInboxProvider.overrideWith(_QuietInbox.new),
       ],
     );
@@ -214,7 +214,7 @@ void main() {
       ProviderScope(
         overrides: [
           customerDiscoveryRepositoryProvider.overrideWith((ref) => _Repo()),
-          openCustomerOrderProvider.overrideWith((ref) async => _openOrder()),
+          openCustomerOrderProvider.overrideWith(_HasOpenOrder.new),
           notificationInboxProvider.overrideWith(_QuietInbox.new),
         ],
         child: MaterialApp(
@@ -253,6 +253,16 @@ void main() {
   });
 }
 
+class _NoOpenOrder extends OpenCustomerOrder {
+  @override
+  Future<CustomerOrderView?> build() async => null;
+}
+
+class _HasOpenOrder extends OpenCustomerOrder {
+  @override
+  Future<CustomerOrderView?> build() async => _openOrder();
+}
+
 class _QuietInbox extends NotificationInbox {
   @override
   Future<NotificationInboxState> build() async {
@@ -264,7 +274,7 @@ Widget _app(GoRouter router) {
   return ProviderScope(
     overrides: [
       customerDiscoveryRepositoryProvider.overrideWith((ref) => _Repo()),
-      openCustomerOrderProvider.overrideWith((ref) async => null),
+      openCustomerOrderProvider.overrideWith(_NoOpenOrder.new),
       notificationInboxProvider.overrideWith(_QuietInbox.new),
     ],
     child: MaterialApp.router(

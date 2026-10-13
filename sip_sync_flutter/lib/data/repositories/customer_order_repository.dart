@@ -28,6 +28,10 @@ class CustomerOrderRepository {
   /// The newest order still in progress, or null when none is open.
   Future<CustomerOrderView?> current() => _client.customerOrder.current();
 
+  /// Live visit: the open order, then each staff change on it.
+  Stream<CustomerOrderLive> watchCurrent() =>
+      _client.customerOrder.watchCurrent();
+
   /// Adds units to an order this customer already has open.
   Future<CustomerOrderView> append({
     required UuidValue orderId,

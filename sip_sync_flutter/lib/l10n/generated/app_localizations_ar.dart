@@ -363,6 +363,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get cancelReasonWorkBreakdown => 'عطل في العمل، حاول لاحقاً';
 
   @override
+  String get cancelReasonCustomerRequest => 'أُلغي بناءً على طلب الزبون';
+
+  @override
   String get openOrderNote => 'المطبخ يحضّر طلبك';
 
   @override

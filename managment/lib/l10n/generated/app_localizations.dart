@@ -2110,6 +2110,72 @@ abstract class AppLocalizations {
   /// **'Create floor orders, advance kitchen status, and record payment.'**
   String get ordersHint;
 
+  /// No description provided for @orderBoardHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Swipe a line, or press and drag the table onto the next column.'**
+  String get orderBoardHint;
+
+  /// No description provided for @orderBoardCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Canceled'**
+  String get orderBoardCancel;
+
+  /// No description provided for @orderBoardCancelHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Select lines or a whole order, then confirm.'**
+  String get orderBoardCancelHint;
+
+  /// No description provided for @orderBoardCancelConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm'**
+  String get orderBoardCancelConfirm;
+
+  /// No description provided for @orderBoardEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No open tickets on the floor.'**
+  String get orderBoardEmpty;
+
+  /// No description provided for @orderBoardColumnEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing here'**
+  String get orderBoardColumnEmpty;
+
+  /// No description provided for @orderBoardNewOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'New order'**
+  String get orderBoardNewOrder;
+
+  /// No description provided for @orderBoardItemAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Added'**
+  String get orderBoardItemAdded;
+
+  /// No description provided for @orderBoardNoTable.
+  ///
+  /// In en, this message translates to:
+  /// **'No table'**
+  String get orderBoardNoTable;
+
+  /// No description provided for @orderViewItems.
+  ///
+  /// In en, this message translates to:
+  /// **'Order items'**
+  String get orderViewItems;
+
+  /// No description provided for @orderViewList.
+  ///
+  /// In en, this message translates to:
+  /// **'Order list'**
+  String get orderViewList;
+
   /// No description provided for @ordersEmpty.
   ///
   /// In en, this message translates to:
@@ -2362,6 +2428,12 @@ abstract class AppLocalizations {
   /// **'Breakdown at work, try later'**
   String get cancelReasonWorkBreakdown;
 
+  /// No description provided for @cancelReasonCustomerRequest.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancelled at the customer\'s request'**
+  String get cancelReasonCustomerRequest;
+
   /// No description provided for @cancelOrderItem.
   ///
   /// In en, this message translates to:
@@ -2415,12 +2487,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Paid {when}'**
   String orderFieldPaidAtLabel(String when);
-
-  /// No description provided for @orderFieldPassedBy.
-  ///
-  /// In en, this message translates to:
-  /// **'Passed by'**
-  String get orderFieldPassedBy;
 
   /// No description provided for @orderFieldPreparedBy.
   ///
@@ -2545,7 +2611,7 @@ abstract class AppLocalizations {
   /// No description provided for @orderItemStatusReady.
   ///
   /// In en, this message translates to:
-  /// **'Ready'**
+  /// **'Prepared'**
   String get orderItemStatusReady;
 
   /// No description provided for @orderItemStatusServed.

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:serverpod/serverpod.dart';
 import 'package:sip_sync_server/src/generated/protocol.dart';
 import 'package:sip_sync_server/src/packs/pack_catalog.dart';
@@ -144,7 +146,6 @@ void main() {
         order.items.every((i) => i.status == OrderItemStatus.payed),
         isTrue,
       );
-      expect(order.items.first.passedBy?.id, isNotNull);
       expect(order.items.first.preparedBy?.id, isNotNull);
       expect(order.items.first.preparedAt, isNotNull);
       expect(order.items.first.servedBy?.id, isNotNull);
@@ -603,6 +604,58 @@ void main() {
           ),
         ),
       );
+    });
+
+    test('board stream announces a new order then an added line', () async {
+      final setup = await setupFixture();
+      final updates = endpoints.order.watchBoard(
+        setup.ownerSession,
+        setup.building.id,
+      );
+      final iterator = StreamIterator(updates);
+      addTearDown(iterator.cancel);
+      while (true) {
+        expect(
+          await iterator.moveNext().timeout(const Duration(seconds: 10)),
+          isTrue,
+        );
+        if (iterator.current.kind == OrderBoardEventKind.synced) {
+          break;
+        }
+      }
+
+      final opened = iterator.moveNext();
+      final created = await endpoints.order.create(
+        setup.ownerSession,
+        OrderCreate(
+          buildingId: setup.building.id,
+          venueTableId: setup.table.id,
+          items: [OrderItemCreateLine(articleId: setup.article.id)],
+        ),
+      );
+      expect(
+        await opened.timeout(const Duration(seconds: 10)),
+        isTrue,
+      );
+      expect(iterator.current.kind, OrderBoardEventKind.orderOpened);
+      expect(iterator.current.order?.id, created.id);
+      expect(iterator.current.itemIds, [created.items.single.id]);
+
+      final added = iterator.moveNext();
+      await endpoints.order.addItems(
+        setup.ownerSession,
+        OrderAddItems(
+          orderId: created.id,
+          items: [OrderItemCreateLine(articleId: setup.article.id)],
+        ),
+      );
+      expect(
+        await added.timeout(const Duration(seconds: 10)),
+        isTrue,
+      );
+      expect(iterator.current.kind, OrderBoardEventKind.itemsAdded);
+      expect(iterator.current.itemIds, hasLength(1));
+      expect(iterator.current.order?.items, hasLength(2));
     });
   });
 }

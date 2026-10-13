@@ -2016,6 +2016,21 @@ class Endpoints extends _is.EndpointDispatch {
                         params['request'],
                       ),
         ),
+        'watchCurrent': _is.MethodStreamConnector(
+          name: 'watchCurrent',
+          params: {},
+          streamParams: {},
+          returnType: _is.MethodStreamReturnType.streamType,
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+                Map<String, Stream> streamParams,
+              ) =>
+                  (endpoints['customerOrder']
+                          as _i3ulyznx.CustomerOrderEndpoint)
+                      .watchCurrent(session),
+        ),
       },
     );
     connectors['order'] = _is.EndpointConnector(
@@ -2160,6 +2175,27 @@ class Endpoints extends _is.EndpointDispatch {
                 session,
                 params['orderId'],
                 params['reason'],
+              ),
+        ),
+        'watchBoard': _is.MethodStreamConnector(
+          name: 'watchBoard',
+          params: {
+            'buildingId': _is.ParameterDescription(
+              name: 'buildingId',
+              type: _is.getType<_is.UuidValue>(),
+              nullable: false,
+            ),
+          },
+          streamParams: {},
+          returnType: _is.MethodStreamReturnType.streamType,
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+                Map<String, Stream> streamParams,
+              ) => (endpoints['order'] as _iuf1spo6.OrderEndpoint).watchBoard(
+                session,
+                params['buildingId'],
               ),
         ),
       },

@@ -1137,6 +1137,41 @@ class AppLocalizationsFr extends AppLocalizations {
       'Créez des commandes, avancez le statut cuisine et enregistrez le paiement.';
 
   @override
+  String get orderBoardHint =>
+      'Glissez une ligne, ou maintenez et déposez la table sur la colonne suivante.';
+
+  @override
+  String get orderBoardCancel => 'Annulé';
+
+  @override
+  String get orderBoardCancelHint =>
+      'Sélectionnez des articles ou toute la commande, puis confirmez.';
+
+  @override
+  String get orderBoardCancelConfirm => 'Confirmer';
+
+  @override
+  String get orderBoardEmpty => 'Aucun ticket en cours.';
+
+  @override
+  String get orderBoardColumnEmpty => 'Rien ici';
+
+  @override
+  String get orderBoardNewOrder => 'Nouvelle commande';
+
+  @override
+  String get orderBoardItemAdded => 'Ajouté';
+
+  @override
+  String get orderBoardNoTable => 'Sans table';
+
+  @override
+  String get orderViewItems => 'Articles';
+
+  @override
+  String get orderViewList => 'Liste des commandes';
+
+  @override
   String get ordersEmpty =>
       'Aucune commande. Appuyez sur Nouvelle commande pour commencer.';
 
@@ -1285,6 +1320,9 @@ class AppLocalizationsFr extends AppLocalizations {
       'Panne au travail, réessayez plus tard';
 
   @override
+  String get cancelReasonCustomerRequest => 'Annulé à la demande du client';
+
+  @override
   String get cancelOrderItem => 'Annuler l’article';
 
   @override
@@ -1312,9 +1350,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String orderFieldPaidAtLabel(String when) {
     return 'Payé $when';
   }
-
-  @override
-  String get orderFieldPassedBy => 'Passé par';
 
   @override
   String get orderFieldPreparedBy => 'Préparé par';
@@ -1387,7 +1422,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get orderItemStatusPicked => 'Prise';
 
   @override
-  String get orderItemStatusReady => 'Prête';
+  String get orderItemStatusReady => 'Préparé';
 
   @override
   String get orderItemStatusServed => 'Servie';
