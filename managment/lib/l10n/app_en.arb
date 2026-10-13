@@ -522,6 +522,7 @@
   "errorOrderTableOccupied": "This table already has an open order.",
   "errorOrderAppendNotAllowed": "Adding articles to open orders is not allowed for this venue.",
   "errorOrderPermissionDenied": "Your access profile does not allow this action.",
+  "errorOrderCancelLocked": "This line or order can no longer be cancelled.",
   "errorAccessNameTaken": "That access name is already used here.",
   "errorAccessInUse": "Reassign staff before deleting this access profile.",
   "navAccessProfiles": "Access",

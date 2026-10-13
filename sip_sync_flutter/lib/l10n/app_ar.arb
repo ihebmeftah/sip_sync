@@ -143,6 +143,7 @@
   },
   "total": "المجموع",
   "orderSent": "أُرسل إلى المطبخ",
+  "orderCancelWindowNote": "لا يمكن إلغاء صنف بعد تقديمه أو دفعه. إذا قُدِّم أي صنف أو دُفع، لا يمكن إلغاء الطلب كاملاً.",
   "orderRef": "طلب #{ref}",
   "@orderRef": {
     "placeholders": { "ref": { "type": "int" } }

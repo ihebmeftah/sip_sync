@@ -224,7 +224,8 @@ class _OrderDetailViewState extends ConsumerState<OrderDetailView> {
                         order.status == OrderStatus.progress &&
                             FloorAccess.fromSession(
                               ref.watch(appSessionStoreProvider),
-                            ).canCancel
+                            ).canCancel &&
+                            !orderCancelLocked(order)
                         ? () => _cancelOrder(order)
                         : null,
                   ),
@@ -549,7 +550,8 @@ class _OrderItemCard extends StatelessWidget {
           actorType: actorType,
           actorId: actorId,
         );
-    final showCancel = canAct && floorAccess.canCancel;
+    final showCancel =
+        canAct && floorAccess.canCancel && !lineCancelLocked(item);
 
     return Padding(
       padding: const EdgeInsets.only(bottom: AppSpacing.sm),

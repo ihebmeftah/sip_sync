@@ -453,6 +453,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get orderSent => 'Sent to the kitchen';
 
   @override
+  String get orderCancelWindowNote =>
+      'A dish cannot be cancelled once it is served or paid. If any dish is served or paid, the whole order cannot be cancelled.';
+
+  @override
   String orderRef(int ref) {
     return 'Order #$ref';
   }

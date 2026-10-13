@@ -1,0 +1,88 @@
+{
+  "__className__": "serverpod.DatabaseMigration",
+  "actions": [
+    {
+      "__className__": "serverpod.DatabaseMigrationAction",
+      "type": "alterTable",
+      "alterTable": {
+        "__className__": "serverpod.TableMigration",
+        "name": "building",
+        "schema": "public",
+        "addColumns": [],
+        "deleteColumns": [
+          "cancelAfterServedMinutes"
+        ],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "__className__": "serverpod.DatabaseMigrationWarning",
+            "type": "columnDropped",
+            "message": "Column \"cancelAfterServedMinutes\" of table \"building\" will be dropped.",
+            "table": "building",
+            "columns": [
+              "cancelAfterServedMinutes"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    },
+    {
+      "__className__": "serverpod.DatabaseMigrationAction",
+      "type": "alterTable",
+      "alterTable": {
+        "__className__": "serverpod.TableMigration",
+        "name": "employee_access",
+        "schema": "public",
+        "addColumns": [],
+        "deleteColumns": [
+          "forceCancel"
+        ],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": [
+          {
+            "__className__": "serverpod.DatabaseMigrationWarning",
+            "type": "columnDropped",
+            "message": "Column \"forceCancel\" of table \"employee_access\" will be dropped.",
+            "table": "employee_access",
+            "columns": [
+              "forceCancel"
+            ],
+            "destrucive": true
+          }
+        ]
+      }
+    }
+  ],
+  "warnings": [
+    {
+      "__className__": "serverpod.DatabaseMigrationWarning",
+      "type": "columnDropped",
+      "message": "Column \"cancelAfterServedMinutes\" of table \"building\" will be dropped.",
+      "table": "building",
+      "columns": [
+        "cancelAfterServedMinutes"
+      ],
+      "destrucive": true
+    },
+    {
+      "__className__": "serverpod.DatabaseMigrationWarning",
+      "type": "columnDropped",
+      "message": "Column \"forceCancel\" of table \"employee_access\" will be dropped.",
+      "table": "employee_access",
+      "columns": [
+        "forceCancel"
+      ],
+      "destrucive": true
+    }
+  ],
+  "migrationApiVersion": 1
+}

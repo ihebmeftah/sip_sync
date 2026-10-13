@@ -169,6 +169,7 @@
   },
   "total": "Total",
   "orderSent": "Sent to the kitchen",
+  "orderCancelWindowNote": "A dish cannot be cancelled once it is served or paid. If any dish is served or paid, the whole order cannot be cancelled.",
   "orderRef": "Order #{ref}",
   "@orderRef": {
     "placeholders": { "ref": { "type": "int" } }

@@ -553,6 +553,9 @@ class OrderService {
         code: OrderErrorCode.notFound,
       );
     }
+    if (request.status == OrderItemStatus.cancelled) {
+      _assertCancellable(order, line: item);
+    }
     _assertItemTransition(
       item.status,
       request.status,
@@ -682,6 +685,14 @@ class OrderService {
         code: OrderErrorCode.invalidStatus,
       );
     }
+    final building = await Building.db.findById(session, order.buildingId);
+    if (building == null) {
+      throw OrderException(
+        message: 'Building not found.',
+        code: OrderErrorCode.notFound,
+      );
+    }
+    _assertCancellable(order);
     final now = DateTime.now().toUtc();
     final restoreArticleIds = <UuidValue>[];
     for (final item in order.items ?? const <VenueOrderItem>[]) {
@@ -719,15 +730,12 @@ class OrderService {
         updatedAt: now,
       ),
     );
-    final building = await Building.db.findById(session, order.buildingId);
-    if (building != null) {
-      await _notifications.recordOrderCancelled(
-        session,
-        order: order,
-        venueName: building.name,
-        reason: reason,
-      );
-    }
+    await _notifications.recordOrderCancelled(
+      session,
+      order: order,
+      venueName: building.name,
+      reason: reason,
+    );
     // The person who cancelled may not be allowed to consult the ticket.
     final view = await _boardView(session, order.id!);
     await _publishBoard(
@@ -1567,6 +1575,28 @@ class OrderService {
       throw OrderException(
         message: 'Access profile does not allow this action.',
         code: OrderErrorCode.permissionDenied,
+      );
+    }
+  }
+
+  /// A served or payed line stays. A ticket that already has one cannot be
+  /// cancelled as a whole. [cancelOrder] is still required for employees.
+  void _assertCancellable(VenueOrder order, {VenueOrderItem? line}) {
+    final items = order.items ?? const <VenueOrderItem>[];
+    final served = line != null
+        ? line.status == OrderItemStatus.served ||
+              line.status == OrderItemStatus.payed
+        : items.any(
+            (item) =>
+                item.status == OrderItemStatus.served ||
+                item.status == OrderItemStatus.payed,
+          );
+    if (served) {
+      throw OrderException(
+        message: line == null
+            ? 'An order with a served line cannot be cancelled.'
+            : 'A served line cannot be cancelled.',
+        code: OrderErrorCode.cancelLocked,
       );
     }
   }

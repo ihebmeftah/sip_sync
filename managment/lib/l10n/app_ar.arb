@@ -519,6 +519,7 @@
   "errorOrderTableOccupied": "هذه الطاولة لديها طلب مفتوح بالفعل.",
   "errorOrderAppendNotAllowed": "إضافة أصناف للطلبات المفتوحة غير مسموحة لهذا المكان.",
   "errorOrderPermissionDenied": "ملف الصلاحيات لا يسمح بهذا الإجراء.",
+  "errorOrderCancelLocked": "لم يعد بالإمكان إلغاء هذا الصنف أو هذا الطلب.",
   "errorAccessNameTaken": "اسم الصلاحية مستخدم هنا بالفعل.",
   "errorAccessInUse": "أعد تعيين الموظفين قبل حذف ملف الصلاحيات.",
   "navAccessProfiles": "الصلاحيات",

@@ -96,6 +96,24 @@ class CustomerOrderReceiptView extends ConsumerWidget {
                     ),
                     const SizedBox(height: AppSpacing.xs),
                     Text(l10n.orderRef(page.ref), style: text.displaySmall),
+                    if (page.status == OrderStatus.progress) ...[
+                      const SizedBox(height: AppSpacing.md),
+                      DecoratedBox(
+                        decoration: BoxDecoration(
+                          color: AppColors.clay,
+                          borderRadius: BorderRadius.circular(AppRadii.md),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(AppSpacing.md),
+                          child: Text(
+                            l10n.orderCancelWindowNote,
+                            style: text.bodyMedium?.copyWith(
+                              color: AppColors.moss,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                     if (page.cancellationReason != null) ...[
                       const SizedBox(height: AppSpacing.sm),
                       Text(

@@ -96,6 +96,7 @@ Failure mapError(Object error) {
       OrderErrorCode.tableOccupied => 'errorOrderTableOccupied',
       OrderErrorCode.appendNotAllowed => 'errorOrderAppendNotAllowed',
       OrderErrorCode.permissionDenied => 'errorOrderPermissionDenied',
+      OrderErrorCode.cancelLocked => 'errorOrderCancelLocked',
       OrderErrorCode.reservationHeld => 'errorOrderReservationHeld',
       OrderErrorCode.customerOrderingDisabled =>
         'errorCustomerOrderingDisabled',
@@ -183,6 +184,7 @@ String lookupError(dynamic l10n, String key) {
     'errorOrderTableOccupied' => l10n.errorOrderTableOccupied,
     'errorOrderAppendNotAllowed' => l10n.errorOrderAppendNotAllowed,
     'errorOrderPermissionDenied' => l10n.errorOrderPermissionDenied,
+    'errorOrderCancelLocked' => l10n.errorOrderCancelLocked,
     'errorAccessNameTaken' => l10n.errorAccessNameTaken,
     'errorAccessInUse' => l10n.errorAccessInUse,
     'errorCannotReachServer' => l10n.errorCannotReachServer,

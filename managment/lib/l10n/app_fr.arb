@@ -519,6 +519,7 @@
   "errorOrderTableOccupied": "Cette table a déjà une commande ouverte.",
   "errorOrderAppendNotAllowed": "L’ajout d’articles aux commandes ouvertes n’est pas autorisé pour ce lieu.",
   "errorOrderPermissionDenied": "Votre profil d’accès n’autorise pas cette action.",
+  "errorOrderCancelLocked": "Cette ligne ou cette commande ne peut plus être annulée.",
   "errorAccessNameTaken": "Ce nom d’accès est déjà utilisé ici.",
   "errorAccessInUse": "Réassignez le personnel avant de supprimer ce profil d’accès.",
   "navAccessProfiles": "Accès",

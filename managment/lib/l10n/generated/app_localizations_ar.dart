@@ -1405,6 +1405,10 @@ class AppLocalizationsAr extends AppLocalizations {
       'ملف الصلاحيات لا يسمح بهذا الإجراء.';
 
   @override
+  String get errorOrderCancelLocked =>
+      'لم يعد بالإمكان إلغاء هذا الصنف أو هذا الطلب.';
+
+  @override
   String get errorAccessNameTaken => 'اسم الصلاحية مستخدم هنا بالفعل.';
 
   @override

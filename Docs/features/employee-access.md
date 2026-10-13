@@ -17,7 +17,7 @@ Status: shipped
 | --- | --- |
 | `orderCreation` | Create orders and append items |
 | `orderPayment` | Set item status to **payed** (and order last-paid attribution) |
-| `cancelOrder` | Cancel an order or an order line |
+| `cancelOrder` | Cancel an order or an order line that is not yet served or payed. A served or payed line cannot be cancelled, and neither can a ticket that already has one |
 | `preparation` | The only employees who can set **picked** or **ready**. Both steps store that person on `preparedBy`. They see the kitchen queue, including lines they did not open |
 | `serving` | See lines waiting to be served and set them to **served**, including lines opened by a customer, owner, or another employee |
 | `consultAllOrders` | When **true**, list every building order and record served / payed on any line. When **false**, the ticket list is orders they launched or lines they added, prepared, served, were paid on, or cancelled. The item board still shows the kitchen or service step their other flags allow |

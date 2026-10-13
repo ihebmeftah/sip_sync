@@ -143,6 +143,7 @@
   },
   "total": "Total",
   "orderSent": "Envoyée en cuisine",
+  "orderCancelWindowNote": "Un plat ne peut plus être annulé une fois servi ou payé. Si un plat est servi ou payé, la commande entière ne peut pas être annulée.",
   "orderRef": "Commande n° {ref}",
   "@orderRef": {
     "placeholders": { "ref": { "type": "int" } }

@@ -17,3 +17,5 @@ values:
   - reservationHeld
   ### Venue turned off customer-app ordering.
   - customerOrderingDisabled
+  ### A served or payed line, or a ticket that already has one.
+  - cancelLocked

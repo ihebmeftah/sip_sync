@@ -458,6 +458,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get orderSent => 'Envoyée en cuisine';
 
   @override
+  String get orderCancelWindowNote =>
+      'Un plat ne peut plus être annulé une fois servi ou payé. Si un plat est servi ou payé, la commande entière ne peut pas être annulée.';
+
+  @override
   String orderRef(int ref) {
     return 'Commande n° $ref';
   }

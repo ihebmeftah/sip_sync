@@ -9,6 +9,7 @@ import '../../../core/widgets/app_controls.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../view_models/orders_view_model.dart';
 import 'cancellation_reason_dialog.dart';
+import 'order_item_workflow.dart';
 import 'order_status_labels.dart';
 
 /// View / advance a single order’s lines.
@@ -215,13 +216,14 @@ class _OrderDetailDialogState extends ConsumerState<_OrderDetailDialog> {
                                               ),
                                             ),
                                           ),
-                                        IconButton(
-                                          tooltip: l10n.cancelOrderItem,
-                                          onPressed: _busy
-                                              ? null
-                                              : () => _cancelLine(item),
-                                          icon: const Icon(Icons.close),
-                                        ),
+                                        if (!lineCancelLocked(item))
+                                          IconButton(
+                                            tooltip: l10n.cancelOrderItem,
+                                            onPressed: _busy
+                                                ? null
+                                                : () => _cancelLine(item),
+                                            icon: const Icon(Icons.close),
+                                          ),
                                       ],
                                     )
                                   : null,
@@ -236,7 +238,9 @@ class _OrderDetailDialogState extends ConsumerState<_OrderDetailDialog> {
               ),
       ),
       actions: [
-        if (order != null && order.status == OrderStatus.progress)
+        if (order != null &&
+            order.status == OrderStatus.progress &&
+            !orderCancelLocked(order))
           TextButton(
             onPressed: _busy ? null : () => _cancelOrder(order),
             child: Text(l10n.cancelOrder),

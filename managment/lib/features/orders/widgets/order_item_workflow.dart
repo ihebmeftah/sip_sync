@@ -196,3 +196,19 @@ OrderActorView? actorForItemStatus(OrderItemView item, OrderItemStatus status) {
     OrderItemStatus.cancelled => item.cancelledBy,
   };
 }
+
+/// A served, payed, or already cancelled line cannot be cancelled.
+bool lineCancelLocked(OrderItemView item) {
+  return item.status == OrderItemStatus.served ||
+      item.status == OrderItemStatus.payed ||
+      item.status == OrderItemStatus.cancelled;
+}
+
+/// The whole ticket cannot be cancelled once any line is served or payed.
+bool orderCancelLocked(OrderView order) {
+  return order.items.any(
+    (item) =>
+        item.status == OrderItemStatus.served ||
+        item.status == OrderItemStatus.payed,
+  );
+}

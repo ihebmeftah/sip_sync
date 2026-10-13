@@ -850,6 +850,12 @@ abstract class AppLocalizations {
   /// **'Sent to the kitchen'**
   String get orderSent;
 
+  /// No description provided for @orderCancelWindowNote.
+  ///
+  /// In en, this message translates to:
+  /// **'A dish cannot be cancelled once it is served or paid. If any dish is served or paid, the whole order cannot be cancelled.'**
+  String get orderCancelWindowNote;
+
   /// No description provided for @orderRef.
   ///
   /// In en, this message translates to:

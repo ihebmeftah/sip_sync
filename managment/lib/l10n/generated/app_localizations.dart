@@ -2668,6 +2668,12 @@ abstract class AppLocalizations {
   /// **'Your access profile does not allow this action.'**
   String get errorOrderPermissionDenied;
 
+  /// No description provided for @errorOrderCancelLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'This line or order can no longer be cancelled.'**
+  String get errorOrderCancelLocked;
+
   /// No description provided for @errorAccessNameTaken.
   ///
   /// In en, this message translates to:

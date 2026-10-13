@@ -1432,6 +1432,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'Your access profile does not allow this action.';
 
   @override
+  String get errorOrderCancelLocked =>
+      'This line or order can no longer be cancelled.';
+
+  @override
   String get errorAccessNameTaken => 'That access name is already used here.';
 
   @override

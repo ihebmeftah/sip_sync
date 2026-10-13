@@ -54,6 +54,7 @@ Failure mapError(Object error) {
       OrderErrorCode.reservationHeld => 'errorOrderReservationHeld',
       OrderErrorCode.customerOrderingDisabled =>
         'errorCustomerOrderingDisabled',
+      OrderErrorCode.cancelLocked => 'errorGeneric',
     });
   }
   if (error is ReservationException) {

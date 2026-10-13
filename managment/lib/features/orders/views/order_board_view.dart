@@ -261,10 +261,13 @@ class _OrderBoardViewState extends ConsumerState<OrderBoardView> {
                 item.status != OrderItemStatus.cancelled)
               item,
         ];
-        if (chosen.length == open.length) {
+        if (!orderCancelLocked(order) && chosen.length == open.length) {
           await board.cancelOrder(order.id, reason);
         } else {
           for (final item in chosen) {
+            if (lineCancelLocked(item)) {
+              continue;
+            }
             await board.cancelItem(item.id, reason);
           }
         }
@@ -334,6 +337,7 @@ class _OrderBoardViewState extends ConsumerState<OrderBoardView> {
       for (final item in order.items)
         if (item.status != OrderItemStatus.payed &&
             item.status != OrderItemStatus.cancelled &&
+            !lineCancelLocked(item) &&
             columns.contains(item.status) &&
             (seesAll ||
                 canAdvanceWorkflowItem(
@@ -694,7 +698,9 @@ class _TicketGroupCard extends ConsumerWidget {
               currency: currency,
               showPrice: showPrice,
               selected: selecting ? selectedIds.contains(item.id.uuid) : null,
-              onToggle: selecting ? () => onToggleItem(item.id.uuid) : null,
+              onToggle: selecting && !lineCancelLocked(item)
+                  ? () => onToggleItem(item.id.uuid)
+                  : null,
               next: nextOrderItemStatusForBuilding(
                 item.status,
                 strictMode: strictMode,

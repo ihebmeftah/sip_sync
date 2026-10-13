@@ -34,7 +34,10 @@ enum OrderErrorCode implements _is.SerializableModel {
   reservationHeld,
 
   /// Venue turned off customer-app ordering.
-  customerOrderingDisabled;
+  customerOrderingDisabled,
+
+  /// A served or payed line, or a ticket that already has one.
+  cancelLocked;
 
   static OrderErrorCode fromJson(String name) {
     switch (name) {
@@ -58,6 +61,8 @@ enum OrderErrorCode implements _is.SerializableModel {
         return OrderErrorCode.reservationHeld;
       case 'customerOrderingDisabled':
         return OrderErrorCode.customerOrderingDisabled;
+      case 'cancelLocked':
+        return OrderErrorCode.cancelLocked;
       default:
         throw ArgumentError(
           'Value "$name" cannot be converted to "OrderErrorCode"',

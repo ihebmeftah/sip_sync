@@ -459,6 +459,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get orderSent => 'أُرسل إلى المطبخ';
 
   @override
+  String get orderCancelWindowNote =>
+      'لا يمكن إلغاء صنف بعد تقديمه أو دفعه. إذا قُدِّم أي صنف أو دُفع، لا يمكن إلغاء الطلب كاملاً.';
+
+  @override
   String orderRef(int ref) {
     return 'طلب #$ref';
   }
