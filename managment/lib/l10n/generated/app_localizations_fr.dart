@@ -579,7 +579,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get buildingStrictModeHint =>
-      'Activé : chaque ligne suit les étapes activées dans l’ordre. Désactivé : le personnel peut passer directement à payé.';
+      'Activé : chaque ligne suit les étapes activées dans l’ordre. Désactivé : pris, prêt et servi restent coupés, et une ligne passe de en cours à payé ou est annulée.';
 
   @override
   String get buildingStrictModeStepsTitle => 'Étapes du workflow';

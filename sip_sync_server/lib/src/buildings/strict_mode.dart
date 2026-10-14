@@ -34,6 +34,29 @@ OrderItemStatus? nextEnabledStrictStatus(
   return null;
 }
 
+/// Steps that actually apply.
+///
+/// Strict workflow keeps the saved enable flags. With it off, picked, ready,
+/// and served are off and only payed stays on, so a line goes from progress
+/// to payed or is cancelled.
+List<StrictModeStep> effectiveStrictModeSteps({
+  required bool strictMode,
+  List<StrictModeStep>? steps,
+}) {
+  final normalized = normalizeStrictModeSteps(steps);
+  if (strictMode) {
+    return normalized;
+  }
+  return [
+    for (final step in normalized)
+      StrictModeStep(
+        rank: step.rank,
+        status: step.status,
+        enabled: step.status == OrderItemStatus.payed,
+      ),
+  ];
+}
+
 /// Normalizes client steps: fixed statuses/ranks; preserves enable flags by status.
 List<StrictModeStep> normalizeStrictModeSteps(List<StrictModeStep>? incoming) {
   final byStatus = {

@@ -571,7 +571,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get buildingStrictModeHint =>
-      'When on, each order line must follow enabled steps in order. When off, staff can mark payed without the earlier steps.';
+      'When on, each order line must follow enabled steps in order. When off, picked, ready, and served stay off, and a line goes from in progress to payed or is cancelled.';
 
   @override
   String get buildingStrictModeStepsTitle => 'Workflow steps';

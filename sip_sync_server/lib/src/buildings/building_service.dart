@@ -226,7 +226,10 @@ ORDER BY COUNT(*) DESC, "countryName" ASC
           tableMultiOrder: request.tableMultiOrder,
           allowAppendingItemsToOrder: request.allowAppendingItemsToOrder,
           strictMode: request.strictMode,
-          strictModeSteps: normalizeStrictModeSteps(request.strictModeSteps),
+          strictModeSteps: effectiveStrictModeSteps(
+            strictMode: request.strictMode,
+            steps: request.strictModeSteps,
+          ),
           reservationFee: _fee(request.reservationFee),
           customerOrderingEnabled: request.customerOrderingEnabled,
           reservationsEnabled: request.reservationsEnabled,
@@ -304,7 +307,10 @@ ORDER BY COUNT(*) DESC, "countryName" ASC
         tableMultiOrder: request.tableMultiOrder,
         allowAppendingItemsToOrder: request.allowAppendingItemsToOrder,
         strictMode: request.strictMode,
-        strictModeSteps: normalizeStrictModeSteps(request.strictModeSteps),
+        strictModeSteps: effectiveStrictModeSteps(
+          strictMode: request.strictMode,
+          steps: request.strictModeSteps,
+        ),
         reservationFee: _fee(request.reservationFee),
         customerOrderingEnabled: request.customerOrderingEnabled,
         reservationsEnabled: request.reservationsEnabled,

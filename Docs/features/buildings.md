@@ -35,8 +35,8 @@ Status: in progress
 | `otherLinks` | `[]` | Extra `http(s)` URLs (max 10). |
 | `tableMultiOrder` | `false` | When **true**, staff may open another order on a table that already has a `progress` order. When **false**, create is rejected (`tableOccupied`) and the floor picker blocks occupied tables. |
 | `allowAppendingItemsToOrder` | `true` | When **false**, staff cannot append articles to an open order (UI disables Add articles; server rejects `addItems`). |
-| `strictMode` | `false` | When **true**, order lines must advance through enabled `strictModeSteps` in rank order. When **false**, staff may jump to **payed**. |
-| `strictModeSteps` | picked→ready→served→payed (all on) | Fixed ranks; UI only toggles `enabled` (no reorder). Disabled steps are skipped when computing the next status. |
+| `strictMode` | `false` | When **true**, order lines must advance through enabled `strictModeSteps` in rank order. When **false**, picked, ready, and served are off and only **payed** stays on. A line goes from in progress to payed, or is cancelled. Saving the venue stores that collapsed pipeline. |
+| `strictModeSteps` | picked→ready→served→payed (all on while strict mode is on) | Fixed ranks; UI only toggles `enabled` (no reorder). Disabled steps are skipped when computing the next status. While strict mode is off the switches stay locked: kitchen steps off, payed on. |
 | `customerOrderingEnabled` | `true` | When **false**, customers cannot place or append orders even if the pack includes customer ordering. The customer app keeps **+** and **Pass order** visible and disables them. |
 | `reservationsEnabled` | `true` | When **false**, nobody can create a reservation even if the pack includes reservations. Existing rows stay visible. The customer app keeps **Reserve now** visible and disables it. |
 | `allowOutOfStockOrders` | `false` | When **true**, an order may be placed even if a recipe ingredient cannot cover it; stock stops at zero. When **false**, that order is rejected and the customer app disables add for that dish. |

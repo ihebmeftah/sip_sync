@@ -2255,6 +2255,16 @@ class Endpoints extends _is.EndpointDispatch {
               type: _is.getType<_is.UuidValue>(),
               nullable: false,
             ),
+            'createdFrom': _is.ParameterDescription(
+              name: 'createdFrom',
+              type: _is.getType<DateTime>(),
+              nullable: false,
+            ),
+            'createdTo': _is.ParameterDescription(
+              name: 'createdTo',
+              type: _is.getType<DateTime>(),
+              nullable: false,
+            ),
           },
           streamParams: {},
           returnType: _is.MethodStreamReturnType.streamType,
@@ -2266,6 +2276,8 @@ class Endpoints extends _is.EndpointDispatch {
               ) => (endpoints['order'] as _iuf1spo6.OrderEndpoint).watchBoard(
                 session,
                 params['buildingId'],
+                createdFrom: params['createdFrom'],
+                createdTo: params['createdTo'],
               ),
         ),
       },

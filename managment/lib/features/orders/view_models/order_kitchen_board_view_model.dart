@@ -5,6 +5,7 @@ import 'package:sip_sync_client/sip_sync_client.dart';
 
 import '../../../core/di/app_providers.dart';
 import '../../tables/view_models/tables_view_model.dart';
+import '../order_list_day.dart';
 
 part 'order_kitchen_board_view_model.g.dart';
 
@@ -48,6 +49,11 @@ class OrderKitchenBoard extends _$OrderKitchenBoard {
 
   @override
   Future<KitchenBoardState> build(String buildingId) async {
+    ref.listen(buildingSelectionProvider, (previous, next) {
+      if (previous?.strictMode != next?.strictMode) {
+        ref.invalidateSelf();
+      }
+    });
     ref.onDispose(() {
       _live?.cancel();
       _live = null;
@@ -59,6 +65,16 @@ class OrderKitchenBoard extends _$OrderKitchenBoard {
         addedItemIds: {},
       );
     }
+    final day = orderListDayWindow(
+      const OrderListDaySelection.today(),
+      DateTime.now(),
+    );
+    var untilMidnight = day.to.difference(DateTime.now());
+    if (untilMidnight <= Duration.zero) {
+      untilMidnight = const Duration(seconds: 1);
+    }
+    final rollDay = Timer(untilMidnight, ref.invalidateSelf);
+    ref.onDispose(rollDay.cancel);
     final ready = Completer<KitchenBoardState>();
     var current = const KitchenBoardState(
       orders: [],
@@ -67,7 +83,11 @@ class OrderKitchenBoard extends _$OrderKitchenBoard {
     );
     _live = ref
         .read(orderRepositoryProvider)
-        .watchBoard(UuidValue.fromString(buildingId))
+        .watchBoard(
+          UuidValue.fromString(buildingId),
+          createdFrom: day.from,
+          createdTo: day.to,
+        )
         .listen(
           (event) {
             current = _reduce(current, event);
@@ -179,7 +199,12 @@ class OrderKitchenBoard extends _$OrderKitchenBoard {
   }) {
     final orders = [...current.orders];
     final index = orders.indexWhere((row) => row.id == order.id);
-    final drop = order.status != OrderStatus.progress;
+    final keepPayed = ref.read(buildingSelectionProvider)?.strictMode == false;
+    final drop =
+        order.status == OrderStatus.cancelled ||
+        (order.status == OrderStatus.payed && !keepPayed) ||
+        (order.status != OrderStatus.progress &&
+            order.status != OrderStatus.payed);
     if (drop) {
       if (index >= 0) {
         orders.removeAt(index);

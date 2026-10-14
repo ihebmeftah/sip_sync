@@ -38,6 +38,7 @@ class _BuildingConfigurationViewState
   var _allowAppendingItemsToOrder = true;
   var _strictMode = false;
   List<StrictModeStep> _strictModeSteps = defaultStrictModeSteps();
+  List<StrictModeStep>? _stepsWhileStrict;
   var _customerOrderingEnabled = true;
   var _reservationsEnabled = true;
   var _allowOutOfStockOrders = false;
@@ -55,7 +56,20 @@ class _BuildingConfigurationViewState
     _tableMultiOrder = building.tableMultiOrder;
     _allowAppendingItemsToOrder = building.allowAppendingItemsToOrder;
     _strictMode = building.strictMode;
-    _strictModeSteps = normalizeStrictModeSteps(building.strictModeSteps);
+    final stored = normalizeStrictModeSteps(building.strictModeSteps);
+    if (_strictMode) {
+      _strictModeSteps = stored;
+      _stepsWhileStrict = null;
+    } else {
+      final hasKitchen = stored.any(
+        (step) => step.status != OrderItemStatus.payed && step.enabled,
+      );
+      _stepsWhileStrict = hasKitchen ? stored : null;
+      _strictModeSteps = effectiveStrictModeSteps(
+        strictMode: false,
+        steps: stored,
+      );
+    }
     _customerOrderingEnabled = building.customerOrderingEnabled;
     _reservationsEnabled = building.reservationsEnabled;
     _allowOutOfStockOrders = building.allowOutOfStockOrders;
@@ -171,7 +185,25 @@ class _BuildingConfigurationViewState
                   title: l10n.buildingStrictMode,
                   subtitle: l10n.buildingStrictModeHint,
                   value: _strictMode,
-                  onChanged: (value) => setState(() => _strictMode = value),
+                  onChanged: (value) {
+                    setState(() {
+                      if (value) {
+                        _strictMode = true;
+                        _strictModeSteps =
+                            _stepsWhileStrict ?? defaultStrictModeSteps();
+                        _stepsWhileStrict = null;
+                      } else {
+                        if (_strictMode) {
+                          _stepsWhileStrict = _strictModeSteps;
+                        }
+                        _strictMode = false;
+                        _strictModeSteps = effectiveStrictModeSteps(
+                          strictMode: false,
+                          steps: _strictModeSteps,
+                        );
+                      }
+                    });
+                  },
                 ),
                 const SizedBox(height: AppSpacing.sm),
                 Text(l10n.buildingStrictModeStepsTitle, style: text.titleSmall),
@@ -184,21 +216,23 @@ class _BuildingConfigurationViewState
                     title: Text(orderItemStatusLabel(l10n, step.status)),
                     subtitle: Text(l10n.buildingStrictModeStepRank(step.rank)),
                     value: step.enabled,
-                    onChanged: (enabled) {
-                      setState(() {
-                        _strictModeSteps = [
-                          for (final current in _strictModeSteps)
-                            if (current.status == step.status)
-                              StrictModeStep(
-                                rank: current.rank,
-                                status: current.status,
-                                enabled: enabled,
-                              )
-                            else
-                              current,
-                        ];
-                      });
-                    },
+                    onChanged: _strictMode
+                        ? (enabled) {
+                            setState(() {
+                              _strictModeSteps = [
+                                for (final current in _strictModeSteps)
+                                  if (current.status == step.status)
+                                    StrictModeStep(
+                                      rank: current.rank,
+                                      status: current.status,
+                                      enabled: enabled,
+                                    )
+                                  else
+                                    current,
+                              ];
+                            });
+                          }
+                        : null,
                   ),
                 AppTextField(
                   controller: _reservationFee,

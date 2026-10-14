@@ -1279,22 +1279,32 @@ class EndpointOrder extends _isc.EndpointRef {
     {'request': request},
   );
 
-  /// Live floor board for [buildingId].
+  /// Live floor board for [buildingId] on one local day.
   ///
-  /// Sends one snapshot per open ticket, then [OrderBoardEventKind.synced],
-  /// then each new ticket, appended line, and status change. An employee who
-  /// cannot consult every order only receives tickets they launched or lines
-  /// they added.
+  /// [createdFrom] is inclusive and [createdTo] is exclusive on
+  /// [VenueOrder.createdAt]. The management app sends the current local day.
+  /// A partial, reversed, or window longer than 8 days throws
+  /// [OrderException] / [OrderErrorCode.invalidInput]. Sends one snapshot per
+  /// ticket in that day, then [OrderBoardEventKind.synced], then each new
+  /// ticket, appended line, and status change whose ticket was created in
+  /// the same window. An employee who cannot consult every order only
+  /// receives tickets they launched or lines they added.
   _ida.Stream<_ij1hdavm.OrderBoardEvent> watchBoard(
-    _isc.UuidValue buildingId,
-  ) =>
+    _isc.UuidValue buildingId, {
+    required DateTime createdFrom,
+    required DateTime createdTo,
+  }) =>
       caller.callStreamingServerEndpoint<
         _ida.Stream<_ij1hdavm.OrderBoardEvent>,
         _ij1hdavm.OrderBoardEvent
       >(
         'order',
         'watchBoard',
-        {'buildingId': buildingId},
+        {
+          'buildingId': buildingId,
+          'createdFrom': createdFrom,
+          'createdTo': createdTo,
+        },
         {},
       );
 

@@ -183,7 +183,7 @@
   "buildingAllowAppendingItems": "السماح بإضافة أصناف للطلبات المفتوحة",
   "buildingAllowAppendingItemsHint": "عند التفعيل يمكن إضافة أصناف لطلب مفتوح. عند الإيقاف يكون زر إضافة الأصناف معطّلاً.",
   "buildingStrictMode": "مسار حالات صارم",
-  "buildingStrictModeHint": "عند التفعيل يمرّ كل بند بالخطوات المفعّلة بالترتيب. عند الإيقاف يمكن تعليم الدفع مباشرة دون الخطوات السابقة.",
+  "buildingStrictModeHint": "عند التفعيل يمرّ كل بند بالخطوات المفعّلة بالترتيب. عند الإيقاف تُغلق خطوات التحضير والتقديم ويبقى الدفع فقط، فينتقل البند من قيد التنفيذ إلى مدفوع أو يُلغى.",
   "buildingStrictModeStepsTitle": "خطوات المسار",
   "buildingStrictModeStepsHint": "فعّل أو عطّل الخطوات فقط. الترتيب ثابت ولا يمكن تغييره.",
   "buildingStrictModeStepRank": "الخطوة {rank}",

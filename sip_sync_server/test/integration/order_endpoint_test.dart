@@ -441,7 +441,7 @@ void main() {
     );
 
     test(
-      'strict mode skips disabled steps; non-strict allows pay jump',
+      'strict mode skips disabled steps; turning it off keeps only payed',
       () async {
         final setup = await setupFixture();
         final steps = [
@@ -512,7 +512,7 @@ void main() {
         );
         expect(order.items.first.status, OrderItemStatus.ready);
 
-        await endpoints.building.update(
+        final updated = await endpoints.building.update(
           setup.ownerSession,
           BuildingUpdate(
             id: setup.building.id,
@@ -535,6 +535,32 @@ void main() {
             strictModeSteps: steps,
           ),
         );
+        expect(updated.strictMode, isFalse);
+        expect(
+          updated.strictModeSteps
+              .where((step) => step.enabled)
+              .map((step) => step.status),
+          [OrderItemStatus.payed],
+        );
+
+        await expectLater(
+          endpoints.order.updateItemStatus(
+            setup.ownerSession,
+            OrderItemStatusUpdate(id: itemId, status: OrderItemStatus.served),
+          ),
+          throwsA(
+            isA<OrderException>().having(
+              (e) => e.code,
+              'code',
+              OrderErrorCode.invalidStatus,
+            ),
+          ),
+        );
+        order = await endpoints.order.updateItemStatus(
+          setup.ownerSession,
+          OrderItemStatusUpdate(id: itemId, status: OrderItemStatus.payed),
+        );
+        expect(order.items.first.status, OrderItemStatus.payed);
 
         order = await endpoints.order.create(
           setup.ownerSession,
@@ -542,6 +568,22 @@ void main() {
             buildingId: setup.building.id,
             venueTableId: null,
             items: [OrderItemCreateLine(articleId: setup.article.id)],
+          ),
+        );
+        await expectLater(
+          endpoints.order.updateItemStatus(
+            setup.ownerSession,
+            OrderItemStatusUpdate(
+              id: order.items.first.id,
+              status: OrderItemStatus.picked,
+            ),
+          ),
+          throwsA(
+            isA<OrderException>().having(
+              (e) => e.code,
+              'code',
+              OrderErrorCode.invalidStatus,
+            ),
           ),
         );
         order = await endpoints.order.updateItemStatus(
@@ -608,9 +650,13 @@ void main() {
 
     test('board stream announces a new order then an added line', () async {
       final setup = await setupFixture();
+      final now = DateTime.now();
+      final start = DateTime(now.year, now.month, now.day);
       final updates = endpoints.order.watchBoard(
         setup.ownerSession,
         setup.building.id,
+        createdFrom: start,
+        createdTo: start.add(const Duration(days: 1)),
       );
       final iterator = StreamIterator(updates);
       addTearDown(iterator.cancel);
@@ -656,6 +702,63 @@ void main() {
       expect(iterator.current.kind, OrderBoardEventKind.itemsAdded);
       expect(iterator.current.itemIds, hasLength(1));
       expect(iterator.current.order?.items, hasLength(2));
+    });
+
+    test('board snapshot keeps only tickets created today', () async {
+      final setup = await setupFixture();
+      final todayOrder = await endpoints.order.create(
+        setup.ownerSession,
+        OrderCreate(
+          buildingId: setup.building.id,
+          venueTableId: setup.table.id,
+          items: [OrderItemCreateLine(articleId: setup.article.id)],
+        ),
+      );
+      final olderOrder = await endpoints.order.create(
+        setup.ownerSession,
+        OrderCreate(
+          buildingId: setup.building.id,
+          venueTableId: null,
+          items: [OrderItemCreateLine(articleId: setup.article.id)],
+        ),
+      );
+      final db = sessionBuilder.build();
+      final olderRow = await VenueOrder.db.findById(db, olderOrder.id);
+      final start = DateTime(
+        DateTime.now().year,
+        DateTime.now().month,
+        DateTime.now().day,
+      );
+      await VenueOrder.db.updateRow(
+        db,
+        olderRow!.copyWith(
+          createdAt: DateTime(start.year, start.month, start.day - 1),
+        ),
+      );
+
+      final updates = endpoints.order.watchBoard(
+        setup.ownerSession,
+        setup.building.id,
+        createdFrom: start,
+        createdTo: DateTime(start.year, start.month, start.day + 1),
+      );
+      final iterator = StreamIterator(updates);
+      addTearDown(iterator.cancel);
+      final seen = <UuidValue>[];
+      while (true) {
+        expect(
+          await iterator.moveNext().timeout(const Duration(seconds: 10)),
+          isTrue,
+        );
+        if (iterator.current.kind == OrderBoardEventKind.synced) {
+          break;
+        }
+        final id = iterator.current.order?.id;
+        if (id != null) {
+          seen.add(id);
+        }
+      }
+      expect(seen, [todayOrder.id]);
     });
 
     test(

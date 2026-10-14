@@ -51,9 +51,18 @@ class OrderRepository {
 
   Future<OrderView> get(UuidValue orderId) => _client.order.get(orderId);
 
-  /// Open tickets, then each new ticket, appended line, and status change.
-  Stream<OrderBoardEvent> watchBoard(UuidValue buildingId) {
-    return _client.order.watchBoard(buildingId);
+  /// Tickets created in [createdFrom] inclusive, [createdTo] exclusive, then
+  /// each new ticket, appended line, and status change in that day.
+  Stream<OrderBoardEvent> watchBoard(
+    UuidValue buildingId, {
+    required DateTime createdFrom,
+    required DateTime createdTo,
+  }) {
+    return _client.order.watchBoard(
+      buildingId,
+      createdFrom: createdFrom,
+      createdTo: createdTo,
+    );
   }
 
   Future<OrderView> create({

@@ -799,19 +799,33 @@ class OrderService {
     return ids;
   }
 
-  /// Open tickets for the floor board, then each create, append, and move.
+  /// Tickets for the floor board created in [createdFrom] inclusive,
+  /// [createdTo] exclusive, then each create, append, and move in that day.
   ///
   /// Preparation sees lines waiting to be picked or readied. Serving and
   /// payment see the step they can record. History is not replayed after [synced].
   Stream<OrderBoardEvent> watchBoard(
     Session session,
-    UuidValue buildingId,
-  ) async* {
+    UuidValue buildingId, {
+    required DateTime createdFrom,
+    required DateTime createdTo,
+  }) async* {
     await _requireBuildingAccess(session, buildingId);
+    final day = _dayWindow(createdFrom: createdFrom, createdTo: createdTo);
+    if (day == null) {
+      throw OrderException(
+        message: 'Order day window is not valid.',
+        code: OrderErrorCode.invalidInput,
+      );
+    }
     final ctx = AuthGuard.requireAny(session);
     final access = await _requireEmployeeAccessIfNeeded(session, ctx);
     final building = await Building.db.findById(session, buildingId);
-    final steps = normalizeStrictModeSteps(building?.strictModeSteps);
+    final strictMode = building?.strictMode ?? false;
+    final steps = effectiveStrictModeSteps(
+      strictMode: strictMode,
+      steps: building?.strictModeSteps,
+    );
     final live = session.messages.createStream<OrderBoardEvent>(
       boardChannel(buildingId),
     );
@@ -822,9 +836,14 @@ class OrderService {
       onDone: queue.close,
     );
     try {
-      final open = await _openBoardOrders(session, buildingId);
+      final open = await _openBoardOrders(
+        session,
+        buildingId,
+        includePayed: !strictMode,
+        day: day,
+      );
       for (final order in open) {
-        if (!_canSeeBoard(order, ctx, access, steps)) {
+        if (!_canSeeBoard(order, ctx, access, steps, strictMode: strictMode)) {
           continue;
         }
         yield OrderBoardEvent(
@@ -840,7 +859,15 @@ class OrderService {
       await for (final event in queue.stream) {
         final order = event.order;
         if (order != null &&
-            !_shouldDeliverBoardEvent(event.kind, order, ctx, access, steps)) {
+            (!_createdOnBoardDay(order.createdAt, day) ||
+                !_shouldDeliverBoardEvent(
+                  event.kind,
+                  order,
+                  ctx,
+                  access,
+                  steps,
+                  strictMode: strictMode,
+                ))) {
           continue;
         }
         yield event;
@@ -853,28 +880,56 @@ class OrderService {
     }
   }
 
+  /// True when [createdAt] falls in [day] (from inclusive, to exclusive).
+  bool _createdOnBoardDay(
+    DateTime createdAt,
+    ({DateTime from, DateTime to}) day,
+  ) {
+    return !createdAt.isBefore(day.from) && createdAt.isBefore(day.to);
+  }
+
   /// Open tickets for the board, without the consult-all list filter.
   ///
   /// Kitchen staff must see progress lines they did not launch. [_canSeeBoard]
-  /// keeps each role to the step they can act on.
+  /// keeps each role to the step they can act on. With strict workflow off,
+  /// payed tickets from the same day stay so the payed column has somewhere
+  /// to land.
   Future<List<OrderView>> _openBoardOrders(
     Session session,
-    UuidValue buildingId,
-  ) async {
+    UuidValue buildingId, {
+    required bool includePayed,
+    required ({DateTime from, DateTime to}) day,
+  }) async {
+    final include = VenueOrder.include(
+      venueTable: VenueTable.include(),
+      items: VenueOrderItem.includeList(orderBy: (t) => t.createdAt),
+    );
+    Expression inDay(VenueOrderTable t, OrderStatus status) {
+      return t.buildingId.equals(buildingId) &
+          t.status.equals(status) &
+          (t.createdAt >= day.from) &
+          (t.createdAt < day.to);
+    }
+
     final rows = await VenueOrder.db.find(
       session,
-      where: (t) =>
-          t.buildingId.equals(buildingId) &
-          t.status.equals(OrderStatus.progress),
+      where: (t) => inDay(t, OrderStatus.progress),
       orderBy: (t) => t.createdAt.desc(),
       limit: 300,
-      include: VenueOrder.include(
-        venueTable: VenueTable.include(),
-        items: VenueOrderItem.includeList(orderBy: (t) => t.createdAt),
-      ),
+      include: include,
     );
-    final names = await _actorNameCache(session, rows);
-    return [for (final row in rows) _view(row, names)];
+    final paid = includePayed
+        ? await VenueOrder.db.find(
+            session,
+            where: (t) => inDay(t, OrderStatus.payed),
+            orderBy: (t) => t.updatedAt.desc(),
+            limit: 80,
+            include: include,
+          )
+        : <VenueOrder>[];
+    final combined = [...rows, ...paid];
+    final names = await _actorNameCache(session, combined);
+    return [for (final row in combined) _view(row, names)];
   }
 
   Future<OrderView> _boardView(Session session, UuidValue orderId) async {
@@ -926,9 +981,19 @@ class OrderService {
       return true;
     }
     final building = await Building.db.findById(session, row.buildingId);
-    final steps = normalizeStrictModeSteps(building?.strictModeSteps);
+    final strictMode = building?.strictMode ?? false;
+    final steps = effectiveStrictModeSteps(
+      strictMode: strictMode,
+      steps: building?.strictModeSteps,
+    );
     final names = await _actorNameCache(session, [row]);
-    return _canSeeBoard(_view(row, names), ctx, access, steps);
+    return _canSeeBoard(
+      _view(row, names),
+      ctx,
+      access,
+      steps,
+      strictMode: strictMode,
+    );
   }
 
   /// Live moves are delivered to preparation and serving even after the line
@@ -938,9 +1003,10 @@ class OrderService {
     OrderView order,
     AuthContext ctx,
     EmployeeAccess? access,
-    List<StrictModeStep> steps,
-  ) {
-    if (_canSeeBoard(order, ctx, access, steps)) {
+    List<StrictModeStep> steps, {
+    required bool strictMode,
+  }) {
+    if (_canSeeBoard(order, ctx, access, steps, strictMode: strictMode)) {
       return true;
     }
     if (kind != OrderBoardEventKind.changed || access == null) {
@@ -951,19 +1017,28 @@ class OrderService {
 
   /// Preparation sees lines waiting to be picked or readied. Serving sees
   /// lines waiting to be served. Payment sees the pay step on tickets they
-  /// placed, unless a customer opened the line.
+  /// placed, unless a customer opened the line. With strict workflow off,
+  /// payment also sees lines that are already payed.
   bool _canSeeBoard(
     OrderView order,
     AuthContext ctx,
     EmployeeAccess? access,
-    List<StrictModeStep> steps,
-  ) {
+    List<StrictModeStep> steps, {
+    required bool strictMode,
+  }) {
     if (access == null || access.consultAllOrders) {
       return true;
     }
     for (final item in order.items) {
-      if (item.status == OrderItemStatus.payed ||
-          item.status == OrderItemStatus.cancelled) {
+      if (item.status == OrderItemStatus.cancelled) {
+        continue;
+      }
+      if (item.status == OrderItemStatus.payed) {
+        if (!strictMode &&
+            access.orderPayment &&
+            _canRecordServiceView(order, item, ctx, access)) {
+          return true;
+        }
         continue;
       }
       final next = nextEnabledStrictStatus(item.status, steps);
@@ -1230,22 +1305,12 @@ class OrderService {
       return;
     }
 
-    if (!strictMode) {
-      final next = nextEnabledStrictStatus(from, steps);
-      final payedEnabled = steps.any(
-        (step) => step.enabled && step.status == OrderItemStatus.payed,
-      );
-      // Open workflow: the next enabled venue step, or a jump to payed.
-      if (to == next || (to == OrderItemStatus.payed && payedEnabled)) {
-        return;
-      }
-      throw OrderException(
-        message: 'Invalid status change for this line.',
-        code: OrderErrorCode.invalidStatus,
-      );
-    }
-
-    final expected = nextEnabledStrictStatus(from, steps);
+    // Strict off collapses the pipeline to payed, so picked, ready, and
+    // served are rejected even when those flags are still stored as on.
+    final expected = nextEnabledStrictStatus(
+      from,
+      effectiveStrictModeSteps(strictMode: strictMode, steps: steps),
+    );
     if (expected == null || to != expected) {
       throw OrderException(
         message: 'Invalid status change for this line.',

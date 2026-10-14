@@ -65,14 +65,28 @@ class OrderEndpoint extends Endpoint {
     return _orders.updateItemStatus(session, request);
   }
 
-  /// Live floor board for [buildingId].
+  /// Live floor board for [buildingId] on one local day.
   ///
-  /// Sends one snapshot per open ticket, then [OrderBoardEventKind.synced],
-  /// then each new ticket, appended line, and status change. An employee who
-  /// cannot consult every order only receives tickets they launched or lines
-  /// they added.
-  Stream<OrderBoardEvent> watchBoard(Session session, UuidValue buildingId) {
-    return _orders.watchBoard(session, buildingId);
+  /// [createdFrom] is inclusive and [createdTo] is exclusive on
+  /// [VenueOrder.createdAt]. The management app sends the current local day.
+  /// A partial, reversed, or window longer than 8 days throws
+  /// [OrderException] / [OrderErrorCode.invalidInput]. Sends one snapshot per
+  /// ticket in that day, then [OrderBoardEventKind.synced], then each new
+  /// ticket, appended line, and status change whose ticket was created in
+  /// the same window. An employee who cannot consult every order only
+  /// receives tickets they launched or lines they added.
+  Stream<OrderBoardEvent> watchBoard(
+    Session session,
+    UuidValue buildingId, {
+    required DateTime createdFrom,
+    required DateTime createdTo,
+  }) {
+    return _orders.watchBoard(
+      session,
+      buildingId,
+      createdFrom: createdFrom,
+      createdTo: createdTo,
+    );
   }
 
   /// Cancels an open order. [reason] is stored on the order and on each

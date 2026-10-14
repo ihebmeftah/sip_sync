@@ -3408,8 +3408,10 @@ class _OrderEndpoint {
 
   _ida.Stream<_i1h8de5w.OrderBoardEvent> watchBoard(
     _ist.TestSessionBuilder sessionBuilder,
-    _is.UuidValue buildingId,
-  ) {
+    _is.UuidValue buildingId, {
+    required DateTime createdFrom,
+    required DateTime createdTo,
+  }) {
     var _localTestStreamManager =
         _ist.TestStreamManager<_i1h8de5w.OrderBoardEvent>();
     _ist.callStreamFunctionAndHandleExceptions(
@@ -3424,7 +3426,11 @@ class _OrderEndpoint {
               createSessionCallback: (_) => _localUniqueSession,
               endpointPath: 'order',
               methodName: 'watchBoard',
-              arguments: {'buildingId': buildingId},
+              arguments: {
+                'buildingId': buildingId,
+                'createdFrom': createdFrom,
+                'createdTo': createdTo,
+              },
               requestedInputStreams: [],
               serializationManager: _serializationManager,
             );

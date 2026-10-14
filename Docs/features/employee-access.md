@@ -20,7 +20,7 @@ Status: shipped
 | `cancelOrder` | Cancel an order or an order line that is not yet served or payed. A served or payed line cannot be cancelled, and neither can a ticket that already has one |
 | `preparation` | The only employees who can set **picked** or **ready**. Both steps store that person on `preparedBy`. They see the kitchen queue, including lines they did not open |
 | `serving` | See lines waiting to be served and set them to **served**, including lines opened by a customer, owner, or another employee |
-| `consultAllOrders` | When **true**, list every building order, open the management dashboard, and record served / payed on any line. When **false**, the ticket list is orders they launched or lines they added, prepared, served, were paid on, or cancelled, and the dashboard tab stays hidden. The item board still shows the kitchen or service step their other flags allow |
+| `consultAllOrders` | When **true**, list every building order, open the management dashboard, and record served / payed on any line. When **false**, the ticket list is orders they launched or lines they added, prepared, served, were paid on, or cancelled, and the dashboard tab stays hidden. The item board still shows the kitchen or service step their other flags allow. With strict workflow off, that board is in progress and payed |
 
 An employee with **no** access assigned cannot perform floor order actions (except what building membership alone allowed before — now denied until assigned).
 
@@ -30,7 +30,7 @@ An employee with **no** access assigned cannot perform floor order actions (exce
 2. Owner opens **Access** (from Employees) → adjust toggles or add custom profiles. The list is 20 profiles per page. The employee form still loads every profile.
 3. Owner creates/edits an employee and picks an access profile.
 4. Employee login loads session with access summary for UX; server re-checks on every order RPC. The employee profile and the owner’s employee details screen list the granted actions.
-5. Order list for employees with `consultAllOrders: false` includes tickets they launched and lines they added, prepared, served, were paid on, or cancelled. The item board follows the venue steps: preparation sees the kitchen queue, and serving sees every line that is ready to be served.
+5. Order list for employees with `consultAllOrders: false` includes tickets they launched and lines they added, prepared, served, were paid on, or cancelled. The item board follows the venue steps: preparation sees the kitchen queue, and serving sees every line that is ready to be served. With strict workflow off, those kitchen steps are not used and the board is in progress and payed.
 
 ## Default profiles (on building create)
 

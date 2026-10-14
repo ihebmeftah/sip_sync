@@ -44,8 +44,12 @@ class _OrderBoardViewState extends ConsumerState<OrderBoardView> {
     final seesAll = session.isOwner || access.canConsultAll;
     final currency = building?.currencyCode ?? '';
     final strictMode = building?.strictMode ?? false;
-    final steps = normalizeStrictModeSteps(building?.strictModeSteps);
+    final steps = effectiveStrictModeSteps(
+      strictMode: strictMode,
+      steps: building?.strictModeSteps,
+    );
     final columns = visibleWorkflowColumns(
+      strictMode: strictMode,
       steps: steps,
       access: access,
       seesAll: seesAll,
@@ -71,6 +75,11 @@ class _OrderBoardViewState extends ConsumerState<OrderBoardView> {
           ),
         ),
         data: (page) {
+          final shown = boardColumnsIncludingOpenLines(
+            strictMode: strictMode,
+            columns: columns,
+            orders: page.orders,
+          );
           return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -124,6 +133,13 @@ class _OrderBoardViewState extends ConsumerState<OrderBoardView> {
                           : l10n.orderBoardHint,
                       style: text.bodyMedium,
                     ),
+                    const SizedBox(height: AppSpacing.xs),
+                    Text(
+                      l10n.ordersFilterToday,
+                      style: text.labelLarge?.copyWith(
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -136,11 +152,11 @@ class _OrderBoardViewState extends ConsumerState<OrderBoardView> {
                     AppSpacing.lg,
                     AppSpacing.xl,
                   ),
-                  itemCount: columns.length,
+                  itemCount: shown.length,
                   separatorBuilder: (_, _) =>
                       const SizedBox(width: AppSpacing.md),
                   itemBuilder: (context, index) {
-                    final status = columns[index];
+                    final status = shown[index];
                     return _StatusColumn(
                       buildingId: buildingId,
                       status: status,
@@ -161,7 +177,7 @@ class _OrderBoardViewState extends ConsumerState<OrderBoardView> {
                       onToggleItem: _toggleItem,
                       onToggleOrder: (order) => _toggleOrder(
                         order,
-                        columns,
+                        shown,
                         steps,
                         access,
                         seesAll,
@@ -171,7 +187,7 @@ class _OrderBoardViewState extends ConsumerState<OrderBoardView> {
                       ),
                       orderSelection: (order) => _orderSelection(
                         order,
-                        columns,
+                        shown,
                         steps,
                         access,
                         seesAll,
@@ -559,9 +575,18 @@ class _StatusColumn extends ConsumerWidget {
       final items = [
         for (final item in order.items)
           if (item.status == status &&
-              item.status != OrderItemStatus.payed &&
               item.status != OrderItemStatus.cancelled &&
               (seesAll ||
+                  (status == OrderItemStatus.payed &&
+                      !strictMode &&
+                      access.canPay &&
+                      actorMayRecordService(
+                        order: order,
+                        item: item,
+                        seesAll: seesAll,
+                        actorType: actorType,
+                        actorId: actorId,
+                      )) ||
                   canAdvanceWorkflowItem(
                     order: order,
                     item: item,

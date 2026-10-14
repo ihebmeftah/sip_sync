@@ -562,7 +562,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get buildingStrictModeHint =>
-      'عند التفعيل يمرّ كل بند بالخطوات المفعّلة بالترتيب. عند الإيقاف يمكن تعليم الدفع مباشرة دون الخطوات السابقة.';
+      'عند التفعيل يمرّ كل بند بالخطوات المفعّلة بالترتيب. عند الإيقاف تُغلق خطوات التحضير والتقديم ويبقى الدفع فقط، فينتقل البند من قيد التنفيذ إلى مدفوع أو يُلغى.';
 
   @override
   String get buildingStrictModeStepsTitle => 'خطوات المسار';

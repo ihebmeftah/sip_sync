@@ -19,6 +19,28 @@ int orderItemStatusRank(OrderItemStatus status) => switch (status) {
   OrderItemStatus.cancelled => -1,
 };
 
+/// Steps that actually apply. Matches server [effectiveStrictModeSteps].
+///
+/// With strict workflow off, picked, ready, and served are off and only
+/// payed stays on.
+List<StrictModeStep> effectiveStrictModeSteps({
+  required bool strictMode,
+  List<StrictModeStep>? steps,
+}) {
+  final normalized = normalizeStrictModeSteps(steps);
+  if (strictMode) {
+    return normalized;
+  }
+  return [
+    for (final step in normalized)
+      StrictModeStep(
+        rank: step.rank,
+        status: step.status,
+        enabled: step.status == OrderItemStatus.payed,
+      ),
+  ];
+}
+
 /// Merges saved enable flags onto the fixed pipeline (no reorder).
 List<StrictModeStep> normalizeStrictModeSteps(List<StrictModeStep>? incoming) {
   final byStatus = {
@@ -49,7 +71,10 @@ OrderItemStatus? nextEnabledStrictStatus(
   return null;
 }
 
-/// Next status for the advance button (respects building strict mode).
+/// Next status for the advance button.
+///
+/// Strict workflow follows enabled steps. With it off, the only forward
+/// step is payed.
 OrderItemStatus? nextOrderItemStatusForBuilding(
   OrderItemStatus status, {
   required bool strictMode,
@@ -58,11 +83,10 @@ OrderItemStatus? nextOrderItemStatusForBuilding(
   if (status == OrderItemStatus.payed || status == OrderItemStatus.cancelled) {
     return null;
   }
-  final next = nextEnabledStrictStatus(status, steps);
-  if (strictMode) {
-    return next;
-  }
-  return next;
+  return nextEnabledStrictStatus(
+    status,
+    effectiveStrictModeSteps(strictMode: strictMode, steps: steps),
+  );
 }
 
 /// When strict mode is off, staff may jump to payed if that step is enabled.
@@ -75,41 +99,107 @@ bool canJumpToPayed(
   if (status == OrderItemStatus.payed || status == OrderItemStatus.cancelled) {
     return false;
   }
-  final next = nextEnabledStrictStatus(status, steps);
+  final effective = effectiveStrictModeSteps(
+    strictMode: strictMode,
+    steps: steps,
+  );
+  final next = nextEnabledStrictStatus(status, effective);
   if (next == null || next == OrderItemStatus.payed) return false;
-  return steps.any(
+  return effective.any(
     (step) => step.enabled && step.status == OrderItemStatus.payed,
   );
 }
 
-/// Board columns follow the venue's enabled steps. Payed lines leave the board.
-List<OrderItemStatus> workflowBoardColumns(List<StrictModeStep> steps) {
+/// Board columns follow the venue's enabled steps.
+///
+/// Strict workflow hides payed lines. With it off, progress and payed are
+/// the columns.
+List<OrderItemStatus> workflowBoardColumns({
+  required bool strictMode,
+  required List<StrictModeStep> steps,
+}) {
+  final effective = effectiveStrictModeSteps(
+    strictMode: strictMode,
+    steps: steps,
+  );
+  if (!strictMode) {
+    return const [OrderItemStatus.progress, OrderItemStatus.payed];
+  }
   return [
     OrderItemStatus.progress,
-    for (final step in steps)
+    for (final step in effective)
       if (step.enabled && step.status != OrderItemStatus.payed) step.status,
+  ];
+}
+
+/// Keeps a kitchen column while a line is already in that status.
+///
+/// Turning strict workflow off does not hide a line that was picked, ready,
+/// or served. It can still move to payed or be cancelled.
+List<OrderItemStatus> boardColumnsIncludingOpenLines({
+  required bool strictMode,
+  required List<OrderItemStatus> columns,
+  required List<OrderView> orders,
+}) {
+  if (strictMode) {
+    return columns;
+  }
+  const kitchen = [
+    OrderItemStatus.picked,
+    OrderItemStatus.ready,
+    OrderItemStatus.served,
+  ];
+  final open = <OrderItemStatus>{
+    for (final order in orders)
+      for (final item in order.items)
+        if (kitchen.contains(item.status)) item.status,
+  };
+  if (open.isEmpty) {
+    return columns;
+  }
+  final canLandPayed =
+      columns.contains(OrderItemStatus.progress) ||
+      columns.contains(OrderItemStatus.payed);
+  if (!canLandPayed) {
+    return columns;
+  }
+  return [
+    if (columns.contains(OrderItemStatus.progress)) OrderItemStatus.progress,
+    for (final status in kitchen)
+      if (open.contains(status)) status,
+    if (columns.contains(OrderItemStatus.payed)) OrderItemStatus.payed,
   ];
 }
 
 /// Columns this person can move. Owners and consult-all see the whole chain.
 List<OrderItemStatus> visibleWorkflowColumns({
+  required bool strictMode,
   required List<StrictModeStep> steps,
   required FloorAccess access,
   required bool seesAll,
 }) {
-  final columns = workflowBoardColumns(steps);
+  final columns = workflowBoardColumns(strictMode: strictMode, steps: steps);
   if (seesAll) return columns;
+  final effective = effectiveStrictModeSteps(
+    strictMode: strictMode,
+    steps: steps,
+  );
   return [
     for (final status in columns)
-      if (_columnForAccess(status, steps, access)) status,
+      if (_columnForAccess(status, effective, access, strictMode: strictMode))
+        status,
   ];
 }
 
 bool _columnForAccess(
   OrderItemStatus status,
   List<StrictModeStep> steps,
-  FloorAccess access,
-) {
+  FloorAccess access, {
+  required bool strictMode,
+}) {
+  if (!strictMode && status == OrderItemStatus.payed) {
+    return access.canPay;
+  }
   return switch (nextEnabledStrictStatus(status, steps)) {
     OrderItemStatus.picked || OrderItemStatus.ready => access.canPrepare,
     OrderItemStatus.served => access.canServe,

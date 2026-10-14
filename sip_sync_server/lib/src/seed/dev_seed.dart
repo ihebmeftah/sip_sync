@@ -138,7 +138,10 @@ class DevSeed {
         tableMultiOrder: false,
         allowAppendingItemsToOrder: true,
         strictMode: false,
-        strictModeSteps: defaultStrictModeSteps(),
+        strictModeSteps: effectiveStrictModeSteps(
+          strictMode: false,
+          steps: defaultStrictModeSteps(),
+        ),
       ),
     );
 
