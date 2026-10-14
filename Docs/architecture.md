@@ -33,6 +33,18 @@ Each Flutter app extends its own tokens in `lib/core/theme/` (`AppColors`, `AppS
 
 Auth uses `AuthShell` (wide split / compact stack). Signed-in `managment` uses `OpsShell` (olive rail / compact drawer). Signed-in `backoffice` uses `ConsoleShell`: a light shadcn sidebar (Stats, Users, Customers, Buildings, Packs) and a zinc canvas. Stats, Users, Customers, Buildings, and Packs are live. After login the user must pick a **building**; dashboard, employees, products, POS, and tables stay locked until then. Forms use `TextFormField` validators (`FormValidators`) plus server errors. A create, update, or delete shows a snackbar when it succeeds and when it fails. A screen that fails to load shows that failure in a snackbar as well as on the page. On the customer app, a failure that belongs to one field (email taken, phone taken, weak password) is drawn on that field and scrolled into view; other failures use `AppFormMessage`. Primary actions are `AppFilledButton` (full width, spinner while busy) and secondary actions are `AppTonalButton`. Arabic is RTL via `MaterialApp` locales. Management selects light or dark with `ThemeController`. Backoffice stays on the light shadcn scheme until a theme switch is added; `AppTheme.shadDark` is already defined. The customer app stays on the light scheme until a theme switch is added; `AppTheme.dark` is already defined.
 
+## Production web
+
+`scloud deploy` builds all three Flutter web apps and the server serves them on one host:
+
+| App | URL |
+| --- | --- |
+| Customer | `https://<project-id>.serverpod.space/` |
+| Management | `https://<project-id>.serverpod.space/managment/` |
+| Backoffice | `https://<project-id>.serverpod.space/backoffice/` |
+
+The API is `https://<project-id>.api.serverpod.space/`. Android and iOS builds are not part of this deploy.
+
 ## Local development on a physical phone
 
 Bundled `assets/config.json` uses `http://localhost:8080`. That works for Flutter **web** and **iOS Simulator**. On a **physical** iOS/Android device, `localhost` is the phone itself — login fails with a network error.

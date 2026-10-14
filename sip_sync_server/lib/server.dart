@@ -27,21 +27,26 @@ void run(List<String> args) async {
     cacheBustingConfig.mountPrefix,
   );
 
-  pod.webServer.addRoute(
-    AppConfigRoute(apiConfig: pod.config.apiServer),
-    '/assets/assets/config.json',
+  // More specific prefixes first. The customer app is mounted at `/` and would
+  // otherwise answer /managment and /backoffice with its own index.html.
+  _mountFlutterWebApp(
+    pod,
+    directoryPath: 'web/managment',
+    mountPath: '/managment',
+  );
+  _mountFlutterWebApp(
+    pod,
+    directoryPath: 'web/backoffice',
+    mountPath: '/backoffice',
+  );
+  _mountFlutterWebApp(
+    pod,
+    directoryPath: 'web/app',
+    mountPath: '/',
   );
 
   final appDir = Directory(Uri(path: 'web/app').toFilePath());
-  if (appDir.existsSync()) {
-    pod.webServer.addRoute(
-      FlutterRoute(
-        appDir,
-        enableWasmHeaders: false,
-      ),
-      '/',
-    );
-  } else {
+  if (!appDir.existsSync()) {
     final defaultRoute = StaticRoute.file(
       File(
         Uri(path: 'web/pages/build_flutter_app.html').toFilePath(),
@@ -82,6 +87,36 @@ void run(List<String> args) async {
     await DevSeed.ensureDemoData(session);
   });
   _watchPackExpiry(pod);
+}
+
+/// Serves one Flutter web build and the live API URL for that build.
+///
+/// [mountPath] is the public prefix. `/` is the customer app. A subpath such
+/// as `/managment` must match the `--base-href` used when that app was built,
+/// so the browser loads assets from the prefix and GoRouter still sees `/`.
+/// The bundled `config.json` points at localhost; this route replaces it with
+/// the server's public API URL.
+void _mountFlutterWebApp(
+  Serverpod pod, {
+  required String directoryPath,
+  required String mountPath,
+}) {
+  final directory = Directory(Uri(path: directoryPath).toFilePath());
+  if (!directory.existsSync()) {
+    return;
+  }
+  final prefix = mountPath == '/' ? '' : mountPath;
+  pod.webServer.addRoute(
+    AppConfigRoute(apiConfig: pod.config.apiServer),
+    '$prefix/assets/assets/config.json',
+  );
+  pod.webServer.addRoute(
+    FlutterRoute(
+      directory,
+      enableWasmHeaders: false,
+    ),
+    mountPath,
+  );
 }
 
 /// Checks paid terms every 15 minutes and returns due venues to the free pack.

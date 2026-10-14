@@ -23,22 +23,42 @@ dev_dependencies:
 
 serverpod:
   scripts:
-    # Build the Flutter web app and copy it to the server's web directory.
+    # Build the three Flutter web apps into the server's web directory.
+    # Customer is served at /, management at /managment/, backoffice at /backoffice/.
+    # The base href must match that prefix so GoRouter ignores it.
     # Windows uses xcopy since flutter's --output flag doesn't work there.
     # See: https://github.com/flutter/flutter/issues/157886
     # On failure, clean and retry once to clear stale Flutter build caches.
     flutter_build:
       windows: >-
         (if exist web\app rmdir /S /Q web\app)
+        & (if exist web\managment rmdir /S /Q web\managment)
+        & (if exist web\backoffice rmdir /S /Q web\backoffice)
         & cd /D ..\sip_sync_flutter
-        & set ARGS=web --base-href /
-        && (call flutter build %ARGS% || (flutter clean && call flutter build %ARGS%))
+        & (call flutter build web --base-href / || (flutter clean && call flutter build web --base-href /))
         && xcopy /E /I /Y build\web ..\sip_sync_server\web\app
+        & cd /D ..\managment
+        & (call flutter build web --base-href /managment/ || (flutter clean && call flutter build web --base-href /managment/))
+        && xcopy /E /I /Y build\web ..\sip_sync_server\web\managment
+        & cd /D ..\backoffice
+        & (call flutter build web --base-href /backoffice/ || (flutter clean && call flutter build web --base-href /backoffice/))
+        && xcopy /E /I /Y build\web ..\sip_sync_server\web\backoffice
       posix: |
-        rm -rf ../sip_sync_server/web/app
-        cd ../sip_sync_flutter
-        set -- web --base-href / --output ../sip_sync_server/web/app
-        flutter build "$@" || { flutter clean && flutter build "$@"; }
+        build_web() {
+          local app_dir="$1"
+          local base_href="$2"
+          local out_dir="$3"
+          rm -rf "$out_dir"
+          (
+            cd "$app_dir"
+            set -- web --base-href "$base_href" --output "$out_dir"
+            flutter build "$@" || { flutter clean && flutter build "$@"; }
+          )
+        }
+        server_dir="$(pwd)"
+        build_web ../sip_sync_flutter / "$server_dir/web/app"
+        build_web ../managment /managment/ "$server_dir/web/managment"
+        build_web ../backoffice /backoffice/ "$server_dir/web/backoffice"
 
   # Companion Flutter apps that `serverpod start` can launch (Ctrl+R), keyed
   # by a display alias. The default device is the web server, opening the
