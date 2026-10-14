@@ -48,6 +48,8 @@ building:
   - create:
   - update:
   - listEmployees:
+dashboard:
+  - summary:
 customerPlace:
   - search:
   - reverse:

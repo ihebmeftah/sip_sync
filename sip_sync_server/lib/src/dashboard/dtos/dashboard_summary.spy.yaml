@@ -1,0 +1,26 @@
+### Operational counts for one venue on one local calendar day.
+###
+### Orders, item lines, and customer-app orders are those created on [day].
+### Pending reservations are still-waiting requests of any day.
+### Ingredients to restock are current stock, not limited to the day.
+class: DashboardSummary
+fields:
+  ### Orders opened on the requested day.
+  orderTotal: int
+  ordersProgress: int
+  ordersPayed: int
+  ordersCancelled: int
+  ### Orders that day launched from the customer app.
+  customerOrders: int
+  itemsProgress: int
+  itemsPicked: int
+  itemsReady: int
+  itemsServed: int
+  itemsPayed: int
+  itemsCancelled: int
+  ### Reservation requests still waiting, any day.
+  pendingReservations: int
+  ### Reservations whose start falls on the requested day.
+  reservationsToday: int
+  ### Ingredients whose current stock is under 10% of the full level.
+  ingredientsToRestock: int

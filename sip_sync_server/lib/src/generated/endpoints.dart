@@ -98,6 +98,7 @@ import '../auth/owner_auth_endpoint.dart' as _is2qyeee;
 import '../auth/platform_directory_endpoint.dart' as _i2rird0e;
 import '../auth/super_admin_auth_endpoint.dart' as _itmp66ay;
 import '../buildings/building_endpoint.dart' as _i69ygv7j;
+import '../dashboard/dashboard_endpoint.dart' as _izwoh05q;
 import '../discovery/customer_place_endpoint.dart' as _i6jzpqpk;
 import '../discovery/customer_venue_endpoint.dart' as _i4o7mcri;
 import '../employee_access/employee_access_endpoint.dart' as _im8yutbr;
@@ -157,6 +158,12 @@ class Endpoints extends _is.EndpointDispatch {
         ..initialize(
           server,
           'building',
+          null,
+        ),
+      'dashboard': _izwoh05q.DashboardEndpoint()
+        ..initialize(
+          server,
+          'dashboard',
           null,
         ),
       'customerPlace': _i6jzpqpk.CustomerPlaceEndpoint()
@@ -1126,6 +1133,37 @@ class Endpoints extends _is.EndpointDispatch {
                     params['buildingId'],
                     limit: params['limit'],
                     offset: params['offset'],
+                  ),
+        ),
+      },
+    );
+    connectors['dashboard'] = _is.EndpointConnector(
+      name: 'dashboard',
+      endpoint: endpoints['dashboard']!,
+      methodConnectors: {
+        'summary': _is.MethodConnector(
+          name: 'summary',
+          params: {
+            'buildingId': _is.ParameterDescription(
+              name: 'buildingId',
+              type: _is.getType<_is.UuidValue>(),
+              nullable: false,
+            ),
+            'day': _is.ParameterDescription(
+              name: 'day',
+              type: _is.getType<DateTime>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['dashboard'] as _izwoh05q.DashboardEndpoint)
+                  .summary(
+                    session,
+                    params['buildingId'],
+                    params['day'],
                   ),
         ),
       },

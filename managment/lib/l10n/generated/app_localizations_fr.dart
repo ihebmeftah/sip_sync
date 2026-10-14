@@ -430,7 +430,46 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get dashboardSubtitle =>
-      'Caisse, salle et catalogue à un geste. Les compteurs arriveront avec le serveur.';
+      'Commandes du jour, réservations et stock à recharger.';
+
+  @override
+  String get dashboardToday => 'Aujourd\'hui';
+
+  @override
+  String get dashboardCurrentDay => 'Jour en cours';
+
+  @override
+  String get dashboardRangeStart => 'Début';
+
+  @override
+  String get dashboardRangeEnd => 'Fin';
+
+  @override
+  String get dashboardOrderTotal => 'Commandes';
+
+  @override
+  String get dashboardOrdersByStatus => 'Commandes par statut';
+
+  @override
+  String get dashboardCustomerOrders => 'Application client';
+
+  @override
+  String get dashboardItemsByStatus => 'Articles par statut';
+
+  @override
+  String get dashboardPendingReservations => 'Demandes en attente';
+
+  @override
+  String get dashboardReservationsToday => 'Réservations du jour';
+
+  @override
+  String get dashboardRestock => 'À réapprovisionner';
+
+  @override
+  String get dashboardRestockHint => 'Moins de 10 % du stock plein';
+
+  @override
+  String get dashboardHouse => 'Réservations et stock';
 
   @override
   String get dashboardShift => 'Tableau de service';

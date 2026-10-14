@@ -865,8 +865,86 @@ abstract class AppLocalizations {
   /// No description provided for @dashboardSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'POS, floor, and catalog sit one tap away. Live counts arrive with the next server slice.'**
+  /// **'Today’s orders, reservations, and stock that needs a refill.'**
   String get dashboardSubtitle;
+
+  /// No description provided for @dashboardToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get dashboardToday;
+
+  /// No description provided for @dashboardCurrentDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Current day'**
+  String get dashboardCurrentDay;
+
+  /// No description provided for @dashboardRangeStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Start'**
+  String get dashboardRangeStart;
+
+  /// No description provided for @dashboardRangeEnd.
+  ///
+  /// In en, this message translates to:
+  /// **'End'**
+  String get dashboardRangeEnd;
+
+  /// No description provided for @dashboardOrderTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Orders'**
+  String get dashboardOrderTotal;
+
+  /// No description provided for @dashboardOrdersByStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Orders by status'**
+  String get dashboardOrdersByStatus;
+
+  /// No description provided for @dashboardCustomerOrders.
+  ///
+  /// In en, this message translates to:
+  /// **'Customer app'**
+  String get dashboardCustomerOrders;
+
+  /// No description provided for @dashboardItemsByStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Items by status'**
+  String get dashboardItemsByStatus;
+
+  /// No description provided for @dashboardPendingReservations.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending requests'**
+  String get dashboardPendingReservations;
+
+  /// No description provided for @dashboardReservationsToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Reservations today'**
+  String get dashboardReservationsToday;
+
+  /// No description provided for @dashboardRestock.
+  ///
+  /// In en, this message translates to:
+  /// **'Need restock'**
+  String get dashboardRestock;
+
+  /// No description provided for @dashboardRestockHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Under 10% of full stock'**
+  String get dashboardRestockHint;
+
+  /// No description provided for @dashboardHouse.
+  ///
+  /// In en, this message translates to:
+  /// **'Reservations and stock'**
+  String get dashboardHouse;
 
   /// No description provided for @dashboardShift.
   ///

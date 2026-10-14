@@ -69,6 +69,7 @@ import 'buildings/dtos/building_update.dart' as _irbupqdx;
 import 'buildings/dtos/building_view.dart' as _i9ph7g7s;
 import 'buildings/dtos/country_building_stat.dart' as _i92kzdia;
 import 'buildings/dtos/strict_mode_step.dart' as _i70klpnb;
+import 'dashboard/dtos/dashboard_summary.dart' as _ie6zmm67;
 import 'discovery/dtos/customer_article_preview.dart' as _ipvj66ag;
 import 'discovery/dtos/customer_category_preview.dart' as _ia0qwq20;
 import 'discovery/dtos/customer_menu.dart' as _i6g8xgrj;
@@ -205,6 +206,7 @@ export 'buildings/dtos/building_update.dart';
 export 'buildings/dtos/building_view.dart';
 export 'buildings/dtos/country_building_stat.dart';
 export 'buildings/dtos/strict_mode_step.dart';
+export 'dashboard/dtos/dashboard_summary.dart';
 export 'discovery/dtos/customer_article_preview.dart';
 export 'discovery/dtos/customer_category_preview.dart';
 export 'discovery/dtos/customer_menu.dart';
@@ -450,6 +452,9 @@ class Protocol extends _isc.SerializationManager {
     }
     if (t == _i70klpnb.StrictModeStep) {
       return _i70klpnb.StrictModeStep.fromJson(data) as T;
+    }
+    if (t == _ie6zmm67.DashboardSummary) {
+      return _ie6zmm67.DashboardSummary.fromJson(data) as T;
     }
     if (t == _ipvj66ag.CustomerArticlePreview) {
       return _ipvj66ag.CustomerArticlePreview.fromJson(data) as T;
@@ -911,6 +916,10 @@ class Protocol extends _isc.SerializationManager {
     }
     if (t == _isc.getType<_i70klpnb.StrictModeStep?>()) {
       return (data != null ? _i70klpnb.StrictModeStep.fromJson(data) : null)
+          as T;
+    }
+    if (t == _isc.getType<_ie6zmm67.DashboardSummary?>()) {
+      return (data != null ? _ie6zmm67.DashboardSummary.fromJson(data) : null)
           as T;
     }
     if (t == _isc.getType<_ipvj66ag.CustomerArticlePreview?>()) {
@@ -1631,6 +1640,7 @@ class Protocol extends _isc.SerializationManager {
       _i9ph7g7s.BuildingView => 'BuildingView',
       _i92kzdia.CountryBuildingStat => 'CountryBuildingStat',
       _i70klpnb.StrictModeStep => 'StrictModeStep',
+      _ie6zmm67.DashboardSummary => 'DashboardSummary',
       _ipvj66ag.CustomerArticlePreview => 'CustomerArticlePreview',
       _ia0qwq20.CustomerCategoryPreview => 'CustomerCategoryPreview',
       _i6g8xgrj.CustomerMenu => 'CustomerMenu',
@@ -1818,6 +1828,8 @@ class Protocol extends _isc.SerializationManager {
         return 'CountryBuildingStat';
       case _i70klpnb.StrictModeStep():
         return 'StrictModeStep';
+      case _ie6zmm67.DashboardSummary():
+        return 'DashboardSummary';
       case _ipvj66ag.CustomerArticlePreview():
         return 'CustomerArticlePreview';
       case _ia0qwq20.CustomerCategoryPreview():
@@ -2148,6 +2160,9 @@ class Protocol extends _isc.SerializationManager {
     }
     if (dataClassName == 'StrictModeStep') {
       return deserialize<_i70klpnb.StrictModeStep>(data['data']);
+    }
+    if (dataClassName == 'DashboardSummary') {
+      return deserialize<_ie6zmm67.DashboardSummary>(data['data']);
     }
     if (dataClassName == 'CustomerArticlePreview') {
       return deserialize<_ipvj66ag.CustomerArticlePreview>(data['data']);

@@ -77,6 +77,7 @@ import 'buildings/dtos/building_view.dart' as _i9ph7g7s;
 import 'buildings/dtos/country_building_stat.dart' as _i92kzdia;
 import 'buildings/dtos/strict_mode_step.dart' as _i70klpnb;
 import 'buildings/entity/building.dart' as _iit041ql;
+import 'dashboard/dtos/dashboard_summary.dart' as _ie6zmm67;
 import 'discovery/dtos/customer_article_preview.dart' as _ipvj66ag;
 import 'discovery/dtos/customer_category_preview.dart' as _ia0qwq20;
 import 'discovery/dtos/customer_menu.dart' as _i6g8xgrj;
@@ -233,6 +234,7 @@ export 'buildings/dtos/building_view.dart';
 export 'buildings/dtos/country_building_stat.dart';
 export 'buildings/dtos/strict_mode_step.dart';
 export 'buildings/entity/building.dart';
+export 'dashboard/dtos/dashboard_summary.dart';
 export 'discovery/dtos/customer_article_preview.dart';
 export 'discovery/dtos/customer_category_preview.dart';
 export 'discovery/dtos/customer_menu.dart';
@@ -3042,6 +3044,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == _iit041ql.Building) {
       return _iit041ql.Building.fromJson(data) as T;
     }
+    if (t == _ie6zmm67.DashboardSummary) {
+      return _ie6zmm67.DashboardSummary.fromJson(data) as T;
+    }
     if (t == _ipvj66ag.CustomerArticlePreview) {
       return _ipvj66ag.CustomerArticlePreview.fromJson(data) as T;
     }
@@ -3564,6 +3569,10 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     if (t == _is.getType<_iit041ql.Building?>()) {
       return (data != null ? _iit041ql.Building.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_ie6zmm67.DashboardSummary?>()) {
+      return (data != null ? _ie6zmm67.DashboardSummary.fromJson(data) : null)
+          as T;
     }
     if (t == _is.getType<_ipvj66ag.CustomerArticlePreview?>()) {
       return (data != null
@@ -4524,6 +4533,7 @@ class Protocol extends _is.DatabaseSerializationManager {
       _i92kzdia.CountryBuildingStat => 'CountryBuildingStat',
       _i70klpnb.StrictModeStep => 'StrictModeStep',
       _iit041ql.Building => 'Building',
+      _ie6zmm67.DashboardSummary => 'DashboardSummary',
       _ipvj66ag.CustomerArticlePreview => 'CustomerArticlePreview',
       _ia0qwq20.CustomerCategoryPreview => 'CustomerCategoryPreview',
       _i6g8xgrj.CustomerMenu => 'CustomerMenu',
@@ -4738,6 +4748,8 @@ class Protocol extends _is.DatabaseSerializationManager {
         return 'StrictModeStep';
       case _iit041ql.Building():
         return 'Building';
+      case _ie6zmm67.DashboardSummary():
+        return 'DashboardSummary';
       case _ipvj66ag.CustomerArticlePreview():
         return 'CustomerArticlePreview';
       case _ia0qwq20.CustomerCategoryPreview():
@@ -5119,6 +5131,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     if (dataClassName == 'Building') {
       return deserialize<_iit041ql.Building>(data['data']);
+    }
+    if (dataClassName == 'DashboardSummary') {
+      return deserialize<_ie6zmm67.DashboardSummary>(data['data']);
     }
     if (dataClassName == 'CustomerArticlePreview') {
       return deserialize<_ipvj66ag.CustomerArticlePreview>(data['data']);

@@ -75,6 +75,8 @@ import 'package:sip_sync_client/src/protocol/buildings/dtos/building_view.dart'
     as _ik35q5v8;
 import 'package:sip_sync_client/src/protocol/buildings/dtos/country_building_stat.dart'
     as _iebf7xye;
+import 'package:sip_sync_client/src/protocol/dashboard/dtos/dashboard_summary.dart'
+    as _igwpv6jx;
 import 'package:sip_sync_client/src/protocol/discovery/dtos/customer_menu.dart'
     as _i1mbazw4;
 import 'package:sip_sync_client/src/protocol/discovery/dtos/customer_seated_table.dart'
@@ -650,6 +652,32 @@ class EndpointBuilding extends _isc.EndpointRef {
       'buildingId': buildingId,
       'limit': limit,
       'offset': offset,
+    },
+  );
+}
+
+/// House counts for the management dashboard of one building.
+/// {@category Endpoint}
+class EndpointDashboard extends _isc.EndpointRef {
+  EndpointDashboard(_isc.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'dashboard';
+
+  /// Orders, item lines, reservations, and low stock for [buildingId].
+  ///
+  /// [day] is the venue's local calendar date stored as UTC midnight.
+  /// The owner of the building, and employees there whose access includes
+  /// consultAllOrders, can call this.
+  _ida.Future<_igwpv6jx.DashboardSummary> summary(
+    _isc.UuidValue buildingId,
+    DateTime day,
+  ) => caller.callServerEndpoint<_igwpv6jx.DashboardSummary>(
+    'dashboard',
+    'summary',
+    {
+      'buildingId': buildingId,
+      'day': day,
     },
   );
 }
@@ -1564,6 +1592,7 @@ class Client extends _isc.ServerpodClientShared {
     platformDirectory = EndpointPlatformDirectory(this);
     superAdminAuth = EndpointSuperAdminAuth(this);
     building = EndpointBuilding(this);
+    dashboard = EndpointDashboard(this);
     customerPlace = EndpointCustomerPlace(this);
     customerVenue = EndpointCustomerVenue(this);
     employeeAccess = EndpointEmployeeAccess(this);
@@ -1594,6 +1623,8 @@ class Client extends _isc.ServerpodClientShared {
   late final EndpointSuperAdminAuth superAdminAuth;
 
   late final EndpointBuilding building;
+
+  late final EndpointDashboard dashboard;
 
   late final EndpointCustomerPlace customerPlace;
 
@@ -1634,6 +1665,7 @@ class Client extends _isc.ServerpodClientShared {
     'platformDirectory': platformDirectory,
     'superAdminAuth': superAdminAuth,
     'building': building,
+    'dashboard': dashboard,
     'customerPlace': customerPlace,
     'customerVenue': customerVenue,
     'employeeAccess': employeeAccess,

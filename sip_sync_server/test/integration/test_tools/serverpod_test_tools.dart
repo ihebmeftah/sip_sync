@@ -73,6 +73,8 @@ import 'package:sip_sync_server/src/generated/buildings/dtos/building_view.dart'
     as _ihha274w;
 import 'package:sip_sync_server/src/generated/buildings/dtos/country_building_stat.dart'
     as _iagq6ykd;
+import 'package:sip_sync_server/src/generated/dashboard/dtos/dashboard_summary.dart'
+    as _ih2gcwn7;
 import 'package:sip_sync_server/src/generated/discovery/dtos/customer_menu.dart'
     as _inirmmjl;
 import 'package:sip_sync_server/src/generated/discovery/dtos/customer_seated_table.dart'
@@ -326,6 +328,8 @@ class TestEndpoints {
 
   late final _BuildingEndpoint building;
 
+  late final _DashboardEndpoint dashboard;
+
   late final _CustomerPlaceEndpoint customerPlace;
 
   late final _CustomerVenueEndpoint customerVenue;
@@ -387,6 +391,10 @@ class _InternalTestEndpoints extends TestEndpoints
       serializationManager,
     );
     building = _BuildingEndpoint(
+      endpoints,
+      serializationManager,
+    );
+    dashboard = _DashboardEndpoint(
       endpoints,
       serializationManager,
     );
@@ -1879,6 +1887,52 @@ class _BuildingEndpoint {
                   _localCallContext.arguments,
                 )
                 as _ida.Future<_idbtbw90.EmployeePage>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+}
+
+class _DashboardEndpoint {
+  _DashboardEndpoint(
+    this._endpointDispatch,
+    this._serializationManager,
+  );
+
+  final _is.EndpointDispatch _endpointDispatch;
+
+  final _is.SerializationManager _serializationManager;
+
+  _ida.Future<_ih2gcwn7.DashboardSummary> summary(
+    _ist.TestSessionBuilder sessionBuilder,
+    _is.UuidValue buildingId,
+    DateTime day,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'dashboard',
+            method: 'summary',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'dashboard',
+          methodName: 'summary',
+          parameters: _ist.testObjectToJson({
+            'buildingId': buildingId,
+            'day': day,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_ih2gcwn7.DashboardSummary>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();

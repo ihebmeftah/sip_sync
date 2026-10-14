@@ -56,6 +56,11 @@ GoRouter appRouter(Ref ref) {
         if (store.isEmployee && location.contains('/configuration')) {
           return employeeHome;
         }
+        if (store.isEmployee &&
+            location.endsWith('/dashboard') &&
+            store.employee?.access?.consultAllOrders != true) {
+          return employeeHome;
+        }
       }
       if (signedIn && !onAuth && !onBuildings && !onOps) {
         return employeeHome ?? const BuildingsRoute().location;

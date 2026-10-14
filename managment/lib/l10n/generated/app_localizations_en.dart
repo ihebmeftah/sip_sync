@@ -422,7 +422,46 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dashboardSubtitle =>
-      'POS, floor, and catalog sit one tap away. Live counts arrive with the next server slice.';
+      'Today’s orders, reservations, and stock that needs a refill.';
+
+  @override
+  String get dashboardToday => 'Today';
+
+  @override
+  String get dashboardCurrentDay => 'Current day';
+
+  @override
+  String get dashboardRangeStart => 'Start';
+
+  @override
+  String get dashboardRangeEnd => 'End';
+
+  @override
+  String get dashboardOrderTotal => 'Orders';
+
+  @override
+  String get dashboardOrdersByStatus => 'Orders by status';
+
+  @override
+  String get dashboardCustomerOrders => 'Customer app';
+
+  @override
+  String get dashboardItemsByStatus => 'Items by status';
+
+  @override
+  String get dashboardPendingReservations => 'Pending requests';
+
+  @override
+  String get dashboardReservationsToday => 'Reservations today';
+
+  @override
+  String get dashboardRestock => 'Need restock';
+
+  @override
+  String get dashboardRestockHint => 'Under 10% of full stock';
+
+  @override
+  String get dashboardHouse => 'Reservations and stock';
 
   @override
   String get dashboardShift => 'Shift board';

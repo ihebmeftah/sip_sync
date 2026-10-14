@@ -45,7 +45,7 @@ final class NotificationToastsProvider
 }
 
 String _$notificationToastsHash() =>
-    r'076b83c9f09361ffe773ad207de17546fd8d20af';
+    r'568e87a28eecd67169f1cd16e6dc24b0b6b0698d';
 
 /// Live alerts piled at the top of the screen. The inbox keeps the history.
 

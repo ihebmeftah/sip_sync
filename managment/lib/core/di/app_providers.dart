@@ -3,6 +3,7 @@ import 'package:sip_sync_client/sip_sync_client.dart';
 
 import '../../data/repositories/article_composition_repository.dart';
 import '../../data/repositories/building_repository.dart';
+import '../../data/repositories/dashboard_repository.dart';
 import '../../data/repositories/employee_access_repository.dart';
 import '../../data/repositories/employee_repository.dart';
 import '../../data/repositories/ingredient_repository.dart';
@@ -29,6 +30,10 @@ OwnerAuthRepository ownerAuthRepository(Ref ref) =>
 
 @Riverpod(keepAlive: true)
 BuildingRepository buildingRepository(Ref ref) => getIt<BuildingRepository>();
+
+@Riverpod(keepAlive: true)
+DashboardRepository dashboardRepository(Ref ref) =>
+    getIt<DashboardRepository>();
 
 @Riverpod(keepAlive: true)
 EmployeeRepository employeeRepository(Ref ref) => getIt<EmployeeRepository>();

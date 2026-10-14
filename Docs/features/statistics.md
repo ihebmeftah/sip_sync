@@ -4,7 +4,7 @@ Status: in progress
 
 ## Apps
 
-`sip_sync_server`, `backoffice`. The owner dashboard in `managment` is still later.
+`sip_sync_server`, `backoffice`. Today's operational counts for a venue live on the [management dashboard](dashboard.md).
 
 ## Actors and permissions
 
@@ -17,7 +17,7 @@ Status: in progress
 2. The monthly total is the sum of each venue’s current pack price, in TND millimes. A private pack still counts in that total.
 3. **Public packs** lists every public pack, including a disabled one, with how many venues are on it and how many distinct owners those venues belong to. Private packs stay off this list.
 
-The owner dashboard (revenue in the venue currency, employee performance) is not this screen.
+Revenue in the venue currency and employee performance are not this screen, and they are not on the management dashboard yet.
 
 ## Data
 

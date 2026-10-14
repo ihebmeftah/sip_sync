@@ -145,6 +145,54 @@ final class BuildingRepositoryProvider
 String _$buildingRepositoryHash() =>
     r'6c7f41e1ecb66a8ddd889faec57caa201f470381';
 
+@ProviderFor(dashboardRepository)
+const dashboardRepositoryProvider = DashboardRepositoryProvider._();
+
+final class DashboardRepositoryProvider
+    extends
+        $FunctionalProvider<
+          DashboardRepository,
+          DashboardRepository,
+          DashboardRepository
+        >
+    with $Provider<DashboardRepository> {
+  const DashboardRepositoryProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'dashboardRepositoryProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$dashboardRepositoryHash();
+
+  @$internal
+  @override
+  $ProviderElement<DashboardRepository> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  DashboardRepository create(Ref ref) {
+    return dashboardRepository(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(DashboardRepository value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<DashboardRepository>(value),
+    );
+  }
+}
+
+String _$dashboardRepositoryHash() =>
+    r'c729569633960b9a3a4df6c6e9fa611805a9e665';
+
 @ProviderFor(employeeRepository)
 const employeeRepositoryProvider = EmployeeRepositoryProvider._();
 

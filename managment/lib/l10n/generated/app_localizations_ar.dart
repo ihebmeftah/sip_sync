@@ -414,7 +414,46 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get dashboardSubtitle =>
-      'نقطة البيع والصالة والكتالوج بضغطة. الأرقام الحية تأتي مع الخادم لاحقاً.';
+      'طلبات اليوم والحجوزات والمخزون الذي يحتاج إعادة تعبئة.';
+
+  @override
+  String get dashboardToday => 'اليوم';
+
+  @override
+  String get dashboardCurrentDay => 'اليوم الحالي';
+
+  @override
+  String get dashboardRangeStart => 'البداية';
+
+  @override
+  String get dashboardRangeEnd => 'النهاية';
+
+  @override
+  String get dashboardOrderTotal => 'الطلبات';
+
+  @override
+  String get dashboardOrdersByStatus => 'الطلبات حسب الحالة';
+
+  @override
+  String get dashboardCustomerOrders => 'تطبيق الزبون';
+
+  @override
+  String get dashboardItemsByStatus => 'بنود الطلب حسب الحالة';
+
+  @override
+  String get dashboardPendingReservations => 'طلبات الحجز المعلقة';
+
+  @override
+  String get dashboardReservationsToday => 'حجوزات اليوم';
+
+  @override
+  String get dashboardRestock => 'تحتاج إعادة تخزين';
+
+  @override
+  String get dashboardRestockHint => 'أقل من 10٪ من المخزون الكامل';
+
+  @override
+  String get dashboardHouse => 'الحجوزات والمخزون';
 
   @override
   String get dashboardShift => 'لوحة الوردية';

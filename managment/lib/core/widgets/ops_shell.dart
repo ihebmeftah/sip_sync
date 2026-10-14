@@ -140,7 +140,26 @@ class _OpsShellState extends ConsumerState<OpsShell> {
     });
   }
 
-  int? _bottomIndexFor(String location, {required bool isEmployee}) {
+  int? _bottomIndexFor(
+    String location, {
+    required bool isEmployee,
+    required bool employeeDashboard,
+  }) {
+    if (isEmployee && employeeDashboard) {
+      if (location.endsWith('/dashboard')) {
+        return 0;
+      }
+      if (location.contains('/tables/scan')) {
+        return 2;
+      }
+      if (location.endsWith('/tables') || location.contains('/tables/')) {
+        return 1;
+      }
+      if (location.contains('/orders')) {
+        return 3;
+      }
+      return null;
+    }
     if (isEmployee) {
       if (location.contains('/orders')) {
         return 2;
@@ -169,13 +188,30 @@ class _OpsShellState extends ConsumerState<OpsShell> {
     String buildingId,
     int index, {
     required bool isEmployee,
+    required bool employeeDashboard,
     required bool scanLocked,
   }) {
-    if (isEmployee && index == 1 && scanLocked) {
+    final scanIndex = isEmployee && employeeDashboard ? 2 : 1;
+    if (isEmployee && index == scanIndex && scanLocked) {
       showPackCatalog(context);
       return;
     }
     setState(() => _lastBottomIndex = index);
+    if (isEmployee && employeeDashboard) {
+      switch (index) {
+        case 0:
+          DashboardRoute(buildingId: buildingId).go(context);
+        case 1:
+          TablesRoute(buildingId: buildingId).go(context);
+        case 2:
+          TableQrScanRoute(buildingId: buildingId).go(context);
+        case 3:
+          OrdersRoute(buildingId: buildingId).go(context);
+        default:
+          break;
+      }
+      return;
+    }
     if (isEmployee) {
       switch (index) {
         case 0:
@@ -275,7 +311,10 @@ class _OpsShellState extends ConsumerState<OpsShell> {
         final location = GoRouterState.of(context).uri.path;
         final l10n = AppLocalizations.of(context)!;
         final scheme = Theme.of(context).colorScheme;
-        final isEmployee = ref.watch(appSessionStoreProvider).isEmployee;
+        final store = ref.watch(appSessionStoreProvider);
+        final isEmployee = store.isEmployee;
+        final employeeDashboard =
+            isEmployee && FloorAccess.fromSession(store).canConsultAll;
         final pendingReservations = buildingId.isEmpty
             ? 0
             : ref
@@ -321,8 +360,95 @@ class _OpsShellState extends ConsumerState<OpsShell> {
           );
         }
 
-        final routeIndex = _bottomIndexFor(location, isEmployee: isEmployee);
-        final bottomIndex = routeIndex ?? _lastBottomIndex;
+        final routeIndex = _bottomIndexFor(
+          location,
+          isEmployee: isEmployee,
+          employeeDashboard: employeeDashboard,
+        );
+        final destinations = employeeDashboard
+            ? [
+                NavigationDestination(
+                  icon: const Icon(Icons.grid_view_outlined),
+                  selectedIcon: const Icon(Icons.grid_view_rounded),
+                  label: l10n.navDashboard,
+                ),
+                NavigationDestination(
+                  icon: const Icon(Icons.table_restaurant_outlined),
+                  selectedIcon: const Icon(Icons.table_restaurant),
+                  label: l10n.navTables,
+                ),
+                NavigationDestination(
+                  icon: _upgradeIcon(
+                    Icons.qr_code_scanner_outlined,
+                    upgrade: scanLocked,
+                    l10n: l10n,
+                    scheme: scheme,
+                  ),
+                  selectedIcon: _upgradeIcon(
+                    Icons.qr_code_scanner,
+                    upgrade: scanLocked,
+                    l10n: l10n,
+                    scheme: scheme,
+                  ),
+                  label: l10n.navScanTable,
+                ),
+                NavigationDestination(
+                  icon: const Icon(Icons.receipt_long_outlined),
+                  selectedIcon: const Icon(Icons.receipt_long),
+                  label: l10n.navOrders,
+                ),
+              ]
+            : isEmployee
+            ? [
+                NavigationDestination(
+                  icon: const Icon(Icons.table_restaurant_outlined),
+                  selectedIcon: const Icon(Icons.table_restaurant),
+                  label: l10n.navTables,
+                ),
+                NavigationDestination(
+                  icon: _upgradeIcon(
+                    Icons.qr_code_scanner_outlined,
+                    upgrade: scanLocked,
+                    l10n: l10n,
+                    scheme: scheme,
+                  ),
+                  selectedIcon: _upgradeIcon(
+                    Icons.qr_code_scanner,
+                    upgrade: scanLocked,
+                    l10n: l10n,
+                    scheme: scheme,
+                  ),
+                  label: l10n.navScanTable,
+                ),
+                NavigationDestination(
+                  icon: const Icon(Icons.receipt_long_outlined),
+                  selectedIcon: const Icon(Icons.receipt_long),
+                  label: l10n.navOrders,
+                ),
+              ]
+            : [
+                NavigationDestination(
+                  icon: const Icon(Icons.grid_view_outlined),
+                  selectedIcon: const Icon(Icons.grid_view_rounded),
+                  label: l10n.navDashboard,
+                ),
+                NavigationDestination(
+                  icon: const Icon(Icons.table_restaurant_outlined),
+                  selectedIcon: const Icon(Icons.table_restaurant),
+                  label: l10n.navTables,
+                ),
+                NavigationDestination(
+                  icon: const Icon(Icons.receipt_long_outlined),
+                  selectedIcon: const Icon(Icons.receipt_long),
+                  label: l10n.navOrders,
+                ),
+              ];
+        final rawIndex = routeIndex ?? _lastBottomIndex;
+        final bottomIndex = rawIndex < 0
+            ? 0
+            : rawIndex >= destinations.length
+            ? destinations.length - 1
+            : rawIndex;
         // Article picker / order detail / QR scan: drop shell chrome so the
         // screen's own AppBar owns the viewport (FAB already hidden via [_buildFab]).
         final immersiveOrderScreen = _isImmersiveOrderScreen(location);
@@ -360,58 +486,15 @@ class _OpsShellState extends ConsumerState<OpsShell> {
           bottomNavigationBar: immersiveOrderScreen
               ? null
               : NavigationBar(
-                  selectedIndex: bottomIndex.clamp(0, 2),
+                  selectedIndex: bottomIndex,
                   onDestinationSelected: (index) => _onBottomNavSelected(
                     buildingId,
                     index,
                     isEmployee: isEmployee,
+                    employeeDashboard: employeeDashboard,
                     scanLocked: scanLocked,
                   ),
-                  destinations: isEmployee
-                      ? [
-                          NavigationDestination(
-                            icon: const Icon(Icons.table_restaurant_outlined),
-                            selectedIcon: const Icon(Icons.table_restaurant),
-                            label: l10n.navTables,
-                          ),
-                          NavigationDestination(
-                            icon: _upgradeIcon(
-                              Icons.qr_code_scanner_outlined,
-                              upgrade: scanLocked,
-                              l10n: l10n,
-                              scheme: scheme,
-                            ),
-                            selectedIcon: _upgradeIcon(
-                              Icons.qr_code_scanner,
-                              upgrade: scanLocked,
-                              l10n: l10n,
-                              scheme: scheme,
-                            ),
-                            label: l10n.navScanTable,
-                          ),
-                          NavigationDestination(
-                            icon: const Icon(Icons.receipt_long_outlined),
-                            selectedIcon: const Icon(Icons.receipt_long),
-                            label: l10n.navOrders,
-                          ),
-                        ]
-                      : [
-                          NavigationDestination(
-                            icon: const Icon(Icons.grid_view_outlined),
-                            selectedIcon: const Icon(Icons.grid_view_rounded),
-                            label: l10n.navDashboard,
-                          ),
-                          NavigationDestination(
-                            icon: const Icon(Icons.table_restaurant_outlined),
-                            selectedIcon: const Icon(Icons.table_restaurant),
-                            label: l10n.navTables,
-                          ),
-                          NavigationDestination(
-                            icon: const Icon(Icons.receipt_long_outlined),
-                            selectedIcon: const Icon(Icons.receipt_long),
-                            label: l10n.navOrders,
-                          ),
-                        ],
+                  destinations: destinations,
                 ),
           body: _withPackBanner(widget.child, show: !immersiveOrderScreen),
         );
@@ -534,13 +617,12 @@ class OpsSideBar extends ConsumerWidget {
                       _NavTile(
                         icon: Icons.tune_outlined,
                         label: l10n.navConfiguration,
-                        indent: true,
                         selected: location.endsWith('/configuration'),
                         onTap: () => BuildingConfigurationRoute(
                           buildingId: buildingId,
                         ).go(context),
                       ),
-                    if (isOwner)
+                    if (isOwner || FloorAccess.fromSession(store).canConsultAll)
                       _NavTile(
                         icon: Icons.grid_view_rounded,
                         label: l10n.navDashboard,
@@ -556,69 +638,45 @@ class OpsSideBar extends ConsumerWidget {
                         onTap: () =>
                             EmployeesRoute(buildingId: buildingId).go(context),
                       ),
-                    Theme(
-                      data: Theme.of(context).copyWith(
-                        dividerColor: Colors.transparent,
-                        expansionTileTheme: ExpansionTileThemeData(
-                          iconColor: scheme.onSurface,
-                          collapsedIconColor: scheme.onSurface.withValues(
-                            alpha: 0.7,
-                          ),
-                          textColor: scheme.onSurface,
-                          collapsedTextColor: scheme.onSurface,
+                    _ProductsNav(
+                      key: ValueKey(productsOpen),
+                      initiallyExpanded: productsOpen,
+                      label: l10n.navProducts,
+                      children: [
+                        _NavTile(
+                          icon: Icons.category_outlined,
+                          label: l10n.navCategories,
+                          indent: true,
+                          selected: location.endsWith('/products/categories'),
+                          onTap: () => CategoriesRoute(
+                            buildingId: buildingId,
+                          ).go(context),
                         ),
-                      ),
-                      child: ExpansionTile(
-                        key: ValueKey(productsOpen),
-                        initiallyExpanded: productsOpen,
-                        leading: Icon(
-                          Icons.inventory_2_outlined,
-                          color: scheme.onSurface,
+                        _NavTile(
+                          icon: Icons.restaurant_menu_outlined,
+                          label: l10n.navArticles,
+                          indent: true,
+                          selected: location.endsWith('/products/articles'),
+                          onTap: () =>
+                              ArticlesRoute(buildingId: buildingId).go(context),
                         ),
-                        title: Text(
-                          l10n.navProducts,
-                          style: Theme.of(context).textTheme.titleSmall
-                              ?.copyWith(color: scheme.onSurface),
-                        ),
-                        children: [
-                          _NavTile(
-                            icon: Icons.category_outlined,
-                            label: l10n.navCategories,
-                            indent: true,
-                            selected: location.endsWith('/products/categories'),
-                            onTap: () => CategoriesRoute(
+                        _NavTile(
+                          icon: Icons.science_outlined,
+                          label: l10n.navIngredients,
+                          indent: true,
+                          upgradeLocked: selected?.pack.inventory == false,
+                          selected: location.endsWith('/products/ingredients'),
+                          onTap: () {
+                            if (selected?.pack.inventory == false) {
+                              showPackCatalog(context, closeDrawer: inDrawer);
+                              return;
+                            }
+                            IngredientsRoute(
                               buildingId: buildingId,
-                            ).go(context),
-                          ),
-                          _NavTile(
-                            icon: Icons.restaurant_menu_outlined,
-                            label: l10n.navArticles,
-                            indent: true,
-                            selected: location.endsWith('/products/articles'),
-                            onTap: () => ArticlesRoute(
-                              buildingId: buildingId,
-                            ).go(context),
-                          ),
-                          _NavTile(
-                            icon: Icons.science_outlined,
-                            label: l10n.navIngredients,
-                            indent: true,
-                            upgradeLocked: selected?.pack.inventory == false,
-                            selected: location.endsWith(
-                              '/products/ingredients',
-                            ),
-                            onTap: () {
-                              if (selected?.pack.inventory == false) {
-                                showPackCatalog(context, closeDrawer: inDrawer);
-                                return;
-                              }
-                              IngredientsRoute(
-                                buildingId: buildingId,
-                              ).go(context);
-                            },
-                          ),
-                        ],
-                      ),
+                            ).go(context);
+                          },
+                        ),
+                      ],
                     ),
                     _NavTile(
                       icon: Icons.receipt_long_outlined,
@@ -753,6 +811,48 @@ class OpsSideBar extends ConsumerWidget {
   }
 }
 
+/// Products header uses the same row metrics as the other destinations.
+class _ProductsNav extends StatefulWidget {
+  const _ProductsNav({
+    super.key,
+    required this.initiallyExpanded,
+    required this.label,
+    required this.children,
+  });
+
+  final bool initiallyExpanded;
+  final String label;
+  final List<Widget> children;
+
+  @override
+  State<_ProductsNav> createState() => _ProductsNavState();
+}
+
+class _ProductsNavState extends State<_ProductsNav> {
+  late bool _open = widget.initiallyExpanded;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Column(
+      children: [
+        _NavTile(
+          icon: Icons.inventory_2_outlined,
+          label: widget.label,
+          selected: false,
+          trailing: Icon(
+            _open ? Icons.expand_less : Icons.expand_more,
+            size: 20,
+            color: scheme.onSurface,
+          ),
+          onTap: () => setState(() => _open = !_open),
+        ),
+        if (_open) ...widget.children,
+      ],
+    );
+  }
+}
+
 class _NavTile extends StatelessWidget {
   const _NavTile({
     required this.icon,
@@ -762,6 +862,7 @@ class _NavTile extends StatelessWidget {
     this.indent = false,
     this.upgradeLocked = false,
     this.badgeCount = 0,
+    this.trailing,
   });
 
   final IconData icon;
@@ -770,6 +871,7 @@ class _NavTile extends StatelessWidget {
   final VoidCallback? onTap;
   final bool indent;
   final int badgeCount;
+  final Widget? trailing;
 
   /// Pack turns this destination off. The row stays tappable and opens plans.
   final bool upgradeLocked;
@@ -820,6 +922,7 @@ class _NavTile extends StatelessWidget {
                   if (badgeCount > 0)
                     Badge(label: Text(badgeCount > 99 ? '99+' : '$badgeCount')),
                   if (upgradeLocked) const PackUpgradeChip(),
+                  ?trailing,
                 ],
               ),
             ),

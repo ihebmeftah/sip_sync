@@ -16,7 +16,7 @@ Sip Sync is an ecosystem for cafés, restaurants, lounges, and bars.
 3. **Menu & inventory** — categories, articles, ingredient stock and thresholds, composition with deduction on order, live stock updates.
 4. **Orders** — tables/seating, statuses In Progress → Picked → Ready → Served → Paid, add items to existing orders, order- and item-level payment, auto-close at building closing time.
 5. **Cash register** — open/close sessions with time tracking, link orders to a session, history and reporting.
-6. **Statistics** — dashboard, order reporting, employee performance.
+6. **Statistics** — management dashboard (today's orders, reservations, low stock), order reporting, employee performance.
 7. **Notifications** — kitchen alerts on new orders, status updates, configurable per employee access.
 8. **Packs** — commercial plans for owners. Public plans can be listed in the apps. Private plans stay off that list. A new venue starts on the free plan. Limits cover the features that exist today.
 

@@ -9,7 +9,7 @@ Status: in progress
 ## Actors and permissions
 
 - **Owner** — export a printable PDF of QR stickers for all tables on the current floor. UI only on the Tables screen.
-- **Employee** — scan a table QR to start a new order (same inactive / occupied rules as tapping a floor tile). Compact bottom nav: **Tables** | **Scan** | **Orders** (no Dashboard).
+- **Employee** — scan a table QR to start a new order (same inactive / occupied rules as tapping a floor tile). Compact bottom nav: **Tables** | **Scan** | **Orders**. **Dashboard** is first when the access profile has consult all orders.
 
 ## Flow
 

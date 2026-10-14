@@ -20,7 +20,7 @@ Status: shipped
 | `cancelOrder` | Cancel an order or an order line that is not yet served or payed. A served or payed line cannot be cancelled, and neither can a ticket that already has one |
 | `preparation` | The only employees who can set **picked** or **ready**. Both steps store that person on `preparedBy`. They see the kitchen queue, including lines they did not open |
 | `serving` | See lines waiting to be served and set them to **served**, including lines opened by a customer, owner, or another employee |
-| `consultAllOrders` | When **true**, list every building order and record served / payed on any line. When **false**, the ticket list is orders they launched or lines they added, prepared, served, were paid on, or cancelled. The item board still shows the kitchen or service step their other flags allow |
+| `consultAllOrders` | When **true**, list every building order, open the management dashboard, and record served / payed on any line. When **false**, the ticket list is orders they launched or lines they added, prepared, served, were paid on, or cancelled, and the dashboard tab stays hidden. The item board still shows the kitchen or service step their other flags allow |
 
 An employee with **no** access assigned cannot perform floor order actions (except what building membership alone allowed before — now denied until assigned).
 
