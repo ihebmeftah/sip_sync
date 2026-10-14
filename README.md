@@ -17,36 +17,14 @@ Open the customer and management apps side by side. Place an order as a customer
 
 ## Test accounts
 
-The server seeds these accounts on boot when they are missing. Every owner password is `password1`.
+Seeded on boot when missing.
 
-### Venue owners (management app)
+| App | Sign in | Email | Password |
+| --- | --- | --- | --- |
+| Management | https://sipsync.serverpod.space/managment/ | `owner.tn.05@sipsync.dev` | `password1` |
+| Backoffice | https://sipsync.serverpod.space/backoffice/ | `serverpod@gmail.com` | `serverpod` |
 
-Sign in at https://sipsync.serverpod.space/managment/
-
-| Email | Password | Venue |
-| --- | --- | --- |
-| `owner.tn.01@sipsync.dev` | `password1` | Restaurant Café Seles, Sousse |
-| `owner.tn.02@sipsync.dev` … `owner.tn.14@sipsync.dev` | `password1` | Venues in Sousse, Tunis, and Hammamet |
-| `owner.se.01@sipsync.dev` … `owner.se.06@sipsync.dev` | `password1` | Venues in Stockholm |
-| `owner.de.01@sipsync.dev` … `owner.de.10@sipsync.dev` | `password1` | Venues in Marburg, Frankfurt, and Gießen |
-
-Each owner has one venue on the free plan, a full menu (ten categories, five to ten dishes each), ingredient stock, and tables. Start with `owner.tn.01@sipsync.dev`.
-
-### Platform admin (backoffice)
-
-Sign in at https://sipsync.serverpod.space/backoffice/
-
-| Email | Password |
-| --- | --- |
-| `admin@sipsync.local` | `SipSyncAdmin8!` |
-
-A local `passwords.yaml` or `SERVERPOD_PASSWORD_sipSyncDefaultAdminEmail` replaces this pair. See [Secrets](#secrets).
-
-### Customers
-
-There is no seeded customer. On https://sipsync.serverpod.space/ register any email and password, then search a city such as Sousse, Tunis, Stockholm, or Frankfurt. The map lists the seeded venues nearest that place.
-
-Staff accounts are created by an owner inside a venue. They are not pre-seeded.
+`owner.tn.05@sipsync.dev` is Le Grand Café du Théâtre in Tunis, with a menu, stock, and tables. Customers are not seeded: register on https://sipsync.serverpod.space/, then search Tunis.
 
 ## What it does
 
@@ -107,11 +85,11 @@ export SERVERPOD_DATABASE_PASSWORD='DrbAj3wCWvAKB3vRw0rqHcXg4NKBTDqo'
 export SERVERPOD_SERVICE_SECRET='replace-with-any-long-random-string'
 ```
 
-Optional. When unset, the seeded platform admin is `admin@sipsync.local` / `SipSyncAdmin8!`.
+Optional. When unset, the seeded platform admin is `serverpod@gmail.com` / `serverpod`.
 
 ```bash
-export SERVERPOD_PASSWORD_sipSyncDefaultAdminEmail='admin@sipsync.local'
-export SERVERPOD_PASSWORD_sipSyncDefaultAdminPassword='SipSyncAdmin8!'
+export SERVERPOD_PASSWORD_sipSyncDefaultAdminEmail='serverpod@gmail.com'
+export SERVERPOD_PASSWORD_sipSyncDefaultAdminPassword='serverpod'
 ```
 
 Any `passwords.yaml` key can also be set as `SERVERPOD_PASSWORD_<key>`.
