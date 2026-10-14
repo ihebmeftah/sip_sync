@@ -1,4 +1,4 @@
-package com.example.sip_sync_flutter
+package com.sipsync.customer
 
 import io.flutter.embedding.android.FlutterActivity
 

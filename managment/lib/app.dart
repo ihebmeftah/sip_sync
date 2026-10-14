@@ -19,7 +19,7 @@ class SipSyncApp extends ConsumerWidget {
     ref.watch(authViewModelProvider);
     final router = ref.watch(appRouterProvider);
     return MaterialApp.router(
-      title: 'Sip Sync Management',
+      title: 'S&S managment',
       theme: AppTheme.light(),
       darkTheme: AppTheme.dark(),
       themeMode: ref.watch(themeControllerProvider),

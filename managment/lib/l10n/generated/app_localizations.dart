@@ -103,7 +103,7 @@ abstract class AppLocalizations {
   /// Customer app title
   ///
   /// In en, this message translates to:
-  /// **'Sip Sync Ops'**
+  /// **'S&S managment'**
   String get appTitle;
 
   /// No description provided for @tagline.

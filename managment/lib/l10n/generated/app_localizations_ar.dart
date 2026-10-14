@@ -9,7 +9,7 @@ class AppLocalizationsAr extends AppLocalizations {
   AppLocalizationsAr([String locale = 'ar']) : super(locale);
 
   @override
-  String get appTitle => 'Sip Sync Ops';
+  String get appTitle => 'S&S managment';
 
   @override
   String get tagline => 'الصالة والمطبخ والصندوق — دخول واحد للبيت.';

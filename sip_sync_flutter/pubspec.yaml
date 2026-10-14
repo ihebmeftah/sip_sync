@@ -39,6 +39,8 @@ dependencies:
     path: ../sip_sync_client
   serverpod_flutter: 4.0.4
   serverpod_auth_idp_flutter: 4.0.4
+  # 10.x only. Declared here so the workspace root stays free of Flutter packages.
+  flutter_secure_storage: ^10.0.0
   shared_preferences: ^2.5.5
   flutter_map: ^8.3.2
   latlong2: ^0.10.1

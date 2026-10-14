@@ -9,7 +9,7 @@ class AppLocalizationsFr extends AppLocalizations {
   AppLocalizationsFr([String locale = 'fr']) : super(locale);
 
   @override
-  String get appTitle => 'Sip Sync Ops';
+  String get appTitle => 'S&S managment';
 
   @override
   String get tagline =>

@@ -1,6 +1,6 @@
 {
-    "name": "Sip Sync Console",
-    "short_name": "Sip Sync Console",
+    "name": "S&S office",
+    "short_name": "S&S office",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#18181B",

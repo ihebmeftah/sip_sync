@@ -1,4 +1,4 @@
-package com.example.managment
+package com.sipsync.managment
 
 import io.flutter.embedding.android.FlutterActivity
 

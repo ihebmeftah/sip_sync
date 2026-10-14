@@ -9,7 +9,7 @@ class AppLocalizationsFr extends AppLocalizations {
   AppLocalizationsFr([String locale = 'fr']) : super(locale);
 
   @override
-  String get appTitle => 'Sip Sync Console';
+  String get appTitle => 'S&S office';
 
   @override
   String get tagline => 'Opérateurs, établissements et admin plateforme.';

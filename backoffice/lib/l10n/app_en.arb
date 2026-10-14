@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "appTitle": "Sip Sync Console",
+  "appTitle": "S&S office",
   "@appTitle": { "description": "Customer app title" },
   "tagline": "Operators, tenants, and the platform admin.",
   "atmosphereTitle": "Keep the platform honest",

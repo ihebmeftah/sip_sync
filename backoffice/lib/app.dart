@@ -24,7 +24,7 @@ class SipSyncApp extends ConsumerWidget {
       darkTheme: AppTheme.shadDark(),
       appBuilder: (context) {
         return MaterialApp.router(
-          title: 'Sip Sync Backoffice',
+          title: 'S&S office',
           theme: AppTheme.material(Theme.of(context)),
           themeMode: ThemeMode.light,
           routerConfig: router,
