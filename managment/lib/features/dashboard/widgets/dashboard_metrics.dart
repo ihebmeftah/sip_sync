@@ -11,6 +11,7 @@ import '../../../core/widgets/app_controls.dart';
 import '../../../core/widgets/app_loader.dart';
 import '../../../core/widgets/pack_catalog_sheet.dart';
 import '../../../l10n/generated/app_localizations.dart';
+import '../../products/view_models/ingredients_view_model.dart';
 import '../view_models/dashboard_view_model.dart';
 
 /// Today's orders, reservations, and low stock for the open building.
@@ -57,6 +58,9 @@ class DashboardMetrics extends ConsumerWidget {
               showPackCatalog(context);
               return;
             }
+            ref
+                .read(ingredientListFilterProvider(buildingId).notifier)
+                .setOutOfStockOnly(true);
             IngredientsRoute(
               buildingId: buildingId,
               outOfStock: true,

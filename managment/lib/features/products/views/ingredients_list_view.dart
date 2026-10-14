@@ -41,11 +41,10 @@ class _IngredientsListViewState extends ConsumerState<IngredientsListView> {
   void initState() {
     super.initState();
     final alive = ref.exists(ingredientsViewModelProvider(widget.buildingId));
-    final filter = ref.read(ingredientListFilterProvider(widget.buildingId));
-    final filterChanged = filter != widget.outOfStockOnly;
-    ref
-        .read(ingredientListFilterProvider(widget.buildingId).notifier)
-        .setOutOfStockOnly(widget.outOfStockOnly);
+    final filterChanged =
+        ref.read(ingredientListFilterProvider(widget.buildingId)) !=
+        widget.outOfStockOnly;
+    _syncFilterFromRoute();
     refreshCachedListOnAppear(
       this,
       providerAlreadyAlive: alive && !filterChanged,
@@ -59,9 +58,17 @@ class _IngredientsListViewState extends ConsumerState<IngredientsListView> {
   void didUpdateWidget(covariant IngredientsListView oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.outOfStockOnly == widget.outOfStockOnly) return;
-    ref
-        .read(ingredientListFilterProvider(widget.buildingId).notifier)
-        .setOutOfStockOnly(widget.outOfStockOnly);
+    _syncFilterFromRoute();
+  }
+
+  /// Route updates run during build. The filter provider is written after the frame.
+  void _syncFilterFromRoute() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      ref
+          .read(ingredientListFilterProvider(widget.buildingId).notifier)
+          .setOutOfStockOnly(widget.outOfStockOnly);
+    });
   }
 
   String _formatQty(double value) {
@@ -188,10 +195,19 @@ class _IngredientsListViewState extends ConsumerState<IngredientsListView> {
               AppFilterChip(
                 label: l10n.ingredientFilterOutOfStock,
                 selected: outOfStockOnly,
-                onSelected: (selected) => IngredientsRoute(
-                  buildingId: widget.buildingId,
-                  outOfStock: selected,
-                ).go(context),
+                onSelected: (selected) {
+                  ref
+                      .read(
+                        ingredientListFilterProvider(
+                          widget.buildingId,
+                        ).notifier,
+                      )
+                      .setOutOfStockOnly(selected);
+                  IngredientsRoute(
+                    buildingId: widget.buildingId,
+                    outOfStock: selected,
+                  ).go(context);
+                },
               ),
               const SizedBox(height: AppSpacing.lg),
               if (ref.watch(buildingSelectionProvider)?.pack.inventory == false)

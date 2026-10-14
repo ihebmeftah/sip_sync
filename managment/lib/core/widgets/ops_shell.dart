@@ -681,6 +681,13 @@ class OpsSideBar extends ConsumerWidget {
                               showPackCatalog(context, closeDrawer: inDrawer);
                               return;
                             }
+                            ref
+                                .read(
+                                  ingredientListFilterProvider(
+                                    buildingId,
+                                  ).notifier,
+                                )
+                                .setOutOfStockOnly(false);
                             IngredientsRoute(
                               buildingId: buildingId,
                             ).go(context);
