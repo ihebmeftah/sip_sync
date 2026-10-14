@@ -6,6 +6,7 @@ import 'core/di/locale_controller.dart';
 import 'core/routing/app_router.dart';
 import 'core/theme/app_theme.dart';
 import 'features/auth/view_models/auth_view_model.dart';
+import 'features/notifications/widgets/notification_toast_host.dart';
 import 'l10n/generated/app_localizations.dart';
 
 class SipSyncApp extends ConsumerWidget {
@@ -32,6 +33,8 @@ class SipSyncApp extends ConsumerWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
+      builder: (context, child) =>
+          NotificationToastHost(child: child ?? const SizedBox.shrink()),
     );
   }
 }

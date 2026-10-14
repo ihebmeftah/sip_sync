@@ -53,7 +53,7 @@ final class OrderKitchenBoardProvider
   }
 }
 
-String _$orderKitchenBoardHash() => r'8d229f96b4769c8a2cd2aa9c2622a98ef0dc5ca1';
+String _$orderKitchenBoardHash() => r'4298b9d8577d2f03ee81031b3815dd1a6f582324';
 
 /// Floor board for one building. History is the stream, not a poll.
 

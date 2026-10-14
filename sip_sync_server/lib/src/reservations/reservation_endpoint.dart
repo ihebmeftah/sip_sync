@@ -10,7 +10,12 @@ class ReservationEndpoint extends Endpoint {
   @override
   bool get requireLogin => true;
 
-  /// Bookings whose start falls on the UTC date of [day].
+  /// Customer requests for [buildingId] that are still waiting.
+  Future<int> pendingCount(Session session, UuidValue buildingId) {
+    return _reservations.pendingCount(session, buildingId);
+  }
+
+  /// Bookings whose start falls on the UTC date of [day], newest first.
   Future<List<ReservationView>> listForDay(
     Session session,
     UuidValue buildingId,
@@ -19,7 +24,7 @@ class ReservationEndpoint extends Endpoint {
     return _reservations.listForDay(session, buildingId, day);
   }
 
-  /// The signed-in customer's upcoming bookings.
+  /// The signed-in customer's upcoming bookings, newest first.
   Future<List<ReservationView>> listMine(Session session) {
     return _reservations.listMine(session);
   }

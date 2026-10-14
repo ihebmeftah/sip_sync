@@ -6,6 +6,7 @@ import 'package:sip_sync_client/sip_sync_client.dart';
 import '../../features/auth/view_models/auth_view_model.dart';
 import '../../features/notifications/view_models/notification_inbox_view_model.dart';
 import '../../features/orders/view_models/order_draft_view_model.dart';
+import '../../features/reservations/view_models/reservations_view_model.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../access/floor_access.dart';
 import '../di/app_providers.dart';
@@ -275,6 +276,13 @@ class _OpsShellState extends ConsumerState<OpsShell> {
         final l10n = AppLocalizations.of(context)!;
         final scheme = Theme.of(context).colorScheme;
         final isEmployee = ref.watch(appSessionStoreProvider).isEmployee;
+        final pendingReservations = buildingId.isEmpty
+            ? 0
+            : ref
+                      .watch(pendingReservationCountProvider(buildingId))
+                      .asData
+                      ?.value ??
+                  0;
         final scanLocked =
             ref.watch(buildingSelectionProvider)?.pack.tableQr == false;
         final draft = buildingId.isEmpty
@@ -323,6 +331,23 @@ class _OpsShellState extends ConsumerState<OpsShell> {
           appBar: immersiveOrderScreen
               ? null
               : AppBar(
+                  leading: Builder(
+                    builder: (context) => IconButton(
+                      tooltip: MaterialLocalizations.of(
+                        context,
+                      ).openAppDrawerTooltip,
+                      onPressed: () => Scaffold.of(context).openDrawer(),
+                      icon: Badge(
+                        isLabelVisible: pendingReservations > 0,
+                        label: Text(
+                          pendingReservations > 99
+                              ? '99+'
+                              : '$pendingReservations',
+                        ),
+                        child: const Icon(Icons.menu),
+                      ),
+                    ),
+                  ),
                   title: Text(l10n.appTitle),
                   actions: [_NotificationButton(buildingId: buildingId)],
                 ),
@@ -433,6 +458,13 @@ class OpsSideBar extends ConsumerWidget {
         ? (store.owner?.email ?? '')
         : (store.employee?.username ?? '');
     final selected = ref.watch(buildingSelectionProvider);
+    final pendingReservations = buildingId.isEmpty
+        ? 0
+        : ref
+                  .watch(pendingReservationCountProvider(buildingId))
+                  .asData
+                  ?.value ??
+              0;
     final location = GoRouterState.of(context).uri.path;
     final productsOpen =
         location.contains('/products/') ||
@@ -497,6 +529,16 @@ class OpsSideBar extends ConsumerWidget {
                         label: l10n.navBuildings,
                         selected: false,
                         onTap: () => const BuildingsRoute().go(context),
+                      ),
+                    if (isOwner)
+                      _NavTile(
+                        icon: Icons.tune_outlined,
+                        label: l10n.navConfiguration,
+                        indent: true,
+                        selected: location.endsWith('/configuration'),
+                        onTap: () => BuildingConfigurationRoute(
+                          buildingId: buildingId,
+                        ).go(context),
                       ),
                     if (isOwner)
                       _NavTile(
@@ -599,6 +641,7 @@ class OpsSideBar extends ConsumerWidget {
                       _NavTile(
                         icon: Icons.event_available_outlined,
                         label: l10n.navReservations,
+                        badgeCount: pendingReservations,
                         upgradeLocked: selected?.pack.reservations == false,
                         selected: location.contains('/reservations'),
                         onTap: () {
@@ -608,15 +651,6 @@ class OpsSideBar extends ConsumerWidget {
                           }
                           ReservationsRoute(buildingId: buildingId).go(context);
                         },
-                      ),
-                    if (isOwner)
-                      _NavTile(
-                        icon: Icons.tune_outlined,
-                        label: l10n.navConfiguration,
-                        selected: location.endsWith('/configuration'),
-                        onTap: () => BuildingConfigurationRoute(
-                          buildingId: buildingId,
-                        ).go(context),
                       ),
                     if (isEmployee)
                       _NavTile(
@@ -727,6 +761,7 @@ class _NavTile extends StatelessWidget {
     required this.onTap,
     this.indent = false,
     this.upgradeLocked = false,
+    this.badgeCount = 0,
   });
 
   final IconData icon;
@@ -734,6 +769,7 @@ class _NavTile extends StatelessWidget {
   final bool selected;
   final VoidCallback? onTap;
   final bool indent;
+  final int badgeCount;
 
   /// Pack turns this destination off. The row stays tappable and opens plans.
   final bool upgradeLocked;
@@ -781,6 +817,8 @@ class _NavTile extends StatelessWidget {
                       ),
                     ),
                   ),
+                  if (badgeCount > 0)
+                    Badge(label: Text(badgeCount > 99 ? '99+' : '$badgeCount')),
                   if (upgradeLocked) const PackUpgradeChip(),
                 ],
               ),

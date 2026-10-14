@@ -11,6 +11,7 @@ import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
 import '../../../core/widgets/app_loader.dart';
 import '../../../l10n/generated/app_localizations.dart';
+import '../notification_copy.dart';
 import '../view_models/notification_inbox_view_model.dart';
 
 /// Stored alerts for the signed-in owner or employee.
@@ -193,14 +194,7 @@ class _NotificationsViewState extends ConsumerState<NotificationsView> {
       _run(() => ref.read(notificationInboxProvider.notifier).markAllRead());
 
   String _body(AppLocalizations l10n, AppNotificationView row) {
-    if (row.kind == AppNotificationKind.reservation &&
-        row.reservationStatus == ReservationStatus.cancelled) {
-      return l10n.notificationReservationCancelled;
-    }
-    if (row.kind == AppNotificationKind.reservation) {
-      return l10n.notificationReservationAccepted;
-    }
-    return row.venueName;
+    return notificationBody(l10n, row);
   }
 
   Future<void> _open(AppNotificationView row) async {

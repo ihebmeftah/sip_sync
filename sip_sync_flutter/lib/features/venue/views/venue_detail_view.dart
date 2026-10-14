@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:sip_sync_client/sip_sync_client.dart';
 
 import '../../../core/errors/error_mapper.dart';
@@ -38,6 +39,35 @@ class VenueDetailView extends ConsumerStatefulWidget {
 class _VenueDetailViewState extends ConsumerState<VenueDetailView> {
   var _tab = VenueVisitTab.overview;
   var _notices = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final uri = GoRouterState.of(context).uri;
+    if (uri.queryParameters['notices'] != '1' || _notices) {
+      return;
+    }
+    _notices = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+      final current = GoRouterState.of(context).uri;
+      if (current.queryParameters['notices'] != '1') {
+        return;
+      }
+      GoRouter.of(context).replace(
+        current
+            .replace(
+              queryParameters: {
+                for (final entry in current.queryParameters.entries)
+                  if (entry.key != 'notices') entry.key: entry.value,
+              },
+            )
+            .toString(),
+      );
+    });
+  }
 
   void _select(VenueVisitTab tab) {
     setState(() {

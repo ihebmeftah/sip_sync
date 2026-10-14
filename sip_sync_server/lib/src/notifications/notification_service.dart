@@ -87,8 +87,45 @@ class NotificationService {
     );
   }
 
-  /// Tells the customer and the venue owner that a reservation was accepted
-  /// or cancelled. The actor who made the change is not notified.
+  /// Tells the venue owner and staff who can manage reservations that a
+  /// customer asked to book.
+  ///
+  /// The customer who sent the request is not notified. The row stays in the
+  /// inbox until it is opened.
+  Future<void> recordReservationRequest(
+    Session session, {
+    required Reservation reservation,
+  }) async {
+    if (reservation.id == null) {
+      return;
+    }
+    final building = await Building.db.findById(
+      session,
+      reservation.buildingId,
+    );
+    if (building == null) {
+      return;
+    }
+    final targets = await _reservationDesk(session, building);
+    for (final target in targets) {
+      await _record(
+        session,
+        recipientType: target.type,
+        recipientId: target.id,
+        buildingId: reservation.buildingId,
+        venueName: building.name,
+        subjectId: reservation.id!,
+        kind: AppNotificationKind.reservation,
+        reservationStatus: ReservationStatus.requested,
+      );
+    }
+  }
+
+  /// Tells the customer, the owner, and staff who can manage reservations
+  /// that a reservation was accepted or cancelled.
+  ///
+  /// Staff are not notified of their own change. A customer who cancels their
+  /// own reservation still receives the alert.
   Future<void> recordReservationChange(
     Session session, {
     required Reservation reservation,
@@ -110,13 +147,18 @@ class NotificationService {
     if (building == null) {
       return;
     }
+    final customerCancelled =
+        status == ReservationStatus.cancelled &&
+        actorType == ActorType.customer;
     final targets = <({ActorType type, UuidValue id})>[
       if (reservation.customerId != null)
         (type: ActorType.customer, id: reservation.customerId!),
-      (type: ActorType.owner, id: building.ownerId),
+      ...await _reservationDesk(session, building),
     ];
     for (final target in targets) {
-      if (target.type == actorType && target.id == actorId) {
+      final isActor = target.type == actorType && target.id == actorId;
+      if (isActor &&
+          !(customerCancelled && target.type == ActorType.customer)) {
         continue;
       }
       await _record(
@@ -130,6 +172,26 @@ class NotificationService {
         reservationStatus: status,
       );
     }
+  }
+
+  /// Owner of [building], plus enabled employees whose access includes
+  /// reservations.
+  Future<List<({ActorType type, UuidValue id})>> _reservationDesk(
+    Session session,
+    Building building,
+  ) async {
+    final staff = await Employee.db.find(
+      session,
+      where: (t) =>
+          t.buildingId.equals(building.id!) & t.isEnabled.equals(true),
+      include: Employee.include(access: EmployeeAccess.include()),
+    );
+    return [
+      (type: ActorType.owner, id: building.ownerId),
+      for (final employee in staff)
+        if (employee.id != null && employee.access?.reservations == true)
+          (type: ActorType.employee, id: employee.id!),
+    ];
   }
 
   /// Newest alerts for the signed-in actor.

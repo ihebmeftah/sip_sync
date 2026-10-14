@@ -319,6 +319,26 @@ class Endpoints extends _is.EndpointDispatch {
                         params['request'],
                       ),
         ),
+        'changePassword': _is.MethodConnector(
+          name: 'changePassword',
+          params: {
+            'request': _is.ParameterDescription(
+              name: 'request',
+              type: _is.getType<_ig12em2g.ChangePasswordRequest>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['customerAuth'] as _i4yxnu3z.CustomerAuthEndpoint)
+                      .changePassword(
+                        session,
+                        params['request'],
+                      ),
+        ),
         'logout': _is.MethodConnector(
           name: 'logout',
           params: {},
@@ -2298,6 +2318,26 @@ class Endpoints extends _is.EndpointDispatch {
       name: 'reservation',
       endpoint: endpoints['reservation']!,
       methodConnectors: {
+        'pendingCount': _is.MethodConnector(
+          name: 'pendingCount',
+          params: {
+            'buildingId': _is.ParameterDescription(
+              name: 'buildingId',
+              type: _is.getType<_is.UuidValue>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['reservation'] as _iag5jdtl.ReservationEndpoint)
+                      .pendingCount(
+                        session,
+                        params['buildingId'],
+                      ),
+        ),
         'listForDay': _is.MethodConnector(
           name: 'listForDay',
           params: {

@@ -364,5 +364,66 @@ void main() {
       );
       expect(login.owner?.email, 'resetme@example.com');
     });
+
+    test('customer can change password then login with the new one', () async {
+      final registered = await endpoints.customerAuth.register(
+        sessionBuilder,
+        EmailRegisterCreate(
+          email: 'customer-pw@example.com',
+          password: 'password1',
+          phoneNumber: '+21620000011',
+          firstName: 'Custo',
+          lastName: 'Mer',
+        ),
+      );
+      final authed = sessionBuilder.copyWith(
+        authentication: AuthenticationOverride.authenticationInfo(
+          registered.customer!.id.uuid,
+          {Scope('sip.customer')},
+          authId: '22222222-2222-2222-2222-222222222222',
+        ),
+      );
+      await endpoints.customerAuth.changePassword(
+        authed,
+        ChangePasswordRequest(
+          currentPassword: 'password1',
+          newPassword: 'password2x',
+        ),
+      );
+      final updated = await endpoints.customerAuth.updateMyProfile(
+        authed,
+        ProfileUpdate(
+          phoneNumber: '+21620000012',
+          firstName: 'Custo',
+          lastName: 'Updated',
+        ),
+      );
+      expect(updated.lastName, 'Updated');
+      expect(updated.phoneNumber, '+21620000012');
+      await expectLater(
+        endpoints.customerAuth.login(
+          sessionBuilder,
+          EmailLoginRequest(
+            email: 'customer-pw@example.com',
+            password: 'password1',
+          ),
+        ),
+        throwsA(
+          isA<AccountException>().having(
+            (e) => e.code,
+            'code',
+            AccountErrorCode.invalidCredentials,
+          ),
+        ),
+      );
+      final login = await endpoints.customerAuth.login(
+        sessionBuilder,
+        EmailLoginRequest(
+          email: 'customer-pw@example.com',
+          password: 'password2x',
+        ),
+      );
+      expect(login.customer?.lastName, 'Updated');
+    });
   });
 }

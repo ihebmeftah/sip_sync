@@ -582,6 +582,37 @@ class _CustomerAuthEndpoint {
     });
   }
 
+  _ida.Future<void> changePassword(
+    _ist.TestSessionBuilder sessionBuilder,
+    _ig12em2g.ChangePasswordRequest request,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'customerAuth',
+            method: 'changePassword',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'customerAuth',
+          methodName: 'changePassword',
+          parameters: _ist.testObjectToJson({'request': request}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<void>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
   _ida.Future<void> logout(_ist.TestSessionBuilder sessionBuilder) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -3564,6 +3595,37 @@ class _ReservationEndpoint {
   final _is.EndpointDispatch _endpointDispatch;
 
   final _is.SerializationManager _serializationManager;
+
+  _ida.Future<int> pendingCount(
+    _ist.TestSessionBuilder sessionBuilder,
+    _is.UuidValue buildingId,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'reservation',
+            method: 'pendingCount',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'reservation',
+          methodName: 'pendingCount',
+          parameters: _ist.testObjectToJson({'buildingId': buildingId}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<int>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
 
   _ida.Future<List<_ixji9mob.ReservationView>> listForDay(
     _ist.TestSessionBuilder sessionBuilder,

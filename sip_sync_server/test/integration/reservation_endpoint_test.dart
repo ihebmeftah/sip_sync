@@ -334,6 +334,23 @@ void main() {
       expect(created.paidAmount, 0);
       expect(created.guestName, 'Guest Book');
       expect(created.customerId, auth.customer!.id);
+      final requested = await endpoints.notification.list(setup.ownerSession);
+      expect(requested.total, 1);
+      expect(
+        requested.items.single.reservationStatus,
+        ReservationStatus.requested,
+      );
+      expect(
+        (await endpoints.notification.list(customerSession)).total,
+        0,
+      );
+      expect(
+        await endpoints.reservation.pendingCount(
+          setup.ownerSession,
+          setup.building.id,
+        ),
+        1,
+      );
 
       await expectLater(
         endpoints.reservation.assignTables(
@@ -355,6 +372,13 @@ void main() {
         created.id,
       );
       expect(confirmed.status, ReservationStatus.confirmed);
+      expect(
+        await endpoints.reservation.pendingCount(
+          setup.ownerSession,
+          setup.building.id,
+        ),
+        0,
+      );
       final accepted = await endpoints.notification.list(customerSession);
       expect(accepted.total, 1);
       expect(accepted.items.single.kind, AppNotificationKind.reservation);
@@ -363,7 +387,7 @@ void main() {
         ReservationStatus.confirmed,
       );
       expect(accepted.items.single.subjectId, created.id);
-      expect(await endpoints.notification.unreadCount(setup.ownerSession), 0);
+      expect(await endpoints.notification.unreadCount(setup.ownerSession), 1);
       final seated = await endpoints.reservation.assignTables(
         setup.ownerSession,
         created.id,
@@ -386,15 +410,191 @@ void main() {
       );
       expect(cancelled.status, ReservationStatus.cancelled);
       final ownerNotes = await endpoints.notification.list(setup.ownerSession);
-      expect(ownerNotes.total, 1);
+      expect(ownerNotes.total, 2);
       expect(
-        ownerNotes.items.single.reservationStatus,
-        ReservationStatus.cancelled,
+        ownerNotes.items.map((row) => row.reservationStatus),
+        contains(ReservationStatus.cancelled),
       );
+      final customerNotes = await endpoints.notification.list(customerSession);
+      expect(customerNotes.total, 2);
       expect(
-        (await endpoints.notification.list(customerSession)).total,
-        1,
+        customerNotes.items.map((row) => row.reservationStatus),
+        contains(ReservationStatus.cancelled),
       );
+    });
+
+    test(
+      'reservation alerts reach the owner and staff who can book',
+      () async {
+        final setup = await openHouse(
+          tag: 'desk',
+          pack: 'floor',
+          ownerPhone: '+21622111007',
+          venuePhone: '+21671111017',
+        );
+        final blocked = await endpoints.employeeAccess.create(
+          setup.ownerSession,
+          EmployeeAccessCreate(
+            buildingId: setup.building.id,
+            name: 'Viewer',
+            orderCreation: true,
+            orderPayment: false,
+            cancelOrder: false,
+            preparation: false,
+            serving: false,
+            consultAllOrders: false,
+          ),
+        );
+        final allowed = await endpoints.employeeAccess.create(
+          setup.ownerSession,
+          EmployeeAccessCreate(
+            buildingId: setup.building.id,
+            name: 'Host',
+            orderCreation: false,
+            orderPayment: false,
+            cancelOrder: false,
+            preparation: false,
+            serving: false,
+            consultAllOrders: false,
+            reservations: true,
+          ),
+        );
+        final viewer = await endpoints.employee.add(
+          setup.ownerSession,
+          EmployeeCreate(
+            password: 'password1',
+            phoneNumber: '+21624440011',
+            firstName: 'View',
+            lastName: 'Only',
+            buildingId: setup.building.id,
+            accessId: blocked.id,
+          ),
+        );
+        final host = await endpoints.employee.add(
+          setup.ownerSession,
+          EmployeeCreate(
+            password: 'password1',
+            phoneNumber: '+21624440012',
+            firstName: 'Host',
+            lastName: 'Desk',
+            buildingId: setup.building.id,
+            accessId: allowed.id,
+          ),
+        );
+        final viewerSession = sessionBuilder.copyWith(
+          authentication: AuthenticationOverride.authenticationInfo(
+            viewer.id.uuid,
+            {Scope('sip.employee')},
+            authId: 'reservation-desk-viewer',
+          ),
+        );
+        final hostSession = sessionBuilder.copyWith(
+          authentication: AuthenticationOverride.authenticationInfo(
+            host.id.uuid,
+            {Scope('sip.employee')},
+            authId: 'reservation-desk-host',
+          ),
+        );
+        final auth = await endpoints.customerAuth.register(
+          sessionBuilder,
+          EmailRegisterCreate(
+            email: 'desk-guest@example.com',
+            password: 'password1',
+            phoneNumber: '+21623330011',
+            firstName: 'Desk',
+            lastName: 'Guest',
+          ),
+        );
+        final customerSession = sessionBuilder.copyWith(
+          authentication: AuthenticationOverride.authenticationInfo(
+            auth.customer!.id.uuid,
+            {Scope('sip.customer')},
+            authId: 'reservation-desk-customer',
+          ),
+        );
+        final start = DateTime.now().toUtc().add(const Duration(hours: 5));
+        final created = await endpoints.reservation.createForCustomer(
+          customerSession,
+          CustomerReservationCreate(
+            buildingId: setup.building.id,
+            startsAt: start,
+            endsAt: start.add(const Duration(hours: 1)),
+          ),
+        );
+
+        expect((await endpoints.notification.list(viewerSession)).total, 0);
+        final hostNotes = await endpoints.notification.list(hostSession);
+        expect(hostNotes.total, 1);
+        expect(
+          hostNotes.items.single.reservationStatus,
+          ReservationStatus.requested,
+        );
+        expect(
+          (await endpoints.notification.list(setup.ownerSession)).total,
+          1,
+        );
+
+        await endpoints.reservation.cancel(customerSession, created.id);
+
+        expect((await endpoints.notification.list(viewerSession)).total, 0);
+        final afterCancel = await endpoints.notification.list(hostSession);
+        expect(afterCancel.total, 2);
+        expect(
+          afterCancel.items.map((row) => row.reservationStatus),
+          contains(ReservationStatus.cancelled),
+        );
+        final customerNotes = await endpoints.notification.list(
+          customerSession,
+        );
+        expect(
+          customerNotes.items.map((row) => row.reservationStatus),
+          contains(ReservationStatus.cancelled),
+        );
+      },
+    );
+
+    test('the day list puts the newest booking first', () async {
+      final setup = await openHouse(
+        tag: 'order',
+        pack: 'floor',
+        ownerPhone: '+21622111018',
+        venuePhone: '+21671111028',
+      );
+      final start = DateTime.now().toUtc().add(const Duration(hours: 6));
+      final older = await endpoints.reservation.create(
+        setup.ownerSession,
+        booking(
+          buildingId: setup.building.id,
+          start: start,
+          guestName: 'Older',
+        ),
+      );
+      final newer = await endpoints.reservation.create(
+        setup.ownerSession,
+        booking(
+          buildingId: setup.building.id,
+          start: start.add(const Duration(minutes: 30)),
+          guestName: 'Newer',
+        ),
+      );
+      final session = sessionBuilder.build();
+      final olderRow = await Reservation.db.findById(session, older.id);
+      final newerRow = await Reservation.db.findById(session, newer.id);
+      final base = DateTime.utc(2026, 1, 1);
+      await Reservation.db.updateRow(
+        session,
+        olderRow!.copyWith(createdAt: base),
+      );
+      await Reservation.db.updateRow(
+        session,
+        newerRow!.copyWith(createdAt: base.add(const Duration(minutes: 1))),
+      );
+      final listed = await endpoints.reservation.listForDay(
+        setup.ownerSession,
+        setup.building.id,
+        start,
+      );
+      expect(listed.map((row) => row.guestName).toList(), ['Newer', 'Older']);
     });
 
     test('employee without the flag cannot book', () async {
@@ -570,6 +770,17 @@ void main() {
         'Nou',
       );
       expect(matches.map((row) => row.firstName), contains('Noura'));
+      expect(
+        matches.firstWhere((row) => row.firstName == 'Noura').email,
+        'noura-seek@example.com',
+      );
+
+      final byEmail = await endpoints.reservation.searchCustomers(
+        setup.ownerSession,
+        setup.building.id,
+        'noura-seek@',
+      );
+      expect(byEmail.map((row) => row.lastName), contains('Seek'));
 
       final tooShort = await endpoints.reservation.searchCustomers(
         setup.ownerSession,

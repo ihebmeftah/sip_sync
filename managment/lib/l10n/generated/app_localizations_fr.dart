@@ -65,12 +65,23 @@ class AppLocalizationsFr extends AppLocalizations {
   String get notificationMarkAllRead => 'Tout marquer comme lu';
 
   @override
+  String get notificationMarkRead => 'Marquer comme lu';
+
+  @override
+  String get notificationViewAll => 'Tout voir';
+
+  @override
   String get notificationReservationAccepted =>
       'Une réservation a été acceptée';
 
   @override
   String get notificationReservationCancelled =>
       'Une réservation a été annulée';
+
+  @override
+  String notificationReservationRequested(String venue) {
+    return 'Un client a demandé une réservation à $venue';
+  }
 
   @override
   String get email => 'E-mail';
@@ -444,6 +455,16 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get profileHint =>
       'Mettez à jour le nom vu en salle. L’identité de connexion reste verrouillée.';
+
+  @override
+  String get yourAccess => 'Votre accès';
+
+  @override
+  String get profileAccessHint =>
+      'Voici les actions que votre profil autorise dans ce lieu.';
+
+  @override
+  String get accessFlagsNone => 'Ce profil n’autorise aucune action.';
 
   @override
   String get navBuildings => 'Établissements';
@@ -1639,6 +1660,17 @@ class AppLocalizationsFr extends AppLocalizations {
   String get navReservations => 'Réservations';
 
   @override
+  String reservationPendingCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count demandes en attente',
+      one: '1 demande en attente',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get reservationsTitle => 'Réservations';
 
   @override
@@ -1743,7 +1775,10 @@ class AppLocalizationsFr extends AppLocalizations {
       'Choisissez un début qui n\'est pas déjà terminé.';
 
   @override
-  String get reservationSearchHint => 'Nom ou téléphone';
+  String get reservationSearchHint => 'Nom, téléphone ou e-mail';
+
+  @override
+  String get reservationCustomerAccount => 'Compte client';
 
   @override
   String get reservationSearchEmpty => 'Aucun client ne correspond.';

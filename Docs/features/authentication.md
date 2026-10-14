@@ -72,7 +72,8 @@ Wipe `.serverpod/development/pgdata` then `serverpod start` to reset and re-seed
 
 - Owner: `OwnerAuth.changePassword` — verify current, set new, revoke other sessions for that actor.
 - Employee: `EmployeeAuth.changePassword` — same.
-- Management **Profile** screen exposes current / new / confirm fields.
+- Customer: `CustomerAuth.changePassword` — same. The customer app **Profile** tab (inside a venue visit) exposes current / new / confirm, plus name and phone. Email stays the sign-in address.
+- Management **Profile** screen exposes current / new / confirm fields. An employee also sees the access profile assigned to them, including which actions it allows.
 
 ### Forgot password (owner)
 

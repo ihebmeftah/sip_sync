@@ -703,6 +703,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get notificationMarkAllRead => 'تعليم الكل كمقروء';
 
   @override
+  String get notificationMarkRead => 'تعليم كمقروء';
+
+  @override
+  String get notificationViewAll => 'عرض الكل';
+
+  @override
   String notificationLineStatus(String article, String status) {
     return '$article أصبح $status';
   }
@@ -729,10 +735,50 @@ class AppLocalizationsAr extends AppLocalizations {
   String get notificationReservationCancelled => 'تم إلغاء حجزك';
 
   @override
+  String get notificationReservationRequested => 'تم طلب حجز';
+
+  @override
   String get profileTitle => 'الملف';
 
   @override
   String get profileReady => 'ملفك جاهز.';
+
+  @override
+  String get profileHint =>
+      'حدّث اسمك ورقم هاتفك. يبقى البريد عنوان تسجيل الدخول.';
+
+  @override
+  String get emailLocked => 'البريد مرتبط بتسجيل الدخول ولا يمكن تغييره هنا.';
+
+  @override
+  String get saveProfile => 'حفظ الملف';
+
+  @override
+  String get profileSaved => 'تم تحديث الملف.';
+
+  @override
+  String get changePassword => 'تغيير كلمة المرور';
+
+  @override
+  String get changePasswordHint => 'سيتم تسجيل الخروج من الأجهزة الأخرى.';
+
+  @override
+  String get currentPassword => 'كلمة المرور الحالية';
+
+  @override
+  String get newPassword => 'كلمة المرور الجديدة';
+
+  @override
+  String get confirmPassword => 'تأكيد كلمة المرور';
+
+  @override
+  String get updatePassword => 'تحديث كلمة المرور';
+
+  @override
+  String get passwordChanged => 'تم تحديث كلمة المرور.';
+
+  @override
+  String get validationPasswordMatch => 'كلمتا المرور غير متطابقتين.';
 
   @override
   String get reserveNow => 'احجز الآن';

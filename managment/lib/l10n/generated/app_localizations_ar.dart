@@ -64,10 +64,21 @@ class AppLocalizationsAr extends AppLocalizations {
   String get notificationMarkAllRead => 'تعليم الكل كمقروء';
 
   @override
+  String get notificationMarkRead => 'تعليم كمقروء';
+
+  @override
+  String get notificationViewAll => 'عرض الكل';
+
+  @override
   String get notificationReservationAccepted => 'تم قبول حجز';
 
   @override
   String get notificationReservationCancelled => 'تم إلغاء حجز';
+
+  @override
+  String notificationReservationRequested(String venue) {
+    return 'طلب زبون حجزاً في $venue';
+  }
 
   @override
   String get email => 'البريد الإلكتروني';
@@ -427,6 +438,16 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get profileHint =>
       'حدّث الاسم الظاهر في الصالة. هوية تسجيل الدخول تبقى مقفلة.';
+
+  @override
+  String get yourAccess => 'صلاحياتك';
+
+  @override
+  String get profileAccessHint =>
+      'هذه الإجراءات التي يسمح بها ملفك في هذا المكان.';
+
+  @override
+  String get accessFlagsNone => 'هذا الملف لا يمنح أي إجراء.';
 
   @override
   String get navBuildings => 'المباني';
@@ -1575,6 +1596,17 @@ class AppLocalizationsAr extends AppLocalizations {
   String get navReservations => 'الحجوزات';
 
   @override
+  String reservationPendingCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count طلبات معلّقة',
+      one: 'طلب معلّق واحد',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get reservationsTitle => 'الحجوزات';
 
   @override
@@ -1676,7 +1708,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get reservationWindow => 'اختر بداية لم تنتهِ بعد.';
 
   @override
-  String get reservationSearchHint => 'الاسم أو الهاتف';
+  String get reservationSearchHint => 'الاسم أو الهاتف أو البريد';
+
+  @override
+  String get reservationCustomerAccount => 'حساب الزبون';
 
   @override
   String get reservationSearchEmpty => 'لا يوجد زبائن مطابقون.';

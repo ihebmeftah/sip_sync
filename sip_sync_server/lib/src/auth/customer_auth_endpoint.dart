@@ -133,6 +133,49 @@ class CustomerAuthEndpoint extends Endpoint {
     );
   }
 
+  /// Updates the signed-in customer's password and drops other sessions.
+  Future<void> changePassword(
+    Session session,
+    ChangePasswordRequest request,
+  ) async {
+    final ctx = AuthGuard.requireAny(session);
+    if (ctx.actorType != ActorType.customer) {
+      throw AccountException(
+        message: 'Only customers can perform this action.',
+        code: AccountErrorCode.notAuthorized,
+      );
+    }
+    _auth.validatePassword(request.newPassword);
+    final customer = await Customer.db.findById(session, ctx.actorId);
+    if (customer == null) {
+      throw AccountException(
+        message: 'Customer not found.',
+        code: AccountErrorCode.notFound,
+      );
+    }
+    if (!_auth.passwords.verify(
+      request.currentPassword,
+      customer.passwordHash,
+    )) {
+      throw AccountException(
+        message: 'Current password is incorrect.',
+        code: AccountErrorCode.invalidCredentials,
+      );
+    }
+    await Customer.db.updateRow(
+      session,
+      customer.copyWith(
+        passwordHash: _auth.passwords.hash(request.newPassword),
+      ),
+    );
+    await SessionService().revokeOtherSessionsForActor(
+      session,
+      actorType: ActorType.customer,
+      actorId: ctx.actorId,
+      keepSessionId: ctx.sessionId,
+    );
+  }
+
   Future<void> logout(Session session) async {
     final ctx = AuthGuard.requireAny(session);
     await SessionService().revoke(session, ctx.sessionId);

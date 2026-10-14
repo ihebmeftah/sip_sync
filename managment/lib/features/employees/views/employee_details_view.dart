@@ -7,6 +7,7 @@ import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
 import '../../../core/widgets/app_loader.dart';
 import '../../../l10n/generated/app_localizations.dart';
+import '../widgets/employee_access_flags.dart';
 import '../view_models/employee_details_view_model.dart';
 
 class EmployeeDetailsPage extends ConsumerStatefulWidget {
@@ -146,12 +147,12 @@ class _EmployeeDetailsPageState extends ConsumerState<EmployeeDetailsPage> {
                         ListTile(
                           contentPadding: EdgeInsets.zero,
                           title: Text(l10n.accessProfile),
-                          subtitle: Text(
-                            employee.accessName?.isNotEmpty == true
-                                ? employee.accessName!
-                                : l10n.accessProfileNone,
-                          ),
+                          subtitle: employee.accessId == null
+                              ? Text(l10n.accessProfileNone)
+                              : null,
                         ),
+                        if (employee.accessId != null)
+                          _AccessBody(accessId: employee.accessId!.uuid),
                         ListTile(
                           contentPadding: EdgeInsets.zero,
                           title: Text(l10n.phone),
@@ -165,6 +166,26 @@ class _EmployeeDetailsPageState extends ConsumerState<EmployeeDetailsPage> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _AccessBody extends ConsumerWidget {
+  const _AccessBody({required this.accessId});
+
+  final String accessId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context)!;
+    final access = ref.watch(employeeAssignedAccessProvider(accessId));
+    return access.when(
+      loading: () => const Padding(
+        padding: EdgeInsets.symmetric(vertical: AppSpacing.sm),
+        child: AppScreenLoader(),
+      ),
+      error: (error, _) => Text(lookupError(l10n, mapError(error).l10nKey)),
+      data: (profile) => EmployeeAccessFlags(access: profile),
     );
   }
 }

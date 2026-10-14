@@ -13,9 +13,30 @@ class MyReservations extends _$MyReservations {
     return ref.watch(customerReservationRepositoryProvider).listMine();
   }
 
+  /// Puts a booking the customer just sent at the top of the list.
+  void remember(ReservationView view) {
+    final current = state.asData?.value;
+    if (current == null) {
+      return;
+    }
+    state = AsyncData([
+      view,
+      for (final row in current)
+        if (row.id != view.id) row,
+    ]);
+  }
+
   /// Drops a future request or confirmed reservation the customer owns.
+  ///
+  /// Replaces that row so the rest of the list stays put.
   Future<void> cancel(UuidValue id) async {
-    await ref.read(customerReservationRepositoryProvider).cancel(id);
-    ref.invalidateSelf();
+    final updated = await ref
+        .read(customerReservationRepositoryProvider)
+        .cancel(id);
+    final current = state.asData?.value ?? const <ReservationView>[];
+    state = AsyncData([
+      for (final row in current)
+        if (row.id == id) updated else row,
+    ]);
   }
 }

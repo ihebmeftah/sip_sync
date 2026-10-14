@@ -47,3 +47,11 @@ class EmployeeDetailsViewModel extends _$EmployeeDetailsViewModel {
     return UuidValue.fromString(trimmed);
   }
 }
+
+/// The permission set assigned to one employee, for the details screen.
+@riverpod
+Future<EmployeeAccessView?> employeeAssignedAccess(Ref ref, String accessId) {
+  return ref
+      .read(employeeAccessRepositoryProvider)
+      .get(UuidValue.fromString(accessId));
+}

@@ -706,6 +706,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notificationMarkAllRead => 'Mark all as read';
 
   @override
+  String get notificationMarkRead => 'Mark as read';
+
+  @override
+  String get notificationViewAll => 'View all';
+
+  @override
   String notificationLineStatus(String article, String status) {
     return '$article is now $status';
   }
@@ -733,10 +739,51 @@ class AppLocalizationsEn extends AppLocalizations {
       'Your reservation was cancelled';
 
   @override
+  String get notificationReservationRequested => 'A reservation was requested';
+
+  @override
   String get profileTitle => 'Profile';
 
   @override
   String get profileReady => 'Your profile is ready.';
+
+  @override
+  String get profileHint =>
+      'Update your name and phone. Your email stays the sign-in address.';
+
+  @override
+  String get emailLocked =>
+      'Email is tied to sign-in and cannot be changed here.';
+
+  @override
+  String get saveProfile => 'Save profile';
+
+  @override
+  String get profileSaved => 'Profile updated.';
+
+  @override
+  String get changePassword => 'Change password';
+
+  @override
+  String get changePasswordHint => 'Other devices will be signed out.';
+
+  @override
+  String get currentPassword => 'Current password';
+
+  @override
+  String get newPassword => 'New password';
+
+  @override
+  String get confirmPassword => 'Confirm password';
+
+  @override
+  String get updatePassword => 'Update password';
+
+  @override
+  String get passwordChanged => 'Password updated.';
+
+  @override
+  String get validationPasswordMatch => 'Passwords do not match.';
 
   @override
   String get reserveNow => 'Reserve now';

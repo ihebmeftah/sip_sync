@@ -109,3 +109,91 @@ abstract class _$EmployeeDetailsViewModel extends $AsyncNotifier<EmployeeView> {
     element.handleValue(ref, created);
   }
 }
+
+/// The permission set assigned to one employee, for the details screen.
+
+@ProviderFor(employeeAssignedAccess)
+const employeeAssignedAccessProvider = EmployeeAssignedAccessFamily._();
+
+/// The permission set assigned to one employee, for the details screen.
+
+final class EmployeeAssignedAccessProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<EmployeeAccessView?>,
+          EmployeeAccessView?,
+          FutureOr<EmployeeAccessView?>
+        >
+    with
+        $FutureModifier<EmployeeAccessView?>,
+        $FutureProvider<EmployeeAccessView?> {
+  /// The permission set assigned to one employee, for the details screen.
+  const EmployeeAssignedAccessProvider._({
+    required EmployeeAssignedAccessFamily super.from,
+    required String super.argument,
+  }) : super(
+         retry: null,
+         name: r'employeeAssignedAccessProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$employeeAssignedAccessHash();
+
+  @override
+  String toString() {
+    return r'employeeAssignedAccessProvider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  $FutureProviderElement<EmployeeAccessView?> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<EmployeeAccessView?> create(Ref ref) {
+    final argument = this.argument as String;
+    return employeeAssignedAccess(ref, argument);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is EmployeeAssignedAccessProvider &&
+        other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$employeeAssignedAccessHash() =>
+    r'b80371a5ff23d103264bf98b26c459101c1a8585';
+
+/// The permission set assigned to one employee, for the details screen.
+
+final class EmployeeAssignedAccessFamily extends $Family
+    with $FunctionalFamilyOverride<FutureOr<EmployeeAccessView?>, String> {
+  const EmployeeAssignedAccessFamily._()
+    : super(
+        retry: null,
+        name: r'employeeAssignedAccessProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  /// The permission set assigned to one employee, for the details screen.
+
+  EmployeeAssignedAccessProvider call(String accessId) =>
+      EmployeeAssignedAccessProvider._(argument: accessId, from: this);
+
+  @override
+  String toString() => r'employeeAssignedAccessProvider';
+}

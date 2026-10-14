@@ -9,10 +9,11 @@ String notificationBody(AppLocalizations l10n, AppNotificationView row) {
       ? null
       : orderCancellationReasonLabel(l10n, row.cancellationReason!);
   if (row.kind == AppNotificationKind.reservation) {
-    if (row.reservationStatus == ReservationStatus.cancelled) {
-      return l10n.notificationReservationCancelled;
-    }
-    return l10n.notificationReservationAccepted;
+    return switch (row.reservationStatus) {
+      ReservationStatus.cancelled => l10n.notificationReservationCancelled,
+      ReservationStatus.requested => l10n.notificationReservationRequested,
+      _ => l10n.notificationReservationAccepted,
+    };
   }
   if (row.kind == AppNotificationKind.orderItem) {
     final article = row.articleName ?? '';

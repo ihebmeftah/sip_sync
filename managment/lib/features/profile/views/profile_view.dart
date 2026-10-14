@@ -10,6 +10,7 @@ import '../../../core/widgets/app_loader.dart';
 import '../../../core/widgets/app_phone_field.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../view_models/profile_view_model.dart';
+import '../../employees/widgets/employee_access_flags.dart';
 
 class ProfileViewPage extends ConsumerStatefulWidget {
   const ProfileViewPage({super.key});
@@ -176,6 +177,21 @@ class _ProfileViewPageState extends ConsumerState<ProfileViewPage> {
                   ),
                 ),
               ),
+              if (isEmployee) ...[
+                const SizedBox(height: AppSpacing.lg),
+                AppSurfaceCard(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Text(l10n.yourAccess, style: text.titleLarge),
+                      const SizedBox(height: AppSpacing.sm),
+                      Text(l10n.profileAccessHint, style: text.bodyMedium),
+                      const SizedBox(height: AppSpacing.lg),
+                      EmployeeAccessFlags(access: store.employee?.access),
+                    ],
+                  ),
+                ),
+              ],
               const SizedBox(height: AppSpacing.lg),
               AppSurfaceCard(
                 child: Form(

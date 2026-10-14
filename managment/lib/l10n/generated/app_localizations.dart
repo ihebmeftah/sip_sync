@@ -208,6 +208,18 @@ abstract class AppLocalizations {
   /// **'Mark all as read'**
   String get notificationMarkAllRead;
 
+  /// No description provided for @notificationMarkRead.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark as read'**
+  String get notificationMarkRead;
+
+  /// No description provided for @notificationViewAll.
+  ///
+  /// In en, this message translates to:
+  /// **'View all'**
+  String get notificationViewAll;
+
   /// No description provided for @notificationReservationAccepted.
   ///
   /// In en, this message translates to:
@@ -219,6 +231,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'A reservation was cancelled'**
   String get notificationReservationCancelled;
+
+  /// No description provided for @notificationReservationRequested.
+  ///
+  /// In en, this message translates to:
+  /// **'A customer requested a reservation at {venue}'**
+  String notificationReservationRequested(String venue);
 
   /// No description provided for @email.
   ///
@@ -891,6 +909,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Update the name the floor sees. Sign-in identity stays locked.'**
   String get profileHint;
+
+  /// No description provided for @yourAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Your access'**
+  String get yourAccess;
+
+  /// No description provided for @profileAccessHint.
+  ///
+  /// In en, this message translates to:
+  /// **'These are the actions your profile allows in this venue.'**
+  String get profileAccessHint;
+
+  /// No description provided for @accessFlagsNone.
+  ///
+  /// In en, this message translates to:
+  /// **'This profile does not grant any actions.'**
+  String get accessFlagsNone;
 
   /// No description provided for @navBuildings.
   ///
@@ -2986,6 +3022,12 @@ abstract class AppLocalizations {
   /// **'Reservations'**
   String get navReservations;
 
+  /// No description provided for @reservationPendingCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 pending request} other{{count} pending requests}}'**
+  String reservationPendingCount(int count);
+
   /// No description provided for @reservationsTitle.
   ///
   /// In en, this message translates to:
@@ -3187,8 +3229,14 @@ abstract class AppLocalizations {
   /// No description provided for @reservationSearchHint.
   ///
   /// In en, this message translates to:
-  /// **'Name or phone'**
+  /// **'Name, phone, or email'**
   String get reservationSearchHint;
+
+  /// No description provided for @reservationCustomerAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Customer account'**
+  String get reservationCustomerAccount;
 
   /// No description provided for @reservationSearchEmpty.
   ///

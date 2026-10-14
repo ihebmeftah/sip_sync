@@ -44,7 +44,7 @@ final class SeatedTableProvider
   }
 }
 
-String _$seatedTableHash() => r'875f52373e7ca02ea0c346192d252db6522df014';
+String _$seatedTableHash() => r'6d51e3f8d5bd88644973ed53dd2c0741c4fc0c55';
 
 /// Session seat. Cleared when the app process restarts.
 

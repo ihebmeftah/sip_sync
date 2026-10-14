@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sip_sync_client/sip_sync_client.dart';
@@ -14,6 +12,7 @@ import '../../../core/widgets/app_controls.dart';
 import '../../../core/widgets/app_phone_field.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../view_models/reservations_view_model.dart';
+import '../widgets/customer_account_picker.dart';
 
 /// Staff booking. It is confirmed on save and still needs a table.
 class ReservationCreateView extends ConsumerStatefulWidget {
@@ -30,24 +29,14 @@ class _ReservationCreateViewState extends ConsumerState<ReservationCreateView> {
   final _formKey = GlobalKey<FormState>();
   final _guestName = TextEditingController();
   final _paid = TextEditingController();
-  final _search = TextEditingController();
-  final _customerFocus = FocusNode();
-  final _customerLink = LayerLink();
-  final _customerMenu = OverlayPortalController();
   DateTime _date = DateTime.now();
   TimeOfDay _start = TimeOfDay.now();
   var _guest = true;
   var _phone = '';
   var _saving = false;
-  var _lookingUp = false;
-  var _searched = false;
-  var _applyingCustomer = false;
   String? _errorKey;
   ReservationCustomerMatch? _customer;
-  List<ReservationCustomerMatch> _matches = [];
-  Timer? _searchTimer;
   var _seededFee = false;
-  var _customerFieldWidth = 360.0;
 
   @override
   void initState() {
@@ -55,17 +44,12 @@ class _ReservationCreateViewState extends ConsumerState<ReservationCreateView> {
     final start = DateTime.now().add(const Duration(hours: 1));
     _date = DateTime(start.year, start.month, start.day);
     _start = TimeOfDay(hour: start.hour, minute: 0);
-    _customerFocus.addListener(_onCustomerFocus);
   }
 
   @override
   void dispose() {
-    _searchTimer?.cancel();
-    _customerFocus.removeListener(_onCustomerFocus);
-    _customerFocus.dispose();
     _guestName.dispose();
     _paid.dispose();
-    _search.dispose();
     super.dispose();
   }
 
@@ -114,12 +98,9 @@ class _ReservationCreateViewState extends ConsumerState<ReservationCreateView> {
                   title: Text(l10n.reservationGuestInstead),
                   value: _guest,
                   onChanged: (value) {
-                    _searchTimer?.cancel();
-                    _customerMenu.hide();
                     setState(() {
                       _guest = value;
                       _errorKey = null;
-                      _lookingUp = false;
                     });
                   },
                 ),
@@ -137,7 +118,14 @@ class _ReservationCreateViewState extends ConsumerState<ReservationCreateView> {
                     onChanged: (value) => setState(() => _phone = value),
                   ),
                 ] else ...[
-                  _customerDropdown(l10n),
+                  CustomerAccountPicker(
+                    buildingId: widget.buildingId,
+                    customer: _customer,
+                    onChanged: (value) => setState(() {
+                      _customer = value;
+                      _errorKey = null;
+                    }),
+                  ),
                 ],
                 AppTextField(
                   controller: _paid,
@@ -189,201 +177,6 @@ class _ReservationCreateViewState extends ConsumerState<ReservationCreateView> {
       return;
     }
     setState(() => _start = picked);
-  }
-
-  Widget _customerDropdown(AppLocalizations l10n) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: AppSpacing.lg),
-      child: OverlayPortal(
-        controller: _customerMenu,
-        overlayChildBuilder: (context) => _customerMenuPanel(l10n),
-        child: CompositedTransformTarget(
-          link: _customerLink,
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              _customerFieldWidth = constraints.maxWidth;
-              return TextFormField(
-                controller: _search,
-                focusNode: _customerFocus,
-                textInputAction: TextInputAction.search,
-                onChanged: _onSearchChanged,
-                decoration: InputDecoration(
-                  labelText: l10n.reservationSearchHint,
-                  helperText: _customer?.phoneNumber,
-                  suffixIcon: _customer == null
-                      ? const Icon(Icons.arrow_drop_down)
-                      : IconButton(
-                          onPressed: _clearCustomer,
-                          icon: const Icon(Icons.close),
-                        ),
-                ),
-              );
-            },
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _customerMenuPanel(AppLocalizations l10n) {
-    return CompositedTransformFollower(
-      link: _customerLink,
-      targetAnchor: Alignment.bottomLeft,
-      followerAnchor: Alignment.topLeft,
-      showWhenUnlinked: false,
-      offset: const Offset(0, 4),
-      child: Align(
-        alignment: AlignmentDirectional.topStart,
-        child: SizedBox(
-          width: _customerFieldWidth,
-          child: Material(
-            elevation: 8,
-            borderRadius: BorderRadius.circular(12),
-            clipBehavior: Clip.antiAlias,
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxHeight: 280),
-              child: _lookingUp
-                  ? const SizedBox(
-                      height: 72,
-                      child: Center(
-                        child: SizedBox(
-                          width: 24,
-                          height: 24,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        ),
-                      ),
-                    )
-                  : _matches.isEmpty
-                  ? Padding(
-                      padding: const EdgeInsets.all(AppSpacing.lg),
-                      child: Text(l10n.reservationSearchEmpty),
-                    )
-                  : ListView(
-                      padding: EdgeInsets.zero,
-                      shrinkWrap: true,
-                      children: [
-                        for (final match in _matches)
-                          GestureDetector(
-                            onTapDown: (_) => _selectCustomer(match),
-                            child: ListTile(
-                              title: Text(
-                                '${match.firstName} ${match.lastName}',
-                              ),
-                              subtitle: Text(match.phoneNumber),
-                            ),
-                          ),
-                      ],
-                    ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  void _onCustomerFocus() {
-    if (_customerFocus.hasFocus) {
-      _showCustomerMenu();
-      return;
-    }
-    Future<void>.delayed(const Duration(milliseconds: 200), () {
-      if (mounted && !_customerFocus.hasFocus) {
-        _customerMenu.hide();
-      }
-    });
-  }
-
-  void _showCustomerMenu() {
-    if (_guest || !_customerFocus.hasFocus) {
-      return;
-    }
-    if (_lookingUp || _searched) {
-      _customerMenu.show();
-    }
-  }
-
-  void _clearCustomer() {
-    _searchTimer?.cancel();
-    _search.clear();
-    setState(() {
-      _customer = null;
-      _matches = [];
-      _searched = false;
-      _lookingUp = false;
-    });
-    _customerMenu.hide();
-    _customerFocus.requestFocus();
-  }
-
-  void _selectCustomer(ReservationCustomerMatch match) {
-    _applyingCustomer = true;
-    _search.text = '${match.firstName} ${match.lastName}';
-    _search.selection = TextSelection.collapsed(offset: _search.text.length);
-    _applyingCustomer = false;
-    _searchTimer?.cancel();
-    setState(() {
-      _customer = match;
-      _matches = [];
-      _searched = false;
-      _lookingUp = false;
-      _errorKey = null;
-    });
-    _customerMenu.hide();
-    _customerFocus.unfocus();
-  }
-
-  void _onSearchChanged(String value) {
-    if (_applyingCustomer) {
-      return;
-    }
-    _searchTimer?.cancel();
-    setState(() {
-      _customer = null;
-      _matches = [];
-      _searched = false;
-      _lookingUp = false;
-      _errorKey = null;
-    });
-    _customerMenu.hide();
-    final query = value.trim();
-    if (query.length < 2) {
-      return;
-    }
-    _searchTimer = Timer(
-      const Duration(seconds: 1),
-      () => _searchCustomers(query),
-    );
-  }
-
-  Future<void> _searchCustomers(String query) async {
-    setState(() {
-      _lookingUp = true;
-      _searched = false;
-      _errorKey = null;
-    });
-    _showCustomerMenu();
-    try {
-      final rows = await ref
-          .read(reservationRepositoryProvider)
-          .searchCustomers(UuidValue.fromString(widget.buildingId), query);
-      if (!mounted || _search.text.trim() != query) {
-        return;
-      }
-      setState(() {
-        _matches = rows;
-        _searched = true;
-        _lookingUp = false;
-      });
-      _showCustomerMenu();
-    } catch (error) {
-      if (mounted && _search.text.trim() == query) {
-        setState(() {
-          _errorKey = captureError(context, error);
-          _lookingUp = false;
-        });
-        _customerMenu.hide();
-      }
-    }
   }
 
   DateTime _combine(TimeOfDay time) {

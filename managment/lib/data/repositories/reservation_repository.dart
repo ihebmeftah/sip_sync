@@ -6,9 +6,14 @@ class ReservationRepository {
 
   final Client _client;
 
-  /// Bookings whose start falls on the UTC date of [day].
+  /// Bookings whose start falls on the UTC date of [day], newest first.
   Future<List<ReservationView>> listForDay(UuidValue buildingId, DateTime day) {
     return _client.reservation.listForDay(buildingId, day);
+  }
+
+  /// Customer requests for [buildingId] that are still waiting.
+  Future<int> pendingCount(UuidValue buildingId) {
+    return _client.reservation.pendingCount(buildingId);
   }
 
   Future<ReservationView> create(ReservationCreate request) {

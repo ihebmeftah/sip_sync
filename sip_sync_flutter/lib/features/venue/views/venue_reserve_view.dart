@@ -25,6 +25,8 @@ class VenueReserveView extends ConsumerStatefulWidget {
 }
 
 class _VenueReserveViewState extends ConsumerState<VenueReserveView> {
+  UuidValue? _busyId;
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -99,19 +101,17 @@ class _VenueReserveViewState extends ConsumerState<VenueReserveView> {
                     return Column(
                       children: [
                         for (final row in here)
-                          ListTile(
-                            contentPadding: EdgeInsets.zero,
-                            title: Text(
-                              '${_clock(row.startsAt)} – ${_clock(row.endsAt)}',
-                            ),
-                            subtitle: Text(_summary(l10n, row)),
-                            trailing:
-                                row.status == ReservationStatus.requested ||
-                                    row.status == ReservationStatus.confirmed
-                                ? TextButton(
-                                    onPressed: () => _cancel(row.id),
-                                    child: Text(l10n.reservationCancel),
-                                  )
+                          _ReservationCard(
+                            key: ValueKey(row.id.uuid),
+                            row: row,
+                            busy: _busyId == row.id,
+                            onCancel:
+                                _busyId == null &&
+                                    (row.status ==
+                                            ReservationStatus.requested ||
+                                        row.status ==
+                                            ReservationStatus.confirmed)
+                                ? () => _cancel(row.id)
                                 : null,
                           ),
                       ],
@@ -127,17 +127,99 @@ class _VenueReserveViewState extends ConsumerState<VenueReserveView> {
   }
 
   Future<void> _cancel(UuidValue id) async {
+    setState(() => _busyId = id);
     try {
       await ref.read(myReservationsProvider.notifier).cancel(id);
     } catch (error) {
       if (mounted) {
         showMappedError(context, error);
       }
+    } finally {
+      if (mounted) {
+        setState(() => _busyId = null);
+      }
     }
+  }
+}
+
+class _ReservationCard extends StatelessWidget {
+  const _ReservationCard({
+    super.key,
+    required this.row,
+    required this.busy,
+    required this.onCancel,
+  });
+
+  final ReservationView row;
+  final bool busy;
+  final VoidCallback? onCancel;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final text = Theme.of(context).textTheme;
+    final scheme = Theme.of(context).colorScheme;
+    final localizations = MaterialLocalizations.of(context);
+    final start = row.startsAt.toLocal();
+    final pending = row.status == ReservationStatus.requested;
+    return Card(
+      margin: const EdgeInsets.only(bottom: AppSpacing.md),
+      color: scheme.surfaceContainerLowest,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppRadii.lg),
+        side: BorderSide(
+          color: pending
+              ? scheme.primary
+              : scheme.outline.withValues(alpha: 0.6),
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.lg),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                _StatusChip(status: row.status),
+                const Spacer(),
+                Text(
+                  localizations.formatMediumDate(start),
+                  style: text.titleSmall,
+                ),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            Text(
+              '${localizations.formatTimeOfDay(TimeOfDay.fromDateTime(start))} – ${localizations.formatTimeOfDay(TimeOfDay.fromDateTime(row.endsAt.toLocal()))}',
+              style: text.titleMedium,
+            ),
+            const SizedBox(height: AppSpacing.xs),
+            Text(_summary(l10n, row), style: text.bodyMedium),
+            if (busy) ...[
+              const SizedBox(height: AppSpacing.sm),
+              const SizedBox(
+                width: 18,
+                height: 18,
+                child: AppBusyIndicator(),
+              ),
+            ] else if (onCancel != null) ...[
+              const SizedBox(height: AppSpacing.sm),
+              Align(
+                alignment: AlignmentDirectional.centerEnd,
+                child: TextButton(
+                  onPressed: onCancel,
+                  child: Text(l10n.reservationCancel),
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
   }
 
   String _summary(AppLocalizations l10n, ReservationView row) {
-    final status = switch (row.status) {
+    return switch (row.status) {
       ReservationStatus.requested => l10n.reservationAwaitingConfirmation,
       ReservationStatus.confirmed when row.tableNumbers.isEmpty =>
         l10n.reservationAwaitingTable,
@@ -148,14 +230,63 @@ class _VenueReserveViewState extends ConsumerState<VenueReserveView> {
       ReservationStatus.cancelled => l10n.reservationStatusCancelled,
       ReservationStatus.noShow => l10n.reservationStatusNoShow,
     };
-    return status;
   }
+}
 
-  String _clock(DateTime value) {
-    final local = value.toLocal();
-    final hour = local.hour.toString().padLeft(2, '0');
-    final minute = local.minute.toString().padLeft(2, '0');
-    return '$hour:$minute';
+class _StatusChip extends StatelessWidget {
+  const _StatusChip({required this.status});
+
+  final ReservationStatus status;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final scheme = Theme.of(context).colorScheme;
+    final (label, background, foreground) = switch (status) {
+      ReservationStatus.requested => (
+        l10n.reservationStatusRequested,
+        scheme.primaryContainer,
+        scheme.onPrimaryContainer,
+      ),
+      ReservationStatus.confirmed => (
+        l10n.reservationStatusConfirmed,
+        scheme.secondaryContainer,
+        scheme.onSecondaryContainer,
+      ),
+      ReservationStatus.arrived => (
+        l10n.reservationStatusArrived,
+        scheme.tertiaryContainer,
+        scheme.onTertiaryContainer,
+      ),
+      ReservationStatus.cancelled => (
+        l10n.reservationStatusCancelled,
+        scheme.errorContainer,
+        scheme.onErrorContainer,
+      ),
+      ReservationStatus.noShow => (
+        l10n.reservationStatusNoShow,
+        scheme.surfaceContainerHighest,
+        scheme.onSurface,
+      ),
+    };
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: background,
+        borderRadius: BorderRadius.circular(AppRadii.sm),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.sm,
+          vertical: AppSpacing.xs,
+        ),
+        child: Text(
+          label,
+          style: Theme.of(
+            context,
+          ).textTheme.labelLarge?.copyWith(color: foreground),
+        ),
+      ),
+    );
   }
 }
 
@@ -299,7 +430,7 @@ class _ReserveRequestDialogState extends ConsumerState<_ReserveRequestDialog> {
       _errorKey = null;
     });
     try {
-      await ref
+      final created = await ref
           .read(customerReservationRepositoryProvider)
           .create(
             CustomerReservationCreate(
@@ -307,7 +438,7 @@ class _ReserveRequestDialogState extends ConsumerState<_ReserveRequestDialog> {
               startsAt: start.toUtc(),
             ),
           );
-      ref.invalidate(myReservationsProvider);
+      ref.read(myReservationsProvider.notifier).remember(created);
       if (mounted) {
         Navigator.of(context).pop();
       }

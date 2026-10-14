@@ -5,6 +5,7 @@ import 'package:sip_sync_client/sip_sync_client.dart';
 
 import '../../../core/di/app_providers.dart';
 import '../../../core/paging/list_paging.dart';
+import 'notification_toasts.dart';
 
 part 'notification_inbox_view_model.g.dart';
 
@@ -270,6 +271,7 @@ class NotificationInbox extends _$NotificationInbox {
     if (current == null || current.items.any((row) => row.id == view.id)) {
       return;
     }
+    ref.read(notificationToastsProvider.notifier).push(view);
     final shown = _matches(view);
     state = AsyncData(
       current.copyWith(

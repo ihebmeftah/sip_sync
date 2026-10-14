@@ -28,6 +28,8 @@ class ReservationsListView extends ConsumerStatefulWidget {
 }
 
 class _ReservationsListViewState extends ConsumerState<ReservationsListView> {
+  UuidValue? _busyId;
+
   @override
   void initState() {
     super.initState();
@@ -47,6 +49,13 @@ class _ReservationsListViewState extends ConsumerState<ReservationsListView> {
     final l10n = AppLocalizations.of(context)!;
     final day = ref.watch(reservationsViewModelProvider(widget.buildingId));
     final building = ref.watch(buildingSelectionProvider);
+    final pending =
+        ref
+            .watch(pendingReservationCountProvider(widget.buildingId))
+            .asData
+            ?.value ??
+        0;
+    final scheme = Theme.of(context).colorScheme;
     final access = FloorAccess.fromSession(ref.watch(appSessionStoreProvider));
     final packOn = building?.pack.reservations == true;
     final venueReservations = building?.reservationsEnabled ?? true;
@@ -73,87 +82,120 @@ class _ReservationsListViewState extends ConsumerState<ReservationsListView> {
             AppErrorBanner(message: lookupError(l10n, mapError(error).l10nKey)),
           ],
         ),
-        data: (value) => ListView(
-          padding: const EdgeInsets.all(AppSpacing.xl),
-          children: [
-            Text(
-              l10n.reservationsTitle,
-              style: Theme.of(context).textTheme.headlineSmall,
-            ),
-            const SizedBox(height: AppSpacing.md),
-            if (access.canManageReservations)
-              PackLockedAction(
-                locked: !packOn || capped,
-                child: AppFilledButton(
-                  label: l10n.reservationNew,
-                  onPressed: packOn && venueReservations && !capped
-                      ? () => ReservationCreateRoute(
-                          buildingId: widget.buildingId,
-                        ).go(context)
-                      : null,
-                ),
-              ),
-            const SizedBox(height: AppSpacing.md),
-            Row(
+        data: (value) => Align(
+          alignment: Alignment.topCenter,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: AppBreakpoints.pageMax),
+            child: ListView(
+              padding: const EdgeInsets.all(AppSpacing.xl),
               children: [
-                IconButton(
-                  tooltip: l10n.reservationPreviousDay,
-                  onPressed: () => ref
-                      .read(
-                        reservationsViewModelProvider(
-                          widget.buildingId,
-                        ).notifier,
-                      )
-                      .shiftDay(-1),
-                  icon: const Icon(Icons.chevron_left),
-                ),
-                Expanded(
-                  child: Text(
-                    MaterialLocalizations.of(context).formatMediumDate(
-                      DateTime(value.day.year, value.day.month, value.day.day),
+                Row(
+                  children: [
+                    Flexible(
+                      child: Text(
+                        l10n.reservationsTitle,
+                        style: Theme.of(context).textTheme.headlineSmall,
+                      ),
                     ),
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.titleMedium,
+                    if (pending > 0) ...[
+                      const SizedBox(width: AppSpacing.sm),
+                      Tooltip(
+                        message: l10n.reservationPendingCount(pending),
+                        child: Badge(
+                          backgroundColor: scheme.primary,
+                          textColor: scheme.onPrimary,
+                          label: Text(pending > 99 ? '99+' : '$pending'),
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+                const SizedBox(height: AppSpacing.md),
+                if (access.canManageReservations)
+                  PackLockedAction(
+                    locked: !packOn || capped,
+                    child: AppFilledButton(
+                      label: l10n.reservationNew,
+                      onPressed: packOn && venueReservations && !capped
+                          ? () => ReservationCreateRoute(
+                              buildingId: widget.buildingId,
+                            ).go(context)
+                          : null,
+                    ),
                   ),
+                const SizedBox(height: AppSpacing.md),
+                Row(
+                  children: [
+                    IconButton(
+                      tooltip: l10n.reservationPreviousDay,
+                      onPressed: () => ref
+                          .read(
+                            reservationsViewModelProvider(
+                              widget.buildingId,
+                            ).notifier,
+                          )
+                          .shiftDay(-1),
+                      icon: const Icon(Icons.chevron_left),
+                    ),
+                    Expanded(
+                      child: Text(
+                        MaterialLocalizations.of(context).formatMediumDate(
+                          DateTime(
+                            value.day.year,
+                            value.day.month,
+                            value.day.day,
+                          ),
+                        ),
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                    ),
+                    IconButton(
+                      tooltip: l10n.reservationNextDay,
+                      onPressed: () => ref
+                          .read(
+                            reservationsViewModelProvider(
+                              widget.buildingId,
+                            ).notifier,
+                          )
+                          .shiftDay(1),
+                      icon: const Icon(Icons.chevron_right),
+                    ),
+                  ],
                 ),
-                IconButton(
-                  tooltip: l10n.reservationNextDay,
-                  onPressed: () => ref
-                      .read(
-                        reservationsViewModelProvider(
-                          widget.buildingId,
-                        ).notifier,
-                      )
-                      .shiftDay(1),
-                  icon: const Icon(Icons.chevron_right),
-                ),
+                const SizedBox(height: AppSpacing.md),
+                if (value.items.isEmpty)
+                  Text(l10n.reservationEmpty)
+                else
+                  for (final row in value.items)
+                    _ReservationCard(
+                      key: ValueKey(row.id.uuid),
+                      row: row,
+                      currency: building?.currencyCode ?? '',
+                      busy: _busyId == row.id,
+                      onConfirm:
+                          row.status == ReservationStatus.requested &&
+                              access.canManageReservations &&
+                              _busyId == null
+                          ? () => _confirm(row)
+                          : null,
+                      onAssign:
+                          row.status == ReservationStatus.confirmed &&
+                              access.canManageReservations &&
+                              _busyId == null
+                          ? () => _assign(row, activeTables)
+                          : null,
+                      onCancel:
+                          (row.status == ReservationStatus.requested ||
+                                  row.status == ReservationStatus.confirmed) &&
+                              access.canManageReservations &&
+                              _busyId == null
+                          ? () => _cancel(row)
+                          : null,
+                    ),
               ],
             ),
-            const SizedBox(height: AppSpacing.md),
-            if (value.items.isEmpty)
-              Text(l10n.reservationEmpty)
-            else
-              for (final row in value.items)
-                _ReservationCard(
-                  row: row,
-                  onConfirm:
-                      row.status == ReservationStatus.requested &&
-                          access.canManageReservations
-                      ? () => _confirm(row)
-                      : null,
-                  onAssign:
-                      row.status == ReservationStatus.confirmed &&
-                          access.canManageReservations
-                      ? () => _assign(row, activeTables)
-                      : null,
-                  onCancel:
-                      (row.status == ReservationStatus.requested ||
-                              row.status == ReservationStatus.confirmed) &&
-                          access.canManageReservations
-                      ? () => _cancel(row)
-                      : null,
-                ),
-          ],
+          ),
         ),
       ),
     );
@@ -168,13 +210,25 @@ class _ReservationsListViewState extends ConsumerState<ReservationsListView> {
   }
 
   Future<void> _confirm(ReservationView row) async {
-    try {
-      await ref
+    await _run(
+      row.id,
+      () => ref
           .read(reservationsViewModelProvider(widget.buildingId).notifier)
-          .confirm(row.id);
+          .confirm(row.id),
+    );
+  }
+
+  Future<void> _run(UuidValue id, Future<void> Function() action) async {
+    setState(() => _busyId = id);
+    try {
+      await action();
     } catch (error) {
       if (mounted) {
         captureError(context, error);
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _busyId = null);
       }
     }
   }
@@ -188,15 +242,12 @@ class _ReservationsListViewState extends ConsumerState<ReservationsListView> {
     if (selected == null || !mounted) {
       return;
     }
-    try {
-      await ref
+    await _run(
+      row.id,
+      () => ref
           .read(reservationsViewModelProvider(widget.buildingId).notifier)
-          .assignTables(row.id, selected);
-    } catch (error) {
-      if (mounted) {
-        captureError(context, error);
-      }
-    }
+          .assignTables(row.id, selected),
+    );
   }
 
   Future<void> _cancel(ReservationView row) async {
@@ -221,27 +272,29 @@ class _ReservationsListViewState extends ConsumerState<ReservationsListView> {
     if (ok != true || !mounted) {
       return;
     }
-    try {
-      await ref
+    await _run(
+      row.id,
+      () => ref
           .read(reservationsViewModelProvider(widget.buildingId).notifier)
-          .cancel(row.id);
-    } catch (error) {
-      if (mounted) {
-        captureError(context, error);
-      }
-    }
+          .cancel(row.id),
+    );
   }
 }
 
 class _ReservationCard extends StatelessWidget {
   const _ReservationCard({
+    super.key,
     required this.row,
+    required this.currency,
+    required this.busy,
     required this.onConfirm,
     required this.onAssign,
     required this.onCancel,
   });
 
   final ReservationView row;
+  final String currency;
+  final bool busy;
   final VoidCallback? onConfirm;
   final VoidCallback? onAssign;
   final VoidCallback? onCancel;
@@ -250,62 +303,144 @@ class _ReservationCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final text = Theme.of(context).textTheme;
+    final scheme = Theme.of(context).colorScheme;
+    final pending = row.status == ReservationStatus.requested;
     final tables = row.tableNumbers.isEmpty
         ? l10n.reservationNoTable
         : '${l10n.reservationTables} ${row.tableNumbers.join(', ')}';
+    final amount = currency.isEmpty
+        ? '${row.paidAmount}'
+        : '${row.paidAmount} $currency';
     return Card(
       margin: const EdgeInsets.only(bottom: AppSpacing.md),
+      color: scheme.surfaceContainerLowest,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppRadii.lg),
+        side: BorderSide(
+          color: pending
+              ? scheme.primary
+              : scheme.outline.withValues(alpha: 0.6),
+        ),
+      ),
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.lg),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(row.guestName, style: text.titleMedium),
-            const SizedBox(height: AppSpacing.xs),
-            Text('${_clock(row.startsAt)} – ${_clock(row.endsAt)} · $tables'),
-            if (row.guestPhone != null) Text(row.guestPhone!),
-            Text('${_status(l10n, row.status)} · ${row.paidAmount} '),
-            Wrap(
-              spacing: AppSpacing.sm,
+            Row(
               children: [
-                if (onConfirm != null)
-                  TextButton(
-                    onPressed: onConfirm,
-                    child: Text(l10n.reservationConfirm),
-                  ),
-                if (onAssign != null)
-                  TextButton(
-                    onPressed: onAssign,
-                    child: Text(l10n.reservationAssignTable),
-                  ),
-                if (onCancel != null)
-                  TextButton(
-                    onPressed: onCancel,
-                    child: Text(l10n.reservationCancel),
-                  ),
+                _StatusChip(status: row.status),
+                const Spacer(),
+                Text(_range(context, row), style: text.titleMedium),
               ],
             ),
+            const SizedBox(height: AppSpacing.sm),
+            Text(row.guestName, style: text.titleLarge),
+            const SizedBox(height: AppSpacing.xs),
+            Text(tables, style: text.bodyMedium),
+            if (row.guestPhone != null)
+              Text(row.guestPhone!, style: text.bodyMedium),
+            Text(
+              '${l10n.reservationPaidAmount} · $amount',
+              style: text.bodyMedium,
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            if (busy)
+              const SizedBox(width: 18, height: 18, child: AppBusyIndicator())
+            else
+              Wrap(
+                spacing: AppSpacing.sm,
+                runSpacing: AppSpacing.sm,
+                children: [
+                  if (onConfirm != null)
+                    FilledButton(
+                      onPressed: onConfirm,
+                      child: Text(l10n.reservationConfirm),
+                    ),
+                  if (onAssign != null)
+                    FilledButton.tonal(
+                      onPressed: onAssign,
+                      child: Text(l10n.reservationAssignTable),
+                    ),
+                  if (onCancel != null)
+                    TextButton(
+                      onPressed: onCancel,
+                      child: Text(l10n.reservationCancel),
+                    ),
+                ],
+              ),
           ],
         ),
       ),
     );
   }
 
-  String _clock(DateTime value) {
-    final local = value.toLocal();
-    final hour = local.hour.toString().padLeft(2, '0');
-    final minute = local.minute.toString().padLeft(2, '0');
-    return '$hour:$minute';
-  }
+  String _range(BuildContext context, ReservationView row) {
+    final localizations = MaterialLocalizations.of(context);
+    String clock(DateTime value) {
+      return localizations.formatTimeOfDay(
+        TimeOfDay.fromDateTime(value.toLocal()),
+      );
+    }
 
-  String _status(AppLocalizations l10n, ReservationStatus status) {
-    return switch (status) {
-      ReservationStatus.requested => l10n.reservationStatusRequested,
-      ReservationStatus.confirmed => l10n.reservationStatusConfirmed,
-      ReservationStatus.arrived => l10n.reservationStatusArrived,
-      ReservationStatus.cancelled => l10n.reservationStatusCancelled,
-      ReservationStatus.noShow => l10n.reservationStatusNoShow,
+    return '${clock(row.startsAt)} – ${clock(row.endsAt)}';
+  }
+}
+
+class _StatusChip extends StatelessWidget {
+  const _StatusChip({required this.status});
+
+  final ReservationStatus status;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final scheme = Theme.of(context).colorScheme;
+    final (label, background, foreground) = switch (status) {
+      ReservationStatus.requested => (
+        l10n.reservationStatusRequested,
+        scheme.primaryContainer,
+        scheme.onPrimaryContainer,
+      ),
+      ReservationStatus.confirmed => (
+        l10n.reservationStatusConfirmed,
+        scheme.secondaryContainer,
+        scheme.onSecondaryContainer,
+      ),
+      ReservationStatus.arrived => (
+        l10n.reservationStatusArrived,
+        scheme.tertiaryContainer,
+        scheme.onTertiaryContainer,
+      ),
+      ReservationStatus.cancelled => (
+        l10n.reservationStatusCancelled,
+        scheme.errorContainer,
+        scheme.onErrorContainer,
+      ),
+      ReservationStatus.noShow => (
+        l10n.reservationStatusNoShow,
+        scheme.surfaceContainerHighest,
+        scheme.onSurface,
+      ),
     };
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: background,
+        borderRadius: BorderRadius.circular(AppRadii.sm),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.sm,
+          vertical: AppSpacing.xs,
+        ),
+        child: Text(
+          label,
+          style: Theme.of(
+            context,
+          ).textTheme.labelLarge?.copyWith(color: foreground),
+        ),
+      ),
+    );
   }
 }
 

@@ -18,6 +18,8 @@ class ReservationService {
   final _notifications = NotificationService();
 
   /// Bookings whose start falls on the UTC date of [day].
+  ///
+  /// Newest rows come first.
   Future<List<ReservationView>> listForDay(
     Session session,
     UuidValue buildingId,
@@ -38,12 +40,27 @@ class ReservationService {
           include: TableReservation.include(venueTable: VenueTable.include()),
         ),
       ),
-      orderBy: (t) => t.startsAt,
+      orderBy: (t) => t.createdAt.desc(),
     );
     return rows.map(_view).toList();
   }
 
+  /// Customer requests for [buildingId] that staff have not accepted or cancelled.
+  Future<int> pendingCount(Session session, UuidValue buildingId) async {
+    await _requireStaff(session, buildingId);
+    await _prepare(session);
+    await settleNoShows(session, buildingId);
+    return Reservation.db.count(
+      session,
+      where: (t) =>
+          t.buildingId.equals(buildingId) &
+          t.status.equals(ReservationStatus.requested),
+    );
+  }
+
   /// Upcoming requests and bookings for the signed-in customer.
+  ///
+  /// Newest rows come first.
   Future<List<ReservationView>> listMine(Session session) async {
     final ctx = _requireCustomer(session);
     await _prepare(session);
@@ -62,7 +79,7 @@ class ReservationService {
           include: TableReservation.include(venueTable: VenueTable.include()),
         ),
       ),
-      orderBy: (t) => t.startsAt,
+      orderBy: (t) => t.createdAt.desc(),
     );
     return rows.map(_view).toList();
   }
@@ -149,10 +166,13 @@ class ReservationService {
       firstName: customer.firstName,
       lastName: customer.lastName,
       phoneNumber: customer.phoneNumber,
+      email: customer.email,
     );
   }
 
-  /// Customers whose name or phone contains [query]. Empty when [query] is too short.
+  /// Customers whose name, phone, or email contains [query].
+  ///
+  /// Empty when [query] is shorter than two characters.
   Future<List<ReservationCustomerMatch>> searchCustomers(
     Session session,
     UuidValue buildingId,
@@ -178,7 +198,8 @@ class ReservationService {
         var match =
             t.firstName.ilike(pattern) |
             t.lastName.ilike(pattern) |
-            t.phoneNumber.ilike(pattern);
+            t.phoneNumber.ilike(pattern) |
+            t.email.ilike(pattern);
         if (first != null && rest != null) {
           match =
               match |
@@ -198,6 +219,7 @@ class ReservationService {
             firstName: customer.firstName,
             lastName: customer.lastName,
             phoneNumber: customer.phoneNumber,
+            email: customer.email,
           ),
     ];
   }
@@ -519,7 +541,12 @@ RETURNING "id"
       ),
     );
     final saved = await _load(session, row.id!);
-    if (status == ReservationStatus.confirmed) {
+    if (status == ReservationStatus.requested) {
+      await _notifications.recordReservationRequest(
+        session,
+        reservation: saved,
+      );
+    } else if (status == ReservationStatus.confirmed) {
       await _notifications.recordReservationChange(
         session,
         reservation: saved,

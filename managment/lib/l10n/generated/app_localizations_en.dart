@@ -64,10 +64,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notificationMarkAllRead => 'Mark all as read';
 
   @override
+  String get notificationMarkRead => 'Mark as read';
+
+  @override
+  String get notificationViewAll => 'View all';
+
+  @override
   String get notificationReservationAccepted => 'A reservation was accepted';
 
   @override
   String get notificationReservationCancelled => 'A reservation was cancelled';
+
+  @override
+  String notificationReservationRequested(String venue) {
+    return 'A customer requested a reservation at $venue';
+  }
 
   @override
   String get email => 'Email';
@@ -436,6 +447,16 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get profileHint =>
       'Update the name the floor sees. Sign-in identity stays locked.';
+
+  @override
+  String get yourAccess => 'Your access';
+
+  @override
+  String get profileAccessHint =>
+      'These are the actions your profile allows in this venue.';
+
+  @override
+  String get accessFlagsNone => 'This profile does not grant any actions.';
 
   @override
   String get navBuildings => 'Buildings';
@@ -1611,6 +1632,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get navReservations => 'Reservations';
 
   @override
+  String reservationPendingCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count pending requests',
+      one: '1 pending request',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get reservationsTitle => 'Reservations';
 
   @override
@@ -1714,7 +1746,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reservationWindow => 'Pick a start that has not already ended.';
 
   @override
-  String get reservationSearchHint => 'Name or phone';
+  String get reservationSearchHint => 'Name, phone, or email';
+
+  @override
+  String get reservationCustomerAccount => 'Customer account';
 
   @override
   String get reservationSearchEmpty => 'No customers match.';

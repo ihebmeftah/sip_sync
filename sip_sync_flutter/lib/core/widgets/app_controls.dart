@@ -133,6 +133,7 @@ class AppTextField extends StatefulWidget {
     this.onChanged,
     this.inputFormatters,
     this.compact = false,
+    this.readOnly = false,
   });
 
   final TextEditingController controller;
@@ -146,6 +147,7 @@ class AppTextField extends StatefulWidget {
   final ValueChanged<String>? onChanged;
   final List<TextInputFormatter>? inputFormatters;
   final bool compact;
+  final bool readOnly;
 
   @override
   State<AppTextField> createState() => _AppTextFieldState();
@@ -162,6 +164,7 @@ class _AppTextFieldState extends State<AppTextField> {
       child: TextFormField(
         controller: widget.controller,
         obscureText: _hidden,
+        readOnly: widget.readOnly,
         keyboardType: widget.keyboardType,
         textInputAction: widget.textInputAction,
         onChanged: widget.onChanged,

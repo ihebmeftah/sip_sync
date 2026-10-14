@@ -144,7 +144,7 @@ final class OpenCustomerOrderProvider
   OpenCustomerOrder create() => OpenCustomerOrder();
 }
 
-String _$openCustomerOrderHash() => r'e6c1c16684c652c24c0dd67025e01ef8330e615b';
+String _$openCustomerOrderHash() => r'2d5b3fcc30b1c17135ac24194f8cccd16d8cfc77';
 
 /// The customer's open order, kept live while they are signed in.
 ///

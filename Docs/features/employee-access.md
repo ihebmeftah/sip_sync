@@ -29,7 +29,7 @@ An employee with **no** access assigned cannot perform floor order actions (exce
 1. Owner creates a **building** → server seeds default profiles **Waiter**, **Gerant**, **Barista**.
 2. Owner opens **Access** (from Employees) → adjust toggles or add custom profiles. The list is 20 profiles per page. The employee form still loads every profile.
 3. Owner creates/edits an employee and picks an access profile.
-4. Employee login loads session with access summary for UX; server re-checks on every order RPC.
+4. Employee login loads session with access summary for UX; server re-checks on every order RPC. The employee profile and the owner’s employee details screen list the granted actions.
 5. Order list for employees with `consultAllOrders: false` includes tickets they launched and lines they added, prepared, served, were paid on, or cancelled. The item board follows the venue steps: preparation sees the kitchen queue, and serving sees every line that is ready to be served.
 
 ## Default profiles (on building create)

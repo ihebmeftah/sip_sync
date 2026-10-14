@@ -1282,6 +1282,18 @@ abstract class AppLocalizations {
   /// **'Mark all as read'**
   String get notificationMarkAllRead;
 
+  /// No description provided for @notificationMarkRead.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark as read'**
+  String get notificationMarkRead;
+
+  /// No description provided for @notificationViewAll.
+  ///
+  /// In en, this message translates to:
+  /// **'View all'**
+  String get notificationViewAll;
+
   /// No description provided for @notificationLineStatus.
   ///
   /// In en, this message translates to:
@@ -1318,6 +1330,12 @@ abstract class AppLocalizations {
   /// **'Your reservation was cancelled'**
   String get notificationReservationCancelled;
 
+  /// No description provided for @notificationReservationRequested.
+  ///
+  /// In en, this message translates to:
+  /// **'A reservation was requested'**
+  String get notificationReservationRequested;
+
   /// No description provided for @profileTitle.
   ///
   /// In en, this message translates to:
@@ -1329,6 +1347,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Your profile is ready.'**
   String get profileReady;
+
+  /// No description provided for @profileHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Update your name and phone. Your email stays the sign-in address.'**
+  String get profileHint;
+
+  /// No description provided for @emailLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Email is tied to sign-in and cannot be changed here.'**
+  String get emailLocked;
+
+  /// No description provided for @saveProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Save profile'**
+  String get saveProfile;
+
+  /// No description provided for @profileSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile updated.'**
+  String get profileSaved;
+
+  /// No description provided for @changePassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Change password'**
+  String get changePassword;
+
+  /// No description provided for @changePasswordHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Other devices will be signed out.'**
+  String get changePasswordHint;
+
+  /// No description provided for @currentPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Current password'**
+  String get currentPassword;
+
+  /// No description provided for @newPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'New password'**
+  String get newPassword;
+
+  /// No description provided for @confirmPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm password'**
+  String get confirmPassword;
+
+  /// No description provided for @updatePassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Update password'**
+  String get updatePassword;
+
+  /// No description provided for @passwordChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Password updated.'**
+  String get passwordChanged;
+
+  /// No description provided for @validationPasswordMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Passwords do not match.'**
+  String get validationPasswordMatch;
 
   /// No description provided for @reserveNow.
   ///

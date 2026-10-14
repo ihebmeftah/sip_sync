@@ -42,6 +42,36 @@ class CustomerAuthRepository {
 
   Future<CustomerSessionView> me() => _client.customerAuth.me();
 
+  /// Saves the signed-in customer's name and phone, then refreshes the session.
+  Future<CustomerSessionView> updateProfile({
+    required String phoneNumber,
+    required String firstName,
+    required String lastName,
+  }) async {
+    final view = await _client.customerAuth.updateMyProfile(
+      ProfileUpdate(
+        phoneNumber: phoneNumber,
+        firstName: firstName,
+        lastName: lastName,
+      ),
+    );
+    await _store.setCustomer(view);
+    return view;
+  }
+
+  /// Verifies the current password, sets a new one, and signs out other devices.
+  Future<void> changePassword({
+    required String currentPassword,
+    required String newPassword,
+  }) {
+    return _client.customerAuth.changePassword(
+      ChangePasswordRequest(
+        currentPassword: currentPassword,
+        newPassword: newPassword,
+      ),
+    );
+  }
+
   Future<void> signOut() async {
     try {
       await _client.customerAuth.logout();

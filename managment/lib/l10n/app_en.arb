@@ -19,8 +19,14 @@
   "notificationThisMonth": "This month",
   "notificationUnreadOnly": "Unread",
   "notificationMarkAllRead": "Mark all as read",
+  "notificationMarkRead": "Mark as read",
+  "notificationViewAll": "View all",
   "notificationReservationAccepted": "A reservation was accepted",
   "notificationReservationCancelled": "A reservation was cancelled",
+  "notificationReservationRequested": "A customer requested a reservation at {venue}",
+  "@notificationReservationRequested": {
+    "placeholders": { "venue": { "type": "String" } }
+  },
   "email": "Email",
   "loginIdentifier": "Email or username",
   "loginIdentifierHint": "Owners use email. Staff use their username.",
@@ -141,6 +147,9 @@
   "dashboardProfileCue": "Your name and phone.",
   "emailLocked": "Email is tied to sign-in and cannot be changed here.",
   "profileHint": "Update the name the floor sees. Sign-in identity stays locked.",
+  "yourAccess": "Your access",
+  "profileAccessHint": "These are the actions your profile allows in this venue.",
+  "accessFlagsNone": "This profile does not grant any actions.",
   "navBuildings": "Buildings",
   "addBuilding": "Add building",
   "editBuilding": "Edit building",
@@ -581,6 +590,12 @@
   "errorPackFeatureAccess": "This plan does not include custom access profiles.",
   "errorPackFeatureQr": "This plan does not include table QR codes.",
   "navReservations": "Reservations",
+  "reservationPendingCount": "{count, plural, =1{1 pending request} other{{count} pending requests}}",
+  "@reservationPendingCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
   "reservationsTitle": "Reservations",
   "reservationNew": "New reservation",
   "reservationPreviousDay": "Previous day",
@@ -614,7 +629,8 @@
   "reservationHeldOrder": "This table is reserved. Scan it to confirm arrival before taking an order.",
   "reservationScanNeedsAccess": "Only someone with reservation access can confirm this table.",
   "reservationWindow": "Pick a start that has not already ended.",
-  "reservationSearchHint": "Name or phone",
+  "reservationSearchHint": "Name, phone, or email",
+  "reservationCustomerAccount": "Customer account",
   "reservationSearchEmpty": "No customers match.",
   "reservationSelectTables": "Select at least one table.",
   "accessReservations": "Reservations",

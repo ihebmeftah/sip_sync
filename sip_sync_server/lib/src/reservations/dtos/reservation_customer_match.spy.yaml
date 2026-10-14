@@ -1,7 +1,8 @@
-### Customer row a staff booking may attach. No email or secret.
+### Customer row a staff booking may attach. Email is for picking the account.
 class: ReservationCustomerMatch
 fields:
   id: UuidValue
   firstName: String
   lastName: String
   phoneNumber: String
+  email: String

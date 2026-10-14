@@ -713,6 +713,12 @@ class AppLocalizationsFr extends AppLocalizations {
   String get notificationMarkAllRead => 'Tout marquer comme lu';
 
   @override
+  String get notificationMarkRead => 'Marquer comme lu';
+
+  @override
+  String get notificationViewAll => 'Tout voir';
+
+  @override
   String notificationLineStatus(String article, String status) {
     return '$article est maintenant $status';
   }
@@ -741,10 +747,53 @@ class AppLocalizationsFr extends AppLocalizations {
       'Votre réservation a été annulée';
 
   @override
+  String get notificationReservationRequested =>
+      'Une réservation a été demandée';
+
+  @override
   String get profileTitle => 'Profil';
 
   @override
   String get profileReady => 'Votre profil est prêt.';
+
+  @override
+  String get profileHint =>
+      'Mettez à jour votre nom et votre téléphone. L’e-mail reste l’adresse de connexion.';
+
+  @override
+  String get emailLocked =>
+      'L’e-mail est lié à la connexion et ne peut pas être modifié ici.';
+
+  @override
+  String get saveProfile => 'Enregistrer le profil';
+
+  @override
+  String get profileSaved => 'Profil mis à jour.';
+
+  @override
+  String get changePassword => 'Changer le mot de passe';
+
+  @override
+  String get changePasswordHint => 'Les autres appareils seront déconnectés.';
+
+  @override
+  String get currentPassword => 'Mot de passe actuel';
+
+  @override
+  String get newPassword => 'Nouveau mot de passe';
+
+  @override
+  String get confirmPassword => 'Confirmer le mot de passe';
+
+  @override
+  String get updatePassword => 'Mettre à jour le mot de passe';
+
+  @override
+  String get passwordChanged => 'Mot de passe mis à jour.';
+
+  @override
+  String get validationPasswordMatch =>
+      'Les mots de passe ne correspondent pas.';
 
   @override
   String get reserveNow => 'Réserver maintenant';

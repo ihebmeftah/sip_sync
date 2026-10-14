@@ -12,7 +12,7 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _is;
 
-/// Customer row a staff booking may attach. No email or secret.
+/// Customer row a staff booking may attach. Email is for picking the account.
 abstract class ReservationCustomerMatch
     implements _is.SerializableModel, _is.ProtocolSerialization {
   ReservationCustomerMatch._({
@@ -20,6 +20,7 @@ abstract class ReservationCustomerMatch
     required this.firstName,
     required this.lastName,
     required this.phoneNumber,
+    required this.email,
   });
 
   factory ReservationCustomerMatch({
@@ -27,6 +28,7 @@ abstract class ReservationCustomerMatch
     required String firstName,
     required String lastName,
     required String phoneNumber,
+    required String email,
   }) = _ReservationCustomerMatchImpl;
 
   factory ReservationCustomerMatch.fromJson(
@@ -37,6 +39,7 @@ abstract class ReservationCustomerMatch
       firstName: jsonSerialization['firstName'] as String,
       lastName: jsonSerialization['lastName'] as String,
       phoneNumber: jsonSerialization['phoneNumber'] as String,
+      email: jsonSerialization['email'] as String,
     );
   }
 
@@ -48,6 +51,8 @@ abstract class ReservationCustomerMatch
 
   String phoneNumber;
 
+  String email;
+
   /// Returns a shallow copy of this [ReservationCustomerMatch]
   /// with some or all fields replaced by the given arguments.
   @_is.useResult
@@ -56,6 +61,7 @@ abstract class ReservationCustomerMatch
     String? firstName,
     String? lastName,
     String? phoneNumber,
+    String? email,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -65,6 +71,7 @@ abstract class ReservationCustomerMatch
       'firstName': firstName,
       'lastName': lastName,
       'phoneNumber': phoneNumber,
+      'email': email,
     };
   }
 
@@ -76,6 +83,7 @@ abstract class ReservationCustomerMatch
       'firstName': firstName,
       'lastName': lastName,
       'phoneNumber': phoneNumber,
+      'email': email,
     };
   }
 
@@ -91,11 +99,13 @@ class _ReservationCustomerMatchImpl extends ReservationCustomerMatch {
     required String firstName,
     required String lastName,
     required String phoneNumber,
+    required String email,
   }) : super._(
          id: id,
          firstName: firstName,
          lastName: lastName,
          phoneNumber: phoneNumber,
+         email: email,
        );
 
   /// Returns a shallow copy of this [ReservationCustomerMatch]
@@ -107,12 +117,14 @@ class _ReservationCustomerMatchImpl extends ReservationCustomerMatch {
     String? firstName,
     String? lastName,
     String? phoneNumber,
+    String? email,
   }) {
     return ReservationCustomerMatch(
       id: id ?? this.id,
       firstName: firstName ?? this.firstName,
       lastName: lastName ?? this.lastName,
       phoneNumber: phoneNumber ?? this.phoneNumber,
+      email: email ?? this.email,
     );
   }
 }

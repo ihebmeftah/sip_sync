@@ -3,6 +3,7 @@ customerAuth:
   - login:
   - me:
   - updateMyProfile:
+  - changePassword:
   - logout:
 employeeAuth:
   - login:
@@ -107,6 +108,7 @@ pack:
   - update:
   - delete:
 reservation:
+  - pendingCount:
   - listForDay:
   - listMine:
   - create:

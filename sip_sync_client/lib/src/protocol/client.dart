@@ -222,6 +222,14 @@ class EndpointCustomerAuth extends _isc.EndpointRef {
     {'request': request},
   );
 
+  /// Updates the signed-in customer's password and drops other sessions.
+  _ida.Future<void> changePassword(_ilzajllb.ChangePasswordRequest request) =>
+      caller.callServerEndpoint<void>(
+        'customerAuth',
+        'changePassword',
+        {'request': request},
+      );
+
   _ida.Future<void> logout() => caller.callServerEndpoint<void>(
     'customerAuth',
     'logout',
@@ -1332,7 +1340,15 @@ class EndpointReservation extends _isc.EndpointRef {
   @override
   String get name => 'reservation';
 
-  /// Bookings whose start falls on the UTC date of [day].
+  /// Customer requests for [buildingId] that are still waiting.
+  _ida.Future<int> pendingCount(_isc.UuidValue buildingId) =>
+      caller.callServerEndpoint<int>(
+        'reservation',
+        'pendingCount',
+        {'buildingId': buildingId},
+      );
+
+  /// Bookings whose start falls on the UTC date of [day], newest first.
   _ida.Future<List<_ixub33vy.ReservationView>> listForDay(
     _isc.UuidValue buildingId,
     DateTime day,
@@ -1345,7 +1361,7 @@ class EndpointReservation extends _isc.EndpointRef {
     },
   );
 
-  /// The signed-in customer's upcoming bookings.
+  /// The signed-in customer's upcoming bookings, newest first.
   _ida.Future<List<_ixub33vy.ReservationView>> listMine() =>
       caller.callServerEndpoint<List<_ixub33vy.ReservationView>>(
         'reservation',
