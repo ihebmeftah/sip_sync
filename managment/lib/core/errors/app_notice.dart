@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../l10n/generated/app_localizations.dart';
@@ -31,6 +32,7 @@ SnackBar buildAppSnackBar(
   };
   return SnackBar(
     behavior: SnackBarBehavior.floating,
+    width: webSnackBarWidth(context),
     backgroundColor: background,
     showCloseIcon: true,
     closeIconColor: foreground,
@@ -41,6 +43,19 @@ SnackBar buildAppSnackBar(
       ).textTheme.bodyMedium?.copyWith(color: foreground),
     ),
   );
+}
+
+/// Caps a floating snack bar on a wide browser. Narrow web keeps the default.
+double? webSnackBarWidth(BuildContext context) {
+  if (!kIsWeb) {
+    return null;
+  }
+  const maxWidth = 400.0;
+  final viewport = MediaQuery.sizeOf(context).width;
+  if (viewport < maxWidth + 48) {
+    return null;
+  }
+  return maxWidth;
 }
 
 /// Closes the current route, then shows [message] on the shell messenger.

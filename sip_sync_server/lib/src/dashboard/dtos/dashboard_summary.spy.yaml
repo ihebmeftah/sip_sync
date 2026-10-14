@@ -20,7 +20,7 @@ fields:
   itemsCancelled: int
   ### Reservation requests still waiting, any day.
   pendingReservations: int
-  ### Reservations whose start falls on the requested day.
+  ### Confirmed reservations whose start falls on the requested day.
   reservationsToday: int
-  ### Ingredients whose current stock is under 10% of the full level.
+  ### Ingredients whose current stock is zero.
   ingredientsToRestock: int

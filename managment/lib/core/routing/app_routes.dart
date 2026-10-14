@@ -592,13 +592,19 @@ class ArticleCompositionRoute extends GoRouteData
 }
 
 class IngredientsRoute extends GoRouteData with $IngredientsRoute {
-  const IngredientsRoute({required this.buildingId});
+  const IngredientsRoute({required this.buildingId, this.outOfStock = false});
 
   final String buildingId;
 
+  /// Opens the list limited to ingredients with no current stock.
+  final bool outOfStock;
+
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return IngredientsListView(buildingId: buildingId);
+    return IngredientsListView(
+      buildingId: buildingId,
+      outOfStockOnly: outOfStock,
+    );
   }
 }
 

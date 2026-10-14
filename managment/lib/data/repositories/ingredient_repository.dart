@@ -8,11 +8,21 @@ class IngredientRepository {
 
   final Client _client;
 
+  /// Ingredients whose current stock is zero.
+  Future<int> outOfStockCount(UuidValue buildingId) =>
+      _client.ingredient.outOfStockCount(buildingId);
+
   Future<IngredientPage> list(
     UuidValue buildingId, {
     int? limit,
     int? offset,
-  }) => _client.ingredient.list(buildingId, limit: limit, offset: offset);
+    bool? outOfStock,
+  }) => _client.ingredient.list(
+    buildingId,
+    limit: limit,
+    offset: offset,
+    outOfStock: outOfStock,
+  );
 
   /// Every ingredient, for recipe pickers.
   Future<List<IngredientView>> listAll(UuidValue buildingId) {

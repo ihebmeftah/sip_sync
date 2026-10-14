@@ -6,6 +6,7 @@ import 'package:sip_sync_client/sip_sync_client.dart';
 import '../../features/auth/view_models/auth_view_model.dart';
 import '../../features/notifications/view_models/notification_inbox_view_model.dart';
 import '../../features/orders/view_models/order_draft_view_model.dart';
+import '../../features/products/view_models/ingredients_view_model.dart';
 import '../../features/reservations/view_models/reservations_view_model.dart';
 import '../../l10n/generated/app_localizations.dart';
 import '../access/floor_access.dart';
@@ -549,6 +550,13 @@ class OpsSideBar extends ConsumerWidget {
                   ?.value ??
               0;
     final location = GoRouterState.of(context).uri.path;
+    final outOfStock = buildingId.isEmpty
+        ? 0
+        : ref
+                  .watch(outOfStockIngredientCountProvider(buildingId))
+                  .asData
+                  ?.value ??
+              0;
     final productsOpen =
         location.contains('/products/') ||
         location.endsWith('/products/articles') ||
@@ -642,6 +650,7 @@ class OpsSideBar extends ConsumerWidget {
                       key: ValueKey(productsOpen),
                       initiallyExpanded: productsOpen,
                       label: l10n.navProducts,
+                      badgeCount: outOfStock,
                       children: [
                         _NavTile(
                           icon: Icons.category_outlined,
@@ -663,6 +672,7 @@ class OpsSideBar extends ConsumerWidget {
                         _NavTile(
                           icon: Icons.science_outlined,
                           label: l10n.navIngredients,
+                          badgeCount: outOfStock,
                           indent: true,
                           upgradeLocked: selected?.pack.inventory == false,
                           selected: location.endsWith('/products/ingredients'),
@@ -833,11 +843,13 @@ class _ProductsNav extends StatefulWidget {
     required this.initiallyExpanded,
     required this.label,
     required this.children,
+    this.badgeCount = 0,
   });
 
   final bool initiallyExpanded;
   final String label;
   final List<Widget> children;
+  final int badgeCount;
 
   @override
   State<_ProductsNav> createState() => _ProductsNavState();
@@ -855,6 +867,7 @@ class _ProductsNavState extends State<_ProductsNav> {
           icon: Icons.inventory_2_outlined,
           label: widget.label,
           selected: false,
+          badgeCount: widget.badgeCount,
           trailing: Icon(
             _open ? Icons.expand_less : Icons.expand_more,
             size: 20,

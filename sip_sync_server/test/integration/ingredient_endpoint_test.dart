@@ -88,6 +88,31 @@ void main() {
         );
         expect(low.belowThreshold, isTrue);
 
+        final empty = await endpoints.ingredient.create(
+          setup.ownerSession,
+          IngredientCreate(
+            buildingId: setup.building.id,
+            name: 'Ice',
+            unit: UnitsType.kilogram,
+            currentStock: 0,
+            thresholdStock: 0,
+          ),
+        );
+        expect(
+          await endpoints.ingredient.outOfStockCount(
+            setup.ownerSession,
+            setup.building.id,
+          ),
+          1,
+        );
+        final onlyEmpty = await endpoints.ingredient.list(
+          setup.ownerSession,
+          setup.building.id,
+          outOfStock: true,
+        );
+        expect(onlyEmpty.total, 1);
+        expect(onlyEmpty.items.single.id, empty.id);
+
         await expectLater(
           endpoints.ingredient.create(
             setup.ownerSession,
@@ -106,19 +131,20 @@ void main() {
           setup.ownerSession,
           setup.building.id,
         )).items;
-        expect(list, hasLength(2));
+        expect(list, hasLength(3));
         final page = await endpoints.ingredient.list(
           setup.ownerSession,
           setup.building.id,
           limit: 1,
           offset: 1,
         );
-        expect(page.total, 2);
+        expect(page.total, 3);
         expect(page.items, hasLength(1));
         expect(page.offset, 1);
 
         await endpoints.ingredient.delete(setup.ownerSession, created.id);
         await endpoints.ingredient.delete(setup.ownerSession, low.id);
+        await endpoints.ingredient.delete(setup.ownerSession, empty.id);
         final afterDelete = (await endpoints.ingredient.list(
           setup.ownerSession,
           setup.building.id,

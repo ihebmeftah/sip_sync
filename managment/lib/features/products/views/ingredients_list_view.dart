@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sip_sync_client/sip_sync_client.dart';
 
 import '../../../core/di/app_providers.dart';
+import '../../../core/routing/app_routes.dart';
 import '../../../core/errors/app_notice.dart';
 import '../../../core/errors/error_mapper.dart';
 import '../../../core/theme/app_tokens.dart';
@@ -19,9 +20,16 @@ import '../widgets/unit_labels.dart';
 
 /// Per-building ingredient list with stock bar, restock, and low-stock alerts.
 class IngredientsListView extends ConsumerStatefulWidget {
-  const IngredientsListView({super.key, required this.buildingId});
+  const IngredientsListView({
+    super.key,
+    required this.buildingId,
+    this.outOfStockOnly = false,
+  });
 
   final String buildingId;
+
+  /// When true, the list opens limited to ingredients with no current stock.
+  final bool outOfStockOnly;
 
   @override
   ConsumerState<IngredientsListView> createState() =>
@@ -32,15 +40,28 @@ class _IngredientsListViewState extends ConsumerState<IngredientsListView> {
   @override
   void initState() {
     super.initState();
+    final alive = ref.exists(ingredientsViewModelProvider(widget.buildingId));
+    final filter = ref.read(ingredientListFilterProvider(widget.buildingId));
+    final filterChanged = filter != widget.outOfStockOnly;
+    ref
+        .read(ingredientListFilterProvider(widget.buildingId).notifier)
+        .setOutOfStockOnly(widget.outOfStockOnly);
     refreshCachedListOnAppear(
       this,
-      providerAlreadyAlive: ref.exists(
-        ingredientsViewModelProvider(widget.buildingId),
-      ),
+      providerAlreadyAlive: alive && !filterChanged,
       refresh: () => ref
           .read(ingredientsViewModelProvider(widget.buildingId).notifier)
           .refresh(),
     );
+  }
+
+  @override
+  void didUpdateWidget(covariant IngredientsListView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.outOfStockOnly == widget.outOfStockOnly) return;
+    ref
+        .read(ingredientListFilterProvider(widget.buildingId).notifier)
+        .setOutOfStockOnly(widget.outOfStockOnly);
   }
 
   String _formatQty(double value) {
@@ -98,6 +119,9 @@ class _IngredientsListViewState extends ConsumerState<IngredientsListView> {
     final scheme = Theme.of(context).colorScheme;
     final isOwner = ref.watch(appSessionStoreProvider).isOwner;
     final async = ref.watch(ingredientsViewModelProvider(widget.buildingId));
+    final outOfStockOnly = ref.watch(
+      ingredientListFilterProvider(widget.buildingId),
+    );
     final pack = ref.watch(buildingSelectionProvider)?.pack;
     final inventoryLocked = pack != null && !pack.inventory;
     final addLocked =
@@ -161,6 +185,15 @@ class _IngredientsListViewState extends ConsumerState<IngredientsListView> {
                 ],
               ),
               const SizedBox(height: AppSpacing.lg),
+              AppFilterChip(
+                label: l10n.ingredientFilterOutOfStock,
+                selected: outOfStockOnly,
+                onSelected: (selected) => IngredientsRoute(
+                  buildingId: widget.buildingId,
+                  outOfStock: selected,
+                ).go(context),
+              ),
+              const SizedBox(height: AppSpacing.lg),
               if (ref.watch(buildingSelectionProvider)?.pack.inventory == false)
                 AppErrorBanner(message: l10n.errorPackFeatureInventory),
               async.when(
@@ -189,9 +222,11 @@ class _IngredientsListViewState extends ConsumerState<IngredientsListView> {
                   if (ingredients.isEmpty) {
                     return AppSurfaceCard(
                       child: Text(
-                        isOwner
-                            ? l10n.ingredientsEmptyOwner
-                            : l10n.ingredientsEmpty,
+                        outOfStockOnly
+                            ? l10n.ingredientsEmptyOutOfStock
+                            : (isOwner
+                                  ? l10n.ingredientsEmptyOwner
+                                  : l10n.ingredientsEmpty),
                       ),
                     );
                   }

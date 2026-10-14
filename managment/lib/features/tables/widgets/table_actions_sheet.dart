@@ -4,6 +4,7 @@ import 'package:sip_sync_client/sip_sync_client.dart';
 
 import '../../../core/access/floor_access.dart';
 import '../../../core/di/app_providers.dart';
+import '../../../core/errors/app_notice.dart';
 import '../../../core/errors/error_mapper.dart';
 import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_tokens.dart';
@@ -117,17 +118,21 @@ class _TableActionsBodyState extends ConsumerState<_TableActionsBody> {
   void _createOrder() {
     final l10n = AppLocalizations.of(context)!;
     if (!widget.table.isActive) {
-      ScaffoldMessenger.of(
+      showAppSnackBar(
         context,
-      ).showSnackBar(SnackBar(content: Text(l10n.orderTableInactive)));
+        l10n.orderTableInactive,
+        kind: AppNoticeKind.error,
+      );
       return;
     }
     final multiOrder =
         ref.read(buildingSelectionProvider)?.tableMultiOrder ?? false;
     if (!multiOrder && widget.table.status == TableFloorStatus.occupied) {
-      ScaffoldMessenger.of(
+      showAppSnackBar(
         context,
-      ).showSnackBar(SnackBar(content: Text(l10n.orderTableOccupied)));
+        l10n.orderTableOccupied,
+        kind: AppNoticeKind.error,
+      );
       return;
     }
     _close();
@@ -142,9 +147,11 @@ class _TableActionsBodyState extends ConsumerState<_TableActionsBody> {
     final allowAppend =
         ref.read(buildingSelectionProvider)?.allowAppendingItemsToOrder ?? true;
     if (!allowAppend) {
-      ScaffoldMessenger.of(
+      showAppSnackBar(
         context,
-      ).showSnackBar(SnackBar(content: Text(l10n.orderAppendArticlesDisabled)));
+        l10n.orderAppendArticlesDisabled,
+        kind: AppNoticeKind.error,
+      );
       return;
     }
     _close();

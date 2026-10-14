@@ -8,6 +8,108 @@ part of 'ingredients_view_model.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
+/// When true, the ingredient list shows only rows with no current stock.
+
+@ProviderFor(IngredientListFilter)
+const ingredientListFilterProvider = IngredientListFilterFamily._();
+
+/// When true, the ingredient list shows only rows with no current stock.
+final class IngredientListFilterProvider
+    extends $NotifierProvider<IngredientListFilter, bool> {
+  /// When true, the ingredient list shows only rows with no current stock.
+  const IngredientListFilterProvider._({
+    required IngredientListFilterFamily super.from,
+    required String super.argument,
+  }) : super(
+         retry: null,
+         name: r'ingredientListFilterProvider',
+         isAutoDispose: false,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$ingredientListFilterHash();
+
+  @override
+  String toString() {
+    return r'ingredientListFilterProvider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  IngredientListFilter create() => IngredientListFilter();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(bool value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<bool>(value),
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is IngredientListFilterProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$ingredientListFilterHash() =>
+    r'bf4bd434843c90db9047622ba5cc40e59c3d3c2e';
+
+/// When true, the ingredient list shows only rows with no current stock.
+
+final class IngredientListFilterFamily extends $Family
+    with $ClassFamilyOverride<IngredientListFilter, bool, bool, bool, String> {
+  const IngredientListFilterFamily._()
+    : super(
+        retry: null,
+        name: r'ingredientListFilterProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: false,
+      );
+
+  /// When true, the ingredient list shows only rows with no current stock.
+
+  IngredientListFilterProvider call(String buildingId) =>
+      IngredientListFilterProvider._(argument: buildingId, from: this);
+
+  @override
+  String toString() => r'ingredientListFilterProvider';
+}
+
+/// When true, the ingredient list shows only rows with no current stock.
+
+abstract class _$IngredientListFilter extends $Notifier<bool> {
+  late final _$args = ref.$arg as String;
+  String get buildingId => _$args;
+
+  bool build(String buildingId);
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final created = build(_$args);
+    final ref = this.ref as $Ref<bool, bool>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<bool, bool>,
+              bool,
+              Object?,
+              Object?
+            >;
+    element.handleValue(ref, created);
+  }
+}
+
 /// Full ingredient catalog for recipe editors.
 
 @ProviderFor(ingredientCatalog)
@@ -136,7 +238,7 @@ final class IngredientsViewModelProvider
 }
 
 String _$ingredientsViewModelHash() =>
-    r'7183c62dd2fc571d234d75767257823b9283348f';
+    r'248d9af7cbaba8962192644559c93c9f399de231';
 
 final class IngredientsViewModelFamily extends $Family
     with
@@ -178,6 +280,108 @@ abstract class _$IngredientsViewModel extends $AsyncNotifier<IngredientPage> {
             as $ClassProviderElement<
               AnyNotifier<AsyncValue<IngredientPage>, IngredientPage>,
               AsyncValue<IngredientPage>,
+              Object?,
+              Object?
+            >;
+    element.handleValue(ref, created);
+  }
+}
+
+/// Ingredients with nothing left. Products and Ingredients show this count.
+
+@ProviderFor(OutOfStockIngredientCount)
+const outOfStockIngredientCountProvider = OutOfStockIngredientCountFamily._();
+
+/// Ingredients with nothing left. Products and Ingredients show this count.
+final class OutOfStockIngredientCountProvider
+    extends $AsyncNotifierProvider<OutOfStockIngredientCount, int> {
+  /// Ingredients with nothing left. Products and Ingredients show this count.
+  const OutOfStockIngredientCountProvider._({
+    required OutOfStockIngredientCountFamily super.from,
+    required String super.argument,
+  }) : super(
+         retry: null,
+         name: r'outOfStockIngredientCountProvider',
+         isAutoDispose: false,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$outOfStockIngredientCountHash();
+
+  @override
+  String toString() {
+    return r'outOfStockIngredientCountProvider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  OutOfStockIngredientCount create() => OutOfStockIngredientCount();
+
+  @override
+  bool operator ==(Object other) {
+    return other is OutOfStockIngredientCountProvider &&
+        other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$outOfStockIngredientCountHash() =>
+    r'0956bb410773260e24386bdd281eb2bd2e0d5b95';
+
+/// Ingredients with nothing left. Products and Ingredients show this count.
+
+final class OutOfStockIngredientCountFamily extends $Family
+    with
+        $ClassFamilyOverride<
+          OutOfStockIngredientCount,
+          AsyncValue<int>,
+          int,
+          FutureOr<int>,
+          String
+        > {
+  const OutOfStockIngredientCountFamily._()
+    : super(
+        retry: null,
+        name: r'outOfStockIngredientCountProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: false,
+      );
+
+  /// Ingredients with nothing left. Products and Ingredients show this count.
+
+  OutOfStockIngredientCountProvider call(String buildingId) =>
+      OutOfStockIngredientCountProvider._(argument: buildingId, from: this);
+
+  @override
+  String toString() => r'outOfStockIngredientCountProvider';
+}
+
+/// Ingredients with nothing left. Products and Ingredients show this count.
+
+abstract class _$OutOfStockIngredientCount extends $AsyncNotifier<int> {
+  late final _$args = ref.$arg as String;
+  String get buildingId => _$args;
+
+  FutureOr<int> build(String buildingId);
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final created = build(_$args);
+    final ref = this.ref as $Ref<AsyncValue<int>, int>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<AsyncValue<int>, int>,
+              AsyncValue<int>,
               Object?,
               Object?
             >;

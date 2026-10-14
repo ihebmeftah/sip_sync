@@ -1012,10 +1012,12 @@ class EndpointIngredient extends _isc.EndpointRef {
   /// Ingredients for [buildingId], name order.
   ///
   /// Owner or assigned employee. [limit] defaults to 20 and is capped at 100.
+  /// When [outOfStock] is true, only ingredients with no current stock are returned.
   _ida.Future<_i5p5mc8n.IngredientPage> list(
     _isc.UuidValue buildingId, {
     int? limit,
     int? offset,
+    bool? outOfStock,
   }) => caller.callServerEndpoint<_i5p5mc8n.IngredientPage>(
     'ingredient',
     'list',
@@ -1023,8 +1025,17 @@ class EndpointIngredient extends _isc.EndpointRef {
       'buildingId': buildingId,
       'limit': limit,
       'offset': offset,
+      'outOfStock': outOfStock,
     },
   );
+
+  /// Ingredients in [buildingId] whose current stock is zero.
+  _ida.Future<int> outOfStockCount(_isc.UuidValue buildingId) =>
+      caller.callServerEndpoint<int>(
+        'ingredient',
+        'outOfStockCount',
+        {'buildingId': buildingId},
+      );
 
   /// Owner creates an ingredient.
   _ida.Future<_i25phy6n.IngredientView> create(

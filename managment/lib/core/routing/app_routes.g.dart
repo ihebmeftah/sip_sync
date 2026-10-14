@@ -1146,14 +1146,26 @@ mixin $ArticleCompositionRoute on GoRouteData {
 }
 
 mixin $IngredientsRoute on GoRouteData {
-  static IngredientsRoute _fromState(GoRouterState state) =>
-      IngredientsRoute(buildingId: state.pathParameters['buildingId']!);
+  static IngredientsRoute _fromState(GoRouterState state) => IngredientsRoute(
+    buildingId: state.pathParameters['buildingId']!,
+    outOfStock:
+        _$convertMapValue(
+          'out-of-stock',
+          state.uri.queryParameters,
+          _$boolConverter,
+        ) ??
+        false,
+  );
 
   IngredientsRoute get _self => this as IngredientsRoute;
 
   @override
   String get location => GoRouteData.$location(
     '/b/${Uri.encodeComponent(_self.buildingId)}/products/ingredients',
+    queryParams: {
+      if (_self.outOfStock != false)
+        'out-of-stock': _self.outOfStock.toString(),
+    },
   );
 
   @override
@@ -1202,4 +1214,15 @@ T? _$convertMapValue<T>(
 ) {
   final value = map[key];
   return value == null ? null : converter(value);
+}
+
+bool _$boolConverter(String value) {
+  switch (value) {
+    case 'true':
+      return true;
+    case 'false':
+      return false;
+    default:
+      throw UnsupportedError('Cannot convert "$value" into a bool.');
+  }
 }

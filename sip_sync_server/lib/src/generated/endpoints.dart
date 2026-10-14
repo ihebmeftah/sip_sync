@@ -1762,6 +1762,11 @@ class Endpoints extends _is.EndpointDispatch {
               type: _is.getType<int?>(),
               nullable: true,
             ),
+            'outOfStock': _is.ParameterDescription(
+              name: 'outOfStock',
+              type: _is.getType<bool?>(),
+              nullable: true,
+            ),
           },
           call:
               (
@@ -1774,6 +1779,27 @@ class Endpoints extends _is.EndpointDispatch {
                         params['buildingId'],
                         limit: params['limit'],
                         offset: params['offset'],
+                        outOfStock: params['outOfStock'],
+                      ),
+        ),
+        'outOfStockCount': _is.MethodConnector(
+          name: 'outOfStockCount',
+          params: {
+            'buildingId': _is.ParameterDescription(
+              name: 'buildingId',
+              type: _is.getType<_is.UuidValue>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['ingredient'] as _i7cjtizz.IngredientEndpoint)
+                      .outOfStockCount(
+                        session,
+                        params['buildingId'],
                       ),
         ),
         'create': _is.MethodConnector(

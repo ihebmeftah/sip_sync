@@ -2,6 +2,7 @@ import 'package:serverpod/serverpod.dart';
 
 import '../auth/auth_guard.dart';
 import '../generated/protocol.dart';
+import '../menu/ingredient_service.dart';
 import '../reservations/reservation_service.dart';
 
 /// House counts for the management dashboard.
@@ -11,6 +12,7 @@ import '../reservations/reservation_service.dart';
 /// the same key the reservation day list uses.
 class DashboardService {
   final _reservations = ReservationService();
+  final _ingredients = IngredientService();
 
   /// Counts for [buildingId] on the UTC calendar day of [day].
   ///
@@ -95,10 +97,11 @@ class DashboardService {
       session,
       where: (t) =>
           t.buildingId.equals(buildingId) &
+          t.status.equals(ReservationStatus.confirmed) &
           (t.startsAt >= range.start) &
           (t.startsAt < range.end),
     );
-    final restock = await _ingredientsToRestock(session, buildingId);
+    final restock = await _ingredients.outOfStockCount(session, buildingId);
 
     return DashboardSummary(
       orderTotal: orders[0],
@@ -204,29 +207,6 @@ class DashboardService {
         return filter;
       },
     );
-  }
-
-  /// Current stock under 10% of the full level. Exactly 10% stays off the list.
-  Future<int> _ingredientsToRestock(
-    Session session,
-    UuidValue buildingId,
-  ) async {
-    final rows = await Ingredient.db.find(
-      session,
-      where: (t) => t.buildingId.equals(buildingId),
-    );
-    var low = 0;
-    for (final row in rows) {
-      if (_needsRestock(row)) low++;
-    }
-    return low;
-  }
-
-  bool _needsRestock(Ingredient row) {
-    if (row.initialStock <= 0) {
-      return row.currentStock <= 0;
-    }
-    return row.currentStock / row.initialStock < 0.10;
   }
 
   ({DateTime start, DateTime end}) _utcDay(DateTime instant) {

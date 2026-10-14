@@ -13,18 +13,26 @@ class IngredientEndpoint extends Endpoint {
   /// Ingredients for [buildingId], name order.
   ///
   /// Owner or assigned employee. [limit] defaults to 20 and is capped at 100.
+  /// When [outOfStock] is true, only ingredients with no current stock are returned.
   Future<IngredientPage> list(
     Session session,
     UuidValue buildingId, {
     int? limit,
     int? offset,
+    bool? outOfStock,
   }) {
     return _ingredients.listForBuilding(
       session,
       buildingId,
       limit: limit,
       offset: offset,
+      outOfStock: outOfStock,
     );
+  }
+
+  /// Ingredients in [buildingId] whose current stock is zero.
+  Future<int> outOfStockCount(Session session, UuidValue buildingId) {
+    return _ingredients.outOfStockCount(session, buildingId);
   }
 
   /// Owner creates an ingredient.

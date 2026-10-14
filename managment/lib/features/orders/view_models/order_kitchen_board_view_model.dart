@@ -4,6 +4,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sip_sync_client/sip_sync_client.dart';
 
 import '../../../core/di/app_providers.dart';
+import '../../products/view_models/ingredients_view_model.dart';
 import '../../tables/view_models/tables_view_model.dart';
 import '../../cash_register/view_models/cash_register_view_model.dart';
 import '../order_list_day.dart';
@@ -121,6 +122,9 @@ class OrderKitchenBoard extends _$OrderKitchenBoard {
         .listen(
           (event) {
             current = _reduce(current, event);
+            if (event.kind != OrderBoardEventKind.synced) {
+              unawaited(_refreshOutOfStock());
+            }
             if (!ready.isCompleted) {
               if (event.kind == OrderBoardEventKind.synced) {
                 ready.complete(current);
@@ -161,6 +165,7 @@ class OrderKitchenBoard extends _$OrderKitchenBoard {
           cancellationReason: reason,
         );
     _apply(saved, clearItemId: itemId.uuid);
+    unawaited(_refreshOutOfStock());
   }
 
   /// Cancels every open line on the ticket and frees the table.
@@ -172,6 +177,14 @@ class OrderKitchenBoard extends _$OrderKitchenBoard {
         .read(orderRepositoryProvider)
         .cancel(orderId, reason);
     _apply(saved);
+    unawaited(_refreshOutOfStock());
+  }
+
+  Future<void> _refreshOutOfStock() {
+    if (buildingId.isEmpty) return Future.value();
+    return ref
+        .read(outOfStockIngredientCountProvider(buildingId).notifier)
+        .refresh();
   }
 
   void _apply(OrderView saved, {String? clearItemId}) {

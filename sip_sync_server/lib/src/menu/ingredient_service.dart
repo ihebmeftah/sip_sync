@@ -14,10 +14,18 @@ class IngredientService {
     UuidValue buildingId, {
     int? limit,
     int? offset,
+    bool? outOfStock,
   }) async {
     await _requireBuildingAccess(session, buildingId);
     final window = PageWindow.from(limit: limit, offset: offset);
-    Expression where(IngredientTable t) => t.buildingId.equals(buildingId);
+    Expression where(IngredientTable t) {
+      var filter = t.buildingId.equals(buildingId);
+      if (outOfStock == true) {
+        filter = filter & (t.currentStock <= 0.0);
+      }
+      return filter;
+    }
+
     final total = await Ingredient.db.count(session, where: where);
     final rows = await Ingredient.db.find(
       session,
@@ -31,6 +39,15 @@ class IngredientService {
       total: total,
       limit: window.limit,
       offset: window.offset,
+    );
+  }
+
+  /// Ingredients whose current stock is zero. A positive remainder is not included.
+  Future<int> outOfStockCount(Session session, UuidValue buildingId) async {
+    await _requireBuildingAccess(session, buildingId);
+    return Ingredient.db.count(
+      session,
+      where: (t) => t.buildingId.equals(buildingId) & (t.currentStock <= 0.0),
     );
   }
 

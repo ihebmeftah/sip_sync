@@ -99,10 +99,10 @@ abstract class DashboardSummary
   /// Reservation requests still waiting, any day.
   int pendingReservations;
 
-  /// Reservations whose start falls on the requested day.
+  /// Confirmed reservations whose start falls on the requested day.
   int reservationsToday;
 
-  /// Ingredients whose current stock is under 10% of the full level.
+  /// Ingredients whose current stock is zero.
   int ingredientsToRestock;
 
   /// Returns a shallow copy of this [DashboardSummary]

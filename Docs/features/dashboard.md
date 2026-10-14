@@ -16,8 +16,8 @@ Status: in progress
 ## Flow
 
 1. The dashboard sends the device's local calendar day as UTC midnight, the same day key as the reservation list.
-2. The server returns counts for that day plus current stock and still-waiting reservation requests. When the venue requires a cash register, order and item counts use the session that is in progress. If none is open, those counts are zero. Reservations and restock stay on the calendar day and current stock.
-3. The welcome band shows that the counts are for the current local day, with that day's start and end. While a register is open it names that register instead. Reservations is the first quick action and shows how many requests are still waiting. Today's reservations and ingredients under 10% sit in their own section above the order counts. Pull to refresh loads them again.
+2. The server returns counts for that day plus current stock and still-waiting reservation requests. When the venue requires a cash register, order and item counts use the session that is in progress. If none is open, those counts are zero. Reservations and the out-of-stock count stay on the calendar day and current stock.
+3. The welcome band shows that the counts are for the current local day, with that day's start and end. While a register is open it names that register instead. Reservations is the first quick action and shows how many requests are still waiting. Confirmed reservations for that day, with pending requests under them, and ingredients with no stock left sit in two equal-height cards above the order counts. The reservation card opens reservations. The out-of-stock card opens ingredients with the out-of-stock filter on. Pull to refresh loads them again.
 
 What each number means:
 
@@ -25,8 +25,9 @@ What each number means:
 - **Customer app** — those tickets whose launcher is a customer.
 - **Items by status** — lines created that day, counted by progress, picked, prepared, served, payed, and cancelled.
 - **Pending requests** — reservation requests still waiting, any day. Expired requests are settled first, so they are not counted.
-- **Reservations today** — reservations whose start falls on that day, every status.
-- **Need restock** — ingredients whose current stock is under 10% of the full level (`initialStock`). Exactly 10% is not included. A full level of zero counts when current stock is also zero.
+- **Confirmed today** — reservations whose start falls on that day and whose status is confirmed. Arrived, cancelled, no-show, and still-waiting requests are not in that number.
+- **Pending** — the same still-waiting count as pending requests, shown under the confirmed number.
+- **Out of stock** — ingredients whose current stock is zero. A positive remainder is not included.
 
 Revenue and employee performance are not on this screen.
 

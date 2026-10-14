@@ -62,9 +62,7 @@ class _TablesListViewState extends ConsumerState<TablesListView> {
           .listAllForExport();
       if (tables.isEmpty) {
         if (!mounted) return;
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(l10n.tableQrExportEmpty)));
+        showAppSnackBar(context, l10n.tableQrExportEmpty);
         return;
       }
       final building = ref.read(buildingSelectionProvider);
@@ -78,9 +76,11 @@ class _TablesListViewState extends ConsumerState<TablesListView> {
       if (!mounted) {
         return;
       }
-      ScaffoldMessenger.of(
+      showAppSnackBar(
         context,
-      ).showSnackBar(SnackBar(content: Text(l10n.tableQrExportFailed)));
+        l10n.tableQrExportFailed,
+        kind: AppNoticeKind.error,
+      );
     } finally {
       if (mounted) {
         setState(() => _exportingQr = false);
@@ -103,17 +103,21 @@ class _TablesListViewState extends ConsumerState<TablesListView> {
   bool _canStartOrderOn(VenueTableView table) {
     final l10n = AppLocalizations.of(context)!;
     if (!table.isActive) {
-      ScaffoldMessenger.of(
+      showAppSnackBar(
         context,
-      ).showSnackBar(SnackBar(content: Text(l10n.orderTableInactive)));
+        l10n.orderTableInactive,
+        kind: AppNoticeKind.error,
+      );
       return false;
     }
     final multiOrder =
         ref.read(buildingSelectionProvider)?.tableMultiOrder ?? false;
     if (!multiOrder && table.status == TableFloorStatus.occupied) {
-      ScaffoldMessenger.of(
+      showAppSnackBar(
         context,
-      ).showSnackBar(SnackBar(content: Text(l10n.orderTableOccupied)));
+        l10n.orderTableOccupied,
+        kind: AppNoticeKind.error,
+      );
       return false;
     }
     return true;

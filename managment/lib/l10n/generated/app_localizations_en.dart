@@ -458,13 +458,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dashboardPendingReservations => 'Pending requests';
 
   @override
-  String get dashboardReservationsToday => 'Reservations today';
+  String dashboardPendingCount(int count) {
+    return '$count pending';
+  }
 
   @override
-  String get dashboardRestock => 'Need restock';
+  String get dashboardReservationsToday => 'Confirmed today';
 
   @override
-  String get dashboardRestockHint => 'Under 10% of full stock';
+  String get dashboardRestock => 'Out of stock';
+
+  @override
+  String get dashboardRestockHint => 'Current stock is zero';
 
   @override
   String get dashboardHouse => 'Reservations and stock';
@@ -959,6 +964,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get ingredientsEmpty => 'No ingredients in this venue yet.';
+
+  @override
+  String get ingredientFilterOutOfStock => 'Out of stock';
+
+  @override
+  String get ingredientsEmptyOutOfStock => 'No ingredients are out of stock.';
 
   @override
   String get addIngredient => 'Add ingredient';

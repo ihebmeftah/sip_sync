@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/errors/app_notice.dart';
 import '../../../core/errors/error_mapper.dart';
 import '../../../core/errors/form_validators.dart';
 import '../../../core/routing/app_routes.dart';
@@ -72,8 +73,10 @@ class _ForgotPasswordViewState extends ConsumerState<ForgotPasswordView> {
     if (!mounted || !ok) {
       return;
     }
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(AppLocalizations.of(context)!.passwordResetDone)),
+    showAppSnackBar(
+      context,
+      AppLocalizations.of(context)!.passwordResetDone,
+      kind: AppNoticeKind.success,
     );
     const SignInRoute().go(context);
   }

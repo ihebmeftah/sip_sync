@@ -2699,6 +2699,7 @@ class _IngredientEndpoint {
     _is.UuidValue buildingId, {
     int? limit,
     int? offset,
+    bool? outOfStock,
   }) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -2715,6 +2716,7 @@ class _IngredientEndpoint {
             'buildingId': buildingId,
             'limit': limit,
             'offset': offset,
+            'outOfStock': outOfStock,
           }),
           serializationManager: _serializationManager,
         );
@@ -2724,6 +2726,37 @@ class _IngredientEndpoint {
                   _localCallContext.arguments,
                 )
                 as _ida.Future<_i441irke.IngredientPage>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<int> outOfStockCount(
+    _ist.TestSessionBuilder sessionBuilder,
+    _is.UuidValue buildingId,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'ingredient',
+            method: 'outOfStockCount',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'ingredient',
+          methodName: 'outOfStockCount',
+          parameters: _ist.testObjectToJson({'buildingId': buildingId}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<int>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();

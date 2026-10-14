@@ -450,13 +450,18 @@ class AppLocalizationsAr extends AppLocalizations {
   String get dashboardPendingReservations => 'طلبات الحجز المعلقة';
 
   @override
-  String get dashboardReservationsToday => 'حجوزات اليوم';
+  String dashboardPendingCount(int count) {
+    return '$count معلّقة';
+  }
 
   @override
-  String get dashboardRestock => 'تحتاج إعادة تخزين';
+  String get dashboardReservationsToday => 'المؤكدة اليوم';
 
   @override
-  String get dashboardRestockHint => 'أقل من 10٪ من المخزون الكامل';
+  String get dashboardRestock => 'نفد المخزون';
+
+  @override
+  String get dashboardRestockHint => 'المخزون الحالي صفر';
 
   @override
   String get dashboardHouse => 'الحجوزات والمخزون';
@@ -939,6 +944,12 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get ingredientsEmpty => 'لا توجد مكوّنات في هذا المكان بعد.';
+
+  @override
+  String get ingredientFilterOutOfStock => 'نفد المخزون';
+
+  @override
+  String get ingredientsEmptyOutOfStock => 'لا توجد مكوّنات نفد مخزونها.';
 
   @override
   String get addIngredient => 'إضافة مكوّن';

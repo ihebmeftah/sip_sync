@@ -82,9 +82,7 @@ class _VenueDetailViewState extends ConsumerState<VenueDetailView> {
     final open = ref.read(openCustomerOrderProvider).asData?.value;
     final openHere = open != null && open.buildingId.uuid == widget.buildingId;
     if (openHere) {
-      final messenger = ScaffoldMessenger.of(context);
-      messenger.hideCurrentSnackBar();
-      messenger.showSnackBar(SnackBar(content: Text(l10n.scanDisabled)));
+      showAppSnackBar(context, l10n.scanDisabled, kind: AppNoticeKind.error);
       return;
     }
     TableScanRoute(
@@ -111,10 +109,10 @@ class _VenueDetailViewState extends ConsumerState<VenueDetailView> {
         if (didPop || !stay) {
           return;
         }
-        final messenger = ScaffoldMessenger.of(context);
-        messenger.hideCurrentSnackBar();
-        messenger.showSnackBar(
-          SnackBar(content: Text(l10n.orderKeepsYouHere)),
+        showAppSnackBar(
+          context,
+          l10n.orderKeepsYouHere,
+          kind: AppNoticeKind.error,
         );
       },
       child: Scaffold(
@@ -256,19 +254,10 @@ class _DetailBodyState extends ConsumerState<_DetailBody> {
 
   void _showChanged(int number) {
     final l10n = AppLocalizations.of(context)!;
-    final messenger = ScaffoldMessenger.of(context);
-    messenger.hideCurrentSnackBar();
-    messenger.showSnackBar(
-      SnackBar(
-        behavior: SnackBarBehavior.floating,
-        backgroundColor: AppColors.moss,
-        content: Text(
-          l10n.tableChanged(number),
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: AppColors.paper,
-          ),
-        ),
-      ),
+    showAppSnackBar(
+      context,
+      l10n.tableChanged(number),
+      kind: AppNoticeKind.success,
     );
   }
 

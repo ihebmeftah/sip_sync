@@ -5,6 +5,7 @@ import '../../../core/di/app_providers.dart';
 import '../../../core/errors/error_mapper.dart';
 import '../../../core/paging/list_paging.dart';
 import '../../auth/view_models/auth_view_model.dart';
+import '../../products/view_models/ingredients_view_model.dart';
 import '../../tables/view_models/tables_view_model.dart';
 import '../../cash_register/view_models/cash_register_view_model.dart';
 import '../order_list_day.dart';
@@ -194,6 +195,7 @@ class OrdersViewModel extends _$OrdersViewModel {
         );
     await refresh();
     await _refreshTables();
+    await _refreshOutOfStock();
     return saved;
   }
 
@@ -205,6 +207,7 @@ class OrdersViewModel extends _$OrdersViewModel {
         .read(orderRepositoryProvider)
         .addItems(orderId: orderId, items: items);
     _patchOrder(saved);
+    await _refreshOutOfStock();
     return saved;
   }
 
@@ -227,6 +230,9 @@ class OrdersViewModel extends _$OrdersViewModel {
     } else {
       _patchOrder(saved);
     }
+    if (status == OrderItemStatus.cancelled) {
+      await _refreshOutOfStock();
+    }
     return saved;
   }
 
@@ -239,12 +245,20 @@ class OrdersViewModel extends _$OrdersViewModel {
         .cancel(orderId, reason);
     await refresh();
     await _refreshTables();
+    await _refreshOutOfStock();
     return saved;
   }
 
   Future<void> _refreshTables() async {
     if (_buildingId.isEmpty) return;
     await ref.read(tablesViewModelProvider(_buildingId).notifier).refresh();
+  }
+
+  Future<void> _refreshOutOfStock() {
+    if (_buildingId.isEmpty) return Future.value();
+    return ref
+        .read(outOfStockIngredientCountProvider(_buildingId).notifier)
+        .refresh();
   }
 
   /// Open ([OrderStatus.progress]) orders seated on [tableId].

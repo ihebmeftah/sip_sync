@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sip_sync_client/sip_sync_client.dart';
 
+import '../../../core/di/app_providers.dart';
 import '../../../core/errors/app_notice.dart';
 import '../../../core/errors/error_mapper.dart';
+import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
 import '../../../core/widgets/app_loader.dart';
+import '../../../core/widgets/pack_catalog_sheet.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../view_models/dashboard_view_model.dart';
 
@@ -38,15 +41,43 @@ class DashboardMetrics extends ConsumerWidget {
           ),
         ],
       ),
-      data: (data) => _MetricsBody(summary: data),
+      data: (data) {
+        final pack = ref.watch(buildingSelectionProvider)?.pack;
+        return _MetricsBody(
+          summary: data,
+          onReservations: () {
+            if (pack?.reservations == false) {
+              showPackCatalog(context);
+              return;
+            }
+            ReservationsRoute(buildingId: buildingId).go(context);
+          },
+          onOutOfStock: () {
+            if (pack?.inventory == false) {
+              showPackCatalog(context);
+              return;
+            }
+            IngredientsRoute(
+              buildingId: buildingId,
+              outOfStock: true,
+            ).go(context);
+          },
+        );
+      },
     );
   }
 }
 
 class _MetricsBody extends StatelessWidget {
-  const _MetricsBody({required this.summary});
+  const _MetricsBody({
+    required this.summary,
+    required this.onReservations,
+    required this.onOutOfStock,
+  });
 
   final DashboardSummary summary;
+  final VoidCallback onReservations;
+  final VoidCallback onOutOfStock;
 
   @override
   Widget build(BuildContext context) {
@@ -64,6 +95,8 @@ class _MetricsBody extends StatelessWidget {
               icon: Icons.event_available_outlined,
               label: l10n.dashboardReservationsToday,
               value: summary.reservationsToday,
+              hint: l10n.dashboardPendingCount(summary.pendingReservations),
+              onTap: onReservations,
             ),
             _SpotlightCard(
               icon: Icons.science_outlined,
@@ -71,6 +104,7 @@ class _MetricsBody extends StatelessWidget {
               hint: l10n.dashboardRestockHint,
               value: summary.ingredientsToRestock,
               alert: summary.ingredientsToRestock > 0,
+              onTap: onOutOfStock,
             ),
           ],
         ),
@@ -159,14 +193,16 @@ class _SpotlightRow extends StatelessWidget {
             ],
           );
         }
-        return Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            for (var i = 0; i < children.length; i++) ...[
-              if (i > 0) const SizedBox(width: AppSpacing.sm),
-              Expanded(child: children[i]),
+        return IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              for (var i = 0; i < children.length; i++) ...[
+                if (i > 0) const SizedBox(width: AppSpacing.sm),
+                Expanded(child: children[i]),
+              ],
             ],
-          ],
+          ),
         );
       },
     );
@@ -180,6 +216,7 @@ class _SpotlightCard extends StatelessWidget {
     required this.value,
     this.hint,
     this.alert = false,
+    this.onTap,
   });
 
   final IconData icon;
@@ -187,6 +224,7 @@ class _SpotlightCard extends StatelessWidget {
   final int value;
   final String? hint;
   final bool alert;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -203,41 +241,47 @@ class _SpotlightCard extends StatelessWidget {
               : scheme.outline.withValues(alpha: 0.7),
         ),
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.md),
-        child: Row(
-          children: [
-            DecoratedBox(
-              decoration: BoxDecoration(
-                color: alert ? scheme.errorContainer : scheme.primaryContainer,
-                borderRadius: BorderRadius.circular(AppRadii.sm),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(AppRadii.md),
+        child: Padding(
+          padding: const EdgeInsets.all(AppSpacing.md),
+          child: Row(
+            children: [
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  color: alert
+                      ? scheme.errorContainer
+                      : scheme.primaryContainer,
+                  borderRadius: BorderRadius.circular(AppRadii.sm),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(AppSpacing.sm),
+                  child: Icon(icon, color: ink, size: 22),
+                ),
               ),
-              child: Padding(
-                padding: const EdgeInsets.all(AppSpacing.sm),
-                child: Icon(icon, color: ink, size: 22),
-              ),
-            ),
-            const SizedBox(width: AppSpacing.md),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '$value',
-                    style: text.headlineSmall?.copyWith(color: ink),
-                  ),
-                  Text(label, style: text.titleSmall),
-                  if (hint != null)
+              const SizedBox(width: AppSpacing.md),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
                     Text(
-                      hint!,
-                      style: text.bodySmall?.copyWith(
-                        color: scheme.onSurfaceVariant,
-                      ),
+                      '$value',
+                      style: text.headlineSmall?.copyWith(color: ink),
                     ),
-                ],
+                    Text(label, style: text.titleSmall),
+                    if (hint != null)
+                      Text(
+                        hint!,
+                        style: text.bodySmall?.copyWith(
+                          color: scheme.onSurfaceVariant,
+                        ),
+                      ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

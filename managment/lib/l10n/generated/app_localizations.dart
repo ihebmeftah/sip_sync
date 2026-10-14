@@ -934,22 +934,28 @@ abstract class AppLocalizations {
   /// **'Pending requests'**
   String get dashboardPendingReservations;
 
+  /// Pending reservation requests under the confirmed count
+  ///
+  /// In en, this message translates to:
+  /// **'{count} pending'**
+  String dashboardPendingCount(int count);
+
   /// No description provided for @dashboardReservationsToday.
   ///
   /// In en, this message translates to:
-  /// **'Reservations today'**
+  /// **'Confirmed today'**
   String get dashboardReservationsToday;
 
   /// No description provided for @dashboardRestock.
   ///
   /// In en, this message translates to:
-  /// **'Need restock'**
+  /// **'Out of stock'**
   String get dashboardRestock;
 
   /// No description provided for @dashboardRestockHint.
   ///
   /// In en, this message translates to:
-  /// **'Under 10% of full stock'**
+  /// **'Current stock is zero'**
   String get dashboardRestockHint;
 
   /// No description provided for @dashboardHouse.
@@ -1839,6 +1845,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No ingredients in this venue yet.'**
   String get ingredientsEmpty;
+
+  /// No description provided for @ingredientFilterOutOfStock.
+  ///
+  /// In en, this message translates to:
+  /// **'Out of stock'**
+  String get ingredientFilterOutOfStock;
+
+  /// No description provided for @ingredientsEmptyOutOfStock.
+  ///
+  /// In en, this message translates to:
+  /// **'No ingredients are out of stock.'**
+  String get ingredientsEmptyOutOfStock;
 
   /// No description provided for @addIngredient.
   ///

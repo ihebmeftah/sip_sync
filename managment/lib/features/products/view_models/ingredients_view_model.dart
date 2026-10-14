@@ -1,11 +1,27 @@
+import 'dart:async';
+
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sip_sync_client/sip_sync_client.dart';
 
 import '../../../core/di/app_providers.dart';
 import '../../../core/paging/list_paging.dart';
 import '../../auth/view_models/auth_view_model.dart';
+import '../../notifications/view_models/notification_inbox_view_model.dart';
 
 part 'ingredients_view_model.g.dart';
+
+/// When true, the ingredient list shows only rows with no current stock.
+@Riverpod(keepAlive: true)
+class IngredientListFilter extends _$IngredientListFilter {
+  @override
+  bool build(String buildingId) => false;
+
+  /// [value] true limits the list to ingredients whose current stock is zero.
+  void setOutOfStockOnly(bool value) {
+    if (state == value) return;
+    state = value;
+  }
+}
 
 /// Full ingredient catalog for recipe editors.
 @riverpod
@@ -24,10 +40,13 @@ class IngredientsViewModel extends _$IngredientsViewModel {
   late String _buildingId;
   var _offset = 0;
 
+  bool _outOfStockOnly = false;
+
   @override
   Future<IngredientPage> build(String buildingId) async {
     _buildingId = buildingId;
     _offset = 0;
+    _outOfStockOnly = ref.watch(ingredientListFilterProvider(buildingId));
     ref.watch(signedInActorIdProvider);
     return _load();
   }
@@ -35,6 +54,7 @@ class IngredientsViewModel extends _$IngredientsViewModel {
   Future<void> refresh() async {
     ref.invalidate(ingredientCatalogProvider(_buildingId));
     state = await AsyncValue.guard(_load);
+    await _refreshOutOfStock();
   }
 
   Future<void> previousPage() => _show(_offset - listPageSize);
@@ -62,6 +82,7 @@ class IngredientsViewModel extends _$IngredientsViewModel {
           UuidValue.fromString(_buildingId),
           limit: listPageSize,
           offset: _offset,
+          outOfStock: _outOfStockOnly ? true : null,
         );
     if (page.items.isEmpty && page.offset > 0 && page.total > 0) {
       _offset = ((page.total - 1) ~/ listPageSize) * listPageSize;
@@ -102,8 +123,9 @@ class IngredientsViewModel extends _$IngredientsViewModel {
         .read(ingredientRepositoryProvider)
         .restock(id: id, quantity: quantity);
     final current = state.asData?.value;
-    if (current == null) {
+    if (current == null || _outOfStockOnly) {
       await refresh();
+      return saved;
     } else {
       state = AsyncData(
         current.copyWith(
@@ -115,6 +137,62 @@ class IngredientsViewModel extends _$IngredientsViewModel {
       );
       ref.invalidate(ingredientCatalogProvider(_buildingId));
     }
+    await _refreshOutOfStock();
     return saved;
+  }
+
+  Future<void> _refreshOutOfStock() {
+    return ref
+        .read(outOfStockIngredientCountProvider(_buildingId).notifier)
+        .refresh();
+  }
+}
+
+/// Ingredients with nothing left. Products and Ingredients show this count.
+@Riverpod(keepAlive: true)
+class OutOfStockIngredientCount extends _$OutOfStockIngredientCount {
+  late String _buildingId;
+
+  @override
+  Future<int> build(String buildingId) async {
+    _buildingId = buildingId;
+    final store = ref.watch(appSessionStoreProvider);
+    ref.listen(notificationInboxProvider, (previous, next) {
+      final before = previous?.asData?.value.unread;
+      final after = next.asData?.value.unread;
+      if (before == null || after == null || before == after) {
+        return;
+      }
+      unawaited(refresh());
+    });
+    if (!store.isSignedIn || buildingId.isEmpty) {
+      return 0;
+    }
+    if (!store.isOwner && !store.isEmployee) {
+      return 0;
+    }
+    return _fetch(buildingId);
+  }
+
+  /// Reloads the count without clearing the badge while the request runs.
+  Future<void> refresh() async {
+    final store = ref.read(appSessionStoreProvider);
+    if (!store.isSignedIn ||
+        _buildingId.isEmpty ||
+        (!store.isOwner && !store.isEmployee)) {
+      state = const AsyncData(0);
+      return;
+    }
+    try {
+      state = AsyncData(await _fetch(_buildingId));
+    } catch (_) {
+      // Keep the last count. The ingredient screen reports action errors.
+    }
+  }
+
+  Future<int> _fetch(String buildingId) {
+    return ref
+        .read(ingredientRepositoryProvider)
+        .outOfStockCount(UuidValue.fromString(buildingId));
   }
 }
