@@ -4,6 +4,7 @@ Product and feature documentation for Sip Sync. Update these pages when behavior
 
 ## Product
 
+- [User guide](user-guide.md) — how to use every app and feature
 - [Overview](product-overview.md)
 - [Architecture](architecture.md)
 

@@ -4,6 +4,14 @@ Sip Sync is a full-stack platform for cafés, restaurants, lounges, and bars. On
 
 The backend is Serverpod with PostgreSQL, custom auth, and permission checks on every endpoint. The Flutter apps talk to the generated Serverpod client. Domain ids are UUIDs. The live demo is deployed on [Serverpod Cloud](https://docs.serverpod.dev/cloud).
 
+## AI agent
+
+Sip Sync was built with the **Cursor** coding agent, using **Grok 4.7**.
+
+## User guide
+
+How to use every screen — what each app offers, and what a customer, an owner, a staff member, or a platform admin can do — is the [user guide](Docs/user-guide.md). It opens with an introduction and a table of contents.
+
 ## Live demo
 
 | App | Who | URL |
