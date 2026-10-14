@@ -3241,6 +3241,8 @@ class _OrderEndpoint {
     _ist.TestSessionBuilder sessionBuilder,
     _is.UuidValue buildingId,
     _i9w9m1jz.OrderStatus? status, {
+    DateTime? createdFrom,
+    DateTime? createdTo,
     _is.UuidValue? venueTableId,
     int? limit,
     int? offset,
@@ -3259,6 +3261,8 @@ class _OrderEndpoint {
           parameters: _ist.testObjectToJson({
             'buildingId': buildingId,
             'status': status,
+            'createdFrom': createdFrom,
+            'createdTo': createdTo,
             'venueTableId': venueTableId,
             'limit': limit,
             'offset': offset,

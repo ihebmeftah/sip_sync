@@ -6,6 +6,7 @@ import '../../../core/errors/error_mapper.dart';
 import '../../../core/paging/list_paging.dart';
 import '../../auth/view_models/auth_view_model.dart';
 import '../../tables/view_models/tables_view_model.dart';
+import '../order_list_day.dart';
 
 part 'orders_view_model.g.dart';
 
@@ -45,9 +46,13 @@ class OrderBoardState {
 class OrdersViewModel extends _$OrdersViewModel {
   late String _buildingId;
   OrderStatus? _statusFilter;
+  OrderListDaySelection _dayFilter = const OrderListDaySelection.today();
 
   /// Current list chip filter (`null` = all).
   OrderStatus? get statusFilter => _statusFilter;
+
+  /// Day chip. Defaults to today and is sent for every caller.
+  OrderListDaySelection get dayFilter => _dayFilter;
 
   @override
   Future<OrderBoardState> build(String buildingId) async {
@@ -67,9 +72,17 @@ class OrdersViewModel extends _$OrdersViewModel {
     await refresh();
   }
 
-  /// Remount: reset chip to All and refetch (keepAlive otherwise keeps the filter).
+  /// Changes the day chip and reloads from the first page.
+  Future<void> setDayFilter(OrderListDaySelection selection) async {
+    if (_dayFilter == selection) return;
+    _dayFilter = selection;
+    await refresh();
+  }
+
+  /// Remount: reset chips to All and today (keepAlive otherwise keeps them).
   Future<void> onScreenAppeared() async {
     _statusFilter = null;
+    _dayFilter = const OrderListDaySelection.today();
     await refresh();
   }
 
@@ -117,11 +130,14 @@ class OrdersViewModel extends _$OrdersViewModel {
   }
 
   Future<OrderPage> _fetch(int offset) {
+    final window = orderListDayWindow(_dayFilter, DateTime.now());
     return ref
         .read(orderRepositoryProvider)
         .list(
           UuidValue.fromString(_buildingId),
           status: _statusFilter,
+          createdFrom: window.from,
+          createdTo: window.to,
           limit: listPageSize,
           offset: offset,
         );

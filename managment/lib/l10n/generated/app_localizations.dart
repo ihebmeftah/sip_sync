@@ -2308,6 +2308,36 @@ abstract class AppLocalizations {
   /// **'No orders match this status.'**
   String get ordersFilterEmpty;
 
+  /// Order list day chip for the current local day
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get ordersFilterToday;
+
+  /// Order list day chip for today and the two previous days
+  ///
+  /// In en, this message translates to:
+  /// **'Last 3 days'**
+  String get ordersFilterLast3Days;
+
+  /// Order list day chip for the seven local days ending today
+  ///
+  /// In en, this message translates to:
+  /// **'Last week'**
+  String get ordersFilterLastWeek;
+
+  /// Opens a date picker for one day on the order list
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a day'**
+  String get ordersFilterPickDay;
+
+  /// Empty order list when a day filter is active
+  ///
+  /// In en, this message translates to:
+  /// **'No orders in this period.'**
+  String get ordersDayFilterEmpty;
+
   /// No description provided for @newOrder.
   ///
   /// In en, this message translates to:

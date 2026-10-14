@@ -26,10 +26,15 @@ class OrderService {
   ///
   /// Optional [status] and [venueTableId] filter in the database, including
   /// the employee visibility rule, so a page is not shortened after the read.
+  /// [createdFrom] and [createdTo] narrow that page by day for every caller.
+  /// An employee who cannot consult every order still only sees tickets they
+  /// took part in, inside that window.
   Future<OrderPage> listForBuilding(
     Session session,
     UuidValue buildingId, {
     OrderStatus? status,
+    DateTime? createdFrom,
+    DateTime? createdTo,
     UuidValue? venueTableId,
     int? limit,
     int? offset,
@@ -39,23 +44,35 @@ class OrderService {
     final access = await _requireEmployeeAccessIfNeeded(session, ctx);
     final window = PageWindow.from(limit: limit, offset: offset);
     final restricted = access != null && !access.consultAllOrders;
+    final dayWindow = _dayWindow(
+      createdFrom: createdFrom,
+      createdTo: createdTo,
+    );
+
+    Expression where(VenueOrderTable t) {
+      var filter = t.buildingId.equals(buildingId);
+      if (status != null) {
+        filter = filter & t.status.equals(status);
+      }
+      if (venueTableId != null) {
+        filter = filter & t.venueTableId.equals(venueTableId);
+      }
+      if (restricted) {
+        filter = filter & _employeeParticipated(t, ctx);
+      }
+      if (dayWindow != null) {
+        filter =
+            filter &
+            (t.createdAt >= dayWindow.from) &
+            (t.createdAt < dayWindow.to);
+      }
+      return filter;
+    }
 
     var total = 0;
     final rows = await VenueOrder.db.find(
       session,
-      where: (t) {
-        var filter = t.buildingId.equals(buildingId);
-        if (status != null) {
-          filter = filter & t.status.equals(status);
-        }
-        if (venueTableId != null) {
-          filter = filter & t.venueTableId.equals(venueTableId);
-        }
-        if (restricted) {
-          filter = filter & _employeeParticipated(t, ctx);
-        }
-        return filter;
-      },
+      where: where,
       orderBy: (t) => t.createdAt.desc(),
       limit: window.limit,
       offset: window.offset,
@@ -66,22 +83,7 @@ class OrderService {
         ),
       ),
     );
-    total = await VenueOrder.db.count(
-      session,
-      where: (t) {
-        var filter = t.buildingId.equals(buildingId);
-        if (status != null) {
-          filter = filter & t.status.equals(status);
-        }
-        if (venueTableId != null) {
-          filter = filter & t.venueTableId.equals(venueTableId);
-        }
-        if (restricted) {
-          filter = filter & _employeeParticipated(t, ctx);
-        }
-        return filter;
-      },
-    );
+    total = await VenueOrder.db.count(session, where: where);
     final names = await _actorNameCache(session, rows);
     return OrderPage(
       items: [for (final row in rows) _view(row, names)],
@@ -1690,6 +1692,29 @@ class OrderService {
           (item) =>
               item.cancelledByType.equals(type) & item.cancelledById.equals(id),
         );
+  }
+
+  /// Day span on [VenueOrder.createdAt], at most 8 days.
+  ///
+  /// Both bounds or neither. The list uses this for today, the last 3 days,
+  /// last week, or one picked day. Every caller is filtered the same way.
+  ({DateTime from, DateTime to})? _dayWindow({
+    required DateTime? createdFrom,
+    required DateTime? createdTo,
+  }) {
+    if (createdFrom == null && createdTo == null) {
+      return null;
+    }
+    if (createdFrom == null ||
+        createdTo == null ||
+        !createdTo.isAfter(createdFrom) ||
+        createdTo.difference(createdFrom) > const Duration(days: 8)) {
+      throw OrderException(
+        message: 'Order day window is not valid.',
+        code: OrderErrorCode.invalidInput,
+      );
+    }
+    return (from: createdFrom, to: createdTo);
   }
 
   /// Employee without [EmployeeAccess.consultAllOrders] sees orders they

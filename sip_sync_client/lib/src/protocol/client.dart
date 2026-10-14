@@ -1217,11 +1217,18 @@ class EndpointOrder extends _isc.EndpointRef {
   /// Lists orders for [buildingId] (owner or assigned employee).
   ///
   /// When [status] is set, only orders with that status are returned.
-  /// [venueTableId] limits the page to one table, so a seat lookup does not
-  /// depend on the floor page. [limit] defaults to 20 and is capped at 100.
+  /// [createdFrom] and [createdTo] are an inclusive-exclusive window on
+  /// [VenueOrder.createdAt] for every caller. Omit both to list every day.
+  /// A partial, reversed, or window longer than 8 days throws
+  /// [OrderException] / [OrderErrorCode.invalidInput]. [venueTableId]
+  /// limits the page to one
+  /// table, so a seat lookup does not depend on the floor page. [limit]
+  /// defaults to 20 and is capped at 100.
   _ida.Future<_ith3f88l.OrderPage> list(
     _isc.UuidValue buildingId,
     _iqp2kjae.OrderStatus? status, {
+    DateTime? createdFrom,
+    DateTime? createdTo,
     _isc.UuidValue? venueTableId,
     int? limit,
     int? offset,
@@ -1231,6 +1238,8 @@ class EndpointOrder extends _isc.EndpointRef {
     {
       'buildingId': buildingId,
       'status': status,
+      'createdFrom': createdFrom,
+      'createdTo': createdTo,
       'venueTableId': venueTableId,
       'limit': limit,
       'offset': offset,

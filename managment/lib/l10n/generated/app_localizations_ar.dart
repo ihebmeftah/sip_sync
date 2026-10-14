@@ -1199,6 +1199,21 @@ class AppLocalizationsAr extends AppLocalizations {
   String get ordersFilterEmpty => 'لا توجد طلبات بهذه الحالة.';
 
   @override
+  String get ordersFilterToday => 'اليوم';
+
+  @override
+  String get ordersFilterLast3Days => 'آخر 3 أيام';
+
+  @override
+  String get ordersFilterLastWeek => 'الأسبوع الماضي';
+
+  @override
+  String get ordersFilterPickDay => 'اختر يوماً';
+
+  @override
+  String get ordersDayFilterEmpty => 'لا توجد طلبات في هذه الفترة.';
+
+  @override
   String get newOrder => 'طلب جديد';
 
   @override

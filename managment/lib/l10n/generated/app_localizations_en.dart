@@ -1222,6 +1222,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ordersFilterEmpty => 'No orders match this status.';
 
   @override
+  String get ordersFilterToday => 'Today';
+
+  @override
+  String get ordersFilterLast3Days => 'Last 3 days';
+
+  @override
+  String get ordersFilterLastWeek => 'Last week';
+
+  @override
+  String get ordersFilterPickDay => 'Pick a day';
+
+  @override
+  String get ordersDayFilterEmpty => 'No orders in this period.';
+
+  @override
   String get newOrder => 'New order';
 
   @override

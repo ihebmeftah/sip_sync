@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:sip_sync_client/sip_sync_client.dart';
 
 import '../../../core/di/app_providers.dart';
@@ -11,6 +12,7 @@ import '../../../core/paging/list_paging.dart';
 import '../../../core/widgets/app_loader.dart';
 import '../../../core/widgets/refresh_on_appear.dart';
 import '../../../l10n/generated/app_localizations.dart';
+import '../order_list_day.dart';
 import '../view_models/orders_view_model.dart';
 import '../widgets/order_item_info_sheet.dart';
 import '../widgets/order_status_labels.dart';
@@ -47,9 +49,11 @@ class _OrdersListViewState extends ConsumerState<OrdersListView> {
     final text = Theme.of(context).textTheme;
     final currency = ref.watch(buildingSelectionProvider)?.currencyCode ?? '';
     final ordersVm = ref.watch(ordersViewModelProvider(widget.buildingId));
-    final statusFilter = ref
-        .watch(ordersViewModelProvider(widget.buildingId).notifier)
-        .statusFilter;
+    final notifier = ref.watch(
+      ordersViewModelProvider(widget.buildingId).notifier,
+    );
+    final statusFilter = notifier.statusFilter;
+    final dayFilter = notifier.dayFilter;
 
     return ColoredBox(
       color: Theme.of(context).scaffoldBackgroundColor,
@@ -125,6 +129,34 @@ class _OrdersListViewState extends ConsumerState<OrdersListView> {
                     ],
                   ),
                 ),
+                const SizedBox(height: AppSpacing.md),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      for (final preset in const [
+                        OrderListDaySelection.today(),
+                        OrderListDaySelection.last3Days(),
+                        OrderListDaySelection.lastWeek(),
+                      ])
+                        Padding(
+                          padding: const EdgeInsetsDirectional.only(
+                            end: AppSpacing.sm,
+                          ),
+                          child: AppFilterChip(
+                            selected: dayFilter == preset,
+                            label: _dayPresetLabel(l10n, preset.preset),
+                            onSelected: (_) => notifier.setDayFilter(preset),
+                          ),
+                        ),
+                      AppFilterChip(
+                        selected: dayFilter.preset == OrderListDayPreset.day,
+                        label: _pickedDayLabel(context, l10n, dayFilter),
+                        onSelected: (_) => _pickDay(context, notifier),
+                      ),
+                    ],
+                  ),
+                ),
                 const SizedBox(height: AppSpacing.lg),
                 ordersVm.when(
                   loading: () => const AppScreenLoader(),
@@ -151,9 +183,7 @@ class _OrdersListViewState extends ConsumerState<OrdersListView> {
                     if (orders.isEmpty) {
                       return AppSurfaceCard(
                         child: Text(
-                          statusFilter == null
-                              ? l10n.ordersEmpty
-                              : l10n.ordersFilterEmpty,
+                          _emptyLabel(l10n, statusFilter: statusFilter),
                         ),
                       );
                     }
@@ -271,4 +301,53 @@ class _OrdersListViewState extends ConsumerState<OrdersListView> {
       ),
     );
   }
+
+  Future<void> _pickDay(BuildContext context, OrdersViewModel notifier) async {
+    final now = DateTime.now();
+    final today = orderListDateOnly(now);
+    final initial = notifier.dayFilter.day ?? today;
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: initial.isAfter(today) ? today : initial,
+      firstDate: DateTime(today.year - 2),
+      lastDate: today,
+    );
+    if (!mounted || picked == null) return;
+    final day = orderListDateOnly(picked);
+    final selection = day == today
+        ? const OrderListDaySelection.today()
+        : OrderListDaySelection.day(day);
+    await notifier.setDayFilter(selection);
+  }
+}
+
+String _emptyLabel(
+  AppLocalizations l10n, {
+  required OrderStatus? statusFilter,
+}) {
+  if (statusFilter != null) return l10n.ordersFilterEmpty;
+  return l10n.ordersDayFilterEmpty;
+}
+
+String _dayPresetLabel(AppLocalizations l10n, OrderListDayPreset preset) {
+  return switch (preset) {
+    OrderListDayPreset.today => l10n.ordersFilterToday,
+    OrderListDayPreset.last3Days => l10n.ordersFilterLast3Days,
+    OrderListDayPreset.lastWeek => l10n.ordersFilterLastWeek,
+    OrderListDayPreset.day => l10n.ordersFilterPickDay,
+  };
+}
+
+String _pickedDayLabel(
+  BuildContext context,
+  AppLocalizations l10n,
+  OrderListDaySelection selection,
+) {
+  final day = selection.day;
+  if (selection.preset != OrderListDayPreset.day || day == null) {
+    return l10n.ordersFilterPickDay;
+  }
+  return DateFormat.yMMMd(
+    Localizations.localeOf(context).toString(),
+  ).format(day);
 }

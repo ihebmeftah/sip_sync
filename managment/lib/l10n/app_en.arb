@@ -440,6 +440,26 @@
   "ordersEmpty": "No orders yet. Tap New order to start.",
   "ordersFilterAll": "All",
   "ordersFilterEmpty": "No orders match this status.",
+  "ordersFilterToday": "Today",
+  "@ordersFilterToday": {
+    "description": "Order list day chip for the current local day"
+  },
+  "ordersFilterLast3Days": "Last 3 days",
+  "@ordersFilterLast3Days": {
+    "description": "Order list day chip for today and the two previous days"
+  },
+  "ordersFilterLastWeek": "Last week",
+  "@ordersFilterLastWeek": {
+    "description": "Order list day chip for the seven local days ending today"
+  },
+  "ordersFilterPickDay": "Pick a day",
+  "@ordersFilterPickDay": {
+    "description": "Opens a date picker for one day on the order list"
+  },
+  "ordersDayFilterEmpty": "No orders in this period.",
+  "@ordersDayFilterEmpty": {
+    "description": "Empty order list when a day filter is active"
+  },
   "newOrder": "New order",
   "cancelOrderDraft": "Cancel selection",
   "orderResetArticles": "Reset articles",

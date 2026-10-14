@@ -9,15 +9,22 @@ class OrderRepository {
   final Client _client;
 
   /// One page of orders. [status] null is every status.
+  ///
+  /// [createdFrom] and [createdTo] are the day window. The server applies
+  /// them for every caller.
   Future<OrderPage> list(
     UuidValue buildingId, {
     OrderStatus? status,
+    DateTime? createdFrom,
+    DateTime? createdTo,
     UuidValue? venueTableId,
     int? limit,
     int? offset,
   }) => _client.order.list(
     buildingId,
     status,
+    createdFrom: createdFrom,
+    createdTo: createdTo,
     venueTableId: venueTableId,
     limit: limit,
     offset: offset,

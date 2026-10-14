@@ -2108,6 +2108,16 @@ class Endpoints extends _is.EndpointDispatch {
               type: _is.getType<_i9w9m1jz.OrderStatus?>(),
               nullable: true,
             ),
+            'createdFrom': _is.ParameterDescription(
+              name: 'createdFrom',
+              type: _is.getType<DateTime?>(),
+              nullable: true,
+            ),
+            'createdTo': _is.ParameterDescription(
+              name: 'createdTo',
+              type: _is.getType<DateTime?>(),
+              nullable: true,
+            ),
             'venueTableId': _is.ParameterDescription(
               name: 'venueTableId',
               type: _is.getType<_is.UuidValue?>(),
@@ -2132,6 +2142,8 @@ class Endpoints extends _is.EndpointDispatch {
                 session,
                 params['buildingId'],
                 params['status'],
+                createdFrom: params['createdFrom'],
+                createdTo: params['createdTo'],
                 venueTableId: params['venueTableId'],
                 limit: params['limit'],
                 offset: params['offset'],

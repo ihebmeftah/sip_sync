@@ -13,12 +13,19 @@ class OrderEndpoint extends Endpoint {
   /// Lists orders for [buildingId] (owner or assigned employee).
   ///
   /// When [status] is set, only orders with that status are returned.
-  /// [venueTableId] limits the page to one table, so a seat lookup does not
-  /// depend on the floor page. [limit] defaults to 20 and is capped at 100.
+  /// [createdFrom] and [createdTo] are an inclusive-exclusive window on
+  /// [VenueOrder.createdAt] for every caller. Omit both to list every day.
+  /// A partial, reversed, or window longer than 8 days throws
+  /// [OrderException] / [OrderErrorCode.invalidInput]. [venueTableId]
+  /// limits the page to one
+  /// table, so a seat lookup does not depend on the floor page. [limit]
+  /// defaults to 20 and is capped at 100.
   Future<OrderPage> list(
     Session session,
     UuidValue buildingId,
     OrderStatus? status, {
+    DateTime? createdFrom,
+    DateTime? createdTo,
     UuidValue? venueTableId,
     int? limit,
     int? offset,
@@ -27,6 +34,8 @@ class OrderEndpoint extends Endpoint {
       session,
       buildingId,
       status: status,
+      createdFrom: createdFrom,
+      createdTo: createdTo,
       venueTableId: venueTableId,
       limit: limit,
       offset: offset,

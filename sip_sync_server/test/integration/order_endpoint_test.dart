@@ -657,5 +657,294 @@ void main() {
       expect(iterator.current.itemIds, hasLength(1));
       expect(iterator.current.order?.items, hasLength(2));
     });
+
+    test(
+      'day window applies for every caller',
+      () async {
+        final auth = await endpoints.ownerAuth.register(
+          sessionBuilder,
+          EmailRegisterCreate(
+            email: 'order-day-owner@example.com',
+            password: 'password1',
+            phoneNumber: '+21621110991',
+            firstName: 'Day',
+            lastName: 'Owner',
+          ),
+        );
+        final ownerSession = sessionBuilder.copyWith(
+          authentication: AuthenticationOverride.authenticationInfo(
+            auth.owner!.id.uuid,
+            {Scope('sip.owner')},
+            authId: UuidValue.fromString(
+              '00000000-0000-7000-8000-000000000091',
+            ).uuid,
+          ),
+        );
+        final building = await endpoints.building.create(
+          ownerSession,
+          BuildingCreate(
+            name: 'Day House',
+            type: 'cafe',
+            address: '9 Day St',
+            latitude: 36.8,
+            longitude: 10.1,
+            openingMinutes: 480,
+            closingMinutes: 1380,
+            phoneNumber: '+21671100091',
+            otherLinks: const [],
+            currencyCode: 'TND',
+            strictModeSteps: [],
+          ),
+        );
+        final db = sessionBuilder.build();
+        await PackCatalog.assignCode(db, building.id, 'floor');
+        final buildingRow = await Building.db.findById(db, building.id);
+        await Building.db.updateRow(
+          db,
+          buildingRow!.copyWith(tableMultiOrder: true),
+        );
+        final tables = await endpoints.venueTable.create(
+          ownerSession,
+          VenueTableCreate(
+            buildingId: building.id,
+            count: 1,
+            maxSeats: 4,
+            isActive: true,
+          ),
+        );
+        final category = await endpoints.menuCategory.create(
+          ownerSession,
+          MenuCategoryCreate(
+            buildingId: building.id,
+            name: 'Coffee',
+            description: null,
+          ),
+        );
+        final article = await endpoints.menuArticle.create(
+          ownerSession,
+          MenuArticleCreate(
+            buildingId: building.id,
+            categoryId: category.id,
+            name: 'Espresso',
+            description: null,
+            price: 3.5,
+          ),
+        );
+        final line = OrderItemCreateLine(articleId: article.id);
+        final todayOrder = await endpoints.order.create(
+          ownerSession,
+          OrderCreate(
+            buildingId: building.id,
+            venueTableId: tables.first.id,
+            items: [line],
+          ),
+        );
+        final olderOrder = await endpoints.order.create(
+          ownerSession,
+          OrderCreate(
+            buildingId: building.id,
+            venueTableId: tables.first.id,
+            items: [line],
+          ),
+        );
+        final start = DateTime(
+          DateTime.now().year,
+          DateTime.now().month,
+          DateTime.now().day,
+        );
+        DateTime addDays(int days) =>
+            DateTime(start.year, start.month, start.day + days);
+        final olderRow = await VenueOrder.db.findById(db, olderOrder.id);
+        await VenueOrder.db.updateRow(
+          db,
+          olderRow!.copyWith(createdAt: addDays(-5)),
+        );
+
+        final todayPage = await endpoints.order.list(
+          ownerSession,
+          building.id,
+          null,
+          createdFrom: start,
+          createdTo: addDays(1),
+        );
+        expect(todayPage.items.map((order) => order.id), [todayOrder.id]);
+
+        final last3 = await endpoints.order.list(
+          ownerSession,
+          building.id,
+          null,
+          createdFrom: addDays(-2),
+          createdTo: addDays(1),
+        );
+        expect(last3.items.map((order) => order.id), [todayOrder.id]);
+
+        final lastWeek = await endpoints.order.list(
+          ownerSession,
+          building.id,
+          null,
+          createdFrom: addDays(-6),
+          createdTo: addDays(1),
+        );
+        expect(
+          lastWeek.items.map((order) => order.id).toSet(),
+          {todayOrder.id, olderOrder.id},
+        );
+
+        final allDays = await endpoints.order.list(
+          ownerSession,
+          building.id,
+          null,
+        );
+        expect(allDays.total, 2);
+
+        await expectLater(
+          endpoints.order.list(
+            ownerSession,
+            building.id,
+            null,
+            createdFrom: addDays(1),
+            createdTo: start,
+          ),
+          throwsA(
+            isA<OrderException>().having(
+              (error) => error.code,
+              'code',
+              OrderErrorCode.invalidInput,
+            ),
+          ),
+        );
+        await expectLater(
+          endpoints.order.list(
+            ownerSession,
+            building.id,
+            null,
+            createdFrom: addDays(-9),
+            createdTo: addDays(1),
+          ),
+          throwsA(
+            isA<OrderException>().having(
+              (error) => error.code,
+              'code',
+              OrderErrorCode.invalidInput,
+            ),
+          ),
+        );
+
+        final restrictedAccess = await endpoints.employeeAccess.create(
+          ownerSession,
+          EmployeeAccessCreate(
+            buildingId: building.id,
+            name: 'Own tickets',
+            orderCreation: true,
+            orderPayment: false,
+            cancelOrder: false,
+            preparation: false,
+            serving: false,
+            consultAllOrders: false,
+          ),
+        );
+        final restrictedEmployee = await endpoints.employee.add(
+          ownerSession,
+          EmployeeCreate(
+            password: 'password1',
+            phoneNumber: '+21621110992',
+            firstName: 'Own',
+            lastName: 'Tickets',
+            buildingId: building.id,
+            accessId: restrictedAccess.id,
+          ),
+        );
+        final restrictedLogin = await endpoints.employeeAuth.login(
+          sessionBuilder,
+          UsernameLoginRequest(
+            username: restrictedEmployee.username,
+            password: 'password1',
+          ),
+        );
+        final restrictedSession = sessionBuilder.copyWith(
+          authentication: AuthenticationOverride.authenticationInfo(
+            restrictedLogin.employee!.id.uuid,
+            {Scope('sip.employee')},
+            authId: 'test-session-order-day-restricted',
+          ),
+        );
+        final ownOrder = await endpoints.order.create(
+          restrictedSession,
+          OrderCreate(
+            buildingId: building.id,
+            venueTableId: tables.first.id,
+            items: [line],
+          ),
+        );
+        final ownRow = await VenueOrder.db.findById(db, ownOrder.id);
+        await VenueOrder.db.updateRow(
+          db,
+          ownRow!.copyWith(createdAt: addDays(-5)),
+        );
+        final ownToday = await endpoints.order.list(
+          restrictedSession,
+          building.id,
+          null,
+          createdFrom: start,
+          createdTo: addDays(1),
+        );
+        expect(ownToday.items, isEmpty);
+        final ownWeek = await endpoints.order.list(
+          restrictedSession,
+          building.id,
+          null,
+          createdFrom: addDays(-6),
+          createdTo: addDays(1),
+        );
+        expect(ownWeek.items.map((order) => order.id), [ownOrder.id]);
+
+        final consultAccess = await endpoints.employeeAccess.create(
+          ownerSession,
+          EmployeeAccessCreate(
+            buildingId: building.id,
+            name: 'All tickets',
+            orderCreation: true,
+            orderPayment: false,
+            cancelOrder: false,
+            preparation: false,
+            serving: false,
+            consultAllOrders: true,
+          ),
+        );
+        final consultEmployee = await endpoints.employee.add(
+          ownerSession,
+          EmployeeCreate(
+            password: 'password1',
+            phoneNumber: '+21621110993',
+            firstName: 'All',
+            lastName: 'Tickets',
+            buildingId: building.id,
+            accessId: consultAccess.id,
+          ),
+        );
+        final consultLogin = await endpoints.employeeAuth.login(
+          sessionBuilder,
+          UsernameLoginRequest(
+            username: consultEmployee.username,
+            password: 'password1',
+          ),
+        );
+        final consultSession = sessionBuilder.copyWith(
+          authentication: AuthenticationOverride.authenticationInfo(
+            consultLogin.employee!.id.uuid,
+            {Scope('sip.employee')},
+            authId: 'test-session-order-day-consult',
+          ),
+        );
+        final consultToday = await endpoints.order.list(
+          consultSession,
+          building.id,
+          null,
+          createdFrom: start,
+          createdTo: addDays(1),
+        );
+        expect(consultToday.items.map((order) => order.id), [todayOrder.id]);
+      },
+    );
   });
 }
