@@ -40,6 +40,7 @@ Status: in progress
 | `customerOrderingEnabled` | `true` | When **false**, customers cannot place or append orders even if the pack includes customer ordering. The customer app keeps **+** and **Pass order** visible and disables them. |
 | `reservationsEnabled` | `true` | When **false**, nobody can create a reservation even if the pack includes reservations. Existing rows stay visible. The customer app keeps **Reserve now** visible and disables it. |
 | `allowOutOfStockOrders` | `false` | When **true**, an order may be placed even if a recipe ingredient cannot cover it; stock stops at zero. When **false**, that order is rejected and the customer app disables add for that dish. |
+| `cashRegisterEnabled` | `false` | When **true**, and the pack includes cash register, creating or appending an order and recording a payment require an open register session. The order board and dashboard order counts follow that session. See [cash register](cash-register.md). |
 
 Owners edit these switches on **Configuration**, directly under **Buildings** in the operations sidebar (`/b/:buildingId/configuration`). Creating or editing the venue profile does not change them. A switch the pack does not include stays locked off. Employees cannot open the page.
 

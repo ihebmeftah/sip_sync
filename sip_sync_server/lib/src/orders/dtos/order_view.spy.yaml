@@ -3,6 +3,8 @@ fields:
   id: UuidValue
   buildingId: UuidValue
   venueTableId: UuidValue?
+  ### Shift this ticket was opened in. Null when no register was open.
+  cashRegisterSessionId: UuidValue?
   tableNumber: int?
   ## Display ticket number (unique per building).
   ref: int

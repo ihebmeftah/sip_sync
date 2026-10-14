@@ -59,6 +59,7 @@ class _BuildingFormViewState extends ConsumerState<BuildingFormView> {
   var _customerOrderingEnabled = true;
   var _reservationsEnabled = true;
   var _allowOutOfStockOrders = false;
+  var _cashRegisterEnabled = false;
   String? _locationErrorKey;
   final _locationPicker = VenueLocationPicker();
 
@@ -119,6 +120,7 @@ class _BuildingFormViewState extends ConsumerState<BuildingFormView> {
     _customerOrderingEnabled = building.customerOrderingEnabled;
     _reservationsEnabled = building.reservationsEnabled;
     _allowOutOfStockOrders = building.allowOutOfStockOrders;
+    _cashRegisterEnabled = building.cashRegisterEnabled;
     _syncTimeFields();
     if (_predefinedTypes.contains(building.type)) {
       _type = building.type;
@@ -475,6 +477,7 @@ class _BuildingFormViewState extends ConsumerState<BuildingFormView> {
                                     _customerOrderingEnabled,
                                 reservationsEnabled: _reservationsEnabled,
                                 allowOutOfStockOrders: _allowOutOfStockOrders,
+                                cashRegisterEnabled: _cashRegisterEnabled,
                               );
                           if (!context.mounted) {
                             return;

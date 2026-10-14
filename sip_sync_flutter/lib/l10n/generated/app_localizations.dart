@@ -1174,6 +1174,18 @@ abstract class AppLocalizations {
   /// **'This venue has turned off ordering.'**
   String get errorCustomerOrderingDisabled;
 
+  /// No description provided for @errorOrderRegisterRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'This venue\'s cash register is closed.'**
+  String get errorOrderRegisterRequired;
+
+  /// No description provided for @errorPackFeatureCashRegister.
+  ///
+  /// In en, this message translates to:
+  /// **'This plan does not include the cash register.'**
+  String get errorPackFeatureCashRegister;
+
   /// No description provided for @errorReservationsDisabled.
   ///
   /// In en, this message translates to:

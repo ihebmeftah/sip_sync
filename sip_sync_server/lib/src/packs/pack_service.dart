@@ -97,6 +97,7 @@ class PackService {
         strictMode: request.capabilities.strictMode,
         customAccessProfiles: request.capabilities.customAccessProfiles,
         reservations: request.capabilities.reservations,
+        cashRegister: request.capabilities.cashRegister,
         maxReservationsPerDay: request.capabilities.maxReservationsPerDay,
       ),
     );
@@ -142,6 +143,7 @@ class PackService {
         strictMode: request.capabilities.strictMode,
         customAccessProfiles: request.capabilities.customAccessProfiles,
         reservations: request.capabilities.reservations,
+        cashRegister: request.capabilities.cashRegister,
         maxReservationsPerDay: request.capabilities.maxReservationsPerDay,
       ),
     );
@@ -226,6 +228,7 @@ class PackService {
       strictMode: row.strictMode,
       customAccessProfiles: row.customAccessProfiles,
       reservations: row.reservations,
+      cashRegister: row.cashRegister,
       maxReservationsPerDay: row.maxReservationsPerDay,
     );
   }

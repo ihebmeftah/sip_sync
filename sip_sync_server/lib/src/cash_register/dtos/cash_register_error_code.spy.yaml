@@ -1,0 +1,14 @@
+enum: CashRegisterErrorCode
+serialized: byName
+values:
+  - notAuthorized
+  - notFound
+  ### Venue switch is off, so a new session cannot be opened.
+  - disabled
+  - registerAlreadyOpen
+  - registerNotOpen
+  - registerHasOpenOrders
+  ### Opening or closing cash was negative or not a real number.
+  - invalidAmount
+  ### The shift has an opening count, so closing cash cannot be left blank.
+  - endCashRequired

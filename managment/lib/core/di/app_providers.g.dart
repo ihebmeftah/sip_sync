@@ -193,6 +193,54 @@ final class DashboardRepositoryProvider
 String _$dashboardRepositoryHash() =>
     r'c729569633960b9a3a4df6c6e9fa611805a9e665';
 
+@ProviderFor(cashRegisterRepository)
+const cashRegisterRepositoryProvider = CashRegisterRepositoryProvider._();
+
+final class CashRegisterRepositoryProvider
+    extends
+        $FunctionalProvider<
+          CashRegisterRepository,
+          CashRegisterRepository,
+          CashRegisterRepository
+        >
+    with $Provider<CashRegisterRepository> {
+  const CashRegisterRepositoryProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'cashRegisterRepositoryProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$cashRegisterRepositoryHash();
+
+  @$internal
+  @override
+  $ProviderElement<CashRegisterRepository> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  CashRegisterRepository create(Ref ref) {
+    return cashRegisterRepository(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(CashRegisterRepository value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<CashRegisterRepository>(value),
+    );
+  }
+}
+
+String _$cashRegisterRepositoryHash() =>
+    r'bd398afc7764dcc6affee60c077c6e10e4ee36da';
+
 @ProviderFor(employeeRepository)
 const employeeRepositoryProvider = EmployeeRepositoryProvider._();
 

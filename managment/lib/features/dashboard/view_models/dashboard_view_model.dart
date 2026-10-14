@@ -2,6 +2,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sip_sync_client/sip_sync_client.dart';
 
 import '../../../core/di/app_providers.dart';
+import '../../cash_register/view_models/cash_register_view_model.dart';
 
 part 'dashboard_view_model.g.dart';
 
@@ -17,7 +18,11 @@ class DashboardViewModel extends _$DashboardViewModel {
   }
 
   /// Reloads counts without clearing the numbers already on screen.
+  ///
+  /// Also reloads the open register so a shift opened on another device
+  /// retargets this band and the order board.
   Future<void> refresh() async {
+    ref.invalidate(openCashRegisterProvider(buildingId));
     state = await AsyncValue.guard(() => _load(buildingId));
   }
 

@@ -25,8 +25,9 @@ abstract class EmployeeAccessView
     required this.serving,
     required this.consultAllOrders,
     required this.reservations,
+    bool? cashRegister,
     required this.createdAt,
-  });
+  }) : cashRegister = cashRegister ?? false;
 
   factory EmployeeAccessView({
     required _is.UuidValue id,
@@ -39,6 +40,7 @@ abstract class EmployeeAccessView
     required bool serving,
     required bool consultAllOrders,
     required bool reservations,
+    bool? cashRegister,
     required DateTime createdAt,
   }) = _EmployeeAccessViewImpl;
 
@@ -68,6 +70,9 @@ abstract class EmployeeAccessView
       reservations: _is.BoolJsonExtension.fromJson(
         jsonSerialization['reservations'],
       ),
+      cashRegister: jsonSerialization['cashRegister'] == null
+          ? null
+          : _is.BoolJsonExtension.fromJson(jsonSerialization['cashRegister']),
       createdAt: _is.DateTimeJsonExtension.fromJson(
         jsonSerialization['createdAt'],
       ),
@@ -94,6 +99,8 @@ abstract class EmployeeAccessView
 
   bool reservations;
 
+  bool cashRegister;
+
   DateTime createdAt;
 
   /// Returns a shallow copy of this [EmployeeAccessView]
@@ -110,6 +117,7 @@ abstract class EmployeeAccessView
     bool? serving,
     bool? consultAllOrders,
     bool? reservations,
+    bool? cashRegister,
     DateTime? createdAt,
   });
   @override
@@ -126,6 +134,7 @@ abstract class EmployeeAccessView
       'serving': serving,
       'consultAllOrders': consultAllOrders,
       'reservations': reservations,
+      'cashRegister': cashRegister,
       'createdAt': createdAt.toJson(),
     };
   }
@@ -144,6 +153,7 @@ abstract class EmployeeAccessView
       'serving': serving,
       'consultAllOrders': consultAllOrders,
       'reservations': reservations,
+      'cashRegister': cashRegister,
       'createdAt': createdAt.toJson(),
     };
   }
@@ -166,6 +176,7 @@ class _EmployeeAccessViewImpl extends EmployeeAccessView {
     required bool serving,
     required bool consultAllOrders,
     required bool reservations,
+    bool? cashRegister,
     required DateTime createdAt,
   }) : super._(
          id: id,
@@ -178,6 +189,7 @@ class _EmployeeAccessViewImpl extends EmployeeAccessView {
          serving: serving,
          consultAllOrders: consultAllOrders,
          reservations: reservations,
+         cashRegister: cashRegister,
          createdAt: createdAt,
        );
 
@@ -196,6 +208,7 @@ class _EmployeeAccessViewImpl extends EmployeeAccessView {
     bool? serving,
     bool? consultAllOrders,
     bool? reservations,
+    bool? cashRegister,
     DateTime? createdAt,
   }) {
     return EmployeeAccessView(
@@ -209,6 +222,7 @@ class _EmployeeAccessViewImpl extends EmployeeAccessView {
       serving: serving ?? this.serving,
       consultAllOrders: consultAllOrders ?? this.consultAllOrders,
       reservations: reservations ?? this.reservations,
+      cashRegister: cashRegister ?? this.cashRegister,
       createdAt: createdAt ?? this.createdAt,
     );
   }

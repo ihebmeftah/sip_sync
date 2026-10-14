@@ -3,6 +3,7 @@ import 'package:sip_sync_client/sip_sync_client.dart';
 
 import '../../data/repositories/article_composition_repository.dart';
 import '../../data/repositories/building_repository.dart';
+import '../../data/repositories/cash_register_repository.dart';
 import '../../data/repositories/dashboard_repository.dart';
 import '../../data/repositories/employee_access_repository.dart';
 import '../../data/repositories/employee_repository.dart';
@@ -34,6 +35,10 @@ BuildingRepository buildingRepository(Ref ref) => getIt<BuildingRepository>();
 @Riverpod(keepAlive: true)
 DashboardRepository dashboardRepository(Ref ref) =>
     getIt<DashboardRepository>();
+
+@Riverpod(keepAlive: true)
+CashRegisterRepository cashRegisterRepository(Ref ref) =>
+    getIt<CashRegisterRepository>();
 
 @Riverpod(keepAlive: true)
 EmployeeRepository employeeRepository(Ref ref) => getIt<EmployeeRepository>();

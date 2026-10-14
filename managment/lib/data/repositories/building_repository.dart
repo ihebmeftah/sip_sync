@@ -33,6 +33,7 @@ class BuildingRepository {
     required bool customerOrderingEnabled,
     required bool reservationsEnabled,
     required bool allowOutOfStockOrders,
+    required bool cashRegisterEnabled,
   }) {
     return _client.building.create(
       BuildingCreate(
@@ -57,6 +58,7 @@ class BuildingRepository {
         customerOrderingEnabled: customerOrderingEnabled,
         reservationsEnabled: reservationsEnabled,
         allowOutOfStockOrders: allowOutOfStockOrders,
+        cashRegisterEnabled: cashRegisterEnabled,
       ),
     );
   }
@@ -84,6 +86,7 @@ class BuildingRepository {
     required bool customerOrderingEnabled,
     required bool reservationsEnabled,
     required bool allowOutOfStockOrders,
+    required bool cashRegisterEnabled,
   }) {
     return _client.building.update(
       BuildingUpdate(
@@ -109,6 +112,7 @@ class BuildingRepository {
         customerOrderingEnabled: customerOrderingEnabled,
         reservationsEnabled: reservationsEnabled,
         allowOutOfStockOrders: allowOutOfStockOrders,
+        cashRegisterEnabled: cashRegisterEnabled,
       ),
     );
   }

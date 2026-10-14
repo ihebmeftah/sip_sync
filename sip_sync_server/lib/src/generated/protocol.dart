@@ -77,6 +77,12 @@ import 'buildings/dtos/building_view.dart' as _i9ph7g7s;
 import 'buildings/dtos/country_building_stat.dart' as _i92kzdia;
 import 'buildings/dtos/strict_mode_step.dart' as _i70klpnb;
 import 'buildings/entity/building.dart' as _iit041ql;
+import 'cash_register/cash_register_status.dart' as _iaxenp5f;
+import 'cash_register/dtos/cash_register_error_code.dart' as _i0y3mhs7;
+import 'cash_register/dtos/cash_register_exception.dart' as _is7gj7rh;
+import 'cash_register/dtos/cash_register_page.dart' as _iyf5p5aa;
+import 'cash_register/dtos/cash_register_session_view.dart' as _iizck86t;
+import 'cash_register/entity/cash_register_session.dart' as _iggi3oj8;
 import 'dashboard/dtos/dashboard_summary.dart' as _ie6zmm67;
 import 'discovery/dtos/customer_article_preview.dart' as _ipvj66ag;
 import 'discovery/dtos/customer_category_preview.dart' as _ia0qwq20;
@@ -234,6 +240,12 @@ export 'buildings/dtos/building_view.dart';
 export 'buildings/dtos/country_building_stat.dart';
 export 'buildings/dtos/strict_mode_step.dart';
 export 'buildings/entity/building.dart';
+export 'cash_register/cash_register_status.dart';
+export 'cash_register/dtos/cash_register_error_code.dart';
+export 'cash_register/dtos/cash_register_exception.dart';
+export 'cash_register/dtos/cash_register_page.dart';
+export 'cash_register/dtos/cash_register_session_view.dart';
+export 'cash_register/entity/cash_register_session.dart';
 export 'dashboard/dtos/dashboard_summary.dart';
 export 'discovery/dtos/customer_article_preview.dart';
 export 'discovery/dtos/customer_category_preview.dart';
@@ -875,6 +887,13 @@ class Protocol extends _is.DatabaseSerializationManager {
           columnDefault: 'false',
         ),
         _isp.ColumnDefinition(
+          name: 'cashRegisterEnabled',
+          columnType: _isp.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'false',
+        ),
+        _isp.ColumnDefinition(
           name: 'createdAt',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: false,
@@ -1038,6 +1057,126 @@ class Protocol extends _is.DatabaseSerializationManager {
             _isp.IndexElementDefinition(
               type: _isp.IndexElementDefinitionType.column,
               definition: 'buildingId',
+            ),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
+    _isp.TableDefinition(
+      name: 'cash_register_session',
+      dartName: 'CashRegisterSession',
+      schema: 'public',
+      module: 'sip_sync',
+      columns: [
+        _isp.ColumnDefinition(
+          name: 'id',
+          columnType: _isp.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue?',
+          columnDefault: 'random_v7',
+        ),
+        _isp.ColumnDefinition(
+          name: 'buildingId',
+          columnType: _isp.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue',
+        ),
+        _isp.ColumnDefinition(
+          name: 'status',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'protocol:CashRegisterStatus',
+        ),
+        _isp.ColumnDefinition(
+          name: 'openedByType',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'protocol:ActorType',
+        ),
+        _isp.ColumnDefinition(
+          name: 'openedById',
+          columnType: _isp.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue',
+        ),
+        _isp.ColumnDefinition(
+          name: 'openedAt',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+        ),
+        _isp.ColumnDefinition(
+          name: 'startCash',
+          columnType: _isp.ColumnType.doublePrecision,
+          isNullable: true,
+          dartType: 'double?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'closedByType',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'protocol:ActorType?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'closedById',
+          columnType: _isp.ColumnType.uuid,
+          isNullable: true,
+          dartType: 'UuidValue?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'closedAt',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: true,
+          dartType: 'DateTime?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'endCash',
+          columnType: _isp.ColumnType.doublePrecision,
+          isNullable: true,
+          dartType: 'double?',
+        ),
+      ],
+      foreignKeys: [
+        _isp.ForeignKeyDefinition(
+          constraintName: 'cash_register_session_fk_0',
+          columns: ['buildingId'],
+          referenceTable: 'building',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.cascade,
+          matchType: null,
+        ),
+      ],
+      indexes: [
+        _isp.IndexDefinition(
+          indexName: 'cash_register_session_building_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'buildingId',
+            ),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+        _isp.IndexDefinition(
+          indexName: 'cash_register_session_building_status_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'buildingId',
+            ),
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'status',
             ),
           ],
           type: 'btree',
@@ -1373,6 +1512,13 @@ class Protocol extends _is.DatabaseSerializationManager {
         ),
         _isp.ColumnDefinition(
           name: 'reservations',
+          columnType: _isp.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'false',
+        ),
+        _isp.ColumnDefinition(
+          name: 'cashRegister',
           columnType: _isp.ColumnType.boolean,
           isNullable: false,
           dartType: 'bool',
@@ -1983,6 +2129,13 @@ class Protocol extends _is.DatabaseSerializationManager {
           columnDefault: 'false',
         ),
         _isp.ColumnDefinition(
+          name: 'cashRegister',
+          columnType: _isp.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'false',
+        ),
+        _isp.ColumnDefinition(
           name: 'maxReservationsPerDay',
           columnType: _isp.ColumnType.bigint,
           isNullable: true,
@@ -2414,6 +2567,12 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'UuidValue?',
         ),
         _isp.ColumnDefinition(
+          name: 'cashRegisterSessionId',
+          columnType: _isp.ColumnType.uuid,
+          isNullable: true,
+          dartType: 'UuidValue?',
+        ),
+        _isp.ColumnDefinition(
           name: 'ref',
           columnType: _isp.ColumnType.bigint,
           isNullable: false,
@@ -2513,6 +2672,16 @@ class Protocol extends _is.DatabaseSerializationManager {
           onDelete: _isp.ForeignKeyAction.setNull,
           matchType: null,
         ),
+        _isp.ForeignKeyDefinition(
+          constraintName: 'venue_order_fk_2',
+          columns: ['cashRegisterSessionId'],
+          referenceTable: 'cash_register_session',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _isp.ForeignKeyAction.noAction,
+          onDelete: _isp.ForeignKeyAction.setNull,
+          matchType: null,
+        ),
       ],
       indexes: [
         _isp.IndexDefinition(
@@ -2552,6 +2721,19 @@ class Protocol extends _is.DatabaseSerializationManager {
             _isp.IndexElementDefinition(
               type: _isp.IndexElementDefinitionType.column,
               definition: 'venueTableId',
+            ),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+        _isp.IndexDefinition(
+          indexName: 'venue_order_cash_register_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'cashRegisterSessionId',
             ),
           ],
           type: 'btree',
@@ -3043,6 +3225,24 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     if (t == _iit041ql.Building) {
       return _iit041ql.Building.fromJson(data) as T;
+    }
+    if (t == _iaxenp5f.CashRegisterStatus) {
+      return _iaxenp5f.CashRegisterStatus.fromJson(data) as T;
+    }
+    if (t == _i0y3mhs7.CashRegisterErrorCode) {
+      return _i0y3mhs7.CashRegisterErrorCode.fromJson(data) as T;
+    }
+    if (t == _is7gj7rh.CashRegisterException) {
+      return _is7gj7rh.CashRegisterException.fromJson(data) as T;
+    }
+    if (t == _iyf5p5aa.CashRegisterPage) {
+      return _iyf5p5aa.CashRegisterPage.fromJson(data) as T;
+    }
+    if (t == _iizck86t.CashRegisterSessionView) {
+      return _iizck86t.CashRegisterSessionView.fromJson(data) as T;
+    }
+    if (t == _iggi3oj8.CashRegisterSession) {
+      return _iggi3oj8.CashRegisterSession.fromJson(data) as T;
     }
     if (t == _ie6zmm67.DashboardSummary) {
       return _ie6zmm67.DashboardSummary.fromJson(data) as T;
@@ -3569,6 +3769,38 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     if (t == _is.getType<_iit041ql.Building?>()) {
       return (data != null ? _iit041ql.Building.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_iaxenp5f.CashRegisterStatus?>()) {
+      return (data != null ? _iaxenp5f.CashRegisterStatus.fromJson(data) : null)
+          as T;
+    }
+    if (t == _is.getType<_i0y3mhs7.CashRegisterErrorCode?>()) {
+      return (data != null
+              ? _i0y3mhs7.CashRegisterErrorCode.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_is7gj7rh.CashRegisterException?>()) {
+      return (data != null
+              ? _is7gj7rh.CashRegisterException.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_iyf5p5aa.CashRegisterPage?>()) {
+      return (data != null ? _iyf5p5aa.CashRegisterPage.fromJson(data) : null)
+          as T;
+    }
+    if (t == _is.getType<_iizck86t.CashRegisterSessionView?>()) {
+      return (data != null
+              ? _iizck86t.CashRegisterSessionView.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _is.getType<_iggi3oj8.CashRegisterSession?>()) {
+      return (data != null
+              ? _iggi3oj8.CashRegisterSession.fromJson(data)
+              : null)
+          as T;
     }
     if (t == _is.getType<_ie6zmm67.DashboardSummary?>()) {
       return (data != null ? _ie6zmm67.DashboardSummary.fromJson(data) : null)
@@ -4260,6 +4492,20 @@ class Protocol extends _is.DatabaseSerializationManager {
               : null)
           as T;
     }
+    if (t == List<_iggi3oj8.CashRegisterSession>) {
+      return (data as List)
+              .map((e) => deserialize<_iggi3oj8.CashRegisterSession>(e))
+              .toList()
+          as T;
+    }
+    if (t == _is.getType<List<_iggi3oj8.CashRegisterSession>?>()) {
+      return (data != null
+              ? (data as List)
+                    .map((e) => deserialize<_iggi3oj8.CashRegisterSession>(e))
+                    .toList()
+              : null)
+          as T;
+    }
     if (t == List<_iv7bzyjr.BuildingPackAssignment>) {
       return (data as List)
               .map((e) => deserialize<_iv7bzyjr.BuildingPackAssignment>(e))
@@ -4274,6 +4520,12 @@ class Protocol extends _is.DatabaseSerializationManager {
                     )
                     .toList()
               : null)
+          as T;
+    }
+    if (t == List<_iizck86t.CashRegisterSessionView>) {
+      return (data as List)
+              .map((e) => deserialize<_iizck86t.CashRegisterSessionView>(e))
+              .toList()
           as T;
     }
     if (t == List<_i15x0mxo.CustomerMenuSection>) {
@@ -4533,6 +4785,12 @@ class Protocol extends _is.DatabaseSerializationManager {
       _i92kzdia.CountryBuildingStat => 'CountryBuildingStat',
       _i70klpnb.StrictModeStep => 'StrictModeStep',
       _iit041ql.Building => 'Building',
+      _iaxenp5f.CashRegisterStatus => 'CashRegisterStatus',
+      _i0y3mhs7.CashRegisterErrorCode => 'CashRegisterErrorCode',
+      _is7gj7rh.CashRegisterException => 'CashRegisterException',
+      _iyf5p5aa.CashRegisterPage => 'CashRegisterPage',
+      _iizck86t.CashRegisterSessionView => 'CashRegisterSessionView',
+      _iggi3oj8.CashRegisterSession => 'CashRegisterSession',
       _ie6zmm67.DashboardSummary => 'DashboardSummary',
       _ipvj66ag.CustomerArticlePreview => 'CustomerArticlePreview',
       _ia0qwq20.CustomerCategoryPreview => 'CustomerCategoryPreview',
@@ -4748,6 +5006,18 @@ class Protocol extends _is.DatabaseSerializationManager {
         return 'StrictModeStep';
       case _iit041ql.Building():
         return 'Building';
+      case _iaxenp5f.CashRegisterStatus():
+        return 'CashRegisterStatus';
+      case _i0y3mhs7.CashRegisterErrorCode():
+        return 'CashRegisterErrorCode';
+      case _is7gj7rh.CashRegisterException():
+        return 'CashRegisterException';
+      case _iyf5p5aa.CashRegisterPage():
+        return 'CashRegisterPage';
+      case _iizck86t.CashRegisterSessionView():
+        return 'CashRegisterSessionView';
+      case _iggi3oj8.CashRegisterSession():
+        return 'CashRegisterSession';
       case _ie6zmm67.DashboardSummary():
         return 'DashboardSummary';
       case _ipvj66ag.CustomerArticlePreview():
@@ -5131,6 +5401,24 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     if (dataClassName == 'Building') {
       return deserialize<_iit041ql.Building>(data['data']);
+    }
+    if (dataClassName == 'CashRegisterStatus') {
+      return deserialize<_iaxenp5f.CashRegisterStatus>(data['data']);
+    }
+    if (dataClassName == 'CashRegisterErrorCode') {
+      return deserialize<_i0y3mhs7.CashRegisterErrorCode>(data['data']);
+    }
+    if (dataClassName == 'CashRegisterException') {
+      return deserialize<_is7gj7rh.CashRegisterException>(data['data']);
+    }
+    if (dataClassName == 'CashRegisterPage') {
+      return deserialize<_iyf5p5aa.CashRegisterPage>(data['data']);
+    }
+    if (dataClassName == 'CashRegisterSessionView') {
+      return deserialize<_iizck86t.CashRegisterSessionView>(data['data']);
+    }
+    if (dataClassName == 'CashRegisterSession') {
+      return deserialize<_iggi3oj8.CashRegisterSession>(data['data']);
     }
     if (dataClassName == 'DashboardSummary') {
       return deserialize<_ie6zmm67.DashboardSummary>(data['data']);
@@ -5526,6 +5814,8 @@ class Protocol extends _is.DatabaseSerializationManager {
         return _ii4fooib.SuperAdmin.t;
       case _iit041ql.Building:
         return _iit041ql.Building.t;
+      case _iggi3oj8.CashRegisterSession:
+        return _iggi3oj8.CashRegisterSession.t;
       case _in0lpay2.EmployeeAccess:
         return _in0lpay2.EmployeeAccess.t;
       case _i3yk9qsn.ArticleComposition:

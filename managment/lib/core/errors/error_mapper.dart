@@ -100,6 +100,22 @@ Failure mapError(Object error) {
       OrderErrorCode.reservationHeld => 'errorOrderReservationHeld',
       OrderErrorCode.customerOrderingDisabled =>
         'errorCustomerOrderingDisabled',
+      OrderErrorCode.registerRequired => 'errorOrderRegisterRequired',
+    });
+  }
+  if (error is CashRegisterException) {
+    return Failure(switch (error.code) {
+      CashRegisterErrorCode.notAuthorized => 'errorNotAuthorized',
+      CashRegisterErrorCode.notFound => 'errorNotFound',
+      CashRegisterErrorCode.disabled => 'errorCashRegisterDisabled',
+      CashRegisterErrorCode.registerAlreadyOpen =>
+        'errorCashRegisterAlreadyOpen',
+      CashRegisterErrorCode.registerNotOpen => 'errorCashRegisterNotOpen',
+      CashRegisterErrorCode.registerHasOpenOrders =>
+        'errorCashRegisterHasOpenOrders',
+      CashRegisterErrorCode.invalidAmount => 'errorCashRegisterInvalidAmount',
+      CashRegisterErrorCode.endCashRequired =>
+        'errorCashRegisterEndCashRequired',
     });
   }
   if (error is ReservationException) {
@@ -149,6 +165,7 @@ String _packFailureKey(PackException error) {
       PackFeature.customAccessProfiles => 'errorPackFeatureAccess',
       PackFeature.tableQr => 'errorPackFeatureQr',
       PackFeature.reservations => 'errorPackFeatureReservations',
+      PackFeature.cashRegister => 'errorPackFeatureCashRegister',
       _ => 'errorPackFeature',
     },
   };
@@ -203,6 +220,14 @@ String lookupError(dynamic l10n, String key) {
     'errorPackFeatureAccess' => l10n.errorPackFeatureAccess,
     'errorPackFeatureQr' => l10n.errorPackFeatureQr,
     'errorPackFeatureReservations' => l10n.errorPackFeatureReservations,
+    'errorPackFeatureCashRegister' => l10n.errorPackFeatureCashRegister,
+    'errorOrderRegisterRequired' => l10n.errorOrderRegisterRequired,
+    'errorCashRegisterDisabled' => l10n.errorCashRegisterDisabled,
+    'errorCashRegisterAlreadyOpen' => l10n.errorCashRegisterAlreadyOpen,
+    'errorCashRegisterNotOpen' => l10n.errorCashRegisterNotOpen,
+    'errorCashRegisterHasOpenOrders' => l10n.errorCashRegisterHasOpenOrders,
+    'errorCashRegisterInvalidAmount' => l10n.errorCashRegisterInvalidAmount,
+    'errorCashRegisterEndCashRequired' => l10n.errorCashRegisterEndCashRequired,
     'errorPackLimitReservations' => l10n.errorPackLimitReservations,
     'errorOrderReservationHeld' => l10n.errorOrderReservationHeld,
     'errorCustomerOrderingDisabled' => l10n.errorCustomerOrderingDisabled,

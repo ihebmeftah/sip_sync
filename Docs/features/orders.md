@@ -70,6 +70,7 @@ Attribution actor ids are owner/employee (or later customer) UUIDs with matching
 9. `order.list(buildingId, status)` (`null` = all) still pages 20 tickets at a time for lookups. An employee who cannot consult every order sees tickets they launched, plus lines they added, prepared, served, recorded payment for, or cancelled. Open orders for one table are loaded in full (no day window). Results are sorted by `createdAt` desc; detail lines stay in stable `createdAt` (+ id) order with **payed** items at the bottom (`paidAt` desc among payed). Intermediate status changes do not reorder lines.
 10. The order **list** can be narrowed by day for every owner and employee. It opens on **today** (local calendar day, from inclusive, to exclusive). **Last 3 days** and **Last week** are the two previous presets (3 and 7 local days ending today). **Pick a day** chooses one other local day. The item board does not use those chips; it always uses today. The server applies `createdFrom` / `createdTo` for every caller, and rejects a partial, reversed, or window longer than 8 days. An employee who cannot consult every order still only sees tickets they took part in, inside that window. Leaving the list and coming back resets the chips to today and All.
 11. Create / append fails with `insufficientStock` when any ingredient would go below zero, unless the venue’s `allowOutOfStockOrders` is **true**. In that case stock is reduced only down to zero. The article picker shows the names of ingredients that cannot cover one more unit. The customer menu does not name them; **+** stays disabled while that flag is off. A venue with `customerOrderingEnabled` off rejects `CustomerOrder.place` and `append` with `customerOrderingDisabled` even when the pack includes ordering.
+12. When the venue’s `cashRegisterEnabled` is **true**, create, append, and recording **payed** require an open cash-register session (`registerRequired` when none is open). The new ticket stores `cashRegisterSessionId`. The item board and the order list default to that session instead of the calendar day. Day chips on the list still choose another day. While a session is open, the board also keeps in-progress tickets that have no session, so an older open ticket stays visible. See [cash register](cash-register.md).
 
 Draft cart lives in `OrderDraftViewModel` (keepAlive). `pickingTable` drives floor-map selection.
 
@@ -85,7 +86,7 @@ Draft cart lives in `OrderDraftViewModel` (keepAlive). `pickingTable` drives flo
 
 ## Data
 
-- `venue_order` — building, optional `venue_table`, **`ref`** (sequential ticket number unique per building, assigned on create), status, launch/last-pay actors, timestamps
+- `venue_order` — building, optional `venue_table`, optional `cashRegisterSessionId` (set on create while a register is open), **`ref`** (sequential ticket number unique per building, assigned on create), status, launch/last-pay actors, timestamps
 - `venue_order_item` — one row per article **unit** (same article repeats as separate lines), name/price snapshot, status, attribution timestamps
 
 Management list shows `ref` as the leading badge; order detail AppBar title is `Order · #{ref}`.
@@ -94,6 +95,6 @@ Protocol DTOs stay `OrderCreate` / `OrderView` / `OrderItemView` for the staff A
 
 ## Realtime
 
-`Order.watchBoard(buildingId, createdFrom, createdTo)` is the floor board for that local day. The first events are one snapshot per ticket created in the window, then `synced`. After that the server sends `orderOpened`, `itemsAdded`, or `changed` with the full ticket when that ticket was created in the same window. Customer place and append publish the same channel, so a dish passed from the menu shows up without a refresh.
+`Order.watchBoard(buildingId, createdFrom, createdTo)` is the floor board for that local day. An optional `cashRegisterSessionId` replaces that day window with the open register. The first events are one snapshot per ticket in the window, then `synced`. After that the server sends `orderOpened`, `itemsAdded`, or `changed` with the full ticket when that ticket belongs to the same window. Customer place and append publish the same channel, so a dish passed from the menu shows up without a refresh.
 
 `CustomerOrder.watchCurrent` is the signed-in customer's visit. The first event is their open order, or empty. Later events carry the receipt that just changed. When that order is paid or cancelled, `open` is empty and `changed` is the final receipt.

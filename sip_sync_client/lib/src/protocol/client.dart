@@ -75,6 +75,10 @@ import 'package:sip_sync_client/src/protocol/buildings/dtos/building_view.dart'
     as _ik35q5v8;
 import 'package:sip_sync_client/src/protocol/buildings/dtos/country_building_stat.dart'
     as _iebf7xye;
+import 'package:sip_sync_client/src/protocol/cash_register/dtos/cash_register_page.dart'
+    as _ifvbr44t;
+import 'package:sip_sync_client/src/protocol/cash_register/dtos/cash_register_session_view.dart'
+    as _iqyyik7b;
 import 'package:sip_sync_client/src/protocol/dashboard/dtos/dashboard_summary.dart'
     as _igwpv6jx;
 import 'package:sip_sync_client/src/protocol/discovery/dtos/customer_menu.dart'
@@ -656,6 +660,101 @@ class EndpointBuilding extends _isc.EndpointRef {
   );
 }
 
+/// One cash-register shift per venue.
+/// {@category Endpoint}
+class EndpointCashRegister extends _isc.EndpointRef {
+  EndpointCashRegister(_isc.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'cashRegister';
+
+  /// The shift in progress, or null when the drawer is shut.
+  ///
+  /// Any member of [buildingId] can read it.
+  _ida.Future<_iqyyik7b.CashRegisterSessionView?> current(
+    _isc.UuidValue buildingId,
+  ) => caller.callServerEndpoint<_iqyyik7b.CashRegisterSessionView?>(
+    'cashRegister',
+    'current',
+    {'buildingId': buildingId},
+  );
+
+  /// Opens the shift for [buildingId].
+  ///
+  /// The owner, or an employee with the cash-register flag, can call this.
+  /// The pack must include it and the venue switch must be on.
+  /// [startCash] is the counted drawer and may be omitted.
+  _ida.Future<_iqyyik7b.CashRegisterSessionView> open(
+    _isc.UuidValue buildingId, {
+    double? startCash,
+  }) => caller.callServerEndpoint<_iqyyik7b.CashRegisterSessionView>(
+    'cashRegister',
+    'open',
+    {
+      'buildingId': buildingId,
+      'startCash': startCash,
+    },
+  );
+
+  /// Closes [id] after its in-progress tickets are paid or cancelled.
+  ///
+  /// [endCash] is the counted drawer.
+  ///
+  /// It may be omitted only when the shift was opened without [startCash].
+  _ida.Future<_iqyyik7b.CashRegisterSessionView> close(
+    _isc.UuidValue id, {
+    double? endCash,
+  }) => caller.callServerEndpoint<_iqyyik7b.CashRegisterSessionView>(
+    'cashRegister',
+    'close',
+    {
+      'id': id,
+      'endCash': endCash,
+    },
+  );
+
+  /// Replaces the counted amounts on [id]. The owner of that venue only.
+  ///
+  /// Pass null to clear an amount. Closing cash stays unset while the
+  /// shift is still open. A shift with an opening count must keep a
+  /// closing count once it is closed.
+  _ida.Future<_iqyyik7b.CashRegisterSessionView> correct(
+    _isc.UuidValue id, {
+    double? startCash,
+    double? endCash,
+  }) => caller.callServerEndpoint<_iqyyik7b.CashRegisterSessionView>(
+    'cashRegister',
+    'correct',
+    {
+      'id': id,
+      'startCash': startCash,
+      'endCash': endCash,
+    },
+  );
+
+  /// Shifts for [buildingId], newest first. Twenty per page.
+  ///
+  /// [openedFrom] inclusive and [openedTo] exclusive limit history to the
+  /// shifts that started in that window. Omit both to list every shift.
+  _ida.Future<_ifvbr44t.CashRegisterPage> list(
+    _isc.UuidValue buildingId, {
+    DateTime? openedFrom,
+    DateTime? openedTo,
+    int? limit,
+    int? offset,
+  }) => caller.callServerEndpoint<_ifvbr44t.CashRegisterPage>(
+    'cashRegister',
+    'list',
+    {
+      'buildingId': buildingId,
+      'openedFrom': openedFrom,
+      'openedTo': openedTo,
+      'limit': limit,
+      'offset': offset,
+    },
+  );
+}
+
 /// House counts for the management dashboard of one building.
 /// {@category Endpoint}
 class EndpointDashboard extends _isc.EndpointRef {
@@ -667,17 +766,22 @@ class EndpointDashboard extends _isc.EndpointRef {
   /// Orders, item lines, reservations, and low stock for [buildingId].
   ///
   /// [day] is the venue's local calendar date stored as UTC midnight.
+  /// [cashRegisterSessionId] replaces the day for order and item counts.
+  /// When the venue requires a register and the id is omitted, the open
+  /// session is used, or those counts are zero.
   /// The owner of the building, and employees there whose access includes
   /// consultAllOrders, can call this.
   _ida.Future<_igwpv6jx.DashboardSummary> summary(
     _isc.UuidValue buildingId,
-    DateTime day,
-  ) => caller.callServerEndpoint<_igwpv6jx.DashboardSummary>(
+    DateTime day, {
+    _isc.UuidValue? cashRegisterSessionId,
+  }) => caller.callServerEndpoint<_igwpv6jx.DashboardSummary>(
     'dashboard',
     'summary',
     {
       'buildingId': buildingId,
       'day': day,
+      'cashRegisterSessionId': cashRegisterSessionId,
     },
   );
 }
@@ -1220,15 +1324,16 @@ class EndpointOrder extends _isc.EndpointRef {
   /// [createdFrom] and [createdTo] are an inclusive-exclusive window on
   /// [VenueOrder.createdAt] for every caller. Omit both to list every day.
   /// A partial, reversed, or window longer than 8 days throws
-  /// [OrderException] / [OrderErrorCode.invalidInput]. [venueTableId]
-  /// limits the page to one
-  /// table, so a seat lookup does not depend on the floor page. [limit]
-  /// defaults to 20 and is capped at 100.
+  /// [OrderException] / [OrderErrorCode.invalidInput].
+  /// [cashRegisterSessionId] replaces that day window with one shift.
+  /// [venueTableId] limits the page to one table, so a seat lookup does not
+  /// depend on the floor page. [limit] defaults to 20 and is capped at 100.
   _ida.Future<_ith3f88l.OrderPage> list(
     _isc.UuidValue buildingId,
     _iqp2kjae.OrderStatus? status, {
     DateTime? createdFrom,
     DateTime? createdTo,
+    _isc.UuidValue? cashRegisterSessionId,
     _isc.UuidValue? venueTableId,
     int? limit,
     int? offset,
@@ -1240,6 +1345,7 @@ class EndpointOrder extends _isc.EndpointRef {
       'status': status,
       'createdFrom': createdFrom,
       'createdTo': createdTo,
+      'cashRegisterSessionId': cashRegisterSessionId,
       'venueTableId': venueTableId,
       'limit': limit,
       'offset': offset,
@@ -1284,15 +1390,18 @@ class EndpointOrder extends _isc.EndpointRef {
   /// [createdFrom] is inclusive and [createdTo] is exclusive on
   /// [VenueOrder.createdAt]. The management app sends the current local day.
   /// A partial, reversed, or window longer than 8 days throws
-  /// [OrderException] / [OrderErrorCode.invalidInput]. Sends one snapshot per
-  /// ticket in that day, then [OrderBoardEventKind.synced], then each new
-  /// ticket, appended line, and status change whose ticket was created in
-  /// the same window. An employee who cannot consult every order only
-  /// receives tickets they launched or lines they added.
+  /// [OrderException] / [OrderErrorCode.invalidInput].
+  /// [cashRegisterSessionId] replaces that day with one shift, and also
+  /// keeps in-progress tickets that were opened before any register.
+  /// Sends one snapshot per ticket in that window, then
+  /// [OrderBoardEventKind.synced], then each new ticket, appended line, and
+  /// status change in the same window. An employee who cannot consult every
+  /// order only receives tickets they launched or lines they added.
   _ida.Stream<_ij1hdavm.OrderBoardEvent> watchBoard(
     _isc.UuidValue buildingId, {
-    required DateTime createdFrom,
-    required DateTime createdTo,
+    DateTime? createdFrom,
+    DateTime? createdTo,
+    _isc.UuidValue? cashRegisterSessionId,
   }) =>
       caller.callStreamingServerEndpoint<
         _ida.Stream<_ij1hdavm.OrderBoardEvent>,
@@ -1304,6 +1413,7 @@ class EndpointOrder extends _isc.EndpointRef {
           'buildingId': buildingId,
           'createdFrom': createdFrom,
           'createdTo': createdTo,
+          'cashRegisterSessionId': cashRegisterSessionId,
         },
         {},
       );
@@ -1611,6 +1721,7 @@ class Client extends _isc.ServerpodClientShared {
     platformDirectory = EndpointPlatformDirectory(this);
     superAdminAuth = EndpointSuperAdminAuth(this);
     building = EndpointBuilding(this);
+    cashRegister = EndpointCashRegister(this);
     dashboard = EndpointDashboard(this);
     customerPlace = EndpointCustomerPlace(this);
     customerVenue = EndpointCustomerVenue(this);
@@ -1642,6 +1753,8 @@ class Client extends _isc.ServerpodClientShared {
   late final EndpointSuperAdminAuth superAdminAuth;
 
   late final EndpointBuilding building;
+
+  late final EndpointCashRegister cashRegister;
 
   late final EndpointDashboard dashboard;
 
@@ -1684,6 +1797,7 @@ class Client extends _isc.ServerpodClientShared {
     'platformDirectory': platformDirectory,
     'superAdminAuth': superAdminAuth,
     'building': building,
+    'cashRegister': cashRegister,
     'dashboard': dashboard,
     'customerPlace': customerPlace,
     'customerVenue': customerVenue,

@@ -25,5 +25,6 @@ fields:
   customerOrderingEnabled: bool
   reservationsEnabled: bool
   allowOutOfStockOrders: bool
+  cashRegisterEnabled: bool
   employeeIds: List<UuidValue>
   pack: BuildingPackView

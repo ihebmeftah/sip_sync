@@ -988,6 +988,24 @@ abstract class AppLocalizations {
   /// **'Staff and customers can book tables. A daily cap still applies when it is set.'**
   String get capReservationsHint;
 
+  /// No description provided for @capCashRegister.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash register'**
+  String get capCashRegister;
+
+  /// No description provided for @capCashRegisterHint.
+  ///
+  /// In en, this message translates to:
+  /// **'The venue can require an open register. Orders and the dashboard then follow that shift.'**
+  String get capCashRegisterHint;
+
+  /// No description provided for @errorPackFeatureCashRegister.
+  ///
+  /// In en, this message translates to:
+  /// **'This plan does not include the cash register.'**
+  String get errorPackFeatureCashRegister;
+
   /// No description provided for @capMaxReservations.
   ///
   /// In en, this message translates to:

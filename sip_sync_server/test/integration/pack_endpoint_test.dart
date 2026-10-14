@@ -54,6 +54,7 @@ void main() {
       bool strictMode = false,
       bool customAccessProfiles = false,
       bool reservations = false,
+      bool cashRegister = false,
       int? maxReservationsPerDay,
     }) {
       return PackCapabilities(
@@ -71,6 +72,7 @@ void main() {
         strictMode: strictMode,
         customAccessProfiles: customAccessProfiles,
         reservations: reservations,
+        cashRegister: cashRegister,
         maxReservationsPerDay: maxReservationsPerDay,
       );
     }
@@ -96,10 +98,12 @@ void main() {
         expect(free.isPublic, isFalse);
         expect(free.monthlyMillimes, 0);
         expect(free.capabilities.maxEmployees, 2);
+        expect(free.capabilities.cashRegister, isFalse);
         final floor = rows.firstWhere((row) => row.code == 'floor');
         expect(floor.isPublic, isTrue);
         expect(floor.customerOrderFeeBps, 150);
         expect(floor.capabilities.customerOrdering, isTrue);
+        expect(floor.capabilities.cashRegister, isTrue);
         final house = rows.firstWhere((row) => row.code == 'house');
         expect(house.capabilities.maxArticles, isNull);
 

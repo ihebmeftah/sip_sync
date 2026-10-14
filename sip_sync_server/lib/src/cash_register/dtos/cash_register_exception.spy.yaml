@@ -1,0 +1,4 @@
+exception: CashRegisterException
+fields:
+  message: String
+  code: CashRegisterErrorCode

@@ -9,3 +9,4 @@ fields:
   serving: bool
   consultAllOrders: bool
   reservations: bool, default=false
+  cashRegister: bool, default=false

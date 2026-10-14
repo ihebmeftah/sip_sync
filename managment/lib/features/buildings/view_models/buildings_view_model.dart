@@ -91,6 +91,7 @@ class BuildingFormViewModel extends _$BuildingFormViewModel {
     required bool customerOrderingEnabled,
     required bool reservationsEnabled,
     required bool allowOutOfStockOrders,
+    required bool cashRegisterEnabled,
   }) async {
     try {
       final existing = state.asData?.value;
@@ -120,6 +121,7 @@ class BuildingFormViewModel extends _$BuildingFormViewModel {
               customerOrderingEnabled: customerOrderingEnabled,
               reservationsEnabled: reservationsEnabled,
               allowOutOfStockOrders: allowOutOfStockOrders,
+              cashRegisterEnabled: cashRegisterEnabled,
             );
       } else {
         saved = await ref
@@ -147,6 +149,7 @@ class BuildingFormViewModel extends _$BuildingFormViewModel {
               customerOrderingEnabled: customerOrderingEnabled,
               reservationsEnabled: reservationsEnabled,
               allowOutOfStockOrders: allowOutOfStockOrders,
+              cashRegisterEnabled: cashRegisterEnabled,
             );
       }
       getIt<BuildingSession>().upsert(saved);
@@ -170,6 +173,7 @@ class BuildingFormViewModel extends _$BuildingFormViewModel {
     required bool customerOrderingEnabled,
     required bool reservationsEnabled,
     required bool allowOutOfStockOrders,
+    required bool cashRegisterEnabled,
   }) async {
     final existing = state.asData?.value;
     if (existing == null) {
@@ -200,6 +204,7 @@ class BuildingFormViewModel extends _$BuildingFormViewModel {
           customerOrderingEnabled: customerOrderingEnabled,
           reservationsEnabled: reservationsEnabled,
           allowOutOfStockOrders: allowOutOfStockOrders,
+          cashRegisterEnabled: cashRegisterEnabled,
         );
     getIt<BuildingSession>().upsert(saved);
     state = AsyncData(saved);

@@ -487,6 +487,16 @@ class AppLocalizationsAr extends AppLocalizations {
       'يمكن للموظفين والزبائن حجز الطاولات. يسري حد يومي إذا تم ضبطه.';
 
   @override
+  String get capCashRegister => 'الصندوق';
+
+  @override
+  String get capCashRegisterHint =>
+      'يمكن للمكان اشتراط صندوق مفتوح. الطلبات ولوحة المتابعة تتبعان تلك الوردية.';
+
+  @override
+  String get errorPackFeatureCashRegister => 'هذه الباقة لا تشمل الصندوق.';
+
+  @override
   String get capMaxReservations => 'حجوزات في اليوم';
 
   @override

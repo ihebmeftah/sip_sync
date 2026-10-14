@@ -1,0 +1,7 @@
+### One page of cash-register shifts, newest first.
+class: CashRegisterPage
+fields:
+  items: List<CashRegisterSessionView>
+  total: int
+  limit: int
+  offset: int

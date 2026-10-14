@@ -45,6 +45,7 @@ class _PackFormDialogState extends ConsumerState<PackFormDialog> {
   late bool _strict;
   late bool _customAccess;
   late bool _reservations;
+  late bool _cashRegister;
   String? _errorKey;
   final _fieldErrors = <String, String>{};
   bool _saving = false;
@@ -89,6 +90,7 @@ class _PackFormDialogState extends ConsumerState<PackFormDialog> {
     _strict = caps?.strictMode ?? false;
     _customAccess = caps?.customAccessProfiles ?? false;
     _reservations = caps?.reservations ?? false;
+    _cashRegister = caps?.cashRegister ?? false;
   }
 
   String _limit(int? value) => value == null ? '' : '$value';
@@ -321,6 +323,12 @@ class _PackFormDialogState extends ConsumerState<PackFormDialog> {
             value: _reservations,
             onChanged: (value) => setState(() => _reservations = value),
           ),
+          _Flag(
+            label: l10n.capCashRegister,
+            hint: l10n.capCashRegisterHint,
+            value: _cashRegister,
+            onChanged: (value) => setState(() => _cashRegister = value),
+          ),
         ],
       ),
     );
@@ -415,6 +423,7 @@ class _PackFormDialogState extends ConsumerState<PackFormDialog> {
       strictMode: _strict,
       customAccessProfiles: _customAccess,
       reservations: _reservations,
+      cashRegister: _cashRegister,
       maxReservationsPerDay: reservationsPerDay.value,
     );
 

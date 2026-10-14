@@ -16,16 +16,17 @@ class OrderEndpoint extends Endpoint {
   /// [createdFrom] and [createdTo] are an inclusive-exclusive window on
   /// [VenueOrder.createdAt] for every caller. Omit both to list every day.
   /// A partial, reversed, or window longer than 8 days throws
-  /// [OrderException] / [OrderErrorCode.invalidInput]. [venueTableId]
-  /// limits the page to one
-  /// table, so a seat lookup does not depend on the floor page. [limit]
-  /// defaults to 20 and is capped at 100.
+  /// [OrderException] / [OrderErrorCode.invalidInput].
+  /// [cashRegisterSessionId] replaces that day window with one shift.
+  /// [venueTableId] limits the page to one table, so a seat lookup does not
+  /// depend on the floor page. [limit] defaults to 20 and is capped at 100.
   Future<OrderPage> list(
     Session session,
     UuidValue buildingId,
     OrderStatus? status, {
     DateTime? createdFrom,
     DateTime? createdTo,
+    UuidValue? cashRegisterSessionId,
     UuidValue? venueTableId,
     int? limit,
     int? offset,
@@ -36,6 +37,7 @@ class OrderEndpoint extends Endpoint {
       status: status,
       createdFrom: createdFrom,
       createdTo: createdTo,
+      cashRegisterSessionId: cashRegisterSessionId,
       venueTableId: venueTableId,
       limit: limit,
       offset: offset,
@@ -70,22 +72,26 @@ class OrderEndpoint extends Endpoint {
   /// [createdFrom] is inclusive and [createdTo] is exclusive on
   /// [VenueOrder.createdAt]. The management app sends the current local day.
   /// A partial, reversed, or window longer than 8 days throws
-  /// [OrderException] / [OrderErrorCode.invalidInput]. Sends one snapshot per
-  /// ticket in that day, then [OrderBoardEventKind.synced], then each new
-  /// ticket, appended line, and status change whose ticket was created in
-  /// the same window. An employee who cannot consult every order only
-  /// receives tickets they launched or lines they added.
+  /// [OrderException] / [OrderErrorCode.invalidInput].
+  /// [cashRegisterSessionId] replaces that day with one shift, and also
+  /// keeps in-progress tickets that were opened before any register.
+  /// Sends one snapshot per ticket in that window, then
+  /// [OrderBoardEventKind.synced], then each new ticket, appended line, and
+  /// status change in the same window. An employee who cannot consult every
+  /// order only receives tickets they launched or lines they added.
   Stream<OrderBoardEvent> watchBoard(
     Session session,
     UuidValue buildingId, {
-    required DateTime createdFrom,
-    required DateTime createdTo,
+    DateTime? createdFrom,
+    DateTime? createdTo,
+    UuidValue? cashRegisterSessionId,
   }) {
     return _orders.watchBoard(
       session,
       buildingId,
       createdFrom: createdFrom,
       createdTo: createdTo,
+      cashRegisterSessionId: cashRegisterSessionId,
     );
   }
 

@@ -24,3 +24,5 @@ fields:
   reservationsEnabled: bool, defaultModel=true
   ### When true, an order may be placed even if a recipe ingredient would go below zero.
   allowOutOfStockOrders: bool, defaultModel=false
+  ### When true, create, append, and payment require an open cash-register session.
+  cashRegisterEnabled: bool, defaultModel=false

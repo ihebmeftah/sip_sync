@@ -684,5 +684,86 @@
   "packCapAppend": "Ajouter des articles à une commande",
   "packCapMultiOrder": "Plusieurs commandes par table",
   "packCapStrict": "Étapes cuisine strictes",
-  "packCapAccess": "Profils d'accès personnalisés"
+  "packCapAccess": "Profils d'accès personnalisés",
+  "packCapCashRegister": "Caisse",
+  "buildingCashRegister": "Caisse",
+  "buildingCashRegisterHint": "Quand c'est activé, les nouvelles commandes et les paiements exigent une caisse ouverte. Le tableau des commandes et le tableau de bord suivent ce service.",
+  "navCashRegister": "Caisse",
+  "accessCashRegister": "Caisse",
+  "accessCashRegisterHint": "Ouvrir et fermer la caisse, et lire son historique.",
+  "errorPackFeatureCashRegister": "Ce pack n'inclut pas la caisse.",
+  "errorOrderRegisterRequired": "Ouvrez la caisse avant de prendre une commande.",
+  "errorCashRegisterDisabled": "Ce lieu n'a pas activé la caisse.",
+  "errorCashRegisterAlreadyOpen": "Une caisse est déjà ouverte.",
+  "errorCashRegisterNotOpen": "Cette caisse n'est pas ouverte.",
+  "errorCashRegisterHasOpenOrders": "Encaissez ou annulez les tickets ouverts avant de fermer.",
+  "errorCashRegisterInvalidAmount": "Entrez 0 ou un montant positif.",
+  "errorCashRegisterEndCashRequired": "Entrez le fond de clôture. Ce service a un fond d'ouverture.",
+  "validationCashRequired": "Entrez le montant compté.",
+  "cashRegisterHistoryAll": "Tous les jours",
+  "cashRegisterHistoryPickDay": "Choisir un jour",
+  "cashRegisterElapsed": "Ouverte depuis {time}",
+  "@cashRegisterElapsed": {
+    "placeholders": { "time": {"type": "String"} }
+  },
+  "cashRegisterPaidTotal": "Commandes payées {amount}",
+  "@cashRegisterPaidTotal": {
+    "placeholders": { "amount": {"type": "String"} }
+  },
+  "cashRegisterBalanceCorrect": "Tiroir juste",
+  "cashRegisterBalanceTips": "Pourboires {amount}",
+  "@cashRegisterBalanceTips": {
+    "placeholders": { "amount": {"type": "String"} }
+  },
+  "cashRegisterBalanceShort": "Manque {amount}",
+  "@cashRegisterBalanceShort": {
+    "placeholders": { "amount": {"type": "String"} }
+  },
+  "cashRegisterCorrect": "Corriger le fond",
+  "cashRegisterEndCashRequiredHint": "Le fond de clôture est requis parce que ce service a un fond d'ouverture.",
+  "validationCashAmount": "Entrez 0 ou un montant positif, ou laissez vide.",
+  "cashRegisterStartCash": "Fond d'ouverture",
+  "cashRegisterStartCashHint": "Facultatif. Laissez vide si vous ne comptez pas le tiroir.",
+  "cashRegisterEndCash": "Fond de clôture",
+  "cashRegisterEndCashHint": "Facultatif. Laissez vide si vous ne comptez pas le tiroir.",
+  "cashRegisterStartCashLine": "Fond d'ouverture {amount}",
+  "@cashRegisterStartCashLine": {
+    "placeholders": { "amount": {"type": "String"} }
+  },
+  "cashRegisterEndCashLine": "Fond de clôture {amount}",
+  "@cashRegisterEndCashLine": {
+    "placeholders": { "amount": {"type": "String"} }
+  },
+  "cashRegisterTitle": "Caisse",
+  "cashRegisterOpen": "Ouvrir la caisse",
+  "cashRegisterClose": "Fermer la caisse",
+  "cashRegisterNone": "La caisse est fermée.",
+  "cashRegisterHistory": "Historique",
+  "cashRegisterHistoryEmpty": "Aucun service pour l'instant.",
+  "cashRegisterOpenedLine": "Ouverte {when} par {name}",
+  "@cashRegisterOpenedLine": {
+    "placeholders": {
+      "when": {"type": "String"},
+      "name": {"type": "String"}
+    }
+  },
+  "cashRegisterClosedLine": "Fermée {when} par {name}",
+  "@cashRegisterClosedLine": {
+    "placeholders": {
+      "when": {"type": "String"},
+      "name": {"type": "String"}
+    }
+  },
+  "cashRegisterOrderCount": "{count} commandes",
+  "@cashRegisterOrderCount": {
+    "placeholders": { "count": {"type": "int"} }
+  },
+  "cashRegisterCloseHint": "Encaissez ou annulez chaque ticket ouvert de ce service avant de fermer.",
+  "cashRegisterCloseConfirm": "Fermer cette caisse ?",
+  "cashRegisterBoardClosed": "Ouvrez la caisse pour prendre des commandes.",
+  "cashRegisterThisShift": "Cette caisse",
+  "dashboardThisRegister": "Cette caisse",
+  "dashboardRegisterClosed": "Ouvrez la caisse. Les comptes de commandes restent à zéro jusque-là.",
+  "cashRegisterInProgress": "En cours",
+  "cashRegisterStatusClosed": "Fermée"
 }

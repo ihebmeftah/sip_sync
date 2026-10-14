@@ -34,6 +34,7 @@ abstract class BuildingPackView
     required this.strictMode,
     required this.customAccessProfiles,
     required this.reservations,
+    required this.cashRegister,
     this.maxReservationsPerDay,
   });
 
@@ -56,6 +57,7 @@ abstract class BuildingPackView
     required bool strictMode,
     required bool customAccessProfiles,
     required bool reservations,
+    required bool cashRegister,
     int? maxReservationsPerDay,
   }) = _BuildingPackViewImpl;
 
@@ -94,6 +96,9 @@ abstract class BuildingPackView
       ),
       reservations: _isc.BoolJsonExtension.fromJson(
         jsonSerialization['reservations'],
+      ),
+      cashRegister: _isc.BoolJsonExtension.fromJson(
+        jsonSerialization['cashRegister'],
       ),
       maxReservationsPerDay: jsonSerialization['maxReservationsPerDay'] as int?,
     );
@@ -135,6 +140,8 @@ abstract class BuildingPackView
 
   bool reservations;
 
+  bool cashRegister;
+
   int? maxReservationsPerDay;
 
   /// Returns a shallow copy of this [BuildingPackView]
@@ -159,6 +166,7 @@ abstract class BuildingPackView
     bool? strictMode,
     bool? customAccessProfiles,
     bool? reservations,
+    bool? cashRegister,
     int? maxReservationsPerDay,
   });
   @override
@@ -183,6 +191,7 @@ abstract class BuildingPackView
       'strictMode': strictMode,
       'customAccessProfiles': customAccessProfiles,
       'reservations': reservations,
+      'cashRegister': cashRegister,
       if (maxReservationsPerDay != null)
         'maxReservationsPerDay': maxReservationsPerDay,
     };
@@ -210,6 +219,7 @@ abstract class BuildingPackView
       'strictMode': strictMode,
       'customAccessProfiles': customAccessProfiles,
       'reservations': reservations,
+      'cashRegister': cashRegister,
       if (maxReservationsPerDay != null)
         'maxReservationsPerDay': maxReservationsPerDay,
     };
@@ -243,6 +253,7 @@ class _BuildingPackViewImpl extends BuildingPackView {
     required bool strictMode,
     required bool customAccessProfiles,
     required bool reservations,
+    required bool cashRegister,
     int? maxReservationsPerDay,
   }) : super._(
          code: code,
@@ -263,6 +274,7 @@ class _BuildingPackViewImpl extends BuildingPackView {
          strictMode: strictMode,
          customAccessProfiles: customAccessProfiles,
          reservations: reservations,
+         cashRegister: cashRegister,
          maxReservationsPerDay: maxReservationsPerDay,
        );
 
@@ -289,6 +301,7 @@ class _BuildingPackViewImpl extends BuildingPackView {
     bool? strictMode,
     bool? customAccessProfiles,
     bool? reservations,
+    bool? cashRegister,
     Object? maxReservationsPerDay = _Undefined,
   }) {
     return BuildingPackView(
@@ -312,6 +325,7 @@ class _BuildingPackViewImpl extends BuildingPackView {
       strictMode: strictMode ?? this.strictMode,
       customAccessProfiles: customAccessProfiles ?? this.customAccessProfiles,
       reservations: reservations ?? this.reservations,
+      cashRegister: cashRegister ?? this.cashRegister,
       maxReservationsPerDay: maxReservationsPerDay is int?
           ? maxReservationsPerDay
           : this.maxReservationsPerDay,

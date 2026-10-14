@@ -498,6 +498,16 @@ class AppLocalizationsFr extends AppLocalizations {
       'Le personnel et les clients peuvent réserver. Un plafond quotidien s\'applique s\'il est renseigné.';
 
   @override
+  String get capCashRegister => 'Caisse';
+
+  @override
+  String get capCashRegisterHint =>
+      'Le lieu peut exiger une caisse ouverte. Les commandes et le tableau de bord suivent alors ce service.';
+
+  @override
+  String get errorPackFeatureCashRegister => 'Ce pack n\'inclut pas la caisse.';
+
+  @override
   String get capMaxReservations => 'Réservations par jour';
 
   @override

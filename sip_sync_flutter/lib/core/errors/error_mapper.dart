@@ -54,6 +54,7 @@ Failure mapError(Object error) {
       OrderErrorCode.reservationHeld => 'errorOrderReservationHeld',
       OrderErrorCode.customerOrderingDisabled =>
         'errorCustomerOrderingDisabled',
+      OrderErrorCode.registerRequired => 'errorOrderRegisterRequired',
       OrderErrorCode.cancelLocked => 'errorGeneric',
     });
   }
@@ -102,6 +103,7 @@ String _packFailureKey(PackException error) {
       PackFeature.customAccessProfiles => 'errorPackFeatureAccess',
       PackFeature.tableQr => 'errorPackFeatureQr',
       PackFeature.reservations => 'errorPackFeatureReservations',
+      PackFeature.cashRegister => 'errorPackFeatureCashRegister',
       _ => 'errorPackFeature',
     },
   };
@@ -146,6 +148,8 @@ String lookupError(dynamic l10n, String key) {
     'errorPackLimitReservations' => l10n.errorPackLimitReservations,
     'errorOrderReservationHeld' => l10n.errorOrderReservationHeld,
     'errorCustomerOrderingDisabled' => l10n.errorCustomerOrderingDisabled,
+    'errorOrderRegisterRequired' => l10n.errorOrderRegisterRequired,
+    'errorPackFeatureCashRegister' => l10n.errorPackFeatureCashRegister,
     'errorReservationsDisabled' => l10n.errorReservationsDisabled,
     'errorReservationOverlap' => l10n.errorReservationOverlap,
     'errorReservationNotFound' => l10n.errorReservationNotFound,

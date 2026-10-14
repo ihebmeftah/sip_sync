@@ -23,6 +23,7 @@ abstract class OrderView
     required this.id,
     required this.buildingId,
     this.venueTableId,
+    this.cashRegisterSessionId,
     this.tableNumber,
     required this.ref,
     required this.status,
@@ -42,6 +43,7 @@ abstract class OrderView
     required _isc.UuidValue id,
     required _isc.UuidValue buildingId,
     _isc.UuidValue? venueTableId,
+    _isc.UuidValue? cashRegisterSessionId,
     int? tableNumber,
     required int ref,
     required _iij1ihnv.OrderStatus status,
@@ -67,6 +69,11 @@ abstract class OrderView
           ? null
           : _isc.UuidValueJsonExtension.fromJson(
               jsonSerialization['venueTableId'],
+            ),
+      cashRegisterSessionId: jsonSerialization['cashRegisterSessionId'] == null
+          ? null
+          : _isc.UuidValueJsonExtension.fromJson(
+              jsonSerialization['cashRegisterSessionId'],
             ),
       tableNumber: jsonSerialization['tableNumber'] as int?,
       ref: jsonSerialization['ref'] as int,
@@ -120,6 +127,9 @@ abstract class OrderView
 
   _isc.UuidValue? venueTableId;
 
+  /// Shift this ticket was opened in. Null when no register was open.
+  _isc.UuidValue? cashRegisterSessionId;
+
   int? tableNumber;
 
   int ref;
@@ -153,6 +163,7 @@ abstract class OrderView
     _isc.UuidValue? id,
     _isc.UuidValue? buildingId,
     _isc.UuidValue? venueTableId,
+    _isc.UuidValue? cashRegisterSessionId,
     int? tableNumber,
     int? ref,
     _iij1ihnv.OrderStatus? status,
@@ -174,6 +185,8 @@ abstract class OrderView
       'id': id.toJson(),
       'buildingId': buildingId.toJson(),
       if (venueTableId != null) 'venueTableId': venueTableId?.toJson(),
+      if (cashRegisterSessionId != null)
+        'cashRegisterSessionId': cashRegisterSessionId?.toJson(),
       if (tableNumber != null) 'tableNumber': tableNumber,
       'ref': ref,
       'status': status.toJson(),
@@ -198,6 +211,8 @@ abstract class OrderView
       'id': id.toJson(),
       'buildingId': buildingId.toJson(),
       if (venueTableId != null) 'venueTableId': venueTableId?.toJson(),
+      if (cashRegisterSessionId != null)
+        'cashRegisterSessionId': cashRegisterSessionId?.toJson(),
       if (tableNumber != null) 'tableNumber': tableNumber,
       'ref': ref,
       'status': status.toJson(),
@@ -228,6 +243,7 @@ class _OrderViewImpl extends OrderView {
     required _isc.UuidValue id,
     required _isc.UuidValue buildingId,
     _isc.UuidValue? venueTableId,
+    _isc.UuidValue? cashRegisterSessionId,
     int? tableNumber,
     required int ref,
     required _iij1ihnv.OrderStatus status,
@@ -245,6 +261,7 @@ class _OrderViewImpl extends OrderView {
          id: id,
          buildingId: buildingId,
          venueTableId: venueTableId,
+         cashRegisterSessionId: cashRegisterSessionId,
          tableNumber: tableNumber,
          ref: ref,
          status: status,
@@ -268,6 +285,7 @@ class _OrderViewImpl extends OrderView {
     _isc.UuidValue? id,
     _isc.UuidValue? buildingId,
     Object? venueTableId = _Undefined,
+    Object? cashRegisterSessionId = _Undefined,
     Object? tableNumber = _Undefined,
     int? ref,
     _iij1ihnv.OrderStatus? status,
@@ -288,6 +306,9 @@ class _OrderViewImpl extends OrderView {
       venueTableId: venueTableId is _isc.UuidValue?
           ? venueTableId
           : this.venueTableId,
+      cashRegisterSessionId: cashRegisterSessionId is _isc.UuidValue?
+          ? cashRegisterSessionId
+          : this.cashRegisterSessionId,
       tableNumber: tableNumber is int? ? tableNumber : this.tableNumber,
       ref: ref ?? this.ref,
       status: status ?? this.status,

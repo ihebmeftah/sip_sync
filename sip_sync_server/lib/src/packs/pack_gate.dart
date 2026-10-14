@@ -94,6 +94,7 @@ class PackGate {
       strictMode: pack.strictMode,
       customAccessProfiles: pack.customAccessProfiles,
       reservations: pack.reservations,
+      cashRegister: pack.cashRegister,
       maxReservationsPerDay: pack.maxReservationsPerDay,
     );
   }

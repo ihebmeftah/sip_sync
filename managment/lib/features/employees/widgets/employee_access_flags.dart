@@ -27,6 +27,7 @@ class EmployeeAccessFlags extends StatelessWidget {
       if (profile.serving) l10n.accessServing,
       if (profile.consultAllOrders) l10n.accessConsultAllOrders,
       if (profile.reservations) l10n.accessReservations,
+      if (profile.cashRegister) l10n.accessCashRegister,
     ];
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

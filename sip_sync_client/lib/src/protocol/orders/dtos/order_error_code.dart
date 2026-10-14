@@ -37,7 +37,10 @@ enum OrderErrorCode implements _isc.SerializableModel {
   customerOrderingDisabled,
 
   /// A served or payed line, or a ticket that already has one.
-  cancelLocked;
+  cancelLocked,
+
+  /// Venue requires a cash register and none is open.
+  registerRequired;
 
   static OrderErrorCode fromJson(String name) {
     switch (name) {
@@ -63,6 +66,8 @@ enum OrderErrorCode implements _isc.SerializableModel {
         return OrderErrorCode.customerOrderingDisabled;
       case 'cancelLocked':
         return OrderErrorCode.cancelLocked;
+      case 'registerRequired':
+        return OrderErrorCode.registerRequired;
       default:
         throw ArgumentError(
           'Value "$name" cannot be converted to "OrderErrorCode"',

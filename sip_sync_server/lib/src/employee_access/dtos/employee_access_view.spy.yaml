@@ -10,4 +10,5 @@ fields:
   serving: bool
   consultAllOrders: bool
   reservations: bool
+  cashRegister: bool, default=false
   createdAt: DateTime

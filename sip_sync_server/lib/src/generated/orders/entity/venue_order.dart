@@ -15,6 +15,7 @@ import 'package:serverpod/serverpod.dart' as _is;
 import 'package:sip_sync_server/src/generated/protocol.dart' as _iaib1p48;
 import '../../auth/dtos/actor_type.dart' as _i6ch5qy5;
 import '../../buildings/entity/building.dart' as _iaohraio;
+import '../../cash_register/entity/cash_register_session.dart' as _i8hg95n2;
 import '../../orders/dtos/order_cancellation_reason.dart' as _i9x1n0bn;
 import '../../orders/dtos/order_status.dart' as _iij1ihnv;
 import '../../orders/entity/venue_order_item.dart' as _io4d4iis;
@@ -29,6 +30,8 @@ abstract class VenueOrder
     this.building,
     this.venueTableId,
     this.venueTable,
+    this.cashRegisterSessionId,
+    this.cashRegisterSession,
     required this.ref,
     required this.status,
     required this.launchedByType,
@@ -52,6 +55,8 @@ abstract class VenueOrder
     _iaohraio.Building? building,
     _is.UuidValue? venueTableId,
     _ilcfc7kr.VenueTable? venueTable,
+    _is.UuidValue? cashRegisterSessionId,
+    _i8hg95n2.CashRegisterSession? cashRegisterSession,
     required int ref,
     required _iij1ihnv.OrderStatus status,
     required _i6ch5qy5.ActorType launchedByType,
@@ -90,6 +95,16 @@ abstract class VenueOrder
           ? null
           : _iaib1p48.Protocol().deserialize<_ilcfc7kr.VenueTable>(
               jsonSerialization['venueTable'],
+            ),
+      cashRegisterSessionId: jsonSerialization['cashRegisterSessionId'] == null
+          ? null
+          : _is.UuidValueJsonExtension.fromJson(
+              jsonSerialization['cashRegisterSessionId'],
+            ),
+      cashRegisterSession: jsonSerialization['cashRegisterSession'] == null
+          ? null
+          : _iaib1p48.Protocol().deserialize<_i8hg95n2.CashRegisterSession>(
+              jsonSerialization['cashRegisterSession'],
             ),
       ref: jsonSerialization['ref'] as int,
       status: _iij1ihnv.OrderStatus.fromJson(
@@ -163,6 +178,11 @@ abstract class VenueOrder
 
   _ilcfc7kr.VenueTable? venueTable;
 
+  _is.UuidValue? cashRegisterSessionId;
+
+  /// Shift this ticket was opened in. Null when the venue was not using a register.
+  _i8hg95n2.CashRegisterSession? cashRegisterSession;
+
   int ref;
 
   _iij1ihnv.OrderStatus status;
@@ -204,6 +224,8 @@ abstract class VenueOrder
     _iaohraio.Building? building,
     _is.UuidValue? venueTableId,
     _ilcfc7kr.VenueTable? venueTable,
+    _is.UuidValue? cashRegisterSessionId,
+    _i8hg95n2.CashRegisterSession? cashRegisterSession,
     int? ref,
     _iij1ihnv.OrderStatus? status,
     _i6ch5qy5.ActorType? launchedByType,
@@ -228,6 +250,10 @@ abstract class VenueOrder
       if (building != null) 'building': building?.toJson(),
       if (venueTableId != null) 'venueTableId': venueTableId?.toJson(),
       if (venueTable != null) 'venueTable': venueTable?.toJson(),
+      if (cashRegisterSessionId != null)
+        'cashRegisterSessionId': cashRegisterSessionId?.toJson(),
+      if (cashRegisterSession != null)
+        'cashRegisterSession': cashRegisterSession?.toJson(),
       'ref': ref,
       'status': status.toJson(),
       'launchedByType': launchedByType.toJson(),
@@ -254,11 +280,13 @@ abstract class VenueOrder
   static VenueOrderInclude include({
     _iaohraio.BuildingInclude? building,
     _ilcfc7kr.VenueTableInclude? venueTable,
+    _i8hg95n2.CashRegisterSessionInclude? cashRegisterSession,
     _io4d4iis.VenueOrderItemIncludeList? items,
   }) {
     return VenueOrderInclude._(
       building: building,
       venueTable: venueTable,
+      cashRegisterSession: cashRegisterSession,
       items: items,
     );
   }
@@ -296,6 +324,8 @@ class _VenueOrderImpl extends VenueOrder {
     _iaohraio.Building? building,
     _is.UuidValue? venueTableId,
     _ilcfc7kr.VenueTable? venueTable,
+    _is.UuidValue? cashRegisterSessionId,
+    _i8hg95n2.CashRegisterSession? cashRegisterSession,
     required int ref,
     required _iij1ihnv.OrderStatus status,
     required _i6ch5qy5.ActorType launchedByType,
@@ -316,6 +346,8 @@ class _VenueOrderImpl extends VenueOrder {
          building: building,
          venueTableId: venueTableId,
          venueTable: venueTable,
+         cashRegisterSessionId: cashRegisterSessionId,
+         cashRegisterSession: cashRegisterSession,
          ref: ref,
          status: status,
          launchedByType: launchedByType,
@@ -342,6 +374,8 @@ class _VenueOrderImpl extends VenueOrder {
     Object? building = _Undefined,
     Object? venueTableId = _Undefined,
     Object? venueTable = _Undefined,
+    Object? cashRegisterSessionId = _Undefined,
+    Object? cashRegisterSession = _Undefined,
     int? ref,
     _iij1ihnv.OrderStatus? status,
     _i6ch5qy5.ActorType? launchedByType,
@@ -369,6 +403,12 @@ class _VenueOrderImpl extends VenueOrder {
       venueTable: venueTable is _ilcfc7kr.VenueTable?
           ? venueTable
           : this.venueTable?.copyWith(),
+      cashRegisterSessionId: cashRegisterSessionId is _is.UuidValue?
+          ? cashRegisterSessionId
+          : this.cashRegisterSessionId,
+      cashRegisterSession: cashRegisterSession is _i8hg95n2.CashRegisterSession?
+          ? cashRegisterSession
+          : this.cashRegisterSession?.copyWith(),
       ref: ref ?? this.ref,
       status: status ?? this.status,
       launchedByType: launchedByType ?? this.launchedByType,
@@ -414,6 +454,13 @@ class VenueOrderUpdateTable extends _is.UpdateTable<VenueOrderTable> {
     _is.UuidValue? value,
   ) => _is.ColumnValue(
     table.venueTableId,
+    value,
+  );
+
+  _is.ColumnValue<_is.UuidValue, _is.UuidValue> cashRegisterSessionId(
+    _is.UuidValue? value,
+  ) => _is.ColumnValue(
+    table.cashRegisterSessionId,
     value,
   );
 
@@ -517,6 +564,10 @@ class VenueOrderTable extends _is.Table<_is.UuidValue?> {
       'venueTableId',
       this,
     );
+    cashRegisterSessionId = _is.ColumnUuid(
+      'cashRegisterSessionId',
+      this,
+    );
     ref = _is.ColumnInt(
       'ref',
       this,
@@ -586,6 +637,11 @@ class VenueOrderTable extends _is.Table<_is.UuidValue?> {
 
   _ilcfc7kr.VenueTableTable? _venueTable;
 
+  late final _is.ColumnUuid cashRegisterSessionId;
+
+  /// Shift this ticket was opened in. Null when the venue was not using a register.
+  _i8hg95n2.CashRegisterSessionTable? _cashRegisterSession;
+
   late final _is.ColumnInt ref;
 
   late final _is.ColumnEnum<_iij1ihnv.OrderStatus> status;
@@ -644,6 +700,20 @@ class VenueOrderTable extends _is.Table<_is.UuidValue?> {
     return _venueTable!;
   }
 
+  _i8hg95n2.CashRegisterSessionTable get cashRegisterSession {
+    if (_cashRegisterSession != null) return _cashRegisterSession!;
+    _cashRegisterSession = _is.createRelationTable(
+      relationFieldName: 'cashRegisterSession',
+      field: VenueOrder.t.cashRegisterSessionId,
+      foreignField: _i8hg95n2.CashRegisterSession.t.id,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) => _i8hg95n2.CashRegisterSessionTable(
+        tableRelation: foreignTableRelation,
+      ),
+    );
+    return _cashRegisterSession!;
+  }
+
   _io4d4iis.VenueOrderItemTable get __items {
     if (___items != null) return ___items!;
     ___items = _is.createRelationTable(
@@ -681,6 +751,7 @@ class VenueOrderTable extends _is.Table<_is.UuidValue?> {
     id,
     buildingId,
     venueTableId,
+    cashRegisterSessionId,
     ref,
     status,
     launchedByType,
@@ -704,6 +775,9 @@ class VenueOrderTable extends _is.Table<_is.UuidValue?> {
     if (relationField == 'venueTable') {
       return venueTable;
     }
+    if (relationField == 'cashRegisterSession') {
+      return cashRegisterSession;
+    }
     if (relationField == 'items') {
       return __items;
     }
@@ -715,10 +789,12 @@ class VenueOrderInclude extends _is.IncludeObject {
   VenueOrderInclude._({
     _iaohraio.BuildingInclude? building,
     _ilcfc7kr.VenueTableInclude? venueTable,
+    _i8hg95n2.CashRegisterSessionInclude? cashRegisterSession,
     _io4d4iis.VenueOrderItemIncludeList? items,
   }) {
     _building = building;
     _venueTable = venueTable;
+    _cashRegisterSession = cashRegisterSession;
     _items = items;
   }
 
@@ -726,12 +802,15 @@ class VenueOrderInclude extends _is.IncludeObject {
 
   _ilcfc7kr.VenueTableInclude? _venueTable;
 
+  _i8hg95n2.CashRegisterSessionInclude? _cashRegisterSession;
+
   _io4d4iis.VenueOrderItemIncludeList? _items;
 
   @override
   Map<String, _is.Include?> get includes => {
     'building': _building,
     'venueTable': _venueTable,
+    'cashRegisterSession': _cashRegisterSession,
     'items': _items,
   };
 
@@ -1243,6 +1322,31 @@ class VenueOrderAttachRowRepository {
     );
   }
 
+  /// Creates a relation between the given [VenueOrder] and [CashRegisterSession]
+  /// by setting the [VenueOrder]'s foreign key `cashRegisterSessionId` to refer to the [CashRegisterSession].
+  Future<void> cashRegisterSession(
+    _is.DatabaseSession session,
+    VenueOrder venueOrder,
+    _i8hg95n2.CashRegisterSession cashRegisterSession, {
+    _is.Transaction? transaction,
+  }) async {
+    if (venueOrder.id == null) {
+      throw ArgumentError.notNull('venueOrder.id');
+    }
+    if (cashRegisterSession.id == null) {
+      throw ArgumentError.notNull('cashRegisterSession.id');
+    }
+
+    var $venueOrder = venueOrder.copyWith(
+      cashRegisterSessionId: cashRegisterSession.id,
+    );
+    await session.db.updateRow<VenueOrder>(
+      $venueOrder,
+      columns: [VenueOrder.t.cashRegisterSessionId],
+      transaction: transaction,
+    );
+  }
+
   /// Creates a relation between this [VenueOrder] and the given [VenueOrderItem]
   /// by setting the [VenueOrderItem]'s foreign key `orderId` to refer to this [VenueOrder].
   Future<void> items(
@@ -1288,6 +1392,28 @@ class VenueOrderDetachRowRepository {
     await session.db.updateRow<VenueOrder>(
       $venueOrder,
       columns: [VenueOrder.t.venueTableId],
+      transaction: transaction,
+    );
+  }
+
+  /// Detaches the relation between this [VenueOrder] and the [CashRegisterSession] set in `cashRegisterSession`
+  /// by setting the [VenueOrder]'s foreign key `cashRegisterSessionId` to `null`.
+  ///
+  /// This removes the association between the two models without deleting
+  /// the related record.
+  Future<void> cashRegisterSession(
+    _is.DatabaseSession session,
+    VenueOrder venueOrder, {
+    _is.Transaction? transaction,
+  }) async {
+    if (venueOrder.id == null) {
+      throw ArgumentError.notNull('venueOrder.id');
+    }
+
+    var $venueOrder = venueOrder.copyWith(cashRegisterSessionId: null);
+    await session.db.updateRow<VenueOrder>(
+      $venueOrder,
+      columns: [VenueOrder.t.cashRegisterSessionId],
       transaction: transaction,
     );
   }

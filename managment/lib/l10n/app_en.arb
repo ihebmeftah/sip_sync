@@ -731,5 +731,86 @@
   "packCapAppend": "Add items to an open order",
   "packCapMultiOrder": "Several orders on a table",
   "packCapStrict": "Strict kitchen steps",
-  "packCapAccess": "Custom access profiles"
+  "packCapAccess": "Custom access profiles",
+  "packCapCashRegister": "Cash register",
+  "buildingCashRegister": "Cash register",
+  "buildingCashRegisterHint": "When on, new orders and payments need an open register. The order board and dashboard follow that shift.",
+  "navCashRegister": "Cash register",
+  "accessCashRegister": "Cash register",
+  "accessCashRegisterHint": "Open and close the cash register, and read its history.",
+  "errorPackFeatureCashRegister": "This plan does not include the cash register.",
+  "errorOrderRegisterRequired": "Open the cash register before taking an order.",
+  "errorCashRegisterDisabled": "This venue has not turned on the cash register.",
+  "errorCashRegisterAlreadyOpen": "A cash register is already open.",
+  "errorCashRegisterNotOpen": "This cash register is not open.",
+  "errorCashRegisterHasOpenOrders": "Pay or cancel the open tickets before closing.",
+  "errorCashRegisterInvalidAmount": "Enter 0 or a positive amount.",
+  "errorCashRegisterEndCashRequired": "Enter the closing cash. This shift has an opening count.",
+  "validationCashRequired": "Enter the counted cash.",
+  "cashRegisterHistoryAll": "All days",
+  "cashRegisterHistoryPickDay": "Pick a day",
+  "cashRegisterElapsed": "Open for {time}",
+  "@cashRegisterElapsed": {
+    "placeholders": { "time": {"type": "String"} }
+  },
+  "cashRegisterPaidTotal": "Paid orders {amount}",
+  "@cashRegisterPaidTotal": {
+    "placeholders": { "amount": {"type": "String"} }
+  },
+  "cashRegisterBalanceCorrect": "Drawer matches",
+  "cashRegisterBalanceTips": "Tips {amount}",
+  "@cashRegisterBalanceTips": {
+    "placeholders": { "amount": {"type": "String"} }
+  },
+  "cashRegisterBalanceShort": "Short {amount}",
+  "@cashRegisterBalanceShort": {
+    "placeholders": { "amount": {"type": "String"} }
+  },
+  "cashRegisterCorrect": "Correct cash",
+  "cashRegisterEndCashRequiredHint": "Closing cash is required because this shift has an opening count.",
+  "validationCashAmount": "Enter 0 or a positive amount, or leave this empty.",
+  "cashRegisterStartCash": "Opening cash",
+  "cashRegisterStartCashHint": "Optional. Leave empty if you are not counting the drawer.",
+  "cashRegisterEndCash": "Closing cash",
+  "cashRegisterEndCashHint": "Optional. Leave empty if you are not counting the drawer.",
+  "cashRegisterStartCashLine": "Opening cash {amount}",
+  "@cashRegisterStartCashLine": {
+    "placeholders": { "amount": {"type": "String"} }
+  },
+  "cashRegisterEndCashLine": "Closing cash {amount}",
+  "@cashRegisterEndCashLine": {
+    "placeholders": { "amount": {"type": "String"} }
+  },
+  "cashRegisterTitle": "Cash register",
+  "cashRegisterOpen": "Open register",
+  "cashRegisterClose": "Close register",
+  "cashRegisterNone": "The register is closed.",
+  "cashRegisterHistory": "History",
+  "cashRegisterHistoryEmpty": "No shifts yet.",
+  "cashRegisterOpenedLine": "Opened {when} by {name}",
+  "@cashRegisterOpenedLine": {
+    "placeholders": {
+      "when": {"type": "String"},
+      "name": {"type": "String"}
+    }
+  },
+  "cashRegisterClosedLine": "Closed {when} by {name}",
+  "@cashRegisterClosedLine": {
+    "placeholders": {
+      "when": {"type": "String"},
+      "name": {"type": "String"}
+    }
+  },
+  "cashRegisterOrderCount": "{count} orders",
+  "@cashRegisterOrderCount": {
+    "placeholders": { "count": {"type": "int"} }
+  },
+  "cashRegisterCloseHint": "Pay or cancel every open ticket on this shift before closing.",
+  "cashRegisterCloseConfirm": "Close this register?",
+  "cashRegisterBoardClosed": "Open the cash register to take orders.",
+  "cashRegisterThisShift": "This register",
+  "dashboardThisRegister": "This register",
+  "dashboardRegisterClosed": "Open the cash register. Order counts stay at zero until then.",
+  "cashRegisterInProgress": "In progress",
+  "cashRegisterStatusClosed": "Closed"
 }

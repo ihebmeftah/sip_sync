@@ -7,6 +7,7 @@ import '../../features/auth/views/forgot_password_view.dart';
 import '../../features/auth/views/register_view.dart';
 import '../../features/auth/views/sign_in_view.dart';
 import '../../features/buildings/views/building_configuration_view.dart';
+import '../../features/cash_register/views/cash_register_view.dart';
 import '../../features/buildings/views/building_form_view.dart';
 import '../../features/buildings/views/buildings_list_view.dart';
 import '../../features/dashboard/views/dashboard_view.dart';
@@ -171,6 +172,10 @@ class BuildingEditRoute extends GoRouteData with $BuildingEditRoute {
     TypedGoRoute<ReservationsRoute>(
       path: '/b/:buildingId/reservations',
       name: 'reservations',
+    ),
+    TypedGoRoute<CashRegisterRoute>(
+      path: '/b/:buildingId/cash-register',
+      name: 'cashRegister',
     ),
     TypedGoRoute<NotificationsRoute>(
       path: '/b/:buildingId/notifications',
@@ -390,6 +395,17 @@ class ReservationsRoute extends GoRouteData with $ReservationsRoute {
   @override
   Widget build(BuildContext context, GoRouterState state) {
     return ReservationsListView(buildingId: buildingId);
+  }
+}
+
+class CashRegisterRoute extends GoRouteData with $CashRegisterRoute {
+  const CashRegisterRoute({required this.buildingId});
+
+  final String buildingId;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return CashRegisterView(buildingId: buildingId);
   }
 }
 

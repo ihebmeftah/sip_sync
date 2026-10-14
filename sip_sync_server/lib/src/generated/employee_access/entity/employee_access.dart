@@ -31,6 +31,7 @@ abstract class EmployeeAccess
     bool? serving,
     bool? consultAllOrders,
     bool? reservations,
+    bool? cashRegister,
     DateTime? createdAt,
     this.employees,
   }) : orderCreation = orderCreation ?? false,
@@ -40,6 +41,7 @@ abstract class EmployeeAccess
        serving = serving ?? false,
        consultAllOrders = consultAllOrders ?? false,
        reservations = reservations ?? false,
+       cashRegister = cashRegister ?? false,
        createdAt = createdAt ?? DateTime.now();
 
   factory EmployeeAccess({
@@ -54,6 +56,7 @@ abstract class EmployeeAccess
     bool? serving,
     bool? consultAllOrders,
     bool? reservations,
+    bool? cashRegister,
     DateTime? createdAt,
     List<_ie30fksv.Employee>? employees,
   }) = _EmployeeAccessImpl;
@@ -95,6 +98,9 @@ abstract class EmployeeAccess
       reservations: jsonSerialization['reservations'] == null
           ? null
           : _is.BoolJsonExtension.fromJson(jsonSerialization['reservations']),
+      cashRegister: jsonSerialization['cashRegister'] == null
+          ? null
+          : _is.BoolJsonExtension.fromJson(jsonSerialization['cashRegister']),
       createdAt: jsonSerialization['createdAt'] == null
           ? null
           : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
@@ -134,6 +140,9 @@ abstract class EmployeeAccess
   /// Create, confirm, cancel, and assign tables for reservations in this building.
   bool reservations;
 
+  /// Open and close the cash register for this building.
+  bool cashRegister;
+
   DateTime createdAt;
 
   List<_ie30fksv.Employee>? employees;
@@ -156,6 +165,7 @@ abstract class EmployeeAccess
     bool? serving,
     bool? consultAllOrders,
     bool? reservations,
+    bool? cashRegister,
     DateTime? createdAt,
     List<_ie30fksv.Employee>? employees,
   });
@@ -174,6 +184,7 @@ abstract class EmployeeAccess
       'serving': serving,
       'consultAllOrders': consultAllOrders,
       'reservations': reservations,
+      'cashRegister': cashRegister,
       'createdAt': createdAt.toJson(),
       if (employees != null)
         'employees': employees?.toJson(valueToJson: (v) => v.toJson()),
@@ -234,6 +245,7 @@ class _EmployeeAccessImpl extends EmployeeAccess {
     bool? serving,
     bool? consultAllOrders,
     bool? reservations,
+    bool? cashRegister,
     DateTime? createdAt,
     List<_ie30fksv.Employee>? employees,
   }) : super._(
@@ -248,6 +260,7 @@ class _EmployeeAccessImpl extends EmployeeAccess {
          serving: serving,
          consultAllOrders: consultAllOrders,
          reservations: reservations,
+         cashRegister: cashRegister,
          createdAt: createdAt,
          employees: employees,
        );
@@ -268,6 +281,7 @@ class _EmployeeAccessImpl extends EmployeeAccess {
     bool? serving,
     bool? consultAllOrders,
     bool? reservations,
+    bool? cashRegister,
     DateTime? createdAt,
     Object? employees = _Undefined,
   }) {
@@ -285,6 +299,7 @@ class _EmployeeAccessImpl extends EmployeeAccess {
       serving: serving ?? this.serving,
       consultAllOrders: consultAllOrders ?? this.consultAllOrders,
       reservations: reservations ?? this.reservations,
+      cashRegister: cashRegister ?? this.cashRegister,
       createdAt: createdAt ?? this.createdAt,
       employees: employees is List<_ie30fksv.Employee>?
           ? employees
@@ -343,6 +358,11 @@ class EmployeeAccessUpdateTable extends _is.UpdateTable<EmployeeAccessTable> {
     value,
   );
 
+  _is.ColumnValue<bool, bool> cashRegister(bool value) => _is.ColumnValue(
+    table.cashRegister,
+    value,
+  );
+
   _is.ColumnValue<DateTime, DateTime> createdAt(DateTime value) =>
       _is.ColumnValue(
         table.createdAt,
@@ -397,6 +417,11 @@ class EmployeeAccessTable extends _is.Table<_is.UuidValue?> {
       this,
       hasDefault: true,
     );
+    cashRegister = _is.ColumnBool(
+      'cashRegister',
+      this,
+      hasDefault: true,
+    );
     createdAt = _is.ColumnDateTime(
       'createdAt',
       this,
@@ -425,6 +450,9 @@ class EmployeeAccessTable extends _is.Table<_is.UuidValue?> {
 
   /// Create, confirm, cancel, and assign tables for reservations in this building.
   late final _is.ColumnBool reservations;
+
+  /// Open and close the cash register for this building.
+  late final _is.ColumnBool cashRegister;
 
   late final _is.ColumnDateTime createdAt;
 
@@ -489,6 +517,7 @@ class EmployeeAccessTable extends _is.Table<_is.UuidValue?> {
     serving,
     consultAllOrders,
     reservations,
+    cashRegister,
     createdAt,
   ];
 

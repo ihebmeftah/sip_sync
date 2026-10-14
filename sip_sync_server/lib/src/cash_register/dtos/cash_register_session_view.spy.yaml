@@ -1,0 +1,18 @@
+### One shift, with who opened and closed it and how many tickets it holds.
+class: CashRegisterSessionView
+fields:
+  id: UuidValue
+  buildingId: UuidValue
+  status: CashRegisterStatus
+  openedBy: OrderActorView
+  openedAt: DateTime
+  ### Counted drawer at open. Null when it was left blank.
+  startCash: double?
+  closedBy: OrderActorView?
+  closedAt: DateTime?
+  ### Counted drawer at close. Null when it was left blank.
+  endCash: double?
+  ### Tickets stamped with this session. Not stored on the row.
+  orderCount: int
+  ### Sum of payed lines on those tickets. Not stored on the row.
+  paidTotal: double

@@ -19,4 +19,5 @@ fields:
   strictMode: bool
   customAccessProfiles: bool
   reservations: bool
+  cashRegister: bool
   maxReservationsPerDay: int?

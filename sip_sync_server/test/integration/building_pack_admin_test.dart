@@ -209,6 +209,7 @@ void main() {
             strictMode: false,
             customAccessProfiles: false,
             reservations: false,
+            cashRegister: false,
           ),
         ),
       );

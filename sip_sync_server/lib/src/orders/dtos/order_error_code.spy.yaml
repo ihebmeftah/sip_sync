@@ -19,3 +19,5 @@ values:
   - customerOrderingDisabled
   ### A served or payed line, or a ticket that already has one.
   - cancelLocked
+  ### Venue requires a cash register and none is open.
+  - registerRequired

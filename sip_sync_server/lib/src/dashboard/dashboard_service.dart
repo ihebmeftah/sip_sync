@@ -14,32 +14,77 @@ class DashboardService {
 
   /// Counts for [buildingId] on the UTC calendar day of [day].
   ///
+  /// When the venue requires a cash register, order and item counts use
+  /// [cashRegisterSessionId], or the shift in progress when that id is
+  /// omitted. A shut drawer zeros those counts. Reservations and stock
+  /// stay on the calendar day.
+  ///
   /// The owner of the building, and employees there with consultAllOrders, can read it.
   Future<DashboardSummary> summary(
     Session session,
     UuidValue buildingId,
-    DateTime day,
-  ) async {
+    DateTime day, {
+    UuidValue? cashRegisterSessionId,
+  }) async {
     await _requireBuildingMember(session, buildingId);
     final range = _utcDay(day);
     await _reservations.settleNoShows(session, buildingId);
+    final registerScope = await _registerScope(
+      session,
+      buildingId,
+      cashRegisterSessionId,
+    );
 
-    final orders = await Future.wait([
-      _orderCount(session, buildingId, range),
-      _orderCount(session, buildingId, range, status: OrderStatus.progress),
-      _orderCount(session, buildingId, range, status: OrderStatus.payed),
-      _orderCount(session, buildingId, range, status: OrderStatus.cancelled),
-      _orderCount(
-        session,
-        buildingId,
-        range,
-        launchedBy: ActorType.customer,
-      ),
-    ]);
-    final items = await Future.wait([
-      for (final status in OrderItemStatus.values)
-        _itemCount(session, buildingId, range, status),
-    ]);
+    final orders = registerScope.zero
+        ? List<int>.filled(5, 0)
+        : await Future.wait([
+            _orderCount(
+              session,
+              buildingId,
+              range,
+              cashRegisterSessionId: registerScope.sessionId,
+            ),
+            _orderCount(
+              session,
+              buildingId,
+              range,
+              status: OrderStatus.progress,
+              cashRegisterSessionId: registerScope.sessionId,
+            ),
+            _orderCount(
+              session,
+              buildingId,
+              range,
+              status: OrderStatus.payed,
+              cashRegisterSessionId: registerScope.sessionId,
+            ),
+            _orderCount(
+              session,
+              buildingId,
+              range,
+              status: OrderStatus.cancelled,
+              cashRegisterSessionId: registerScope.sessionId,
+            ),
+            _orderCount(
+              session,
+              buildingId,
+              range,
+              launchedBy: ActorType.customer,
+              cashRegisterSessionId: registerScope.sessionId,
+            ),
+          ]);
+    final items = registerScope.zero
+        ? List<int>.filled(OrderItemStatus.values.length, 0)
+        : await Future.wait([
+            for (final status in OrderItemStatus.values)
+              _itemCount(
+                session,
+                buildingId,
+                range,
+                status,
+                cashRegisterSessionId: registerScope.sessionId,
+              ),
+          ]);
     final pending = await Reservation.db.count(
       session,
       where: (t) =>
@@ -73,20 +118,58 @@ class DashboardService {
     );
   }
 
+  /// [sessionId] set means the shift replaces the calendar day. [zero] means
+  /// the venue requires a register and none is open.
+  Future<({UuidValue? sessionId, bool zero})> _registerScope(
+    Session session,
+    UuidValue buildingId,
+    UuidValue? requested,
+  ) async {
+    final building = await Building.db.findById(session, buildingId);
+    if (building == null || !building.cashRegisterEnabled) {
+      return (sessionId: null, zero: false);
+    }
+    if (requested != null) {
+      final row = await CashRegisterSession.db.findById(session, requested);
+      if (row == null || row.buildingId != buildingId) {
+        throw AccountException(
+          message: 'Cash register not found.',
+          code: AccountErrorCode.notFound,
+        );
+      }
+      return (sessionId: row.id, zero: false);
+    }
+    final open = await CashRegisterSession.db.findFirstRow(
+      session,
+      where: (t) =>
+          t.buildingId.equals(buildingId) &
+          t.status.equals(CashRegisterStatus.progress),
+    );
+    if (open == null) {
+      return (sessionId: null, zero: true);
+    }
+    return (sessionId: open.id, zero: false);
+  }
+
   Future<int> _orderCount(
     Session session,
     UuidValue buildingId,
     ({DateTime start, DateTime end}) range, {
     OrderStatus? status,
     ActorType? launchedBy,
+    UuidValue? cashRegisterSessionId,
   }) {
     return VenueOrder.db.count(
       session,
       where: (t) {
-        Expression filter =
-            t.buildingId.equals(buildingId) &
-            (t.createdAt >= range.start) &
-            (t.createdAt < range.end);
+        var filter = t.buildingId.equals(buildingId);
+        if (cashRegisterSessionId != null) {
+          filter =
+              filter & t.cashRegisterSessionId.equals(cashRegisterSessionId);
+        } else {
+          filter =
+              filter & (t.createdAt >= range.start) & (t.createdAt < range.end);
+        }
         if (status != null) {
           filter = filter & t.status.equals(status);
         }
@@ -102,15 +185,24 @@ class DashboardService {
     Session session,
     UuidValue buildingId,
     ({DateTime start, DateTime end}) range,
-    OrderItemStatus status,
-  ) {
+    OrderItemStatus status, {
+    UuidValue? cashRegisterSessionId,
+  }) {
     return VenueOrderItem.db.count(
       session,
-      where: (t) =>
-          t.order.buildingId.equals(buildingId) &
-          (t.createdAt >= range.start) &
-          (t.createdAt < range.end) &
-          t.status.equals(status),
+      where: (t) {
+        var filter =
+            t.order.buildingId.equals(buildingId) & t.status.equals(status);
+        if (cashRegisterSessionId != null) {
+          filter =
+              filter &
+              t.order.cashRegisterSessionId.equals(cashRegisterSessionId);
+        } else {
+          filter =
+              filter & (t.createdAt >= range.start) & (t.createdAt < range.end);
+        }
+        return filter;
+      },
     );
   }
 

@@ -47,7 +47,8 @@ class _OrdersListViewState extends ConsumerState<OrdersListView> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final text = Theme.of(context).textTheme;
-    final currency = ref.watch(buildingSelectionProvider)?.currencyCode ?? '';
+    final building = ref.watch(buildingSelectionProvider);
+    final currency = building?.currencyCode ?? '';
     final ordersVm = ref.watch(ordersViewModelProvider(widget.buildingId));
     final notifier = ref.watch(
       ordersViewModelProvider(widget.buildingId).notifier,
@@ -134,6 +135,17 @@ class _OrdersListViewState extends ConsumerState<OrdersListView> {
                   scrollDirection: Axis.horizontal,
                   child: Row(
                     children: [
+                      if (building?.cashRegisterEnabled == true)
+                        Padding(
+                          padding: const EdgeInsetsDirectional.only(
+                            end: AppSpacing.sm,
+                          ),
+                          child: AppFilterChip(
+                            selected: notifier.followingRegister,
+                            label: l10n.cashRegisterThisShift,
+                            onSelected: (_) => notifier.followRegister(),
+                          ),
+                        ),
                       for (final preset in const [
                         OrderListDaySelection.today(),
                         OrderListDaySelection.last3Days(),
@@ -144,13 +156,17 @@ class _OrdersListViewState extends ConsumerState<OrdersListView> {
                             end: AppSpacing.sm,
                           ),
                           child: AppFilterChip(
-                            selected: dayFilter == preset,
+                            selected:
+                                !notifier.followingRegister &&
+                                dayFilter == preset,
                             label: _dayPresetLabel(l10n, preset.preset),
                             onSelected: (_) => notifier.setDayFilter(preset),
                           ),
                         ),
                       AppFilterChip(
-                        selected: dayFilter.preset == OrderListDayPreset.day,
+                        selected:
+                            !notifier.followingRegister &&
+                            dayFilter.preset == OrderListDayPreset.day,
                         label: _pickedDayLabel(context, l10n, dayFilter),
                         onSelected: (_) => _pickDay(context, notifier),
                       ),

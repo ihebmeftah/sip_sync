@@ -123,6 +123,35 @@ abstract final class FormValidators {
     return null;
   }
 
+  /// A counted amount is required and must be zero or greater.
+  static String? requiredCash(AppLocalizations l10n, String? value) {
+    if ((value ?? '').trim().isEmpty) {
+      return l10n.validationCashRequired;
+    }
+    return optionalCash(l10n, value);
+  }
+
+  /// Blank is allowed. A filled amount must be zero or greater.
+  static String? optionalCash(AppLocalizations l10n, String? value) {
+    if (parseOptionalCash(value) == null && (value ?? '').trim().isNotEmpty) {
+      return l10n.validationCashAmount;
+    }
+    return null;
+  }
+
+  /// Null when [value] is blank. Null also when it is not a usable amount.
+  static double? parseOptionalCash(String? value) {
+    final text = (value ?? '').trim().replaceAll(',', '.');
+    if (text.isEmpty) {
+      return null;
+    }
+    final parsed = double.tryParse(text);
+    if (parsed == null || parsed.isNaN || parsed.isInfinite || parsed < 0) {
+      return null;
+    }
+    return parsed;
+  }
+
   static String? currency(AppLocalizations l10n, String? value) {
     final text = (value ?? '').trim().toUpperCase();
     if (!Currencies.isValidCode(text)) {

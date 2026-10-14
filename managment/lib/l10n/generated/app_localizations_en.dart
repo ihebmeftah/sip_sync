@@ -1957,4 +1957,180 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get packCapAccess => 'Custom access profiles';
+
+  @override
+  String get packCapCashRegister => 'Cash register';
+
+  @override
+  String get buildingCashRegister => 'Cash register';
+
+  @override
+  String get buildingCashRegisterHint =>
+      'When on, new orders and payments need an open register. The order board and dashboard follow that shift.';
+
+  @override
+  String get navCashRegister => 'Cash register';
+
+  @override
+  String get accessCashRegister => 'Cash register';
+
+  @override
+  String get accessCashRegisterHint =>
+      'Open and close the cash register, and read its history.';
+
+  @override
+  String get errorPackFeatureCashRegister =>
+      'This plan does not include the cash register.';
+
+  @override
+  String get errorOrderRegisterRequired =>
+      'Open the cash register before taking an order.';
+
+  @override
+  String get errorCashRegisterDisabled =>
+      'This venue has not turned on the cash register.';
+
+  @override
+  String get errorCashRegisterAlreadyOpen => 'A cash register is already open.';
+
+  @override
+  String get errorCashRegisterNotOpen => 'This cash register is not open.';
+
+  @override
+  String get errorCashRegisterHasOpenOrders =>
+      'Pay or cancel the open tickets before closing.';
+
+  @override
+  String get errorCashRegisterInvalidAmount => 'Enter 0 or a positive amount.';
+
+  @override
+  String get errorCashRegisterEndCashRequired =>
+      'Enter the closing cash. This shift has an opening count.';
+
+  @override
+  String get validationCashRequired => 'Enter the counted cash.';
+
+  @override
+  String get cashRegisterHistoryAll => 'All days';
+
+  @override
+  String get cashRegisterHistoryPickDay => 'Pick a day';
+
+  @override
+  String cashRegisterElapsed(String time) {
+    return 'Open for $time';
+  }
+
+  @override
+  String cashRegisterPaidTotal(String amount) {
+    return 'Paid orders $amount';
+  }
+
+  @override
+  String get cashRegisterBalanceCorrect => 'Drawer matches';
+
+  @override
+  String cashRegisterBalanceTips(String amount) {
+    return 'Tips $amount';
+  }
+
+  @override
+  String cashRegisterBalanceShort(String amount) {
+    return 'Short $amount';
+  }
+
+  @override
+  String get cashRegisterCorrect => 'Correct cash';
+
+  @override
+  String get cashRegisterEndCashRequiredHint =>
+      'Closing cash is required because this shift has an opening count.';
+
+  @override
+  String get validationCashAmount =>
+      'Enter 0 or a positive amount, or leave this empty.';
+
+  @override
+  String get cashRegisterStartCash => 'Opening cash';
+
+  @override
+  String get cashRegisterStartCashHint =>
+      'Optional. Leave empty if you are not counting the drawer.';
+
+  @override
+  String get cashRegisterEndCash => 'Closing cash';
+
+  @override
+  String get cashRegisterEndCashHint =>
+      'Optional. Leave empty if you are not counting the drawer.';
+
+  @override
+  String cashRegisterStartCashLine(String amount) {
+    return 'Opening cash $amount';
+  }
+
+  @override
+  String cashRegisterEndCashLine(String amount) {
+    return 'Closing cash $amount';
+  }
+
+  @override
+  String get cashRegisterTitle => 'Cash register';
+
+  @override
+  String get cashRegisterOpen => 'Open register';
+
+  @override
+  String get cashRegisterClose => 'Close register';
+
+  @override
+  String get cashRegisterNone => 'The register is closed.';
+
+  @override
+  String get cashRegisterHistory => 'History';
+
+  @override
+  String get cashRegisterHistoryEmpty => 'No shifts yet.';
+
+  @override
+  String cashRegisterOpenedLine(String when, String name) {
+    return 'Opened $when by $name';
+  }
+
+  @override
+  String cashRegisterClosedLine(String when, String name) {
+    return 'Closed $when by $name';
+  }
+
+  @override
+  String cashRegisterOrderCount(int count) {
+    return '$count orders';
+  }
+
+  @override
+  String get cashRegisterCloseHint =>
+      'Pay or cancel every open ticket on this shift before closing.';
+
+  @override
+  String get cashRegisterCloseConfirm => 'Close this register?';
+
+  @override
+  String get cashRegisterBoardClosed =>
+      'Open the cash register to take orders.';
+
+  @override
+  String get cashRegisterThisShift => 'This register';
+
+  @override
+  String get dashboardThisRegister => 'This register';
+
+  @override
+  String get dashboardRegisterClosed =>
+      'Open the cash register. Order counts stay at zero until then.';
+
+  @override
+  String get cashRegisterInProgress => 'In progress';
+
+  @override
+  String get cashRegisterStatusClosed => 'Closed';
 }

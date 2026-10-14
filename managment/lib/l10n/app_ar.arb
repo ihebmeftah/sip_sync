@@ -684,5 +684,86 @@
   "packCapAppend": "إضافة أصناف إلى طلب",
   "packCapMultiOrder": "عدة طلبات على الطاولة",
   "packCapStrict": "خطوات المطبخ الصارمة",
-  "packCapAccess": "ملفات صلاحيات مخصصة"
+  "packCapAccess": "ملفات صلاحيات مخصصة",
+  "packCapCashRegister": "الصندوق",
+  "buildingCashRegister": "الصندوق",
+  "buildingCashRegisterHint": "عند التفعيل، الطلبات الجديدة والدفع تحتاج صندوقاً مفتوحاً. لوحة الطلبات ولوحة المتابعة تتبعان هذه الوردية.",
+  "navCashRegister": "الصندوق",
+  "accessCashRegister": "الصندوق",
+  "accessCashRegisterHint": "فتح الصندوق وإغلاقه وقراءة سجله.",
+  "errorPackFeatureCashRegister": "هذه الباقة لا تشمل الصندوق.",
+  "errorOrderRegisterRequired": "افتح الصندوق قبل أخذ طلب.",
+  "errorCashRegisterDisabled": "هذا المكان لم يفعّل الصندوق.",
+  "errorCashRegisterAlreadyOpen": "الصندوق مفتوح بالفعل.",
+  "errorCashRegisterNotOpen": "هذا الصندوق غير مفتوح.",
+  "errorCashRegisterHasOpenOrders": "ادفع أو ألغِ الطلبات المفتوحة قبل الإغلاق.",
+  "errorCashRegisterInvalidAmount": "أدخل 0 أو مبلغاً موجباً.",
+  "errorCashRegisterEndCashRequired": "أدخل نقد الإغلاق. هذه الوردية لها نقد افتتاح.",
+  "validationCashRequired": "أدخل النقد المعدود.",
+  "cashRegisterHistoryAll": "كل الأيام",
+  "cashRegisterHistoryPickDay": "اختر يوماً",
+  "cashRegisterElapsed": "مفتوح منذ {time}",
+  "@cashRegisterElapsed": {
+    "placeholders": { "time": {"type": "String"} }
+  },
+  "cashRegisterPaidTotal": "الطلبات المدفوعة {amount}",
+  "@cashRegisterPaidTotal": {
+    "placeholders": { "amount": {"type": "String"} }
+  },
+  "cashRegisterBalanceCorrect": "الدرج مطابق",
+  "cashRegisterBalanceTips": "إكرامية {amount}",
+  "@cashRegisterBalanceTips": {
+    "placeholders": { "amount": {"type": "String"} }
+  },
+  "cashRegisterBalanceShort": "نقص {amount}",
+  "@cashRegisterBalanceShort": {
+    "placeholders": { "amount": {"type": "String"} }
+  },
+  "cashRegisterCorrect": "تصحيح النقد",
+  "cashRegisterEndCashRequiredHint": "نقد الإغلاق مطلوب لأن هذه الوردية لها نقد افتتاح.",
+  "validationCashAmount": "أدخل 0 أو مبلغاً موجباً، أو اترك الحقل فارغاً.",
+  "cashRegisterStartCash": "نقد الافتتاح",
+  "cashRegisterStartCashHint": "اختياري. اتركه فارغاً إذا لم تَعُدّ الدرج.",
+  "cashRegisterEndCash": "نقد الإغلاق",
+  "cashRegisterEndCashHint": "اختياري. اتركه فارغاً إذا لم تَعُدّ الدرج.",
+  "cashRegisterStartCashLine": "نقد الافتتاح {amount}",
+  "@cashRegisterStartCashLine": {
+    "placeholders": { "amount": {"type": "String"} }
+  },
+  "cashRegisterEndCashLine": "نقد الإغلاق {amount}",
+  "@cashRegisterEndCashLine": {
+    "placeholders": { "amount": {"type": "String"} }
+  },
+  "cashRegisterTitle": "الصندوق",
+  "cashRegisterOpen": "فتح الصندوق",
+  "cashRegisterClose": "إغلاق الصندوق",
+  "cashRegisterNone": "الصندوق مغلق.",
+  "cashRegisterHistory": "السجل",
+  "cashRegisterHistoryEmpty": "لا ورديات بعد.",
+  "cashRegisterOpenedLine": "فُتح {when} بواسطة {name}",
+  "@cashRegisterOpenedLine": {
+    "placeholders": {
+      "when": {"type": "String"},
+      "name": {"type": "String"}
+    }
+  },
+  "cashRegisterClosedLine": "أُغلق {when} بواسطة {name}",
+  "@cashRegisterClosedLine": {
+    "placeholders": {
+      "when": {"type": "String"},
+      "name": {"type": "String"}
+    }
+  },
+  "cashRegisterOrderCount": "{count} طلبات",
+  "@cashRegisterOrderCount": {
+    "placeholders": { "count": {"type": "int"} }
+  },
+  "cashRegisterCloseHint": "ادفع أو ألغِ كل طلب مفتوح في هذه الوردية قبل الإغلاق.",
+  "cashRegisterCloseConfirm": "إغلاق هذا الصندوق؟",
+  "cashRegisterBoardClosed": "افتح الصندوق لأخذ الطلبات.",
+  "cashRegisterThisShift": "هذا الصندوق",
+  "dashboardThisRegister": "هذا الصندوق",
+  "dashboardRegisterClosed": "افتح الصندوق. تبقى أعداد الطلبات صفراً حتى ذلك.",
+  "cashRegisterInProgress": "قيد العمل",
+  "cashRegisterStatusClosed": "مغلق"
 }

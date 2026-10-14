@@ -206,6 +206,8 @@
   "errorPackLimitReservations": "Ce pack a atteint sa limite de réservations pour la journée.",
   "errorOrderReservationHeld": "Cette table est réservée jusqu'à confirmation de l'arrivée.",
   "errorCustomerOrderingDisabled": "Ce lieu a désactivé les commandes.",
+  "errorOrderRegisterRequired": "La caisse de ce lieu est fermée.",
+  "errorPackFeatureCashRegister": "Ce pack n'inclut pas la caisse.",
   "errorReservationsDisabled": "Ce lieu a désactivé les réservations.",
   "errorReservationOverlap": "Une table est déjà réservée à cette heure.",
   "errorReservationNotFound": "Aucune réservation ne correspond.",

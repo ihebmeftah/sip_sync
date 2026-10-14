@@ -17,6 +17,7 @@ class OrderRepository {
     OrderStatus? status,
     DateTime? createdFrom,
     DateTime? createdTo,
+    UuidValue? cashRegisterSessionId,
     UuidValue? venueTableId,
     int? limit,
     int? offset,
@@ -25,6 +26,7 @@ class OrderRepository {
     status,
     createdFrom: createdFrom,
     createdTo: createdTo,
+    cashRegisterSessionId: cashRegisterSessionId,
     venueTableId: venueTableId,
     limit: limit,
     offset: offset,
@@ -55,13 +57,15 @@ class OrderRepository {
   /// each new ticket, appended line, and status change in that day.
   Stream<OrderBoardEvent> watchBoard(
     UuidValue buildingId, {
-    required DateTime createdFrom,
-    required DateTime createdTo,
+    DateTime? createdFrom,
+    DateTime? createdTo,
+    UuidValue? cashRegisterSessionId,
   }) {
     return _client.order.watchBoard(
       buildingId,
       createdFrom: createdFrom,
       createdTo: createdTo,
+      cashRegisterSessionId: cashRegisterSessionId,
     );
   }
 

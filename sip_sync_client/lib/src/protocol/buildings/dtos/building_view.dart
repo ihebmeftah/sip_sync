@@ -43,6 +43,7 @@ abstract class BuildingView
     required this.customerOrderingEnabled,
     required this.reservationsEnabled,
     required this.allowOutOfStockOrders,
+    required this.cashRegisterEnabled,
     required this.employeeIds,
     required this.pack,
   });
@@ -73,6 +74,7 @@ abstract class BuildingView
     required bool customerOrderingEnabled,
     required bool reservationsEnabled,
     required bool allowOutOfStockOrders,
+    required bool cashRegisterEnabled,
     required List<_isc.UuidValue> employeeIds,
     required _i1961zho.BuildingPackView pack,
   }) = _BuildingViewImpl;
@@ -122,6 +124,9 @@ abstract class BuildingView
       ),
       allowOutOfStockOrders: _isc.BoolJsonExtension.fromJson(
         jsonSerialization['allowOutOfStockOrders'],
+      ),
+      cashRegisterEnabled: _isc.BoolJsonExtension.fromJson(
+        jsonSerialization['cashRegisterEnabled'],
       ),
       employeeIds: _iozg9o5r.Protocol().deserialize<List<_isc.UuidValue>>(
         jsonSerialization['employeeIds'],
@@ -182,6 +187,8 @@ abstract class BuildingView
 
   bool allowOutOfStockOrders;
 
+  bool cashRegisterEnabled;
+
   List<_isc.UuidValue> employeeIds;
 
   _i1961zho.BuildingPackView pack;
@@ -215,6 +222,7 @@ abstract class BuildingView
     bool? customerOrderingEnabled,
     bool? reservationsEnabled,
     bool? allowOutOfStockOrders,
+    bool? cashRegisterEnabled,
     List<_isc.UuidValue>? employeeIds,
     _i1961zho.BuildingPackView? pack,
   });
@@ -247,6 +255,7 @@ abstract class BuildingView
       'customerOrderingEnabled': customerOrderingEnabled,
       'reservationsEnabled': reservationsEnabled,
       'allowOutOfStockOrders': allowOutOfStockOrders,
+      'cashRegisterEnabled': cashRegisterEnabled,
       'employeeIds': employeeIds.toJson(valueToJson: (v) => v.toJson()),
       'pack': pack.toJson(),
     };
@@ -283,6 +292,7 @@ abstract class BuildingView
       'customerOrderingEnabled': customerOrderingEnabled,
       'reservationsEnabled': reservationsEnabled,
       'allowOutOfStockOrders': allowOutOfStockOrders,
+      'cashRegisterEnabled': cashRegisterEnabled,
       'employeeIds': employeeIds.toJson(valueToJson: (v) => v.toJson()),
       'pack': pack.toJsonForProtocol(),
     };
@@ -323,6 +333,7 @@ class _BuildingViewImpl extends BuildingView {
     required bool customerOrderingEnabled,
     required bool reservationsEnabled,
     required bool allowOutOfStockOrders,
+    required bool cashRegisterEnabled,
     required List<_isc.UuidValue> employeeIds,
     required _i1961zho.BuildingPackView pack,
   }) : super._(
@@ -351,6 +362,7 @@ class _BuildingViewImpl extends BuildingView {
          customerOrderingEnabled: customerOrderingEnabled,
          reservationsEnabled: reservationsEnabled,
          allowOutOfStockOrders: allowOutOfStockOrders,
+         cashRegisterEnabled: cashRegisterEnabled,
          employeeIds: employeeIds,
          pack: pack,
        );
@@ -385,6 +397,7 @@ class _BuildingViewImpl extends BuildingView {
     bool? customerOrderingEnabled,
     bool? reservationsEnabled,
     bool? allowOutOfStockOrders,
+    bool? cashRegisterEnabled,
     List<_isc.UuidValue>? employeeIds,
     _i1961zho.BuildingPackView? pack,
   }) {
@@ -419,6 +432,7 @@ class _BuildingViewImpl extends BuildingView {
       reservationsEnabled: reservationsEnabled ?? this.reservationsEnabled,
       allowOutOfStockOrders:
           allowOutOfStockOrders ?? this.allowOutOfStockOrders,
+      cashRegisterEnabled: cashRegisterEnabled ?? this.cashRegisterEnabled,
       employeeIds: employeeIds ?? this.employeeIds.map((e0) => e0).toList(),
       pack: pack ?? this.pack.copyWith(),
     );

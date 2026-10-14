@@ -695,6 +695,21 @@ class OpsSideBar extends ConsumerWidget {
                       onTap: () =>
                           TablesRoute(buildingId: buildingId).go(context),
                     ),
+                    if (isOwner ||
+                        FloorAccess.fromSession(store).canOperateRegister)
+                      _NavTile(
+                        icon: Icons.point_of_sale_outlined,
+                        label: l10n.navCashRegister,
+                        upgradeLocked: selected?.pack.cashRegister == false,
+                        selected: location.contains('/cash-register'),
+                        onTap: () {
+                          if (selected?.pack.cashRegister == false) {
+                            showPackCatalog(context, closeDrawer: inDrawer);
+                            return;
+                          }
+                          CashRegisterRoute(buildingId: buildingId).go(context);
+                        },
+                      ),
                     if (canReserve)
                       _NavTile(
                         icon: Icons.event_available_outlined,

@@ -32,6 +32,8 @@ fields:
   strictMode: bool, default=false
   customAccessProfiles: bool, default=false
   reservations: bool, default=false
+  ### When true, the venue may require an open cash-register session.
+  cashRegister: bool, default=false
   ### Non-cancelled reservations per UTC date. Null means no cap.
   maxReservationsPerDay: int?
   createdAt: DateTime, defaultModel=now

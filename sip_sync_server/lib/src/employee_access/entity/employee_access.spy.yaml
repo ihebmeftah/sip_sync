@@ -14,6 +14,8 @@ fields:
   consultAllOrders: bool, default=false
   ### Create, confirm, cancel, and assign tables for reservations in this building.
   reservations: bool, default=false
+  ### Open and close the cash register for this building.
+  cashRegister: bool, default=false
   createdAt: DateTime, defaultModel=now
   employees: List<Employee>?, relation(name=access_employees)
 indexes:

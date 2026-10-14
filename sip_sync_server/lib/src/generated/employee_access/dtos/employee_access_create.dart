@@ -24,7 +24,9 @@ abstract class EmployeeAccessCreate
     required this.serving,
     required this.consultAllOrders,
     bool? reservations,
-  }) : reservations = reservations ?? false;
+    bool? cashRegister,
+  }) : reservations = reservations ?? false,
+       cashRegister = cashRegister ?? false;
 
   factory EmployeeAccessCreate({
     required _is.UuidValue buildingId,
@@ -36,6 +38,7 @@ abstract class EmployeeAccessCreate
     required bool serving,
     required bool consultAllOrders,
     bool? reservations,
+    bool? cashRegister,
   }) = _EmployeeAccessCreateImpl;
 
   factory EmployeeAccessCreate.fromJson(
@@ -65,6 +68,9 @@ abstract class EmployeeAccessCreate
       reservations: jsonSerialization['reservations'] == null
           ? null
           : _is.BoolJsonExtension.fromJson(jsonSerialization['reservations']),
+      cashRegister: jsonSerialization['cashRegister'] == null
+          ? null
+          : _is.BoolJsonExtension.fromJson(jsonSerialization['cashRegister']),
     );
   }
 
@@ -86,6 +92,8 @@ abstract class EmployeeAccessCreate
 
   bool reservations;
 
+  bool cashRegister;
+
   /// Returns a shallow copy of this [EmployeeAccessCreate]
   /// with some or all fields replaced by the given arguments.
   @_is.useResult
@@ -99,6 +107,7 @@ abstract class EmployeeAccessCreate
     bool? serving,
     bool? consultAllOrders,
     bool? reservations,
+    bool? cashRegister,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -113,6 +122,7 @@ abstract class EmployeeAccessCreate
       'serving': serving,
       'consultAllOrders': consultAllOrders,
       'reservations': reservations,
+      'cashRegister': cashRegister,
     };
   }
 
@@ -129,6 +139,7 @@ abstract class EmployeeAccessCreate
       'serving': serving,
       'consultAllOrders': consultAllOrders,
       'reservations': reservations,
+      'cashRegister': cashRegister,
     };
   }
 
@@ -149,6 +160,7 @@ class _EmployeeAccessCreateImpl extends EmployeeAccessCreate {
     required bool serving,
     required bool consultAllOrders,
     bool? reservations,
+    bool? cashRegister,
   }) : super._(
          buildingId: buildingId,
          name: name,
@@ -159,6 +171,7 @@ class _EmployeeAccessCreateImpl extends EmployeeAccessCreate {
          serving: serving,
          consultAllOrders: consultAllOrders,
          reservations: reservations,
+         cashRegister: cashRegister,
        );
 
   /// Returns a shallow copy of this [EmployeeAccessCreate]
@@ -175,6 +188,7 @@ class _EmployeeAccessCreateImpl extends EmployeeAccessCreate {
     bool? serving,
     bool? consultAllOrders,
     bool? reservations,
+    bool? cashRegister,
   }) {
     return EmployeeAccessCreate(
       buildingId: buildingId ?? this.buildingId,
@@ -186,6 +200,7 @@ class _EmployeeAccessCreateImpl extends EmployeeAccessCreate {
       serving: serving ?? this.serving,
       consultAllOrders: consultAllOrders ?? this.consultAllOrders,
       reservations: reservations ?? this.reservations,
+      cashRegister: cashRegister ?? this.cashRegister,
     );
   }
 }

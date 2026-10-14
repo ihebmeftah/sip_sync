@@ -206,6 +206,8 @@
   "errorPackLimitReservations": "بلغت هذه الباقة حد الحجوزات لهذا اليوم.",
   "errorOrderReservationHeld": "هذه الطاولة محجوزة إلى أن يؤكد المكان الوصول.",
   "errorCustomerOrderingDisabled": "هذا المكان أوقف الطلبات.",
+  "errorOrderRegisterRequired": "صندوق هذا المكان مغلق.",
+  "errorPackFeatureCashRegister": "هذه الباقة لا تشمل الصندوق.",
   "errorReservationsDisabled": "هذا المكان أوقف الحجوزات.",
   "errorReservationOverlap": "طاولة محجوزة بالفعل في هذا الوقت.",
   "errorReservationNotFound": "لا يوجد حجز مطابق.",

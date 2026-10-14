@@ -28,7 +28,7 @@ Status: in progress
 
 Prices are millimes (89 TND = 89,000). The catalog currency is TND, separate from a venue’s `currencyCode`. The customer-app fee is basis points on orders placed in the customer app (`150` = 1.5%). Staff-entered tickets are not charged.
 
-Capability keys match features that exist today. An empty limit means no cap. Cash register, statistics, and kitchen alerts are not keys yet.
+Capability keys match features that exist today. An empty limit means no cap. Statistics and kitchen alerts are not keys yet. Cash register is a switch: off on `free`, on for `counter`, `floor`, `house`, and `group`.
 
 ## Seeded catalog
 
@@ -61,7 +61,7 @@ Capability keys match features that exist today. An empty limit means no cap. Ca
 Before a write is stored, the server loads the venue pack:
 
 - Counts: employees, tables, categories, articles, ingredients. A null cap is unlimited.
-- Flags: customer ordering, appending items, inventory (ingredients, restock, recipes), custom access profiles, and turning on multi-order, strict mode, or append on the venue.
+- Flags: customer ordering, appending items, inventory (ingredients, restock, recipes), custom access profiles, cash register, and turning on multi-order, strict mode, or append on the venue.
 - Customer discovery hides a venue from the customer map and venue page. Table QR hides sticker resolution. The owner app blocks QR export before the call when the pack leaves it off.
 
 The owner banner names the current pack, says a change goes through the support team, and offers an Upgrade chip that opens the public catalog. A locked action is drawn disabled with the same Upgrade badge; tapping it opens that catalog instead of running the action. A switch the pack leaves off stays off and locked unless it is already on, so the owner can still turn it off. Strict item workflow is one of those switches. While it is off, order lines go from in progress to payed or cancelled, and the item board shows a payed column. The customer app shows a snackbar when ordering is off, and hides the cart action. Discovery and table QR still answer as not found when those switches are off.

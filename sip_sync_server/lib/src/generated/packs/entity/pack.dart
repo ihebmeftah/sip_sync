@@ -44,6 +44,7 @@ abstract class Pack
     bool? strictMode,
     bool? customAccessProfiles,
     bool? reservations,
+    bool? cashRegister,
     this.maxReservationsPerDay,
     DateTime? createdAt,
     this.buildings,
@@ -62,6 +63,7 @@ abstract class Pack
        strictMode = strictMode ?? false,
        customAccessProfiles = customAccessProfiles ?? false,
        reservations = reservations ?? false,
+       cashRegister = cashRegister ?? false,
        createdAt = createdAt ?? DateTime.now();
 
   factory Pack({
@@ -89,6 +91,7 @@ abstract class Pack
     bool? strictMode,
     bool? customAccessProfiles,
     bool? reservations,
+    bool? cashRegister,
     int? maxReservationsPerDay,
     DateTime? createdAt,
     List<_iaohraio.Building>? buildings,
@@ -157,6 +160,9 @@ abstract class Pack
       reservations: jsonSerialization['reservations'] == null
           ? null
           : _is.BoolJsonExtension.fromJson(jsonSerialization['reservations']),
+      cashRegister: jsonSerialization['cashRegister'] == null
+          ? null
+          : _is.BoolJsonExtension.fromJson(jsonSerialization['cashRegister']),
       maxReservationsPerDay: jsonSerialization['maxReservationsPerDay'] as int?,
       createdAt: jsonSerialization['createdAt'] == null
           ? null
@@ -233,6 +239,9 @@ abstract class Pack
 
   bool reservations;
 
+  /// When true, the venue may require an open cash-register session.
+  bool cashRegister;
+
   /// Non-cancelled reservations per UTC date. Null means no cap.
   int? maxReservationsPerDay;
 
@@ -273,6 +282,7 @@ abstract class Pack
     bool? strictMode,
     bool? customAccessProfiles,
     bool? reservations,
+    bool? cashRegister,
     int? maxReservationsPerDay,
     DateTime? createdAt,
     List<_iaohraio.Building>? buildings,
@@ -306,6 +316,7 @@ abstract class Pack
       'strictMode': strictMode,
       'customAccessProfiles': customAccessProfiles,
       'reservations': reservations,
+      'cashRegister': cashRegister,
       if (maxReservationsPerDay != null)
         'maxReservationsPerDay': maxReservationsPerDay,
       'createdAt': createdAt.toJson(),
@@ -383,6 +394,7 @@ class _PackImpl extends Pack {
     bool? strictMode,
     bool? customAccessProfiles,
     bool? reservations,
+    bool? cashRegister,
     int? maxReservationsPerDay,
     DateTime? createdAt,
     List<_iaohraio.Building>? buildings,
@@ -412,6 +424,7 @@ class _PackImpl extends Pack {
          strictMode: strictMode,
          customAccessProfiles: customAccessProfiles,
          reservations: reservations,
+         cashRegister: cashRegister,
          maxReservationsPerDay: maxReservationsPerDay,
          createdAt: createdAt,
          buildings: buildings,
@@ -447,6 +460,7 @@ class _PackImpl extends Pack {
     bool? strictMode,
     bool? customAccessProfiles,
     bool? reservations,
+    bool? cashRegister,
     Object? maxReservationsPerDay = _Undefined,
     DateTime? createdAt,
     Object? buildings = _Undefined,
@@ -481,6 +495,7 @@ class _PackImpl extends Pack {
       strictMode: strictMode ?? this.strictMode,
       customAccessProfiles: customAccessProfiles ?? this.customAccessProfiles,
       reservations: reservations ?? this.reservations,
+      cashRegister: cashRegister ?? this.cashRegister,
       maxReservationsPerDay: maxReservationsPerDay is int?
           ? maxReservationsPerDay
           : this.maxReservationsPerDay,
@@ -615,6 +630,11 @@ class PackUpdateTable extends _is.UpdateTable<PackTable> {
     value,
   );
 
+  _is.ColumnValue<bool, bool> cashRegister(bool value) => _is.ColumnValue(
+    table.cashRegister,
+    value,
+  );
+
   _is.ColumnValue<int, int> maxReservationsPerDay(int? value) =>
       _is.ColumnValue(
         table.maxReservationsPerDay,
@@ -737,6 +757,11 @@ class PackTable extends _is.Table<_is.UuidValue?> {
       this,
       hasDefault: true,
     );
+    cashRegister = _is.ColumnBool(
+      'cashRegister',
+      this,
+      hasDefault: true,
+    );
     maxReservationsPerDay = _is.ColumnInt(
       'maxReservationsPerDay',
       this,
@@ -799,6 +824,9 @@ class PackTable extends _is.Table<_is.UuidValue?> {
   late final _is.ColumnBool customAccessProfiles;
 
   late final _is.ColumnBool reservations;
+
+  /// When true, the venue may require an open cash-register session.
+  late final _is.ColumnBool cashRegister;
 
   /// Non-cancelled reservations per UTC date. Null means no cap.
   late final _is.ColumnInt maxReservationsPerDay;
@@ -907,6 +935,7 @@ class PackTable extends _is.Table<_is.UuidValue?> {
     strictMode,
     customAccessProfiles,
     reservations,
+    cashRegister,
     maxReservationsPerDay,
     createdAt,
   ];

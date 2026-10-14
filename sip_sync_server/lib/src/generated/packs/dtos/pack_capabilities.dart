@@ -30,6 +30,7 @@ abstract class PackCapabilities
     required this.strictMode,
     required this.customAccessProfiles,
     required this.reservations,
+    required this.cashRegister,
     this.maxReservationsPerDay,
   });
 
@@ -48,6 +49,7 @@ abstract class PackCapabilities
     required bool strictMode,
     required bool customAccessProfiles,
     required bool reservations,
+    required bool cashRegister,
     int? maxReservationsPerDay,
   }) = _PackCapabilitiesImpl;
 
@@ -81,6 +83,9 @@ abstract class PackCapabilities
       reservations: _is.BoolJsonExtension.fromJson(
         jsonSerialization['reservations'],
       ),
+      cashRegister: _is.BoolJsonExtension.fromJson(
+        jsonSerialization['cashRegister'],
+      ),
       maxReservationsPerDay: jsonSerialization['maxReservationsPerDay'] as int?,
     );
   }
@@ -113,6 +118,8 @@ abstract class PackCapabilities
 
   bool reservations;
 
+  bool cashRegister;
+
   /// Non-cancelled reservations whose start falls on one UTC date. Null means no cap.
   int? maxReservationsPerDay;
 
@@ -134,6 +141,7 @@ abstract class PackCapabilities
     bool? strictMode,
     bool? customAccessProfiles,
     bool? reservations,
+    bool? cashRegister,
     int? maxReservationsPerDay,
   });
   @override
@@ -154,6 +162,7 @@ abstract class PackCapabilities
       'strictMode': strictMode,
       'customAccessProfiles': customAccessProfiles,
       'reservations': reservations,
+      'cashRegister': cashRegister,
       if (maxReservationsPerDay != null)
         'maxReservationsPerDay': maxReservationsPerDay,
     };
@@ -177,6 +186,7 @@ abstract class PackCapabilities
       'strictMode': strictMode,
       'customAccessProfiles': customAccessProfiles,
       'reservations': reservations,
+      'cashRegister': cashRegister,
       if (maxReservationsPerDay != null)
         'maxReservationsPerDay': maxReservationsPerDay,
     };
@@ -206,6 +216,7 @@ class _PackCapabilitiesImpl extends PackCapabilities {
     required bool strictMode,
     required bool customAccessProfiles,
     required bool reservations,
+    required bool cashRegister,
     int? maxReservationsPerDay,
   }) : super._(
          maxEmployees: maxEmployees,
@@ -222,6 +233,7 @@ class _PackCapabilitiesImpl extends PackCapabilities {
          strictMode: strictMode,
          customAccessProfiles: customAccessProfiles,
          reservations: reservations,
+         cashRegister: cashRegister,
          maxReservationsPerDay: maxReservationsPerDay,
        );
 
@@ -244,6 +256,7 @@ class _PackCapabilitiesImpl extends PackCapabilities {
     bool? strictMode,
     bool? customAccessProfiles,
     bool? reservations,
+    bool? cashRegister,
     Object? maxReservationsPerDay = _Undefined,
   }) {
     return PackCapabilities(
@@ -263,6 +276,7 @@ class _PackCapabilitiesImpl extends PackCapabilities {
       strictMode: strictMode ?? this.strictMode,
       customAccessProfiles: customAccessProfiles ?? this.customAccessProfiles,
       reservations: reservations ?? this.reservations,
+      cashRegister: cashRegister ?? this.cashRegister,
       maxReservationsPerDay: maxReservationsPerDay is int?
           ? maxReservationsPerDay
           : this.maxReservationsPerDay,

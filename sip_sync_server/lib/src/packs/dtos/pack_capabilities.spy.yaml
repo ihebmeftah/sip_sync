@@ -15,5 +15,6 @@ fields:
   strictMode: bool
   customAccessProfiles: bool
   reservations: bool
+  cashRegister: bool
   ### Non-cancelled reservations whose start falls on one UTC date. Null means no cap.
   maxReservationsPerDay: int?

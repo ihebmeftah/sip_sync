@@ -1,0 +1,24 @@
+### One cash-register shift for a venue. At most one row stays in progress.
+class: CashRegisterSession
+table: cash_register_session
+serverOnly: true
+fields:
+  id: UuidValue?, defaultPersist=random_v7
+  building: Building?, relation(name=building_cash_registers, onDelete=Cascade)
+  status: CashRegisterStatus
+  openedByType: ActorType
+  openedById: UuidValue
+  openedAt: DateTime
+  ### Counted drawer when the shift opened. Empty when nobody counted it.
+  startCash: double?
+  closedByType: ActorType?
+  closedById: UuidValue?
+  closedAt: DateTime?
+  ### Counted drawer when the shift closed. Empty when nobody counted it.
+  endCash: double?
+  orders: List<VenueOrder>?, relation(name=cash_register_orders)
+indexes:
+  cash_register_session_building_idx:
+    fields: buildingId
+  cash_register_session_building_status_idx:
+    fields: buildingId, status

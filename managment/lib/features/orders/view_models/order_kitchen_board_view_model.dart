@@ -5,6 +5,7 @@ import 'package:sip_sync_client/sip_sync_client.dart';
 
 import '../../../core/di/app_providers.dart';
 import '../../tables/view_models/tables_view_model.dart';
+import '../../cash_register/view_models/cash_register_view_model.dart';
 import '../order_list_day.dart';
 
 part 'order_kitchen_board_view_model.g.dart';
@@ -16,6 +17,7 @@ class KitchenBoardState {
     required this.newOrderIds,
     required this.addedItemIds,
     this.live = false,
+    this.registerClosed = false,
   });
 
   final List<OrderView> orders;
@@ -27,17 +29,22 @@ class KitchenBoardState {
   final Set<String> addedItemIds;
   final bool live;
 
+  /// The venue requires a register and none is open.
+  final bool registerClosed;
+
   KitchenBoardState copyWith({
     List<OrderView>? orders,
     Set<String>? newOrderIds,
     Set<String>? addedItemIds,
     bool? live,
+    bool? registerClosed,
   }) {
     return KitchenBoardState(
       orders: orders ?? this.orders,
       newOrderIds: newOrderIds ?? this.newOrderIds,
       addedItemIds: addedItemIds ?? this.addedItemIds,
       live: live ?? this.live,
+      registerClosed: registerClosed ?? this.registerClosed,
     );
   }
 }
@@ -50,7 +57,8 @@ class OrderKitchenBoard extends _$OrderKitchenBoard {
   @override
   Future<KitchenBoardState> build(String buildingId) async {
     ref.listen(buildingSelectionProvider, (previous, next) {
-      if (previous?.strictMode != next?.strictMode) {
+      if (previous?.strictMode != next?.strictMode ||
+          previous?.cashRegisterEnabled != next?.cashRegisterEnabled) {
         ref.invalidateSelf();
       }
     });
@@ -65,16 +73,37 @@ class OrderKitchenBoard extends _$OrderKitchenBoard {
         addedItemIds: {},
       );
     }
+    final building = ref.read(buildingSelectionProvider);
+    final registerRequired =
+        building?.cashRegisterEnabled == true &&
+        building?.id.uuid == buildingId;
+    UuidValue? sessionId;
+    if (registerRequired) {
+      final session = await ref.watch(
+        openCashRegisterProvider(buildingId).future,
+      );
+      if (session == null) {
+        return const KitchenBoardState(
+          orders: [],
+          newOrderIds: {},
+          addedItemIds: {},
+          registerClosed: true,
+        );
+      }
+      sessionId = session.id;
+    }
     final day = orderListDayWindow(
       const OrderListDaySelection.today(),
       DateTime.now(),
     );
-    var untilMidnight = day.to.difference(DateTime.now());
-    if (untilMidnight <= Duration.zero) {
-      untilMidnight = const Duration(seconds: 1);
+    if (!registerRequired) {
+      var untilMidnight = day.to.difference(DateTime.now());
+      if (untilMidnight <= Duration.zero) {
+        untilMidnight = const Duration(seconds: 1);
+      }
+      final rollDay = Timer(untilMidnight, ref.invalidateSelf);
+      ref.onDispose(rollDay.cancel);
     }
-    final rollDay = Timer(untilMidnight, ref.invalidateSelf);
-    ref.onDispose(rollDay.cancel);
     final ready = Completer<KitchenBoardState>();
     var current = const KitchenBoardState(
       orders: [],
@@ -85,8 +114,9 @@ class OrderKitchenBoard extends _$OrderKitchenBoard {
         .read(orderRepositoryProvider)
         .watchBoard(
           UuidValue.fromString(buildingId),
-          createdFrom: day.from,
-          createdTo: day.to,
+          createdFrom: sessionId == null ? day.from : null,
+          createdTo: sessionId == null ? day.to : null,
+          cashRegisterSessionId: sessionId,
         )
         .listen(
           (event) {

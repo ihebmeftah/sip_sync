@@ -647,6 +647,14 @@ class AppLocalizationsEn extends AppLocalizations {
       'This venue has turned off ordering.';
 
   @override
+  String get errorOrderRegisterRequired =>
+      'This venue\'s cash register is closed.';
+
+  @override
+  String get errorPackFeatureCashRegister =>
+      'This plan does not include the cash register.';
+
+  @override
   String get errorReservationsDisabled =>
       'This venue has turned off reservations.';
 

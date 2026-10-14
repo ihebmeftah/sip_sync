@@ -1986,4 +1986,179 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get packCapAccess => 'Profils d\'accès personnalisés';
+
+  @override
+  String get packCapCashRegister => 'Caisse';
+
+  @override
+  String get buildingCashRegister => 'Caisse';
+
+  @override
+  String get buildingCashRegisterHint =>
+      'Quand c\'est activé, les nouvelles commandes et les paiements exigent une caisse ouverte. Le tableau des commandes et le tableau de bord suivent ce service.';
+
+  @override
+  String get navCashRegister => 'Caisse';
+
+  @override
+  String get accessCashRegister => 'Caisse';
+
+  @override
+  String get accessCashRegisterHint =>
+      'Ouvrir et fermer la caisse, et lire son historique.';
+
+  @override
+  String get errorPackFeatureCashRegister => 'Ce pack n\'inclut pas la caisse.';
+
+  @override
+  String get errorOrderRegisterRequired =>
+      'Ouvrez la caisse avant de prendre une commande.';
+
+  @override
+  String get errorCashRegisterDisabled => 'Ce lieu n\'a pas activé la caisse.';
+
+  @override
+  String get errorCashRegisterAlreadyOpen => 'Une caisse est déjà ouverte.';
+
+  @override
+  String get errorCashRegisterNotOpen => 'Cette caisse n\'est pas ouverte.';
+
+  @override
+  String get errorCashRegisterHasOpenOrders =>
+      'Encaissez ou annulez les tickets ouverts avant de fermer.';
+
+  @override
+  String get errorCashRegisterInvalidAmount =>
+      'Entrez 0 ou un montant positif.';
+
+  @override
+  String get errorCashRegisterEndCashRequired =>
+      'Entrez le fond de clôture. Ce service a un fond d\'ouverture.';
+
+  @override
+  String get validationCashRequired => 'Entrez le montant compté.';
+
+  @override
+  String get cashRegisterHistoryAll => 'Tous les jours';
+
+  @override
+  String get cashRegisterHistoryPickDay => 'Choisir un jour';
+
+  @override
+  String cashRegisterElapsed(String time) {
+    return 'Ouverte depuis $time';
+  }
+
+  @override
+  String cashRegisterPaidTotal(String amount) {
+    return 'Commandes payées $amount';
+  }
+
+  @override
+  String get cashRegisterBalanceCorrect => 'Tiroir juste';
+
+  @override
+  String cashRegisterBalanceTips(String amount) {
+    return 'Pourboires $amount';
+  }
+
+  @override
+  String cashRegisterBalanceShort(String amount) {
+    return 'Manque $amount';
+  }
+
+  @override
+  String get cashRegisterCorrect => 'Corriger le fond';
+
+  @override
+  String get cashRegisterEndCashRequiredHint =>
+      'Le fond de clôture est requis parce que ce service a un fond d\'ouverture.';
+
+  @override
+  String get validationCashAmount =>
+      'Entrez 0 ou un montant positif, ou laissez vide.';
+
+  @override
+  String get cashRegisterStartCash => 'Fond d\'ouverture';
+
+  @override
+  String get cashRegisterStartCashHint =>
+      'Facultatif. Laissez vide si vous ne comptez pas le tiroir.';
+
+  @override
+  String get cashRegisterEndCash => 'Fond de clôture';
+
+  @override
+  String get cashRegisterEndCashHint =>
+      'Facultatif. Laissez vide si vous ne comptez pas le tiroir.';
+
+  @override
+  String cashRegisterStartCashLine(String amount) {
+    return 'Fond d\'ouverture $amount';
+  }
+
+  @override
+  String cashRegisterEndCashLine(String amount) {
+    return 'Fond de clôture $amount';
+  }
+
+  @override
+  String get cashRegisterTitle => 'Caisse';
+
+  @override
+  String get cashRegisterOpen => 'Ouvrir la caisse';
+
+  @override
+  String get cashRegisterClose => 'Fermer la caisse';
+
+  @override
+  String get cashRegisterNone => 'La caisse est fermée.';
+
+  @override
+  String get cashRegisterHistory => 'Historique';
+
+  @override
+  String get cashRegisterHistoryEmpty => 'Aucun service pour l\'instant.';
+
+  @override
+  String cashRegisterOpenedLine(String when, String name) {
+    return 'Ouverte $when par $name';
+  }
+
+  @override
+  String cashRegisterClosedLine(String when, String name) {
+    return 'Fermée $when par $name';
+  }
+
+  @override
+  String cashRegisterOrderCount(int count) {
+    return '$count commandes';
+  }
+
+  @override
+  String get cashRegisterCloseHint =>
+      'Encaissez ou annulez chaque ticket ouvert de ce service avant de fermer.';
+
+  @override
+  String get cashRegisterCloseConfirm => 'Fermer cette caisse ?';
+
+  @override
+  String get cashRegisterBoardClosed =>
+      'Ouvrez la caisse pour prendre des commandes.';
+
+  @override
+  String get cashRegisterThisShift => 'Cette caisse';
+
+  @override
+  String get dashboardThisRegister => 'Cette caisse';
+
+  @override
+  String get dashboardRegisterClosed =>
+      'Ouvrez la caisse. Les comptes de commandes restent à zéro jusque-là.';
+
+  @override
+  String get cashRegisterInProgress => 'En cours';
+
+  @override
+  String get cashRegisterStatusClosed => 'Fermée';
 }

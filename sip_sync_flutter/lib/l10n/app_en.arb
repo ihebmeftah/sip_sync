@@ -235,6 +235,8 @@
   "errorPackLimitReservations": "This plan has reached its reservation limit for the day.",
   "errorOrderReservationHeld": "This table is reserved until the venue confirms arrival.",
   "errorCustomerOrderingDisabled": "This venue has turned off ordering.",
+  "errorOrderRegisterRequired": "This venue's cash register is closed.",
+  "errorPackFeatureCashRegister": "This plan does not include the cash register.",
   "errorReservationsDisabled": "This venue has turned off reservations.",
   "errorReservationOverlap": "A table is already reserved for that time.",
   "errorReservationNotFound": "No reservation matches that.",

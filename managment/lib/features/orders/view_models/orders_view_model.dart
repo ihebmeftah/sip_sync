@@ -6,6 +6,7 @@ import '../../../core/errors/error_mapper.dart';
 import '../../../core/paging/list_paging.dart';
 import '../../auth/view_models/auth_view_model.dart';
 import '../../tables/view_models/tables_view_model.dart';
+import '../../cash_register/view_models/cash_register_view_model.dart';
 import '../order_list_day.dart';
 
 part 'orders_view_model.g.dart';
@@ -47,12 +48,16 @@ class OrdersViewModel extends _$OrdersViewModel {
   late String _buildingId;
   OrderStatus? _statusFilter;
   OrderListDaySelection _dayFilter = const OrderListDaySelection.today();
+  var _followRegister = true;
 
   /// Current list chip filter (`null` = all).
   OrderStatus? get statusFilter => _statusFilter;
 
   /// Day chip. Defaults to today and is sent for every caller.
   OrderListDaySelection get dayFilter => _dayFilter;
+
+  /// True while the list follows the open cash register instead of a day chip.
+  bool get followingRegister => _followRegister;
 
   @override
   Future<OrderBoardState> build(String buildingId) async {
@@ -74,19 +79,29 @@ class OrdersViewModel extends _$OrdersViewModel {
 
   /// Changes the day chip and reloads from the first page.
   Future<void> setDayFilter(OrderListDaySelection selection) async {
-    if (_dayFilter == selection) return;
+    if (!_followRegister && _dayFilter == selection) return;
+    _followRegister = false;
     _dayFilter = selection;
     await refresh();
   }
 
-  /// Remount: reset chips to All and today (keepAlive otherwise keeps them).
+  /// Follows the open register again. The day chips stay for another lookup.
+  Future<void> followRegister() async {
+    if (_followRegister) return;
+    _followRegister = true;
+    await refresh();
+  }
+
+  /// Remount: reset chips to All and the open register, or today.
   Future<void> onScreenAppeared() async {
     _statusFilter = null;
     _dayFilter = const OrderListDaySelection.today();
+    _followRegister = true;
     await refresh();
   }
 
   Future<void> refresh() async {
+    ref.invalidate(openCashRegisterProvider(_buildingId));
     state = await AsyncValue.guard(() async {
       if (_buildingId.isEmpty) {
         return const OrderBoardState(orders: [], total: 0);
@@ -129,7 +144,30 @@ class OrdersViewModel extends _$OrdersViewModel {
     }
   }
 
-  Future<OrderPage> _fetch(int offset) {
+  Future<OrderPage> _fetch(int offset) async {
+    final building = ref.read(buildingSelectionProvider);
+    if (_followRegister && building?.cashRegisterEnabled == true) {
+      final session = await ref.read(
+        openCashRegisterProvider(_buildingId).future,
+      );
+      if (session == null) {
+        return OrderPage(
+          items: const [],
+          total: 0,
+          limit: listPageSize,
+          offset: offset,
+        );
+      }
+      return ref
+          .read(orderRepositoryProvider)
+          .list(
+            UuidValue.fromString(_buildingId),
+            status: _statusFilter,
+            cashRegisterSessionId: session.id,
+            limit: listPageSize,
+            offset: offset,
+          );
+    }
     final window = orderListDayWindow(_dayFilter, DateTime.now());
     return ref
         .read(orderRepositoryProvider)

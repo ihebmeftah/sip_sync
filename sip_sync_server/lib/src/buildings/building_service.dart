@@ -202,6 +202,11 @@ ORDER BY COUNT(*) DESC, "countryName" ASC
       free.allowAppendingItems,
       PackFeature.appendingItems,
     );
+    PackGate.requireIfRequested(
+      request.cashRegisterEnabled,
+      free.cashRegister,
+      PackFeature.cashRegister,
+    );
     final row = await session.db.transaction((transaction) async {
       final inserted = await Building.db.insertRow(
         session,
@@ -234,6 +239,7 @@ ORDER BY COUNT(*) DESC, "countryName" ASC
           customerOrderingEnabled: request.customerOrderingEnabled,
           reservationsEnabled: request.reservationsEnabled,
           allowOutOfStockOrders: request.allowOutOfStockOrders,
+          cashRegisterEnabled: request.cashRegisterEnabled,
         ),
         transaction: transaction,
       );
@@ -286,6 +292,11 @@ ORDER BY COUNT(*) DESC, "countryName" ASC
       pack.allowAppendingItems,
       PackFeature.appendingItems,
     );
+    PackGate.requireIfRequested(
+      request.cashRegisterEnabled && !row.cashRegisterEnabled,
+      pack.cashRegister,
+      PackFeature.cashRegister,
+    );
     final updated = await Building.db.updateRow(
       session,
       current.copyWith(
@@ -315,6 +326,7 @@ ORDER BY COUNT(*) DESC, "countryName" ASC
         customerOrderingEnabled: request.customerOrderingEnabled,
         reservationsEnabled: request.reservationsEnabled,
         allowOutOfStockOrders: request.allowOutOfStockOrders,
+        cashRegisterEnabled: request.cashRegisterEnabled,
       ),
     );
     return _view(session, updated);
@@ -440,6 +452,7 @@ ORDER BY COUNT(*) DESC, "countryName" ASC
       customerOrderingEnabled: current.customerOrderingEnabled,
       reservationsEnabled: current.reservationsEnabled,
       allowOutOfStockOrders: current.allowOutOfStockOrders,
+      cashRegisterEnabled: current.cashRegisterEnabled,
       employeeIds: staff.map((s) => s.id!).toList(),
       pack: PackGate.summary(pack),
     );

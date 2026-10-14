@@ -22,7 +22,7 @@ Product and feature documentation for Sip Sync. Update these pages when behavior
 | Employee access profiles | shipped | [employee-access](features/employee-access.md) |
 | Menu & inventory | in progress | [menu-inventory](features/menu-inventory.md) |
 | Order management | in progress | [orders](features/orders.md) |
-| Cash register | planned | [cash-register](features/cash-register.md) |
+| Cash register | shipped | [cash-register](features/cash-register.md) |
 | Statistics & analytics | in progress | [statistics](features/statistics.md) |
 | Management dashboard | in progress | [dashboard](features/dashboard.md) |
 | Real-time notifications | in progress | [notifications](features/notifications.md) |

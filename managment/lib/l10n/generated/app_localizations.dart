@@ -3609,6 +3609,294 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Custom access profiles'**
   String get packCapAccess;
+
+  /// No description provided for @packCapCashRegister.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash register'**
+  String get packCapCashRegister;
+
+  /// No description provided for @buildingCashRegister.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash register'**
+  String get buildingCashRegister;
+
+  /// No description provided for @buildingCashRegisterHint.
+  ///
+  /// In en, this message translates to:
+  /// **'When on, new orders and payments need an open register. The order board and dashboard follow that shift.'**
+  String get buildingCashRegisterHint;
+
+  /// No description provided for @navCashRegister.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash register'**
+  String get navCashRegister;
+
+  /// No description provided for @accessCashRegister.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash register'**
+  String get accessCashRegister;
+
+  /// No description provided for @accessCashRegisterHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Open and close the cash register, and read its history.'**
+  String get accessCashRegisterHint;
+
+  /// No description provided for @errorPackFeatureCashRegister.
+  ///
+  /// In en, this message translates to:
+  /// **'This plan does not include the cash register.'**
+  String get errorPackFeatureCashRegister;
+
+  /// No description provided for @errorOrderRegisterRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the cash register before taking an order.'**
+  String get errorOrderRegisterRequired;
+
+  /// No description provided for @errorCashRegisterDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'This venue has not turned on the cash register.'**
+  String get errorCashRegisterDisabled;
+
+  /// No description provided for @errorCashRegisterAlreadyOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'A cash register is already open.'**
+  String get errorCashRegisterAlreadyOpen;
+
+  /// No description provided for @errorCashRegisterNotOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'This cash register is not open.'**
+  String get errorCashRegisterNotOpen;
+
+  /// No description provided for @errorCashRegisterHasOpenOrders.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay or cancel the open tickets before closing.'**
+  String get errorCashRegisterHasOpenOrders;
+
+  /// No description provided for @errorCashRegisterInvalidAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter 0 or a positive amount.'**
+  String get errorCashRegisterInvalidAmount;
+
+  /// No description provided for @errorCashRegisterEndCashRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the closing cash. This shift has an opening count.'**
+  String get errorCashRegisterEndCashRequired;
+
+  /// No description provided for @validationCashRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the counted cash.'**
+  String get validationCashRequired;
+
+  /// No description provided for @cashRegisterHistoryAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All days'**
+  String get cashRegisterHistoryAll;
+
+  /// No description provided for @cashRegisterHistoryPickDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a day'**
+  String get cashRegisterHistoryPickDay;
+
+  /// No description provided for @cashRegisterElapsed.
+  ///
+  /// In en, this message translates to:
+  /// **'Open for {time}'**
+  String cashRegisterElapsed(String time);
+
+  /// No description provided for @cashRegisterPaidTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Paid orders {amount}'**
+  String cashRegisterPaidTotal(String amount);
+
+  /// No description provided for @cashRegisterBalanceCorrect.
+  ///
+  /// In en, this message translates to:
+  /// **'Drawer matches'**
+  String get cashRegisterBalanceCorrect;
+
+  /// No description provided for @cashRegisterBalanceTips.
+  ///
+  /// In en, this message translates to:
+  /// **'Tips {amount}'**
+  String cashRegisterBalanceTips(String amount);
+
+  /// No description provided for @cashRegisterBalanceShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Short {amount}'**
+  String cashRegisterBalanceShort(String amount);
+
+  /// No description provided for @cashRegisterCorrect.
+  ///
+  /// In en, this message translates to:
+  /// **'Correct cash'**
+  String get cashRegisterCorrect;
+
+  /// No description provided for @cashRegisterEndCashRequiredHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Closing cash is required because this shift has an opening count.'**
+  String get cashRegisterEndCashRequiredHint;
+
+  /// No description provided for @validationCashAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter 0 or a positive amount, or leave this empty.'**
+  String get validationCashAmount;
+
+  /// No description provided for @cashRegisterStartCash.
+  ///
+  /// In en, this message translates to:
+  /// **'Opening cash'**
+  String get cashRegisterStartCash;
+
+  /// No description provided for @cashRegisterStartCashHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional. Leave empty if you are not counting the drawer.'**
+  String get cashRegisterStartCashHint;
+
+  /// No description provided for @cashRegisterEndCash.
+  ///
+  /// In en, this message translates to:
+  /// **'Closing cash'**
+  String get cashRegisterEndCash;
+
+  /// No description provided for @cashRegisterEndCashHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional. Leave empty if you are not counting the drawer.'**
+  String get cashRegisterEndCashHint;
+
+  /// No description provided for @cashRegisterStartCashLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Opening cash {amount}'**
+  String cashRegisterStartCashLine(String amount);
+
+  /// No description provided for @cashRegisterEndCashLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Closing cash {amount}'**
+  String cashRegisterEndCashLine(String amount);
+
+  /// No description provided for @cashRegisterTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash register'**
+  String get cashRegisterTitle;
+
+  /// No description provided for @cashRegisterOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open register'**
+  String get cashRegisterOpen;
+
+  /// No description provided for @cashRegisterClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Close register'**
+  String get cashRegisterClose;
+
+  /// No description provided for @cashRegisterNone.
+  ///
+  /// In en, this message translates to:
+  /// **'The register is closed.'**
+  String get cashRegisterNone;
+
+  /// No description provided for @cashRegisterHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'History'**
+  String get cashRegisterHistory;
+
+  /// No description provided for @cashRegisterHistoryEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No shifts yet.'**
+  String get cashRegisterHistoryEmpty;
+
+  /// No description provided for @cashRegisterOpenedLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Opened {when} by {name}'**
+  String cashRegisterOpenedLine(String when, String name);
+
+  /// No description provided for @cashRegisterClosedLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Closed {when} by {name}'**
+  String cashRegisterClosedLine(String when, String name);
+
+  /// No description provided for @cashRegisterOrderCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} orders'**
+  String cashRegisterOrderCount(int count);
+
+  /// No description provided for @cashRegisterCloseHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay or cancel every open ticket on this shift before closing.'**
+  String get cashRegisterCloseHint;
+
+  /// No description provided for @cashRegisterCloseConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Close this register?'**
+  String get cashRegisterCloseConfirm;
+
+  /// No description provided for @cashRegisterBoardClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the cash register to take orders.'**
+  String get cashRegisterBoardClosed;
+
+  /// No description provided for @cashRegisterThisShift.
+  ///
+  /// In en, this message translates to:
+  /// **'This register'**
+  String get cashRegisterThisShift;
+
+  /// No description provided for @dashboardThisRegister.
+  ///
+  /// In en, this message translates to:
+  /// **'This register'**
+  String get dashboardThisRegister;
+
+  /// No description provided for @dashboardRegisterClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the cash register. Order counts stay at zero until then.'**
+  String get dashboardRegisterClosed;
+
+  /// No description provided for @cashRegisterInProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'In progress'**
+  String get cashRegisterInProgress;
+
+  /// No description provided for @cashRegisterStatusClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'Closed'**
+  String get cashRegisterStatusClosed;
 }
 
 class _AppLocalizationsDelegate

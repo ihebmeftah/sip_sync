@@ -69,6 +69,11 @@ import 'buildings/dtos/building_update.dart' as _irbupqdx;
 import 'buildings/dtos/building_view.dart' as _i9ph7g7s;
 import 'buildings/dtos/country_building_stat.dart' as _i92kzdia;
 import 'buildings/dtos/strict_mode_step.dart' as _i70klpnb;
+import 'cash_register/cash_register_status.dart' as _iaxenp5f;
+import 'cash_register/dtos/cash_register_error_code.dart' as _i0y3mhs7;
+import 'cash_register/dtos/cash_register_exception.dart' as _is7gj7rh;
+import 'cash_register/dtos/cash_register_page.dart' as _iyf5p5aa;
+import 'cash_register/dtos/cash_register_session_view.dart' as _iizck86t;
 import 'dashboard/dtos/dashboard_summary.dart' as _ie6zmm67;
 import 'discovery/dtos/customer_article_preview.dart' as _ipvj66ag;
 import 'discovery/dtos/customer_category_preview.dart' as _ia0qwq20;
@@ -206,6 +211,11 @@ export 'buildings/dtos/building_update.dart';
 export 'buildings/dtos/building_view.dart';
 export 'buildings/dtos/country_building_stat.dart';
 export 'buildings/dtos/strict_mode_step.dart';
+export 'cash_register/cash_register_status.dart';
+export 'cash_register/dtos/cash_register_error_code.dart';
+export 'cash_register/dtos/cash_register_exception.dart';
+export 'cash_register/dtos/cash_register_page.dart';
+export 'cash_register/dtos/cash_register_session_view.dart';
 export 'dashboard/dtos/dashboard_summary.dart';
 export 'discovery/dtos/customer_article_preview.dart';
 export 'discovery/dtos/customer_category_preview.dart';
@@ -452,6 +462,21 @@ class Protocol extends _isc.SerializationManager {
     }
     if (t == _i70klpnb.StrictModeStep) {
       return _i70klpnb.StrictModeStep.fromJson(data) as T;
+    }
+    if (t == _iaxenp5f.CashRegisterStatus) {
+      return _iaxenp5f.CashRegisterStatus.fromJson(data) as T;
+    }
+    if (t == _i0y3mhs7.CashRegisterErrorCode) {
+      return _i0y3mhs7.CashRegisterErrorCode.fromJson(data) as T;
+    }
+    if (t == _is7gj7rh.CashRegisterException) {
+      return _is7gj7rh.CashRegisterException.fromJson(data) as T;
+    }
+    if (t == _iyf5p5aa.CashRegisterPage) {
+      return _iyf5p5aa.CashRegisterPage.fromJson(data) as T;
+    }
+    if (t == _iizck86t.CashRegisterSessionView) {
+      return _iizck86t.CashRegisterSessionView.fromJson(data) as T;
     }
     if (t == _ie6zmm67.DashboardSummary) {
       return _ie6zmm67.DashboardSummary.fromJson(data) as T;
@@ -916,6 +941,32 @@ class Protocol extends _isc.SerializationManager {
     }
     if (t == _isc.getType<_i70klpnb.StrictModeStep?>()) {
       return (data != null ? _i70klpnb.StrictModeStep.fromJson(data) : null)
+          as T;
+    }
+    if (t == _isc.getType<_iaxenp5f.CashRegisterStatus?>()) {
+      return (data != null ? _iaxenp5f.CashRegisterStatus.fromJson(data) : null)
+          as T;
+    }
+    if (t == _isc.getType<_i0y3mhs7.CashRegisterErrorCode?>()) {
+      return (data != null
+              ? _i0y3mhs7.CashRegisterErrorCode.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _isc.getType<_is7gj7rh.CashRegisterException?>()) {
+      return (data != null
+              ? _is7gj7rh.CashRegisterException.fromJson(data)
+              : null)
+          as T;
+    }
+    if (t == _isc.getType<_iyf5p5aa.CashRegisterPage?>()) {
+      return (data != null ? _iyf5p5aa.CashRegisterPage.fromJson(data) : null)
+          as T;
+    }
+    if (t == _isc.getType<_iizck86t.CashRegisterSessionView?>()) {
+      return (data != null
+              ? _iizck86t.CashRegisterSessionView.fromJson(data)
+              : null)
           as T;
     }
     if (t == _isc.getType<_ie6zmm67.DashboardSummary?>()) {
@@ -1435,6 +1486,12 @@ class Protocol extends _isc.SerializationManager {
       return (data as List).map((e) => deserialize<_isc.UuidValue>(e)).toList()
           as T;
     }
+    if (t == List<_iizck86t.CashRegisterSessionView>) {
+      return (data as List)
+              .map((e) => deserialize<_iizck86t.CashRegisterSessionView>(e))
+              .toList()
+          as T;
+    }
     if (t == List<_i15x0mxo.CustomerMenuSection>) {
       return (data as List)
               .map((e) => deserialize<_i15x0mxo.CustomerMenuSection>(e))
@@ -1640,6 +1697,11 @@ class Protocol extends _isc.SerializationManager {
       _i9ph7g7s.BuildingView => 'BuildingView',
       _i92kzdia.CountryBuildingStat => 'CountryBuildingStat',
       _i70klpnb.StrictModeStep => 'StrictModeStep',
+      _iaxenp5f.CashRegisterStatus => 'CashRegisterStatus',
+      _i0y3mhs7.CashRegisterErrorCode => 'CashRegisterErrorCode',
+      _is7gj7rh.CashRegisterException => 'CashRegisterException',
+      _iyf5p5aa.CashRegisterPage => 'CashRegisterPage',
+      _iizck86t.CashRegisterSessionView => 'CashRegisterSessionView',
       _ie6zmm67.DashboardSummary => 'DashboardSummary',
       _ipvj66ag.CustomerArticlePreview => 'CustomerArticlePreview',
       _ia0qwq20.CustomerCategoryPreview => 'CustomerCategoryPreview',
@@ -1828,6 +1890,16 @@ class Protocol extends _isc.SerializationManager {
         return 'CountryBuildingStat';
       case _i70klpnb.StrictModeStep():
         return 'StrictModeStep';
+      case _iaxenp5f.CashRegisterStatus():
+        return 'CashRegisterStatus';
+      case _i0y3mhs7.CashRegisterErrorCode():
+        return 'CashRegisterErrorCode';
+      case _is7gj7rh.CashRegisterException():
+        return 'CashRegisterException';
+      case _iyf5p5aa.CashRegisterPage():
+        return 'CashRegisterPage';
+      case _iizck86t.CashRegisterSessionView():
+        return 'CashRegisterSessionView';
       case _ie6zmm67.DashboardSummary():
         return 'DashboardSummary';
       case _ipvj66ag.CustomerArticlePreview():
@@ -2160,6 +2232,21 @@ class Protocol extends _isc.SerializationManager {
     }
     if (dataClassName == 'StrictModeStep') {
       return deserialize<_i70klpnb.StrictModeStep>(data['data']);
+    }
+    if (dataClassName == 'CashRegisterStatus') {
+      return deserialize<_iaxenp5f.CashRegisterStatus>(data['data']);
+    }
+    if (dataClassName == 'CashRegisterErrorCode') {
+      return deserialize<_i0y3mhs7.CashRegisterErrorCode>(data['data']);
+    }
+    if (dataClassName == 'CashRegisterException') {
+      return deserialize<_is7gj7rh.CashRegisterException>(data['data']);
+    }
+    if (dataClassName == 'CashRegisterPage') {
+      return deserialize<_iyf5p5aa.CashRegisterPage>(data['data']);
+    }
+    if (dataClassName == 'CashRegisterSessionView') {
+      return deserialize<_iizck86t.CashRegisterSessionView>(data['data']);
     }
     if (dataClassName == 'DashboardSummary') {
       return deserialize<_ie6zmm67.DashboardSummary>(data['data']);

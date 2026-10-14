@@ -42,6 +42,7 @@ class _BuildingConfigurationViewState
   var _customerOrderingEnabled = true;
   var _reservationsEnabled = true;
   var _allowOutOfStockOrders = false;
+  var _cashRegisterEnabled = false;
 
   @override
   void dispose() {
@@ -73,6 +74,7 @@ class _BuildingConfigurationViewState
     _customerOrderingEnabled = building.customerOrderingEnabled;
     _reservationsEnabled = building.reservationsEnabled;
     _allowOutOfStockOrders = building.allowOutOfStockOrders;
+    _cashRegisterEnabled = building.cashRegisterEnabled;
     _reservationFee.text = _money(building.reservationFee);
     _filled = true;
   }
@@ -138,6 +140,17 @@ class _BuildingConfigurationViewState
                   value: _customerOrderingEnabled,
                   onChanged: (value) =>
                       setState(() => _customerOrderingEnabled = value),
+                ),
+                PackLockedSwitch(
+                  locked:
+                      pack != null &&
+                      !pack.cashRegister &&
+                      !_cashRegisterEnabled,
+                  title: l10n.buildingCashRegister,
+                  subtitle: l10n.buildingCashRegisterHint,
+                  value: _cashRegisterEnabled,
+                  onChanged: (value) =>
+                      setState(() => _cashRegisterEnabled = value),
                 ),
                 PackLockedSwitch(
                   locked:
@@ -293,6 +306,7 @@ class _BuildingConfigurationViewState
                             customerOrderingEnabled: _customerOrderingEnabled,
                             reservationsEnabled: _reservationsEnabled,
                             allowOutOfStockOrders: _allowOutOfStockOrders,
+                            cashRegisterEnabled: _cashRegisterEnabled,
                           );
                       if (!mounted) {
                         return;

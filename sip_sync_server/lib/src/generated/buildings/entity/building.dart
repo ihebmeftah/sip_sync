@@ -16,6 +16,7 @@ import 'package:sip_sync_server/src/generated/protocol.dart' as _iaib1p48;
 import '../../auth/entity/employee.dart' as _ie30fksv;
 import '../../auth/entity/owner.dart' as _i2wy11ca;
 import '../../buildings/dtos/strict_mode_step.dart' as _ik04yv2w;
+import '../../cash_register/entity/cash_register_session.dart' as _i8hg95n2;
 import '../../employee_access/entity/employee_access.dart' as _i5dpfzds;
 import '../../menu/entity/ingredient.dart' as _ixki5cxr;
 import '../../menu/entity/menu_article.dart' as _is7gdyz6;
@@ -57,6 +58,7 @@ abstract class Building
     bool? customerOrderingEnabled,
     bool? reservationsEnabled,
     bool? allowOutOfStockOrders,
+    bool? cashRegisterEnabled,
     DateTime? createdAt,
     this.employees,
     this.accessProfiles,
@@ -66,6 +68,7 @@ abstract class Building
     this.ingredients,
     this.orders,
     this.reservations,
+    this.cashRegisterSessions,
     this.packAssignments,
     required this.packId,
     this.pack,
@@ -79,6 +82,7 @@ abstract class Building
        customerOrderingEnabled = customerOrderingEnabled ?? true,
        reservationsEnabled = reservationsEnabled ?? true,
        allowOutOfStockOrders = allowOutOfStockOrders ?? false,
+       cashRegisterEnabled = cashRegisterEnabled ?? false,
        createdAt = createdAt ?? DateTime.now();
 
   factory Building({
@@ -108,6 +112,7 @@ abstract class Building
     bool? customerOrderingEnabled,
     bool? reservationsEnabled,
     bool? allowOutOfStockOrders,
+    bool? cashRegisterEnabled,
     DateTime? createdAt,
     List<_ie30fksv.Employee>? employees,
     List<_i5dpfzds.EmployeeAccess>? accessProfiles,
@@ -117,6 +122,7 @@ abstract class Building
     List<_ixki5cxr.Ingredient>? ingredients,
     List<_iwamn8sj.VenueOrder>? orders,
     List<_iq51mm5o.Reservation>? reservations,
+    List<_i8hg95n2.CashRegisterSession>? cashRegisterSessions,
     List<_iq3bhcsv.BuildingPackAssignment>? packAssignments,
     required _is.UuidValue packId,
     _iqwmqtub.Pack? pack,
@@ -189,6 +195,11 @@ abstract class Building
           : _is.BoolJsonExtension.fromJson(
               jsonSerialization['allowOutOfStockOrders'],
             ),
+      cashRegisterEnabled: jsonSerialization['cashRegisterEnabled'] == null
+          ? null
+          : _is.BoolJsonExtension.fromJson(
+              jsonSerialization['cashRegisterEnabled'],
+            ),
       createdAt: jsonSerialization['createdAt'] == null
           ? null
           : _is.DateTimeJsonExtension.fromJson(jsonSerialization['createdAt']),
@@ -232,6 +243,12 @@ abstract class Building
           : _iaib1p48.Protocol().deserialize<List<_iq51mm5o.Reservation>>(
               jsonSerialization['reservations'],
             ),
+      cashRegisterSessions: jsonSerialization['cashRegisterSessions'] == null
+          ? null
+          : _iaib1p48.Protocol()
+                .deserialize<List<_i8hg95n2.CashRegisterSession>>(
+                  jsonSerialization['cashRegisterSessions'],
+                ),
       packAssignments: jsonSerialization['packAssignments'] == null
           ? null
           : _iaib1p48.Protocol()
@@ -329,6 +346,9 @@ abstract class Building
   /// When true, an order may be placed even if a recipe ingredient would go below zero.
   bool allowOutOfStockOrders;
 
+  /// When true, create, append, and payment require an open cash-register session.
+  bool cashRegisterEnabled;
+
   DateTime createdAt;
 
   List<_ie30fksv.Employee>? employees;
@@ -346,6 +366,8 @@ abstract class Building
   List<_iwamn8sj.VenueOrder>? orders;
 
   List<_iq51mm5o.Reservation>? reservations;
+
+  List<_i8hg95n2.CashRegisterSession>? cashRegisterSessions;
 
   /// Every plan this venue has been on, including the open row.
   List<_iq3bhcsv.BuildingPackAssignment>? packAssignments;
@@ -394,6 +416,7 @@ abstract class Building
     bool? customerOrderingEnabled,
     bool? reservationsEnabled,
     bool? allowOutOfStockOrders,
+    bool? cashRegisterEnabled,
     DateTime? createdAt,
     List<_ie30fksv.Employee>? employees,
     List<_i5dpfzds.EmployeeAccess>? accessProfiles,
@@ -403,6 +426,7 @@ abstract class Building
     List<_ixki5cxr.Ingredient>? ingredients,
     List<_iwamn8sj.VenueOrder>? orders,
     List<_iq51mm5o.Reservation>? reservations,
+    List<_i8hg95n2.CashRegisterSession>? cashRegisterSessions,
     List<_iq3bhcsv.BuildingPackAssignment>? packAssignments,
     _is.UuidValue? packId,
     _iqwmqtub.Pack? pack,
@@ -439,6 +463,7 @@ abstract class Building
       'customerOrderingEnabled': customerOrderingEnabled,
       'reservationsEnabled': reservationsEnabled,
       'allowOutOfStockOrders': allowOutOfStockOrders,
+      'cashRegisterEnabled': cashRegisterEnabled,
       'createdAt': createdAt.toJson(),
       if (employees != null)
         'employees': employees?.toJson(valueToJson: (v) => v.toJson()),
@@ -460,6 +485,10 @@ abstract class Building
         'orders': orders?.toJson(valueToJson: (v) => v.toJson()),
       if (reservations != null)
         'reservations': reservations?.toJson(valueToJson: (v) => v.toJson()),
+      if (cashRegisterSessions != null)
+        'cashRegisterSessions': cashRegisterSessions?.toJson(
+          valueToJson: (v) => v.toJson(),
+        ),
       if (packAssignments != null)
         'packAssignments': packAssignments?.toJson(
           valueToJson: (v) => v.toJson(),
@@ -487,6 +516,7 @@ abstract class Building
     _ixki5cxr.IngredientIncludeList? ingredients,
     _iwamn8sj.VenueOrderIncludeList? orders,
     _iq51mm5o.ReservationIncludeList? reservations,
+    _i8hg95n2.CashRegisterSessionIncludeList? cashRegisterSessions,
     _iq3bhcsv.BuildingPackAssignmentIncludeList? packAssignments,
     _iqwmqtub.PackInclude? pack,
   }) {
@@ -500,6 +530,7 @@ abstract class Building
       ingredients: ingredients,
       orders: orders,
       reservations: reservations,
+      cashRegisterSessions: cashRegisterSessions,
       packAssignments: packAssignments,
       pack: pack,
     );
@@ -559,6 +590,7 @@ class _BuildingImpl extends Building {
     bool? customerOrderingEnabled,
     bool? reservationsEnabled,
     bool? allowOutOfStockOrders,
+    bool? cashRegisterEnabled,
     DateTime? createdAt,
     List<_ie30fksv.Employee>? employees,
     List<_i5dpfzds.EmployeeAccess>? accessProfiles,
@@ -568,6 +600,7 @@ class _BuildingImpl extends Building {
     List<_ixki5cxr.Ingredient>? ingredients,
     List<_iwamn8sj.VenueOrder>? orders,
     List<_iq51mm5o.Reservation>? reservations,
+    List<_i8hg95n2.CashRegisterSession>? cashRegisterSessions,
     List<_iq3bhcsv.BuildingPackAssignment>? packAssignments,
     required _is.UuidValue packId,
     _iqwmqtub.Pack? pack,
@@ -600,6 +633,7 @@ class _BuildingImpl extends Building {
          customerOrderingEnabled: customerOrderingEnabled,
          reservationsEnabled: reservationsEnabled,
          allowOutOfStockOrders: allowOutOfStockOrders,
+         cashRegisterEnabled: cashRegisterEnabled,
          createdAt: createdAt,
          employees: employees,
          accessProfiles: accessProfiles,
@@ -609,6 +643,7 @@ class _BuildingImpl extends Building {
          ingredients: ingredients,
          orders: orders,
          reservations: reservations,
+         cashRegisterSessions: cashRegisterSessions,
          packAssignments: packAssignments,
          packId: packId,
          pack: pack,
@@ -647,6 +682,7 @@ class _BuildingImpl extends Building {
     bool? customerOrderingEnabled,
     bool? reservationsEnabled,
     bool? allowOutOfStockOrders,
+    bool? cashRegisterEnabled,
     DateTime? createdAt,
     Object? employees = _Undefined,
     Object? accessProfiles = _Undefined,
@@ -656,6 +692,7 @@ class _BuildingImpl extends Building {
     Object? ingredients = _Undefined,
     Object? orders = _Undefined,
     Object? reservations = _Undefined,
+    Object? cashRegisterSessions = _Undefined,
     Object? packAssignments = _Undefined,
     _is.UuidValue? packId,
     Object? pack = _Undefined,
@@ -694,6 +731,7 @@ class _BuildingImpl extends Building {
       reservationsEnabled: reservationsEnabled ?? this.reservationsEnabled,
       allowOutOfStockOrders:
           allowOutOfStockOrders ?? this.allowOutOfStockOrders,
+      cashRegisterEnabled: cashRegisterEnabled ?? this.cashRegisterEnabled,
       createdAt: createdAt ?? this.createdAt,
       employees: employees is List<_ie30fksv.Employee>?
           ? employees
@@ -719,6 +757,10 @@ class _BuildingImpl extends Building {
       reservations: reservations is List<_iq51mm5o.Reservation>?
           ? reservations
           : this.reservations?.map((e0) => e0.copyWith()).toList(),
+      cashRegisterSessions:
+          cashRegisterSessions is List<_i8hg95n2.CashRegisterSession>?
+          ? cashRegisterSessions
+          : this.cashRegisterSessions?.map((e0) => e0.copyWith()).toList(),
       packAssignments:
           packAssignments is List<_iq3bhcsv.BuildingPackAssignment>?
           ? packAssignments
@@ -869,6 +911,12 @@ class BuildingUpdateTable extends _is.UpdateTable<BuildingTable> {
         value,
       );
 
+  _is.ColumnValue<bool, bool> cashRegisterEnabled(bool value) =>
+      _is.ColumnValue(
+        table.cashRegisterEnabled,
+        value,
+      );
+
   _is.ColumnValue<DateTime, DateTime> createdAt(DateTime value) =>
       _is.ColumnValue(
         table.createdAt,
@@ -998,6 +1046,11 @@ class BuildingTable extends _is.Table<_is.UuidValue?> {
       this,
       hasDefault: true,
     );
+    cashRegisterEnabled = _is.ColumnBool(
+      'cashRegisterEnabled',
+      this,
+      hasDefault: true,
+    );
     createdAt = _is.ColumnDateTime(
       'createdAt',
       this,
@@ -1085,6 +1138,9 @@ class BuildingTable extends _is.Table<_is.UuidValue?> {
   /// When true, an order may be placed even if a recipe ingredient would go below zero.
   late final _is.ColumnBool allowOutOfStockOrders;
 
+  /// When true, create, append, and payment require an open cash-register session.
+  late final _is.ColumnBool cashRegisterEnabled;
+
   late final _is.ColumnDateTime createdAt;
 
   _ie30fksv.EmployeeTable? ___employees;
@@ -1118,6 +1174,10 @@ class BuildingTable extends _is.Table<_is.UuidValue?> {
   _iq51mm5o.ReservationTable? ___reservations;
 
   _is.ManyRelation<_iq51mm5o.ReservationTable>? _reservations;
+
+  _i8hg95n2.CashRegisterSessionTable? ___cashRegisterSessions;
+
+  _is.ManyRelation<_i8hg95n2.CashRegisterSessionTable>? _cashRegisterSessions;
 
   /// Every plan this venue has been on, including the open row.
   _iq3bhcsv.BuildingPackAssignmentTable? ___packAssignments;
@@ -1251,6 +1311,20 @@ class BuildingTable extends _is.Table<_is.UuidValue?> {
           _iq51mm5o.ReservationTable(tableRelation: foreignTableRelation),
     );
     return ___reservations!;
+  }
+
+  _i8hg95n2.CashRegisterSessionTable get __cashRegisterSessions {
+    if (___cashRegisterSessions != null) return ___cashRegisterSessions!;
+    ___cashRegisterSessions = _is.createRelationTable(
+      relationFieldName: '__cashRegisterSessions',
+      field: Building.t.id,
+      foreignField: _i8hg95n2.CashRegisterSession.t.buildingId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) => _i8hg95n2.CashRegisterSessionTable(
+        tableRelation: foreignTableRelation,
+      ),
+    );
+    return ___cashRegisterSessions!;
   }
 
   _iq3bhcsv.BuildingPackAssignmentTable get __packAssignments {
@@ -1433,6 +1507,28 @@ class BuildingTable extends _is.Table<_is.UuidValue?> {
     return _reservations!;
   }
 
+  _is.ManyRelation<_i8hg95n2.CashRegisterSessionTable>
+  get cashRegisterSessions {
+    if (_cashRegisterSessions != null) return _cashRegisterSessions!;
+    var relationTable = _is.createRelationTable(
+      relationFieldName: 'cashRegisterSessions',
+      field: Building.t.id,
+      foreignField: _i8hg95n2.CashRegisterSession.t.buildingId,
+      tableRelation: tableRelation,
+      createTable: (foreignTableRelation) => _i8hg95n2.CashRegisterSessionTable(
+        tableRelation: foreignTableRelation,
+      ),
+    );
+    _cashRegisterSessions =
+        _is.ManyRelation<_i8hg95n2.CashRegisterSessionTable>(
+          tableWithRelations: relationTable,
+          table: _i8hg95n2.CashRegisterSessionTable(
+            tableRelation: relationTable.tableRelation!.lastRelation,
+          ),
+        );
+    return _cashRegisterSessions!;
+  }
+
   _is.ManyRelation<_iq3bhcsv.BuildingPackAssignmentTable> get packAssignments {
     if (_packAssignments != null) return _packAssignments!;
     var relationTable = _is.createRelationTable(
@@ -1481,6 +1577,7 @@ class BuildingTable extends _is.Table<_is.UuidValue?> {
     customerOrderingEnabled,
     reservationsEnabled,
     allowOutOfStockOrders,
+    cashRegisterEnabled,
     createdAt,
     packId,
     packBillingPeriod,
@@ -1516,6 +1613,9 @@ class BuildingTable extends _is.Table<_is.UuidValue?> {
     if (relationField == 'reservations') {
       return __reservations;
     }
+    if (relationField == 'cashRegisterSessions') {
+      return __cashRegisterSessions;
+    }
     if (relationField == 'packAssignments') {
       return __packAssignments;
     }
@@ -1537,6 +1637,7 @@ class BuildingInclude extends _is.IncludeObject {
     _ixki5cxr.IngredientIncludeList? ingredients,
     _iwamn8sj.VenueOrderIncludeList? orders,
     _iq51mm5o.ReservationIncludeList? reservations,
+    _i8hg95n2.CashRegisterSessionIncludeList? cashRegisterSessions,
     _iq3bhcsv.BuildingPackAssignmentIncludeList? packAssignments,
     _iqwmqtub.PackInclude? pack,
   }) {
@@ -1549,6 +1650,7 @@ class BuildingInclude extends _is.IncludeObject {
     _ingredients = ingredients;
     _orders = orders;
     _reservations = reservations;
+    _cashRegisterSessions = cashRegisterSessions;
     _packAssignments = packAssignments;
     _pack = pack;
   }
@@ -1571,6 +1673,8 @@ class BuildingInclude extends _is.IncludeObject {
 
   _iq51mm5o.ReservationIncludeList? _reservations;
 
+  _i8hg95n2.CashRegisterSessionIncludeList? _cashRegisterSessions;
+
   _iq3bhcsv.BuildingPackAssignmentIncludeList? _packAssignments;
 
   _iqwmqtub.PackInclude? _pack;
@@ -1586,6 +1690,7 @@ class BuildingInclude extends _is.IncludeObject {
     'ingredients': _ingredients,
     'orders': _orders,
     'reservations': _reservations,
+    'cashRegisterSessions': _cashRegisterSessions,
     'packAssignments': _packAssignments,
     'pack': _pack,
   };
@@ -2221,6 +2326,31 @@ class BuildingAttachRepository {
     );
   }
 
+  /// Creates a relation between this [Building] and the given [CashRegisterSession]s
+  /// by setting each [CashRegisterSession]'s foreign key `buildingId` to refer to this [Building].
+  Future<void> cashRegisterSessions(
+    _is.DatabaseSession session,
+    Building building,
+    List<_i8hg95n2.CashRegisterSession> cashRegisterSession, {
+    _is.Transaction? transaction,
+  }) async {
+    if (cashRegisterSession.any((e) => e.id == null)) {
+      throw ArgumentError.notNull('cashRegisterSession.id');
+    }
+    if (building.id == null) {
+      throw ArgumentError.notNull('building.id');
+    }
+
+    var $cashRegisterSession = cashRegisterSession
+        .map((e) => e.copyWith(buildingId: building.id))
+        .toList();
+    await session.db.update<_i8hg95n2.CashRegisterSession>(
+      $cashRegisterSession,
+      columns: [_i8hg95n2.CashRegisterSession.t.buildingId],
+      transaction: transaction,
+    );
+  }
+
   /// Creates a relation between this [Building] and the given [BuildingPackAssignment]s
   /// by setting each [BuildingPackAssignment]'s foreign key `buildingId` to refer to this [Building].
   Future<void> packAssignments(
@@ -2476,6 +2606,31 @@ class BuildingAttachRowRepository {
     await session.db.updateRow<_iq51mm5o.Reservation>(
       $reservation,
       columns: [_iq51mm5o.Reservation.t.buildingId],
+      transaction: transaction,
+    );
+  }
+
+  /// Creates a relation between this [Building] and the given [CashRegisterSession]
+  /// by setting the [CashRegisterSession]'s foreign key `buildingId` to refer to this [Building].
+  Future<void> cashRegisterSessions(
+    _is.DatabaseSession session,
+    Building building,
+    _i8hg95n2.CashRegisterSession cashRegisterSession, {
+    _is.Transaction? transaction,
+  }) async {
+    if (cashRegisterSession.id == null) {
+      throw ArgumentError.notNull('cashRegisterSession.id');
+    }
+    if (building.id == null) {
+      throw ArgumentError.notNull('building.id');
+    }
+
+    var $cashRegisterSession = cashRegisterSession.copyWith(
+      buildingId: building.id,
+    );
+    await session.db.updateRow<_i8hg95n2.CashRegisterSession>(
+      $cashRegisterSession,
+      columns: [_i8hg95n2.CashRegisterSession.t.buildingId],
       transaction: transaction,
     );
   }

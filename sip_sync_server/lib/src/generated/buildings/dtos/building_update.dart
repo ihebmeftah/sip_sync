@@ -39,10 +39,12 @@ abstract class BuildingUpdate
     bool? customerOrderingEnabled,
     bool? reservationsEnabled,
     bool? allowOutOfStockOrders,
+    bool? cashRegisterEnabled,
   }) : reservationFee = reservationFee ?? 0.0,
        customerOrderingEnabled = customerOrderingEnabled ?? true,
        reservationsEnabled = reservationsEnabled ?? true,
-       allowOutOfStockOrders = allowOutOfStockOrders ?? false;
+       allowOutOfStockOrders = allowOutOfStockOrders ?? false,
+       cashRegisterEnabled = cashRegisterEnabled ?? false;
 
   factory BuildingUpdate({
     required _is.UuidValue id,
@@ -67,6 +69,7 @@ abstract class BuildingUpdate
     bool? customerOrderingEnabled,
     bool? reservationsEnabled,
     bool? allowOutOfStockOrders,
+    bool? cashRegisterEnabled,
   }) = _BuildingUpdateImpl;
 
   factory BuildingUpdate.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -116,6 +119,11 @@ abstract class BuildingUpdate
           ? null
           : _is.BoolJsonExtension.fromJson(
               jsonSerialization['allowOutOfStockOrders'],
+            ),
+      cashRegisterEnabled: jsonSerialization['cashRegisterEnabled'] == null
+          ? null
+          : _is.BoolJsonExtension.fromJson(
+              jsonSerialization['cashRegisterEnabled'],
             ),
     );
   }
@@ -167,6 +175,9 @@ abstract class BuildingUpdate
   /// When true, an order may be placed even if a recipe ingredient would go below zero.
   bool allowOutOfStockOrders;
 
+  /// When true, create, append, and payment require an open cash-register session.
+  bool cashRegisterEnabled;
+
   /// Returns a shallow copy of this [BuildingUpdate]
   /// with some or all fields replaced by the given arguments.
   @_is.useResult
@@ -193,6 +204,7 @@ abstract class BuildingUpdate
     bool? customerOrderingEnabled,
     bool? reservationsEnabled,
     bool? allowOutOfStockOrders,
+    bool? cashRegisterEnabled,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -220,6 +232,7 @@ abstract class BuildingUpdate
       'customerOrderingEnabled': customerOrderingEnabled,
       'reservationsEnabled': reservationsEnabled,
       'allowOutOfStockOrders': allowOutOfStockOrders,
+      'cashRegisterEnabled': cashRegisterEnabled,
     };
   }
 
@@ -251,6 +264,7 @@ abstract class BuildingUpdate
       'customerOrderingEnabled': customerOrderingEnabled,
       'reservationsEnabled': reservationsEnabled,
       'allowOutOfStockOrders': allowOutOfStockOrders,
+      'cashRegisterEnabled': cashRegisterEnabled,
     };
   }
 
@@ -286,6 +300,7 @@ class _BuildingUpdateImpl extends BuildingUpdate {
     bool? customerOrderingEnabled,
     bool? reservationsEnabled,
     bool? allowOutOfStockOrders,
+    bool? cashRegisterEnabled,
   }) : super._(
          id: id,
          name: name,
@@ -309,6 +324,7 @@ class _BuildingUpdateImpl extends BuildingUpdate {
          customerOrderingEnabled: customerOrderingEnabled,
          reservationsEnabled: reservationsEnabled,
          allowOutOfStockOrders: allowOutOfStockOrders,
+         cashRegisterEnabled: cashRegisterEnabled,
        );
 
   /// Returns a shallow copy of this [BuildingUpdate]
@@ -338,6 +354,7 @@ class _BuildingUpdateImpl extends BuildingUpdate {
     bool? customerOrderingEnabled,
     bool? reservationsEnabled,
     bool? allowOutOfStockOrders,
+    bool? cashRegisterEnabled,
   }) {
     return BuildingUpdate(
       id: id ?? this.id,
@@ -367,6 +384,7 @@ class _BuildingUpdateImpl extends BuildingUpdate {
       reservationsEnabled: reservationsEnabled ?? this.reservationsEnabled,
       allowOutOfStockOrders:
           allowOutOfStockOrders ?? this.allowOutOfStockOrders,
+      cashRegisterEnabled: cashRegisterEnabled ?? this.cashRegisterEnabled,
     );
   }
 }

@@ -64,6 +64,7 @@ String _packFailureKey(PackException error) {
       PackFeature.customAccessProfiles => 'errorPackFeatureAccess',
       PackFeature.tableQr => 'errorPackFeatureQr',
       PackFeature.reservations => 'errorPackFeatureReservations',
+      PackFeature.cashRegister => 'errorPackFeatureCashRegister',
       _ => 'errorPackFeature',
     },
   };
@@ -103,6 +104,7 @@ String lookupError(dynamic l10n, String key) {
     'errorPackFeatureAccess' => l10n.errorPackFeatureAccess,
     'errorPackFeatureQr' => l10n.errorPackFeatureQr,
     'errorPackFeatureReservations' => l10n.errorPackFeatureReservations,
+    'errorPackFeatureCashRegister' => l10n.errorPackFeatureCashRegister,
     'errorPackLimitReservations' => l10n.errorPackLimitReservations,
     'errorPackPaidActive' => l10n.errorPackPaidActive,
     _ => l10n.errorGeneric,

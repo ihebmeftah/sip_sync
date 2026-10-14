@@ -98,6 +98,7 @@ import '../auth/owner_auth_endpoint.dart' as _is2qyeee;
 import '../auth/platform_directory_endpoint.dart' as _i2rird0e;
 import '../auth/super_admin_auth_endpoint.dart' as _itmp66ay;
 import '../buildings/building_endpoint.dart' as _i69ygv7j;
+import '../cash_register/cash_register_endpoint.dart' as _ikiy0end;
 import '../dashboard/dashboard_endpoint.dart' as _izwoh05q;
 import '../discovery/customer_place_endpoint.dart' as _i6jzpqpk;
 import '../discovery/customer_venue_endpoint.dart' as _i4o7mcri;
@@ -158,6 +159,12 @@ class Endpoints extends _is.EndpointDispatch {
         ..initialize(
           server,
           'building',
+          null,
+        ),
+      'cashRegister': _ikiy0end.CashRegisterEndpoint()
+        ..initialize(
+          server,
+          'cashRegister',
           null,
         ),
       'dashboard': _izwoh05q.DashboardEndpoint()
@@ -1137,6 +1144,160 @@ class Endpoints extends _is.EndpointDispatch {
         ),
       },
     );
+    connectors['cashRegister'] = _is.EndpointConnector(
+      name: 'cashRegister',
+      endpoint: endpoints['cashRegister']!,
+      methodConnectors: {
+        'current': _is.MethodConnector(
+          name: 'current',
+          params: {
+            'buildingId': _is.ParameterDescription(
+              name: 'buildingId',
+              type: _is.getType<_is.UuidValue>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['cashRegister'] as _ikiy0end.CashRegisterEndpoint)
+                      .current(
+                        session,
+                        params['buildingId'],
+                      ),
+        ),
+        'open': _is.MethodConnector(
+          name: 'open',
+          params: {
+            'buildingId': _is.ParameterDescription(
+              name: 'buildingId',
+              type: _is.getType<_is.UuidValue>(),
+              nullable: false,
+            ),
+            'startCash': _is.ParameterDescription(
+              name: 'startCash',
+              type: _is.getType<double?>(),
+              nullable: true,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['cashRegister'] as _ikiy0end.CashRegisterEndpoint)
+                      .open(
+                        session,
+                        params['buildingId'],
+                        startCash: params['startCash'],
+                      ),
+        ),
+        'close': _is.MethodConnector(
+          name: 'close',
+          params: {
+            'id': _is.ParameterDescription(
+              name: 'id',
+              type: _is.getType<_is.UuidValue>(),
+              nullable: false,
+            ),
+            'endCash': _is.ParameterDescription(
+              name: 'endCash',
+              type: _is.getType<double?>(),
+              nullable: true,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['cashRegister'] as _ikiy0end.CashRegisterEndpoint)
+                      .close(
+                        session,
+                        params['id'],
+                        endCash: params['endCash'],
+                      ),
+        ),
+        'correct': _is.MethodConnector(
+          name: 'correct',
+          params: {
+            'id': _is.ParameterDescription(
+              name: 'id',
+              type: _is.getType<_is.UuidValue>(),
+              nullable: false,
+            ),
+            'startCash': _is.ParameterDescription(
+              name: 'startCash',
+              type: _is.getType<double?>(),
+              nullable: true,
+            ),
+            'endCash': _is.ParameterDescription(
+              name: 'endCash',
+              type: _is.getType<double?>(),
+              nullable: true,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['cashRegister'] as _ikiy0end.CashRegisterEndpoint)
+                      .correct(
+                        session,
+                        params['id'],
+                        startCash: params['startCash'],
+                        endCash: params['endCash'],
+                      ),
+        ),
+        'list': _is.MethodConnector(
+          name: 'list',
+          params: {
+            'buildingId': _is.ParameterDescription(
+              name: 'buildingId',
+              type: _is.getType<_is.UuidValue>(),
+              nullable: false,
+            ),
+            'openedFrom': _is.ParameterDescription(
+              name: 'openedFrom',
+              type: _is.getType<DateTime?>(),
+              nullable: true,
+            ),
+            'openedTo': _is.ParameterDescription(
+              name: 'openedTo',
+              type: _is.getType<DateTime?>(),
+              nullable: true,
+            ),
+            'limit': _is.ParameterDescription(
+              name: 'limit',
+              type: _is.getType<int?>(),
+              nullable: true,
+            ),
+            'offset': _is.ParameterDescription(
+              name: 'offset',
+              type: _is.getType<int?>(),
+              nullable: true,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['cashRegister'] as _ikiy0end.CashRegisterEndpoint)
+                      .list(
+                        session,
+                        params['buildingId'],
+                        openedFrom: params['openedFrom'],
+                        openedTo: params['openedTo'],
+                        limit: params['limit'],
+                        offset: params['offset'],
+                      ),
+        ),
+      },
+    );
     connectors['dashboard'] = _is.EndpointConnector(
       name: 'dashboard',
       endpoint: endpoints['dashboard']!,
@@ -1154,6 +1315,11 @@ class Endpoints extends _is.EndpointDispatch {
               type: _is.getType<DateTime>(),
               nullable: false,
             ),
+            'cashRegisterSessionId': _is.ParameterDescription(
+              name: 'cashRegisterSessionId',
+              type: _is.getType<_is.UuidValue?>(),
+              nullable: true,
+            ),
           },
           call:
               (
@@ -1164,6 +1330,7 @@ class Endpoints extends _is.EndpointDispatch {
                     session,
                     params['buildingId'],
                     params['day'],
+                    cashRegisterSessionId: params['cashRegisterSessionId'],
                   ),
         ),
       },
@@ -2118,6 +2285,11 @@ class Endpoints extends _is.EndpointDispatch {
               type: _is.getType<DateTime?>(),
               nullable: true,
             ),
+            'cashRegisterSessionId': _is.ParameterDescription(
+              name: 'cashRegisterSessionId',
+              type: _is.getType<_is.UuidValue?>(),
+              nullable: true,
+            ),
             'venueTableId': _is.ParameterDescription(
               name: 'venueTableId',
               type: _is.getType<_is.UuidValue?>(),
@@ -2144,6 +2316,7 @@ class Endpoints extends _is.EndpointDispatch {
                 params['status'],
                 createdFrom: params['createdFrom'],
                 createdTo: params['createdTo'],
+                cashRegisterSessionId: params['cashRegisterSessionId'],
                 venueTableId: params['venueTableId'],
                 limit: params['limit'],
                 offset: params['offset'],
@@ -2257,13 +2430,18 @@ class Endpoints extends _is.EndpointDispatch {
             ),
             'createdFrom': _is.ParameterDescription(
               name: 'createdFrom',
-              type: _is.getType<DateTime>(),
-              nullable: false,
+              type: _is.getType<DateTime?>(),
+              nullable: true,
             ),
             'createdTo': _is.ParameterDescription(
               name: 'createdTo',
-              type: _is.getType<DateTime>(),
-              nullable: false,
+              type: _is.getType<DateTime?>(),
+              nullable: true,
+            ),
+            'cashRegisterSessionId': _is.ParameterDescription(
+              name: 'cashRegisterSessionId',
+              type: _is.getType<_is.UuidValue?>(),
+              nullable: true,
             ),
           },
           streamParams: {},
@@ -2278,6 +2456,7 @@ class Endpoints extends _is.EndpointDispatch {
                 params['buildingId'],
                 createdFrom: params['createdFrom'],
                 createdTo: params['createdTo'],
+                cashRegisterSessionId: params['cashRegisterSessionId'],
               ),
         ),
       },

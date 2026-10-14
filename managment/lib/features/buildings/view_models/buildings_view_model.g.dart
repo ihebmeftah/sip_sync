@@ -97,7 +97,7 @@ final class BuildingFormViewModelProvider
 }
 
 String _$buildingFormViewModelHash() =>
-    r'a3743eaad3f64af7c929b5e55aad8f80a4454a07';
+    r'5af0a6112f0d90e25bc3a0b397ff13a6b4743245';
 
 final class BuildingFormViewModelFamily extends $Family
     with

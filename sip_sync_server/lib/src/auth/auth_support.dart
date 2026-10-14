@@ -136,6 +136,7 @@ class AuthSupport {
           serving: access.serving,
           consultAllOrders: access.consultAllOrders,
           reservations: access.reservations,
+          cashRegister: access.cashRegister,
           createdAt: access.createdAt,
         );
       }

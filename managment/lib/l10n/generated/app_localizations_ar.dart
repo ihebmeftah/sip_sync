@@ -1913,4 +1913,175 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get packCapAccess => 'ملفات صلاحيات مخصصة';
+
+  @override
+  String get packCapCashRegister => 'الصندوق';
+
+  @override
+  String get buildingCashRegister => 'الصندوق';
+
+  @override
+  String get buildingCashRegisterHint =>
+      'عند التفعيل، الطلبات الجديدة والدفع تحتاج صندوقاً مفتوحاً. لوحة الطلبات ولوحة المتابعة تتبعان هذه الوردية.';
+
+  @override
+  String get navCashRegister => 'الصندوق';
+
+  @override
+  String get accessCashRegister => 'الصندوق';
+
+  @override
+  String get accessCashRegisterHint => 'فتح الصندوق وإغلاقه وقراءة سجله.';
+
+  @override
+  String get errorPackFeatureCashRegister => 'هذه الباقة لا تشمل الصندوق.';
+
+  @override
+  String get errorOrderRegisterRequired => 'افتح الصندوق قبل أخذ طلب.';
+
+  @override
+  String get errorCashRegisterDisabled => 'هذا المكان لم يفعّل الصندوق.';
+
+  @override
+  String get errorCashRegisterAlreadyOpen => 'الصندوق مفتوح بالفعل.';
+
+  @override
+  String get errorCashRegisterNotOpen => 'هذا الصندوق غير مفتوح.';
+
+  @override
+  String get errorCashRegisterHasOpenOrders =>
+      'ادفع أو ألغِ الطلبات المفتوحة قبل الإغلاق.';
+
+  @override
+  String get errorCashRegisterInvalidAmount => 'أدخل 0 أو مبلغاً موجباً.';
+
+  @override
+  String get errorCashRegisterEndCashRequired =>
+      'أدخل نقد الإغلاق. هذه الوردية لها نقد افتتاح.';
+
+  @override
+  String get validationCashRequired => 'أدخل النقد المعدود.';
+
+  @override
+  String get cashRegisterHistoryAll => 'كل الأيام';
+
+  @override
+  String get cashRegisterHistoryPickDay => 'اختر يوماً';
+
+  @override
+  String cashRegisterElapsed(String time) {
+    return 'مفتوح منذ $time';
+  }
+
+  @override
+  String cashRegisterPaidTotal(String amount) {
+    return 'الطلبات المدفوعة $amount';
+  }
+
+  @override
+  String get cashRegisterBalanceCorrect => 'الدرج مطابق';
+
+  @override
+  String cashRegisterBalanceTips(String amount) {
+    return 'إكرامية $amount';
+  }
+
+  @override
+  String cashRegisterBalanceShort(String amount) {
+    return 'نقص $amount';
+  }
+
+  @override
+  String get cashRegisterCorrect => 'تصحيح النقد';
+
+  @override
+  String get cashRegisterEndCashRequiredHint =>
+      'نقد الإغلاق مطلوب لأن هذه الوردية لها نقد افتتاح.';
+
+  @override
+  String get validationCashAmount =>
+      'أدخل 0 أو مبلغاً موجباً، أو اترك الحقل فارغاً.';
+
+  @override
+  String get cashRegisterStartCash => 'نقد الافتتاح';
+
+  @override
+  String get cashRegisterStartCashHint =>
+      'اختياري. اتركه فارغاً إذا لم تَعُدّ الدرج.';
+
+  @override
+  String get cashRegisterEndCash => 'نقد الإغلاق';
+
+  @override
+  String get cashRegisterEndCashHint =>
+      'اختياري. اتركه فارغاً إذا لم تَعُدّ الدرج.';
+
+  @override
+  String cashRegisterStartCashLine(String amount) {
+    return 'نقد الافتتاح $amount';
+  }
+
+  @override
+  String cashRegisterEndCashLine(String amount) {
+    return 'نقد الإغلاق $amount';
+  }
+
+  @override
+  String get cashRegisterTitle => 'الصندوق';
+
+  @override
+  String get cashRegisterOpen => 'فتح الصندوق';
+
+  @override
+  String get cashRegisterClose => 'إغلاق الصندوق';
+
+  @override
+  String get cashRegisterNone => 'الصندوق مغلق.';
+
+  @override
+  String get cashRegisterHistory => 'السجل';
+
+  @override
+  String get cashRegisterHistoryEmpty => 'لا ورديات بعد.';
+
+  @override
+  String cashRegisterOpenedLine(String when, String name) {
+    return 'فُتح $when بواسطة $name';
+  }
+
+  @override
+  String cashRegisterClosedLine(String when, String name) {
+    return 'أُغلق $when بواسطة $name';
+  }
+
+  @override
+  String cashRegisterOrderCount(int count) {
+    return '$count طلبات';
+  }
+
+  @override
+  String get cashRegisterCloseHint =>
+      'ادفع أو ألغِ كل طلب مفتوح في هذه الوردية قبل الإغلاق.';
+
+  @override
+  String get cashRegisterCloseConfirm => 'إغلاق هذا الصندوق؟';
+
+  @override
+  String get cashRegisterBoardClosed => 'افتح الصندوق لأخذ الطلبات.';
+
+  @override
+  String get cashRegisterThisShift => 'هذا الصندوق';
+
+  @override
+  String get dashboardThisRegister => 'هذا الصندوق';
+
+  @override
+  String get dashboardRegisterClosed =>
+      'افتح الصندوق. تبقى أعداد الطلبات صفراً حتى ذلك.';
+
+  @override
+  String get cashRegisterInProgress => 'قيد العمل';
+
+  @override
+  String get cashRegisterStatusClosed => 'مغلق';
 }

@@ -646,6 +646,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get errorCustomerOrderingDisabled => 'هذا المكان أوقف الطلبات.';
 
   @override
+  String get errorOrderRegisterRequired => 'صندوق هذا المكان مغلق.';
+
+  @override
+  String get errorPackFeatureCashRegister => 'هذه الباقة لا تشمل الصندوق.';
+
+  @override
   String get errorReservationsDisabled => 'هذا المكان أوقف الحجوزات.';
 
   @override

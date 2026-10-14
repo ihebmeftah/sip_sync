@@ -57,6 +57,11 @@ GoRouter appRouter(Ref ref) {
           return employeeHome;
         }
         if (store.isEmployee &&
+            location.contains('/cash-register') &&
+            store.employee?.access?.cashRegister != true) {
+          return employeeHome;
+        }
+        if (store.isEmployee &&
             location.endsWith('/dashboard') &&
             store.employee?.access?.consultAllOrders != true) {
           return employeeHome;

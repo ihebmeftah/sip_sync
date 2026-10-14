@@ -38,13 +38,15 @@ abstract class BuildingCreate
     bool? customerOrderingEnabled,
     bool? reservationsEnabled,
     bool? allowOutOfStockOrders,
+    bool? cashRegisterEnabled,
   }) : tableMultiOrder = tableMultiOrder ?? false,
        allowAppendingItemsToOrder = allowAppendingItemsToOrder ?? true,
        strictMode = strictMode ?? false,
        reservationFee = reservationFee ?? 0.0,
        customerOrderingEnabled = customerOrderingEnabled ?? true,
        reservationsEnabled = reservationsEnabled ?? true,
-       allowOutOfStockOrders = allowOutOfStockOrders ?? false;
+       allowOutOfStockOrders = allowOutOfStockOrders ?? false,
+       cashRegisterEnabled = cashRegisterEnabled ?? false;
 
   factory BuildingCreate({
     required String name,
@@ -68,6 +70,7 @@ abstract class BuildingCreate
     bool? customerOrderingEnabled,
     bool? reservationsEnabled,
     bool? allowOutOfStockOrders,
+    bool? cashRegisterEnabled,
   }) = _BuildingCreateImpl;
 
   factory BuildingCreate.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -122,6 +125,11 @@ abstract class BuildingCreate
           : _isc.BoolJsonExtension.fromJson(
               jsonSerialization['allowOutOfStockOrders'],
             ),
+      cashRegisterEnabled: jsonSerialization['cashRegisterEnabled'] == null
+          ? null
+          : _isc.BoolJsonExtension.fromJson(
+              jsonSerialization['cashRegisterEnabled'],
+            ),
     );
   }
 
@@ -170,6 +178,9 @@ abstract class BuildingCreate
   /// When true, an order may be placed even if a recipe ingredient would go below zero.
   bool allowOutOfStockOrders;
 
+  /// When true, create, append, and payment require an open cash-register session.
+  bool cashRegisterEnabled;
+
   /// Returns a shallow copy of this [BuildingCreate]
   /// with some or all fields replaced by the given arguments.
   @_isc.useResult
@@ -195,6 +206,7 @@ abstract class BuildingCreate
     bool? customerOrderingEnabled,
     bool? reservationsEnabled,
     bool? allowOutOfStockOrders,
+    bool? cashRegisterEnabled,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -221,6 +233,7 @@ abstract class BuildingCreate
       'customerOrderingEnabled': customerOrderingEnabled,
       'reservationsEnabled': reservationsEnabled,
       'allowOutOfStockOrders': allowOutOfStockOrders,
+      'cashRegisterEnabled': cashRegisterEnabled,
     };
   }
 
@@ -251,6 +264,7 @@ abstract class BuildingCreate
       'customerOrderingEnabled': customerOrderingEnabled,
       'reservationsEnabled': reservationsEnabled,
       'allowOutOfStockOrders': allowOutOfStockOrders,
+      'cashRegisterEnabled': cashRegisterEnabled,
     };
   }
 
@@ -285,6 +299,7 @@ class _BuildingCreateImpl extends BuildingCreate {
     bool? customerOrderingEnabled,
     bool? reservationsEnabled,
     bool? allowOutOfStockOrders,
+    bool? cashRegisterEnabled,
   }) : super._(
          name: name,
          type: type,
@@ -307,6 +322,7 @@ class _BuildingCreateImpl extends BuildingCreate {
          customerOrderingEnabled: customerOrderingEnabled,
          reservationsEnabled: reservationsEnabled,
          allowOutOfStockOrders: allowOutOfStockOrders,
+         cashRegisterEnabled: cashRegisterEnabled,
        );
 
   /// Returns a shallow copy of this [BuildingCreate]
@@ -335,6 +351,7 @@ class _BuildingCreateImpl extends BuildingCreate {
     bool? customerOrderingEnabled,
     bool? reservationsEnabled,
     bool? allowOutOfStockOrders,
+    bool? cashRegisterEnabled,
   }) {
     return BuildingCreate(
       name: name ?? this.name,
@@ -363,6 +380,7 @@ class _BuildingCreateImpl extends BuildingCreate {
       reservationsEnabled: reservationsEnabled ?? this.reservationsEnabled,
       allowOutOfStockOrders:
           allowOutOfStockOrders ?? this.allowOutOfStockOrders,
+      cashRegisterEnabled: cashRegisterEnabled ?? this.cashRegisterEnabled,
     );
   }
 }

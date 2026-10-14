@@ -128,7 +128,9 @@ class _OrderBoardViewState extends ConsumerState<OrderBoardView> {
                     ],
                     const SizedBox(height: AppSpacing.xs),
                     Text(
-                      _selecting
+                      page.registerClosed
+                          ? l10n.cashRegisterBoardClosed
+                          : _selecting
                           ? l10n.orderBoardCancelHint
                           : l10n.orderBoardHint,
                       style: text.bodyMedium,

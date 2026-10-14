@@ -6,6 +6,7 @@ import '../../../core/errors/form_validators.dart';
 import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../l10n/generated/app_localizations.dart';
+import '../../cash_register/view_models/cash_register_view_model.dart';
 import '../view_models/dashboard_view_model.dart';
 import '../widgets/dashboard_metrics.dart';
 
@@ -113,7 +114,7 @@ class DashboardView extends ConsumerWidget {
                             ),
                           ],
                           const SizedBox(height: AppSpacing.md),
-                          const _DayRange(),
+                          _DayRange(buildingId: buildingId),
                           const SizedBox(height: AppSpacing.md),
                           _QuickActions(buildingId: buildingId),
                         ],
@@ -140,18 +141,26 @@ class DashboardView extends ConsumerWidget {
 }
 
 /// Local start and end of the day the counts cover.
-class _DayRange extends StatelessWidget {
-  const _DayRange();
+///
+/// While a cash register is required, this names the open shift instead.
+class _DayRange extends ConsumerWidget {
+  const _DayRange({required this.buildingId});
+
+  final String buildingId;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
     final material = MaterialLocalizations.of(context);
     final scheme = Theme.of(context).colorScheme;
     final text = Theme.of(context).textTheme;
+    final building = ref.watch(buildingSelectionProvider);
+    final register = ref.watch(openCashRegisterProvider(buildingId));
     final now = DateTime.now();
     final start = DateTime(now.year, now.month, now.day);
     final end = DateTime(now.year, now.month, now.day, 23, 59);
+    final requiredRegister = building?.cashRegisterEnabled == true;
+    final open = register.asData?.value;
     final use24 = MediaQuery.alwaysUse24HourFormatOf(context);
     String stamp(DateTime value) {
       final date = material.formatMediumDate(value);
@@ -174,21 +183,27 @@ class _DayRange extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              l10n.dashboardCurrentDay,
+              requiredRegister
+                  ? (open == null
+                        ? l10n.dashboardRegisterClosed
+                        : l10n.dashboardThisRegister)
+                  : l10n.dashboardCurrentDay,
               style: text.labelLarge?.copyWith(color: scheme.primary),
             ),
-            const SizedBox(height: AppSpacing.xs),
-            Wrap(
-              spacing: AppSpacing.lg,
-              runSpacing: AppSpacing.xs,
-              children: [
-                _RangeStamp(
-                  label: l10n.dashboardRangeStart,
-                  value: stamp(start),
-                ),
-                _RangeStamp(label: l10n.dashboardRangeEnd, value: stamp(end)),
-              ],
-            ),
+            if (!requiredRegister) ...[
+              const SizedBox(height: AppSpacing.xs),
+              Wrap(
+                spacing: AppSpacing.lg,
+                runSpacing: AppSpacing.xs,
+                children: [
+                  _RangeStamp(
+                    label: l10n.dashboardRangeStart,
+                    value: stamp(start),
+                  ),
+                  _RangeStamp(label: l10n.dashboardRangeEnd, value: stamp(end)),
+                ],
+              ),
+            ],
           ],
         ),
       ),

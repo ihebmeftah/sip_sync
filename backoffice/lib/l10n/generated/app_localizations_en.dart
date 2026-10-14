@@ -492,6 +492,17 @@ class AppLocalizationsEn extends AppLocalizations {
       'Staff and customers can book tables. A daily cap still applies when it is set.';
 
   @override
+  String get capCashRegister => 'Cash register';
+
+  @override
+  String get capCashRegisterHint =>
+      'The venue can require an open register. Orders and the dashboard then follow that shift.';
+
+  @override
+  String get errorPackFeatureCashRegister =>
+      'This plan does not include the cash register.';
+
+  @override
   String get capMaxReservations => 'Reservations per day';
 
   @override

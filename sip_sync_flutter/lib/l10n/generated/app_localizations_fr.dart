@@ -654,6 +654,12 @@ class AppLocalizationsFr extends AppLocalizations {
       'Ce lieu a désactivé les commandes.';
 
   @override
+  String get errorOrderRegisterRequired => 'La caisse de ce lieu est fermée.';
+
+  @override
+  String get errorPackFeatureCashRegister => 'Ce pack n\'inclut pas la caisse.';
+
+  @override
   String get errorReservationsDisabled =>
       'Ce lieu a désactivé les réservations.';
 

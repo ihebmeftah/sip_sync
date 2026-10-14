@@ -27,6 +27,7 @@ class OrderService {
   /// Optional [status] and [venueTableId] filter in the database, including
   /// the employee visibility rule, so a page is not shortened after the read.
   /// [createdFrom] and [createdTo] narrow that page by day for every caller.
+  /// [cashRegisterSessionId] replaces that day with one shift.
   /// An employee who cannot consult every order still only sees tickets they
   /// took part in, inside that window.
   Future<OrderPage> listForBuilding(
@@ -35,6 +36,7 @@ class OrderService {
     OrderStatus? status,
     DateTime? createdFrom,
     DateTime? createdTo,
+    UuidValue? cashRegisterSessionId,
     UuidValue? venueTableId,
     int? limit,
     int? offset,
@@ -44,10 +46,12 @@ class OrderService {
     final access = await _requireEmployeeAccessIfNeeded(session, ctx);
     final window = PageWindow.from(limit: limit, offset: offset);
     final restricted = access != null && !access.consultAllOrders;
-    final dayWindow = _dayWindow(
-      createdFrom: createdFrom,
-      createdTo: createdTo,
-    );
+    final dayWindow = cashRegisterSessionId == null
+        ? _dayWindow(
+            createdFrom: createdFrom,
+            createdTo: createdTo,
+          )
+        : null;
 
     Expression where(VenueOrderTable t) {
       var filter = t.buildingId.equals(buildingId);
@@ -60,7 +64,9 @@ class OrderService {
       if (restricted) {
         filter = filter & _employeeParticipated(t, ctx);
       }
-      if (dayWindow != null) {
+      if (cashRegisterSessionId != null) {
+        filter = filter & t.cashRegisterSessionId.equals(cashRegisterSessionId);
+      } else if (dayWindow != null) {
         filter =
             filter &
             (t.createdAt >= dayWindow.from) &
@@ -115,6 +121,7 @@ class OrderService {
     _requireFloorActor(ctx);
     await _requireBuildingAccess(session, request.buildingId);
     await _requireFlag(session, ctx, (a) => a.orderCreation);
+    final registerId = await _requireOpenRegister(session, request.buildingId);
     final lines = _validateLines(request.items);
     final tableId = await _resolveTableId(
       session,
@@ -145,6 +152,7 @@ class OrderService {
       VenueOrder(
         buildingId: request.buildingId,
         venueTableId: tableId,
+        cashRegisterSessionId: registerId,
         ref: orderRef,
         status: OrderStatus.progress,
         launchedByType: ctx.actorType,
@@ -185,6 +193,7 @@ class OrderService {
       PackFeature.customerOrdering,
     );
     await _assertCustomerOrderingEnabled(session, request.buildingId);
+    final registerId = await _requireOpenRegister(session, request.buildingId);
     final lines = _customerLines(request.items);
     final table = await _requireActiveTable(
       session,
@@ -214,6 +223,7 @@ class OrderService {
       VenueOrder(
         buildingId: request.buildingId,
         venueTableId: table.id,
+        cashRegisterSessionId: registerId,
         ref: orderRef,
         status: OrderStatus.progress,
         launchedByType: ctx.actorType,
@@ -429,6 +439,7 @@ class OrderService {
         code: OrderErrorCode.appendNotAllowed,
       );
     }
+    await _requireOpenRegister(session, order.buildingId);
     final lines = _customerLines(request.items);
     final articles = await _resolveArticles(session, order.buildingId, lines);
     await _syncIngredientStock(
@@ -485,6 +496,7 @@ class OrderService {
         code: OrderErrorCode.appendNotAllowed,
       );
     }
+    await _requireOpenRegister(session, order.buildingId);
     final pack = await PackGate.ofBuilding(session, order.buildingId);
     PackGate.requireFeature(
       pack.allowAppendingItems,
@@ -541,6 +553,9 @@ class OrderService {
     final order = await _loadOrder(session, item.orderId);
     await _requireBuildingAccess(session, order.buildingId);
     await _requireStatusFlag(session, ctx, request.status);
+    if (request.status == OrderItemStatus.payed) {
+      await _requireOpenRegister(session, order.buildingId);
+    }
     await _assertServiceAttribution(session, ctx, order, item, request.status);
     if (order.status == OrderStatus.cancelled) {
       throw OrderException(
@@ -802,17 +817,22 @@ class OrderService {
   /// Tickets for the floor board created in [createdFrom] inclusive,
   /// [createdTo] exclusive, then each create, append, and move in that day.
   ///
+  /// [cashRegisterSessionId] replaces the day. In-progress tickets with no
+  /// session stay on that board so an older open ticket is not hidden.
   /// Preparation sees lines waiting to be picked or readied. Serving and
   /// payment see the step they can record. History is not replayed after [synced].
   Stream<OrderBoardEvent> watchBoard(
     Session session,
     UuidValue buildingId, {
-    required DateTime createdFrom,
-    required DateTime createdTo,
+    DateTime? createdFrom,
+    DateTime? createdTo,
+    UuidValue? cashRegisterSessionId,
   }) async* {
     await _requireBuildingAccess(session, buildingId);
-    final day = _dayWindow(createdFrom: createdFrom, createdTo: createdTo);
-    if (day == null) {
+    final day = cashRegisterSessionId == null
+        ? _dayWindow(createdFrom: createdFrom, createdTo: createdTo)
+        : null;
+    if (cashRegisterSessionId == null && day == null) {
       throw OrderException(
         message: 'Order day window is not valid.',
         code: OrderErrorCode.invalidInput,
@@ -841,6 +861,7 @@ class OrderService {
         buildingId,
         includePayed: !strictMode,
         day: day,
+        cashRegisterSessionId: cashRegisterSessionId,
       );
       for (final order in open) {
         if (!_canSeeBoard(order, ctx, access, steps, strictMode: strictMode)) {
@@ -859,7 +880,11 @@ class OrderService {
       await for (final event in queue.stream) {
         final order = event.order;
         if (order != null &&
-            (!_createdOnBoardDay(order.createdAt, day) ||
+            (!_onWatchedBoard(
+                  order,
+                  day: day,
+                  cashRegisterSessionId: cashRegisterSessionId,
+                ) ||
                 !_shouldDeliverBoardEvent(
                   event.kind,
                   order,
@@ -888,6 +913,25 @@ class OrderService {
     return !createdAt.isBefore(day.from) && createdAt.isBefore(day.to);
   }
 
+  /// Day window, or the open shift plus in-progress tickets that predate it.
+  bool _onWatchedBoard(
+    OrderView order, {
+    required ({DateTime from, DateTime to})? day,
+    required UuidValue? cashRegisterSessionId,
+  }) {
+    if (cashRegisterSessionId != null) {
+      if (order.cashRegisterSessionId == cashRegisterSessionId) {
+        return true;
+      }
+      return order.cashRegisterSessionId == null &&
+          order.status == OrderStatus.progress;
+    }
+    if (day == null) {
+      return false;
+    }
+    return _createdOnBoardDay(order.createdAt, day);
+  }
+
   /// Open tickets for the board, without the consult-all list filter.
   ///
   /// Kitchen staff must see progress lines they did not launch. [_canSeeBoard]
@@ -898,22 +942,30 @@ class OrderService {
     Session session,
     UuidValue buildingId, {
     required bool includePayed,
-    required ({DateTime from, DateTime to}) day,
+    required ({DateTime from, DateTime to})? day,
+    UuidValue? cashRegisterSessionId,
   }) async {
     final include = VenueOrder.include(
       venueTable: VenueTable.include(),
       items: VenueOrderItem.includeList(orderBy: (t) => t.createdAt),
     );
-    Expression inDay(VenueOrderTable t, OrderStatus status) {
-      return t.buildingId.equals(buildingId) &
-          t.status.equals(status) &
-          (t.createdAt >= day.from) &
-          (t.createdAt < day.to);
+    Expression inWindow(VenueOrderTable t, OrderStatus status) {
+      var filter = t.buildingId.equals(buildingId) & t.status.equals(status);
+      if (cashRegisterSessionId != null) {
+        filter =
+            filter &
+            (t.cashRegisterSessionId.equals(cashRegisterSessionId) |
+                (t.cashRegisterSessionId.equals(null) &
+                    t.status.equals(OrderStatus.progress)));
+      } else if (day != null) {
+        filter = filter & (t.createdAt >= day.from) & (t.createdAt < day.to);
+      }
+      return filter;
     }
 
     final rows = await VenueOrder.db.find(
       session,
-      where: (t) => inDay(t, OrderStatus.progress),
+      where: (t) => inWindow(t, OrderStatus.progress),
       orderBy: (t) => t.createdAt.desc(),
       limit: 300,
       include: include,
@@ -921,7 +973,7 @@ class OrderService {
     final paid = includePayed
         ? await VenueOrder.db.find(
             session,
-            where: (t) => inDay(t, OrderStatus.payed),
+            where: (t) => inWindow(t, OrderStatus.payed),
             orderBy: (t) => t.updatedAt.desc(),
             limit: 80,
             include: include,
@@ -1145,6 +1197,36 @@ class OrderService {
         ingredient.copyWith(currentStock: next),
       );
     }
+  }
+
+  /// The open shift when the venue requires one.
+  ///
+  /// Returns null when the switch is off. Throws [OrderErrorCode.registerRequired]
+  /// when the switch is on and the drawer is shut, and [PackException] when
+  /// the pack leaves cash register off.
+  Future<UuidValue?> _requireOpenRegister(
+    Session session,
+    UuidValue buildingId,
+  ) async {
+    final building = await Building.db.findById(session, buildingId);
+    if (building == null || !building.cashRegisterEnabled) {
+      return null;
+    }
+    final pack = await PackGate.ofBuilding(session, buildingId);
+    PackGate.requireFeature(pack.cashRegister, PackFeature.cashRegister);
+    final open = await CashRegisterSession.db.findFirstRow(
+      session,
+      where: (t) =>
+          t.buildingId.equals(buildingId) &
+          t.status.equals(CashRegisterStatus.progress),
+    );
+    if (open == null || open.id == null) {
+      throw OrderException(
+        message: 'Open the cash register before taking an order.',
+        code: OrderErrorCode.registerRequired,
+      );
+    }
+    return open.id;
   }
 
   /// The pack can include customer ordering while the venue has it turned off.
@@ -1379,6 +1461,7 @@ class OrderService {
       id: row.id!,
       buildingId: row.buildingId,
       venueTableId: row.venueTableId,
+      cashRegisterSessionId: row.cashRegisterSessionId,
       tableNumber: row.venueTable?.number,
       ref: row.ref,
       status: row.status,

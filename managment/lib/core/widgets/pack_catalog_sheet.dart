@@ -179,6 +179,7 @@ class _PackCard extends StatelessWidget {
       (l10n.packCapStrict, caps.strictMode),
       (l10n.packCapAccess, caps.customAccessProfiles),
       (l10n.packCapReservations, caps.reservations),
+      (l10n.packCapCashRegister, caps.cashRegister),
     ];
 
     return Material(

@@ -32,6 +32,7 @@ class DefaultEmployeeAccess {
           serving: profile.serving,
           consultAllOrders: profile.consultAllOrders,
           reservations: profile.reservations,
+          cashRegister: profile.cashRegister,
         ),
       );
     }
@@ -48,6 +49,7 @@ class DefaultEmployeeAccess {
           bool serving,
           bool consultAllOrders,
           bool reservations,
+          bool cashRegister,
         })
       >[
         (
@@ -59,6 +61,7 @@ class DefaultEmployeeAccess {
           serving: true,
           consultAllOrders: false,
           reservations: false,
+          cashRegister: false,
         ),
         (
           name: 'Gerant',
@@ -69,6 +72,7 @@ class DefaultEmployeeAccess {
           serving: true,
           consultAllOrders: true,
           reservations: true,
+          cashRegister: true,
         ),
         (
           name: 'Barista',
@@ -79,6 +83,7 @@ class DefaultEmployeeAccess {
           serving: false,
           consultAllOrders: false,
           reservations: false,
+          cashRegister: false,
         ),
       ];
 }

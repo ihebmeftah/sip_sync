@@ -43,6 +43,8 @@ fields:
   reservationsEnabled: bool, default=true
   ### When true, an order may be placed even if a recipe ingredient would go below zero.
   allowOutOfStockOrders: bool, default=false
+  ### When true, create, append, and payment require an open cash-register session.
+  cashRegisterEnabled: bool, default=false
   createdAt: DateTime, defaultModel=now
   employees: List<Employee>?, relation(name=building_employees)
   accessProfiles: List<EmployeeAccess>?, relation(name=building_access_profiles)
@@ -52,6 +54,7 @@ fields:
   ingredients: List<Ingredient>?, relation(name=building_ingredients)
   orders: List<VenueOrder>?, relation(name=building_orders)
   reservations: List<Reservation>?, relation(name=building_reservations)
+  cashRegisterSessions: List<CashRegisterSession>?, relation(name=building_cash_registers)
   ### Every plan this venue has been on, including the open row.
   packAssignments: List<BuildingPackAssignment>?, relation(name=building_pack_assignments)
   ### Plan this venue is on. Create assigns the free pack.

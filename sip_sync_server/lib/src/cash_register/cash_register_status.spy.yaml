@@ -1,0 +1,6 @@
+### One shift is in progress, or it has been closed.
+enum: CashRegisterStatus
+serialized: byName
+values:
+  - progress
+  - closed

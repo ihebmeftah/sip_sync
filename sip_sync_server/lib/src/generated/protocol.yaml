@@ -48,6 +48,12 @@ building:
   - create:
   - update:
   - listEmployees:
+cashRegister:
+  - current:
+  - open:
+  - close:
+  - correct:
+  - list:
 dashboard:
   - summary:
 customerPlace:

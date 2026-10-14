@@ -21,6 +21,7 @@ Status: shipped
 | `preparation` | The only employees who can set **picked** or **ready**. Both steps store that person on `preparedBy`. They see the kitchen queue, including lines they did not open |
 | `serving` | See lines waiting to be served and set them to **served**, including lines opened by a customer, owner, or another employee |
 | `consultAllOrders` | When **true**, list every building order, open the management dashboard, and record served / payed on any line. When **false**, the ticket list is orders they launched or lines they added, prepared, served, were paid on, or cancelled, and the dashboard tab stays hidden. The item board still shows the kitchen or service step their other flags allow. With strict workflow off, that board is in progress and payed |
+| `cashRegister` | Open and close the cash register, and read its history. Any building member can still read the session that is in progress. See [cash register](cash-register.md) |
 
 An employee with **no** access assigned cannot perform floor order actions (except what building membership alone allowed before — now denied until assigned).
 
@@ -34,11 +35,11 @@ An employee with **no** access assigned cannot perform floor order actions (exce
 
 ## Default profiles (on building create)
 
-| Name | orderCreation | orderPayment | cancelOrder | preparation | serving | consultAllOrders |
-| --- | --- | --- | --- | --- | --- | --- |
-| Waiter | ✓ | ✓ | ✓ | | ✓ | |
-| Gerant | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
-| Barista | ✓ | | | ✓ | | |
+| Name | orderCreation | orderPayment | cancelOrder | preparation | serving | consultAllOrders | cashRegister |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Waiter | ✓ | ✓ | ✓ | | ✓ | | |
+| Gerant | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| Barista | ✓ | | | ✓ | | | |
 
 ## Data
 
@@ -49,7 +50,7 @@ An employee with **no** access assigned cannot perform floor order actions (exce
 | `id` | UUID |
 | `buildingId` | → building (Cascade) |
 | `name` | Unique per building |
-| flags | booleans above |
+| flags | booleans above, including `cashRegister` |
 | `createdAt` | |
 
 ### `employee.accessId`

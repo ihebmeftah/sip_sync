@@ -82,6 +82,7 @@ final _seeds = <Pack>[
     strictMode: false,
     customAccessProfiles: false,
     reservations: false,
+    cashRegister: false,
     maxReservationsPerDay: null,
   ),
   _pack(
@@ -103,6 +104,7 @@ final _seeds = <Pack>[
     strictMode: false,
     customAccessProfiles: false,
     reservations: true,
+    cashRegister: true,
     maxReservationsPerDay: 8,
   ),
   _pack(
@@ -124,6 +126,7 @@ final _seeds = <Pack>[
     strictMode: true,
     customAccessProfiles: true,
     reservations: true,
+    cashRegister: true,
     maxReservationsPerDay: 30,
   ),
   _pack(
@@ -145,6 +148,7 @@ final _seeds = <Pack>[
     strictMode: true,
     customAccessProfiles: true,
     reservations: true,
+    cashRegister: true,
     maxReservationsPerDay: null,
   ),
   _pack(
@@ -166,6 +170,7 @@ final _seeds = <Pack>[
     strictMode: true,
     customAccessProfiles: true,
     reservations: true,
+    cashRegister: true,
     maxReservationsPerDay: null,
   ),
 ];
@@ -189,6 +194,7 @@ Pack _pack({
   required bool strictMode,
   required bool customAccessProfiles,
   required bool reservations,
+  required bool cashRegister,
   required int? maxReservationsPerDay,
 }) {
   return Pack(
@@ -215,6 +221,7 @@ Pack _pack({
     strictMode: strictMode,
     customAccessProfiles: customAccessProfiles,
     reservations: reservations,
+    cashRegister: cashRegister,
     maxReservationsPerDay: maxReservationsPerDay,
   );
 }
