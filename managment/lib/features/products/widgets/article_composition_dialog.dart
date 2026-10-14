@@ -4,6 +4,7 @@ import 'package:sip_sync_client/sip_sync_client.dart';
 
 import '../../../core/di/app_providers.dart';
 import '../../../core/errors/app_notice.dart';
+import '../../../core/errors/async_lists.dart';
 import '../../../core/errors/error_mapper.dart';
 import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_tokens.dart';
@@ -107,6 +108,7 @@ class _CompositionDialogState extends ConsumerState<_CompositionDialog> {
         _ingredientId = null;
         _qty.text = '1';
       });
+      showSavedSnackBar(context);
     } catch (error) {
       if (!mounted) {
         return;
@@ -160,6 +162,10 @@ class _CompositionDialogState extends ConsumerState<_CompositionDialog> {
             ).notifier,
           )
           .updateQuantity(id: line.id, quantity: quantity);
+      if (!mounted) {
+        return;
+      }
+      showSavedSnackBar(context);
     } catch (error) {
       if (!mounted) {
         return;
@@ -199,6 +205,10 @@ class _CompositionDialogState extends ConsumerState<_CompositionDialog> {
             ).notifier,
           )
           .removeLine(line.id);
+      if (!mounted) {
+        return;
+      }
+      showRemovedSnackBar(context);
     } catch (error) {
       if (!mounted) {
         return;
@@ -218,17 +228,21 @@ class _CompositionDialogState extends ConsumerState<_CompositionDialog> {
         articleId: widget.article.id.uuid,
       ),
     );
-    final ingredients =
-        ref.watch(ingredientCatalogProvider(widget.buildingId)).asData?.value ??
-        const <IngredientView>[];
+    final ingredientsAsync = ref.watch(
+      ingredientCatalogProvider(widget.buildingId),
+    );
+    final ingredients = settledList(ingredientsAsync);
     final usedIds = {
       for (final line
           in async.asData?.value ?? const <ArticleCompositionView>[])
         line.ingredientId,
     };
-    final available = ingredients
+    final available = (ingredients ?? const <IngredientView>[])
         .where((i) => !usedIds.contains(i.id))
         .toList();
+    final ingredientsFailed = ingredients == null && ingredientsAsync.hasError;
+    final ingredientsPending = ingredients == null && !ingredientsFailed;
+    final ingredientsMissing = isSettledEmpty(ingredientsAsync);
 
     return AlertDialog(
       title: Text(l10n.articleCompositionTitle(widget.article.name)),
@@ -242,8 +256,14 @@ class _CompositionDialogState extends ConsumerState<_CompositionDialog> {
             const SizedBox(height: AppSpacing.lg),
             async.when(
               loading: () => const AppScreenLoader(),
-              error: (error, _) => AppErrorBanner(
-                message: lookupError(l10n, mapError(error).l10nKey),
+              error: (error, _) => Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  LoadFailureNotice(error: error),
+                  AppErrorBanner(
+                    message: lookupError(l10n, mapError(error).l10nKey),
+                  ),
+                ],
               ),
               data: (lines) {
                 if (lines.isEmpty) {
@@ -294,7 +314,22 @@ class _CompositionDialogState extends ConsumerState<_CompositionDialog> {
             ),
             if (isOwner) ...[
               const SizedBox(height: AppSpacing.lg),
-              if (ingredients.isEmpty)
+              if (ingredientsPending)
+                const AppScreenLoader(compact: true)
+              else if (ingredientsFailed)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    LoadFailureNotice(error: ingredientsAsync.error),
+                    AppErrorBanner(
+                      message: lookupError(
+                        l10n,
+                        mapError(ingredientsAsync.error!).l10nKey,
+                      ),
+                    ),
+                  ],
+                )
+              else if (ingredientsMissing)
                 AppErrorBanner(message: l10n.compositionNeedIngredients)
               else if (available.isEmpty)
                 Text(l10n.compositionAllIngredientsUsed, style: text.bodySmall)

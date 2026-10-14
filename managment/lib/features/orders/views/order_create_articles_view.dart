@@ -65,6 +65,7 @@ class _OrderCreateArticlesViewState
             .createOrder(venueTableId: draft.venueTableId, items: lines);
       }
       if (!mounted) return;
+      showSavedSnackBar(context);
       // Navigate first; keep _confirming true so clearing the draft cannot
       // trigger the empty-table redirect back to the floor map.
       OrderDetailRoute(
@@ -259,8 +260,14 @@ class _OrderCreateArticlesViewState
                   loading: () => const AppScreenLoader(),
                   error: (error, _) => Padding(
                     padding: const EdgeInsets.all(AppSpacing.xl),
-                    child: AppErrorBanner(
-                      message: lookupError(l10n, mapError(error).l10nKey),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        LoadFailureNotice(error: error),
+                        AppErrorBanner(
+                          message: lookupError(l10n, mapError(error).l10nKey),
+                        ),
+                      ],
                     ),
                   ),
                   data: (_) {

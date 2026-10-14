@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sip_sync_client/sip_sync_client.dart';
 
 import '../../../core/errors/app_notice.dart';
+import '../../../core/errors/async_lists.dart';
 import '../../../core/errors/error_mapper.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
@@ -116,7 +117,7 @@ class _ArticleFormViewState extends ConsumerState<ArticleFormView> {
       if (!mounted) {
         return;
       }
-      Navigator.of(context).pop(true);
+      popWithSnackBar(context, AppLocalizations.of(context)!.noticeSaved);
     } catch (error) {
       if (!mounted) {
         return;
@@ -138,9 +139,11 @@ class _ArticleFormViewState extends ConsumerState<ArticleFormView> {
     final categoriesAsync = ref.watch(
       categoryCatalogProvider(widget.buildingId),
     );
-    final articles = articlesAsync.asData?.value ?? const <MenuArticleView>[];
-    final categories =
-        categoriesAsync.asData?.value ?? const <MenuCategoryView>[];
+    final articles = settledList(articlesAsync) ?? const <MenuArticleView>[];
+    final categories = settledList(categoriesAsync);
+    final categoriesFailed = categories == null && categoriesAsync.hasError;
+    final categoriesPending = categories == null && !categoriesFailed;
+    final categoriesMissing = isSettledEmpty(categoriesAsync);
     _fillFromList(articles);
 
     MenuArticleView? existing;
@@ -178,13 +181,28 @@ class _ArticleFormViewState extends ConsumerState<ArticleFormView> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        if (categories.isEmpty)
+                        if (categoriesPending)
+                          const AppScreenLoader(compact: true)
+                        else if (categoriesFailed)
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              LoadFailureNotice(error: categoriesAsync.error),
+                              AppErrorBanner(
+                                message: lookupError(
+                                  l10n,
+                                  mapError(categoriesAsync.error!).l10nKey,
+                                ),
+                              ),
+                            ],
+                          )
+                        else if (categoriesMissing)
                           AppErrorBanner(message: l10n.articlesNeedCategory)
                         else
                           DropdownButtonFormField<UuidValue>(
                             initialValue:
                                 _categoryId != null &&
-                                    categories.any((c) => c.id == _categoryId)
+                                    categories!.any((c) => c.id == _categoryId)
                                 ? _categoryId
                                 : null,
                             decoration: InputDecoration(
@@ -192,7 +210,7 @@ class _ArticleFormViewState extends ConsumerState<ArticleFormView> {
                               prefixIcon: const Icon(Icons.category_outlined),
                             ),
                             items: [
-                              for (final category in categories)
+                              for (final category in categories!)
                                 DropdownMenuItem(
                                   value: category.id,
                                   child: Text(category.name),
@@ -263,7 +281,9 @@ class _ArticleFormViewState extends ConsumerState<ArticleFormView> {
                           label: _isEdit ? l10n.saveArticle : l10n.addArticle,
                           busy: _saving,
                           onPressed:
-                              categories.isEmpty ||
+                              categoriesPending ||
+                                  categoriesFailed ||
+                                  categoriesMissing ||
                                   (_isEdit && existing == null && !_filled)
                               ? null
                               : () => _submit(existing),

@@ -226,6 +226,7 @@ class _ReservationCreateViewState extends ConsumerState<ReservationCreateView> {
       if (!mounted) {
         return;
       }
+      showSavedSnackBar(context);
       ReservationsRoute(buildingId: widget.buildingId).go(context);
     } catch (error) {
       if (mounted) {

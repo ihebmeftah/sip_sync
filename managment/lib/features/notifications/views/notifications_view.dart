@@ -62,6 +62,7 @@ class _NotificationsViewState extends ConsumerState<NotificationsView> {
               padding: const EdgeInsets.all(AppSpacing.lg),
               child: Column(
                 children: [
+                  LoadFailureNotice(error: error),
                   AppErrorBanner(
                     message: lookupError(l10n, mapError(error).l10nKey),
                   ),
@@ -174,7 +175,9 @@ class _NotificationsViewState extends ConsumerState<NotificationsView> {
       }
     } catch (error) {
       if (mounted) {
-        setState(() => _errorKey = mapError(error).l10nKey);
+        final key = mapError(error).l10nKey;
+        setState(() => _errorKey = key);
+        showErrorKey(context, key);
       }
     }
   }

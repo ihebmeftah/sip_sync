@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:sip_sync_client/sip_sync_client.dart';
 
+import '../../../core/errors/app_notice.dart';
 import '../../../core/errors/error_mapper.dart';
 import '../../../core/errors/form_validators.dart';
 import '../../../core/theme/app_tokens.dart';
@@ -216,12 +217,13 @@ class _UserFormDialogState extends ConsumerState<UserFormDialog> {
       return;
     }
     if (errorKey == null) {
-      Navigator.of(context).pop();
+      popWithSnackBar(context, AppLocalizations.of(context)!.noticeSaved);
       return;
     }
     setState(() {
       _saving = false;
       _errorKey = errorKey;
     });
+    showErrorKey(context, errorKey);
   }
 }

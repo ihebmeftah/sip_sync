@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/di/app_providers.dart';
+import '../../../core/errors/app_notice.dart';
 import '../../../core/errors/error_mapper.dart';
 import '../../../core/errors/form_validators.dart';
 import '../../../core/theme/app_tokens.dart';
@@ -82,6 +83,11 @@ class _ProfileViewPageState extends ConsumerState<ProfileViewPage> {
     _currentPassword.clear();
     _newPassword.clear();
     _confirmPassword.clear();
+    showAppSnackBar(
+      context,
+      AppLocalizations.of(context)!.passwordChanged,
+      kind: AppNoticeKind.success,
+    );
   }
 
   @override
@@ -89,6 +95,23 @@ class _ProfileViewPageState extends ConsumerState<ProfileViewPage> {
     final l10n = AppLocalizations.of(context)!;
     final store = ref.watch(appSessionStoreProvider);
     final ui = ref.watch(profileViewModelProvider);
+    ref.listen(profileViewModelProvider, (previous, next) {
+      if (next.saved && previous?.saved != true) {
+        showAppSnackBar(
+          context,
+          l10n.profileSaved,
+          kind: AppNoticeKind.success,
+        );
+      }
+      final key = next.errorKey;
+      if (key != null && key != previous?.errorKey) {
+        showErrorKey(context, key);
+      }
+      final passwordKey = next.passwordErrorKey;
+      if (passwordKey != null && passwordKey != previous?.passwordErrorKey) {
+        showErrorKey(context, passwordKey);
+      }
+    });
     final text = Theme.of(context).textTheme;
     final isEmployee = store.isEmployee;
     _fillFromSession();

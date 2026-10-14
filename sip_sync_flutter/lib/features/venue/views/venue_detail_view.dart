@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sip_sync_client/sip_sync_client.dart';
 
+import '../../../core/errors/app_notice.dart';
 import '../../../core/errors/error_mapper.dart';
 import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_icons.dart';
@@ -137,6 +138,7 @@ class _VenueDetailViewState extends ConsumerState<VenueDetailView> {
                       VenueVisitTab.overview => detail.when(
                         loading: () => const AppScreenLoader(),
                         error: (error, _) => _VenueMessage(
+                          failure: error,
                           message: lookupError(l10n, mapError(error).l10nKey),
                           onRetry: () => ref.invalidate(
                             venueDetailViewModelProvider(widget.buildingId),
@@ -910,8 +912,13 @@ class _SeeAllCard extends StatelessWidget {
 }
 
 class _VenueMessage extends StatelessWidget {
-  const _VenueMessage({required this.message, required this.onRetry});
+  const _VenueMessage({
+    required this.failure,
+    required this.message,
+    required this.onRetry,
+  });
 
+  final Object failure;
   final String message;
   final VoidCallback onRetry;
 
@@ -922,6 +929,7 @@ class _VenueMessage extends StatelessWidget {
       padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(
         children: [
+          LoadFailureNotice(error: failure),
           const Spacer(),
           AppErrorBanner(message: message),
           AppTonalButton(label: l10n.retry, onPressed: onRetry),

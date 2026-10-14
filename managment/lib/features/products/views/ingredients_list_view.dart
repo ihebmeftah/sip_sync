@@ -79,6 +79,10 @@ class _IngredientsListViewState extends ConsumerState<IngredientsListView> {
       await ref
           .read(ingredientsViewModelProvider(widget.buildingId).notifier)
           .deleteIngredient(ingredient.id);
+      if (!mounted) {
+        return;
+      }
+      showRemovedSnackBar(context);
     } catch (error) {
       if (!mounted) {
         return;
@@ -164,6 +168,7 @@ class _IngredientsListViewState extends ConsumerState<IngredientsListView> {
                 error: (error, _) => Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
+                    LoadFailureNotice(error: error),
                     AppErrorBanner(
                       message: lookupError(l10n, mapError(error).l10nKey),
                     ),

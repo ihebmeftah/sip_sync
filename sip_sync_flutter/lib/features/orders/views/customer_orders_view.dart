@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:sip_sync_client/sip_sync_client.dart';
 
+import '../../../core/errors/app_notice.dart';
 import '../../../core/errors/error_mapper.dart';
 import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_tokens.dart';
@@ -146,6 +147,7 @@ class _CustomerOrdersViewState extends ConsumerState<CustomerOrdersView> {
                   loading: () => const AppScreenLoader(),
                   error: (error, _) => Column(
                     children: [
+                      LoadFailureNotice(error: error),
                       AppErrorBanner(
                         message: lookupError(l10n, mapError(error).l10nKey),
                       ),

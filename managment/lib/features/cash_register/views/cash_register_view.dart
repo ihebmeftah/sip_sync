@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sip_sync_client/sip_sync_client.dart';
 
 import '../../../core/di/app_providers.dart';
+import '../../../core/errors/app_notice.dart';
 import '../../../core/errors/error_mapper.dart';
 import '../../../core/errors/form_validators.dart';
 import '../../../core/theme/app_tokens.dart';
@@ -46,6 +47,7 @@ class _CashRegisterViewState extends ConsumerState<CashRegisterView> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            LoadFailureNotice(error: error),
             AppErrorBanner(message: lookupError(l10n, mapError(error).l10nKey)),
             AppFilledButton(
               label: l10n.retry,
@@ -286,9 +288,14 @@ class _CashRegisterViewState extends ConsumerState<CashRegisterView> {
     });
     try {
       await action();
+      if (mounted) {
+        showSavedSnackBar(context);
+      }
     } catch (error) {
       if (mounted) {
-        setState(() => _errorKey = mapError(error).l10nKey);
+        final key = mapError(error).l10nKey;
+        setState(() => _errorKey = key);
+        showErrorKey(context, key);
       }
     } finally {
       if (mounted) {

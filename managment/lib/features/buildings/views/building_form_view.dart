@@ -494,6 +494,7 @@ class _BuildingFormViewState extends ConsumerState<BuildingFormView> {
                           }
                           getIt<BuildingSession>().upsert(saved);
                           getIt<BuildingSession>().select(saved.id);
+                          showSavedSnackBar(context);
                           DashboardRoute(buildingId: saved.id.uuid).go(context);
                         },
                       ),

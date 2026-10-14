@@ -104,6 +104,7 @@ class _AccessProfileFormViewState extends ConsumerState<AccessProfileFormView> {
         );
       }
       if (!mounted) return;
+      showSavedSnackBar(context);
       AccessProfilesRoute(buildingId: widget.buildingId).go(context);
     } catch (error) {
       if (mounted) {
@@ -147,6 +148,7 @@ class _AccessProfileFormViewState extends ConsumerState<AccessProfileFormView> {
           .read(accessProfilesViewModelProvider(widget.buildingId).notifier)
           .deleteProfile(existing.id);
       if (!mounted) return;
+      showRemovedSnackBar(context);
       AccessProfilesRoute(buildingId: widget.buildingId).go(context);
     } catch (error) {
       if (mounted) {

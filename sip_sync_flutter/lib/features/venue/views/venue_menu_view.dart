@@ -121,6 +121,7 @@ class _VenueMenuViewState extends ConsumerState<VenueMenuView> {
     final body = menu.when(
       loading: () => const AppScreenLoader(),
       error: (error, _) => _MenuMessage(
+        failure: error,
         embedded: widget.embedded,
         message: lookupError(l10n, mapError(error).l10nKey),
         onRetry: () =>
@@ -776,11 +777,13 @@ class _QtyButton extends StatelessWidget {
 
 class _MenuMessage extends StatelessWidget {
   const _MenuMessage({
+    required this.failure,
     required this.embedded,
     required this.message,
     required this.onRetry,
   });
 
+  final Object failure;
   final bool embedded;
   final String message;
   final VoidCallback onRetry;
@@ -792,6 +795,7 @@ class _MenuMessage extends StatelessWidget {
       padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(
         children: [
+          LoadFailureNotice(error: failure),
           if (!embedded)
             const Align(
               alignment: AlignmentDirectional.centerStart,

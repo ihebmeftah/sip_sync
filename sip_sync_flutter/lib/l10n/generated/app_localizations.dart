@@ -244,6 +244,18 @@ abstract class AppLocalizations {
   /// **'Retry'**
   String get retry;
 
+  /// Snackbar after a create or update succeeds
+  ///
+  /// In en, this message translates to:
+  /// **'Saved.'**
+  String get noticeSaved;
+
+  /// Snackbar after a delete succeeds
+  ///
+  /// In en, this message translates to:
+  /// **'Removed.'**
+  String get noticeRemoved;
+
   /// No description provided for @empty.
   ///
   /// In en, this message translates to:

@@ -63,6 +63,7 @@ class _OrderBoardViewState extends ConsumerState<OrderBoardView> {
           padding: const EdgeInsets.all(AppSpacing.lg),
           child: Column(
             children: [
+              LoadFailureNotice(error: error),
               AppErrorBanner(
                 message: lookupError(l10n, mapError(error).l10nKey),
               ),

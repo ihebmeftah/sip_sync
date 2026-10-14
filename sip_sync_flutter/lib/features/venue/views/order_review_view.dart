@@ -75,6 +75,7 @@ class OrderReviewView extends ConsumerWidget {
         if (!context.mounted) {
           return;
         }
+        showSavedSnackBar(context);
         CustomerOrderRoute(
           id: buildingId,
           orderId: order.id.uuid,

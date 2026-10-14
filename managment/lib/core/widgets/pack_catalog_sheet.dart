@@ -6,6 +6,7 @@ import 'package:sip_sync_client/sip_sync_client.dart';
 
 import '../../l10n/generated/app_localizations.dart';
 import '../di/app_providers.dart';
+import '../errors/app_notice.dart';
 import '../errors/error_mapper.dart';
 import '../theme/app_tokens.dart';
 import 'app_controls.dart';
@@ -101,6 +102,7 @@ class _PackCatalogSheet extends ConsumerWidget {
             error: (error, _) => ListView(
               padding: const EdgeInsets.all(AppSpacing.xl),
               children: [
+                LoadFailureNotice(error: error),
                 AppErrorBanner(
                   message: lookupError(l10n, mapError(error).l10nKey),
                 ),

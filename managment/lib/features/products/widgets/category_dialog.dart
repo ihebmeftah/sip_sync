@@ -110,7 +110,7 @@ class _CategoryDialogState extends ConsumerState<_CategoryDialog> {
       if (!mounted) {
         return;
       }
-      Navigator.of(context).pop(true);
+      popWithSnackBar(context, AppLocalizations.of(context)!.noticeSaved);
     } catch (error) {
       if (!mounted) {
         return;

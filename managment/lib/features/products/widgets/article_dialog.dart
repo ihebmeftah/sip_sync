@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sip_sync_client/sip_sync_client.dart';
 
 import '../../../core/errors/app_notice.dart';
+import '../../../core/errors/async_lists.dart';
 import '../../../core/errors/error_mapper.dart';
 import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_tokens.dart';
@@ -135,7 +136,7 @@ class _ArticleDialogState extends ConsumerState<_ArticleDialog> {
       if (!mounted) {
         return;
       }
-      Navigator.of(context).pop(true);
+      popWithSnackBar(context, AppLocalizations.of(context)!.noticeSaved);
     } catch (error) {
       if (!mounted) {
         return;
@@ -154,8 +155,10 @@ class _ArticleDialogState extends ConsumerState<_ArticleDialog> {
     final categoriesAsync = ref.watch(
       categoryCatalogProvider(widget.buildingId),
     );
-    final categories =
-        categoriesAsync.asData?.value ?? const <MenuCategoryView>[];
+    final categories = settledList(categoriesAsync);
+    final categoriesFailed = categories == null && categoriesAsync.hasError;
+    final categoriesPending = categories == null && !categoriesFailed;
+    final categoriesMissing = isSettledEmpty(categoriesAsync);
 
     return AlertDialog(
       title: Text(_isEdit ? l10n.editArticle : l10n.addArticle),
@@ -169,13 +172,28 @@ class _ArticleDialogState extends ConsumerState<_ArticleDialog> {
             children: [
               Text(l10n.articleFormHint, style: text.bodyMedium),
               const SizedBox(height: AppSpacing.lg),
-              if (categories.isEmpty)
+              if (categoriesPending)
+                const AppScreenLoader(compact: true)
+              else if (categoriesFailed)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    LoadFailureNotice(error: categoriesAsync.error),
+                    AppErrorBanner(
+                      message: lookupError(
+                        l10n,
+                        mapError(categoriesAsync.error!).l10nKey,
+                      ),
+                    ),
+                  ],
+                )
+              else if (categoriesMissing)
                 AppErrorBanner(message: l10n.articlesNeedCategory)
               else
                 DropdownButtonFormField<UuidValue>(
                   initialValue:
                       _categoryId != null &&
-                          categories.any((c) => c.id == _categoryId)
+                          categories!.any((c) => c.id == _categoryId)
                       ? _categoryId
                       : null,
                   decoration: InputDecoration(
@@ -183,7 +201,7 @@ class _ArticleDialogState extends ConsumerState<_ArticleDialog> {
                     prefixIcon: const Icon(Icons.category_outlined),
                   ),
                   items: [
-                    for (final category in categories)
+                    for (final category in categories!)
                       DropdownMenuItem(
                         value: category.id,
                         child: Text(category.name),
@@ -256,7 +274,13 @@ class _ArticleDialogState extends ConsumerState<_ArticleDialog> {
           child: Text(l10n.cancel),
         ),
         FilledButton(
-          onPressed: _saving || categories.isEmpty ? null : _submit,
+          onPressed:
+              _saving ||
+                  categoriesPending ||
+                  categoriesFailed ||
+                  categoriesMissing
+              ? null
+              : _submit,
           child: _saving
               ? const SizedBox(width: 18, height: 18, child: AppBusyIndicator())
               : Text(_isEdit ? l10n.saveArticle : l10n.addArticle),

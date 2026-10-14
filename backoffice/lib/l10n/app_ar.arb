@@ -30,6 +30,8 @@
   "defaultAdminFlag": "افتراضي",
   "loading": "جارٍ التحميل",
   "retry": "إعادة المحاولة",
+  "noticeSaved": "تم الحفظ.",
+  "noticeRemoved": "تم الحذف.",
   "empty": "لا شيء بعد",
   "language": "اللغة",
   "errorGeneric": "حدث خطأ. حاول مجدداً.",

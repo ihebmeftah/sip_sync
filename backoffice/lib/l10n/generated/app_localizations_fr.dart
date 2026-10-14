@@ -103,6 +103,12 @@ class AppLocalizationsFr extends AppLocalizations {
   String get retry => 'Réessayer';
 
   @override
+  String get noticeSaved => 'Enregistré.';
+
+  @override
+  String get noticeRemoved => 'Supprimé.';
+
+  @override
   String get empty => 'Rien pour le moment';
 
   @override

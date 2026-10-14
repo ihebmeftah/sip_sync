@@ -4,6 +4,7 @@ import 'package:sip_sync_client/sip_sync_client.dart';
 
 import '../../../core/di/app_providers.dart';
 import '../../../core/errors/app_notice.dart';
+import '../../../core/errors/async_lists.dart';
 import '../../../core/errors/error_mapper.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
@@ -93,6 +94,7 @@ class _ArticleCompositionFormViewState
         _ingredientId = null;
         _qty.text = '1';
       });
+      showSavedSnackBar(context);
     } catch (error) {
       if (!mounted) {
         return;
@@ -146,6 +148,10 @@ class _ArticleCompositionFormViewState
             ).notifier,
           )
           .updateQuantity(id: line.id, quantity: quantity);
+      if (!mounted) {
+        return;
+      }
+      showSavedSnackBar(context);
     } catch (error) {
       if (!mounted) {
         return;
@@ -185,6 +191,10 @@ class _ArticleCompositionFormViewState
             ).notifier,
           )
           .removeLine(line.id);
+      if (!mounted) {
+        return;
+      }
+      showRemovedSnackBar(context);
     } catch (error) {
       if (!mounted) {
         return;
@@ -208,17 +218,22 @@ class _ArticleCompositionFormViewState
         articleId: widget.articleId,
       ),
     );
-    final ingredients =
-        ref.watch(ingredientCatalogProvider(widget.buildingId)).asData?.value ??
-        const <IngredientView>[];
+    final ingredientsAsync = ref.watch(
+      ingredientCatalogProvider(widget.buildingId),
+    );
+    final ingredients = settledList(ingredientsAsync);
     final usedIds = {
       for (final line
           in async.asData?.value ?? const <ArticleCompositionView>[])
         line.ingredientId,
     };
-    final available = ingredients
+    final available = (ingredients ?? const <IngredientView>[])
         .where((i) => !usedIds.contains(i.id))
         .toList();
+    final ingredientsPending =
+        ingredients == null && !ingredientsAsync.hasError;
+    final ingredientsFailed = ingredients == null && ingredientsAsync.hasError;
+    final ingredientsMissing = isSettledEmpty(ingredientsAsync);
     final titleName = article?.name ?? l10n.navArticles;
 
     return ColoredBox(
@@ -240,8 +255,14 @@ class _ArticleCompositionFormViewState
                 const SizedBox(height: AppSpacing.lg),
                 async.when(
                   loading: () => const AppScreenLoader(),
-                  error: (error, _) => AppErrorBanner(
-                    message: lookupError(l10n, mapError(error).l10nKey),
+                  error: (error, _) => Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      LoadFailureNotice(error: error),
+                      AppErrorBanner(
+                        message: lookupError(l10n, mapError(error).l10nKey),
+                      ),
+                    ],
                   ),
                   data: (lines) {
                     if (lines.isEmpty) {
@@ -291,7 +312,22 @@ class _ArticleCompositionFormViewState
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        if (ingredients.isEmpty)
+                        if (ingredientsPending)
+                          const AppScreenLoader(compact: true)
+                        else if (ingredientsFailed)
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              LoadFailureNotice(error: ingredientsAsync.error),
+                              AppErrorBanner(
+                                message: lookupError(
+                                  l10n,
+                                  mapError(ingredientsAsync.error!).l10nKey,
+                                ),
+                              ),
+                            ],
+                          )
+                        else if (ingredientsMissing)
                           AppErrorBanner(
                             message: l10n.compositionNeedIngredients,
                           )

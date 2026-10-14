@@ -4,6 +4,7 @@ import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:sip_sync_client/sip_sync_client.dart';
 
 import '../../../core/di/app_providers.dart';
+import '../../../core/errors/app_notice.dart';
 import '../../../core/errors/error_mapper.dart';
 import '../../../core/errors/form_validators.dart';
 import '../../../core/routing/app_routes.dart';
@@ -53,6 +54,7 @@ class _BuildingDetailViewState extends ConsumerState<BuildingDetailView> {
         error: (error, _) => Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            LoadFailureNotice(error: error),
             AppErrorBanner(message: lookupError(l10n, mapError(error).l10nKey)),
             ShadButton.outline(
               onPressed: () => ref.invalidate(
@@ -152,6 +154,11 @@ class _BuildingDetailViewState extends ConsumerState<BuildingDetailView> {
       return;
     }
     setState(() => _errorKey = error);
+    if (error == null) {
+      showSavedSnackBar(context);
+    } else {
+      showErrorKey(context, error);
+    }
   }
 }
 

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:sip_sync_client/sip_sync_client.dart';
 
+import '../../../core/errors/app_notice.dart';
 import '../../../core/errors/error_mapper.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
@@ -28,6 +29,7 @@ class StatsView extends ConsumerWidget {
         error: (error, _) => Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            LoadFailureNotice(error: error),
             AppErrorBanner(message: lookupError(l10n, mapError(error).l10nKey)),
             ShadButton.outline(
               onPressed: () =>

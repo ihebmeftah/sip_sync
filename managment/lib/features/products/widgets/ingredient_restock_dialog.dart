@@ -79,7 +79,7 @@ class _IngredientRestockDialogState
           .read(ingredientsViewModelProvider(widget.buildingId).notifier)
           .restock(id: widget.ingredient.id, quantity: quantity);
       if (!mounted) return;
-      Navigator.of(context).pop(true);
+      popWithSnackBar(context, AppLocalizations.of(context)!.noticeSaved);
     } catch (error) {
       if (!mounted) return;
       setState(() {

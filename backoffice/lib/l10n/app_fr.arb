@@ -30,6 +30,8 @@
   "defaultAdminFlag": "défaut",
   "loading": "Chargement",
   "retry": "Réessayer",
+  "noticeSaved": "Enregistré.",
+  "noticeRemoved": "Supprimé.",
   "empty": "Rien pour le moment",
   "language": "Langue",
   "errorGeneric": "Une erreur s'est produite. Réessayez.",

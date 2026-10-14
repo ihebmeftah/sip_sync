@@ -92,7 +92,7 @@ class _CategoryFormViewState extends ConsumerState<CategoryFormView> {
       if (!mounted) {
         return;
       }
-      Navigator.of(context).pop(true);
+      popWithSnackBar(context, AppLocalizations.of(context)!.noticeSaved);
     } catch (error) {
       if (!mounted) {
         return;
@@ -141,10 +141,12 @@ class _CategoryFormViewState extends ConsumerState<CategoryFormView> {
                 const SizedBox(height: AppSpacing.lg),
                 if (_isEdit && async.isLoading && existing == null)
                   const AppScreenLoader(),
-                if (_isEdit && async.hasError && existing == null)
+                if (_isEdit && async.hasError && existing == null) ...[
+                  LoadFailureNotice(error: async.error),
                   AppErrorBanner(
                     message: lookupError(l10n, mapError(async.error!).l10nKey),
                   ),
+                ],
                 AppSurfaceCard(
                   child: Form(
                     key: _formKey,

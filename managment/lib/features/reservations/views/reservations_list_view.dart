@@ -79,6 +79,7 @@ class _ReservationsListViewState extends ConsumerState<ReservationsListView> {
         error: (error, _) => ListView(
           padding: const EdgeInsets.all(AppSpacing.xl),
           children: [
+            LoadFailureNotice(error: error),
             AppErrorBanner(message: lookupError(l10n, mapError(error).l10nKey)),
           ],
         ),
@@ -222,6 +223,9 @@ class _ReservationsListViewState extends ConsumerState<ReservationsListView> {
     setState(() => _busyId = id);
     try {
       await action();
+      if (mounted) {
+        showSavedSnackBar(context);
+      }
     } catch (error) {
       if (mounted) {
         captureError(context, error);

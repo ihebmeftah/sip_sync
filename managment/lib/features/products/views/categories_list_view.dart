@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/di/app_providers.dart';
+import '../../../core/errors/app_notice.dart';
 import '../../../core/errors/error_mapper.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
@@ -97,6 +98,7 @@ class _CategoriesListViewState extends ConsumerState<CategoriesListView> {
                 error: (error, _) => Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
+                    LoadFailureNotice(error: error),
                     AppErrorBanner(
                       message: lookupError(l10n, mapError(error).l10nKey),
                     ),

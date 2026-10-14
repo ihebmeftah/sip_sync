@@ -102,6 +102,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get retry => 'إعادة المحاولة';
 
   @override
+  String get noticeSaved => 'تم الحفظ.';
+
+  @override
+  String get noticeRemoved => 'تم الحذف.';
+
+  @override
   String get empty => 'لا شيء بعد';
 
   @override

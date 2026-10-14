@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sip_sync_client/sip_sync_client.dart';
 
 import '../../../core/di/app_providers.dart';
+import '../../../core/errors/app_notice.dart';
+import '../../../core/errors/async_lists.dart';
 import '../../../core/errors/error_mapper.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
@@ -60,9 +61,9 @@ class _ArticlesListViewState extends ConsumerState<ArticlesListView> {
       max: building?.pack.maxArticles,
       current: async.asData?.value.length ?? 0,
     );
-    final categories =
-        ref.watch(categoryCatalogProvider(widget.buildingId)).asData?.value ??
-        const <MenuCategoryView>[];
+    final categoriesAsync = ref.watch(
+      categoryCatalogProvider(widget.buildingId),
+    );
 
     return ColoredBox(
       color: Theme.of(context).scaffoldBackgroundColor,
@@ -113,7 +114,25 @@ class _ArticlesListViewState extends ConsumerState<ArticlesListView> {
                 ],
               ),
               const SizedBox(height: AppSpacing.lg),
-              if (isOwner && categories.isEmpty)
+              if (isOwner &&
+                  categoriesAsync.hasError &&
+                  categoriesAsync.asData == null)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: AppSpacing.lg),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      LoadFailureNotice(error: categoriesAsync.error),
+                      AppErrorBanner(
+                        message: lookupError(
+                          l10n,
+                          mapError(categoriesAsync.error!).l10nKey,
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              else if (isOwner && isSettledEmpty(categoriesAsync))
                 Padding(
                   padding: const EdgeInsets.only(bottom: AppSpacing.lg),
                   child: AppErrorBanner(message: l10n.articlesNeedCategory),
@@ -123,6 +142,7 @@ class _ArticlesListViewState extends ConsumerState<ArticlesListView> {
                 error: (error, _) => Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
+                    LoadFailureNotice(error: error),
                     AppErrorBanner(
                       message: lookupError(l10n, mapError(error).l10nKey),
                     ),

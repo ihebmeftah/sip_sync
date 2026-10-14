@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sip_sync_client/sip_sync_client.dart';
 
+import '../../../core/errors/app_notice.dart';
 import '../../../core/errors/error_mapper.dart';
 import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_icons.dart';
@@ -158,6 +159,12 @@ class _DiscoverPane extends ConsumerWidget {
     final text = Theme.of(context).textTheme;
     final scheme = Theme.of(context).colorScheme;
     final discover = ref.watch(discoverViewModelProvider);
+    ref.listen(discoverViewModelProvider, (previous, next) {
+      final key = next.errorKey;
+      if (key != null && key != previous?.errorKey) {
+        showErrorKey(context, key);
+      }
+    });
     final session = ref.watch(authViewModelProvider).session;
     final name = session?.firstName ?? '';
     final ranked = discover.ranked;

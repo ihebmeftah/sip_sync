@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/di/app_providers.dart';
 import '../../../core/di/building_session.dart';
 import '../../../core/di/service_locator.dart';
+import '../../../core/errors/app_notice.dart';
 import '../../../core/errors/error_mapper.dart';
 import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_tokens.dart';
@@ -56,8 +57,14 @@ class BuildingsListView extends ConsumerWidget {
               const SizedBox(height: AppSpacing.lg),
               async.when(
                 loading: () => const AppScreenLoader(),
-                error: (error, _) => AppErrorBanner(
-                  message: lookupError(l10n, mapError(error).l10nKey),
+                error: (error, _) => Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    LoadFailureNotice(error: error),
+                    AppErrorBanner(
+                      message: lookupError(l10n, mapError(error).l10nKey),
+                    ),
+                  ],
                 ),
                 data: (page) {
                   final buildings = page.items;

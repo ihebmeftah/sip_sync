@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sip_sync_client/sip_sync_client.dart';
 
 import '../../../core/di/app_providers.dart';
+import '../../../core/errors/app_notice.dart';
 import '../../../core/errors/error_mapper.dart';
 import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_tokens.dart';
@@ -333,6 +334,7 @@ class _TablesListViewState extends ConsumerState<TablesListView> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
+                      LoadFailureNotice(error: async.error),
                       AppErrorBanner(
                         message: lookupError(
                           l10n,

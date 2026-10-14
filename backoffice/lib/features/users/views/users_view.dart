@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:sip_sync_client/sip_sync_client.dart';
 
+import '../../../core/errors/app_notice.dart';
 import '../../../core/errors/error_mapper.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
@@ -53,6 +54,7 @@ class _UsersViewState extends ConsumerState<UsersView> {
             error: (error, _) => Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                LoadFailureNotice(error: error),
                 AppErrorBanner(
                   message: lookupError(l10n, mapError(error).l10nKey),
                 ),
@@ -92,8 +94,13 @@ class _UsersViewState extends ConsumerState<UsersView> {
                               final error = await ref
                                   .read(usersViewModelProvider.notifier)
                                   .setEnabled(rows[i].id, enabled);
-                              if (!mounted) return;
+                              if (!context.mounted) return;
                               setState(() => _bannerKey = error);
+                              if (error == null) {
+                                showSavedSnackBar(context);
+                              } else {
+                                showErrorKey(context, error);
+                              }
                             },
                             onDelete: rows[i].isSystemDefault
                                 ? null
@@ -148,6 +155,11 @@ class _UsersViewState extends ConsumerState<UsersView> {
         .delete(user.id);
     if (!mounted) return;
     setState(() => _bannerKey = error);
+    if (error == null) {
+      showRemovedSnackBar(context);
+    } else {
+      showErrorKey(context, error);
+    }
   }
 }
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/errors/app_notice.dart';
 import '../../../core/errors/error_mapper.dart';
 import '../../../core/routing/app_routes.dart';
 import '../../../core/theme/app_tokens.dart';
@@ -97,6 +98,7 @@ class _EmployeeDetailsPageState extends ConsumerState<EmployeeDetailsPage> {
                 if (async.isLoading && employee == null)
                   const AppScreenLoader(),
                 if (async.hasError && employee == null) ...[
+                  LoadFailureNotice(error: async.error),
                   AppErrorBanner(
                     message: lookupError(l10n, mapError(async.error!).l10nKey),
                   ),
@@ -184,7 +186,13 @@ class _AccessBody extends ConsumerWidget {
         padding: EdgeInsets.symmetric(vertical: AppSpacing.sm),
         child: AppScreenLoader(),
       ),
-      error: (error, _) => Text(lookupError(l10n, mapError(error).l10nKey)),
+      error: (error, _) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          LoadFailureNotice(error: error),
+          Text(lookupError(l10n, mapError(error).l10nKey)),
+        ],
+      ),
       data: (profile) => EmployeeAccessFlags(access: profile),
     );
   }

@@ -70,10 +70,8 @@ class _EmployeeFormViewState extends ConsumerState<EmployeeFormView> {
     final ui = ref.watch(employeeFormViewModelProvider(_employeeKey));
     ref.listen(employeeFormViewModelProvider(_employeeKey), (previous, next) {
       final key = next.errorKey;
-      if (key != null &&
-          key != previous?.errorKey &&
-          key.startsWith('errorPack')) {
-        showAppSnackBar(context, lookupError(l10n, key));
+      if (key != null && key != previous?.errorKey) {
+        showErrorKey(context, key);
       }
     });
     final profilesAsync = ref.watch(accessCatalogProvider(widget.buildingId));
@@ -146,8 +144,17 @@ class _EmployeeFormViewState extends ConsumerState<EmployeeFormView> {
                           ),
                         profilesAsync.when(
                           loading: () => const AppScreenLoader(compact: true),
-                          error: (error, _) => AppErrorBanner(
-                            message: lookupError(l10n, mapError(error).l10nKey),
+                          error: (error, _) => Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              LoadFailureNotice(error: error),
+                              AppErrorBanner(
+                                message: lookupError(
+                                  l10n,
+                                  mapError(error).l10nKey,
+                                ),
+                              ),
+                            ],
                           ),
                           data: (profiles) {
                             if (profiles.isEmpty) {
@@ -231,6 +238,7 @@ class _EmployeeFormViewState extends ConsumerState<EmployeeFormView> {
                             if (!context.mounted || saved == null) {
                               return;
                             }
+                            showSavedSnackBar(context);
                             EmployeeDetailsRoute(
                               buildingId: widget.buildingId,
                               employeeId: saved.id.uuid,

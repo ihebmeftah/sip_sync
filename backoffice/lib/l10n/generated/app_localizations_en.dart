@@ -103,6 +103,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get retry => 'Retry';
 
   @override
+  String get noticeSaved => 'Saved.';
+
+  @override
+  String get noticeRemoved => 'Removed.';
+
+  @override
   String get empty => 'Nothing here yet';
 
   @override

@@ -181,8 +181,14 @@ class _OrderDetailViewState extends ConsumerState<OrderDetailView> {
             loading: () => const AppScreenLoader(),
             error: (error, _) => Padding(
               padding: const EdgeInsets.all(AppSpacing.xl),
-              child: AppErrorBanner(
-                message: lookupError(l10n, mapError(error).l10nKey),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  LoadFailureNotice(error: error),
+                  AppErrorBanner(
+                    message: lookupError(l10n, mapError(error).l10nKey),
+                  ),
+                ],
               ),
             ),
             data: (_) {

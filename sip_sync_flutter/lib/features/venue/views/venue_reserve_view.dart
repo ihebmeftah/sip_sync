@@ -57,8 +57,14 @@ class _VenueReserveViewState extends ConsumerState<VenueReserveView> {
                 else
                   detail.when(
                     loading: () => const AppScreenLoader(compact: true),
-                    error: (error, _) => AppErrorBanner(
-                      message: lookupError(l10n, mapError(error).l10nKey),
+                    error: (error, _) => Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        LoadFailureNotice(error: error),
+                        AppErrorBanner(
+                          message: lookupError(l10n, mapError(error).l10nKey),
+                        ),
+                      ],
                     ),
                     data: (page) {
                       if (page.reservationsClosedByVenue) {
@@ -87,8 +93,14 @@ class _VenueReserveViewState extends ConsumerState<VenueReserveView> {
                 const SizedBox(height: AppSpacing.md),
                 mine.when(
                   loading: () => const AppScreenLoader(compact: true),
-                  error: (error, _) => AppErrorBanner(
-                    message: lookupError(l10n, mapError(error).l10nKey),
+                  error: (error, _) => Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      LoadFailureNotice(error: error),
+                      AppErrorBanner(
+                        message: lookupError(l10n, mapError(error).l10nKey),
+                      ),
+                    ],
                   ),
                   data: (rows) {
                     final here = [
@@ -440,7 +452,7 @@ class _ReserveRequestDialogState extends ConsumerState<_ReserveRequestDialog> {
           );
       ref.read(myReservationsProvider.notifier).remember(created);
       if (mounted) {
-        Navigator.of(context).pop();
+        popWithSnackBar(context, AppLocalizations.of(context)!.noticeSaved);
       }
     } catch (error) {
       if (mounted) {

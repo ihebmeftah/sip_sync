@@ -104,8 +104,14 @@ class _BuildingConfigurationViewState
         loading: () => const AppScreenLoader(),
         error: (error, _) => Padding(
           padding: const EdgeInsets.all(AppSpacing.xl),
-          child: AppErrorBanner(
-            message: lookupError(l10n, mapError(error).l10nKey),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              LoadFailureNotice(error: error),
+              AppErrorBanner(
+                message: lookupError(l10n, mapError(error).l10nKey),
+              ),
+            ],
           ),
         ),
         data: (_) => const AppScreenLoader(),
@@ -308,7 +314,7 @@ class _BuildingConfigurationViewState
                             allowOutOfStockOrders: _allowOutOfStockOrders,
                             cashRegisterEnabled: _cashRegisterEnabled,
                           );
-                      if (!mounted) {
+                      if (!context.mounted) {
                         return;
                       }
                       getIt<BuildingSession>().upsert(saved);
@@ -316,6 +322,7 @@ class _BuildingConfigurationViewState
                         _saving = false;
                         _saved = true;
                       });
+                      showSavedSnackBar(context);
                     } catch (error) {
                       if (!mounted) {
                         return;

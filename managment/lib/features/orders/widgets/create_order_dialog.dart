@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sip_sync_client/sip_sync_client.dart';
 
 import '../../../core/errors/app_notice.dart';
+import '../../../core/errors/async_lists.dart';
 import '../../../core/errors/error_mapper.dart';
 import '../../../core/theme/app_tokens.dart';
 import '../../../core/widgets/app_controls.dart';
@@ -60,7 +61,7 @@ class _CreateOrderDialogState extends ConsumerState<_CreateOrderDialog> {
       if (!mounted) {
         return;
       }
-      Navigator.of(context).pop(true);
+      popWithSnackBar(context, AppLocalizations.of(context)!.noticeSaved);
     } catch (error) {
       if (!mounted) {
         return;
@@ -79,9 +80,12 @@ class _CreateOrderDialogState extends ConsumerState<_CreateOrderDialog> {
     final tables =
         ref.watch(tablesViewModelProvider(widget.buildingId)).asData?.value ??
         const <VenueTableView>[];
-    final articles =
-        ref.watch(articlesViewModelProvider(widget.buildingId)).asData?.value ??
-        const <MenuArticleView>[];
+    final articlesAsync = ref.watch(
+      articlesViewModelProvider(widget.buildingId),
+    );
+    final articles = settledList(articlesAsync);
+    final articlesFailed = articles == null && articlesAsync.hasError;
+    final articlesPending = articles == null && !articlesFailed;
     final activeTables = tables.where((t) => t.isActive).toList();
 
     return AlertDialog(
@@ -112,14 +116,29 @@ class _CreateOrderDialogState extends ConsumerState<_CreateOrderDialog> {
                 onChanged: (value) => setState(() => _tableId = value),
               ),
               const SizedBox(height: AppSpacing.lg),
-              if (articles.isEmpty)
+              if (articlesPending)
+                const AppScreenLoader(compact: true)
+              else if (articlesFailed)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    LoadFailureNotice(error: articlesAsync.error),
+                    AppErrorBanner(
+                      message: lookupError(
+                        l10n,
+                        mapError(articlesAsync.error!).l10nKey,
+                      ),
+                    ),
+                  ],
+                )
+              else if (isSettledEmpty(articlesAsync))
                 AppErrorBanner(message: l10n.orderNeedArticles)
               else
                 Material(
                   type: MaterialType.transparency,
                   child: Column(
                     children: [
-                      for (final article in articles)
+                      for (final article in articles!)
                         ListTile(
                           contentPadding: EdgeInsets.zero,
                           title: Text(article.name),
@@ -173,7 +192,13 @@ class _CreateOrderDialogState extends ConsumerState<_CreateOrderDialog> {
           child: Text(l10n.cancel),
         ),
         FilledButton(
-          onPressed: _saving || articles.isEmpty ? null : _submit,
+          onPressed:
+              _saving ||
+                  articlesPending ||
+                  articlesFailed ||
+                  isSettledEmpty(articlesAsync)
+              ? null
+              : _submit,
           child: _saving
               ? const SizedBox(width: 18, height: 18, child: AppBusyIndicator())
               : Text(l10n.createOrder),
